@@ -1,0 +1,3 @@
+The 'checkfiles' directory is used for testing
+file deletion and creation. DO NOT change anything
+in this directory or you will break tests.

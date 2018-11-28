@@ -1,0 +1,1587 @@
+package common
+
+import (
+	"errors"
+	"fmt"
+	"io"
+	"os"
+	"path"
+	fp "path/filepath"
+	"strings"
+	"time"
+)
+
+/*
+This source code file is located in the source code repository:
+https://github.com/MikeAustin71/pathfilego.git
+*/
+
+type FileWalkInfo struct {
+	Path string
+	Info os.FileInfo
+}
+
+// DirWalkInfo - structure used to
+// encapsulate information gleaned from
+// 'walking' a directory tree using
+// filepath.Walk(root string, walkFn WalkFunc) error
+type DirWalkInfo struct {
+	StartPath            string
+	Directories          []string
+	FoundFiles           []FileWalkInfo
+	ErrReturns           []string
+	PatternMatch         string
+	DeleteFilesOlderThan time.Time
+	DeletedFiles         []FileWalkInfo
+}
+
+// FileHelper - structure used
+// to encapsulate FileHelper utility
+// methods.
+type FileHelper struct {
+	Input		string
+	Output	string
+}
+
+func (fh FileHelper) AddPathSeparatorToPathStr(pathStr string) (string, error) {
+	lStr := len(pathStr)
+
+	ePrefix := "FileHelper.AddPathSeparatorToPathStr() "
+
+	if lStr == 0 {
+		return "", errors.New(ePrefix + "Error: Zero length input parameter, 'pathStr'!")
+	}
+
+	if pathStr[lStr-1] == '/' || pathStr[lStr-1] == '\\' || pathStr[lStr-1] == os.PathSeparator {
+		return pathStr, nil
+	}
+
+	newPathStr := pathStr + string(os.PathSeparator)
+
+	return newPathStr, nil
+}
+
+// AdjustPathSlash standardize path
+// separators according to operating system
+func (fh FileHelper) AdjustPathSlash(path string) string {
+
+	return fp.FromSlash(path)
+}
+
+// ChangeDir - Chdir changes the current working directory to the named directory. If there is an error, it will be of type *PathError.
+func (fh FileHelper) ChangeDir(dirPath string) error {
+
+	err := os.Chdir(dirPath)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+
+// CopyFile - Copies file from source path & File Name
+// to destination path & File Name.
+// See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+func (fh FileHelper) CopyFile(src, dst string) (err error) {
+
+	sfi, err := os.Stat(src)
+	if err != nil {
+		return
+	}
+	if !sfi.Mode().IsRegular() {
+		// cannot copy non-regular files (e.g., directories,
+		// symlinks, devices, etc.)
+		return fmt.Errorf("FileHelper:CopyFile(): non-regular source file %s (%q)", sfi.Name(), sfi.Mode().String())
+	}
+
+	dfi, err := os.Stat(dst)
+
+	if err != nil {
+
+		if !os.IsNotExist(err) {
+			// Must be PathError - Path does not exist
+			return fmt.Errorf("FileHelper:CopyFile(): Destination File Path Error - Path does NOT exist. Error: %v", err.Error())
+		}
+	} else {
+		if !(dfi.Mode().IsRegular()) {
+			return fmt.Errorf("FileHelper:CopyFile(): non-regular destination file %s (%q) - Cannot Overwrite destination file.", dfi.Name(), dfi.Mode().String())
+		}
+		if os.SameFile(sfi, dfi) {
+			return nil
+		}
+	}
+	if err = os.Link(src, dst); err == nil {
+		return
+	}
+
+	err = fh.CopyFileContents(src, dst)
+	return
+}
+
+// CopyFileContents - Copies file contents from source to destination file.
+// Note: No validity checks are performed on 'src' and 'dest' files.
+// This method is called by FileHelper:CopyFile(). Use FileHelper:CopyFile() for
+// ordinary file copy operations since it provides validity checks on 'src' and 'dest'
+// files.
+// See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+func (fh FileHelper) CopyFileContents(src, dst string) (err error) {
+	in, err := os.Open(src)
+	if err != nil {
+		return
+	}
+	defer in.Close()
+	out, err := os.Create(dst)
+	if err != nil {
+		return
+	}
+
+	defer func() {
+		cerr := out.Close()
+		if err == nil {
+			err = cerr
+		}
+	}()
+
+	if _, err = io.Copy(out, in); err != nil {
+		return
+	}
+	err = out.Sync()
+
+	return
+}
+
+// CleanPathStr - Wrapper Function for filepath.Clean()
+// See: https://golang.org/pkg/path/filepath/#Clean
+// Clean returns the shortest path name equivalent to path
+// by purely lexical processing. It applies the following rules
+// iteratively until no further processing can be done:
+// 1. Replace multiple Separator elements with a single one.
+// 2. Eliminate each . path name element (the current directory).
+// 3. Eliminate each inner .. path name element (the parent directory)
+// 		along with the non-.. element that precedes it.
+// 4. Eliminate .. elements that begin a rooted path:
+// 		that is, replace "/.." by "/" at the beginning of a path,
+// 		assuming Separator is '/'.'
+// The returned path ends in a slash only if it represents a root
+// directory, such as "/" on Unix or `C:\` on Windows.
+// Finally, any occurrences of slash are replaced by Separator.
+// If the result of this process is an empty string,
+// Clean returns the string ".".
+
+func (fh FileHelper) CleanPathStr(pathStr string) string {
+
+	return fp.Clean(pathStr)
+}
+
+
+
+// CreateFile - Wrapper function for os.Create
+func (fh FileHelper) CreateFile(pathFileName string) (*os.File, error) {
+	return os.Create(pathFileName)
+}
+
+// DeleteDirFile - Wrapper function for Remove.
+// Remove removes the named file or directory.
+// If there is an error, it will be of type *PathError.
+func (fh FileHelper) DeleteDirFile(pathFile string) error {
+	return os.Remove(pathFile)
+}
+
+// DeleteDirPathAll - Wrapper function for RemoveAll
+// RemoveAll removes path and any children it contains.
+// It removes everything it can but returns the first
+// error it encounters. If the path does not exist,
+// RemoveAll returns nil (no error).
+func (fh FileHelper) DeleteDirPathAll(path string) error {
+	return os.RemoveAll(path)
+}
+
+// DoesFileExist - Returns a boolean value
+// designating whether the passed file name
+// exists.
+func (fh FileHelper) DoesFileExist(pathFileName string) bool {
+
+	status, _, _ := fh.DoesFileInfoExist(pathFileName)
+
+	return status
+}
+
+// DoesFileInfoExist - returns a boolean value indicating
+// whether the path and file name passed to the function
+// actually exists. Note: If the file actually exists,
+// the function will return the associated FileInfo structure.
+func (fh FileHelper) DoesFileInfoExist(pathFileName string) (doesFInfoExist bool, fInfo os.FileInfo, err error) {
+
+	doesFInfoExist = false
+
+	if fInfo, err = os.Stat(pathFileName); os.IsNotExist(err) {
+		return doesFInfoExist, fInfo, err
+	}
+
+	doesFInfoExist = true
+
+	return doesFInfoExist, fInfo, nil
+
+}
+
+func (fh FileHelper) DoesStringEndWithPathSeparator(pathStr string) bool {
+
+	lenStr := len(pathStr)
+
+	if lenStr < 1 {
+		return false
+	}
+
+	if pathStr[lenStr-1] == '\\' || pathStr[lenStr-1] == '/' || pathStr[lenStr-1] == os.PathSeparator {
+		return true
+	}
+
+	return false
+}
+
+// GetAbsPathFromFilePath - Supply a string containing both
+// the path file name and extension and return the path
+// element.
+func (fh FileHelper) GetAbsPathFromFilePath(filePath string) (string, error) {
+
+	return fh.MakeAbsolutePath(path.Dir(filePath))
+
+}
+
+// GetAbsCurrDir - returns
+// the absolute path of the
+// current working directory
+func (fh FileHelper) GetAbsCurrDir() (string, error) {
+
+	dir, err := fh.GetCurrentDir()
+
+	if err != nil {
+		return dir, err
+	}
+
+	return fh.MakeAbsolutePath(dir)
+}
+
+// GetCurrentDir - Wrapper function for
+// Getwd(). Getwd returns a rooted path name
+// corresponding to the current directory.
+// If the current directory can be reached via
+// multiple paths (due to symbolic links),
+// Getwd may return any one of them.
+func (fh FileHelper) GetCurrentDir() (string, error) {
+	return os.Getwd()
+}
+
+// GetExecutablePathFileName - Gets the file name
+// and path of the executable that started the
+// current process
+func (fh FileHelper) GetExecutablePathFileName() (string, error) {
+	ex, err := os.Executable()
+
+	return ex, err
+
+}
+
+// GetFileInfoFromPath - Wrapper function for os.Stat(). This method
+// can be used to return FileInfo data on a specific file. If the file
+// does NOT exist, an error will be triggered. This method is similar to
+// FileHelpter.DoesFileInfoExist().
+//
+// type FileInfo interface {
+// 	Name() string       // base name of the file
+// 	Size() int64        // length in bytes for regular files; system-dependent for others
+// 	Mode() FileMode     // file mode bits
+// 	ModTime() time.Time // modification time
+// 	IsDir() bool        // abbreviation for Mode().IsDir()
+// 	Sys() interface{}   // underlying data source (can return nil)
+// }
+func (fh FileHelper) GetFileInfoFromPath(pathFileName string) (os.FileInfo, error) {
+
+	return os.Stat(pathFileName)
+
+}
+
+// GetFileLastModificationDate - Returns the last modification'
+// date/time on a specific file. If input parameter 'customTimeFmt'
+// string is empty, default time format will be used to format the
+// returned time string.
+func (fh FileHelper) GetFileLastModificationDate(pathFileName string, customTimeFmt string) (time.Time, string, error) {
+
+	const fmtDateTimeNanoSecondStr = "2006-01-02 15:04:05.000000000"
+	var zeroTime time.Time
+
+	if pathFileName == "" {
+		return zeroTime, "", errors.New("FileHelper:GetFileLastModificationDate() Error: Input parameter 'pathFileName' is empty string!")
+	}
+
+	fmtStr := customTimeFmt
+
+	if len(fmtStr) == 0 {
+		fmtStr = fmtDateTimeNanoSecondStr
+	}
+
+	fInfo, err := fh.GetFileInfoFromPath(pathFileName)
+
+	if err != nil {
+		return zeroTime, "", errors.New(fmt.Sprintf("FileHelper:GetFileLastModificationDate() Error Getting FileInfo on %v Error on GetFileInfoFromPath(): %v", pathFileName, err.Error()))
+	}
+
+	return fInfo.ModTime(), fInfo.ModTime().Format(fmtStr), nil
+}
+
+// GetPathAndFileNameExt - Breaks out path and FileName+Ext elements from
+// a path string. If both path and fileName are empty strings, this method
+// returns an error.
+func (fh FileHelper) GetPathAndFileNameExt(pathFileNameExt string) (path, fileNameExt string, bothAreEmpty bool) {
+
+	bothAreEmpty = true
+	if pathFileNameExt == "" {
+		return "", "", bothAreEmpty
+	}
+
+	path, fileNameExt = fp.Split(pathFileNameExt)
+
+	if path == "" && fileNameExt == "" {
+		return path, fileNameExt, bothAreEmpty
+	}
+
+	bothAreEmpty = false
+
+	return path, fileNameExt, bothAreEmpty
+
+}
+
+// GetPathFromPathFileName - Returns the path from a path and file name string.
+// If the returned path is an empty string, return parameter 'isEmpty' is set to
+// 'true'
+func (fh FileHelper) GetPathFromPathFileName(pathFileNameExt string) (path string, isEmpty bool) {
+	path = ""
+	isEmpty = true
+
+	if pathFileNameExt == "" {
+		return path, isEmpty
+	}
+
+	path, _ = fp.Split(pathFileNameExt)
+
+	if path != "" {
+		isEmpty = false
+	}
+
+	return path, isEmpty
+
+}
+
+// GetFileNameWithoutExt - returns the file name
+// without the path or extension. If the returned
+// File Name is an empty string, isEmpty is set to true.
+func (fh FileHelper) GetFileNameWithoutExt(pathFileNameExt string) (fName string, isEmpty bool) {
+	isEmpty = true
+	fName = ""
+
+	if pathFileNameExt == "" {
+		return fName, isEmpty
+	}
+
+	_, f := fp.Split(pathFileNameExt)
+
+	if f == "" {
+		return fName, isEmpty
+	}
+
+	sArray := strings.Split(f, ".")
+
+	if len(sArray) == 0 {
+		return fName, isEmpty
+	}
+
+	isEmpty = false
+	fName = sArray[0]
+
+	return fName, isEmpty
+
+}
+
+// GetFileExtension - Returns the File Extension with
+// the dot. If there is no File Extension an empty
+// string is returned (NO dot included). If the returned
+// File Extension is an empty string, the returned
+// parameter 'isEmpty' is set equal to 'true'.
+func (fh FileHelper) GetFileExtension(pathFileNameExt string) (ext string, isEmpty bool) {
+	isEmpty = true
+	ext = fp.Ext(pathFileNameExt)
+
+	if ext == "" {
+		return ext, isEmpty
+	}
+
+	isEmpty = false
+
+	return ext, isEmpty
+}
+
+
+// IsAbsolutePath - Wrapper function for path.IsAbs()
+// https://golang.org/pkg/path/#IsAbs
+// This method reports whether the input parameter is
+// an absolute path.
+func (fh FileHelper) IsAbsolutePath(pathStr string) bool {
+	return path.IsAbs(pathStr)
+}
+
+
+// IsPathString - Attempts to determine whether a string is a
+// path string designating a directory.
+//
+// Input Parameter
+// ===============
+// pathStr string 	- The path string to be analyzed.
+//
+// Return Values
+// =============
+//
+// isPathStr bool				- If the input parameter, 'pathStr'
+//												is determined to be a directory
+//												path, this return value is set to
+//												true.
+//
+// cannotDetermine bool	- If the method cannot determine whether
+//												the input parameter 'pathStr' is or
+// 												is NOT a valid directory path, this
+//												this return value will be set to 'true'.
+//												The 'cannotDetermine=true' condition occurs
+//												with path names like 'D:\DirA\common'. The
+//												cannot determine whether 'common' is a file
+//												name or a directory name.
+//
+// err error						- If an error occurs this return value will
+//												be populated. If no errors occur, this return
+//												value is set to nil.
+//
+//
+// If the path exists on disk, this method will examine the
+// associated file information and render a definitive and
+// accurate determination as to whether the path string represents
+// a directory.
+//
+func (fh FileHelper) IsPathString(pathStr string) (isPathStr bool, cannotDetermine bool, err error) {
+
+	ePrefix := "FileHelper.IsPathString() "
+
+	var fInfo os.FileInfo
+
+	lpathStr := len(pathStr)
+
+	if lpathStr == 0 {
+		isPathStr = false
+		cannotDetermine = false
+		err = errors.New(ePrefix + "Error - Zero Length input parameter 'pathStr'.")
+		return
+	}
+
+	dot := path.Ext(pathStr)
+
+	if dot != "" {
+		isPathStr = false
+		cannotDetermine = false
+		err = nil
+		return
+	}
+
+	fInfo, err = os.Stat(pathStr)
+
+	if err==nil  {
+
+		if fInfo.IsDir() {
+			isPathStr = true
+			cannotDetermine = false
+			err = nil
+			return
+
+		} else {
+			isPathStr = false
+			cannotDetermine = false
+			err = nil
+			return
+		}
+
+	}
+
+	if pathStr[lpathStr-1] == '/' || pathStr[lpathStr-1] == '\\' || pathStr[lpathStr-1] == os.PathSeparator {
+		isPathStr = true
+		cannotDetermine = false
+		err = nil
+		return
+	}
+
+	isPathStr = false
+	cannotDetermine = true
+	err = nil
+	return
+}
+
+// JoinPathsAdjustSeparators - Joins two
+// path strings and standardizes the
+// path separators according to the
+// current operating system.
+func (fh FileHelper) JoinPathsAdjustSeparators(p1 string, p2 string) string {
+	ps1 := fp.FromSlash(fp.Clean(p1))
+	ps2 := fp.FromSlash(fp.Clean(p2))
+	return fp.Clean(fp.FromSlash(path.Join(ps1, ps2)))
+
+}
+
+// JoinPaths - correctly joins 2-paths
+func (fh FileHelper) JoinPaths(p1 string, p2 string) string {
+
+	return fp.Clean(path.Join(fp.Clean(p1), fp.Clean(p2)))
+
+}
+
+// MakeAbsolutePath - Supply a relative path or any path
+// string and resolve that path to an Absolute Path.
+// Note: Clean() is called on result by fp.Abs().
+func (fh FileHelper) MakeAbsolutePath(relPath string) (string, error) {
+
+	p, err := fp.Abs(relPath)
+
+	if err != nil {
+		return "Invalid p!", err
+	}
+
+	return p, err
+}
+
+// MakeDirAll - creates a directory named path,
+// along with any necessary parents, and returns nil,
+// or else returns an error. The permission bits perm
+// are used for all directories that MkdirAll creates.
+// If path is already a directory, MkdirAll does nothing
+// and returns nil.
+func (fh FileHelper) MakeDirAll(dirPath string) error {
+	var ModePerm os.FileMode = 0777
+	return os.MkdirAll(dirPath, ModePerm)
+}
+
+// MakeDir - Makes a directory. Returns
+// boolean value of false plus error if
+// the operation fails. If successful,
+// the function returns true.
+func (fh FileHelper) MakeDir(dirPath string) (bool, error) {
+	var ModePerm os.FileMode = 0777
+	err := os.Mkdir(dirPath, ModePerm)
+
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+// MoveFile - Copies file from source to destination and, if
+// successful, then deletes the original source file.
+func (fh FileHelper) MoveFile(src, dst string) (err error) {
+
+	err = fh.CopyFile(src, dst)
+
+	if err != nil {
+		return
+	}
+
+	err = fh.DeleteDirFile(src)
+
+	if err != nil {
+		return fmt.Errorf("FileHelper:MoveFile() Successfully copied file from source, '%v', to destination '%v'; however deletion of source file failed! Error: %v", src, dst, err.Error())
+	}
+
+	return
+}
+
+// OpenFileForReading - Wrapper function for os.Open() method which opens
+// files on disk. 'Open' opens the named file for reading.
+// If successful, methods on the returned file can be used for reading;
+// the associated file descriptor has mode O_RDONLY. If there is an error,
+// it will be of type *PathError. (See CreateFile() above.
+func (fh FileHelper) OpenFileForReading(fileName string) (*os.File, error) {
+	return os.Open(fileName)
+}
+
+// WalkDirPurgeFilesOlderThan - Walks a directory tree specified by
+// input parameter dInfo.StartPath and purges (a.k.a. 'Deletes) all
+// files older than t.Time, dInfo.DeleteFilesOlderThan. Note: The
+// list of file eligible for deletion can be further constrained
+// through use of a file pattern (i.e. "*.log") which is stored
+// in input parameter 'dInfo.PatternMatch'.
+// BE CAREFUL, THIS METHOD DELETES FILES!!!
+func (fh FileHelper) WalkDirPurgeFilesOlderThan(dInfo *DirWalkInfo) error {
+
+	err := fp.Walk(dInfo.StartPath, fh.MakePurgeFilesFunc(dInfo))
+
+	if err != nil {
+
+		return err
+	}
+
+	return nil
+}
+
+// WalkDirGetFileInfo - Walks a directory tree specified by input
+// parameter, 'dInfo.StartPath'. All file information found in
+// the directory tree is then stored and returned through
+// (dInfo *DirWalkInfo).
+func (fh FileHelper) WalkDirGetFileInfo(dInfo *DirWalkInfo) error {
+
+	err := fp.Walk(dInfo.StartPath, fh.MakeWalkDirGetFilesFunc(dInfo))
+
+	if err != nil {
+
+		return err
+	}
+
+	return nil
+}
+
+// MakeWalkDirGetFilesFunc - Creates a function used in conjunction with
+// method FileHelper.WalkDirGetFileInfo(), above. The signature of the
+// method below is designed to coordinate with filepath.Walk() method.
+// See https://golang.org/pkg/path/filepath/#Walk
+func (fh FileHelper) MakeWalkDirGetFilesFunc(dInfo *DirWalkInfo) func(string, os.FileInfo, error) error {
+	return func(path string, info os.FileInfo, erIn error) error {
+
+		if erIn != nil {
+			dInfo.ErrReturns = append(dInfo.ErrReturns, erIn.Error())
+		}
+
+		if info.IsDir() {
+			dInfo.Directories = append(dInfo.Directories, path)
+		} else if dInfo.PatternMatch != "" {
+
+			matched, err := fp.Match(dInfo.PatternMatch, info.Name())
+
+			if err != nil {
+				panic(err)
+			}
+
+			if matched {
+				dInfo.FoundFiles = append(dInfo.FoundFiles, FileWalkInfo{Path: path, Info: info})
+			}
+
+		} else {
+			dInfo.FoundFiles = append(dInfo.FoundFiles, FileWalkInfo{Path: path, Info: info})
+		}
+
+		return nil
+	}
+}
+
+// MakePurgeFilesFunc - Creates a function used in conjunction with
+// method FileHelper.WalkDirPurgeFilesOlderThan(), above. The signature of the
+// method below is designed to coordinate with the filepath.Walk() method.
+//          See https://golang.org/pkg/path/filepath/#Walk
+// When used with FileHelper.WalkDirPurgeFilesOlderThan(), the method below may
+// be used to delete old files.
+func (fh FileHelper) MakePurgeFilesFunc(dInfo *DirWalkInfo) func(string, os.FileInfo, error) error {
+	return func(path string, info os.FileInfo, _ error) error {
+
+		if info.IsDir() {
+			return nil
+		}
+
+		if dInfo.PatternMatch != "" {
+
+			matched, err := fp.Match(dInfo.PatternMatch, info.Name())
+
+			if err != nil {
+				panic(err)
+			}
+
+			if matched {
+				if info.ModTime().Before(dInfo.DeleteFilesOlderThan) {
+
+					err := os.Remove(path)
+
+					if err != nil {
+						dInfo.ErrReturns = append(dInfo.ErrReturns, err.Error())
+					} else {
+						// No Errors! - Successful File Deletion Confirmed
+						dInfo.DeletedFiles = append(dInfo.DeletedFiles, FileWalkInfo{Path: path, Info: info})
+					}
+				}
+			}
+		} else {
+
+			if info.ModTime().Before(dInfo.DeleteFilesOlderThan) {
+				err := os.Remove(path)
+
+				if err != nil {
+					dInfo.ErrReturns = append(dInfo.ErrReturns, err.Error())
+				} else {
+					// No Errors! - Successful File Deletion Confirmed
+					dInfo.DeletedFiles = append(dInfo.DeletedFiles, FileWalkInfo{Path: path, Info: info})
+				}
+			}
+
+		}
+
+		return nil
+	}
+}
+
+func (fh FileHelper) ReadFileBytes(rFile *os.File, byteBuff []byte) (int, error) {
+	return rFile.Read(byteBuff)
+}
+
+// WriteFileStr - Wrapper for *os.File.WriteString. Writes a string
+// to an open file pointed to by *os.File.
+func (fh FileHelper) WriteFileStr(str string, fPtr *os.File) (int, error) {
+
+	return fPtr.WriteString(str)
+
+}
+
+// DirMgr - This structure and associated methods
+// are used to manage a specific directory.
+type DirMgr struct {
+	IsInitialized										bool
+	OriginalPath            				string
+	Path                            string
+	PathIsPopulated									bool
+	PathExists											bool
+	ParentPath											string
+	ParentPathIsPopulated						bool
+	RelativePath										string
+	RelativePathIsPopulated					bool
+	AbsolutePath                    string
+	AbsolutePathIsPopulated         bool
+	AbsolutePathDoesExist           bool
+	AbsolutePathDifferentFromPath		bool
+	VolumeName											string
+	VolumeIsPopulated								bool
+
+}
+
+// New - Returns a new DirMgr object and populates the
+// the data fields.
+//
+// Input Parameters:
+// =================
+//
+// pathStr string 	- A path string designating a path or directory.
+// 										To reduce errors, the 'pathStr' should be terminated
+//										with an appropriate path separator ('/' or '\')
+//										Example 'pathStr': "C:\dirA\dirB\dirC\"
+//
+// Example Output After DirMgr Configuration:
+//
+//     ----------------------------
+//     DirMgr Fields
+//     ----------------------------
+//                 IsInitialized:  true
+//                 Original Path:  ..\common\
+//                          Path:  ..\common
+//               PathIsPopulated:  true
+//                    PathExists:  true
+//                    ParentPath:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper
+//         ParentPathIsPopulated:  true
+//                  RelativePath:  common
+//       RelativePathIsPopulated:  true
+//                  AbsolutePath:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\common
+//       AbsolutePathIsPopulated:  true
+// AbsolutePathDifferentFromPath:  true
+//         AbsolutePathDoesExist:  true
+//                    VolumeName:  D:
+//             VolumeIsPopulated:  true
+//
+func (dMgr DirMgr) New(pathStr string) (DirMgr, error) {
+
+	ePrefix := "DirMgr.New() "
+
+	fh := FileHelper{}
+
+	var err error
+
+	lStr := len(pathStr)
+
+	if lStr < 1 {
+		return DirMgr{}, errors.New(ePrefix + "Error: Input parameter 'pathStr' is Zero Length!")
+	}
+
+	// Determine if this is a valid path
+	dot := path.Ext(pathStr)
+
+	if dot != "" {
+		// This is a path file name. Extract the path.
+		pathStr, _ = fp.Split(pathStr)
+	} else {
+		// There is no dot ('.') in the path. Analyze the
+		// path string and try to determine if this is a
+		// valid directory path.
+		isPath, cannotDetermine, err := fh.IsPathString(pathStr)
+
+		if err != nil {
+			return DirMgr{}, fmt.Errorf(ePrefix + "Erorr returned from FileHelper.IsPathString(pathStr). pathStr='%v' Error='%v'", pathStr, err.Error())
+		}
+
+		if !isPath && !cannotDetermine {
+			return DirMgr{}, fmt.Errorf(ePrefix + "Input parameter 'pathStr' is NOT a valid path or directory specificaiton. Path strings should end with a path separator. pathStr='%v'", pathStr)
+		}
+
+		// isPath==false and cannotDetermine==true we will give
+		// the caller the benefit of the doubt and consider this
+		// a valid path string. This condition usually arises
+		// from a path string like 'D:\DirA\common'. If this
+		// directory does not exist on disk, there is no way to
+		// know if 'common' is a file name or a directory name.
+		// Since the caller is calling 'DirMgr' a directory manager,
+		// it is assumed that 'common' is a directory.
+
+	}
+
+	newDirMgr := DirMgr{}
+	adjustedPath := fh.AdjustPathSlash(pathStr)
+	newDirMgr.OriginalPath = adjustedPath
+
+	newDirMgr.Path = fp.Clean(newDirMgr.OriginalPath)
+	if newDirMgr.Path == "" {
+		return newDirMgr, fmt.Errorf(ePrefix + "Error: Cleaning input parameter 'pathStr' resulted in an EMPTY 'pathStr'! pathStr='%v' ", pathStr)
+	}
+
+	newDirMgr.PathIsPopulated = true
+	newDirMgr.PathExists = fh.DoesFileExist(newDirMgr.Path)
+
+	newDirMgr.AbsolutePath, err = fh.MakeAbsolutePath(newDirMgr.Path)
+
+	if err != nil {
+		return newDirMgr, fmt.Errorf(ePrefix + "- fh.MakeAbsolutePath(newDirMgr.Path) returned error. newDirMgr.Path='%v' Error='%v'", newDirMgr.Path, err.Error())
+	}
+
+	newDirMgr.AbsolutePath = fh.AdjustPathSlash(newDirMgr.AbsolutePath)
+
+	newDirMgr.AbsolutePathIsPopulated = true
+	newDirMgr.AbsolutePathDoesExist = fh.DoesFileExist(newDirMgr.AbsolutePath)
+
+	strAry := strings.Split(newDirMgr.AbsolutePath, string(os.PathSeparator))
+	lStr = len(strAry)
+	idxStr := strAry[lStr-1]
+	idx := strings.Index(newDirMgr.AbsolutePath, idxStr)
+	newDirMgr.ParentPath = fp.Clean(newDirMgr.AbsolutePath[0:idx])
+	newDirMgr.ParentPathIsPopulated = true
+
+	if newDirMgr.AbsolutePathIsPopulated && newDirMgr.ParentPathIsPopulated {
+
+		newDirMgr.RelativePath, err =	fp.Rel(newDirMgr.ParentPath, newDirMgr.AbsolutePath)
+
+		if err!=nil {
+			newDirMgr.RelativePath = ""
+			newDirMgr.ParentPathIsPopulated = false
+		 } else {
+			newDirMgr.ParentPathIsPopulated = true
+			newDirMgr.RelativePathIsPopulated = true
+		}
+
+	}
+
+	if newDirMgr.Path != newDirMgr.AbsolutePath {
+		newDirMgr.AbsolutePathDifferentFromPath = true
+	}
+
+	var vn string
+	if newDirMgr.AbsolutePathIsPopulated {
+		vn = fp.VolumeName(newDirMgr.AbsolutePath)
+	} else if newDirMgr.PathIsPopulated {
+		vn = fp.VolumeName(newDirMgr.Path)
+	}
+
+	if vn != "" {
+		newDirMgr.VolumeIsPopulated = true
+		newDirMgr.VolumeName = vn
+	}
+
+	if newDirMgr.AbsolutePathIsPopulated && newDirMgr.PathIsPopulated {
+		newDirMgr.IsInitialized = true
+	}
+
+	return newDirMgr, nil
+}
+
+// FileMgr - This structure and associated methods
+// are used to manage a specific file.
+type FileMgr struct {
+	IsInitialized                   bool
+	OriginalPathFileName            string
+	AbsolutePath                    string
+	AbsolutePathIsPopulated         bool
+	AbsolutePathDoesExist           bool
+	AbsolutePathDifferentFromPath   bool
+	AbsolutePathFileName            string
+	AbsolutePathFileNameIsPopulated bool
+	AbsolutePathFileNameDoesExist   bool
+	Path                            string
+	PathIsPopulated                 bool
+	PathDoesExist                   bool
+	FileName                        string
+	FileNameIsPopulated             bool
+	FileExt                         string
+	FileExtIsPopulated              bool
+	FileNameExt                     string
+	FileNameExtIsPopulated          bool
+	FilePtr													*os.File
+	IsFilePtrOpen										bool
+	VolumeName                      string
+	VolumeIsPopulated               bool
+}
+
+// CopyFile - Copies file from Fmgr.AbsolutePathFileName to
+// to destination path & File Name.
+// See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+func (fMgr *FileMgr) CopyFile(dstPathFileName string) error {
+
+	ePrefix := "FileMgr.CopyFile "
+
+	if !fMgr.IsInitialized {
+		return errors.New(ePrefix + " Error: This data structure is NOT initialized.")
+	}
+
+	if !fMgr.AbsolutePathFileNameIsPopulated {
+		return errors.New(ePrefix + " Error: AbsolutePathFileName is NOT populated/initialized.")
+	}
+
+	if fMgr.AbsolutePathFileName != "" {
+		fMgr.AbsolutePathFileNameIsPopulated = false
+		return errors.New(ePrefix + " Error: AbsolutePathFileName is EMPTY!")
+	}
+
+	sfi, err := os.Stat(fMgr.AbsolutePathFileName)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix + " Error: fMgr.AbsolutePathFileName does not exit! AbsolutePathFileName= '%v' ", fMgr.AbsolutePathFileName)
+	}
+
+	if !sfi.Mode().IsRegular() {
+		// cannot copy non-regular files (e.g., directories,
+		// symlinks, devices, etc.)
+		return fmt.Errorf(ePrefix + " Error: fMgr.AbsolutePathFileName is a non-regular source file. fMgr.AbsolutePathFileName='%v'. FileMode='%v'", fMgr.AbsolutePathFileName, sfi.Mode().String())
+	}
+
+	dst, err := FileMgr{}.New(dstPathFileName)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix + " - Error creating FileMgr for Destination File. Destination File='%v'. FileMgr{}.New(dstPathFileName) Error='%v' ",dstPathFileName, err.Error() )
+	}
+
+
+	dfi, err := os.Stat(dst.AbsolutePathFileName)
+
+	if err != nil {
+
+		if !os.IsNotExist(err) {
+			// Must be PathError - Path does not exist
+			return fmt.Errorf("FileMgr.CopyFile(): Destination File Path Error - Destinatino Path does NOT exist. Error: %v", err.Error())
+		}
+	} else {
+		if !(dfi.Mode().IsRegular()) {
+			return fmt.Errorf("FileMgr.CopyFile(): non-regular destination file  - Cannot Overwrite destination file. Destination File='%v' Destination File Mode='%v' ", dfi.Name(), dfi.Mode().String())
+		}
+
+		if os.SameFile(sfi, dfi) {
+			return nil
+		}
+	}
+
+	if err = os.Link(fMgr.AbsolutePathFileName, dst.AbsolutePathFileName); err == nil {
+		return nil
+	}
+
+	fh := FileHelper{}
+	err = fh.CopyFileContents(fMgr.AbsolutePathFileName, dst.AbsolutePathFileName)
+
+	if err != nil {
+		return fmt.Errorf("FileMgr.CopyFile() - An error occurred whild copying the srouce file to the destination file. Source File='%v' Destination File='%v' Error='%v'", fMgr.AbsolutePathFileName, dst.AbsolutePathFileName, err.Error())
+	}
+
+	return nil
+}
+
+// CloseFile - This method will call the Close()
+// method on the current file pointer, FileHelper.FilePtr
+func (fMgr *FileMgr) CloseFile() error {
+
+
+	if fMgr.FilePtr == nil {
+		fMgr.IsFilePtrOpen = false
+		return nil
+	}
+
+	err := fMgr.FilePtr.Close()
+
+	if err != nil {
+		return fmt.Errorf("FileMgr.CloseFile() Received Error from fMgr.FilePtr.Close(). fMgr.AbsolutePathFileName")
+	}
+
+	fMgr.IsFilePtrOpen = false
+
+	return nil
+}
+
+// CopyIn - Copies data from an incoming FileMgr object
+// into the current FileMgr object.
+func (fMgr *FileMgr) CopyIn(fmgr2 *FileMgr) {
+
+	fMgr.IsInitialized = fmgr2.IsInitialized
+	fMgr.OriginalPathFileName = fmgr2.OriginalPathFileName
+	fMgr.AbsolutePath = fmgr2.AbsolutePath
+	fMgr.AbsolutePathIsPopulated = fmgr2.AbsolutePathIsPopulated
+	fMgr.AbsolutePathDoesExist = fmgr2.AbsolutePathDoesExist
+	fMgr.AbsolutePathDifferentFromPath = fmgr2.AbsolutePathDifferentFromPath
+	fMgr.AbsolutePathFileName = fmgr2.AbsolutePathFileName
+	fMgr.AbsolutePathFileNameIsPopulated = fmgr2.AbsolutePathFileNameIsPopulated
+	fMgr.AbsolutePathFileNameDoesExist = fmgr2.AbsolutePathFileNameDoesExist
+	fMgr.Path = fmgr2.Path
+	fMgr.PathIsPopulated = fmgr2.PathIsPopulated
+	fMgr.PathDoesExist = fmgr2.PathDoesExist
+	fMgr.FileName = fmgr2.FileName
+	fMgr.FileNameIsPopulated = fmgr2.FileNameIsPopulated
+	fMgr.FileExt = fmgr2.FileExt
+	fMgr.FileExtIsPopulated = fmgr2.FileExtIsPopulated
+	fMgr.FileNameExt = fmgr2.FileNameExt
+	fMgr.FileNameExtIsPopulated = fmgr2.FileNameExtIsPopulated
+	fMgr.FilePtr = fmgr2.FilePtr
+	fMgr.IsFilePtrOpen = fmgr2.IsFilePtrOpen
+	fMgr.VolumeName = fmgr2.VolumeName
+	fMgr.VolumeIsPopulated = fmgr2.VolumeIsPopulated
+
+	return
+}
+
+// CopyOut - Duplicates the file information in the current
+// FileMgr object and returns it as a new FileMgr object.
+func (fMgr *FileMgr) CopyOut() FileMgr {
+
+	fmgr2 := FileMgr{}
+
+	fmgr2.IsInitialized = fMgr.IsInitialized
+	fmgr2.OriginalPathFileName = fMgr.OriginalPathFileName
+	fmgr2.AbsolutePath = fMgr.AbsolutePath
+	fmgr2.AbsolutePathIsPopulated = fMgr.AbsolutePathIsPopulated
+	fmgr2.AbsolutePathDoesExist = fMgr.AbsolutePathDoesExist
+	fmgr2.AbsolutePathDifferentFromPath = fMgr.AbsolutePathDifferentFromPath
+	fmgr2.AbsolutePathFileName = fMgr.AbsolutePathFileName
+	fmgr2.AbsolutePathFileNameIsPopulated = fMgr.AbsolutePathFileNameIsPopulated
+	fmgr2.AbsolutePathFileNameDoesExist = fMgr.AbsolutePathFileNameDoesExist
+	fmgr2.Path = fMgr.Path
+	fmgr2.PathIsPopulated = fMgr.PathIsPopulated
+	fmgr2.PathDoesExist = fMgr.PathDoesExist
+	fmgr2.FileName = fMgr.FileName
+	fmgr2.FileNameIsPopulated = fMgr.FileNameIsPopulated
+	fmgr2.FileExt = fMgr.FileExt
+	fmgr2.FileExtIsPopulated = fMgr.FileExtIsPopulated
+	fmgr2.FileNameExt = fMgr.FileNameExt
+	fmgr2.FileNameExtIsPopulated = fMgr.FileNameExtIsPopulated
+	fmgr2.FilePtr = fMgr.FilePtr
+	fmgr2.IsFilePtrOpen = fMgr.IsFilePtrOpen
+	fmgr2.VolumeName = fMgr.VolumeName
+	fmgr2.VolumeIsPopulated = fMgr.VolumeIsPopulated
+
+	return fmgr2
+}
+
+// Equal - Compares a second FileHelper data structure
+// to the current FileHelpter data structure and returns
+// a boolean value indicating whether they are equal
+// in all respects.
+func (fMgr *FileMgr) Equal(fmgr2 *FileMgr) bool {
+
+	if fMgr.IsInitialized != fmgr2.IsInitialized ||
+		fMgr.OriginalPathFileName != fmgr2.OriginalPathFileName ||
+		fMgr.AbsolutePath != fmgr2.AbsolutePath ||
+		fMgr.AbsolutePathIsPopulated != fmgr2.AbsolutePathIsPopulated ||
+		fMgr.AbsolutePathDoesExist != fmgr2.AbsolutePathDoesExist ||
+		fMgr.AbsolutePathDifferentFromPath != fmgr2.AbsolutePathDifferentFromPath ||
+		fMgr.AbsolutePathFileNameIsPopulated != fmgr2.AbsolutePathFileNameIsPopulated ||
+		fMgr.AbsolutePathFileNameDoesExist != fmgr2.AbsolutePathFileNameDoesExist ||
+		fMgr.AbsolutePathFileName != fmgr2.AbsolutePathFileName ||
+		fMgr.Path != fmgr2.Path ||
+		fMgr.PathIsPopulated != fmgr2.PathIsPopulated ||
+		fMgr.PathDoesExist != fmgr2.PathDoesExist ||
+		fMgr.FileName != fmgr2.FileName ||
+		fMgr.FileNameIsPopulated != fmgr2.FileNameIsPopulated ||
+		fMgr.FileExt != fmgr2.FileExt ||
+		fMgr.FileExtIsPopulated != fmgr2.FileExtIsPopulated ||
+		fMgr.FileNameExt != fmgr2.FileNameExt ||
+		fMgr.FileNameExtIsPopulated != fmgr2.FileNameExtIsPopulated ||
+		fMgr.FilePtr != fmgr2.FilePtr ||
+		fMgr.IsFilePtrOpen != fmgr2.IsFilePtrOpen ||
+		fMgr.VolumeName != fmgr2.VolumeName ||
+		fMgr.VolumeIsPopulated != fmgr2.VolumeIsPopulated {
+		return false
+	}
+
+	return true
+}
+
+
+// CreateDirAndFile - Performs two operations:
+// This is a Wrapper function for os.Create - Create a file.
+//
+//  If the home directory does not currently exist, this method
+//  will first create the directory tree, before creating the new
+//	file.
+//
+// If the file previously exists, it will be truncated.
+func (fMgr *FileMgr) CreateDirAndFile()  error {
+
+	ePrefix := "FileMgr:CreateDirAndFile() Error - "
+
+
+	if !fMgr.IsInitialized {
+		return errors.New(ePrefix + " FileMgr is NOT Initialized!")
+	}
+
+	if !fMgr.AbsolutePathFileNameIsPopulated {
+		return errors.New(ePrefix + " FileMgr.AbsolutePathFileName is NOT populated!")
+	}
+
+	if fMgr.AbsolutePathFileName == "" {
+		fMgr.AbsolutePathFileNameIsPopulated = false
+		return errors.New(ePrefix + " FileMgr.AbsolutePathFileName is EMPTY!")
+	}
+
+	fh := FileHelper{}
+
+	if !fh.DoesFileExist(fMgr.AbsolutePath) {
+		// Directory does NOT exist, create it!
+
+		err := fh.MakeDirAll(fMgr.AbsolutePath)
+
+		if err != nil {
+			return fmt.Errorf(ePrefix + "Errors from FileHelper:MakeDirAll(fMgr.AbsolutePath). fMgr.AbsolutePath='%v'  Error='%v' ",fMgr.AbsolutePath, err.Error())
+		}
+
+		fMgr.AbsolutePathDoesExist = true
+
+	} else {
+
+		fMgr.AbsolutePathDoesExist = true
+
+	}
+
+	var err error
+
+	fMgr.FilePtr, err = os.Create(fMgr.AbsolutePathFileName)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix + "Error creating File. Error returned from os.Create(fMgr.AbsolutePathFileName). fMgr.AbsolutePathFileName='%v' Error='%v' ",fMgr.AbsolutePathFileName, err.Error() )
+	}
+
+	return nil
+
+}
+
+// CreateFile - Creates the File identified by FileMgr.AbsolutePathFileName.
+// If the directory in the path file name designation does not exist, this
+// method will throw an error.
+//
+// See Method CreateDirAndFile() which will create both the directory and the file
+// as required.
+func (fMgr *FileMgr) CreateFile() error {
+
+	ePrefix := "FileMgr:CreateFile() Error - "
+
+	fh := FileHelper{}
+
+	if !fMgr.IsInitialized {
+		return errors.New(ePrefix + " FileMgr is NOT Initialized!")
+	}
+
+	if !fMgr.AbsolutePathIsPopulated {
+		return errors.New(ePrefix + " FileMgr.AbsolutePathFileName is NOT populated!")
+	}
+
+	if fMgr.AbsolutePathFileName == "" {
+		fMgr.AbsolutePathFileNameIsPopulated = false
+		return errors.New(ePrefix + " FileMgr.AbsolutePathFileName is EMPTY!")
+	}
+
+	if !fh.DoesFileExist(fMgr.AbsolutePath) {
+		fMgr.AbsolutePathDoesExist = false
+		return fmt.Errorf(ePrefix + "FileMgr.AbsolutePath Does NOT exist! Create the path. FileMgr.AbsolutePath='%v'", fMgr.AbsolutePath)
+	}
+
+	var err error
+
+	fMgr.FilePtr, err = os.Create(fMgr.AbsolutePathFileName)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix + "Error creating File. Error returned from os.Create(fMgr.AbsolutePathFileName). fMgr.AbsolutePathFileName='%v' Error='%v' ",fMgr.AbsolutePathFileName, err.Error())
+	}
+
+	return nil
+
+}
+
+// DeleteThisFile - Deletes the file identified by FileMgr.AbsolutePathFileName
+// in the current FileHelper structure.
+func (fMgr *FileMgr) DeleteThisFile() error {
+
+	ePrefix := "FileMgr.DeleteThisFile()"
+
+	if !fMgr.IsInitialized {
+		return errors.New(ePrefix + " Error: This data structure is NOT initialized.")
+	}
+
+	if !fMgr.AbsolutePathFileNameIsPopulated {
+		return errors.New(ePrefix + " Error: AbsolutePathFileName is NOT populated/initialized.")
+	}
+
+	if fMgr.AbsolutePathFileName == "" {
+		fMgr.AbsolutePathFileNameIsPopulated = false
+		return errors.New(ePrefix + " Error: AbsolutePathFileName is EMPTY!")
+	}
+
+	if fMgr.FilePtr != nil {
+		fMgr.FilePtr.Close()
+	}
+
+	fMgr.IsFilePtrOpen = false
+
+
+	err:= os.Remove(fMgr.AbsolutePathFileName)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix + " - os.Remove(fMgr.AbsolutePathFileName) returned an error. AbsolutePathFileName='%v'   Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+	}
+
+	fMgr.AbsolutePathFileNameDoesExist = false
+
+	return nil
+}
+
+
+// DoesThisFileExist - Returns a boolean value
+// designated whether the file specified by the
+// current FileHelper.AbsolutePathFileName field
+// exists.
+func(fMgr *FileMgr) DoesThisFileExist() (bool, error) {
+
+	fh := FileHelper{}
+	ePrefix := "FileMgr.DoesThisFileExist() "
+
+	if !fMgr.IsInitialized {
+		return false,  errors.New(ePrefix + " Error: The File Manager data structure has NOT been initialized.")
+	}
+
+	if fMgr.AbsolutePathFileNameIsPopulated == false {
+		return false, errors.New(ePrefix + " Error: AbsolutePathFileName is NOT POPULATED!")
+	}
+
+	if fMgr.AbsolutePathFileName == "" {
+		fMgr.AbsolutePathFileNameIsPopulated = false
+		return false, errors.New(ePrefix + " Error: AbsolutePathFileName is EMPTY!")
+	}
+
+	fileDoesExist := fh.DoesFileExist(fMgr.AbsolutePathFileName)
+
+	if fileDoesExist {
+		fMgr.AbsolutePathFileNameIsPopulated = true
+		fMgr.AbsolutePathFileNameDoesExist = true
+	} else {
+		fMgr.AbsolutePathFileNameDoesExist = false
+	}
+
+	return fileDoesExist, nil
+}
+
+// GetFileInfo - Wrapper function for os.Stat(). This method
+// can be used to return FileInfo data on the specific file identified
+// by FileMgr.AbsolutePathFileName. If the file does NOT exist,
+// an error will be triggered.
+//
+// type FileInfo interface {
+// 	Name() string       // base name of the file
+// 	Size() int64        // length in bytes for regular files; system-dependent for others
+// 	Mode() FileMode     // file mode bits
+// 	ModTime() time.Time // modification time
+// 	IsDir() bool        // abbreviation for Mode().IsDir()
+// 	Sys() interface{}   // underlying data source (can return nil)
+// }
+func (fMgr *FileMgr) GetFileInfo() (os.FileInfo, error) {
+
+	ePrefix := "FileMgr.DeleteThisFile()"
+
+	if !fMgr.IsInitialized {
+		return nil, errors.New(ePrefix + " Error: This data structure is NOT initialized.")
+	}
+
+	if !fMgr.AbsolutePathFileNameIsPopulated {
+		return nil, errors.New(ePrefix + " Error: AbsolutePathFileName is NOT populated/initialized.")
+	}
+
+	if fMgr.AbsolutePathFileName == "" {
+		fMgr.AbsolutePathFileNameIsPopulated = false
+		return nil, errors.New(ePrefix + " Error: AbsolutePathFileName is EMPTY!")
+	}
+
+
+	return os.Stat(fMgr.AbsolutePathFileName)
+
+}
+
+func(fMgr *FileMgr) IsValid() (bool, error) {
+
+	ePrefix := "FileMgr.IsValid()"
+
+	if !fMgr.IsInitialized {
+		return false, errors.New(ePrefix + " Error: This data structure is NOT initialized.")
+	}
+
+	if !fMgr.AbsolutePathFileNameIsPopulated {
+		return false, errors.New(ePrefix + " Error: AbsolutePathFileName is NOT populated/initialized.")
+	}
+
+	if fMgr.AbsolutePathFileName == "" {
+		fMgr.AbsolutePathFileNameIsPopulated = false
+		return false, errors.New(ePrefix + " Error: AbsolutePathFileName is EMPTY!")
+	}
+
+
+	return true, nil
+}
+
+// New - Creates a new FileMgr object. Input parameter parses out the
+// path, file name and file extension. The file data is returned in
+// the data fields of the new FileMgr object.
+//
+// Input Parameter
+// ===============
+//
+// pathFileNameExt string - Must consist of a valid path, file name
+// 													and file extension. The file need not exist.
+//													Failure to provide a properly formatted path
+//													path, file name will result in an error.
+//
+// Example Usage:
+// fmgr := FileMgr{}.New("../common/FileName.ext")
+//
+func (fMgr FileMgr) New(pathFileNameExt string) (FileMgr, error) {
+
+	var s string
+	var pathIsEmpty bool
+	var err error
+
+	fMgrOut := FileMgr{}
+	fh := FileHelper{}
+
+	ePrefix := "FileMgr.New() "
+
+	if pathFileNameExt == "" {
+		return fMgrOut, errors.New(ePrefix +"-Error: pathFileNameExt is Empty!")
+	}
+
+	adjustedPathFileNameExt := fh.AdjustPathSlash(pathFileNameExt)
+	s, pathIsEmpty = fh.GetPathFromPathFileName(adjustedPathFileNameExt)
+
+	fMgrOut.OriginalPathFileName = adjustedPathFileNameExt
+
+	if !pathIsEmpty {
+		fMgrOut.PathIsPopulated = true
+		fMgrOut.Path = fp.Clean(s)
+		fMgrOut.PathDoesExist = fh.DoesFileExist(fMgrOut.Path)
+		s, err = fh.MakeAbsolutePath(fp.Clean(s))
+		if err != nil {
+			return FileMgr{}, errors.New(ePrefix + "-Error: " + err.Error())
+		}
+
+		fMgrOut.AbsolutePathIsPopulated = true
+		fMgrOut.AbsolutePath = fp.Clean(s)
+		fMgrOut.AbsolutePathDoesExist = fh.DoesFileExist(fMgrOut.AbsolutePath)
+		if fMgrOut.AbsolutePath != fMgrOut.Path {
+			fMgrOut.AbsolutePathDifferentFromPath = true
+		}
+
+		s = ""
+
+		if fMgrOut.AbsolutePathIsPopulated {
+			s = fp.VolumeName(fMgrOut.AbsolutePath)
+		} else if fMgrOut.PathIsPopulated {
+			s = fp.VolumeName(fMgrOut.Path)
+		}
+
+		if s != "" {
+			fMgrOut.VolumeIsPopulated = true
+			fMgrOut.VolumeName = s
+		}
+
+	}
+
+	s, pathIsEmpty = fh.GetFileNameWithoutExt(adjustedPathFileNameExt)
+
+	if !pathIsEmpty {
+		fMgrOut.FileNameIsPopulated = true
+		fMgrOut.FileName = s
+	}
+
+	s, pathIsEmpty = fh.GetFileExtension(adjustedPathFileNameExt)
+
+	if !pathIsEmpty {
+		fMgrOut.FileExtIsPopulated = true
+		fMgrOut.FileExt = s
+	}
+
+	if fMgrOut.FileNameIsPopulated {
+		fMgrOut.FileNameExtIsPopulated = true
+		fMgrOut.FileNameExt = fMgrOut.FileName + fMgrOut.FileExt
+	}
+
+	fMgrOut.AbsolutePathFileName = fh.JoinPathsAdjustSeparators(fMgrOut.AbsolutePath, fMgrOut.FileNameExt)
+	fMgrOut.AbsolutePathFileNameIsPopulated = true
+	fMgrOut.AbsolutePathFileNameDoesExist = fh.DoesFileExist(fMgrOut.AbsolutePathFileName)
+
+	fMgrOut.IsInitialized = true
+
+	return fMgrOut, nil
+}
+
+// OpenThisFileReadWrite - Opens a file using file data in the
+// current FileHelper data fields. If successful, this method
+// will use FileHelper.AbsolutePathFileName to open an *os.File
+// or File Pointer.
+//
+// As the method's name implies, the 'FileHelper.AbsolutePathFileName'
+// will be opened for reading and writing. If FileHelper.AbsolutePathFileName
+// does not exist, it will be created.
+//
+// If the path and file name identified by FileMgr.
+func (fMgr *FileMgr) OpenThisFileReadWrite() error {
+	var err error
+
+	ePrefix := "FileMgr.OpenThisFileReadWrite()"
+
+	if !fMgr.IsInitialized {
+		return errors.New(ePrefix + " Error: The File Manager data structure has NOT been initialized.")
+	}
+
+	if !fMgr.AbsolutePathFileNameIsPopulated {
+		return errors.New(ePrefix + " Error: FileMgr.AbsolutePathFileName has NOT been initialized and populated.")
+	}
+
+	if fMgr.AbsolutePathFileName == "" {
+		fMgr.AbsolutePathFileNameIsPopulated = false
+		return errors.New(ePrefix + " Error: FileMgr.AbsolutePathFileName is EMPTY!")
+	}
+
+	doesFileExist, err := fMgr.DoesThisFileExist()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix + " Error returned from fMgr.DoesThisFileExist() - %v", err.Error())
+	}
+
+	if !doesFileExist {
+
+		err = fMgr.CreateDirAndFile()
+
+		if err != nil {
+			return fmt.Errorf(ePrefix + " Error from fMgr.CreateDirAndFile(fMgr.AbsolutePathFileName). AbsolutePathFileName='%v'. Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+		}
+
+		fMgr.AbsolutePathFileNameDoesExist = true
+		fMgr.AbsolutePathFileNameIsPopulated = true
+	}
+
+	if err != nil {
+		return fmt.Errorf(ePrefix + "Error creating File. Error returned from os.Create(fMgr.AbsolutePathFileName). fMgr.AbsolutePathFileName='%v' Error='%v' ",fMgr.AbsolutePathFileName, err.Error() )
+	}
+
+	fMgr.FilePtr, err = os.OpenFile(fMgr.AbsolutePathFileName,os.O_RDWR,0666)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix + " Error opening file: '%v' Error= '%v'", fMgr.AbsolutePathFileName, err.Error())
+	}
+
+
+	fMgr.IsFilePtrOpen = true
+
+	return nil
+}
+
+func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (int, error) {
+
+	ePrefix := "FileMgr.WriteStrToFile() "
+
+	if !fMgr.IsInitialized {
+		return 0, errors.New(ePrefix + " Error: The File Manager data structure has NOT been initialized.")
+	}
+
+	if !fMgr.AbsolutePathFileNameIsPopulated {
+		return 0, errors.New(ePrefix + " Error: FileMgr.AbsolutePathFileName has NOT been initialized and populated.")
+	}
+
+	if fMgr.AbsolutePathFileName == "" {
+		fMgr.AbsolutePathFileNameIsPopulated = false
+		return 0, errors.New(ePrefix + " Error: FileMgr.AbsolutePathFileName is EMPTY!")
+	}
+
+	if fMgr.FilePtr == nil {
+
+		// If the path and file name do not exist, this method will
+		// attempt to create said path and file name.
+		err := fMgr.OpenThisFileReadWrite()
+
+		if err != nil {
+			return 0, fmt.Errorf(ePrefix + " - fMgr.OpenThisFileReadWrite() returned errors: %v", err.Error())
+		}
+
+		fMgr.IsFilePtrOpen = true
+	}
+
+	bytesRead, err := fMgr.FilePtr.Read(byteBuff)
+
+	if err!=nil {
+		return bytesRead, fmt.Errorf(ePrefix + " fMgr.FilePtr.Read(byteBuff) returned errors. FileName='%v' Errors='%v'", fMgr.AbsolutePathFileName, err.Error())
+	}
+
+	return bytesRead, nil
+}
+
+// WriteStrToFile - Writes a string to the File identified by
+// FileMgr.AbsolutePathFileName. If the file is not open, this
+// method will attempt to open it.
+func (fMgr *FileMgr) WriteStrToFile(str string) (int, error) {
+
+	ePrefix := "FileMgr.WriteStrToFile() "
+
+	if !fMgr.IsInitialized {
+		return 0, errors.New(ePrefix + " Error: The File Manager data structure has NOT been initialized.")
+	}
+
+	if !fMgr.AbsolutePathFileNameIsPopulated {
+		return 0, errors.New(ePrefix + " Error: FileMgr.AbsolutePathFileName has NOT been initialized and populated.")
+	}
+
+	if fMgr.AbsolutePathFileName == "" {
+		fMgr.AbsolutePathFileNameIsPopulated = false
+		return 0, errors.New(ePrefix + " Error: FileMgr.AbsolutePathFileName is EMPTY!")
+	}
+
+	if fMgr.FilePtr == nil {
+
+		// If the path and file name do not exist, this method will
+		// attempt to create said path and file name.
+		err := fMgr.OpenThisFileReadWrite()
+
+		if err != nil {
+			return 0, fmt.Errorf(ePrefix + " - fMgr.OpenThisFileReadWrite() returned errors: %v", err.Error())
+		}
+
+		fMgr.IsFilePtrOpen = true
+	}
+
+	bytesWritten, err := fMgr.FilePtr.WriteString(str)
+
+	if err!= nil {
+		return bytesWritten, fmt.Errorf("Error returned from fMgr.FilePtr.WriteString(str). Output File='%v'. Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+	}
+
+	return bytesWritten, nil
+}
