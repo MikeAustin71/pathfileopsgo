@@ -1,11 +1,10 @@
-package common
+package pathfileops
 
 import (
-	"testing"
 	"io/ioutil"
 	"os"
+	"testing"
 )
-
 
 func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
 	fh := FileHelper{}
@@ -101,9 +100,9 @@ func TestFileMgr_ReadFileBytes_01(t *testing.T) {
 
 	defer fMgr.CloseFile()
 
-	var rStr = make([]rune,0,2048)
+	var rStr = make([]rune, 0, 2048)
 
-	for i:=0; i < len(byteBuff); i++ {
+	for i := 0; i < len(byteBuff); i++ {
 
 		if byteBuff[i] == 0 {
 			break
@@ -132,7 +131,7 @@ func TestFileMgr_SetFileInfo(t *testing.T) {
 
 	expectedFileNameExt := "newerFileForTest_01.txt"
 
-	fh:= FileHelper{}
+	fh := FileHelper{}
 	adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
 
 	absPath, err := fh.MakeAbsolutePath(adjustedPath)
@@ -161,10 +160,9 @@ func TestFileMgr_SetFileInfo(t *testing.T) {
 		t.Errorf("Error returned by fmgr.SetFileInfo(info). info.Name()='%v'  Error='%v'", info.Name(), err.Error())
 	}
 
-	if ! fmgr.ActualFileInfo.IsFInfoInitialized {
+	if !fmgr.ActualFileInfo.IsFInfoInitialized {
 		t.Error("Error - File Manager FileInfoPlus object is not initialized!")
 	}
-
 
 	if fmgr.ActualFileInfo.Name() != expectedFileNameExt {
 		t.Errorf("Error = Expected fmgr.ActualFileInfo.Name()='%v'.  Instead, fmgr.ActualFileInfo.Name()='%v'", expectedFileNameExt, fmgr.ActualFileInfo.Name())
@@ -196,7 +194,7 @@ func TestFileMgr_WriteStrToFile_01(t *testing.T) {
 
 	err = fMgr.CloseFile()
 
-	if err!=nil {
+	if err != nil {
 		t.Errorf("Error returned from fMgr.CloseFile() No 1.  Error='%v'", err.Error())
 	}
 
@@ -222,17 +220,17 @@ func TestFileMgr_WriteStrToFile_01(t *testing.T) {
 
 	err = fMgr.CloseFile()
 
-	if err!=nil {
+	if err != nil {
 		t.Errorf("Error returned by fMgr.CloseFile() No 2. Error='%v'", err.Error())
 	}
 
 	err = fMgr.DeleteThisFile()
 
-	if err!=nil {
+	if err != nil {
 		t.Errorf("Error returned from fMgr.DeleteThisFile(). Error='%v'", err.Error())
 	}
 
-	doesFileExist:= fh.DoesFileExist(filePath)
+	doesFileExist := fh.DoesFileExist(filePath)
 
 	if doesFileExist {
 		t.Errorf("Error: Failed to DELETE FileNameExt='%v'", fMgr.AbsolutePathFileName)

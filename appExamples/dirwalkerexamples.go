@@ -1,10 +1,9 @@
-package common
+package appExamples
 
 import (
 	"fmt"
 	"path/filepath"
 )
-
 
 func TestFilePathMatch002() {
 	// filename := "D:\\Test03\\start.txt"
@@ -38,5 +37,3 @@ func TestFilePathGlob003(dirPathAndPattern string) {
 	}
 
 }
-
-

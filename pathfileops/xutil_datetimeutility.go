@@ -1,25 +1,25 @@
-package common
+package pathfileops
 
 import (
 	"time"
 )
 
 /*
-datetimeutility.go is part of the date time operations library. The source code repository
+xutil_datetimeutility.go is part of the date time operations library. The source code repository
  	for this file is located at:
 
 					https://github.com/MikeAustin71/datetimeopsgo.git
 
- */
+*/
 
 const (
 	// FmtDateTimeSecondStr - Date Time format used
 	// for file names and directory names
 	FmtDateTimeSecondStr = "20060102150405"
-	
+
 	// FmtDateTimeNanoSecondStr - Custom Date Time Format
 	FmtDateTimeNanoSecondStr = "2006-01-02 15:04:05.000000000"
-	
+
 	// FmtDateTimeSecText - Custom Date Time Format
 	FmtDateTimeSecText = "2006-01-02 15:04:05"
 
@@ -38,9 +38,9 @@ const (
 	FmtDateTimeTzNanoYMDDow = "2006-01-02 Monday 15:04:05.000000000 -0700 MST"
 
 	// FmtDateTimeYMDAbbrvDowNano - Output date time to nano seconds with abbreviated
-	// day of week. 
-  FmtDateTimeYMDAbbrvDowNano = "2006-01-02 Mon 15:04:05.000000000 -0700 MST"
-	
+	// day of week.
+	FmtDateTimeYMDAbbrvDowNano = "2006-01-02 Mon 15:04:05.000000000 -0700 MST"
+
 	// FmtDateTimeTzSec - Outputs date time to seconds with associated time zone
 	FmtDateTimeTzSec = "01/02/2006 15:04:05 -0700 MST"
 
@@ -156,7 +156,6 @@ func (dt DateTimeUtility) GetDateTimeEverything(t time.Time) string {
 func (dt DateTimeUtility) GetDateTimeCustomFmt(t time.Time, fmt string) string {
 	return t.Format(fmt)
 }
-
 
 // GetTimeStampEverything - Generates and returns a time stamp as
 // type string. The current time is computed using time.Now() for the

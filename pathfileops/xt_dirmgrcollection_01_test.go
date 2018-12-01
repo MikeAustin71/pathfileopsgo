@@ -1,10 +1,9 @@
-package common
+package pathfileops
 
 import (
-	"testing"
 	"strings"
+	"testing"
 )
-
 
 func TestDirMgrCollection_AddDirMgr_01(t *testing.T) {
 
@@ -202,7 +201,6 @@ func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
 		t.Errorf("Expected final dMgrs.GetArrayLength() == 6.  Instead, dMgrs.GetArrayLength()=='%v'", dMgrs.GetArrayLength())
 	}
 
-
 	dMgrs2 := DirMgrCollection{}
 
 	// # Phase 2-2
@@ -357,7 +355,6 @@ func TestDirMgrCollection_PopLastDirMgr_01(t *testing.T) {
 		t.Errorf("Expected final dMgrs.GetArrayLength() == 5.  Instead, dMgrs.GetArrayLength()=='%v'", dMgrs.GetArrayLength())
 	}
 
-
 }
 
 func TestDirMgrCollection_PopFirstDirMgr_01(t *testing.T) {
@@ -365,14 +362,12 @@ func TestDirMgrCollection_PopFirstDirMgr_01(t *testing.T) {
 	fh := FileHelper{}
 	dMgrs := DirMgrCollection{}
 
-
 	// # 1
 	firstDirPath := fh.AdjustPathSlash("../logTest")
 
 	origPath := firstDirPath
 
 	origAbsPath, err := fh.MakeAbsolutePath(origPath)
-
 
 	if err != nil {
 		t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
@@ -469,17 +464,14 @@ func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
 	fh := FileHelper{}
 	dMgrs := DirMgrCollection{}
 
-
 	// # 1
 	origPath := fh.AdjustPathSlash("../logTest")
 
 	origAbsPath, err := fh.MakeAbsolutePath(origPath)
 
-
 	if err != nil {
 		t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
-
 
 	dMgrs.AddDirMgrByPathFile(origPath)
 
@@ -570,7 +562,6 @@ func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
 		t.Errorf("Expected final dMgrs.GetArrayLength() == 5.  Instead, dMgrs.GetArrayLength()=='%v'", dMgrs.GetArrayLength())
 	}
 
-
 	dMgr, err = dMgrs.PopDirMgrAtIndex(2)
 
 	if err != nil {
@@ -595,17 +586,14 @@ func TestDirMgrCollection_PeekDirMgrAtIndex_01(t *testing.T) {
 	fh := FileHelper{}
 	dMgrs := DirMgrCollection{}
 
-
 	// # 1
 	origPath := fh.AdjustPathSlash("../logTest")
 
 	origAbsPath, err := fh.MakeAbsolutePath(origPath)
 
-
 	if err != nil {
 		t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
-
 
 	dMgrs.AddDirMgrByPathFile(origPath)
 
@@ -696,7 +684,6 @@ func TestDirMgrCollection_PeekDirMgrAtIndex_01(t *testing.T) {
 		t.Errorf("Expected final dMgrs.GetArrayLength() == 6.  Instead, dMgrs.GetArrayLength()=='%v'", dMgrs.GetArrayLength())
 	}
 
-
 	dMgr, err = dMgrs.PeekDirMgrAtIndex(3)
 
 	if err != nil {
@@ -753,7 +740,7 @@ func TestDirMgrCollection_FindDirectories_01(t *testing.T) {
 	isLevel02Found := false
 	isLevel01Found := false
 
-	for i:=0; i < dCol.GetArrayLength(); i++ {
+	for i := 0; i < dCol.GetArrayLength(); i++ {
 		if strings.Contains(dCol.DirMgrs[i].DirectoryName, "Level01") {
 			isLevel01Found = true
 		}

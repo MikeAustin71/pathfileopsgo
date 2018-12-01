@@ -1,11 +1,11 @@
-package common
+package appExamples
 
 import (
 	"fmt"
 	"time"
 )
 
-func WalkDirFindFiles(dMgr DirMgr, filePattern string, filesOlderThan, filesNewerThan time.Time ) error {
+func WalkDirFindFiles(dMgr DirMgr, filePattern string, filesOlderThan, filesNewerThan time.Time) error {
 
 	du := DateTimeUtility{}
 
@@ -19,7 +19,7 @@ func WalkDirFindFiles(dMgr DirMgr, filePattern string, filesOlderThan, filesNewe
 	dWalkInfo, err := dMgr.FindWalkDirFiles(fsc)
 
 	if err != nil {
-		return fmt.Errorf("Error returned from dMgr.FindWalkDirFiles(filePattern, filesOlderThan, filesNewerThan) filePattern='%v'  filesOlderThan='%v' filesNewerThan='%v' Error='%v' \n",filePattern, du.GetDateTimeYMDAbbrvDowNano(filesOlderThan), du.GetDateTimeYMDAbbrvDowNano(filesNewerThan), err.Error())
+		return fmt.Errorf("Error returned from dMgr.FindWalkDirFiles(filePattern, filesOlderThan, filesNewerThan) filePattern='%v'  filesOlderThan='%v' filesNewerThan='%v' Error='%v' \n", filePattern, du.GetDateTimeYMDAbbrvDowNano(filesOlderThan), du.GetDateTimeYMDAbbrvDowNano(filesNewerThan), err.Error())
 	}
 
 	PrintDirMgrFields(dMgr)
@@ -33,8 +33,8 @@ func WalkDirFindFiles(dMgr DirMgr, filePattern string, filesOlderThan, filesNewe
 		fmt.Println("No Files Found")
 	} else {
 		fmt.Println("Files Found: ")
-		for i:=0; i < dWalkInfo.FoundFiles.GetArrayLength(); i ++ {
-			fmt.Printf("  Name: %v Mod Date: %v Path: %v \n", dWalkInfo.FoundFiles.FMgrs[i].FileNameExt,dWalkInfo.FoundFiles.FMgrs[i].ActualFileInfo.ModTime(), dWalkInfo.FoundFiles.FMgrs[i].ActualFileInfo.DirPath())
+		for i := 0; i < dWalkInfo.FoundFiles.GetArrayLength(); i++ {
+			fmt.Printf("  Name: %v Mod Date: %v Path: %v \n", dWalkInfo.FoundFiles.FMgrs[i].FileNameExt, dWalkInfo.FoundFiles.FMgrs[i].ActualFileInfo.ModTime(), dWalkInfo.FoundFiles.FMgrs[i].ActualFileInfo.DirPath())
 		}
 		fmt.Println()
 	}
@@ -42,7 +42,7 @@ func WalkDirFindFiles(dMgr DirMgr, filePattern string, filesOlderThan, filesNewe
 	if dWalkInfo.Directories.GetArrayLength() > 0 {
 		fmt.Println("DirMgrs Found:")
 
-		for k:=0; k < dWalkInfo.Directories.GetArrayLength(); k++ {
+		for k := 0; k < dWalkInfo.Directories.GetArrayLength(); k++ {
 			fmt.Printf("Dir: %v \n", dWalkInfo.Directories.DirMgrs[k].Path)
 		}
 
@@ -51,7 +51,7 @@ func WalkDirFindFiles(dMgr DirMgr, filePattern string, filesOlderThan, filesNewe
 	if len(dWalkInfo.ErrReturns) > 0 {
 		fmt.Println("Errors Found: ")
 
-		for j:=0; j < len(dWalkInfo.ErrReturns); j++ {
+		for j := 0; j < len(dWalkInfo.ErrReturns); j++ {
 			fmt.Printf("Error: %v \n", dWalkInfo.ErrReturns[j])
 		}
 		fmt.Println("")
@@ -60,7 +60,7 @@ func WalkDirFindFiles(dMgr DirMgr, filePattern string, filesOlderThan, filesNewe
 	return nil
 }
 
-func WalkDirFindFiles2(dMgr DirMgr, filePattern string, filesOlderThan, filesNewerThan time.Time ) error {
+func WalkDirFindFiles2(dMgr DirMgr, filePattern string, filesOlderThan, filesNewerThan time.Time) error {
 
 	du := DateTimeUtility{}
 	fsc := FileSelectionCriteria{}
@@ -73,7 +73,7 @@ func WalkDirFindFiles2(dMgr DirMgr, filePattern string, filesOlderThan, filesNew
 	dWalkInfo, err := dMgr.FindWalkDirFiles(fsc)
 
 	if err != nil {
-		return fmt.Errorf("Error returned from dMgr.FindWalkDirFiles(filePattern, filesOlderThan, filesNewerThan) filePattern='%v'  filesOlderThan='%v' filesNewerThan='%v' Error='%v' \n",filePattern, du.GetDateTimeYMDAbbrvDowNano(filesOlderThan), du.GetDateTimeYMDAbbrvDowNano(filesNewerThan), err.Error())
+		return fmt.Errorf("Error returned from dMgr.FindWalkDirFiles(filePattern, filesOlderThan, filesNewerThan) filePattern='%v'  filesOlderThan='%v' filesNewerThan='%v' Error='%v' \n", filePattern, du.GetDateTimeYMDAbbrvDowNano(filesOlderThan), du.GetDateTimeYMDAbbrvDowNano(filesNewerThan), err.Error())
 	}
 
 	PrintDirMgrFields(dMgr)
@@ -87,7 +87,7 @@ func WalkDirFindFiles2(dMgr DirMgr, filePattern string, filesOlderThan, filesNew
 		fmt.Println("No Files Found")
 	} else {
 		fmt.Println("Files Found: ")
-		for i:=0; i < dWalkInfo.FoundFiles.GetArrayLength(); i ++ {
+		for i := 0; i < dWalkInfo.FoundFiles.GetArrayLength(); i++ {
 			fmt.Printf("  Name: %v SysInfo: %v \n", dWalkInfo.FoundFiles.FMgrs[i].FileNameExt, dWalkInfo.FoundFiles.FMgrs[i].ActualFileInfo.Sys())
 		}
 		fmt.Println()
@@ -96,7 +96,7 @@ func WalkDirFindFiles2(dMgr DirMgr, filePattern string, filesOlderThan, filesNew
 	if dWalkInfo.Directories.GetArrayLength() > 0 {
 		fmt.Println("DirMgrs Found:")
 
-		for k:=0; k < dWalkInfo.Directories.GetArrayLength(); k++ {
+		for k := 0; k < dWalkInfo.Directories.GetArrayLength(); k++ {
 			fmt.Printf("Dir: %v \n", dWalkInfo.Directories.DirMgrs[k].Path)
 		}
 
@@ -105,7 +105,7 @@ func WalkDirFindFiles2(dMgr DirMgr, filePattern string, filesOlderThan, filesNew
 	if len(dWalkInfo.ErrReturns) > 0 {
 		fmt.Println("Errors Found: ")
 
-		for j:=0; j < len(dWalkInfo.ErrReturns); j++ {
+		for j := 0; j < len(dWalkInfo.ErrReturns); j++ {
 			fmt.Printf("Error: %v \n", dWalkInfo.ErrReturns[j])
 		}
 		fmt.Println("")
@@ -151,7 +151,6 @@ func PrintDirMgrFields(dMgr DirMgr) {
 	} else {
 		fmt.Println("File Info Data is NOT Initialized")
 	}
-
 
 	return
 }

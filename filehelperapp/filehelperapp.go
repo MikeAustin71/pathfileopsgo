@@ -1,30 +1,30 @@
 package main
 
 import (
-	"MikeAustin71/pathfilego/003_filehelper/common"
+	pathfileops "../pathfileops"
 	"errors"
 	"fmt"
 )
 
-func main()  {
+func main() {
 
-	fh := common.FileHelper{}
+	fh := pathfileops.FileHelper{}
 
-	targetFile, err := fh.MakeAbsolutePath(fh.AdjustPathSlash( "..\\logTest\\topTest1.txt"))
+	targetFile, err := fh.MakeAbsolutePath(fh.AdjustPathSlash("..\\logTest\\topTest1.txt"))
 
 	if err != nil {
-		panic (errors.New("filehelperapp-main() Error on MakeAbsolutePath()- "+ err.Error()) )
+		panic(errors.New("filehelperapp-main() Error on MakeAbsolutePath()- " + err.Error()))
 	}
 
 	fInfo, err := fh.GetFileInfoFromPath(targetFile)
 
 	if err != nil {
-		panic (errors.New(fmt.Sprintf("filehelperapp-main() Error on GetFileInfoFromPath(%v)- ",targetFile)+ err.Error()) )
+		panic(errors.New(fmt.Sprintf("filehelperapp-main() Error on GetFileInfoFromPath(%v)- ", targetFile) + err.Error()))
 	}
 
 	fmt.Println("Target File: ", targetFile)
 	fmt.Println("FileInfo.IsDir():", fInfo.IsDir())
-	dt := common.DateTimeUtility{}
+	dt := pathfileops.DateTimeUtility{}
 
 	tStr := dt.GetDateTimeNanoSecText(fInfo.ModTime())
 
@@ -34,7 +34,7 @@ func main()  {
 
 	fmt.Println("FileInfo.Mode()", fInfo.Mode())
 
-	fmt.Println("FileInfo.Size():" ,fInfo.Size())
+	fmt.Println("FileInfo.Size():", fInfo.Size())
 
 	fmt.Println("FileInfo.Sys():", fInfo.Sys())
 

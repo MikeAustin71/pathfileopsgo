@@ -1,4 +1,4 @@
-package common
+package pathfileops
 
 import (
 	"fmt"
@@ -19,7 +19,7 @@ func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
 
 	dMgr, err := DirMgr{}.New(dir)
 
-	if err!=nil {
+	if err != nil {
 		t.Errorf("Error returned from DirMgr{}.New(dir). dir='%v' Error='%v'", dir, err.Error())
 	}
 
@@ -28,15 +28,15 @@ func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
 	}
 
 	fsc := FileSelectionCriteria{}
-	
+
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
 	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
-	
+
 	dirTreeInfo, err := dMgr.FindWalkDirFiles(fsc)
 
-	if err!=nil {
+	if err != nil {
 		t.Errorf("Error returned from dMgr.FindWalkDirFiles(searchPattern, filesOlderThan, filesNewerThan). dir='%v' Error='%v'", dir, err.Error())
 	}
 
@@ -47,7 +47,7 @@ func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
 	foundnewTestFile3 := false
 	foundOldReadingFile := false
 
-	for i:=0; i < dirTreeInfo.FoundFiles.GetArrayLength(); i++ {
+	for i := 0; i < dirTreeInfo.FoundFiles.GetArrayLength(); i++ {
 		if dirTreeInfo.FoundFiles.FMgrs[i].FileNameExt == "newerFileForTest_03.txt" {
 			foundnewTestFile3 = true
 		}
@@ -73,7 +73,7 @@ func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
 
 	foundDir3 := false
 
-	for j:=0; j < dirTreeInfo.Directories.GetArrayLength() ; j++ {
+	for j := 0; j < dirTreeInfo.Directories.GetArrayLength(); j++ {
 		if strings.Contains(dirTreeInfo.Directories.DirMgrs[j].Path, dir3) {
 			foundDir3 = true
 		}
@@ -96,7 +96,7 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
 
 	dMgr, err := DirMgr{}.New(dir)
 
-	if err!=nil {
+	if err != nil {
 		t.Errorf("Error returned from DirMgr{}.New(dir). dir='%v' Error='%v'", dir, err.Error())
 	}
 
@@ -113,7 +113,7 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
 
 	dWalker, err := dMgr.FindWalkDirFiles(fsc)
 
-	if err!=nil {
+	if err != nil {
 		t.Errorf("Error returned from dMgr.FindWalkDirFiles(searchPattern, filesOlderThan, filesNewerThan). dir='%v' Error='%v'", dir, err.Error())
 	}
 
@@ -124,7 +124,7 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
 	foundWritingFiles := false
 	foundOldReadingFile := false
 
-	for i:=0; i < dWalker.FoundFiles.GetArrayLength(); i++ {
+	for i := 0; i < dWalker.FoundFiles.GetArrayLength(); i++ {
 		if dWalker.FoundFiles.FMgrs[i].FileNameExt == "006890_WritingFiles.htm" {
 			foundWritingFiles = true
 		}
@@ -143,14 +143,14 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
 	}
 
 	if dWalker.Directories.GetArrayLength() != 3 {
-		t.Errorf("Expected the number of directories found would equal 3. It did NOT! Number of directories= '%v'",dWalker.Directories.GetArrayLength())
+		t.Errorf("Expected the number of directories found would equal 3. It did NOT! Number of directories= '%v'", dWalker.Directories.GetArrayLength())
 	}
 
 	dir3 := fh.AdjustPathSlash("/dirwalktests/dir01/dir02/dir03")
 
 	foundDir3 := false
 
-	for j:=0; j < dWalker.Directories.GetArrayLength() ; j++ {
+	for j := 0; j < dWalker.Directories.GetArrayLength(); j++ {
 		if strings.Contains(dWalker.Directories.DirMgrs[j].Path, dir3) {
 			foundDir3 = true
 		}
@@ -172,7 +172,7 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 	searchPattern := ""
 	filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
 
-	if err!=nil {
+	if err != nil {
 		t.Errorf("Failed to parse FilesOlderThan time value. fmtstr='%v' fOlderThanStr='%v'  Error='%v'", fmtstr, fOlderThanStr, err.Error())
 	}
 
@@ -180,7 +180,7 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 
 	dMgr, err := DirMgr{}.New(dir)
 
-	if err!=nil {
+	if err != nil {
 		t.Errorf("Error returned from DirMgr{}.New(dir). dir='%v' Error='%v'", dir, err.Error())
 	}
 
@@ -193,10 +193,10 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
 	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
-	
+
 	dWalker, err := dMgr.FindWalkDirFiles(fsc)
 
-	if err!=nil {
+	if err != nil {
 		t.Errorf("Error returned from dMgr.FindWalkDirFiles(searchPattern, filesOlderThan, filesNewerThan). dir='%v' Error='%v'", dir, err.Error())
 	}
 
@@ -208,8 +208,7 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 	foundOldReadingFile := false
 	foundOldTestHtmFile := false
 
-
-	for i:=0; i < dWalker.FoundFiles.GetArrayLength(); i++ {
+	for i := 0; i < dWalker.FoundFiles.GetArrayLength(); i++ {
 		if dWalker.FoundFiles.FMgrs[i].FileNameExt == "006890_WritingFiles.htm" {
 			foundOldWritingFiles = true
 		}
@@ -237,14 +236,14 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 	}
 
 	if dWalker.Directories.GetArrayLength() != 3 {
-		t.Errorf("Expected the number of directories found would equal 3. It did NOT! Number of directories= '%v'",dWalker.Directories.GetArrayLength())
+		t.Errorf("Expected the number of directories found would equal 3. It did NOT! Number of directories= '%v'", dWalker.Directories.GetArrayLength())
 	}
 
 	dir3 := fh.AdjustPathSlash("/dirwalktests/dir01/dir02/dir03")
 
 	foundDir3 := false
 
-	for j:=0; j < dWalker.Directories.GetArrayLength() ; j++ {
+	for j := 0; j < dWalker.Directories.GetArrayLength(); j++ {
 		if strings.Contains(dWalker.Directories.DirMgrs[j].Path, dir3) {
 			foundDir3 = true
 		}
@@ -268,30 +267,30 @@ func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 
 	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
 
-	if err!=nil {
+	if err != nil {
 		t.Errorf("Failed to parse FilesNewerThan time value. fmtstr='%v' fNewerThanStr='%v'  Error='%v'", fmtstr, fNewerThanStr, err.Error())
 	}
 
 	dMgr, err := DirMgr{}.New(dir)
 
-	if err!=nil {
+	if err != nil {
 		t.Errorf("Error returned from DirMgr{}.New(dir). dir='%v' Error='%v'", dir, err.Error())
 	}
 
 	if !dMgr.AbsolutePathDoesExist {
 		t.Errorf("Expected target directory to exist. I does NOT exist. dMgr.Path='%v' dMgr.AbolutePath='%v'", dMgr.Path, dMgr.AbsolutePath)
 	}
-	
+
 	fsc := FileSelectionCriteria{}
 
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
 	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
-	
+
 	dWalker, err := dMgr.FindWalkDirFiles(fsc)
 
-	if err!=nil {
+	if err != nil {
 		t.Errorf("Error returned from dMgr.FindWalkDirFiles(searchPattern, filesOlderThan, filesNewerThan). dir='%v' Error='%v'", dir, err.Error())
 	}
 
@@ -303,8 +302,7 @@ func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 	foundNewerFile2 := false
 	foundNewerFile3 := false
 
-
-	for i:=0; i < dWalker.FoundFiles.GetArrayLength(); i++ {
+	for i := 0; i < dWalker.FoundFiles.GetArrayLength(); i++ {
 		if dWalker.FoundFiles.FMgrs[i].FileNameExt == "newerFileForTest_01.txt" {
 			foundNewerFile1 = true
 		}
@@ -332,14 +330,14 @@ func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 	}
 
 	if dWalker.Directories.GetArrayLength() != 3 {
-		t.Errorf("Expected the number of directories found would equal 3. It did NOT! Number of directories= '%v'",dWalker.Directories.GetArrayLength())
+		t.Errorf("Expected the number of directories found would equal 3. It did NOT! Number of directories= '%v'", dWalker.Directories.GetArrayLength())
 	}
 
 	dir3 := fh.AdjustPathSlash("/dirwalktests/dir01/dir02/dir03")
 
 	foundDir3 := false
 
-	for j:=0; j < dWalker.Directories.GetArrayLength() ; j++ {
+	for j := 0; j < dWalker.Directories.GetArrayLength(); j++ {
 		if strings.Contains(dWalker.Directories.DirMgrs[j].Path, dir3) {
 			foundDir3 = true
 		}
@@ -353,7 +351,7 @@ func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 
 func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 
-	origDir, err :=  DirMgr02TestSetupFileWalkDeleteFiles()
+	origDir, err := DirMgr02TestSetupFileWalkDeleteFiles()
 
 	if err != nil {
 		t.Errorf("Error returned from DirMgr02TestSetupFileWalkDeleteFiles(). Error='%v'", err.Error())
@@ -361,7 +359,7 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 
 	fh := FileHelper{}
 
-	if ! fh.DoesFileExist(origDir) {
+	if !fh.DoesFileExist(origDir) {
 		t.Errorf("Error: The target directory does NOT Exist! origDir='%v'", origDir)
 	}
 
@@ -376,14 +374,14 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 	fOlderThanStr := "2016-12-01 19:54:30.000000000 -0600 CST"
 	filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
 
-	if err!= nil {
+	if err != nil {
 		t.Errorf("Error returned from time.Parse(fmtstr,fOlderThanStr). fmtstr='%v' fOlderThanStr='%v' Error='%v'", fmtstr, fOlderThanStr, err.Error())
 	}
 
 	fNewerThanStr := "2017-12-01 19:54:30.000000000 -0600 CST"
 	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
 
-	if err!= nil {
+	if err != nil {
 		t.Errorf("Error returned from time.Parse(fmtstr,fNewerThanStr). fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
 	}
 
@@ -393,7 +391,6 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
 	fsc.SelectCriterionMode = ORFILESELECTCRITERION
-
 
 	dInfo, err := dMgr.FindWalkDirFiles(fsc)
 
@@ -416,7 +413,7 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 	newFile2Found := false
 	newFile3Found := false
 
-	for i:=0; i < dInfo.FoundFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.FoundFiles.GetArrayLength(); i++ {
 
 		if strings.Contains(dInfo.FoundFiles.FMgrs[i].FileNameExt, oldFile1) {
 			oldFile1Found = true
@@ -445,29 +442,28 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 	}
 
 	if oldFile1Found == false {
-		t.Errorf("Expected to find oldFile1='%v'. The file was NOT found!",oldFile1)
+		t.Errorf("Expected to find oldFile1='%v'. The file was NOT found!", oldFile1)
 	}
 
 	if oldFile2Found == false {
-		t.Errorf("Expected to find oldFile2='%v'. The file was NOT found!",oldFile2)
+		t.Errorf("Expected to find oldFile2='%v'. The file was NOT found!", oldFile2)
 	}
 
 	if oldFile3Found == false {
-		t.Errorf("Expected find oldFile3='%v'. The file was NOT found!",oldFile3)
+		t.Errorf("Expected find oldFile3='%v'. The file was NOT found!", oldFile3)
 	}
 
 	if newFile1Found == false {
-		t.Errorf("Expected to find newFile1='%v'. The file was NOT found!",newFile1)
+		t.Errorf("Expected to find newFile1='%v'. The file was NOT found!", newFile1)
 	}
 
 	if newFile2Found == false {
-		t.Errorf("Expected to find newFile2='%v'. The file was NOT found!",newFile2)
+		t.Errorf("Expected to find newFile2='%v'. The file was NOT found!", newFile2)
 	}
 
 	if newFile3Found == false {
-		t.Errorf("Expected to find newFile3='%v'. The file was NOT found!",newFile3)
+		t.Errorf("Expected to find newFile3='%v'. The file was NOT found!", newFile3)
 	}
-
 
 	if len(dInfo.ErrReturns) != 0 {
 		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
@@ -481,7 +477,7 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 
 	foundDir3 := false
 
-	for j:=0; j < dInfo.Directories.GetArrayLength() ; j++ {
+	for j := 0; j < dInfo.Directories.GetArrayLength(); j++ {
 		if strings.Contains(dInfo.Directories.DirMgrs[j].Path, dir3) {
 			foundDir3 = true
 		}
@@ -495,7 +491,7 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 
 func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 
-	origDir, err :=  DirMgr02TestSetupFileWalkDeleteFiles()
+	origDir, err := DirMgr02TestSetupFileWalkDeleteFiles()
 
 	if err != nil {
 		t.Errorf("Error returned from DirMgr02TestSetupFileWalkDeleteFiles(). Error='%v'", err.Error())
@@ -503,7 +499,7 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 
 	fh := FileHelper{}
 
-	if ! fh.DoesFileExist(origDir) {
+	if !fh.DoesFileExist(origDir) {
 		t.Errorf("Error: The target directory does NOT Exist! origDir='%v'", origDir)
 	}
 
@@ -526,7 +522,6 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 	fsc.FilesNewerThan = filesNewerThan
 	fsc.SelectCriterionMode = ORFILESELECTCRITERION
 
-
 	dInfo, err := dMgr.FindWalkDirFiles(fsc)
 
 	if dInfo.FoundFiles.GetArrayLength() != 6 {
@@ -548,7 +543,7 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 	newFile2Found := false
 	newFile3Found := false
 
-	for i:=0; i < dInfo.FoundFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.FoundFiles.GetArrayLength(); i++ {
 
 		if strings.Contains(dInfo.FoundFiles.FMgrs[i].FileNameExt, oldFile1) {
 			oldFile1Found = true
@@ -577,29 +572,28 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 	}
 
 	if oldFile1Found == false {
-		t.Errorf("Expected to find oldFile1='%v'. The file was NOT found!",oldFile1)
+		t.Errorf("Expected to find oldFile1='%v'. The file was NOT found!", oldFile1)
 	}
 
 	if oldFile2Found == false {
-		t.Errorf("Expected to find oldFile2='%v'. The file was NOT found!",oldFile2)
+		t.Errorf("Expected to find oldFile2='%v'. The file was NOT found!", oldFile2)
 	}
 
 	if oldFile3Found == false {
-		t.Errorf("Expected find oldFile3='%v'. The file was NOT found!",oldFile3)
+		t.Errorf("Expected find oldFile3='%v'. The file was NOT found!", oldFile3)
 	}
 
 	if newFile1Found == false {
-		t.Errorf("Expected to find newFile1='%v'. The file was NOT found!",newFile1)
+		t.Errorf("Expected to find newFile1='%v'. The file was NOT found!", newFile1)
 	}
 
 	if newFile2Found == false {
-		t.Errorf("Expected to find newFile2='%v'. The file was NOT found!",newFile2)
+		t.Errorf("Expected to find newFile2='%v'. The file was NOT found!", newFile2)
 	}
 
 	if newFile3Found == false {
-		t.Errorf("Expected to find newFile3='%v'. The file was NOT found!",newFile3)
+		t.Errorf("Expected to find newFile3='%v'. The file was NOT found!", newFile3)
 	}
-
 
 	if len(dInfo.ErrReturns) != 0 {
 		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
@@ -613,7 +607,7 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 
 	foundDir3 := false
 
-	for j:=0; j < dInfo.Directories.GetArrayLength() ; j++ {
+	for j := 0; j < dInfo.Directories.GetArrayLength(); j++ {
 		if strings.Contains(dInfo.Directories.DirMgrs[j].Path, dir3) {
 			foundDir3 = true
 		}
@@ -625,9 +619,8 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 
 }
 
-
 func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
-	origDir, err :=  DirMgr02TestSetupFileWalkDeleteFiles()
+	origDir, err := DirMgr02TestSetupFileWalkDeleteFiles()
 
 	if err != nil {
 		t.Errorf("Error returned from DirMgr02TestSetupFileWalkDeleteFiles(). Error='%v'", err.Error())
@@ -635,16 +628,16 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
 
 	fh := FileHelper{}
 
-	if ! fh.DoesFileExist(origDir) {
+	if !fh.DoesFileExist(origDir) {
 		t.Errorf("Error: The target directory does NOT Exist! origDir='%v'", origDir)
 	}
 
 	dMgr, err := DirMgr{}.New(origDir)
-	
+
 	if err != nil {
 		t.Errorf("Error returned by DirMgr{}.New(origDir). origDir='%v' Error='%v'", origDir, err.Error())
 	}
-	
+
 	searchPattern := ""
 	filesOlderThan := time.Time{}
 	filesNewerThan := time.Time{}
@@ -656,9 +649,8 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
 	fsc.FilesNewerThan = filesNewerThan
 	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
 
-
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
-	
+
 	if dInfo.DeletedFiles.GetArrayLength() != 6 {
 		t.Errorf("Expected to find 6-files deleted. Instead, %v-files were deleted.", dInfo.DeletedFiles.GetArrayLength())
 	}
@@ -669,67 +661,66 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
 	newFile1 := "newerFileForTest_01.txt"
 	newFile2 := "newerFileForTest_02.txt"
 	newFile3 := "newerFileForTest_03.txt"
-	
+
 	oldFile1Found := false
 	oldFile2Found := false
 	oldFile3Found := false
-	
+
 	newFile1Found := false
 	newFile2Found := false
 	newFile3Found := false
-	
-	for i:=0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
-		
+
+	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
+
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile1) {
 			oldFile1Found = true
 		}
-		
+
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile2) {
 			oldFile2Found = true
 		}
-		
+
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile3) {
 			oldFile3Found = true
 		}
-		
+
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile1) {
 			newFile1Found = true
 		}
-		
+
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile2) {
 			newFile2Found = true
 		}
-		
+
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile3) {
 			newFile3Found = true
 		}
-		
-	}
-	
-	if oldFile1Found == false {
-		t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!",oldFile1)
-	}
-	
-	if oldFile2Found == false {
-		t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!",oldFile2)
-	}
-	
-	if oldFile3Found == false {
-		t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!",oldFile3)
-	}
-	
-	if newFile1Found == false {
-		t.Errorf("Expected deletion of newFile1='%v'. The file was NOT deleted!",newFile1)
-	}
-	
-	if newFile2Found == false {
-		t.Errorf("Expected deletion of newFile2='%v'. The file was NOT deleted!",newFile2)
-	}
-	
-	if newFile3Found == false {
-		t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!",newFile3)
+
 	}
 
+	if oldFile1Found == false {
+		t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!", oldFile1)
+	}
+
+	if oldFile2Found == false {
+		t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!", oldFile2)
+	}
+
+	if oldFile3Found == false {
+		t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!", oldFile3)
+	}
+
+	if newFile1Found == false {
+		t.Errorf("Expected deletion of newFile1='%v'. The file was NOT deleted!", newFile1)
+	}
+
+	if newFile2Found == false {
+		t.Errorf("Expected deletion of newFile2='%v'. The file was NOT deleted!", newFile2)
+	}
+
+	if newFile3Found == false {
+		t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!", newFile3)
+	}
 
 	if len(dInfo.ErrReturns) != 0 {
 		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
@@ -743,7 +734,7 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
 
 func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
 
-	origDir, err :=  DirMgr02TestSetupFileWalkDeleteFiles()
+	origDir, err := DirMgr02TestSetupFileWalkDeleteFiles()
 
 	if err != nil {
 		t.Errorf("Error returned from DirMgr02TestSetupFileWalkDeleteFiles(). Error='%v'", err.Error())
@@ -751,7 +742,7 @@ func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
 
 	fh := FileHelper{}
 
-	if ! fh.DoesFileExist(origDir) {
+	if !fh.DoesFileExist(origDir) {
 		t.Errorf("Error: The target directory does NOT Exist! origDir='%v'", origDir)
 	}
 
@@ -786,8 +777,7 @@ func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
 	oldFile2Found := false
 	oldFile3Found := false
 
-
-	for i:=0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile1) {
 			oldFile1Found = true
@@ -804,17 +794,16 @@ func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
 	}
 
 	if oldFile1Found == false {
-		t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!",oldFile1)
+		t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!", oldFile1)
 	}
 
 	if oldFile2Found == false {
-		t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!",oldFile2)
+		t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!", oldFile2)
 	}
 
 	if oldFile3Found == false {
-		t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!",oldFile3)
+		t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!", oldFile3)
 	}
-
 
 	if len(dInfo.ErrReturns) != 0 {
 		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
@@ -828,7 +817,7 @@ func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
 
 func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
 
-	origDir, err :=  DirMgr02TestSetupFileWalkDeleteFiles()
+	origDir, err := DirMgr02TestSetupFileWalkDeleteFiles()
 
 	if err != nil {
 		t.Errorf("Error returned from DirMgr02TestSetupFileWalkDeleteFiles(). Error='%v'", err.Error())
@@ -836,7 +825,7 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
 
 	fh := FileHelper{}
 
-	if ! fh.DoesFileExist(origDir) {
+	if !fh.DoesFileExist(origDir) {
 		t.Errorf("Error: The target directory does NOT Exist! origDir='%v'", origDir)
 	}
 
@@ -865,7 +854,6 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
 	fsc.FilesNewerThan = filesNewerThan
 	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
 
-
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
 	if dInfo.DeletedFiles.GetArrayLength() != 3 {
@@ -880,8 +868,7 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
 	oldFile2Found := false
 	oldFile3Found := false
 
-
-	for i:=0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile1) {
 			oldFile1Found = true
@@ -898,15 +885,15 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
 	}
 
 	if oldFile1Found == false {
-		t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!",oldFile1)
+		t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!", oldFile1)
 	}
 
 	if oldFile2Found == false {
-		t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!",oldFile2)
+		t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!", oldFile2)
 	}
 
 	if oldFile3Found == false {
-		t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!",oldFile3)
+		t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!", oldFile3)
 	}
 
 	if len(dInfo.ErrReturns) != 0 {
@@ -920,7 +907,7 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
 }
 
 func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
-	origDir, err :=  DirMgr02TestSetupFileWalkDeleteFiles()
+	origDir, err := DirMgr02TestSetupFileWalkDeleteFiles()
 
 	if err != nil {
 		t.Errorf("Error returned from DirMgr02TestSetupFileWalkDeleteFiles(). Error='%v'", err.Error())
@@ -928,7 +915,7 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
 
 	fh := FileHelper{}
 
-	if ! fh.DoesFileExist(origDir) {
+	if !fh.DoesFileExist(origDir) {
 		t.Errorf("Error: The target directory does NOT Exist! origDir='%v'", origDir)
 	}
 
@@ -950,7 +937,6 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
 
 	filesNewerThan := time.Time{}
 
-
 	fsc := FileSelectionCriteria{}
 
 	fsc.FileNamePatterns = []string{searchPattern}
@@ -964,7 +950,6 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
 		t.Errorf("Expected to find 0-files deleted. Instead, %v-files were deleted.", dInfo.DeletedFiles.GetArrayLength())
 	}
 
-
 	if len(dInfo.ErrReturns) != 0 {
 		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
 	}
@@ -975,10 +960,8 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
 
 }
 
-
-
 func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
-	origDir, err :=  DirMgr02TestSetupFileWalkDeleteFiles()
+	origDir, err := DirMgr02TestSetupFileWalkDeleteFiles()
 
 	if err != nil {
 		t.Errorf("Error returned from DirMgr02TestSetupFileWalkDeleteFiles(). Error='%v'", err.Error())
@@ -986,7 +969,7 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
 
 	fh := FileHelper{}
 
-	if ! fh.DoesFileExist(origDir) {
+	if !fh.DoesFileExist(origDir) {
 		t.Errorf("Error: The target directory does NOT Exist! origDir='%v'", origDir)
 	}
 
@@ -1029,7 +1012,7 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
 	newFile2Found := false
 	newFile3Found := false
 
-	for i:=0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile1) {
 			newFile1Found = true
@@ -1046,17 +1029,16 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
 	}
 
 	if newFile1Found == false {
-		t.Errorf("Expected deletion of newFile1='%v'. The file was NOT deleted!",newFile1)
+		t.Errorf("Expected deletion of newFile1='%v'. The file was NOT deleted!", newFile1)
 	}
 
 	if newFile2Found == false {
-		t.Errorf("Expected deletion of newFile2='%v'. The file was NOT deleted!",newFile2)
+		t.Errorf("Expected deletion of newFile2='%v'. The file was NOT deleted!", newFile2)
 	}
 
 	if newFile3Found == false {
-		t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!",newFile3)
+		t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!", newFile3)
 	}
-
 
 	if len(dInfo.ErrReturns) != 0 {
 		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
@@ -1070,7 +1052,7 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
 
 func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 
-	origDir, err :=  DirMgr02TestSetupFileWalkDeleteFiles()
+	origDir, err := DirMgr02TestSetupFileWalkDeleteFiles()
 
 	if err != nil {
 		t.Errorf("Error returned from DirMgr02TestSetupFileWalkDeleteFiles(). Error='%v'", err.Error())
@@ -1078,7 +1060,7 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 
 	fh := FileHelper{}
 
-	if ! fh.DoesFileExist(origDir) {
+	if !fh.DoesFileExist(origDir) {
 		t.Errorf("Error: The target directory does NOT Exist! origDir='%v'", origDir)
 	}
 
@@ -1105,14 +1087,12 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 		t.Errorf("Error returned from time.Parse(fmtstr, fNewerThanStr). fNewerThanStr='%v' Error='%v'", fNewerThanStr, err.Error())
 	}
 
-
 	fsc := FileSelectionCriteria{}
 
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
 	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
-
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
@@ -1135,7 +1115,7 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 	newFile2Found := false
 	newFile3Found := false
 
-	for i:=0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile1) {
 			oldFile1Found = true
@@ -1164,27 +1144,27 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 	}
 
 	if oldFile1Found == false {
-		t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!",oldFile1)
+		t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!", oldFile1)
 	}
 
 	if oldFile2Found == false {
-		t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!",oldFile2)
+		t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!", oldFile2)
 	}
 
 	if oldFile3Found == false {
-		t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!",oldFile3)
+		t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!", oldFile3)
 	}
 
 	if newFile1Found == false {
-		t.Errorf("Expected deletion of newFile1='%v'. The file was NOT deleted!",newFile1)
+		t.Errorf("Expected deletion of newFile1='%v'. The file was NOT deleted!", newFile1)
 	}
 
 	if newFile2Found == false {
-		t.Errorf("Expected deletion of newFile2='%v'. The file was NOT deleted!",newFile2)
+		t.Errorf("Expected deletion of newFile2='%v'. The file was NOT deleted!", newFile2)
 	}
 
 	if newFile3Found == false {
-		t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!",newFile3)
+		t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!", newFile3)
 	}
 
 	if len(dInfo.ErrReturns) != 0 {
@@ -1198,7 +1178,7 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 }
 
 func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
-	origDir, err :=  DirMgr02TestSetupFileWalkDeleteFiles()
+	origDir, err := DirMgr02TestSetupFileWalkDeleteFiles()
 
 	if err != nil {
 		t.Errorf("Error returned from DirMgr02TestSetupFileWalkDeleteFiles(). Error='%v'", err.Error())
@@ -1206,7 +1186,7 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
 
 	fh := FileHelper{}
 
-	if ! fh.DoesFileExist(origDir) {
+	if !fh.DoesFileExist(origDir) {
 		t.Errorf("Error: The target directory does NOT Exist! origDir='%v'", origDir)
 	}
 
@@ -1228,7 +1208,6 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
 	fsc.SelectByFileMode = 0666
 	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
 
-
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
 	if dInfo.DeletedFiles.GetArrayLength() != 6 {
@@ -1250,7 +1229,7 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
 	newFile2Found := false
 	newFile3Found := false
 
-	for i:=0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile1) {
 			oldFile1Found = true
@@ -1279,29 +1258,28 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
 	}
 
 	if oldFile1Found == false {
-		t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!",oldFile1)
+		t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!", oldFile1)
 	}
 
 	if oldFile2Found == false {
-		t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!",oldFile2)
+		t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!", oldFile2)
 	}
 
 	if oldFile3Found == false {
-		t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!",oldFile3)
+		t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!", oldFile3)
 	}
 
 	if newFile1Found == false {
-		t.Errorf("Expected deletion of newFile1='%v'. The file was NOT deleted!",newFile1)
+		t.Errorf("Expected deletion of newFile1='%v'. The file was NOT deleted!", newFile1)
 	}
 
 	if newFile2Found == false {
-		t.Errorf("Expected deletion of newFile2='%v'. The file was NOT deleted!",newFile2)
+		t.Errorf("Expected deletion of newFile2='%v'. The file was NOT deleted!", newFile2)
 	}
 
 	if newFile3Found == false {
-		t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!",newFile3)
+		t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!", newFile3)
 	}
-
 
 	if len(dInfo.ErrReturns) != 0 {
 		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
@@ -1314,7 +1292,7 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
 }
 
 func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
-	origDir, err :=  DirMgr02TestSetupFileWalkDeleteFiles()
+	origDir, err := DirMgr02TestSetupFileWalkDeleteFiles()
 
 	if err != nil {
 		t.Errorf("Error returned from DirMgr02TestSetupFileWalkDeleteFiles(). Error='%v'", err.Error())
@@ -1322,7 +1300,7 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
 
 	fh := FileHelper{}
 
-	if ! fh.DoesFileExist(origDir) {
+	if !fh.DoesFileExist(origDir) {
 		t.Errorf("Error: The target directory does NOT Exist! origDir='%v'", origDir)
 	}
 
@@ -1345,7 +1323,6 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
 	fsc.SelectByFileMode = 0666
 	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
 
-
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
 	if dInfo.DeletedFiles.GetArrayLength() != 6 {
@@ -1367,7 +1344,7 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
 	newFile2Found := false
 	newFile3Found := false
 
-	for i:=0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile1) {
 			oldFile1Found = true
@@ -1396,29 +1373,28 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
 	}
 
 	if oldFile1Found == false {
-		t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!",oldFile1)
+		t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!", oldFile1)
 	}
 
 	if oldFile2Found == false {
-		t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!",oldFile2)
+		t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!", oldFile2)
 	}
 
 	if oldFile3Found == false {
-		t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!",oldFile3)
+		t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!", oldFile3)
 	}
 
 	if newFile1Found == false {
-		t.Errorf("Expected deletion of newFile1='%v'. The file was NOT deleted!",newFile1)
+		t.Errorf("Expected deletion of newFile1='%v'. The file was NOT deleted!", newFile1)
 	}
 
 	if newFile2Found == false {
-		t.Errorf("Expected deletion of newFile2='%v'. The file was NOT deleted!",newFile2)
+		t.Errorf("Expected deletion of newFile2='%v'. The file was NOT deleted!", newFile2)
 	}
 
 	if newFile3Found == false {
-		t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!",newFile3)
+		t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!", newFile3)
 	}
-
 
 	if len(dInfo.ErrReturns) != 0 {
 		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
@@ -1430,7 +1406,6 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
 
 }
 
-
 /*
 	************************************************************************************
 														Test and Setup Methods
@@ -1438,23 +1413,23 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
 */
 
 func DirMgr02TestCreateCheckFiles99DirFiles() (string, error) {
-	ePrefix := "TestFile: dirmgr_01_test.go Func: testDirMgrCreateCheckFiles03DirFiles() "
+	ePrefix := "TestFile: xt_dirmgr_01_test.go Func: testDirMgrCreateCheckFiles03DirFiles() "
 	fh := FileHelper{}
 
-	origDir :=  fh.AdjustPathSlash("../checkfiles/checkfiles99/checkfiles999")
+	origDir := fh.AdjustPathSlash("../checkfiles/checkfiles99/checkfiles999")
 
 	if fh.DoesFileExist(origDir) {
 
-		err :=	os.RemoveAll(origDir)
+		err := os.RemoveAll(origDir)
 
 		if err != nil {
-			return "", fmt.Errorf(ePrefix + "Error returned by os.RemoveAll(origDir). origDir='%v'  Error='%v'", origDir, err.Error())
+			return "", fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(origDir). origDir='%v'  Error='%v'", origDir, err.Error())
 		}
 
 	}
 
-	if fh.DoesFileExist(origDir){
-		return "", fmt.Errorf(ePrefix + "Error: Attempted to delete origDir='%v'. However, it still Exists!", origDir)
+	if fh.DoesFileExist(origDir) {
+		return "", fmt.Errorf(ePrefix+"Error: Attempted to delete origDir='%v'. However, it still Exists!", origDir)
 	}
 
 	// origDir does NOT exist!
@@ -1463,64 +1438,60 @@ func DirMgr02TestCreateCheckFiles99DirFiles() (string, error) {
 	err := os.MkdirAll(origDir, ModePerm)
 
 	if err != nil {
-		return "", fmt.Errorf(ePrefix + "Error returned from os.MkdirAll(origDir, ModePerm). origDir='%v' ModePerm='%v'  Error='%v'", origDir, ModePerm, err.Error())
+		return "", fmt.Errorf(ePrefix+"Error returned from os.MkdirAll(origDir, ModePerm). origDir='%v' ModePerm='%v'  Error='%v'", origDir, ModePerm, err.Error())
 	}
 
 	if !fh.DoesFileExist(origDir) {
-		return "", fmt.Errorf(ePrefix + "Error: Failed to create directory! origDir='%v'", origDir)
+		return "", fmt.Errorf(ePrefix+"Error: Failed to create directory! origDir='%v'", origDir)
 	}
 
 	fileDir := origDir + string(os.PathSeparator)
 	newFile1 := fileDir + "checkFile99001.txt"
 	fp1, err := os.Create(newFile1)
 
-	if err!= nil{
-		return "", fmt.Errorf(ePrefix + "Error returned from os.Create(newFile1). newFile1='%v' Error='%v' ", newFile1, err.Error())
+	if err != nil {
+		return "", fmt.Errorf(ePrefix+"Error returned from os.Create(newFile1). newFile1='%v' Error='%v' ", newFile1, err.Error())
 	}
-
-
 
 	newFile2 := fileDir + "checkFile99002.txt"
 
 	fp2, err := os.Create(newFile2)
 
-	if err!= nil{
+	if err != nil {
 		_ = fp1.Close()
-		return "", fmt.Errorf(ePrefix + "Error returned from os.Create(newFile2). newFile2='%v' Error='%v' ", newFile2, err.Error())
+		return "", fmt.Errorf(ePrefix+"Error returned from os.Create(newFile2). newFile2='%v' Error='%v' ", newFile2, err.Error())
 	}
-
 
 	newFile3 := fileDir + "checkFile99003.txt"
 
 	fp3, err := os.Create(newFile3)
 
-	if err!= nil{
+	if err != nil {
 		_ = fp1.Close()
 		_ = fp2.Close()
-		return "", fmt.Errorf(ePrefix + "Error returned from os.Create(newFile3). newFile3='%v' Error='%v' ", newFile3, err.Error())
+		return "", fmt.Errorf(ePrefix+"Error returned from os.Create(newFile3). newFile3='%v' Error='%v' ", newFile3, err.Error())
 	}
 
 	newFile4 := fileDir + "checkFile99004.txt"
 
 	fp4, err := os.Create(newFile4)
 
-	if err!= nil{
+	if err != nil {
 		_ = fp1.Close()
 		_ = fp2.Close()
 		_ = fp3.Close()
-		return "", fmt.Errorf(ePrefix + "Error returned from os.Create(newFile4). newFile4='%v' Error='%v' ", newFile4, err.Error())
+		return "", fmt.Errorf(ePrefix+"Error returned from os.Create(newFile4). newFile4='%v' Error='%v' ", newFile4, err.Error())
 	}
-
 
 	du := DateTimeUtility{}
 
-	_ , err = fp4.WriteString(du.GetDateTimeYMDAbbrvDowNano(time.Now()))
+	_, err = fp4.WriteString(du.GetDateTimeYMDAbbrvDowNano(time.Now()))
 
-	if err!= nil{
+	if err != nil {
 		_ = fp1.Close()
 		_ = fp2.Close()
 		_ = fp3.Close()
-		return "", fmt.Errorf(ePrefix + "Error returned from fp4.WriteString(du.GetDateTimeYMDAbbrvDowNano" +
+		return "", fmt.Errorf(ePrefix+"Error returned from fp4.WriteString(du.GetDateTimeYMDAbbrvDowNano"+
 			"(time.Now())). Error='%v' ", err.Error())
 	}
 
@@ -1533,28 +1504,26 @@ func DirMgr02TestCreateCheckFiles99DirFiles() (string, error) {
 
 }
 
-
 func DirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 
-	ePrefix := "TestFile: dirmgr_02_test.go Func: DirMgr02TestSetupFileWalkDeleteFiles() "
+	ePrefix := "TestFile: xt_dirmgr_02_test.go Func: DirMgr02TestSetupFileWalkDeleteFiles() "
 
 	fh := FileHelper{}
 
 	origDir := fh.AdjustPathSlash("D:/gowork/src/MikeAustin71/pathfilego/003_filehelper/dirwalkdeletetests/dirdelete01")
 
-	if fh.DoesFileExist(origDir ) {
+	if fh.DoesFileExist(origDir) {
 
-		err :=	os.RemoveAll(origDir)
+		err := os.RemoveAll(origDir)
 
 		if err != nil {
-			return "", fmt.Errorf(ePrefix + "Error returned by os.RemoveAll(origDir). origDir='%v'  Error='%v'", origDir, err.Error())
+			return "", fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(origDir). origDir='%v'  Error='%v'", origDir, err.Error())
 		}
 
 	}
 
-
-	if fh.DoesFileExist(origDir){
-		return "", fmt.Errorf(ePrefix + "Error: Attempted to delete origDir='%v'. However, it still Exists!", origDir)
+	if fh.DoesFileExist(origDir) {
+		return "", fmt.Errorf(ePrefix+"Error: Attempted to delete origDir='%v'. However, it still Exists!", origDir)
 	}
 
 	origFullDir := origDir + string(os.PathSeparator) + "dirdelete02" + string(os.PathSeparator) + "dirdelete03"
@@ -1565,18 +1534,18 @@ func DirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 	err := os.MkdirAll(origFullDir, ModePerm)
 
 	if err != nil {
-		return "", fmt.Errorf(ePrefix + "Error returned from os.MkdirAll(origFullDir, ModePerm). origDir='%v' ModePerm='%v'  Error='%v'", origFullDir, ModePerm, err.Error())
+		return "", fmt.Errorf(ePrefix+"Error returned from os.MkdirAll(origFullDir, ModePerm). origDir='%v' ModePerm='%v'  Error='%v'", origFullDir, ModePerm, err.Error())
 	}
 
 	if !fh.DoesFileExist(origFullDir) {
-		return "", fmt.Errorf(ePrefix + "Error: Failed to create directory! origFullDir='%v'", origFullDir)
+		return "", fmt.Errorf(ePrefix+"Error: Failed to create directory! origFullDir='%v'", origFullDir)
 	}
 
 	// Copy Old Files
 	dirOldFilesForTest := fh.AdjustPathSlash("D:/gowork/src/MikeAustin71/pathfilego/003_filehelper/filesfortest/oldfilesfortest")
 
 	if !fh.DoesFileExist(dirOldFilesForTest) {
-		return "", fmt.Errorf(ePrefix + "Error: Old Files Directory does NOT exist! dirOldFilesForTest='%v'", dirOldFilesForTest)
+		return "", fmt.Errorf(ePrefix+"Error: Old Files Directory does NOT exist! dirOldFilesForTest='%v'", dirOldFilesForTest)
 
 	}
 
@@ -1590,7 +1559,7 @@ func DirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 	err = fh.CopyFileByLink(srcFile, destFile)
 
 	if err != nil {
-	 return "", fmt.Errorf("Error while Copying Source File, '%v' to  Destination File '%v', Error:'%v'", srcFile, destFile, err)
+		return "", fmt.Errorf("Error while Copying Source File, '%v' to  Destination File '%v', Error:'%v'", srcFile, destFile, err)
 	}
 
 	srcFile = dirOldFilesForTest + string(os.PathSeparator) + oldFile2
@@ -1619,7 +1588,7 @@ func DirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 	dirNewFilesForTest := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
 
 	if !fh.DoesFileExist(dirNewFilesForTest) {
-		return "", fmt.Errorf(ePrefix + "Error: New Files Directory does NOT exist! dirNewFilesForTest='%v'", dirNewFilesForTest)
+		return "", fmt.Errorf(ePrefix+"Error: New Files Directory does NOT exist! dirNewFilesForTest='%v'", dirNewFilesForTest)
 	}
 
 	srcFile = dirNewFilesForTest + string(os.PathSeparator) + newFile1
@@ -1651,4 +1620,3 @@ func DirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 
 	return origDir, nil
 }
-

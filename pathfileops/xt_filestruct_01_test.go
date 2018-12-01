@@ -1,4 +1,4 @@
-package common
+package pathfileops
 
 import (
 	"os"
@@ -14,10 +14,9 @@ func TestFileInfoPlus_CopyOut_01(t *testing.T) {
 		fip.SetDirectoryPath("D:/gowork/src/MikeAustin71/pathfilego/003_filehelper/filesfortest/newfilesfortest")
 
 	if err != nil {
-		t.Errorf("Error returned from fip.SetDirectoryPath(). " +
-			"Error='%v'",  err.Error())
+		t.Errorf("Error returned from fip.SetDirectoryPath(). "+
+			"Error='%v'", err.Error())
 	}
-
 
 	fip.SetMode(0777)
 	fip.SetSize(107633)
@@ -33,9 +32,9 @@ func TestFileInfoPlus_CopyOut_01(t *testing.T) {
 	fip.SetIsDir(false)
 	fip.SetSysDataSrc(nil)
 	fip.SetIsFInfoInitialized(true)
-	
+
 	fip2 := fip.CopyOut()
-	
+
 	if fip.Name() != fip2.Name() {
 		t.Errorf("Error CopyOut. Names do not match. fip.Name()= '%v'  fip2.Name()= '%v' ", fip.Name(), fip2.Name())
 	}
@@ -79,7 +78,7 @@ func TestFileInfoPlus_CopyOut_01(t *testing.T) {
 }
 
 func TestFileInfoPlus_NewFromFileInfo_01(t *testing.T) {
-	fh:= FileHelper{}
+	fh := FileHelper{}
 
 	baseFileName := "newerFileForTest_01.txt"
 	baseDirPath := "../filesfortest/newfilesfortest"
@@ -132,7 +131,7 @@ func TestFileInfoPlus_NewFromFileInfo_01(t *testing.T) {
 }
 
 func TestFileInfoPlus_Equal_01(t *testing.T) {
-	fh:= FileHelper{}
+	fh := FileHelper{}
 
 	baseFileName := "newerFileForTest_01.txt"
 
@@ -158,7 +157,6 @@ func TestFileInfoPlus_Equal_01(t *testing.T) {
 	if fip.Name() != baseFileName {
 		t.Errorf("Expected fip.Name()='%v'. Instead, fip.Name()='%v'.", baseFileName, fip.Name())
 	}
-
 
 	fip2 := FileInfoPlus{}.NewFromFileInfo(fInfo)
 
@@ -169,7 +167,7 @@ func TestFileInfoPlus_Equal_01(t *testing.T) {
 }
 
 func TestFileInfoPlus_Equal_02(t *testing.T) {
-	fh:= FileHelper{}
+	fh := FileHelper{}
 
 	baseFileName := "newerFileForTest_01.txt"
 	baseDirPath := "D:/gowork/src/MikeAustin71/pathfilego/003_filehelper/filesfortest/newfilesfortest"
@@ -195,7 +193,6 @@ func TestFileInfoPlus_Equal_02(t *testing.T) {
 		t.Errorf("Expected fip.Name()='%v'. Instead, fip.Name()='%v'.", baseFileName, fip.Name())
 	}
 
-
 	fip2 := FileInfoPlus{}.NewFromFileInfo(fInfo)
 
 	err = fip2.SetDirectoryPath("XXX")
@@ -204,7 +201,6 @@ func TestFileInfoPlus_Equal_02(t *testing.T) {
 		t.Errorf("Error returned from fip2.SetDirectoryPath(\"XXX\").  Error='%v'",
 			err.Error())
 	}
-
 
 	if fip.Equal(&fip2) == true {
 		t.Error("Expected fip to NOT EQUAL fip2. Error- fip==fip2")
@@ -278,4 +274,3 @@ func TestFileSelectCriterionMode_Value_02(t *testing.T) {
 		t.Errorf("Expected 'ORFILESELECTCRITERION' value = 1. Instead, got %v", i)
 	}
 }
-

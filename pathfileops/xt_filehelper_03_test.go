@@ -1,4 +1,4 @@
-package common
+package pathfileops
 
 import (
 	"errors"
@@ -8,11 +8,10 @@ import (
 	"time"
 )
 
-
 func TestFileHelper_IsAbsolutePath(t *testing.T) {
 
 	fh := FileHelper{}
-	commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\dirmgr_01_test.go")
+	commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
 
 	result := fh.IsAbsolutePath(commonDir)
 
@@ -25,8 +24,8 @@ func TestFileHelper_IsAbsolutePath(t *testing.T) {
 func TestFileHelper_JoinPathsAdjustSeparators_01(t *testing.T) {
 	fh := FileHelper{}
 	path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common")
-	file1 := "dirmgr_01_test.go"
-	expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/dirmgr_01_test.go")
+	file1 := "xt_dirmgr_01_test.go"
+	expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/xt_dirmgr_01_test.go")
 
 	result1 := fh.JoinPathsAdjustSeparators(path1, file1)
 
@@ -38,8 +37,8 @@ func TestFileHelper_JoinPathsAdjustSeparators_01(t *testing.T) {
 func TestFileHelper_JoinMismatchedPathsAdjustSeparators_02(t *testing.T) {
 	fh := FileHelper{}
 	path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/")
-	file1 := "/dirmgr_01_test.go"
-	expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/dirmgr_01_test.go")
+	file1 := "/xt_dirmgr_01_test.go"
+	expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/xt_dirmgr_01_test.go")
 
 	result1 := fh.JoinPathsAdjustSeparators(path1, file1)
 
@@ -52,8 +51,8 @@ func TestFileHelper_JoinMismatchedPathsAdjustSeparators_02(t *testing.T) {
 func TestFileHelper_JoinMismatchedPathsAdjustSeparators_03(t *testing.T) {
 	fh := FileHelper{}
 	path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common")
-	file1 := "/dirmgr_01_test.go"
-	expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/dirmgr_01_test.go")
+	file1 := "/xt_dirmgr_01_test.go"
+	expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/xt_dirmgr_01_test.go")
 
 	result1 := fh.JoinPathsAdjustSeparators(path1, file1)
 
@@ -66,8 +65,8 @@ func TestFileHelper_JoinMismatchedPathsAdjustSeparators_03(t *testing.T) {
 func TestFileHelper_JoinMismatchedPathsAdjustSeparators_04(t *testing.T) {
 	fh := FileHelper{}
 	path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common")
-	file1 := "dirmgr_01_test.go"
-	expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/dirmgr_01_test.go")
+	file1 := "xt_dirmgr_01_test.go"
+	expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/xt_dirmgr_01_test.go")
 
 	result1 := fh.JoinPathsAdjustSeparators(path1, file1)
 
@@ -80,8 +79,8 @@ func TestFileHelper_JoinMismatchedPathsAdjustSeparators_04(t *testing.T) {
 func TestFileHelper_JoinMismatchedPathsAdjustSeparators_05(t *testing.T) {
 	fh := FileHelper{}
 	path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common\\")
-	file1 := "dirmgr_01_test.go"
-	expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/dirmgr_01_test.go")
+	file1 := "xt_dirmgr_01_test.go"
+	expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/xt_dirmgr_01_test.go")
 
 	result1 := fh.JoinPathsAdjustSeparators(path1, file1)
 
@@ -94,8 +93,8 @@ func TestFileHelper_JoinMismatchedPathsAdjustSeparators_05(t *testing.T) {
 func TestFileHelper_JoinMismatchedPathsAdjustSeparators_06(t *testing.T) {
 	fh := FileHelper{}
 	path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common//")
-	file1 := "//dirmgr_01_test.go"
-	expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/dirmgr_01_test.go")
+	file1 := "//xt_dirmgr_01_test.go"
+	expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/xt_dirmgr_01_test.go")
 
 	result1 := fh.JoinPathsAdjustSeparators(path1, file1)
 
@@ -110,15 +109,15 @@ func TestFileHelper_JoinMismatchedPathsAdjustSeparators_07(t *testing.T) {
 	path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/")
 	path12, err := fh.GetAbsPathFromFilePath(path1)
 
-	if err!= nil {
+	if err != nil {
 		t.Errorf("Error returned from fh.GetAbsPathFromFilePath(path1) path1='%v'  Error='%v'", path1, err.Error())
 	}
 
-	file1 := "//dirmgr_01_test.go"
-	expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/dirmgr_01_test.go")
+	file1 := "//xt_dirmgr_01_test.go"
+	expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/xt_dirmgr_01_test.go")
 	expected12, err := fh.GetAbsPathFromFilePath(expected1)
 
-	if err!= nil {
+	if err != nil {
 		t.Errorf("Error returned from fh.GetAbsPathFromFilePath(expected1) expected1='%v'  Error='%v'", expected1, err.Error())
 	}
 
@@ -134,8 +133,8 @@ func TestFileHelper_JoinMismatchedPathsAdjustSeparators_07(t *testing.T) {
 func TestFileHelper_JoinPaths_03(t *testing.T) {
 	fh := FileHelper{}
 	path1 := "../../../pathfilego/003_filehelper/common"
-	file1 := "dirmgr_01_test.go"
-	expected1 := "..\\..\\..\\pathfilego\\003_filehelper\\common\\dirmgr_01_test.go"
+	file1 := "xt_dirmgr_01_test.go"
+	expected1 := "..\\..\\..\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go"
 
 	result1 := fh.JoinPaths(path1, file1)
 
@@ -148,8 +147,8 @@ func TestFileHelper_JoinPaths_03(t *testing.T) {
 func TestFileHelper_JoinBadPaths_04(t *testing.T) {
 	fh := FileHelper{}
 	path1 := "../../../pathfilego/003_filehelper/common/"
-	file1 := "./dirmgr_01_test.go"
-	expected1 := "..\\..\\..\\pathfilego\\003_filehelper\\common\\dirmgr_01_test.go"
+	file1 := "./xt_dirmgr_01_test.go"
+	expected1 := "..\\..\\..\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go"
 
 	result1 := fh.JoinPaths(path1, file1)
 
@@ -158,7 +157,6 @@ func TestFileHelper_JoinBadPaths_04(t *testing.T) {
 	}
 
 }
-
 
 func TestFileHelper_MoveFile_01(t *testing.T) {
 	fh := FileHelper{}
@@ -202,7 +200,7 @@ func TestFileHelper_MoveFile_01(t *testing.T) {
 		t.Error(fmt.Sprintf("FileHelper:MoveFile() FAILED! Destination File '%v' DOES NOT EXIST!", destFile))
 	}
 
-	if copyByLink!=true {
+	if copyByLink != true {
 		t.Error("Expected copyByLink = 'true'. Instead, copyByLink='false'")
 	}
 }
@@ -216,7 +214,6 @@ func TestFileHelper_OpenFile_01(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to open file: '%v' , got error - '%v'", target, err.Error())
 	}
-
 
 	le := len(expected)
 	bRead := make([]byte, le)
@@ -266,7 +263,6 @@ func createTargetDir() error {
 		return err4
 	}
 
-
 	nowTime := DateTimeUtility{}.GetDateTimeNanoSecText(time.Now().Local())
 
 	_, err5 := f.WriteString("Sample Write - " + nowTime + "\n")
@@ -309,6 +305,3 @@ func deleteTargetDir() error {
 
 	return nil
 }
-
-
-

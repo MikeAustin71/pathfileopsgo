@@ -1,4 +1,4 @@
-package common
+package appExamples
 
 import (
 	"errors"
@@ -9,7 +9,7 @@ import (
 func ExampleExtractPathElements() {
 
 	fh := FileHelper{}
-	commonDir := fh.AdjustPathSlash("..\\..\\003_filehelper\\common\\dirmgr_01_test.go")
+	commonDir := fh.AdjustPathSlash("..\\..\\003_filehelper\\common\\xt_dirmgr_01_test.go")
 
 	fileMgr, err := FileMgr{}.New(commonDir)
 
@@ -31,7 +31,6 @@ func PathElementsAnalysis(pathFile string) {
 	commonDir := fh.AdjustPathSlash(pathFile)
 
 	fMgr, err := FileMgr{}.New(commonDir)
-
 
 	if err != nil {
 		panic(errors.New("PathElementsAnalysis()- Error returned on fh.GetPathFileNameElements(), Error:" + err.Error()))
@@ -68,14 +67,14 @@ func PrintFileManagerFields(fileMgr FileMgr) {
 	PrintDirMgrFields(fileMgr.DMgr)
 }
 
-func PrintFileInfoPlusFields(info FileInfoPlus){
+func PrintFileInfoPlusFields(info FileInfoPlus) {
 	fmt.Println("======================================")
 	fmt.Println("            File Info Plus")
 	fmt.Println("======================================")
 	du := DateTimeUtility{}
 	fmt.Println("  IsFInfoInitialized: ", info.IsFInfoInitialized)
 	fmt.Println("IsDirPathInitialized: ", info.IsDirPathInitialized)
-	fmt.Println("     CreateTimeStamp: ", du.GetDateTimeYMDAbbrvDowNano(info.CreateTimeStamp) )
+	fmt.Println("     CreateTimeStamp: ", du.GetDateTimeYMDAbbrvDowNano(info.CreateTimeStamp))
 	fmt.Println("              Name(): ", info.Name())
 	fmt.Println("              Size(): ", info.Size())
 	fmt.Println("              Mode(): ", info.Mode())
@@ -89,7 +88,7 @@ func CreateFileOnTopOfExistingFile() {
 	tstFile := "..//logTest//testoverwrite//TestOverwrite001.txt"
 	fMgr, err := FileMgr{}.New(tstFile)
 
-	if err!=nil {
+	if err != nil {
 		panic(fmt.Errorf("CreateFileOnTopOfExistingFile() - Error: FileMgr{}.New(tstFile) Failed. tstFile='%v' Error='%v'", tstFile, err.Error()))
 	}
 
@@ -99,7 +98,7 @@ func CreateFileOnTopOfExistingFile() {
 
 	defer fMgr.CloseFile()
 
-	du:= DateTimeUtility{}
+	du := DateTimeUtility{}
 	str := "Test Over Write Time Stamp: " + du.GetDateTimeEverything(time.Now())
 	fMgr.WriteStrToFile(str)
 
