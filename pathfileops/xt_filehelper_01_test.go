@@ -333,15 +333,18 @@ func TestFileHelper_CreateFile_02(t *testing.T) {
 		t.Error(fmt.Sprintf("Error: Create File Failed for file: %v", tstFile))
 	}
 
-	defer f.Close()
-
 	_, err4 := f.WriteString(aLoremIpsumTxt)
 
 	if err4 != nil {
+		_ = f.Close()
 		t.Error(fmt.Sprintf("Error Re-Writing to File: %v, Error: ", tstFile), err4)
 	}
 
-	f.Close()
+	err = f.Close()
+
+	if err != nil {
+		t.Errorf("%v", err.Error())
+	}
 
 	// Now recreate the original file. It should be
 	// truncated with the old contents deleted.
@@ -351,17 +354,20 @@ func TestFileHelper_CreateFile_02(t *testing.T) {
 		t.Errorf("Error: Re-Creating File %v", tstFile)
 	}
 
-	defer f2.Close()
-
 	fOvrWriteTxt := "Test Over Write and existing file using Create()"
 
 	_, err5 := f2.WriteString(fOvrWriteTxt)
 
 	if err5 != nil {
+		_ = f2.Close()
 		t.Error(fmt.Sprintf("Error Re-Writing to File: %v, Error: ", tstFile), err5)
 	}
 
-	f2.Close()
+	err = f2.Close()
+
+	if err != nil {
+		t.Errorf("Error closing f2. %v", err.Error())
+	}
 
 	dat, err := ioutil.ReadFile(tstFile)
 
@@ -461,8 +467,11 @@ func TestFileHelper_FilterFileName_02(t *testing.T) {
 	//filesOlderThan := time.Time{}
 	fOlderThanStr := "2017-12-01 00:00:00.000000000 -0600 CST"
 	filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
+
 	if err != nil {
-		fmt.Errorf("Error returned by time.Parse(fmtstr, fOlderThanStr). fmtstr='%v' fOlderThanStr='%v' Error='%v'", fmtstr, fOlderThanStr, err.Error())
+		t.Errorf("Error returned by time.Parse(fmtstr, fOlderThanStr). "+
+			"fmtstr='%v' fOlderThanStr='%v' Error='%v'",
+			fmtstr, fOlderThanStr, err.Error())
 	}
 
 	filesNewerThan := time.Time{}
@@ -507,7 +516,8 @@ func TestFileHelper_FilterFileName_03(t *testing.T) {
 	fOlderThanStr := "2017-12-01 00:00:00.000000000 -0600 CST"
 	filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
 	if err != nil {
-		fmt.Errorf("Error returned by time.Parse(fmtstr, fOlderThanStr). fmtstr='%v' fOlderThanStr='%v' Error='%v'", fmtstr, fOlderThanStr, err.Error())
+		t.Errorf("Error returned by time.Parse(fmtstr, fOlderThanStr). "+
+			"fmtstr='%v' fOlderThanStr='%v' Error='%v'", fmtstr, fOlderThanStr, err.Error())
 	}
 
 	filesNewerThan := time.Time{}
@@ -553,7 +563,8 @@ func TestFileHelper_FilterFileName_04(t *testing.T) {
 	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
 
 	if err != nil {
-		fmt.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
+		t.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). "+
+			"fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
 	}
 
 	fsc := FileSelectionCriteria{}
@@ -567,7 +578,8 @@ func TestFileHelper_FilterFileName_04(t *testing.T) {
 	isFound, err := fh.FilterFileName(fia, fsc)
 
 	if !isFound {
-		t.Errorf("File was NOT found. File should have been found. fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
+		t.Errorf("File was NOT found. File should have been found. "+
+			"fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
 	}
 
 }
@@ -583,7 +595,8 @@ func TestFileHelper_FilterFileName_05(t *testing.T) {
 	fModTime, err := time.Parse(fmtstr, fModTimeStr)
 
 	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
+		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). "+
+			"fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
 	}
 
 	fia.SetModTime(fModTime)
@@ -597,7 +610,8 @@ func TestFileHelper_FilterFileName_05(t *testing.T) {
 	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
 
 	if err != nil {
-		fmt.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
+		t.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). "+
+			"fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
 	}
 
 	fsc := FileSelectionCriteria{}
@@ -611,7 +625,8 @@ func TestFileHelper_FilterFileName_05(t *testing.T) {
 	isFound, err := fh.FilterFileName(fia, fsc)
 
 	if !isFound {
-		t.Errorf("File was NOT found. File should have been found. fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
+		t.Errorf("File was NOT found. File should have been found. "+
+			"fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
 	}
 
 }
@@ -627,7 +642,8 @@ func TestFileHelper_FilterFileName_06(t *testing.T) {
 	fModTime, err := time.Parse(fmtstr, fModTimeStr)
 
 	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
+		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). "+
+			"fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
 	}
 
 	fia.SetModTime(fModTime)
@@ -644,7 +660,8 @@ func TestFileHelper_FilterFileName_06(t *testing.T) {
 	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
 
 	if err != nil {
-		fmt.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
+		t.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). "+
+			"fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
 	}
 
 	fsc := FileSelectionCriteria{}
@@ -658,7 +675,8 @@ func TestFileHelper_FilterFileName_06(t *testing.T) {
 	isFound, err := fh.FilterFileName(fia, fsc)
 
 	if isFound {
-		t.Errorf("It was expected that this File would NOT be found. It WAS Found. Error! fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
+		t.Errorf("It was expected that this File would NOT be found. It WAS Found. "+
+			"Error! fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
 	}
 
 }
@@ -691,7 +709,8 @@ func TestFileHelper_FilterFileName_07(t *testing.T) {
 	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
 
 	if err != nil {
-		fmt.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
+		t.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). "+
+			"fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
 	}
 
 	fsc := FileSelectionCriteria{}
@@ -705,7 +724,8 @@ func TestFileHelper_FilterFileName_07(t *testing.T) {
 	isFound, err := fh.FilterFileName(fia, fsc)
 
 	if isFound {
-		t.Errorf("It was expected that this file would NOT be Found. Instead, it WAS found. Error! fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
+		t.Errorf("It was expected that this file would NOT be Found. Instead, it WAS found. "+
+			"Error! fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
 	}
 
 }
@@ -721,7 +741,8 @@ func TestFileHelper_FilterFileName_08(t *testing.T) {
 	fModTime, err := time.Parse(fmtstr, fModTimeStr)
 
 	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
+		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). "+
+			"fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
 	}
 
 	fia.SetModTime(fModTime)
@@ -738,7 +759,8 @@ func TestFileHelper_FilterFileName_08(t *testing.T) {
 	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
 
 	if err != nil {
-		fmt.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
+		t.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). "+
+			"fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
 	}
 
 	fsc := FileSelectionCriteria{}
@@ -752,7 +774,8 @@ func TestFileHelper_FilterFileName_08(t *testing.T) {
 	isFound, err := fh.FilterFileName(fia, fsc)
 
 	if isFound {
-		t.Errorf("Expected that File was NOT found. Instead, File WAS found - Error. fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
+		t.Errorf("Expected that File was NOT found. Instead, File WAS found - Error. "+
+			"fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
 	}
 
 }
@@ -768,7 +791,8 @@ func TestFileHelper_FilterFileName_09(t *testing.T) {
 	fModTime, err := time.Parse(fmtstr, fModTimeStr)
 
 	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
+		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). "+
+			"fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
 	}
 
 	fia.SetModTime(fModTime)
@@ -785,7 +809,8 @@ func TestFileHelper_FilterFileName_09(t *testing.T) {
 	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
 
 	if err != nil {
-		fmt.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
+		t.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). "+
+			"fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
 	}
 
 	fsc := FileSelectionCriteria{}
@@ -799,7 +824,8 @@ func TestFileHelper_FilterFileName_09(t *testing.T) {
 	isFound, err := fh.FilterFileName(fia, fsc)
 
 	if isFound {
-		t.Errorf("Expected that File was NOT found. Instead, File WAS found - Error. fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
+		t.Errorf("Expected that File was NOT found. Instead, File WAS found - Error. "+
+			"fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
 	}
 
 }
@@ -815,7 +841,8 @@ func TestFileHelper_FilterFileName_10(t *testing.T) {
 	fModTime, err := time.Parse(fmtstr, fModTimeStr)
 
 	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
+		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). "+
+			"fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
 	}
 
 	fia.SetModTime(fModTime)
@@ -830,7 +857,8 @@ func TestFileHelper_FilterFileName_10(t *testing.T) {
 	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
 
 	if err != nil {
-		fmt.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
+		t.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). "+
+			"fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
 	}
 
 	fsc := FileSelectionCriteria{}
@@ -844,7 +872,8 @@ func TestFileHelper_FilterFileName_10(t *testing.T) {
 	isFound, err := fh.FilterFileName(fia, fsc)
 
 	if isFound {
-		t.Errorf("Expected that File was NOT found. Instead, File WAS found - Error. fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
+		t.Errorf("Expected that File was NOT found. Instead, File WAS found - Error. "+
+			"fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
 	}
 
 }
@@ -860,7 +889,8 @@ func TestFileHelper_FilterFileName_11(t *testing.T) {
 	fModTime, err := time.Parse(fmtstr, fModTimeStr)
 
 	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
+		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). "+
+			"fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
 	}
 
 	fia.SetModTime(fModTime)
@@ -883,7 +913,8 @@ func TestFileHelper_FilterFileName_11(t *testing.T) {
 	isFound, err := fh.FilterFileName(fia, fsc)
 
 	if !isFound {
-		t.Errorf("Expected that File would be found. However, File WAS NOT found - Error. fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
+		t.Errorf("Expected that File would be found. However, File WAS NOT found - Error. "+
+			"fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
 	}
 
 }

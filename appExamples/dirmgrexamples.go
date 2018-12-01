@@ -1,25 +1,34 @@
 package appExamples
 
 import (
+	appLib "../appLibs"
+	pathFileOps "../pathfileops"
 	"fmt"
 	"time"
 )
 
-func WalkDirFindFiles(dMgr DirMgr, filePattern string, filesOlderThan, filesNewerThan time.Time) error {
+func WalkDirFindFiles(
+	dMgr pathFileOps.DirMgr,
+	filePattern string,
+	filesOlderThan, filesNewerThan time.Time) error {
 
-	du := DateTimeUtility{}
+	du := appLib.DateTimeUtility{}
 
-	fsc := FileSelectionCriteria{}
+	fsc := pathFileOps.FileSelectionCriteria{}
 
 	fsc.FileNamePatterns = []string{filePattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = pathFileOps.ANDFILESELECTCRITERION
 
 	dWalkInfo, err := dMgr.FindWalkDirFiles(fsc)
 
 	if err != nil {
-		return fmt.Errorf("Error returned from dMgr.FindWalkDirFiles(filePattern, filesOlderThan, filesNewerThan) filePattern='%v'  filesOlderThan='%v' filesNewerThan='%v' Error='%v' \n", filePattern, du.GetDateTimeYMDAbbrvDowNano(filesOlderThan), du.GetDateTimeYMDAbbrvDowNano(filesNewerThan), err.Error())
+		return fmt.Errorf("Error returned from dMgr.FindWalkDirFiles(filePattern, "+
+			"filesOlderThan, filesNewerThan) filePattern='%v'  filesOlderThan='%v' "+
+			"filesNewerThan='%v' Error='%v' \n",
+			filePattern, du.GetDateTimeYMDAbbrvDowNano(filesOlderThan),
+			du.GetDateTimeYMDAbbrvDowNano(filesNewerThan), err.Error())
 	}
 
 	PrintDirMgrFields(dMgr)
@@ -60,15 +69,15 @@ func WalkDirFindFiles(dMgr DirMgr, filePattern string, filesOlderThan, filesNewe
 	return nil
 }
 
-func WalkDirFindFiles2(dMgr DirMgr, filePattern string, filesOlderThan, filesNewerThan time.Time) error {
+func WalkDirFindFiles2(dMgr pathFileOps.DirMgr, filePattern string, filesOlderThan, filesNewerThan time.Time) error {
 
-	du := DateTimeUtility{}
-	fsc := FileSelectionCriteria{}
+	du := appLib.DateTimeUtility{}
+	fsc := pathFileOps.FileSelectionCriteria{}
 
 	fsc.FileNamePatterns = []string{filePattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = pathFileOps.ANDFILESELECTCRITERION
 
 	dWalkInfo, err := dMgr.FindWalkDirFiles(fsc)
 
@@ -114,8 +123,8 @@ func WalkDirFindFiles2(dMgr DirMgr, filePattern string, filesOlderThan, filesNew
 	return nil
 }
 
-func PrintDirMgrFields(dMgr DirMgr) {
-	du := DateTimeUtility{}
+func PrintDirMgrFields(dMgr pathFileOps.DirMgr) {
+	du := appLib.DateTimeUtility{}
 	fmt.Println("-----------------------------------------")
 	fmt.Println(" 	DirMgr Fields")
 	fmt.Println("-----------------------------------------")
@@ -142,7 +151,8 @@ func PrintDirMgrFields(dMgr DirMgr) {
 		fmt.Println("            File Info IsDir(): ", dMgr.ActualDirFileInfo.IsDir())
 		fmt.Println("             File Info Name(): ", dMgr.ActualDirFileInfo.Name())
 		fmt.Println("             File Info Size(): ", dMgr.ActualDirFileInfo.Size())
-		fmt.Println("          File Info ModTime(): ", du.GetDateTimeYMDAbbrvDowNano(dMgr.ActualDirFileInfo.ModTime()))
+		fmt.Println("          File Info ModTime(): ", du.GetDateTimeYMDAbbrvDowNano(
+			dMgr.ActualDirFileInfo.ModTime()))
 		fmt.Println("             File Info Mode(): ", dMgr.ActualDirFileInfo.Mode())
 		fmt.Println("          File Info     Sys(): ", dMgr.ActualDirFileInfo.Sys())
 		if dMgr.ActualDirFileInfo.IsDirPathInitialized {

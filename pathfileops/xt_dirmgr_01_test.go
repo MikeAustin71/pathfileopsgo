@@ -1,6 +1,7 @@
 package pathfileops
 
 import (
+	appLib "../appLibs"
 	"fmt"
 	"os"
 	"strings"
@@ -865,7 +866,7 @@ func DirMgr01TestCreateCheckFiles03DirFiles() (string, error) {
 		return "", fmt.Errorf(ePrefix+"Error returned from os.Create(newFile4). newFile4='%v' Error='%v' ", newFile4, err.Error())
 	}
 
-	du := DateTimeUtility{}
+	du := appLib.DateTimeUtility{}
 
 	_, err = fp4.WriteString(du.GetDateTimeYMDAbbrvDowNano(time.Now()))
 

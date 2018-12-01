@@ -1,4 +1,4 @@
-package pathfileops
+package appLibs
 
 import (
 	"errors"
@@ -26,7 +26,7 @@ func (su StringUtility) ReadStrNewLineFromBuffer(buff []byte, previousPartialStr
 	for i := startIdx; i <= lastIdx; i++ {
 
 		if buff[i] == '\n' {
-			return string(sOut), (i + 1), false
+			return string(sOut), i + 1, false
 		}
 
 		sOut = append(sOut, buff[i])

@@ -12,16 +12,14 @@ func TestFileHelper_GetFileExtension_01(t *testing.T) {
 
 	expectedExt := ".go"
 
-	expectedIsEmpty := false
-
 	result, isEmpty, err := fh.GetFileExtension(commonDir)
 
 	if err != nil {
 		t.Errorf("Error returned from fh.GetFileExtension(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
 	}
 
-	if isEmpty != expectedIsEmpty {
-		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if isEmpty != false {
+		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead isEmpty='%v' ", false, isEmpty)
 	}
 
 	if result != expectedExt {
@@ -36,20 +34,22 @@ func TestFileHelper_GetFileExtension_02(t *testing.T) {
 	commonDir := fh.AdjustPathSlash("xt_dirmgr_01_test.go")
 
 	expectedExt := ".go"
-	expectedIsEmpty := false
 
 	result, isEmpty, err := fh.GetFileExtension(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetFileExtension(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetFileExtension(commonDir). commonDir='%v' Error='%v'",
+			commonDir, err.Error())
 	}
 
-	if isEmpty != expectedIsEmpty {
-		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if isEmpty != false {
+		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead isEmpty='%v' ",
+			false, isEmpty)
 	}
 
 	if result != expectedExt {
-		t.Errorf("Expected GetFileExtension to return file extension == '%v'.  Instead file extension='%v' ", expectedExt, result)
+		t.Errorf("Expected GetFileExtension to return file extension == '%v'.  "+
+			"Instead file extension='%v' ", expectedExt, result)
 	}
 
 }
@@ -61,16 +61,16 @@ func TestFileHelper_GetFileExtension_03(t *testing.T) {
 
 	expectedExt := ""
 
-	expectedIsEmpty := true
-
 	result, isEmpty, err := fh.GetFileExtension(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetFileExtension(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetFileExtension(commonDir). commonDir='%v' Error='%v'",
+			commonDir, err.Error())
 	}
 
-	if expectedIsEmpty != isEmpty {
-		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead, isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if true != isEmpty {
+		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead, isEmpty='%v' ",
+			true, isEmpty)
 	}
 
 	if result != expectedExt {
@@ -86,16 +86,14 @@ func TestFileHelper_GetFileExtension_04(t *testing.T) {
 
 	expectedExt := ".go"
 
-	expectedIsEmpty := false
-
 	result, isEmpty, err := fh.GetFileExtension(commonDir)
 
 	if err != nil {
 		t.Errorf("Error returned from fh.GetFileExtension(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
 	}
 
-	if expectedIsEmpty != isEmpty {
-		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead, isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if false != isEmpty {
+		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead, isEmpty='%v' ", false, isEmpty)
 	}
 
 	if result != expectedExt {
@@ -111,20 +109,21 @@ func TestFileHelper_GetFileExtension_05(t *testing.T) {
 
 	expectedExt := ".go"
 
-	expectedIsEmpty := false
-
 	result, isEmpty, err := fh.GetFileExtension(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetFileExtension(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetFileExtension(commonDir). commonDir='%v' Error='%v'",
+			commonDir, err.Error())
 	}
 
-	if expectedIsEmpty != isEmpty {
-		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead, isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if false != isEmpty {
+		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead, isEmpty='%v' ",
+			false, isEmpty)
 	}
 
 	if result != expectedExt {
-		t.Errorf("Expected GetFileExtension to return result == '%v' for file extension. Instead result='%v' ", expectedExt, result)
+		t.Errorf("Expected GetFileExtension to return result == '%v' for file extension. "+
+			"Instead result='%v' ", expectedExt, result)
 	}
 
 }

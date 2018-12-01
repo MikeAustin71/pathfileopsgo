@@ -1,6 +1,8 @@
 package appExamples
 
 import (
+	appLib "../appLibs"
+	pathFileOps "../pathfileops"
 	"errors"
 	"fmt"
 	"time"
@@ -8,10 +10,10 @@ import (
 
 func ExampleExtractPathElements() {
 
-	fh := FileHelper{}
+	fh := pathFileOps.FileHelper{}
 	commonDir := fh.AdjustPathSlash("..\\..\\003_filehelper\\common\\xt_dirmgr_01_test.go")
 
-	fileMgr, err := FileMgr{}.New(commonDir)
+	fileMgr, err := pathFileOps.FileMgr{}.New(commonDir)
 
 	if err != nil {
 		panic(errors.New("ExampleExtractPathElements()- Error returned on fh.GetPathFileNameElements(), Error:" + err.Error()))
@@ -27,13 +29,14 @@ func ExampleExtractPathElements() {
 }
 
 func PathElementsAnalysis(pathFile string) {
-	fh := FileHelper{}
+	fh := pathFileOps.FileHelper{}
 	commonDir := fh.AdjustPathSlash(pathFile)
 
-	fMgr, err := FileMgr{}.New(commonDir)
+	fMgr, err := pathFileOps.FileMgr{}.New(commonDir)
 
 	if err != nil {
-		panic(errors.New("PathElementsAnalysis()- Error returned on fh.GetPathFileNameElements(), Error:" + err.Error()))
+		panic(errors.New("PathElementsAnalysis()- Error returned on fh.GetPathFileNameElements(), Error:" +
+			err.Error()))
 	}
 
 	fMgr2 := fMgr.CopyOut()
@@ -46,7 +49,7 @@ func PathElementsAnalysis(pathFile string) {
 
 }
 
-func PrintFileManagerFields(fileMgr FileMgr) {
+func PrintFileManagerFields(fileMgr pathFileOps.FileMgr) {
 
 	fmt.Println("======================================")
 	fmt.Println("            File Manager")
@@ -67,11 +70,11 @@ func PrintFileManagerFields(fileMgr FileMgr) {
 	PrintDirMgrFields(fileMgr.DMgr)
 }
 
-func PrintFileInfoPlusFields(info FileInfoPlus) {
+func PrintFileInfoPlusFields(info pathFileOps.FileInfoPlus) {
 	fmt.Println("======================================")
 	fmt.Println("            File Info Plus")
 	fmt.Println("======================================")
-	du := DateTimeUtility{}
+	du := appLib.DateTimeUtility{}
 	fmt.Println("  IsFInfoInitialized: ", info.IsFInfoInitialized)
 	fmt.Println("IsDirPathInitialized: ", info.IsDirPathInitialized)
 	fmt.Println("     CreateTimeStamp: ", du.GetDateTimeYMDAbbrvDowNano(info.CreateTimeStamp))
@@ -86,47 +89,62 @@ func PrintFileInfoPlusFields(info FileInfoPlus) {
 
 func CreateFileOnTopOfExistingFile() {
 	tstFile := "..//logTest//testoverwrite//TestOverwrite001.txt"
-	fMgr, err := FileMgr{}.New(tstFile)
+	fMgr, err := pathFileOps.FileMgr{}.New(tstFile)
+	ePrefix := "CreateFileOnTopOfExistingFile() "
 
 	if err != nil {
-		panic(fmt.Errorf("CreateFileOnTopOfExistingFile() - Error: FileMgr{}.New(tstFile) Failed. tstFile='%v' Error='%v'", tstFile, err.Error()))
+		_ = fMgr.CloseFile()
+		panic(fmt.Errorf(ePrefix+
+			"- Error: FileMgr{}.New(tstFile) Failed. tstFile='%v' Error='%v'",
+			tstFile, err.Error()))
 	}
 
 	if err != nil {
-		panic(errors.New(fmt.Sprintf("CreateFileOnTopOfExistingFile() Error Creating File: '%v' Error: %v", tstFile, err.Error())))
+		_ = fMgr.CloseFile()
+		panic(errors.New(fmt.Sprintf(ePrefix+
+			"Error Creating File: '%v' Error: %v", tstFile, err.Error())))
 	}
 
-	defer fMgr.CloseFile()
-
-	du := DateTimeUtility{}
+	du := appLib.DateTimeUtility{}
 	str := "Test Over Write Time Stamp: " + du.GetDateTimeEverything(time.Now())
-	fMgr.WriteStrToFile(str)
+	_, err = fMgr.WriteStrToFile(str)
+
+	if err != nil {
+		_ = fMgr.CloseFile()
+		panic(fmt.Errorf(ePrefix+" %v ", err.Error()))
+	}
+
+	err = fMgr.CloseFile()
+
+	if err != nil {
+		panic(fmt.Errorf(ePrefix+" %v ", err.Error()))
+	}
 
 }
 
 func ExampleReadTestFile() {
+
+	ePrefix := "ExampleReadTestFile() "
 	tstFile := "../testfiles/TestRead.txt"
 	tstOutFile := "../testfiles/Output.txt"
-	fh := FileHelper{}
+	fh := pathFileOps.FileHelper{}
 	f, err := fh.OpenFileForReading(tstFile)
 
 	if err != nil {
 		fmt.Printf("Error Opening file: %v\n", tstFile)
 	}
 
-	defer f.Close()
-
 	fOut, err2 := fh.CreateFile(tstOutFile)
 
 	if err2 != nil {
-		fmt.Printf("Error Opening file: %v\n", tstOutFile)
+		_ = f.Close()
+		fmt.Printf(ePrefix+"Error Opening file: %v\n", tstOutFile)
+		return
 	}
-
-	defer fOut.Close()
 
 	buffer := make([]byte, 50000)
 	doRead := true
-	su := StringUtility{}
+	su := appLib.StringUtility{}
 	strCnt := 0
 	partialString := ""
 
@@ -144,11 +162,26 @@ func ExampleReadTestFile() {
 			if !isPartialString {
 				strCnt++
 
-				fh.WriteFileStr(fmt.Sprintf("%07d- %s\n", strCnt, s), fOut)
+				_, err = fh.WriteFileStr(fmt.Sprintf("%07d- %s\n", strCnt, s), fOut)
+
+				if err != nil {
+					_ = f.Close()
+					_ = fOut.Close()
+					fmt.Printf(ePrefix+"Error Writhing File Str #1: %v\n", err.Error())
+					return
+				}
 
 			} else {
 				partialString = s
-				fh.WriteFileStr(fmt.Sprintf("******* Partial String %07d- %s **********\n", strCnt, s), fOut)
+				_, err = fh.WriteFileStr(fmt.Sprintf("******* Partial String %07d- %s **********\n", strCnt, s), fOut)
+
+				if err != nil {
+					_ = f.Close()
+					_ = fOut.Close()
+					fmt.Printf(ePrefix+"Error Writing File Str #2: %v\n", err.Error())
+					return
+				}
+
 			}
 
 			if nIdx == -1 {
@@ -162,6 +195,9 @@ func ExampleReadTestFile() {
 		}
 
 	}
+
+	_ = f.Close()
+	_ = fOut.Close()
 
 	fmt.Println("Completed File Read and output to output file: ", tstOutFile)
 }
