@@ -1,7 +1,7 @@
 package pathfileops
 
 import (
-	appLib "../appLibs"
+	appLib "MikeAustin71/pathfileopsgo/appLibs"
 	"fmt"
 	"os"
 	"strings"

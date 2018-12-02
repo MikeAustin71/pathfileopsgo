@@ -132,7 +132,7 @@ func (fip *FileInfoPlus) CopyOut() FileInfoPlus {
 
 // DirPath - Returns the directory path. This field, FileInfoPlus.dirPath,
 // is not part of the standard FileInfo interface.
-func (fip FileInfoPlus) DirPath() string {
+func (fip *FileInfoPlus) DirPath() string {
 	return fip.dirPath
 }
 
@@ -144,9 +144,32 @@ func (fip *FileInfoPlus) Equal(fip2 *FileInfoPlus) bool {
 		fip.Size() != fip2.Size() ||
 		fip.Mode() != fip2.Mode() ||
 		fip.ModTime() != fip2.ModTime() ||
-		fip.IsDir() != fip2.IsDir() ||
-		fip.Sys() != fip2.Sys() ||
-		fip.DirPath() != fip2.DirPath() {
+		fip.IsDir() != fip2.IsDir() {
+
+		return false
+	}
+
+	if fip.DirPath() != fip2.DirPath() {
+		return false
+	}
+
+	if fip.Sys() == nil && fip2.Sys() == nil {
+		return true
+	}
+
+	if fip.Sys() == nil && fip2.Sys() != nil {
+		return false
+	}
+
+	if fip.Sys() != nil && fip2.Sys() == nil {
+		return false
+	}
+
+	strFipSys := fmt.Sprintf("%v", fip.Sys())
+	strFip2Sys := fmt.Sprintf("%v", fip2.Sys())
+
+	if strFipSys != strFip2Sys {
+
 		return false
 	}
 
@@ -3151,7 +3174,8 @@ func (fh FileHelper) MakeAbsolutePath(relPath string) (string, error) {
 	testRelPath := fh.AdjustPathSlash(relPath)
 
 	if len(testRelPath) == 0 {
-		return "", errors.New(ePrefix + "Error: Input Parameter 'relPath' adjusted for Path Separators is an EMPTY string!")
+		return "", errors.New(ePrefix +
+			"Error: Input Parameter 'relPath' adjusted for Path Separators is an EMPTY string!")
 	}
 
 	p, err := fp.Abs(testRelPath)

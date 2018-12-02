@@ -23,11 +23,10 @@ func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
 		t.Errorf("Error returned from fMgr.OpenThisFileReadOnly(). filePath='%v'  Error='%v'", filePath, err.Error())
 	}
 
-	defer fMgr.CloseFile()
-
 	b, err := ioutil.ReadAll(fMgr.FilePtr)
 
 	if err != nil {
+		_ = fMgr.CloseFile()
 		t.Errorf("Error returned from ioutil.ReadAll(fMgr.FilePtr) filePath='%v'  Error='%v'", filePath, err.Error())
 		return
 	}
@@ -39,6 +38,8 @@ func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
 	if expectedStr != actualStr {
 		t.Errorf("Expected Read String='%v'. Instead, Actual Read String='%v'", expectedStr, actualStr)
 	}
+
+	_ = fMgr.CloseFile()
 
 }
 
@@ -56,15 +57,19 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
 	err = fMgr.OpenThisFileReadWrite()
 
 	if err != nil {
-		t.Errorf("Error returned from fMgr.OpenThisFileReadOnly(). filePath='%v'  Error='%v'", filePath, err.Error())
-	}
 
-	defer fMgr.CloseFile()
+		t.Errorf("Error returned from fMgr.OpenThisFileReadOnly(). filePath='%v'  Error='%v'", filePath, err.Error())
+		return
+	}
 
 	b, err := ioutil.ReadAll(fMgr.FilePtr)
 
 	if err != nil {
+
+		_ = fMgr.CloseFile()
+
 		t.Errorf("Error returned from ioutil.ReadAll(fMgr.FilePtr) filePath='%v'  Error='%v'", filePath, err.Error())
+
 		return
 	}
 
@@ -73,8 +78,14 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
 	expectedStr := "Test Read File. Do NOT alter the contents of this file."
 
 	if expectedStr != actualStr {
+
+		_ = fMgr.CloseFile()
+
 		t.Errorf("Expected Read String='%v'. Instead, Actual Read String='%v'", expectedStr, actualStr)
+		return
 	}
+
+	_ = fMgr.CloseFile()
 
 }
 
@@ -97,8 +108,6 @@ func TestFileMgr_ReadFileBytes_01(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error returned from fMgr.ReadFileBytes(byteBuff). filePath='%v'  Error='%v'", filePath, err.Error())
 	}
-
-	defer fMgr.CloseFile()
 
 	var rStr = make([]rune, 0, 2048)
 
@@ -124,6 +133,8 @@ func TestFileMgr_ReadFileBytes_01(t *testing.T) {
 	if expectedBytesRead != bytesRead {
 		t.Errorf("Expected Bytes Read='%v'.  Instead, Actual Bytes Read='%v'", expectedBytesRead, bytesRead)
 	}
+
+	_ = fMgr.CloseFile()
 
 }
 

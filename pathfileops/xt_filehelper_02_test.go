@@ -135,16 +135,14 @@ func TestFileHelper_GetFileExtension_06(t *testing.T) {
 
 	expectedExt := ""
 
-	expectedIsEmpty := true
-
 	result, isEmpty, err := fh.GetFileExtension(commonDir)
 
 	if err != nil {
 		t.Errorf("Error returned from fh.GetFileExtension(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
 	}
 
-	if expectedIsEmpty != isEmpty {
-		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead, isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if true != isEmpty {
+		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead, isEmpty='%v' ", true, isEmpty)
 	}
 
 	if result != expectedExt {
@@ -160,16 +158,14 @@ func TestFileHelper_GetFileExtension_07(t *testing.T) {
 
 	expectedExt := ".go"
 
-	expectedIsEmpty := false
-
 	result, isEmpty, err := fh.GetFileExtension(commonDir)
 
 	if err != nil {
 		t.Errorf("Error returned from fh.GetFileExtension(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
 	}
 
-	if expectedIsEmpty != isEmpty {
-		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead, isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if false != isEmpty {
+		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead, isEmpty='%v' ", false, isEmpty)
 	}
 
 	if result != expectedExt {
@@ -185,16 +181,14 @@ func TestFileHelper_GetFileExtension_08(t *testing.T) {
 
 	expectedExt := ".go"
 
-	expectedIsEmpty := false
-
 	result, isEmpty, err := fh.GetFileExtension(commonDir)
 
 	if err != nil {
 		t.Errorf("Error returned from fh.GetFileExtension(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
 	}
 
-	if expectedIsEmpty != isEmpty {
-		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead, isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if false != isEmpty {
+		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead, isEmpty='%v' ", false, isEmpty)
 	}
 
 	if result != expectedExt {
@@ -210,16 +204,16 @@ func TestFileHelper_GetFileExtension_09(t *testing.T) {
 
 	expectedExt := ""
 
-	expectedIsEmpty := true
-
 	result, isEmpty, err := fh.GetFileExtension(commonDir)
 
 	if err == nil {
-		t.Errorf("Expected an error to be returned from fh.GetFileExtension(commonDir). commonDir='%v' NO Error was returned!", commonDir)
+		t.Errorf("Expected an error to be returned from fh.GetFileExtension(commonDir). "+
+			"commonDir='%v' NO Error was returned!", commonDir)
 	}
 
-	if expectedIsEmpty != isEmpty {
-		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead, isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if true != isEmpty {
+		t.Errorf("Expected GetFileExtension isEmpty=='%v'. Instead, isEmpty='%v' ",
+			true, isEmpty)
 	}
 
 	if result != expectedExt {
@@ -233,20 +227,21 @@ func TestFileHelper_GetFileNameWithExt_01(t *testing.T) {
 
 	commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
 	expectedFNameExt := "xt_dirmgr_01_test.go"
-	expectedIsEmpty := false
 
 	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'",
+			commonDir, err.Error())
 	}
 
-	if isEmpty != expectedIsEmpty {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if isEmpty != false {
+		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
 	}
 
 	if expectedFNameExt != fNameExt {
-		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ", expectedFNameExt, fNameExt)
+		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
+			expectedFNameExt, fNameExt)
 	}
 
 }
@@ -256,7 +251,6 @@ func TestFileHelper_GetFileNameWithExt_02(t *testing.T) {
 
 	commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\dirmgr_test")
 	expectedFNameExt := "dirmgr_test"
-	expectedIsEmpty := false
 
 	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
 
@@ -264,8 +258,8 @@ func TestFileHelper_GetFileNameWithExt_02(t *testing.T) {
 		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
 	}
 
-	if isEmpty != expectedIsEmpty {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if isEmpty != false {
+		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
 	}
 
 	if expectedFNameExt != fNameExt {
@@ -279,16 +273,17 @@ func TestFileHelper_GetFileNameWithExt_03(t *testing.T) {
 
 	commonDir := fh.AdjustPathSlash("F:\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
 	expectedFNameExt := "xt_dirmgr_01_test.go"
-	expectedIsEmpty := false
 
 	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'",
+			commonDir, err.Error())
 	}
 
-	if isEmpty != expectedIsEmpty {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if isEmpty != false {
+		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ",
+			false, isEmpty)
 	}
 
 	if expectedFNameExt != fNameExt {
@@ -302,7 +297,6 @@ func TestFileHelper_GetFileNameWithExt_04(t *testing.T) {
 
 	commonDir := fh.AdjustPathSlash("F:\\pathfilego\\003_filehelper\\common\\dirmgr_test")
 	expectedFNameExt := "dirmgr_test"
-	expectedIsEmpty := false
 
 	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
 
@@ -310,8 +304,8 @@ func TestFileHelper_GetFileNameWithExt_04(t *testing.T) {
 		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
 	}
 
-	if isEmpty != expectedIsEmpty {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if isEmpty != false {
+		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
 	}
 
 	if expectedFNameExt != fNameExt {
@@ -325,20 +319,22 @@ func TestFileHelper_GetFileNameWithExt_05(t *testing.T) {
 
 	commonDir := fh.AdjustPathSlash("F:\\pathfilego\\003_filehelper\\common\\")
 	expectedFNameExt := ""
-	expectedIsEmpty := true
 
 	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'",
+			commonDir, err.Error())
 	}
 
-	if isEmpty != expectedIsEmpty {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if isEmpty != true {
+		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ",
+			true, isEmpty)
 	}
 
 	if expectedFNameExt != fNameExt {
-		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ", expectedFNameExt, fNameExt)
+		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
+			expectedFNameExt, fNameExt)
 	}
 
 }
@@ -348,20 +344,21 @@ func TestFileHelper_GetFileNameWithExt_06(t *testing.T) {
 
 	commonDir := fh.AdjustPathSlash("xt_dirmgr_01_test.go")
 	expectedFNameExt := "xt_dirmgr_01_test.go"
-	expectedIsEmpty := false
 
 	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'",
+			commonDir, err.Error())
 	}
 
-	if isEmpty != expectedIsEmpty {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if isEmpty != false {
+		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
 	}
 
 	if expectedFNameExt != fNameExt {
-		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ", expectedFNameExt, fNameExt)
+		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
+			expectedFNameExt, fNameExt)
 	}
 
 }
@@ -371,20 +368,21 @@ func TestFileHelper_GetFileNameWithExt_07(t *testing.T) {
 
 	commonDir := fh.AdjustPathSlash("dirmgr_test")
 	expectedFNameExt := "dirmgr_test"
-	expectedIsEmpty := false
 
 	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'",
+			commonDir, err.Error())
 	}
 
-	if isEmpty != expectedIsEmpty {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if isEmpty != false {
+		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
 	}
 
 	if expectedFNameExt != fNameExt {
-		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ", expectedFNameExt, fNameExt)
+		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
+			expectedFNameExt, fNameExt)
 	}
 
 }
@@ -394,20 +392,21 @@ func TestFileHelper_GetFileNameWithExt_08(t *testing.T) {
 
 	commonDir := fh.AdjustPathSlash(".go")
 	expectedFNameExt := ""
-	expectedIsEmpty := true
 
 	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
 
 	if err == nil {
-		t.Errorf("Expected error returned from fh.GetFileNameWithExt(commonDir). Instead, NO ERROR was returned. commonDir='%v'  ", commonDir)
+		t.Errorf("Expected error returned from fh.GetFileNameWithExt(commonDir). "+
+			"Instead, NO ERROR was returned. commonDir='%v'  ", commonDir)
 	}
 
-	if isEmpty != expectedIsEmpty {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if isEmpty != true {
+		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", true, isEmpty)
 	}
 
 	if expectedFNameExt != fNameExt {
-		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ", expectedFNameExt, fNameExt)
+		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
+			expectedFNameExt, fNameExt)
 	}
 
 }
@@ -417,7 +416,6 @@ func TestFileHelper_GetFileNameWithExt_09(t *testing.T) {
 
 	commonDir := fh.AdjustPathSlash("")
 	expectedFNameExt := ""
-	expectedIsEmpty := true
 
 	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
 
@@ -425,8 +423,8 @@ func TestFileHelper_GetFileNameWithExt_09(t *testing.T) {
 		t.Errorf("Error error returned from fh.GetFileNameWithExt(commonDir). Result- commonDir='%v' No Error Returned!", commonDir)
 	}
 
-	if isEmpty != expectedIsEmpty {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if isEmpty != true {
+		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", true, isEmpty)
 	}
 
 	if expectedFNameExt != fNameExt {
@@ -487,7 +485,7 @@ func TestFileHelper_GetFileNameWithoutExt_01(t *testing.T) {
 	fh := FileHelper{}
 
 	commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
-	expectedFileName := "dirmgr_01_test"
+	expectedFileName := "xt_dirmgr_01_test"
 
 	result, isEmpty, err := fh.GetFileNameWithoutExt(commonDir)
 
@@ -532,20 +530,22 @@ func TestFileHelper_GetFileNameWithoutExt_03(t *testing.T) {
 
 	commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\")
 	expectedFileName := ""
-	expectedIsEmpty := true
 
 	result, isEmpty, err := fh.GetFileNameWithoutExt(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetFileNameWithoutExt(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetFileNameWithoutExt(commonDir). "+
+			"commonDir='%v' Error='%v'", commonDir, err.Error())
 	}
 
-	if expectedIsEmpty != isEmpty {
-		t.Errorf("Expected GetFileNameWithoutExt isEmpty='%v', instead got: ", isEmpty)
+	if true != isEmpty {
+		t.Errorf("Expected GetFileNameWithoutExt isEmpty='%v', instead got %v ",
+			true, isEmpty)
 	}
 
 	if result != expectedFileName {
-		t.Errorf("Expected GetFileExtension to return result == '%v' for valid file name, instead got: %v", expectedFileName, result)
+		t.Errorf("Expected GetFileExtension to return result == '%v' for valid file name, "+
+			"instead got: %v", expectedFileName, result)
 	}
 
 }
@@ -554,7 +554,7 @@ func TestFileHelper_GetFileNameWithoutExt_04(t *testing.T) {
 	fh := FileHelper{}
 
 	commonDir := fh.AdjustPathSlash("xt_dirmgr_01_test.go")
-	expectedFileName := "dirmgr_01_test"
+	expectedFileName := "xt_dirmgr_01_test"
 
 	result, isEmpty, err := fh.GetFileNameWithoutExt(commonDir)
 
@@ -577,20 +577,22 @@ func TestFileHelper_GetFileNameWithoutExt_05(t *testing.T) {
 
 	commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\")
 	expectedFileName := ""
-	expectedIsEmpty := true
 
 	result, isEmpty, err := fh.GetFileNameWithoutExt(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetFileNameWithoutExt(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetFileNameWithoutExt(commonDir). commonDir='%v' Error='%v'",
+			commonDir, err.Error())
 	}
 
-	if expectedIsEmpty != isEmpty {
-		t.Errorf("Expected GetFileNameWithoutExt isEmpty='%v'. Instead isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if true != isEmpty {
+		t.Errorf("Expected GetFileNameWithoutExt isEmpty='%v'. Instead isEmpty='%v' ",
+			true, isEmpty)
 	}
 
 	if result != expectedFileName {
-		t.Errorf("Expected GetFileExtension to return result == '%v' for valid file name, instead got: %v", expectedFileName, result)
+		t.Errorf("Expected GetFileExtension to return result == '%v' for valid file name, "+
+			"instead got: %v", expectedFileName, result)
 	}
 
 }
@@ -600,20 +602,22 @@ func TestFileHelper_GetFileNameWithoutExt_06(t *testing.T) {
 
 	commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
 	expectedFileName := "common"
-	expectedIsEmpty := false
 
 	result, isEmpty, err := fh.GetFileNameWithoutExt(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetFileNameWithoutExt(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetFileNameWithoutExt(commonDir). commonDir='%v' Error='%v'",
+			commonDir, err.Error())
 	}
 
-	if expectedIsEmpty != isEmpty {
-		t.Errorf("Expected GetFileNameWithoutExt isEmpty='%v'. Instead isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if false != isEmpty {
+		t.Errorf("Expected GetFileNameWithoutExt isEmpty='%v'. Instead isEmpty='%v' ",
+			false, isEmpty)
 	}
 
 	if result != expectedFileName {
-		t.Errorf("Expected GetFileExtension to return result == '%v' for valid file name, instead got: %v", expectedFileName, result)
+		t.Errorf("Expected GetFileExtension to return result == '%v' for valid file name, "+
+			"instead got: %v", expectedFileName, result)
 	}
 
 }
@@ -694,20 +698,20 @@ func TestFileHelper_GetPathFromPathFileName_04(t *testing.T) {
 
 	expectedDir := fh.AdjustPathSlash("D:\\go\\work\\src\\MikeAustin71\\pathfilego\\003_filehelper\\common")
 
-	expectedIsEmpty := false
-
 	result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'",
+			commonDir, err.Error())
 	}
 
-	if isEmpty != expectedIsEmpty {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if isEmpty != false {
+		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
 	}
 
 	if result != expectedDir {
-		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file name. Instead path=='%v' ", expectedDir, result)
+		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file name. "+
+			"Instead path=='%v' ", expectedDir, result)
 	}
 
 }
@@ -719,20 +723,20 @@ func TestFileHelper_GetPathFromPathFileName_05(t *testing.T) {
 
 	expectedDir := fh.AdjustPathSlash("")
 
-	expectedIsEmpty := true
-
 	result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
 
 	if err != nil {
-		t.Errorf("Expected no error returned from fh.GetPathFromPathFileName(commonDir). Instead an error WAS Returned. commonDir='%v' Error='%v'", commonDir, err.Error())
+		t.Errorf("Expected no error returned from fh.GetPathFromPathFileName(commonDir). "+
+			"Instead an error WAS Returned. commonDir='%v' Error='%v'", commonDir, err.Error())
 	}
 
-	if isEmpty != expectedIsEmpty {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if isEmpty != true {
+		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", true, isEmpty)
 	}
 
 	if result != expectedDir {
-		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file name. Instead path=='%v' ", expectedDir, result)
+		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file name. "+
+			"Instead path=='%v' ", expectedDir, result)
 	}
 
 }
@@ -747,15 +751,18 @@ func TestFileHelper_GetPathFromPathFileName_06(t *testing.T) {
 	result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). "+
+			"commonDir='%v' Error='%v'", commonDir, err.Error())
 	}
 
 	if isEmpty != false {
-		t.Errorf("Expected isEmpty GetPathFromPathFileName for valid file extension to return 'false', instead isEmpty='%v' ", isEmpty)
+		t.Errorf("Expected isEmpty GetPathFromPathFileName for valid file extension to return "+
+			"'false', instead isEmpty='%v' ", isEmpty)
 	}
 
 	if result != expectedDir {
-		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid pathn/file name, instead got: %v", expectedDir, result)
+		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid pathn/file "+
+			"name, instead got: %v", expectedDir, result)
 	}
 
 }
@@ -767,20 +774,21 @@ func TestFileHelper_GetPathFromPathFileName_07(t *testing.T) {
 
 	expectedDir := "."
 
-	expectedIsEmpty := false
-
 	result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). "+
+			"commonDir='%v' Error='%v'", commonDir, err.Error())
 	}
 
-	if expectedIsEmpty != isEmpty {
-		t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if false != isEmpty {
+		t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ",
+			false, isEmpty)
 	}
 
 	if result != expectedDir {
-		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid pathn/file name, instead got: %v", expectedDir, result)
+		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid pathn/file "+
+			"name, instead got: %v", expectedDir, result)
 	}
 
 }
@@ -792,20 +800,21 @@ func TestFileHelper_GetPathFromPathFileName_08(t *testing.T) {
 
 	expectedDir := fh.AdjustPathSlash(".")
 
-	expectedIsEmpty := false
-
 	result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' "+
+			"Error='%v'", commonDir, err.Error())
 	}
 
-	if expectedIsEmpty != isEmpty {
-		t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if false != isEmpty {
+		t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ",
+			false, isEmpty)
 	}
 
 	if result != expectedDir {
-		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file name, instead got: %v", expectedDir, result)
+		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid "+
+			"path/file name, instead got: %v", expectedDir, result)
 	}
 
 }
@@ -817,20 +826,21 @@ func TestFileHelper_GetPathFromPathFileName_09(t *testing.T) {
 
 	expectedDir := fh.AdjustPathSlash("..")
 
-	expectedIsEmpty := false
-
 	result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'",
+			commonDir, err.Error())
 	}
 
-	if expectedIsEmpty != isEmpty {
-		t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if false != isEmpty {
+		t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ",
+			false, isEmpty)
 	}
 
 	if result != expectedDir {
-		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file name, instead got: %v", expectedDir, result)
+		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file "+
+			"name, instead got: %v", expectedDir, result)
 	}
 
 }
@@ -842,20 +852,21 @@ func TestFileHelper_GetPathFromPathFileName_10(t *testing.T) {
 
 	expectedDir := fh.AdjustPathSlash("")
 
-	expectedIsEmpty := true
-
 	result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
 
 	if err == nil {
-		t.Errorf("Expected error to be returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' No Error Returned!", commonDir)
+		t.Errorf("Expected error to be returned from fh.GetPathFromPathFileName(commonDir). "+
+			"commonDir='%v' No Error Returned!", commonDir)
 	}
 
-	if expectedIsEmpty != isEmpty {
-		t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if true != isEmpty {
+		t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ",
+			true, isEmpty)
 	}
 
 	if result != expectedDir {
-		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid pathn/file name, instead got: %v", expectedDir, result)
+		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid pathn/file"+
+			"name, instead got: %v", expectedDir, result)
 	}
 
 }
@@ -867,20 +878,21 @@ func TestFileHelper_GetPathFromPathFileName_11(t *testing.T) {
 
 	expectedDir := fh.AdjustPathSlash("../../..")
 
-	expectedIsEmpty := false
-
 	result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'",
+			commonDir, err.Error())
 	}
 
-	if expectedIsEmpty != isEmpty {
-		t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if false != isEmpty {
+		t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ",
+			false, isEmpty)
 	}
 
 	if result != expectedDir {
-		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file name, instead got: %v", expectedDir, result)
+		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file "+
+			"name, instead got: %v", expectedDir, result)
 	}
 
 }
@@ -892,20 +904,20 @@ func TestFileHelper_GetPathFromPathFileName_12(t *testing.T) {
 
 	expectedDir := fh.AdjustPathSlash(".")
 
-	expectedIsEmpty := false
-
 	result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
 
 	if err != nil {
-		t.Errorf("Expected no error returned from fh.GetPathFromPathFileName(commonDir). Instead an error WAS Returned. commonDir='%v' Error='%v'", commonDir, err.Error())
+		t.Errorf("Expected no error returned from fh.GetPathFromPathFileName(commonDir). "+
+			"Instead an error WAS Returned. commonDir='%v' Error='%v'", commonDir, err.Error())
 	}
 
-	if isEmpty != expectedIsEmpty {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", expectedIsEmpty, isEmpty)
+	if isEmpty != false {
+		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
 	}
 
 	if result != expectedDir {
-		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file name. Instead path=='%v' ", expectedDir, result)
+		t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file"+
+			"name. Instead path=='%v' ", expectedDir, result)
 	}
 
 }
@@ -920,24 +932,26 @@ func TestFileHelper_GetPathAndFileNameExt_01(t *testing.T) {
 
 	expectedFileNameExt := "xt_dirmgr_01_test.go"
 
-	expectedAreBothEmpty := false
-
 	pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetPathAndFileNameExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetPathAndFileNameExt(commonDir). commonDir='%v' "+
+			"Error='%v'", commonDir, err.Error())
 	}
 
-	if expectedAreBothEmpty != bothAreEmpty {
-		t.Errorf("Expected GetPathAndFileNameExt bothAreEmpty='%v'. Instead, bothAreEmpty='%v' ", expectedAreBothEmpty, bothAreEmpty)
+	if false != bothAreEmpty {
+		t.Errorf("Expected GetPathAndFileNameExt bothAreEmpty='%v'. Instead, bothAreEmpty='%v' ",
+			false, bothAreEmpty)
 	}
 
 	if pathDir != expectedDir {
-		t.Errorf("Expected GetPathAndFileNameExt to return path == '%v'. Instead, path== '%v' ", expectedDir, pathDir)
+		t.Errorf("Expected GetPathAndFileNameExt to return path == '%v'. "+
+			"Instead, path== '%v' ", expectedDir, pathDir)
 	}
 
 	if fileNameExt != expectedFileNameExt {
-		t.Errorf("Expected GetPathAndFileNameExt to return fileNameExt == '%v'. Instead, fileNameExt == '%v' ", expectedFileNameExt, fileNameExt)
+		t.Errorf("Expected GetPathAndFileNameExt to return fileNameExt == '%v'. Instead, "+
+			"fileNameExt == '%v' ", expectedFileNameExt, fileNameExt)
 	}
 
 }
@@ -952,24 +966,26 @@ func TestFileHelper_GetPathAndFileNameExt_02(t *testing.T) {
 
 	expectedFileNameExt := ""
 
-	expectedAreBothEmpty := false
-
 	pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetPathAndFileNameExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetPathAndFileNameExt(commonDir). commonDir='%v'  Error='%v'",
+			commonDir, err.Error())
 	}
 
-	if expectedAreBothEmpty != bothAreEmpty {
-		t.Errorf("Expected GetPathAndFileNameExt bothAreEmpty='%v'. Instead, bothAreEmpty='%v' ", expectedAreBothEmpty, bothAreEmpty)
+	if false != bothAreEmpty {
+		t.Errorf("Expected GetPathAndFileNameExt bothAreEmpty='%v'. Instead, bothAreEmpty='%v' ",
+			false, bothAreEmpty)
 	}
 
 	if pathDir != expectedDir {
-		t.Errorf("Expected GetPathAndFileNameExt to return path == '%v'. Instead, path== '%v' ", expectedDir, pathDir)
+		t.Errorf("Expected GetPathAndFileNameExt to return path == '%v'. Instead, path== '%v' ",
+			expectedDir, pathDir)
 	}
 
 	if fileNameExt != expectedFileNameExt {
-		t.Errorf("Expected GetPathAndFileNameExt to return fileNameExt == '%v'. Instead, fileNameExt == '%v' ", expectedFileNameExt, fileNameExt)
+		t.Errorf("Expected GetPathAndFileNameExt to return fileNameExt == '%v'. Instead, "+
+			"fileNameExt == '%v' ", expectedFileNameExt, fileNameExt)
 	}
 
 }
@@ -984,24 +1000,26 @@ func TestFileHelper_GetPathAndFileNameExt_03(t *testing.T) {
 
 	expectedFileNameExt := "dirmgr_test"
 
-	expectedAreBothEmpty := false
-
 	pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetPathAndFileNameExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned from fh.GetPathAndFileNameExt(commonDir). commonDir='%v'  "+
+			"Error='%v'", commonDir, err.Error())
 	}
 
-	if expectedAreBothEmpty != bothAreEmpty {
-		t.Errorf("Expected GetPathAndFileNameExt bothAreEmpty='%v'. Instead, bothAreEmpty='%v' ", expectedAreBothEmpty, bothAreEmpty)
+	if false != bothAreEmpty {
+		t.Errorf("Expected GetPathAndFileNameExt bothAreEmpty='%v'. Instead, bothAreEmpty='%v' ",
+			false, bothAreEmpty)
 	}
 
 	if pathDir != expectedDir {
-		t.Errorf("Expected GetPathAndFileNameExt to return path == '%v'. Instead, path== '%v' ", expectedDir, pathDir)
+		t.Errorf("Expected GetPathAndFileNameExt to return path == '%v'. Instead, path== '%v' ",
+			expectedDir, pathDir)
 	}
 
 	if fileNameExt != expectedFileNameExt {
-		t.Errorf("Expected GetPathAndFileNameExt to return fileNameExt == '%v'. Instead, fileNameExt == '%v' ", expectedFileNameExt, fileNameExt)
+		t.Errorf("Expected GetPathAndFileNameExt to return fileNameExt == '%v'. Instead, "+
+			"fileNameExt == '%v' ", expectedFileNameExt, fileNameExt)
 	}
 
 }
@@ -1016,16 +1034,14 @@ func TestFileHelper_GetPathAndFileNameExt_04(t *testing.T) {
 
 	expectedFileNameExt := "xt_dirmgr_01_test.go"
 
-	expectedAreBothEmpty := false
-
 	pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt(commonDir)
 
 	if err != nil {
 		t.Errorf("Error returned from fh.GetPathAndFileNameExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
 	}
 
-	if expectedAreBothEmpty != bothAreEmpty {
-		t.Errorf("Expected GetPathAndFileNameExt bothAreEmpty='%v'. Instead, bothAreEmpty='%v' ", expectedAreBothEmpty, bothAreEmpty)
+	if false != bothAreEmpty {
+		t.Errorf("Expected GetPathAndFileNameExt bothAreEmpty='%v'. Instead, bothAreEmpty='%v' ", false, bothAreEmpty)
 	}
 
 	if pathDir != expectedDir {

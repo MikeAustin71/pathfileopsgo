@@ -1,6 +1,7 @@
 package pathfileops
 
 import (
+	appLib "MikeAustin71/pathfileopsgo/appLibs"
 	"errors"
 	"fmt"
 	"io"
@@ -263,7 +264,7 @@ func createTargetDir() error {
 		return err4
 	}
 
-	nowTime := DateTimeUtility{}.GetDateTimeNanoSecText(time.Now().Local())
+	nowTime := appLib.DateTimeUtility{}.GetDateTimeNanoSecText(time.Now().Local())
 
 	_, err5 := f.WriteString("Sample Write - " + nowTime + "\n")
 

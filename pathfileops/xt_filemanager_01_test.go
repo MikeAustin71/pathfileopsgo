@@ -12,7 +12,7 @@ func TestFileMgr_CopyOut_01(t *testing.T) {
 
 	commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
 	expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
-	fileName := "dirmgr_01_test"
+	fileName := "xt_dirmgr_01_test"
 	fileNameExt := "xt_dirmgr_01_test.go"
 	extName := ".go"
 
@@ -346,7 +346,7 @@ func TestFileMgr_New_01(t *testing.T) {
 	fh := FileHelper{}
 
 	commonDir := fh.AdjustPathSlash(".\\xt_dirmgr_01_test.go")
-	fileName := "dirmgr_01_test"
+	fileName := "xt_dirmgr_01_test"
 	fileNameExt := "xt_dirmgr_01_test.go"
 	extName := ".go"
 
@@ -392,34 +392,40 @@ func TestFileMgr_New_01(t *testing.T) {
 
 func TestFileMgr_New_02(t *testing.T) {
 
-	path := ".\\filehelperexamples.go"
+	path := "../appExamples/filehelperexamples.go"
 
 	eFileNameExt := "filehelperexamples.go"
 
 	fileMgr, err := FileMgr{}.New(path)
 
 	if err != nil {
-		t.Error("Error returned from FileHelper:GetPathFileNameElements() path== 'xt_dirmgr_01_test.go' Error: ", err)
+		t.Errorf("Error returned from FileMgr{}.New(path) "+
+			"path== '%v' Error: %v", path, err)
 	}
 
-	if fileMgr.FileNameExt != eFileNameExt {
-		t.Error(fmt.Sprintf("Expected extracted FileNameExt == %v, instead got: ", path), fileMgr.FileNameExt)
+	if eFileNameExt != fileMgr.FileNameExt {
+		t.Errorf("Expected extracted FileNameExt == %v, instead got: %v",
+			eFileNameExt, fileMgr.FileNameExt)
 	}
 
 	if fileMgr.FileName != "filehelperexamples" {
-		t.Error("Expected fileMgr.FileName== 'dirmgr_test', instead got: fileMgr.FileName==", fileMgr.FileName)
+		t.Errorf("Expected fileMgr.FileName== 'filehelperexamples', "+
+			"instead got: fileMgr.FileName== %v", fileMgr.FileName)
 	}
 
 	if fileMgr.FileExt != ".go" {
-		t.Error("Expected fileMgr.FileExt== '.go', instead got: fileMgr.FileExt==", fileMgr.FileName)
+		t.Errorf("Expected fileMgr.FileExt== '.go', instead got: fileMgr.FileExt== %v",
+			fileMgr.FileExt)
 	}
 
 	if !fileMgr.DMgr.PathIsPopulated {
-		t.Error("Expected 'fileMgr.PathIsPopulated==true', instead got: fileMgr.PathIsPopulated==", fileMgr.DMgr.PathIsPopulated)
+		t.Errorf("Expected 'fileMgr.PathIsPopulated==true', instead got: fileMgr.PathIsPopulated==%v",
+			fileMgr.DMgr.PathIsPopulated)
 	}
 
 	if !fileMgr.AbsolutePathFileNameDoesExist {
-		t.Error("Expected 'fileMgr.AbsolutePathFileNameDoesExist==true', instead got: fileMgr.AbsolutePathFileNameDoesExist==", fileMgr.DMgr.PathIsPopulated)
+		t.Errorf("Expected 'fileMgr.AbsolutePathFileNameDoesExist==true', instead got: "+
+			"fileMgr.AbsolutePathFileNameDoesExist==%v", fileMgr.AbsolutePathFileNameDoesExist)
 	}
 
 	if !fileMgr.AbsolutePathFileNameIsPopulated {
@@ -465,42 +471,51 @@ func TestFileMgr_New_03(t *testing.T) {
 
 func TestFileMgr_New_04(t *testing.T) {
 
-	path := "filehelperexamples.go"
+	path := "../appExamples/filehelperexamples.go"
 
 	eFileNameExt := "filehelperexamples.go"
 
 	fileMgr, err := FileMgr{}.New(path)
 
 	if err != nil {
-		t.Error("Error returned from FileHelper:GetPathFileNameElements() path== 'xt_dirmgr_01_test.go' Error: ", err)
+		t.Errorf("Error returned from FileMgr{}.New(path) "+
+			"path=='%v' Error: %v ", path, err)
 	}
 
-	if fileMgr.FileNameExt != eFileNameExt {
-		t.Error(fmt.Sprintf("Expected extracted FileNameExt == %v, instead got: ", path), fileMgr.FileNameExt)
+	if eFileNameExt != fileMgr.FileNameExt {
+		t.Errorf("Expected extracted FileNameExt == '%v', instead got: '%v' ",
+			eFileNameExt, fileMgr.FileNameExt)
 	}
 
-	if fileMgr.FileName != "filehelperexamples" {
-		t.Error("Expected fileMgr.FileName== 'dirmgr_test', instead got: fileMgr.FileName==", fileMgr.FileName)
+	if "filehelperexamples" != fileMgr.FileName {
+		t.Errorf("Expected fileMgr.FileName== '%v', instead got: fileMgr.FileName== '%v'",
+			"filehelperexamples", fileMgr.FileName)
 	}
 
-	if fileMgr.FileExt != ".go" {
-		t.Error("Expected fileMgr.FileExt== '.go', instead got: fileMgr.FileExt==", fileMgr.FileName)
+	if ".go" != fileMgr.FileExt {
+		t.Errorf("Expected fileMgr.FileExt== '.go', instead got: fileMgr.FileExt== %v",
+			fileMgr.FileExt)
 	}
 
-	if fileMgr.DMgr.PathIsPopulated {
-		t.Error("Expected 'fileMgr.PathIsPopulated==false', instead got: fileMgr.PathIsPopulated==", fileMgr.DMgr.PathIsPopulated)
+	if !fileMgr.DMgr.PathIsPopulated {
+		t.Errorf("Expected 'fileMgr.DMgr.PathIsPopulated==true', instead got: "+
+			"fileMgr.PathIsPopulated==%v",
+			fileMgr.DMgr.PathIsPopulated)
 	}
 
 	if !fileMgr.AbsolutePathFileNameDoesExist {
-		t.Error("Expected 'fileMgr.AbsolutePathFileNameDoesExist==true', instead got: fileMgr.AbsolutePathFileNameDoesExist==", fileMgr.DMgr.PathIsPopulated)
+		t.Errorf("Expected 'fileMgr.AbsolutePathFileNameDoesExist==true', instead got: "+
+			"fileMgr.AbsolutePathFileNameDoesExist== %v", fileMgr.DMgr.PathIsPopulated)
 	}
 
 	if !fileMgr.AbsolutePathFileNameIsPopulated {
-		t.Error("Expected fileMgr.AbsolutePathFileNameIsPopulated == 'true'.  Instead, it is 'false'")
+		t.Errorf("Expected fileMgr.AbsolutePathFileNameIsPopulated == 'true'.  Instead, "+
+			"fileMgr.AbsolutePathFileNameIsPopulated == '%v' ", fileMgr.AbsolutePathFileNameIsPopulated)
 	}
 
-	if fileMgr.DMgr.AbsolutePathDoesExist {
-		t.Error("Expected fileMgr.AbsolutePathDoesExist == 'false'.  Instead, it is 'true'")
+	if !fileMgr.DMgr.AbsolutePathDoesExist {
+		t.Errorf("Expected fileMgr.AbsolutePathDoesExist == 'true'.  Instead, it is '%v'",
+			fileMgr.DMgr.AbsolutePathDoesExist)
 	}
 
 }

@@ -135,21 +135,28 @@ func TestFileInfoPlus_Equal_01(t *testing.T) {
 
 	baseFileName := "newerFileForTest_01.txt"
 
-	baseDirPath := "D:/gowork/src/MikeAustin71/pathfilego/003_filehelper/filesfortest/newfilesfortest"
+	baseDirPath := "../filesfortest/newfilesfortest"
 
 	absBaseDirPath, err := fh.MakeAbsolutePath(baseDirPath)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.MakeAbsolutePath(baseDirPath). baseDirPath='%v' Error='%v'", baseDirPath, err.Error())
+		t.Errorf("Error returned from fh.MakeAbsolutePath(baseDirPath). "+
+			"baseDirPath='%v' Error='%v'", baseDirPath, err.Error())
+		return
 	}
 
-	absPathFileName, _ := fh.AddPathSeparatorToEndOfPathStr(absBaseDirPath)
+	absPathFileName, _ :=
+		fh.AddPathSeparatorToEndOfPathStr(absBaseDirPath)
+
 	absPathFileName = absPathFileName + baseFileName
 
 	fInfo, err := fh.GetFileInfoFromPath(absPathFileName)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileName). absPathFileName='%v' Error='%v'", absPathFileName, err.Error())
+		t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileName). "+
+			"absPathFileName='%v' Error='%v'",
+			absPathFileName, err.Error())
+		return
 	}
 
 	fip := FileInfoPlus{}.NewFromFileInfo(fInfo)
@@ -170,12 +177,14 @@ func TestFileInfoPlus_Equal_02(t *testing.T) {
 	fh := FileHelper{}
 
 	baseFileName := "newerFileForTest_01.txt"
-	baseDirPath := "D:/gowork/src/MikeAustin71/pathfilego/003_filehelper/filesfortest/newfilesfortest"
+	baseDirPath := "../filesfortest/newfilesfortest"
 
 	absBaseDirPath, err := fh.MakeAbsolutePath(baseDirPath)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.MakeAbsolutePath(baseDirPath). baseDirPath='%v' Error='%v'", baseDirPath, err.Error())
+		t.Errorf("Error returned from fh.MakeAbsolutePath(baseDirPath). "+
+			"baseDirPath='%v' Error='%v'", baseDirPath, err.Error())
+		return
 	}
 
 	absPathFileName, _ := fh.AddPathSeparatorToEndOfPathStr(absBaseDirPath)
@@ -184,7 +193,8 @@ func TestFileInfoPlus_Equal_02(t *testing.T) {
 	fInfo, err := fh.GetFileInfoFromPath(absPathFileName)
 
 	if err != nil {
-		t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileName). absPathFileName='%v' Error='%v'", absPathFileName, err.Error())
+		t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileName). "+
+			"absPathFileName='%v' Error='%v'", absPathFileName, err.Error())
 	}
 
 	fip := FileInfoPlus{}.NewFromFileInfo(fInfo)

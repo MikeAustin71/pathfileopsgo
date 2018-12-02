@@ -1,6 +1,8 @@
 package main
 
 import (
+	"../appExamples"
+	appLib "../appLibs"
 	pathFileOps "../pathfileops"
 	"fmt"
 	"io/ioutil"
@@ -32,7 +34,66 @@ const (
 var baseProjectPath = "D:/gowork/src/MikeAustin71/pathfileopsgo"
 
 func main() {
-	TestWriteFile()
+	TestingfileinfoplusEqual01()
+}
+
+func TestingfileinfoplusEqual01() {
+	fh := pathFileOps.FileHelper{}
+
+	baseFileName := "newerFileForTest_01.txt"
+
+	baseDirPath := "../filesfortest/newfilesfortest"
+
+	absCurrPath, err := fh.GetAbsCurrDir()
+
+	if err != nil {
+		fmt.Printf("Error returned by fh.GetAbsCurrDir(). %v\n", err.Error())
+	}
+
+	fmt.Println("Absolute Current Path: ", absCurrPath)
+
+	absBaseDirPath, err := fh.MakeAbsolutePath(baseDirPath)
+
+	if err != nil {
+		fmt.Printf("Error returned from fh.MakeAbsolutePath(baseDirPath). "+
+			"baseDirPath='%v' Error='%v'", baseDirPath, err.Error())
+		return
+	}
+
+	fmt.Printf("    Base Path: %v\n", baseDirPath)
+	fmt.Printf("Absolute Path: %v\n", absBaseDirPath)
+	fmt.Println()
+
+	absPathFileName, _ := fh.AddPathSeparatorToEndOfPathStr(absBaseDirPath)
+	absPathFileName = absPathFileName + baseFileName
+
+	fInfo, err := fh.GetFileInfoFromPath(absPathFileName)
+
+	if err != nil {
+		fmt.Printf("Error returned from fh.GetFileInfoFromPath(absPathFileName). "+
+			"absPathFileName='%v' Error='%v'", absPathFileName, err.Error())
+		return
+	}
+
+	fip := pathFileOps.FileInfoPlus{}.NewFromFileInfo(fInfo)
+
+	if fip.Name() != baseFileName {
+		fmt.Printf("Expected fip.Name()='%v'. Instead, fip.Name()='%v'.",
+			baseFileName, fip.Name())
+		return
+	}
+
+	fip2 := pathFileOps.FileInfoPlus{}.NewFromFileInfo(fInfo)
+
+	if fip.Equal(&fip2) == false {
+		fmt.Println("Expected  fip to EQUAL fip2. It DID NOT!")
+		fmt.Println("fip file info")
+		appExamples.PrintFileInfoPlusFields(fip)
+		fmt.Println()
+		fmt.Println("fip2 file info")
+		appExamples.PrintFileInfoPlusFields(fip2)
+	}
+
 }
 
 func TestWriteFile() {
@@ -319,7 +380,7 @@ func TestNewFileMgrFromPathFileNameStr(pathFileNameExt string) {
 		fmt.Printf("Error returned from pathFileOps.FileMgr{}.New(pathFileNameExt) pathFileNameExt='%v'  Error='%v' \n", pathFileNameExt, err.Error())
 	}
 
-	pathFileOps.PrintFileManagerFields(fMgr)
+	appExamples.PrintFileManagerFields(fMgr)
 
 }
 
@@ -342,7 +403,7 @@ func TestNewFileMgrFromDirMgrFileNameExt(rawPath, rawFileNameExt string) {
 		fmt.Printf("Error returned by FileMgr{}.NewFromDirMgrFileNameExt(dMgr, rawFileNameExt). dMgr.Path='%v' rawFileNameExt='%v'  \n", dMgr.Path, rawFileNameExt)
 	}
 
-	pathFileOps.PrintFileManagerFields(fMgr)
+	appExamples.PrintFileManagerFields(fMgr)
 
 }
 
@@ -364,7 +425,7 @@ func TestDirMgr(rawPath string, expectedPath string) {
 		return
 	}
 
-	pathFileOps.PrintDirMgrFields(dMgr)
+	appExamples.PrintDirMgrFields(dMgr)
 
 	fmt.Println()
 	fmt.Println("=========================================")
@@ -516,7 +577,7 @@ func TestDirMgrFileInfo() {
 	for i := 0; i < lDirs; i++ {
 		foundDMgr := findfiles.Directories.DirMgrs[i]
 
-		pathFileOps.PrintDirMgrFields(foundDMgr)
+		appExamples.PrintDirMgrFields(foundDMgr)
 	}
 
 	fmt.Println("Success")
@@ -897,7 +958,7 @@ func testMain01CreateCheckFiles03DirFiles() (string, error) {
 		return "", fmt.Errorf(ePrefix+"Error returned from os.Create(newFile4). newFile4='%v' Error='%v' ", newFile4, err.Error())
 	}
 
-	du := pathFileOps.DateTimeUtility{}
+	du := appLib.DateTimeUtility{}
 
 	_, err = fp4.WriteString(du.GetDateTimeYMDAbbrvDowNano(time.Now()))
 
