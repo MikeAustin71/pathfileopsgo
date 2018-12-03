@@ -503,7 +503,7 @@ func (fh FileHelper) AddPathSeparatorToEndOfPathStr(pathStr string) (string, err
 	return newPathStr, nil
 }
 
-// AdjustPathSlash standardize path
+// AdjustPathSlash will standardize path
 // separators according to operating system
 func (fh FileHelper) AdjustPathSlash(path string) string {
 
@@ -520,6 +520,37 @@ func (fh FileHelper) ChangeDir(dirPath string) error {
 	}
 
 	return nil
+}
+
+// CopyFile - Copies a file from source to destination
+// by means of creating a 'hard link' to the source file.
+// If that operation fails, the method will call CopyToNewFile().
+//
+// CopyToNewFile() will create a new destination file and attempt
+// to write the contents of the source file to the new destination
+// file.
+//
+func (fh FileHelper) CopyFile(src, dst string) (err error) {
+
+	ePrefix := "FileHelper.CopyFile() "
+
+	err = fh.CopyFileByLink(src, dst)
+
+	if err == nil {
+		return err
+	}
+
+	// Copy by Link Failed. Try CopyToNewFile()
+	errX := fh.CopyToNewFile(src, dst)
+
+	if errX != nil {
+		err = fmt.Errorf(ePrefix+"%v", errX)
+		return err
+	}
+
+	err = nil
+
+	return err
 }
 
 // CopyFileByLink - Copies a file from source to destination
@@ -661,6 +692,7 @@ func (fh FileHelper) CopyToNewFile(src, dst string) (err error) {
 			err = fmt.Errorf(ePrefix+"Error: non-regular destination file. Cannot Overwrite destination file. Destination file='%v' destination file mode='%v'", dfi.Name(), dfi.Mode().String())
 			return
 		}
+
 		if os.SameFile(sfi, dfi) {
 			// Source and destination are the same
 			// path and file name.
@@ -679,9 +711,10 @@ func (fh FileHelper) CopyToNewFile(src, dst string) (err error) {
 // CopyFileContents - Copies file contents from source to destination file.
 // Note: If 'src' file does NOT exist, an error will be returned.
 //
-// No validity checks are performed on 'dest' file.
+// No validity checks are performed on 'dest' file. If 'dest' file currently
+// exists, it will be truncated to zero bytes and overwritten.
 //
-// This method is called by FileHelper:CopyFileStr(). Use FileHelper:CopyFileStr() for
+// This method is called by FileHelper:CopyToNewFile(). Use FileHelper:CopyToNewFile() for
 // ordinary file copy operations since it provides validity checks on 'src' and 'dest'
 // files.
 //

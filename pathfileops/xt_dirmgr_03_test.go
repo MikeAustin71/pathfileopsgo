@@ -926,11 +926,11 @@ func TestDirMgr_SubstituteBaseDir_01(t *testing.T) {
 
 	fh := FileHelper{}
 
-	rawOrigPath := "../dirwalktests/dir01/dir02/dir03"
+	rawOrigPath := fh.AdjustPathSlash("../dirwalktests/dir01/dir02/dir03")
 
-	rawBasePath := "../dirwalktests/dir01"
+	rawBasePath := fh.AdjustPathSlash("../dirwalktests/dir01")
 
-	substitutePath := "../checkfiles"
+	substitutePath := fh.AdjustPathSlash("../checkfiles")
 
 	expectedPath := fh.AdjustPathSlash("../checkfiles/dir02/dir03")
 
@@ -961,15 +961,21 @@ func TestDirMgr_SubstituteBaseDir_01(t *testing.T) {
 	dMgrResult, err := dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute)
 
 	if err != nil {
-		t.Errorf("Error returned by dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute).  Error='%v'", err.Error())
+		t.Errorf("Error returned by dMgrOrig.SubstituteBaseDir(dMgrBase, "+
+			"dMgrSubstitute).  Error='%v'",
+			err.Error())
 	}
 
 	if expectedPath != dMgrResult.Path {
-		t.Errorf("Expected final substituted path = '%v'.  Instead substituted path = '%v' ", expectedPath, dMgrResult.Path)
+		t.Errorf("Expected final substituted path = '%v'.  Instead substituted "+
+			"path = '%v' ",
+			expectedPath, dMgrResult.Path)
 	}
 
 	if expectedAbsPath != dMgrResult.AbsolutePath {
-		t.Errorf("Expected final substituted absolute path = '%v'.  Instead substituted absolute path = '%v' ", expectedAbsPath, dMgrResult.AbsolutePath)
+		t.Errorf("Expected final substituted absolute path = '%v'.  Instead "+
+			"substituted absolute path = '%v' ",
+			expectedAbsPath, dMgrResult.AbsolutePath)
 	}
 
 }
@@ -978,11 +984,11 @@ func TestDirMgr_SubstituteBaseDir_02(t *testing.T) {
 
 	fh := FileHelper{}
 
-	rawOrigPath := "../dirwalktests/dir01/dir02/dir03/"
+	rawOrigPath := fh.AdjustPathSlash("../dirwalktests/dir01/dir02/dir03/")
 
-	rawBasePath := "../dirwalktests/dir01/"
+	rawBasePath := fh.AdjustPathSlash("../dirwalktests/dir01/")
 
-	substitutePath := "../checkfiles/"
+	substitutePath := fh.AdjustPathSlash("../checkfiles/")
 
 	expectedPath := fh.AdjustPathSlash("../checkfiles/dir02/dir03")
 

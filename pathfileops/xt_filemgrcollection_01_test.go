@@ -149,13 +149,16 @@ func TestFileMgrCollection_AddFileInfo_01(t *testing.T) {
 		fileNameExt = fmt.Sprintf("testAddFile_%03d.txt", i+1)
 		fmgr, err := FileMgrCollectionTestSetupFmgr01(fileNameExt)
 		if err != nil {
-			t.Errorf("Error returned from testFileMgrCollection_SetupFmgr_01(fileNameExt). fileNameExt='%v'  Error='%v'", fileNameExt, err.Error())
+			t.Errorf("Error returned from testFileMgrCollection_SetupFmgr_01(fileNameExt). "+
+				"fileNameExt='%v'  Error='%v'", fileNameExt, err.Error())
 		}
+
 		fMgrs.AddFileMgr(fmgr)
 	}
 
 	if fMgrs.GetArrayLength() != 10 {
-		t.Errorf("Expected fMgrs Array Length == 10. Instead fMgrs.GetArrayLength()=='%v'", fMgrs.GetArrayLength())
+		t.Errorf("Expected fMgrs Array Length == 10. Instead fMgrs.GetArrayLength()=='%v'",
+			fMgrs.GetArrayLength())
 	}
 
 	expectedFileNameExt := "newerFileForTest_01.txt"

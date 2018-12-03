@@ -1813,29 +1813,13 @@ func (fMgr *FileMgr) CopyFileMgr(fMgrDest *FileMgr) error {
 
 	// See Reference:
 	// https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
-	/*
-		if err = os.Link(fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName); err == nil {
-
-			destFileExists, err = fMgrDest.DoesThisFileExist()
-
-			if err != nil {
-				return fmt.Errorf(ePrefix + "Error returned from LinkSet fMgrDest.DoesThisFileExist(). fMgrDest.AbsolutePathFileName='%v'  Error='%v'", fMgrDest.AbsolutePathFileName, err.Error())
-			}
-
-			if !destFileExists {
-				return fmt.Errorf(ePrefix + "Error from LinkSet: After attempted file copy to destination file. Destination file does NOT exist! fMgrDest.AbsolutePathFileName='%v'",fMgrDest.AbsolutePathFileName)
-			}
-
-		 	return nil
-		}
-	*/
 
 	fh := FileHelper{}
 
-	err = fh.CopyFileContents(fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName)
+	err = fh.CopyFile(fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error returned by fh.CopyFileContents(fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName) fMgr.AbsolutePathFileName='%v'  fMgrDest.AbsolutePathFileName='%v'  Error='%v'", fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName, err.Error())
+		return fmt.Errorf(ePrefix+"Error returned by fh.CopyFile(fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName) fMgr.AbsolutePathFileName='%v'  fMgrDest.AbsolutePathFileName='%v'  Error='%v'", fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName, err.Error())
 	}
 
 	destFileExists, err = fMgrDest.DoesThisFileExist()
