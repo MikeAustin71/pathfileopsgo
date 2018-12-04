@@ -315,11 +315,11 @@ type FileSelectionCriteria struct {
 	// ANDFILESELECTCRITERION or ORFILESELECTCRITERION
 	//
 	// ANDFILESELECTCRITERION = select a file only if ALL
-	//										      the selection crietrion
+	//										      the selection criterion
 	//                          are satisfied.
 	//
 	// ORFILESELECTCRITERION  = select a file if only ONE
-	//													of the selection crierion
+	//													of the selection criterion
 	//													are satisfied.
 }
 

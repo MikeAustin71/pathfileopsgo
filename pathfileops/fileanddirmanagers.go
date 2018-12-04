@@ -49,7 +49,8 @@ func (dMgrs *DirMgrCollection) AddDirMgrByPathFile(pathFileName string) error {
 	dMgr, err := DirMgr{}.New(pathFileName)
 
 	if err != nil {
-		s := ePrefix + "Error returned from DirMgr{}.New(pathFileName). pathFileName='%v' Error='%v'"
+		s := ePrefix +
+			"Error returned from DirMgr{}.New(pathFileName). pathFileName='%v' Error='%v'"
 		return fmt.Errorf(s, pathFileName, err.Error())
 	}
 
@@ -67,7 +68,9 @@ func (dMgrs *DirMgrCollection) AddFileInfo(pathFile string, info os.FileInfo) er
 	dMgr, err := DirMgr{}.NewFromFileInfo(pathFile, info)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error retrned from DirMgr{}.NewFromFileInfo(pathFile, info). pathFile='%v' info.Name()='%v'  Error='%v'", pathFile, info.Name(), err.Error())
+		return fmt.Errorf(ePrefix+"Error retrned from DirMgr{}."+
+			"NewFromFileInfo(pathFile, info). pathFile='%v' info.Name()='%v'  Error='%v'",
+			pathFile, info.Name(), err.Error())
 	}
 
 	dMgrs.DirMgrs = append(dMgrs.DirMgrs, dMgr)
@@ -103,7 +106,8 @@ func (dMgrs *DirMgrCollection) CopyOut() (DirMgrCollection, error) {
 	lOmc := len(dMgrs.DirMgrs)
 
 	if lOmc == 0 {
-		return DirMgrCollection{}, errors.New(ePrefix + "Error: Empty DirMgrCollection. No messages available!")
+		return DirMgrCollection{},
+			errors.New(ePrefix + "Error: Empty DirMgrCollection. No messages available!")
 	}
 
 	for i := 0; i < lOmc; i++ {
@@ -113,9 +117,10 @@ func (dMgrs *DirMgrCollection) CopyOut() (DirMgrCollection, error) {
 	return dMgrs2, nil
 }
 
-// FindDirectories - searches through the DirMgrCollection to find DirMgr objects matching specified
-// search criteria.
-func (dMgrs *DirMgrCollection) FindDirectories(fileSelectionCriteria FileSelectionCriteria) (DirMgrCollection, error) {
+// FindDirectories - searches through the DirMgrCollection to find
+// DirMgr objects matching specified search criteria.
+func (dMgrs *DirMgrCollection) FindDirectories(
+	fileSelectionCriteria FileSelectionCriteria) (DirMgrCollection, error) {
 
 	ePrefix := "DirMgrCollection.FindDirectories() "
 
@@ -140,7 +145,9 @@ func (dMgrs *DirMgrCollection) FindDirectories(fileSelectionCriteria FileSelecti
 			isMatchedFile, err = fh.FilterFileName(dMgr.ActualDirFileInfo, fileSelectionCriteria)
 
 			if err != nil {
-				return DirMgrCollection{}, fmt.Errorf(ePrefix+"Error returned by fh.FilterFileName(dMgr.ActualDirFileInfo, fileSelectionCriteria) dMgr.ActualDirFileInfo.Name()='%v'  Error='%v'", dMgr.ActualDirFileInfo.Name(), err.Error())
+				return DirMgrCollection{}, fmt.Errorf(ePrefix+"Error returned by fh.FilterFileName("+
+					"dMgr.ActualDirFileInfo, fileSelectionCriteria) dMgr.ActualDirFileInfo.Name()='%v' "+
+					"Error='%v'", dMgr.ActualDirFileInfo.Name(), err.Error())
 			}
 
 		} else {
@@ -152,7 +159,9 @@ func (dMgrs *DirMgrCollection) FindDirectories(fileSelectionCriteria FileSelecti
 			isMatchedFile, err = fh.FilterFileName(fip, fileSelectionCriteria)
 
 			if err != nil {
-				s := ePrefix + "Error returned by fh.FilterFileName(fip, fileSelectionCriteria) fip.Name()='%v'  Error='%v'"
+				s := ePrefix +
+					"Error returned by fh.FilterFileName(fip, fileSelectionCriteria) " +
+					"fip.Name()='%v'  Error='%v'"
 				return DirMgrCollection{}, fmt.Errorf(s, fip.Name(), err.Error())
 			}
 
@@ -219,13 +228,15 @@ func (dMgrs *DirMgrCollection) PopDirMgrAtIndex(idx int) (DirMgr, error) {
 	ePrefix := "DirMgrCollection.PopDirMgrAtIndex() "
 
 	if idx < 0 {
-		return DirMgr{}, fmt.Errorf(ePrefix+"Error: Input Parameter is less than zero. Index Out-Of-Range! idx='%v'", idx)
+		return DirMgr{}, fmt.Errorf(ePrefix+"Error: Input Parameter is less than zero. "+
+			"Index Out-Of-Range! idx='%v'", idx)
 	}
 
 	lDirMgrs := len(dMgrs.DirMgrs)
 
 	if idx >= lDirMgrs {
-		return DirMgr{}, fmt.Errorf(ePrefix+"Error: Input Parameter is greater than the length of the collection index. Index Out-Of-Range! idx='%v' Array Length='%v' ", idx, lDirMgrs)
+		return DirMgr{}, fmt.Errorf(ePrefix+"Error: Input Parameter is greater than the "+
+			"length of the collection index. Index Out-Of-Range! idx='%v' Array Length='%v' ", idx, lDirMgrs)
 	}
 
 	if idx == 0 {
@@ -291,11 +302,15 @@ func (dMgrs *DirMgrCollection) PeekDirMgrAtIndex(idx int) (DirMgr, error) {
 	ePrefix := "DirMgrCollection.PeekDirMgrAtIndex() "
 
 	if idx < 0 {
-		return DirMgr{}, fmt.Errorf(ePrefix+"Error: Input Parameter is less than zero. Index Out-Of-Range! idx='%v'", idx)
+		return DirMgr{}, fmt.Errorf(ePrefix+
+			"Error: Input Parameter is less than zero. Index Out-Of-Range! idx='%v'", idx)
 	}
 
 	if idx >= len(dMgrs.DirMgrs) {
-		return DirMgr{}, fmt.Errorf(ePrefix+"Error: Input Parameter is greater than the length of the collection index. Index Out-Of-Range! idx='%v' Array Length='%v' ", idx, len(dMgrs.DirMgrs))
+		return DirMgr{}, fmt.Errorf(ePrefix+"Error: Input Parameter is greater than the "+
+			"length of the collection index. Index Out-Of-Range! idx='%v' Array Length='%v' ",
+			idx, len(dMgrs.DirMgrs))
+
 	}
 
 	return dMgrs.DirMgrs[idx].CopyOut(), nil
@@ -400,7 +415,8 @@ func (dMgr *DirMgr) DeleteAll() error {
 		err = os.RemoveAll(dMgr.AbsolutePath)
 
 		if err != nil {
-			return fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(dMgr.AbsolutePath) returned error. dMgr.AbsolutePath='%v' Error='%v' ", dMgr.AbsolutePath, err.Error())
+			return fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(dMgr.AbsolutePath) "+
+				"returned error. dMgr.AbsolutePath='%v' Error='%v' ", dMgr.AbsolutePath, err.Error())
 		}
 
 		dMgr.DoesDirMgrPathExist()
@@ -415,7 +431,9 @@ func (dMgr *DirMgr) DeleteAll() error {
 		err = os.RemoveAll(dMgr.Path)
 
 		if err != nil {
-			return fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(dMgr.AbsolutePath) returned error. dMgr.Path='%v' Error='%v' ", dMgr.Path, err.Error())
+			return fmt.Errorf(ePrefix+"Error returned by "+
+				"os.RemoveAll(dMgr.AbsolutePath) returned error. "+
+				"dMgr.Path='%v' Error='%v' ", dMgr.Path, err.Error())
 		}
 
 		dMgr.AbsolutePathDoesExist = false
@@ -690,7 +708,7 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //					FileNamePatterns 	= ZERO Length Array
 //          filesOlderThan 		= time.Time{}
 //					filesNewerThan 		= time.Time{}
-//					SelectByFileMode 	= uint32(0)
+//					SelectByFileMode 	= 0
 //
 //					In this example, all of the selection criterion are
 //					'Inactive' and therefore all of the files encountered
@@ -722,7 +740,8 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //					returned as an 'error' type. Also, see the comment on
 // 					DirectoryDeleteFileInfo.ErrReturns, above.
 //
-func (dMgr *DirMgr) DeleteWalkDirFiles(deleteFileSelectionCriteria FileSelectionCriteria) (DirectoryDeleteFileInfo, error) {
+func (dMgr *DirMgr) DeleteWalkDirFiles(
+	deleteFileSelectionCriteria FileSelectionCriteria) (DirectoryDeleteFileInfo, error) {
 
 	ePrefix := "DirMgr.DeleteWalkDirFiles() "
 	deleteFilesInfo := DirectoryDeleteFileInfo{}
@@ -756,7 +775,8 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(deleteFileSelectionCriteria FileSelection
 
 	if err != nil {
 		return deleteFilesInfo,
-			fmt.Errorf(ePrefix+"Error returned by FileHelper.makeFileHelperWalkDirDeleteFilesFunc(&dWalkInfo). "+
+			fmt.Errorf(ePrefix+"Error returned by FileHelper."+
+				"makeFileHelperWalkDirDeleteFilesFunc(&dWalkInfo). "+
 				"dWalkInfo.StartPath='%v' Error='%v' ", deleteFilesInfo.StartPath, err.Error())
 	}
 
@@ -898,7 +918,7 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(deleteFileSelectionCriteria FileSelection
 //	DirectoryTreeInfo structure	-
 //					type DirectoryTreeInfo struct {
 //						StartPath            	string								// The starting path or directory for the file search
-//						DirMgrs          	[]DirMgr							// DirMgrs found during directory tree search
+//						DirMgrs          	[]DirMgr									// DirMgrs found during directory tree search
 //						FoundFiles           	[]FileWalkInfo				// Found Files matching file selection criteria
 //						ErrReturns           	[]string							// Internal System errors encountered
 //						FileSelectCriteria    FileSelectionCriteria // The File Selection Criteria submitted as an
@@ -919,7 +939,8 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(deleteFileSelectionCriteria FileSelection
 //					be returned as an 'error' type. Also, see the comment on
 // 					'DirectoryTreeInfo.ErrReturns', above.
 //
-func (dMgr *DirMgr) FindWalkDirFiles(fileSelectCriteria FileSelectionCriteria) (DirectoryTreeInfo, error) {
+func (dMgr *DirMgr) FindWalkDirFiles(
+	fileSelectCriteria FileSelectionCriteria) (DirectoryTreeInfo, error) {
 
 	ePrefix := "DirMgr.GetWalkDirInfo() "
 	findFilesInfo := DirectoryTreeInfo{}
@@ -940,7 +961,10 @@ func (dMgr *DirMgr) FindWalkDirFiles(fileSelectCriteria FileSelectionCriteria) (
 
 	} else {
 
-		return findFilesInfo, fmt.Errorf(ePrefix+"Path and AbsolutePath - PATH DOES NOT EXIST! dMgr.AbsolutePath='%v' dMgr.Path='%v'", dMgr.AbsolutePath, dMgr.Path)
+		return findFilesInfo,
+			fmt.Errorf(ePrefix+
+				"Path and AbsolutePath - PATH DOES NOT EXIST! "+
+				"dMgr.AbsolutePath='%v' dMgr.Path='%v'", dMgr.AbsolutePath, dMgr.Path)
 	}
 
 	findFilesInfo.FileSelectCriteria = fileSelectCriteria
@@ -950,7 +974,9 @@ func (dMgr *DirMgr) FindWalkDirFiles(fileSelectCriteria FileSelectionCriteria) (
 	err = fp.Walk(findFilesInfo.StartPath, fh.makeFileHelperWalkDirFindFilesFunc(&findFilesInfo))
 
 	if err != nil {
-		return findFilesInfo, fmt.Errorf(ePrefix+"Error returned by  FileHelper.FindFilesWalkDirectory(&dWalkInfo). dWalkInfo.StartPath='%v' Error='%v' ", findFilesInfo.StartPath, err.Error())
+		return findFilesInfo, fmt.Errorf(ePrefix+
+			"Error returned by FileHelper.FindFilesWalkDirectory(&dWalkInfo). "+
+			"dWalkInfo.StartPath='%v' Error='%v' ", findFilesInfo.StartPath, err.Error())
 	}
 
 	return findFilesInfo, nil
@@ -1050,7 +1076,10 @@ func (dMgr *DirMgr) MakeDir() error {
 		err = os.MkdirAll(dMgr.AbsolutePath, ModePerm)
 
 		if err != nil {
-			return fmt.Errorf(ePrefix+"Error returned from os.MkdirAll(dMgr.AbsolutePath, ModePerm) dMgr.AbsolutePath='%v' ModePerm='%v'  Error='%v'", dMgr.AbsolutePath, ModePerm, err.Error())
+			return fmt.Errorf(ePrefix+
+				"Error returned from os.MkdirAll(dMgr.AbsolutePath, "+
+				"ModePerm) dMgr.AbsolutePath='%v' ModePerm='%v'  Error='%v'",
+				dMgr.AbsolutePath, ModePerm, err.Error())
 		}
 
 		dMgr.DoesDirMgrPathExist()
@@ -1071,7 +1100,10 @@ func (dMgr *DirMgr) MakeDir() error {
 	err = os.MkdirAll(dMgr.Path, ModePerm)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error returned from os.MkdirAll(dMgr.Path, ModePerm) dMgr.Path='%v' ModePerm='%v'  Error='%v'", dMgr.Path, ModePerm, err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error returned from os.MkdirAll(dMgr.Path, ModePerm) "+
+			"dMgr.Path='%v' ModePerm='%v'  Error='%v'",
+			dMgr.Path, ModePerm, err.Error())
 	}
 
 	dMgr.DoesDirMgrPathExist()
@@ -1128,7 +1160,8 @@ func (dMgr DirMgr) New(pathStr string) (DirMgr, error) {
 	ePrefix := "DirMgr.New() "
 
 	if len(pathStr) == 0 {
-		return DirMgr{}, errors.New(ePrefix + "Error: Input parameter 'pathStr' is Zero Length!")
+		return DirMgr{}, errors.New(ePrefix +
+			"Error: Input parameter 'pathStr' is Zero Length!")
 	}
 
 	newDirMgr := DirMgr{}
@@ -1136,7 +1169,9 @@ func (dMgr DirMgr) New(pathStr string) (DirMgr, error) {
 	_, err := newDirMgr.SetDirMgr(pathStr)
 
 	if err != nil {
-		return DirMgr{}, fmt.Errorf(ePrefix+"Error returned by newDirMgr.SetDirMgr(pathStr) pathStr='%v' Error='%v'", pathStr, err.Error())
+		return DirMgr{}, fmt.Errorf(ePrefix+
+			"Error returned by newDirMgr.SetDirMgr(pathStr) pathStr='%v' Error='%v'",
+			pathStr, err.Error())
 	}
 
 	return newDirMgr, nil
@@ -1150,7 +1185,9 @@ func (dMgr DirMgr) NewFromFileInfo(pathStr string, info os.FileInfo) (DirMgr, er
 	ePrefix := "DirMgr) NewFromFileInfo() "
 
 	if len(pathStr) == 0 {
-		return DirMgr{}, errors.New(ePrefix + "Error: Input parameter 'pathStr' is Zero Length!")
+		return DirMgr{},
+			errors.New(ePrefix +
+				"Error: Input parameter 'pathStr' is Zero Length!")
 	}
 
 	newDirMgr := DirMgr{}
@@ -1218,14 +1255,16 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
 
 	if len(pathStr) == 0 {
 		isEmpty = true
-		err = errors.New(ePrefix + "Error: Input parameter 'pathStr' is a Zero length string!")
+		err = errors.New(ePrefix +
+			"Error: Input parameter 'pathStr' is a Zero length string!")
 		return
 	}
 
 	trimmedPathStr := strings.TrimLeft(strings.TrimRight(pathStr, " "), " ")
 
 	if len(trimmedPathStr) == 0 {
-		err = errors.New(ePrefix + "Error: Trimmed Input Parameter 'pathStr' is a Zero length string!")
+		err = errors.New(ePrefix +
+			"Error: Trimmed Input Parameter 'pathStr' is a Zero length string!")
 		isEmpty = true
 		return
 	}
@@ -1235,19 +1274,25 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
 	finalPathStr, isEmptyPath, err2 := fh.GetPathFromPathFileName(adjustedTrimmedPathStr)
 
 	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error: INVALID PATH. fh.GetPathFromPathFileName(pathStr) pathStr='%v'  Error='%v'", pathStr, err2.Error())
+		err = fmt.Errorf(ePrefix+
+			"Error: INVALID PATH. fh.GetPathFromPathFileName(pathStr) "+
+			"pathStr='%v'  Error='%v'", pathStr, err2.Error())
 		isEmpty = isEmptyPath
 		return
 	}
 
 	if isEmptyPath {
 		isEmpty = true
-		err = fmt.Errorf(ePrefix+"Error: INVALID PATH. 'pathStr' generated an Empty Path! pathStr='%v' ", pathStr)
+		err = fmt.Errorf(ePrefix+
+			"Error: INVALID PATH. 'pathStr' generated an Empty Path! pathStr='%v' ",
+			pathStr)
 		return
 	}
 
 	if len(finalPathStr) == 0 {
-		err = fmt.Errorf(ePrefix+"Error: Path returned from fh.GetPathFromPathFileName(pathStr) is EMPTY! pathStr='%v'", pathStr)
+		err = fmt.Errorf(ePrefix+
+			"Error: Path returned from fh.GetPathFromPathFileName(pathStr) is EMPTY! "+
+			"pathStr='%v'", pathStr)
 		isEmpty = true
 		return
 	}
@@ -1269,7 +1314,9 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
 
 		if err2 != nil {
 			dMgr.Empty()
-			err = fmt.Errorf(ePrefix+"- fh.MakeAbsolutePath(dMgr.Path) returned error. dMgr.Path='%v' Error='%v'", dMgr.Path, err2.Error())
+			err = fmt.Errorf(ePrefix+
+				"- fh.MakeAbsolutePath(dMgr.Path) returned error. dMgr.Path='%v' Error='%v'",
+				dMgr.Path, err2.Error())
 			isEmpty = true
 			return
 		}
@@ -1339,8 +1386,10 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
 	return
 }
 
-// SetDirMgrWithFileInfo - Sets the DirMgr fields and path strings for the current DirMgr object
-// based on an input 'pathStr' parameter and an os.FileInfo input parameter ('info').
+// SetDirMgrWithFileInfo - Sets the DirMgr fields and path strings for the current
+// DirMgr object based on an input 'pathStr' parameter and an os.FileInfo input
+// parameter ('info').
+//
 func (dMgr *DirMgr) SetDirMgrWithFileInfo(pathStr string, info os.FileInfo) error {
 	ePrefix := "DirMgr.SetDirMgrWithFileInfo() "
 
@@ -1351,7 +1400,9 @@ func (dMgr *DirMgr) SetDirMgrWithFileInfo(pathStr string, info os.FileInfo) erro
 	_, err := dMgr.SetDirMgr(pathStr)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error returned from dMgr.SetDirMgr(pathStr). pathStr='%v'  Error='%v'", pathStr, err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error returned from dMgr.SetDirMgr(pathStr). "+
+			"pathStr='%v'  Error='%v'", pathStr, err.Error())
 	}
 
 	dMgr.ActualDirFileInfo = FileInfoPlus{}.NewPathFileInfo(pathStr, info)
@@ -1363,7 +1414,9 @@ func (dMgr *DirMgr) SetDirMgrWithFileInfo(pathStr string, info os.FileInfo) erro
 // SubstituteBaseDir - Substitute baseDir segment of the current DirMgr with a new
 // parent directory identified by input parameter 'substituteBaseDir'. This is useful
 // in copying files to new directory trees.
-func (dMgr *DirMgr) SubstituteBaseDir(baseDir DirMgr, substituteBaseDir DirMgr) (newDMgr DirMgr, err error) {
+func (dMgr *DirMgr) SubstituteBaseDir(
+	baseDir DirMgr,
+	substituteBaseDir DirMgr) (newDMgr DirMgr, err error) {
 
 	ePrefix := "DirMgr.SubstituteBaseDir() "
 
@@ -1422,7 +1475,10 @@ func (dMgr *DirMgr) SubstituteBaseDir(baseDir DirMgr, substituteBaseDir DirMgr) 
 		newPath = substituteBaseDir.GetAbsolutePathWithSeparator() + trimmedRemainingPath
 
 	} else {
-		err = fmt.Errorf(ePrefix+"Error: Could not locate baseDir.Path or baseDir.AbsolutePath in this dMgr. dMgr.Path='%v' dMgr.AbsolutePath='%v'", dMgr.Path, dMgr.AbsolutePath)
+		err = fmt.Errorf(ePrefix+
+			"Error: Could not locate baseDir.Path or "+
+			"baseDir.AbsolutePath in this dMgr. dMgr.Path='%v' dMgr.AbsolutePath='%v'",
+			dMgr.Path, dMgr.AbsolutePath)
 		return
 	}
 
@@ -1430,7 +1486,9 @@ func (dMgr *DirMgr) SubstituteBaseDir(baseDir DirMgr, substituteBaseDir DirMgr) 
 
 	if err2 != nil {
 		newDMgr = DirMgr{}
-		err = fmt.Errorf(ePrefix+"Error returned from DirMgr{}.New(newPath). newPath='%v'  Error='%v'", newPath, err2.Error())
+		err = fmt.Errorf(ePrefix+
+			"Error returned from DirMgr{}.New(newPath). "+
+			"newPath='%v'  Error='%v'", newPath, err2.Error())
 		return
 	}
 
@@ -1448,13 +1506,17 @@ func (fMgrs *FileMgrCollection) AddFileMgr(fMgr FileMgr) {
 	fMgrs.FMgrs = append(fMgrs.FMgrs, fMgr.CopyOut())
 }
 
-func (fMgrs *FileMgrCollection) AddFileMgrByPathFile(pathFileName string) error {
+func (fMgrs *FileMgrCollection) AddFileMgrByPathFile(
+	pathFileName string) error {
+
 	ePrefix := "FileMgrCollection.AddFileMgrByPathFile() "
 
 	fMgr, err := FileMgr{}.New(pathFileName)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error returned from FileMgr{}.New(pathFileName). pathFileName='%v' Error='%v'", pathFileName, err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error returned from FileMgr{}.New(pathFileName). "+
+			"pathFileName='%v' Error='%v'", pathFileName, err.Error())
 	}
 
 	fMgrs.FMgrs = append(fMgrs.FMgrs, fMgr)
@@ -1471,7 +1533,9 @@ func (fMgrs *FileMgrCollection) AddFileInfo(pathFile string, info os.FileInfo) e
 	fMgr, err := FileMgr{}.NewFromFileInfo(pathFile, info)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error retrned from FileMgr{}.NewFromFileInfo(pathFile, info). pathFile='%v' info.Name()='%v'  Error='%v'", pathFile, info.Name(), err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error retrned from FileMgr{}.NewFromFileInfo(pathFile, info). "+
+			"pathFile='%v' info.Name()='%v'  Error='%v'", pathFile, info.Name(), err.Error())
 	}
 
 	fMgrs.FMgrs = append(fMgrs.FMgrs, fMgr)
@@ -1507,7 +1571,9 @@ func (fMgrs *FileMgrCollection) CopyOut() (FileMgrCollection, error) {
 	lOmc := len(fMgrs.FMgrs)
 
 	if lOmc == 0 {
-		return FileMgrCollection{}, errors.New(ePrefix + "Error: Empty FileMgrCollection. No messages available!")
+		return FileMgrCollection{},
+			errors.New(ePrefix +
+				"Error: Empty FileMgrCollection. No messages available!")
 	}
 
 	for i := 0; i < lOmc; i++ {
@@ -1517,9 +1583,12 @@ func (fMgrs *FileMgrCollection) CopyOut() (FileMgrCollection, error) {
 	return fMgrs2, nil
 }
 
-// FindFiles - Searches the current FileMgrCollection and returns a new FileMgrCollection containing
-// FileMgr objects which match the specified search criteria.
-func (fMgrs *FileMgrCollection) FindFiles(fileSelectionCriteria FileSelectionCriteria) (FileMgrCollection, error) {
+// FindFiles - Searches the current FileMgrCollection and returns a new
+// FileMgrCollection containing FileMgr objects which match the specified
+// search criteria.
+//
+func (fMgrs *FileMgrCollection) FindFiles(
+	fileSelectionCriteria FileSelectionCriteria) (FileMgrCollection, error) {
 
 	ePrefix := "FileMgrCollection.FindFiles() "
 
@@ -1544,7 +1613,12 @@ func (fMgrs *FileMgrCollection) FindFiles(fileSelectionCriteria FileSelectionCri
 			isMatchedFile, err = fh.FilterFileName(fMgr.ActualFileInfo, fileSelectionCriteria)
 
 			if err != nil {
-				return FileMgrCollection{}, fmt.Errorf(ePrefix+"Error returned by fh.FilterFileName(fMgr.ActualFileInfo, fileSelectionCriteria) fMgr.ActualFileInfo.Name()='%v'  Error='%v'", fMgr.ActualFileInfo.Name(), err.Error())
+				return FileMgrCollection{},
+					fmt.Errorf(ePrefix+
+						"Error returned by "+
+						"fh.FilterFileName(fMgr.ActualFileInfo, fileSelectionCriteria) "+
+						"fMgr.ActualFileInfo.Name()='%v'  Error='%v'",
+						fMgr.ActualFileInfo.Name(), err.Error())
 			}
 
 		} else {
@@ -1556,7 +1630,9 @@ func (fMgrs *FileMgrCollection) FindFiles(fileSelectionCriteria FileSelectionCri
 			isMatchedFile, err = fh.FilterFileName(fip, fileSelectionCriteria)
 
 			if err != nil {
-				return FileMgrCollection{}, fmt.Errorf(ePrefix+"Error returned by fh.FilterFileName(fip, fileSelectionCriteria) fip.Name()='%v'  Error='%v'", fip.Name(), err.Error())
+				return FileMgrCollection{}, fmt.Errorf(ePrefix+
+					"Error returned by fh.FilterFileName(fip, fileSelectionCriteria) "+
+					"fip.Name()='%v'  Error='%v'", fip.Name(), err.Error())
 			}
 
 		}
@@ -1585,7 +1661,8 @@ func (fMgrs *FileMgrCollection) PopLastFMgr() (FileMgr, error) {
 	l1 := len(fMgrs.FMgrs)
 
 	if l1 == 0 {
-		return FileMgr{}, errors.New(ePrefix + "Error: Empty FileMgrCollection. No messages available!")
+		return FileMgr{}, errors.New(ePrefix +
+			"Error: Empty FileMgrCollection. No messages available!")
 	}
 
 	fmgr := fMgrs.FMgrs[l1-1].CopyOut()
@@ -1605,7 +1682,9 @@ func (fMgrs *FileMgrCollection) PopFirstFMgr() (FileMgr, error) {
 	l1 := len(fMgrs.FMgrs)
 
 	if l1 == 0 {
-		return FileMgr{}, errors.New(ePrefix + "Error: Empty FileMgrCollection. No messages available!")
+		return FileMgr{},
+			errors.New(ePrefix +
+				"Error: Empty FileMgrCollection. No messages available!")
 	}
 
 	om := fMgrs.FMgrs[0].CopyOut()
@@ -1623,13 +1702,16 @@ func (fMgrs *FileMgrCollection) PopFMgrAtIndex(idx int) (FileMgr, error) {
 	ePrefix := "FileMgrCollection.PopFMgrAtIndex() "
 
 	if idx < 0 {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error: Input Parameter is less than zero. Index Out-Of-Range! idx='%v'", idx)
+		return FileMgr{}, fmt.Errorf(ePrefix+
+			"Error: Input Parameter is less than zero. Index Out-Of-Range! idx='%v'", idx)
 	}
 
 	lFMgrs := len(fMgrs.FMgrs)
 
 	if idx >= lFMgrs {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error: Input Parameter is greater than the length of the collection index. Index Out-Of-Range! idx='%v' Array Length='%v' ", idx, lFMgrs)
+		return FileMgr{}, fmt.Errorf(ePrefix+
+			"Error: Input Parameter is greater than the length of the collection index. "+
+			"Index Out-Of-Range! idx='%v' Array Length='%v' ", idx, lFMgrs)
 	}
 
 	if idx == 0 {
@@ -1665,7 +1747,9 @@ func (fMgrs *FileMgrCollection) PeekFirstFMgr() (FileMgr, error) {
 	ePrefix := "FileMgrCollection.PeekFirstFMgr() "
 
 	if len(fMgrs.FMgrs) == 0 {
-		return FileMgr{}, errors.New(ePrefix + "Error: Empty FileMgrCollection. No messages available!")
+		return FileMgr{},
+			errors.New(ePrefix +
+				"Error: Empty FileMgrCollection. No messages available!")
 	}
 
 	return fMgrs.FMgrs[0].CopyOut(), nil
@@ -1681,7 +1765,8 @@ func (fMgrs *FileMgrCollection) PeekLastFMgr() (FileMgr, error) {
 	l1 := len(fMgrs.FMgrs)
 
 	if l1 == 0 {
-		return FileMgr{}, errors.New(ePrefix + "Error: Empty FileMgrCollection. No messages available!")
+		return FileMgr{}, errors.New(ePrefix +
+			"Error: Empty FileMgrCollection. No messages available!")
 	}
 
 	return fMgrs.FMgrs[l1-1].CopyOut(), nil
@@ -1695,11 +1780,15 @@ func (fMgrs *FileMgrCollection) PeekFMgrAtIndex(idx int) (FileMgr, error) {
 	ePrefix := "FileMgrCollection.PeekFMgrAtIndex() "
 
 	if idx < 0 {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error: Input Parameter is less than zero. Index Out-Of-Range! idx='%v'", idx)
+		return FileMgr{}, fmt.Errorf(ePrefix+
+			"Error: Input Parameter is less than zero. "+
+			"Index Out-Of-Range! idx='%v'", idx)
 	}
 
 	if idx >= len(fMgrs.FMgrs) {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error: Input Parameter is greater than the length of the collection index. Index Out-Of-Range! idx='%v' Array Length='%v' ", idx, len(fMgrs.FMgrs))
+		return FileMgr{}, fmt.Errorf(ePrefix+
+			"Error: Input Parameter is greater than the length of the collection index. "+
+			"Index Out-Of-Range! idx='%v' Array Length='%v' ", idx, len(fMgrs.FMgrs))
 	}
 
 	return fMgrs.FMgrs[idx].CopyOut(), nil
@@ -1734,19 +1823,27 @@ func (fMgr *FileMgr) CopyFileToDir(dir DirMgr) error {
 	err := dir.IsDirMgrValid("")
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error: Input parmater dir is INVALID! Error='%v'", err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error: Input parmater dir is INVALID! Error='%v'",
+			err.Error())
 	}
 
 	newFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dir, fMgr.FileNameExt)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dir, fMgr.FileNameExt) dir.AbsolutePath='%v'  fMgr.FileNameExt='%v'  Error='%v'", dir.AbsolutePath, fMgr.FileNameExt, err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dir, "+
+			"fMgr.FileNameExt) dir.AbsolutePath='%v'  fMgr.FileNameExt='%v'  Error='%v'",
+			dir.AbsolutePath, fMgr.FileNameExt, err.Error())
 	}
 
 	err = fMgr.CopyFileMgr(&newFMgr)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error returned from fMgr.CopyFileMgr(&newFMgr) newFMgr.AbsolutePathFileName='%v'  Error='%v'", newFMgr.AbsolutePathFileName, err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error returned from fMgr.CopyFileMgr(&newFMgr) "+
+			"newFMgr.AbsolutePathFileName='%v'  Error='%v'",
+			newFMgr.AbsolutePathFileName, err.Error())
 	}
 
 	return nil
@@ -1758,46 +1855,59 @@ func (fMgr *FileMgr) CopyFileToDir(dir DirMgr) error {
 // Note that if the destination directory does not exist, this method will
 // attempt to create it.
 func (fMgr *FileMgr) CopyFileMgr(fMgrDest *FileMgr) error {
+
 	ePrefix := "FileMgr.CopyFileMgr() "
 
 	err := fMgr.IsFileMgrValid("")
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+" Error: This FileMgr object is INVALID! Error='%v'", err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error: This FileMgr object is INVALID! Error='%v'", err.Error())
 	}
 
 	if fMgrDest == nil {
-		return errors.New(ePrefix + "Error: Input parameter fMgrDest is a nil pointer!")
+		return errors.New(ePrefix +
+			"Error: Input parameter fMgrDest is a nil pointer!")
 	}
 
 	err = fMgrDest.IsFileMgrValid("")
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+" Error: The Destination FileMgr object is INVALID! Error='%v'", err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error: The Destination FileMgr object is INVALID! Error='%v'",
+			err.Error())
 	}
 
 	if !fMgr.AbsolutePathFileNameDoesExist {
-		return fmt.Errorf(ePrefix+"Error: Source file-  %v  DOES NOT EXIST!", fMgr.AbsolutePathFileName)
+		return fmt.Errorf(ePrefix+"Error: Source file-  %v  DOES NOT EXIST!",
+			fMgr.AbsolutePathFileName)
 	}
 
 	if !fMgr.ActualFileInfo.Mode().IsRegular() {
-		return fmt.Errorf(ePrefix+"Error: Source file is a Non-Regular File and cannot be compied. File='%v'", fMgr.AbsolutePathFileName)
+		return fmt.Errorf(ePrefix+
+			"Error: Source file is a Non-Regular "+
+			"File and cannot be compied. File='%v'", fMgr.AbsolutePathFileName)
 	}
 
 	err = fMgrDest.DMgr.MakeDir()
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Atempted creation of destination directory FAILED! Error= '%v'", err.Error())
+		return fmt.Errorf(ePrefix+
+			"Atempted creation of destination directory FAILED! Error= '%v'",
+			err.Error())
 	}
 
 	destFileExists, err := fMgrDest.DoesThisFileExist()
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error returned by fMgrDest.DoesThisFileExist(). Error= '%v'", err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error returned by fMgrDest.DoesThisFileExist(). Error= '%v'", err.Error())
 	}
 
 	if destFileExists && !fMgrDest.ActualFileInfo.Mode().IsRegular() {
-		return fmt.Errorf(ePrefix+"Error: Destination file exists and it is NOT a 'regular' file. Copy operation aborted! Destination File='%v' ", fMgrDest.AbsolutePathFileName)
+		return fmt.Errorf(ePrefix+
+			"Error: Destination file exists and it is NOT a 'regular' file. "+
+			"Copy operation aborted! Destination File='%v' ", fMgrDest.AbsolutePathFileName)
 	}
 
 	// Source and destination files are the same file.
@@ -1821,17 +1931,27 @@ func (fMgr *FileMgr) CopyFileMgr(fMgrDest *FileMgr) error {
 	err = fh.CopyFileByIoByLink(fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error returned by fh.CopyFileByLinkByIo(fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName) fMgr.AbsolutePathFileName='%v'  fMgrDest.AbsolutePathFileName='%v'  Error='%v'", fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName, err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error returned by fh.CopyFileByLinkByIo(fMgr.AbsolutePathFileName, "+
+			"fMgrDest.AbsolutePathFileName) fMgr.AbsolutePathFileName='%v' "+
+			"fMgrDest.AbsolutePathFileName='%v' Error='%v'",
+			fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName, err.Error())
 	}
 
 	destFileExists, err = fMgrDest.DoesThisFileExist()
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error returned from fMgrDest.DoesThisFileExist(). fMgrDest.AbsolutePathFileName='%v'  Error='%v'", fMgrDest.AbsolutePathFileName, err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error returned from fMgrDest.DoesThisFileExist(). "+
+			"fMgrDest.AbsolutePathFileName='%v'  Error='%v'",
+			fMgrDest.AbsolutePathFileName, err.Error())
 	}
 
 	if !destFileExists {
-		return fmt.Errorf(ePrefix+"Error: After attempted file copy to destination file. Destination file does NOT exist! fMgrDest.AbsolutePathFileName='%v'", fMgrDest.AbsolutePathFileName)
+		return fmt.Errorf(ePrefix+
+			"Error: After attempted file copy to destination file. Destination "+
+			"file does NOT exist! fMgrDest.AbsolutePathFileName='%v'",
+			fMgrDest.AbsolutePathFileName)
 	}
 
 	return nil
@@ -1840,6 +1960,7 @@ func (fMgr *FileMgr) CopyFileMgr(fMgrDest *FileMgr) error {
 // CopyFileStr - Copies file from fMgr.AbsolutePathFileName to
 // to destination path & File Name.
 // See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
 func (fMgr *FileMgr) CopyFileStr(dstPathFileName string) error {
 
 	ePrefix := "FileMgr.CopyFileStr "
@@ -1847,13 +1968,15 @@ func (fMgr *FileMgr) CopyFileStr(dstPathFileName string) error {
 	fMgrDest, err := FileMgr{}.New(dstPathFileName)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error returned by FileMgr{}.New(dstPathFileName). dstPathFileName='%v' Error='%v'", dstPathFileName, err.Error())
+		return fmt.Errorf(ePrefix+"Error returned by FileMgr{}.New(dstPathFileName). "+
+			"dstPathFileName='%v' Error='%v'", dstPathFileName, err.Error())
 	}
 
 	err = fMgr.CopyFileMgr(&fMgrDest)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error returned from fMgr.CopyFileMgr(&fMgrDest) fMgrDest.AbsolutePathFileName='%v'  Error='%v'", fMgrDest.AbsolutePathFileName, err.Error())
+		return fmt.Errorf(ePrefix+"Error returned from fMgr.CopyFileMgr(&fMgrDest) "+
+			"fMgrDest.AbsolutePathFileName='%v'  Error='%v'", fMgrDest.AbsolutePathFileName, err.Error())
 	}
 
 	return nil
@@ -1874,13 +1997,18 @@ func (fMgr *FileMgr) CloseFile() error {
 	err = fMgr.FlushBytesToDisk()
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error returned from fMgr.FlushBytesToDisk().  Error='%v'", err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error returned from fMgr.FlushBytesToDisk().  "+
+			"Error='%v'", err.Error())
+
 	}
 
 	err = fMgr.FilePtr.Close()
 
 	if err != nil {
-		return fmt.Errorf(ePrefix + "Received Error from fMgr.FilePtr.Close(). fMgr.AbsolutePathFileName")
+		return fmt.Errorf(ePrefix+
+			"Received Error from fMgr.FilePtr.Close(). "+
+			"fMgr.AbsolutePathFileName= '%v' ", fMgr.AbsolutePathFileName)
 	}
 
 	fMgr.IsFilePtrOpen = false
@@ -2029,7 +2157,9 @@ func (fMgr *FileMgr) CreateDirAndFile() error {
 		err := fh.MakeDirAll(fMgr.DMgr.AbsolutePath)
 
 		if err != nil {
-			return fmt.Errorf(ePrefix+"Errors from FileHelper:MakeDirAll(fMgr.DMgr.AbsolutePath). fMgr.DMgr.AbsolutePath='%v'  Error='%v' ", fMgr.DMgr.AbsolutePath, err.Error())
+			return fmt.Errorf(ePrefix+"Errors from FileHelper:"+
+				"MakeDirAll(fMgr.DMgr.AbsolutePath). fMgr.DMgr.AbsolutePath='%v'  Error='%v' ",
+				fMgr.DMgr.AbsolutePath, err.Error())
 		}
 
 		fMgr.DMgr.AbsolutePathDoesExist = true
@@ -2043,7 +2173,10 @@ func (fMgr *FileMgr) CreateDirAndFile() error {
 	fMgr.FilePtr, err = os.Create(fMgr.AbsolutePathFileName)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error creating File. Error returned from os.Create(fMgr.AbsolutePathFileName). fMgr.AbsolutePathFileName='%v' Error='%v' ", fMgr.AbsolutePathFileName, err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error creating File. Error returned from os.Create("+
+			"fMgr.AbsolutePathFileName). fMgr.AbsolutePathFileName='%v' Error='%v' ",
+			fMgr.AbsolutePathFileName, err.Error())
 	}
 
 	fMgr.IsFilePtrOpen = true
@@ -2084,7 +2217,9 @@ func (fMgr *FileMgr) CreateFile() error {
 
 	if !fh.DoesFileExist(fMgr.DMgr.AbsolutePath) {
 		fMgr.DMgr.AbsolutePathDoesExist = false
-		return fmt.Errorf(ePrefix+"FileMgr.DMgr.AbsolutePath Does NOT exist! Create the path. FileMgr.DMgr.AbsolutePath='%v'", fMgr.DMgr.AbsolutePath)
+		return fmt.Errorf(ePrefix+
+			"FileMgr.DMgr.AbsolutePath Does NOT exist! Create the path. "+
+			"FileMgr.DMgr.AbsolutePath='%v'", fMgr.DMgr.AbsolutePath)
 	}
 
 	var err error
@@ -2092,7 +2227,10 @@ func (fMgr *FileMgr) CreateFile() error {
 	fMgr.FilePtr, err = os.Create(fMgr.AbsolutePathFileName)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error creating File. Error returned from os.Create(fMgr.AbsolutePathFileName). fMgr.AbsolutePathFileName='%v' Error='%v' ", fMgr.AbsolutePathFileName, err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error creating File. Error returned from "+
+			"os.Create(fMgr.AbsolutePathFileName). fMgr.AbsolutePathFileName='%v' Error='%v' ",
+			fMgr.AbsolutePathFileName, err.Error())
 	}
 
 	fMgr.IsFilePtrOpen = true
@@ -2105,12 +2243,13 @@ func (fMgr *FileMgr) CreateFile() error {
 // in the current FileHelper structure.
 func (fMgr *FileMgr) DeleteThisFile() error {
 
-	ePrefix := "FileMgr.DeleteThisFile()"
+	ePrefix := "FileMgr.DeleteThisFile() "
 
 	err := fMgr.IsFileMgrValid("")
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+" Error: This FileMgr object is INVALID!  Error='%v'", err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error: This FileMgr object is INVALID!  Error='%v'", err.Error())
 	}
 
 	if fMgr.FilePtr != nil {
@@ -2118,7 +2257,8 @@ func (fMgr *FileMgr) DeleteThisFile() error {
 		err = fMgr.FilePtr.Close()
 
 		if err != nil {
-			return fmt.Errorf(ePrefix+" Error from fMgr.FilePtr.Close()!  Error='%v'", err.Error())
+			return fmt.Errorf(ePrefix+
+				"Error from fMgr.FilePtr.Close()!  Error='%v'", err.Error())
 		}
 	}
 
@@ -2127,17 +2267,24 @@ func (fMgr *FileMgr) DeleteThisFile() error {
 	err = os.Remove(fMgr.AbsolutePathFileName)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+" - os.Remove(fMgr.AbsolutePathFileName) returned an error. AbsolutePathFileName='%v'   Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+		return fmt.Errorf(ePrefix+
+			"- os.Remove(fMgr.AbsolutePathFileName) "+
+			"returned an error. AbsolutePathFileName='%v'   Error='%v'",
+			fMgr.AbsolutePathFileName, err.Error())
 	}
 
 	fileExists, err := fMgr.DoesThisFileExist()
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error returned by fMgr.DoesThisFileExist() fMgr.AbsolutePathFileName='%v'  Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error returned by fMgr.DoesThisFileExist() "+
+			"fMgr.AbsolutePathFileName='%v'  Error='%v'", fMgr.AbsolutePathFileName, err.Error())
 	}
 
 	if fileExists {
-		return fmt.Errorf(ePrefix+"Error: Attempted file deletion FAILED!. File still exists. fMgr.AbsolutePathFileName='%v'", fMgr.AbsolutePathFileName)
+		return fmt.Errorf(ePrefix+
+			"Error: Attempted file deletion FAILED!. "+
+			"File still exists. fMgr.AbsolutePathFileName='%v'", fMgr.AbsolutePathFileName)
 	}
 
 	fMgr.ActualFileInfo = FileInfoPlus{}
@@ -2154,11 +2301,14 @@ func (fMgr *FileMgr) DoesThisFileExist() (bool, error) {
 	ePrefix := "FileMgr.DoesThisFileExist() "
 
 	if !fMgr.IsInitialized {
-		return false, errors.New(ePrefix + " Error: The File Manager data structure has NOT been initialized.")
+		return false,
+			errors.New(ePrefix +
+				"Error: The File Manager data structure has NOT been initialized.")
 	}
 
 	if fMgr.AbsolutePathFileNameIsPopulated == false {
-		return false, errors.New(ePrefix + " Error: AbsolutePathFileName is NOT POPULATED!")
+		return false,
+			errors.New(ePrefix + " Error: AbsolutePathFileName is NOT POPULATED!")
 	}
 
 	if fMgr.AbsolutePathFileName == "" {
@@ -2220,25 +2370,34 @@ func (fMgr *FileMgr) FlushBytesToDisk() error {
 // }
 func (fMgr *FileMgr) GetFileInfo() (os.FileInfo, error) {
 
-	ePrefix := "FileMgr.DeleteThisFile()"
+	ePrefix := "FileMgr.DeleteThisFile() "
 
 	if !fMgr.IsInitialized {
-		return nil, errors.New(ePrefix + " Error: This data structure is NOT initialized.")
+		return nil,
+			errors.New(ePrefix +
+				"Error: This data structure is NOT initialized.")
 	}
 
 	if !fMgr.AbsolutePathFileNameIsPopulated {
-		return nil, errors.New(ePrefix + " Error: AbsolutePathFileName is NOT populated/initialized.")
+		return nil,
+			errors.New(ePrefix +
+				"Error: AbsolutePathFileName is NOT populated/initialized.")
 	}
 
 	if fMgr.AbsolutePathFileName == "" {
 		fMgr.AbsolutePathFileNameIsPopulated = false
-		return nil, errors.New(ePrefix + " Error: AbsolutePathFileName is EMPTY!")
+		return nil,
+			errors.New(ePrefix +
+				"Error: AbsolutePathFileName is EMPTY!")
 	}
 
 	info, err := os.Stat(fMgr.AbsolutePathFileName)
 
 	if err != nil {
-		return nil, fmt.Errorf(ePrefix+"Error returned by os.Stat(fMgr.AbsolutePathFileName). fMgr.AbsolutePathFileName='%v'  Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+		return nil,
+			fmt.Errorf(ePrefix+"Error returned by "+
+				"os.Stat(fMgr.AbsolutePathFileName). fMgr.AbsolutePathFileName='%v'  Error='%v'",
+				fMgr.AbsolutePathFileName, err.Error())
 	}
 
 	fMgr.ActualFileInfo = FileInfoPlus{}.NewPathFileInfo(fMgr.DMgr.AbsolutePath, info)
@@ -2297,19 +2456,22 @@ func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err erro
 	err = nil
 
 	if !fMgr.IsInitialized {
-		err = errors.New(ePrefix + "Error: The current FileMgr object is NOT initialized. It is Empty!")
+		err = errors.New(ePrefix +
+			"Error: The current FileMgr object is NOT initialized. It is Empty!")
 		return
 	}
 
 	err2 := fMgr.IsFileMgrValid("")
 
 	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error: Current FileMgr object is INVALID!. Error='%v'", err2.Error())
+		err = fmt.Errorf(ePrefix+"Error: Current FileMgr object is INVALID!. Error='%v'",
+			err2.Error())
 		return
 	}
 
 	if !dMgr.IsInitialized {
-		err = errors.New(ePrefix + "Error: Input parameter 'dMgr' is NOT initialized. It is Empty!")
+		err = errors.New(ePrefix +
+			"Error: Input parameter 'dMgr' is NOT initialized. It is Empty!")
 		return
 	}
 
@@ -2321,19 +2483,26 @@ func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err erro
 	}
 
 	if !dMgr.AbsolutePathDoesExist && !dMgr.PathDoesExist {
-		err = fmt.Errorf(ePrefix+"Error: Destination Path DOES NOT EXIST!. For this DirMgr object, both AbsolutePath and Path DO NOT EXIST! dMgr.AbsolutePath='%v'  dMgr.Path='%v'", dMgr.AbsolutePath, dMgr.Path)
+		err = fmt.Errorf(ePrefix+
+			"Error: Destination Path DOES NOT EXIST!. "+
+			"For this DirMgr object, both AbsolutePath and Path DO NOT EXIST! "+
+			"dMgr.AbsolutePath='%v'  dMgr.Path='%v'", dMgr.AbsolutePath, dMgr.Path)
 		return
 	}
 
 	srcFileExists, err2 := fMgr.DoesThisFileExist()
 
 	if err2 != nil {
-		err = fmt.Errorf("Error returned by fMgr.DoesThisFileExist(). fMgr.AbsolutePathFileName='%v'  Error='%v'", fMgr.AbsolutePathFileName, err2.Error())
+		err = fmt.Errorf(ePrefix+
+			"Error returned by fMgr.DoesThisFileExist(). "+
+			"fMgr.AbsolutePathFileName='%v'  Error='%v'", fMgr.AbsolutePathFileName, err2.Error())
 		return
 	}
 
 	if !srcFileExists {
-		err = fmt.Errorf("Error: The source file identified by the current FileMgr object DOES NOT EXIST! fMgr.AbsolutePathFileName='%v'", fMgr.AbsolutePathFileName)
+		err = fmt.Errorf(ePrefix+
+			"Error: The source file identified by the current FileMgr object DOES NOT EXIST! "+
+			"fMgr.AbsolutePathFileName='%v'", fMgr.AbsolutePathFileName)
 		return
 	}
 
@@ -2349,14 +2518,21 @@ func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err erro
 	_, err = fh.MoveFile(fMgr.AbsolutePathFileName, destPathFileName)
 
 	if err != nil {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error returned from fh.MoveFile(fMgr.AbsolutePathFileName, destPathFileName). fMgr.AbsolutePathFileName='%v'  pathFile='%v' Error='%v'", fMgr.AbsolutePathFileName, destPathFileName, err.Error())
+		return FileMgr{},
+			fmt.Errorf(ePrefix+
+				"Error returned from "+
+				"fh.MoveFile(fMgr.AbsolutePathFileName, destPathFileName). "+
+				"fMgr.AbsolutePathFileName='%v' pathFile='%v' Error='%v'",
+				fMgr.AbsolutePathFileName, destPathFileName, err.Error())
 	}
 
 	newFMgr, err2 = FileMgr{}.New(destPathFileName)
 
 	if err2 != nil {
 		newFMgr = FileMgr{}
-		err = fmt.Errorf(ePrefix+"Error returned by FileMgr{}.New(destPathFileName). destPathFileName='%v' Error='%v'", destPathFileName, err2.Error())
+		err = fmt.Errorf(ePrefix+
+			"Error returned by FileMgr{}.New(destPathFileName). destPathFileName='%v' "+
+			"Error='%v'", destPathFileName, err2.Error())
 		return
 	}
 
@@ -2364,13 +2540,15 @@ func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err erro
 
 	if err2 != nil {
 		newFMgr = FileMgr{}
-		err = fmt.Errorf(ePrefix+"Error: Old file still exists! Error='%v'", err2.Error())
+		err = fmt.Errorf(ePrefix+"Error: Old file still exists! Error='%v'",
+			err2.Error())
 		return
 	}
 
 	if doesFileExist == true {
 		newFMgr = FileMgr{}
-		err = fmt.Errorf(ePrefix+"Error: Old file still exists! Old File Name: %v ", fMgr.AbsolutePathFileName)
+		err = fmt.Errorf(ePrefix+"Error: Old file still exists! Old File Name: %v ",
+			fMgr.AbsolutePathFileName)
 		return
 	}
 
@@ -2402,43 +2580,55 @@ func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (newFMgr FileMgr, err erro
 	lPath := len(dirPath)
 
 	if lPath == 0 {
-		err = errors.New(ePrefix + "Error: Input parameter 'dirPath' is a Zero length string!")
+		err = errors.New(ePrefix +
+			"Error: Input parameter 'dirPath' is a Zero length string!")
 		return
 	}
 
 	if !fMgr.IsInitialized {
-		err = errors.New(ePrefix + "Error: The current FileMgr object is NOT Initialized! It is EMPTY!")
+		err = errors.New(ePrefix +
+			"Error: The current FileMgr object is NOT Initialized! It is EMPTY!")
 		return
 	}
 
 	err2 := fMgr.IsFileMgrValid("")
 
 	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error: Current FileMgr object is INVALID!. Error='%v'", err2.Error())
+		err = fmt.Errorf(ePrefix+
+			"Error: Current FileMgr object is INVALID!. Error='%v'",
+			err2.Error())
 		return
 	}
 
 	if !fMgr.AbsolutePathFileNameDoesExist {
-		err = fmt.Errorf(ePrefix+"Error: The source files does NOT exist. srcFile='%v' ", fMgr.AbsolutePathFileName)
+		err = fmt.Errorf(ePrefix+
+			"Error: The source files does NOT exist. srcFile='%v' ",
+			fMgr.AbsolutePathFileName)
 		return
 	}
 
 	dMgr, err2 := DirMgr{}.New(dirPath)
 
 	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error returned from DirMgr{}.New(dirPath). dirPath='%v'  Error='%v'", dirPath, err2.Error())
+		err = fmt.Errorf(ePrefix+
+			"Error returned from DirMgr{}.New(dirPath). dirPath='%v'  Error='%v'",
+			dirPath, err2.Error())
 		return
 	}
 
 	if !dMgr.IsInitialized {
-		err = fmt.Errorf(ePrefix+"Error: Input parameter 'dirPath' generated an empty DirMgr object. dirPath='%v'", dirPath)
+		err = fmt.Errorf(ePrefix+
+			"Error: Input parameter 'dirPath' "+
+			"generated an empty DirMgr object. dirPath='%v'", dirPath)
 		return
 	}
 
 	pathExists, absPathExists := dMgr.DoesDirectoryExist()
 
 	if !pathExists && !absPathExists {
-		err = fmt.Errorf(ePrefix+"Error: Target Destination Path DOES NOT EXIST! dirPath='%v'", dirPath)
+		err = fmt.Errorf(ePrefix+
+			"Error: Target Destination Path DOES NOT EXIST! dirPath='%v'",
+			dirPath)
 		return
 	}
 
@@ -2446,7 +2636,9 @@ func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (newFMgr FileMgr, err erro
 
 	if err2 != nil {
 		newFMgr = FileMgr{}
-		err = fmt.Errorf(ePrefix+"Error returned by fMgr.MoveFileToNewDirMgr(dMgr). dMgr.Path='%v' Error='%v'", dMgr.Path, err2.Error())
+		err = fmt.Errorf(ePrefix+
+			"Error returned by fMgr.MoveFileToNewDirMgr(dMgr). "+
+			"dMgr.Path='%v' Error='%v'", dMgr.Path, err2.Error())
 		return
 	}
 
@@ -2481,11 +2673,14 @@ func (fMgr FileMgr) New(pathFileNameExt string) (FileMgr, error) {
 	isEmpty, err := fMgrOut.SetFileMgrFromPathFileName(pathFileNameExt)
 
 	if err != nil {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error returned from fMgrOut.SetFileMgrFromPathFileName(pathFileNameExt) pathFileNameExt='%v'  Error='%v'", pathFileNameExt, err.Error())
+		return FileMgr{}, fmt.Errorf(ePrefix+
+			"Error returned from fMgrOut.SetFileMgrFromPathFileName(pathFileNameExt) "+
+			"pathFileNameExt='%v'  Error='%v'", pathFileNameExt, err.Error())
 	}
 
 	if isEmpty {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error: Returned FileMgr is Empty! pathFileNameExt='%v' ", pathFileNameExt)
+		return FileMgr{}, fmt.Errorf(ePrefix+
+			"Error: Returned FileMgr is Empty! pathFileNameExt='%v' ", pathFileNameExt)
 	}
 
 	return fMgrOut, nil
@@ -2503,7 +2698,10 @@ func (fMgr FileMgr) NewFromFileInfo(pathStr string, info os.FileInfo) (FileMgr, 
 	pathStr, err = fh.AddPathSeparatorToEndOfPathStr(pathStr)
 
 	if err != nil {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error returned from fh.AddPathSeparatorToEndOfPathStr(pathStr). pathStr='%v' Error='%v'", pathStr, err.Error())
+		return FileMgr{},
+			fmt.Errorf(ePrefix+
+				"Error returned from fh.AddPathSeparatorToEndOfPathStr(pathStr). "+
+				"pathStr='%v' Error='%v'", pathStr, err.Error())
 	}
 
 	pathFileName := pathStr + info.Name()
@@ -2513,11 +2711,15 @@ func (fMgr FileMgr) NewFromFileInfo(pathStr string, info os.FileInfo) (FileMgr, 
 	isEmpty, err := fmgr2.SetFileMgrFromPathFileName(pathFileName)
 
 	if err != nil {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error returned from fmgr2.SetFileMgrFromPathFileName(pathFileName). pathFileName='%v' Error='%v'", pathFileName, err.Error())
+		return FileMgr{},
+			fmt.Errorf(ePrefix+
+				"Error returned from fmgr2.SetFileMgrFromPathFileName(pathFileName). "+
+				"pathFileName='%v' Error='%v'", pathFileName, err.Error())
 	}
 
 	if isEmpty {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error returned FileMgr is Empty! pathFileName='%v'", pathFileName)
+		return FileMgr{}, fmt.Errorf(ePrefix+
+			"Error returned FileMgr is Empty! pathFileName='%v'", pathFileName)
 	}
 
 	fmgr2.ActualFileInfo = FileInfoPlus{}.NewPathFileInfo(pathStr, info)
@@ -2536,18 +2738,25 @@ func (fMgr FileMgr) NewFromFileInfo(pathStr string, info os.FileInfo) (FileMgr, 
 // 'dirMgr' and 'fileNameExt' will be combined to create a new File Manager (FileMgr) with a
 // properly configured path, file name and file extension.
 //
-func (fMgr FileMgr) NewFromDirMgrFileNameExt(dirMgr DirMgr, fileNameExt string) (FileMgr, error) {
+func (fMgr FileMgr) NewFromDirMgrFileNameExt(
+	dirMgr DirMgr,
+	fileNameExt string) (FileMgr, error) {
+
 	ePrefix := "FileMgr.NewFromDirMgrFileNameExt() "
 
 	if len(fileNameExt) == 0 {
-		return FileMgr{}, errors.New(ePrefix + "Error: Input Parameter fileNameExt is a zero length string!")
+		return FileMgr{},
+			errors.New(ePrefix +
+				"Error: Input Parameter fileNameExt is a zero length string!")
 	}
 
 	if dirMgr.IsInitialized {
 		err := dirMgr.IsDirMgrValid("")
 
 		if err != nil {
-			return FileMgr{}, errors.New(ePrefix + "Error: DirMgr object, 'dirMgr', passed as input parameter is INVALID!")
+			return FileMgr{},
+				errors.New(ePrefix +
+					"Error: DirMgr object, 'dirMgr', passed as input parameter is INVALID!")
 		}
 
 	}
@@ -2557,11 +2766,15 @@ func (fMgr FileMgr) NewFromDirMgrFileNameExt(dirMgr DirMgr, fileNameExt string) 
 	isEmpty, err := fmgr2.SetFileMgrFromDirMgrFileName(dirMgr, fileNameExt)
 
 	if err != nil {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error returned by fmgr2.SetFileMgrFromDirMgrFileName(dirMgr, fileNameExt). Error='%v'", err.Error())
+		return FileMgr{}, fmt.Errorf(ePrefix+
+			"Error returned by fmgr2.SetFileMgrFromDirMgrFileName(dirMgr, fileNameExt). "+
+			"Error='%v'", err.Error())
 	}
 
 	if isEmpty {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error: Empty FileMgr object returned by fmgr2.SetFileMgrFromDirMgrFileName(dirMgr, fileNameExt) dirMgr.Path='%v' fileNameExt='%v'", dirMgr.Path, fileNameExt)
+		return FileMgr{}, fmt.Errorf(ePrefix+
+			"Error: Empty FileMgr object returned by fmgr2.SetFileMgrFromDirMgrFileName("+
+			"dirMgr, fileNameExt) dirMgr.Path='%v' fileNameExt='%v'", dirMgr.Path, fileNameExt)
 	}
 
 	return fmgr2, nil
@@ -2569,28 +2782,40 @@ func (fMgr FileMgr) NewFromDirMgrFileNameExt(dirMgr DirMgr, fileNameExt string) 
 
 // NewFromDirStrFileNameStr - Creates a new file manager object (FileMgr) from a directory
 // string and a File Name and Extension string passed as input parameters.
-func (fMgr FileMgr) NewFromDirStrFileNameStr(dirStr, fileNameExtStr string) (FileMgr, error) {
+func (fMgr FileMgr) NewFromDirStrFileNameStr(
+	dirStr,
+	fileNameExtStr string) (FileMgr, error) {
 
 	ePrefix := "FileMgr.NewFromDirStrFileNameStr() "
 
 	if len(dirStr) == 0 {
-		return FileMgr{}, errors.New(ePrefix + "Error: Input parameter 'dirStr' is a Zero Length String!")
+		return FileMgr{},
+			errors.New(ePrefix +
+				"Error: Input parameter 'dirStr' is a Zero Length String!")
 	}
 
 	if len(fileNameExtStr) == 0 {
-		return FileMgr{}, errors.New(ePrefix + "Error: Input parameter 'fileNameExtStr' is a Zero Length String!")
+		return FileMgr{},
+			errors.New(ePrefix +
+				"Error: Input parameter 'fileNameExtStr' is a Zero Length String!")
 	}
 
 	dMgr, err := DirMgr{}.New(dirStr)
 
 	if err != nil {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error returned by DirMgr{}.New(dirStr). dirStr='%v'  Error='%v'", dirStr, err.Error())
+		return FileMgr{},
+			fmt.Errorf(ePrefix+
+				"Error returned by DirMgr{}.New(dirStr). dirStr='%v'  Error='%v'",
+				dirStr, err.Error())
 	}
 
 	fMgr2, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, fileNameExtStr)
 
 	if err != nil {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, fileNameExtStr). fileNameExtStr='%v'  Error='%v'", fileNameExtStr, err.Error())
+		return FileMgr{},
+			fmt.Errorf(ePrefix+
+				"Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, fileNameExtStr). "+
+				"fileNameExtStr='%v'  Error='%v'", fileNameExtStr, err.Error())
 	}
 
 	return fMgr2, nil
@@ -2603,33 +2828,39 @@ func (fMgr FileMgr) NewFromDirStrFileNameStr(dirStr, fileNameExtStr string) (Fil
 //
 //
 func (fMgr *FileMgr) OpenThisFileReadOnly() error {
-	ePrefix := "FileMgr.OpenThisFileReadWrite()"
+	ePrefix := "FileMgr.OpenThisFileReadWrite() "
 	var err error
 
 	if !fMgr.IsInitialized {
-		return errors.New(ePrefix + " Error: The File Manager data structure has NOT been initialized.")
+		return errors.New(ePrefix +
+			"Error: The File Manager data structure has NOT been initialized.")
 	}
 
 	if !fMgr.AbsolutePathFileNameIsPopulated {
-		return errors.New(ePrefix + " Error: FileMgr.AbsolutePathFileName has NOT been initialized and populated.")
+		return errors.New(ePrefix +
+			"Error: FileMgr.AbsolutePathFileName has NOT been initialized and populated.")
 	}
 
 	if fMgr.AbsolutePathFileName == "" {
 		fMgr.AbsolutePathFileNameIsPopulated = false
-		return errors.New(ePrefix + " Error: FileMgr.AbsolutePathFileName is EMPTY!")
+		return errors.New(ePrefix +
+			"Error: FileMgr.AbsolutePathFileName is EMPTY!")
 	}
 
 	if fMgr.IsFilePtrOpen {
 		err = fMgr.CloseFile()
 		if err != nil {
-			return fmt.Errorf(ePrefix+"Error returned by fMgr.CloseFile(). AbsolutePathFileName='%v'  Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+			return fmt.Errorf(ePrefix+
+				"Error returned by fMgr.CloseFile(). AbsolutePathFileName='%v'  Error='%v'",
+				fMgr.AbsolutePathFileName, err.Error())
 		}
 	}
 
 	doesFileExist, err := fMgr.DoesThisFileExist()
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+" Error returned from fMgr.DoesThisFileExist() - %v", err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error returned from fMgr.DoesThisFileExist() - %v", err.Error())
 	}
 
 	if !doesFileExist {
@@ -2637,7 +2868,9 @@ func (fMgr *FileMgr) OpenThisFileReadOnly() error {
 		err = fMgr.CreateDirAndFile()
 
 		if err != nil {
-			return fmt.Errorf(ePrefix+" Error from fMgr.CreateDirAndFile(fMgr.AbsolutePathFileName). AbsolutePathFileName='%v'. Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+			return fmt.Errorf(ePrefix+
+				"Error from fMgr.CreateDirAndFile(fMgr.AbsolutePathFileName). "+
+				"AbsolutePathFileName='%v'. Error='%v'", fMgr.AbsolutePathFileName, err.Error())
 		}
 
 		fMgr.AbsolutePathFileNameDoesExist = true
@@ -2645,13 +2878,16 @@ func (fMgr *FileMgr) OpenThisFileReadOnly() error {
 	}
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error creating File. Error returned from os.Create(fMgr.AbsolutePathFileName). fMgr.AbsolutePathFileName='%v' Error='%v' ", fMgr.AbsolutePathFileName, err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error creating File. Error returned from os.Create(fMgr.AbsolutePathFileName). "+
+			"fMgr.AbsolutePathFileName='%v' Error='%v' ", fMgr.AbsolutePathFileName, err.Error())
 	}
 
 	fMgr.FilePtr, err = os.OpenFile(fMgr.AbsolutePathFileName, os.O_RDONLY, 0666)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+" Error opening file: '%v' Error= '%v'", fMgr.AbsolutePathFileName, err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error opening file: '%v' Error= '%v'", fMgr.AbsolutePathFileName, err.Error())
 	}
 
 	fMgr.IsFilePtrOpen = true
@@ -2673,32 +2909,38 @@ func (fMgr *FileMgr) OpenThisFileReadOnly() error {
 func (fMgr *FileMgr) OpenThisFileReadWrite() error {
 	var err error
 
-	ePrefix := "FileMgr.OpenThisFileReadWrite()"
+	ePrefix := "FileMgr.OpenThisFileReadWrite() "
 
 	if !fMgr.IsInitialized {
-		return errors.New(ePrefix + " Error: The File Manager data structure has NOT been initialized.")
+		return errors.New(ePrefix +
+			"Error: The File Manager data structure has NOT been initialized.")
 	}
 
 	if !fMgr.AbsolutePathFileNameIsPopulated {
-		return errors.New(ePrefix + " Error: FileMgr.AbsolutePathFileName has NOT been initialized and populated.")
+		return errors.New(ePrefix +
+			"Error: FileMgr.AbsolutePathFileName has NOT been initialized and populated.")
 	}
 
 	if fMgr.AbsolutePathFileName == "" {
 		fMgr.AbsolutePathFileNameIsPopulated = false
-		return errors.New(ePrefix + " Error: FileMgr.AbsolutePathFileName is EMPTY!")
+		return errors.New(ePrefix +
+			"Error: FileMgr.AbsolutePathFileName is EMPTY!")
 	}
 
 	if fMgr.IsFilePtrOpen || fMgr.FilePtr != nil {
 		err = fMgr.CloseFile()
 		if err != nil {
-			return fmt.Errorf(ePrefix+"Error returned by fMgr.CloseFile(). AbsolutePathFileName='%v'  Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+			return fmt.Errorf(ePrefix+
+				"Error returned by fMgr.CloseFile(). AbsolutePathFileName='%v'  Error='%v'",
+				fMgr.AbsolutePathFileName, err.Error())
 		}
 	}
 
 	doesFileExist, err := fMgr.DoesThisFileExist()
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+" Error returned from fMgr.DoesThisFileExist() - %v", err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error returned from fMgr.DoesThisFileExist() - %v", err.Error())
 	}
 
 	if !doesFileExist {
@@ -2706,7 +2948,10 @@ func (fMgr *FileMgr) OpenThisFileReadWrite() error {
 		err = fMgr.CreateDirAndFile()
 
 		if err != nil {
-			return fmt.Errorf(ePrefix+" Error from fMgr.CreateDirAndFile(fMgr.AbsolutePathFileName). AbsolutePathFileName='%v'. Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+			return fmt.Errorf(ePrefix+
+				"Error from fMgr.CreateDirAndFile(fMgr.AbsolutePathFileName). "+
+				"AbsolutePathFileName='%v'. Error='%v'",
+				fMgr.AbsolutePathFileName, err.Error())
 		}
 
 		fMgr.AbsolutePathFileNameDoesExist = true
@@ -2718,7 +2963,9 @@ func (fMgr *FileMgr) OpenThisFileReadWrite() error {
 	fMgr.FilePtr, err = os.OpenFile(fMgr.AbsolutePathFileName, os.O_RDWR, 0666)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+" Error opening file: '%v' Error= '%v'", fMgr.AbsolutePathFileName, err.Error())
+		return fmt.Errorf(ePrefix+
+			"Error opening file: '%v' Error= '%v'",
+			fMgr.AbsolutePathFileName, err.Error())
 	}
 
 	fMgr.IsFilePtrOpen = true
@@ -2736,17 +2983,20 @@ func (fMgr *FileMgr) ReadAllFile() ([]byte, error) {
 	var err error
 
 	if !fMgr.IsInitialized {
-		return []byte{}, errors.New(ePrefix + " Error: The File Manager data structure has NOT been initialized.")
+		return []byte{}, errors.New(ePrefix +
+			"Error: The File Manager data structure has NOT been initialized.")
 	}
 
 	err = fMgr.IsFileMgrValid("")
 
 	if err != nil {
-		return []byte{}, fmt.Errorf(ePrefix+"Error - This File Manager is INVALID! Error='%v'", err.Error())
+		return []byte{}, fmt.Errorf(ePrefix+
+			"Error - This File Manager is INVALID! Error='%v'", err.Error())
 	}
 
 	if !fMgr.AbsolutePathFileNameIsPopulated {
-		return []byte{}, errors.New(ePrefix + "Error: FileMgr.AbsolutePathFileName has NOT been initialized and populated.")
+		return []byte{}, errors.New(ePrefix +
+			"Error: FileMgr.AbsolutePathFileName has NOT been initialized and populated.")
 	}
 
 	if fMgr.AbsolutePathFileName == "" {
@@ -2761,7 +3011,9 @@ func (fMgr *FileMgr) ReadAllFile() ([]byte, error) {
 			err = fMgr.CloseFile()
 
 			if err != nil {
-				return []byte{}, fmt.Errorf(ePrefix+"Error: Failed to Close '%v'. Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+				return []byte{}, fmt.Errorf(ePrefix+
+					"Error: Failed to Close '%v'. Error='%v'",
+					fMgr.AbsolutePathFileName, err.Error())
 			}
 		}
 
@@ -2770,7 +3022,10 @@ func (fMgr *FileMgr) ReadAllFile() ([]byte, error) {
 		err = fMgr.OpenThisFileReadWrite()
 
 		if err != nil {
-			return []byte{}, fmt.Errorf(ePrefix+"Error returned from fMgr.OpenThisFileReadWrite() fileNameExt='%v' Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+			return []byte{},
+				fmt.Errorf(ePrefix+
+					"Error returned from fMgr.OpenThisFileReadWrite() fileNameExt='%v' Error='%v'",
+					fMgr.AbsolutePathFileName, err.Error())
 		}
 
 		fMgr.IsFilePtrOpen = true
@@ -2779,7 +3034,11 @@ func (fMgr *FileMgr) ReadAllFile() ([]byte, error) {
 	bytesRead, err := ioutil.ReadAll(fMgr.FilePtr)
 
 	if err != nil {
-		return []byte{}, fmt.Errorf(ePrefix+"Error returned by ioutil.ReadAll(fMgr.FilePtr). FileName='%v' Errors='%v'", fMgr.AbsolutePathFileName, err.Error())
+		return []byte{},
+			fmt.Errorf(ePrefix+
+				"Error returned by ioutil.ReadAll(fMgr.FilePtr). "+
+				"FileName='%v' Errors='%v'",
+				fMgr.AbsolutePathFileName, err.Error())
 	}
 
 	return bytesRead, nil
@@ -2797,22 +3056,27 @@ func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (int, error) {
 	var err error
 
 	if !fMgr.IsInitialized {
-		return 0, errors.New(ePrefix + " Error: The File Manager data structure has NOT been initialized.")
+		return 0, errors.New(ePrefix +
+			"Error: The File Manager data structure has NOT been initialized.")
 	}
 
 	err = fMgr.IsFileMgrValid("")
 
 	if err != nil {
-		return 0, fmt.Errorf(ePrefix+"Error - This File Manager is INVALID! Error='%v'", err.Error())
+		return 0, fmt.Errorf(ePrefix+
+			"Error - This File Manager is INVALID! Error='%v'", err.Error())
 	}
 
 	if !fMgr.AbsolutePathFileNameIsPopulated {
-		return 0, errors.New(ePrefix + " Error: FileMgr.AbsolutePathFileName has NOT been initialized and populated.")
+		return 0,
+			errors.New(ePrefix +
+				"Error: FileMgr.AbsolutePathFileName has NOT been initialized and populated.")
 	}
 
 	if fMgr.AbsolutePathFileName == "" {
 		fMgr.AbsolutePathFileNameIsPopulated = false
-		return 0, errors.New(ePrefix + " Error: FileMgr.AbsolutePathFileName is EMPTY!")
+		return 0,
+			errors.New(ePrefix + " Error: FileMgr.AbsolutePathFileName is EMPTY!")
 	}
 
 	if !fMgr.IsFilePtrOpen || fMgr.FilePtr == nil {
@@ -2821,7 +3085,9 @@ func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (int, error) {
 			err = fMgr.CloseFile()
 
 			if err != nil {
-				return 0, fmt.Errorf(ePrefix+"Error: Failed to close fMgr.AbsolutePathFileName='%v'. Error='%v' ", fMgr.AbsolutePathFileName, err.Error())
+				return 0, fmt.Errorf(ePrefix+
+					"Error: Failed to close fMgr.AbsolutePathFileName='%v'. Error='%v' ",
+					fMgr.AbsolutePathFileName, err.Error())
 			}
 
 		}
@@ -2831,7 +3097,10 @@ func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (int, error) {
 		err = fMgr.OpenThisFileReadWrite()
 
 		if err != nil {
-			return 0, fmt.Errorf(ePrefix+"Error returned by fMgr.OpenThisFileReadWrite()  FileName='%v'  Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+			return 0,
+				fmt.Errorf(ePrefix+
+					"Error returned by fMgr.OpenThisFileReadWrite()  FileName='%v'  Error='%v'",
+					fMgr.AbsolutePathFileName, err.Error())
 		}
 
 		fMgr.IsFilePtrOpen = true
@@ -2840,7 +3109,9 @@ func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (int, error) {
 	bytesRead, err := fMgr.FilePtr.Read(byteBuff)
 
 	if err != nil {
-		return bytesRead, fmt.Errorf(ePrefix+"Error returned by fMgr.FilePtr.Read(byteBuff). FileName='%v'  Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+		return bytesRead, fmt.Errorf(ePrefix+
+			"Error returned by fMgr.FilePtr.Read(byteBuff). "+
+			"FileName='%v'  Error='%v'", fMgr.AbsolutePathFileName, err.Error())
 	}
 
 	return bytesRead, nil
@@ -2848,7 +3119,10 @@ func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (int, error) {
 
 // SetFileMgrFromDirMgrFileName - Sets the data fields of the current FileMgr object
 // based on a DirMgr object and a File Name string which are passed as input parameters.
-func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(dMgr DirMgr, fileNameExt string) (isEmpty bool, err error) {
+func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
+	dMgr DirMgr,
+	fileNameExt string) (isEmpty bool, err error) {
+
 	ePrefix := "FileMgr.SetFileMgrFromDirMgrFileName() "
 	isEmpty = true
 	err = nil
@@ -2860,26 +3134,32 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(dMgr DirMgr, fileNameExt strin
 		err2 := dMgr.IsDirMgrValid("")
 
 		if err2 != nil {
-			err = fmt.Errorf(ePrefix+"Error: Input parameter 'dMgr' is INVALID! dMgr.Path='%v'  Error='%v'", dMgr.Path, err2.Error())
+			err = fmt.Errorf(ePrefix+
+				"Error: Input parameter 'dMgr' is INVALID! dMgr.Path='%v'  Error='%v'",
+				dMgr.Path, err2.Error())
 			return
 		}
 
 	}
 
 	if len(fileNameExt) == 0 {
-		err = errors.New(ePrefix + "Error: Input parameter 'fileNameExt' is a Zero length string!")
+		err = errors.New(ePrefix +
+			"Error: Input parameter 'fileNameExt' is a Zero length string!")
 		return
 	}
 
 	adjustedFileNameExt, isFileNameEmpty, err2 := fh.CleanFileNameExtStr(fileNameExt)
 
 	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error returned from fh.CleanFileNameExtStr(fileNameExt). fileNameExt='%v' Error='%v'", fileNameExt, err2.Error())
+		err = fmt.Errorf(ePrefix+"Error returned from fh.CleanFileNameExtStr(fileNameExt). "+
+			"fileNameExt='%v' Error='%v'", fileNameExt, err2.Error())
 		return
 	}
 
 	if isFileNameEmpty {
-		err = fmt.Errorf(ePrefix+"Error: fileName returned from fh.CleanFileNameExtStr(fileNameExt) is a ZERO length string! fileNameExt='%v'", fileNameExt)
+		err = fmt.Errorf(ePrefix+
+			"Error: fileName returned from fh.CleanFileNameExtStr(fileNameExt) "+
+			"is a ZERO length string! fileNameExt='%v'", fileNameExt)
 		return
 	}
 
@@ -2888,14 +3168,18 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(dMgr DirMgr, fileNameExt strin
 	s, fNameIsEmpty, err2 := fh.GetFileNameWithoutExt(adjustedFileNameExt)
 
 	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error returned from fh.GetFileNameWithoutExt(adjustedFileNameExt). adjustedFileNameExt='%v'  Error='%v' ", adjustedFileNameExt, err2.Error())
+		err = fmt.Errorf(ePrefix+
+			"Error returned from fh.GetFileNameWithoutExt(adjustedFileNameExt). "+
+			"adjustedFileNameExt='%v'  Error='%v' ", adjustedFileNameExt, err2.Error())
 		fMgr.Empty()
 		isEmpty = true
 		return
 	}
 
 	if fNameIsEmpty {
-		err = fmt.Errorf(ePrefix+"Error: FileName returned from fh.GetFileNameWithoutExt(adjustedFileNameExt) is Zero length string! adjustedFileNameExt='%v'  ", adjustedFileNameExt)
+		err = fmt.Errorf(ePrefix+
+			"Error: FileName returned from fh.GetFileNameWithoutExt(adjustedFileNameExt) "+
+			"is Zero length string! adjustedFileNameExt='%v'  ", adjustedFileNameExt)
 		fMgr.Empty()
 		isEmpty = true
 		return
@@ -2908,7 +3192,9 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(dMgr DirMgr, fileNameExt strin
 	s, extIsEmpty, err2 := fh.GetFileExtension(adjustedFileNameExt)
 
 	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error returned from fh.GetFileExtension(fileNameAndExt). fileNameAndExt='%v'  Error='%v' ", adjustedFileNameExt, err2.Error())
+		err = fmt.Errorf(ePrefix+
+			"Error returned from fh.GetFileExtension(fileNameAndExt). "+
+			"fileNameAndExt='%v'  Error='%v' ", adjustedFileNameExt, err2.Error())
 		fMgr.Empty()
 		isEmpty = true
 		return
@@ -2932,7 +3218,8 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(dMgr DirMgr, fileNameExt strin
 		fMgr.AbsolutePathFileName = fMgr.DMgr.AbsolutePath + fMgr.FileNameExt
 
 	} else {
-		fMgr.AbsolutePathFileName = fMgr.DMgr.AbsolutePath + string(os.PathSeparator) + fMgr.FileNameExt
+		fMgr.AbsolutePathFileName =
+			fMgr.DMgr.AbsolutePath + string(os.PathSeparator) + fMgr.FileNameExt
 
 	}
 
@@ -2973,7 +3260,8 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(dMgr DirMgr, fileNameExt strin
 // SetFileMgrFromPathFileName - Initializes all the data fields of the
 // current FileMgr object based on the path file name string passed to
 // this method as an input parameter.
-func (fMgr *FileMgr) SetFileMgrFromPathFileName(pathFileNameExt string) (isEmpty bool, err error) {
+func (fMgr *FileMgr) SetFileMgrFromPathFileName(
+	pathFileNameExt string) (isEmpty bool, err error) {
 
 	ePrefix := "FileMgr.SetFileMgrFromPathFileName() "
 	isEmpty = true
@@ -2981,7 +3269,8 @@ func (fMgr *FileMgr) SetFileMgrFromPathFileName(pathFileNameExt string) (isEmpty
 	fh := FileHelper{}
 
 	if len(pathFileNameExt) == 0 {
-		err = errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' is a zero length or empty string!")
+		err = errors.New(ePrefix +
+			"Error: Input parameter 'pathFileNameExt' is a zero length or empty string!")
 		return
 	}
 
@@ -2990,12 +3279,16 @@ func (fMgr *FileMgr) SetFileMgrFromPathFileName(pathFileNameExt string) (isEmpty
 	adjustedFileNameExt, isEmptyFileName, err2 := fh.CleanFileNameExtStr(adjustedPathFileNameExt)
 
 	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error returned from fh.CleanFileNameExtStr(adjustedPathFileNameExt). adjustedPathFileNameExt='%v' Error='%v'", adjustedPathFileNameExt, err2.Error())
+		err = fmt.Errorf(ePrefix+
+			"Error returned from fh.CleanFileNameExtStr(adjustedPathFileNameExt). "+
+			"adjustedPathFileNameExt='%v' Error='%v'", adjustedPathFileNameExt, err2.Error())
 		return
 	}
 
 	if isEmptyFileName {
-		err = fmt.Errorf(ePrefix+"Error: File Name returned from fh.CleanFileNameExtStr(adjustedPathFileNameExt) is a Zero Length String!. pathFileNameExt='%v'", adjustedPathFileNameExt)
+		err = fmt.Errorf(ePrefix+
+			"Error: File Name returned from fh.CleanFileNameExtStr(adjustedPathFileNameExt) "+
+			"is a Zero Length String!. pathFileNameExt='%v'", adjustedPathFileNameExt)
 	}
 
 	remainingPathStr := strings.TrimSuffix(adjustedPathFileNameExt, adjustedFileNameExt)
@@ -3009,7 +3302,9 @@ func (fMgr *FileMgr) SetFileMgrFromPathFileName(pathFileNameExt string) (isEmpty
 		dMgr, err2 = DirMgr{}.New(remainingPathStr)
 
 		if err2 != nil {
-			err = fmt.Errorf(ePrefix+"Error returned from DirMgr{}.New(remainingPathStr). remainingPathStr='%v'  Error='%v'", remainingPathStr, err2.Error())
+			err = fmt.Errorf(ePrefix+
+				"Error returned from DirMgr{}.New(remainingPathStr). "+
+				"remainingPathStr='%v'  Error='%v'", remainingPathStr, err2.Error())
 			return
 		}
 
@@ -3018,12 +3313,17 @@ func (fMgr *FileMgr) SetFileMgrFromPathFileName(pathFileNameExt string) (isEmpty
 	isEmptyFMgr, err2 := fMgr.SetFileMgrFromDirMgrFileName(dMgr, adjustedFileNameExt)
 
 	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error returned from fMgr.SetFileMgrFromDirMgrFileName(dMgr, adjustedFileNameExt). adjustedFileNameExt='%v'  Error='%v'", adjustedFileNameExt, err2.Error())
+		err = fmt.Errorf(ePrefix+
+			"Error returned from fMgr.SetFileMgrFromDirMgrFileName(dMgr, adjustedFileNameExt). "+
+			"adjustedFileNameExt='%v'  Error='%v'", adjustedFileNameExt, err2.Error())
 		return
 	}
 
 	if isEmptyFMgr {
-		err = fmt.Errorf(ePrefix+"Error: Empty FileMgr returned from fMgr.SetFileMgrFromDirMgrFileName(dMgr, adjustedFileNameExt). dMgr.Path='%v'   adjustedFileNameExt='%v' ", dMgr.Path, adjustedFileNameExt)
+		err = fmt.Errorf(ePrefix+
+			"Error: Empty FileMgr returned from fMgr.SetFileMgrFromDirMgrFileName("+
+			"dMgr, adjustedFileNameExt). dMgr.Path='%v'   adjustedFileNameExt='%v' ",
+			dMgr.Path, adjustedFileNameExt)
 		return
 	}
 
@@ -3049,7 +3349,9 @@ func (fMgr *FileMgr) SetFileInfo(info os.FileInfo) error {
 	fMgr.ActualFileInfo = FileInfoPlus{}.NewFromFileInfo(info)
 
 	if !fMgr.ActualFileInfo.IsFInfoInitialized {
-		return fmt.Errorf(ePrefix+"Error: Failed to initialize fMgr.ActualFileInfo object. info.Name()='%v'", info.Name())
+		return fmt.Errorf(ePrefix+
+			"Error: Failed to initialize fMgr.ActualFileInfo object. info.Name()='%v'",
+			info.Name())
 	}
 
 	return nil
@@ -3064,17 +3366,24 @@ func (fMgr *FileMgr) WriteBytesToFile(bytes []byte) (int, error) {
 	var err error
 
 	if !fMgr.IsInitialized {
-		return 0, errors.New(ePrefix + "Error: The File Manager data structure has NOT been initialized.")
+		return 0,
+			errors.New(ePrefix +
+				"Error: The File Manager data structure has NOT been initialized.")
 	}
 
 	err = fMgr.IsFileMgrValid("")
 
 	if err != nil {
-		return 0, fmt.Errorf(ePrefix+"Error: This File Manger is INVALID! fileNameExt='%v'  Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+		return 0,
+			fmt.Errorf(ePrefix+
+				"Error: This File Manger is INVALID! fileNameExt='%v'  "+
+				"Error='%v'", fMgr.AbsolutePathFileName, err.Error())
 	}
 
 	if !fMgr.AbsolutePathFileNameIsPopulated {
-		return 0, errors.New(ePrefix + "Error: FileMgr.AbsolutePathFileName has NOT been initialized and populated.")
+		return 0,
+			errors.New(ePrefix +
+				"Error: FileMgr.AbsolutePathFileName has NOT been initialized and populated.")
 	}
 
 	if fMgr.AbsolutePathFileName == "" {
@@ -3087,7 +3396,8 @@ func (fMgr *FileMgr) WriteBytesToFile(bytes []byte) (int, error) {
 		if fMgr.FilePtr != nil {
 			err = fMgr.CloseFile()
 			if err != nil {
-				return 0, fmt.Errorf(ePrefix+"Error: failed to close %v.  Error='%v' ", fMgr.AbsolutePathFileName, err.Error())
+				return 0, fmt.Errorf(ePrefix+"Error: failed to close %v.  Error='%v' ",
+					fMgr.AbsolutePathFileName, err.Error())
 			}
 
 		}
@@ -3097,7 +3407,10 @@ func (fMgr *FileMgr) WriteBytesToFile(bytes []byte) (int, error) {
 		err = fMgr.OpenThisFileReadWrite()
 
 		if err != nil {
-			return 0, fmt.Errorf(ePrefix+" - fMgr.OpenThisFileReadWrite() returned errors: %v", err.Error())
+			return 0,
+				fmt.Errorf(ePrefix+
+					" - fMgr.OpenThisFileReadWrite() returned errors: %v",
+					err.Error())
 		}
 
 		fMgr.IsFilePtrOpen = true
@@ -3106,7 +3419,10 @@ func (fMgr *FileMgr) WriteBytesToFile(bytes []byte) (int, error) {
 	bytesWritten, err := fMgr.FilePtr.Write(bytes)
 
 	if err != nil {
-		return bytesWritten, fmt.Errorf("Error returned from fMgr.FilePtr.Write(str). Output File='%v'. Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+		return bytesWritten,
+			fmt.Errorf(ePrefix+
+				"Error returned from fMgr.FilePtr.Write(str). Output File='%v'. "+
+				"Error='%v'", fMgr.AbsolutePathFileName, err.Error())
 	}
 
 	return bytesWritten, nil
@@ -3127,11 +3443,16 @@ func (fMgr *FileMgr) WriteStrToFile(str string) (int, error) {
 	err = fMgr.IsFileMgrValid("")
 
 	if err != nil {
-		return 0, fmt.Errorf(ePrefix+"Error: This File Manger is INVALID! fileNameExt='%v'  Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+		return 0,
+			fmt.Errorf(ePrefix+
+				"Error: This File Manger is INVALID! fileNameExt='%v'  Error='%v'",
+				fMgr.AbsolutePathFileName, err.Error())
 	}
 
 	if !fMgr.AbsolutePathFileNameIsPopulated {
-		return 0, errors.New(ePrefix + "Error: FileMgr.AbsolutePathFileName has NOT been initialized and populated.")
+		return 0,
+			errors.New(ePrefix +
+				"Error: FileMgr.AbsolutePathFileName has NOT been initialized and populated.")
 	}
 
 	if fMgr.AbsolutePathFileName == "" {
@@ -3144,7 +3465,9 @@ func (fMgr *FileMgr) WriteStrToFile(str string) (int, error) {
 		if fMgr.FilePtr != nil {
 			err = fMgr.CloseFile()
 			if err != nil {
-				return 0, fmt.Errorf(ePrefix+"Error: failed to close %v.  Error='%v' ", fMgr.AbsolutePathFileName, err.Error())
+				return 0,
+					fmt.Errorf(ePrefix+
+						"Error: failed to close %v.  Error='%v' ", fMgr.AbsolutePathFileName, err.Error())
 			}
 
 		}
@@ -3154,7 +3477,8 @@ func (fMgr *FileMgr) WriteStrToFile(str string) (int, error) {
 		err = fMgr.OpenThisFileReadWrite()
 
 		if err != nil {
-			return 0, fmt.Errorf(ePrefix+" - fMgr.OpenThisFileReadWrite() returned errors: %v", err.Error())
+			return 0, fmt.Errorf(ePrefix+
+				" - fMgr.OpenThisFileReadWrite() returned errors: %v", err.Error())
 		}
 
 		fMgr.IsFilePtrOpen = true
@@ -3163,7 +3487,11 @@ func (fMgr *FileMgr) WriteStrToFile(str string) (int, error) {
 	bytesWritten, err := fMgr.FilePtr.WriteString(str)
 
 	if err != nil {
-		return bytesWritten, fmt.Errorf("Error returned from fMgr.FilePtr.WriteString(str). Output File='%v'. Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+		return bytesWritten,
+			fmt.Errorf(ePrefix+
+				"Error returned from fMgr.FilePtr.WriteString(str). Output File='%v'. "+
+				"Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+
 	}
 
 	return bytesWritten, nil
