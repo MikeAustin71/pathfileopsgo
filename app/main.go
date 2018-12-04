@@ -34,22 +34,23 @@ const (
 var baseProjectPath = "D:/gowork/src/MikeAustin71/pathfileopsgo"
 
 func main() {
+
+	TestingDirMgrDeleteWalkDirFiles06()
+	fmt.Println("Completed!")
+
 	/*
-		TestingDirMgrDeleteWalkDirFiles06()
-		fmt.Println("Completed!")
+		result, err := TestingDirMgr02TestSetupFileWalkDeleteFiles()
+
+		if err != nil {
+			fmt.Printf("Error returned from TestingDirMgr02TestSetupFileWalkDeleteFiles() "+
+				"\nError='%v \n", err.Error())
+			return
+		}
+
+		fmt.Println("Success!")
+		fmt.Println("result= ", result)
+
 	*/
-
-	result, err := TestingDirMgr02TestSetupFileWalkDeleteFiles()
-
-	if err != nil {
-		fmt.Printf("Error returned from TestingDirMgr02TestSetupFileWalkDeleteFiles() "+
-			"\nError='%v \n", err.Error())
-		return
-	}
-
-	fmt.Println("Success!")
-	fmt.Println("result= ", result)
-
 }
 
 func TestingDirMgrDeleteWalkDirFiles06() {
@@ -82,16 +83,19 @@ func TestingDirMgrDeleteWalkDirFiles06() {
 	searchPattern := ""
 	fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
 	fNewerThanStr := "2016-07-01 00:00:00.000000000 -0500 CDT"
-	fOlderThanStr := "2018-11-30 00:00:00.000000000 -0600 CST"
+	//fOlderThanStr := "2018-11-30 00:00:00.000000000 -0600 CST"
+	filesOlderThan := time.Now()
+	filesOlderThan.AddDate(0, 1, 0)
 
-	filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
+	/*
+		filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
 
-	if err != nil {
-		fmt.Printf("Error returned from time.Parse(fmtstr, fOlderThanStr). "+
-			"fOlderThanStr='%v' Error='%v'", fOlderThanStr, err.Error())
-		return
-	}
-
+		if err != nil {
+			fmt.Printf("Error returned from time.Parse(fmtstr, fOlderThanStr). "+
+				"fOlderThanStr='%v' Error='%v'", fOlderThanStr, err.Error())
+			return
+		}
+	*/
 	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
 
 	if err != nil {
@@ -264,7 +268,8 @@ func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 	// Copy Old Files
 
 	if !fh.DoesFileExist(dirOldFilesForTest) {
-		return "", fmt.Errorf(ePrefix+"Error: Old Files Directory does NOT exist! "+
+		return "", fmt.Errorf(ePrefix+
+			"Error: Old Files Directory does NOT exist! "+
 			"dirOldFilesForTest='%v'", dirOldFilesForTest)
 
 	}
@@ -276,7 +281,7 @@ func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 	srcFile := dirOldFilesForTest + string(os.PathSeparator) + oldFile1
 	destFile := origDir + string(os.PathSeparator) + oldFile1
 
-	err = fh.CopyFileByLink(srcFile, destFile)
+	err = fh.CopyFileByLinkByIo(srcFile, destFile)
 
 	if err != nil {
 		return "", fmt.Errorf(ePrefix+
@@ -287,7 +292,7 @@ func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 	srcFile = dirOldFilesForTest + string(os.PathSeparator) + oldFile2
 	destFile = origDir + string(os.PathSeparator) + "dirdelete02" + string(os.PathSeparator) + oldFile2
 
-	err = fh.CopyFileByLink(srcFile, destFile)
+	err = fh.CopyFileByLinkByIo(srcFile, destFile)
 
 	if err != nil {
 		return "", fmt.Errorf(ePrefix+
@@ -301,7 +306,7 @@ func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 	destFile = origDir + string(os.PathSeparator) + "dirdelete02" +
 		string(os.PathSeparator) + "dirdelete03" + string(os.PathSeparator) + oldFile3
 
-	err = fh.CopyFileByLink(srcFile, destFile)
+	err = fh.CopyFileByLinkByIo(srcFile, destFile)
 
 	if err != nil {
 		return "",
@@ -331,7 +336,7 @@ func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 	srcFile = dirNewFilesForTest + string(os.PathSeparator) + newFile1
 	destFile = origDir + string(os.PathSeparator) + newFile1
 
-	err = fh.CopyFileByLink(srcFile, destFile)
+	err = fh.CopyFileByLinkByIo(srcFile, destFile)
 
 	if err != nil {
 		return "",
@@ -343,7 +348,7 @@ func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 	srcFile = dirNewFilesForTest + string(os.PathSeparator) + newFile2
 	destFile = origDir + string(os.PathSeparator) + "dirdelete02" + string(os.PathSeparator) + newFile2
 
-	err = fh.CopyFileByLink(srcFile, destFile)
+	err = fh.CopyFileByLinkByIo(srcFile, destFile)
 
 	if err != nil {
 		return "", fmt.Errorf("Error while Copying Source File, '%v' to  Destination File '%v', Error:'%v'", srcFile, destFile, err)
@@ -352,7 +357,7 @@ func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 	srcFile = dirNewFilesForTest + string(os.PathSeparator) + newFile3
 	destFile = origDir + string(os.PathSeparator) + "dirdelete02" + string(os.PathSeparator) + "dirdelete03" + string(os.PathSeparator) + newFile3
 
-	err = fh.CopyFileByLink(srcFile, destFile)
+	err = fh.CopyFileByLinkByIo(srcFile, destFile)
 
 	if err != nil {
 		return "", fmt.Errorf("Error while Copying Source File, '%v' to  Destination File '%v', Error:'%v'", srcFile, destFile, err)
@@ -1355,7 +1360,7 @@ func MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
 	srcFile := dirOldFilesForTest + string(os.PathSeparator) + oldFile1
 	destFile := origDir + string(os.PathSeparator) + oldFile1
 
-	err = fh.CopyToNewFile(srcFile, destFile)
+	err = fh.CopyFileByIo(srcFile, destFile)
 
 	if err != nil {
 		return "", fmt.Errorf("Error while Copying Source File, '%v' to  Destination File '%v', Error:'%v'", srcFile, destFile, err)
@@ -1364,7 +1369,7 @@ func MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
 	srcFile = dirOldFilesForTest + string(os.PathSeparator) + oldFile2
 	destFile = origDir + string(os.PathSeparator) + "dirdelete02" + string(os.PathSeparator) + oldFile2
 
-	err = fh.CopyToNewFile(srcFile, destFile)
+	err = fh.CopyFileByIo(srcFile, destFile)
 
 	if err != nil {
 		return "", fmt.Errorf("Error while Copying Source File, '%v' to  Destination File '%v', Error:'%v'", srcFile, destFile, err)
@@ -1373,7 +1378,7 @@ func MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
 	srcFile = dirOldFilesForTest + string(os.PathSeparator) + oldFile3
 	destFile = origDir + string(os.PathSeparator) + "dirdelete02" + string(os.PathSeparator) + "dirdelete03" + string(os.PathSeparator) + oldFile3
 
-	err = fh.CopyToNewFile(srcFile, destFile)
+	err = fh.CopyFileByIo(srcFile, destFile)
 
 	if err != nil {
 		return "", fmt.Errorf("Error while Copying Source File, '%v' to  Destination File '%v', Error:'%v'", srcFile, destFile, err)
@@ -1393,7 +1398,7 @@ func MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
 	srcFile = dirNewFilesForTest + string(os.PathSeparator) + newFile1
 	destFile = origDir + string(os.PathSeparator) + newFile1
 
-	err = fh.CopyToNewFile(srcFile, destFile)
+	err = fh.CopyFileByIo(srcFile, destFile)
 
 	if err != nil {
 		return "", fmt.Errorf("Error while Copying Source File, '%v' to  Destination File '%v', Error:'%v'", srcFile, destFile, err)
@@ -1402,7 +1407,7 @@ func MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
 	srcFile = dirNewFilesForTest + string(os.PathSeparator) + newFile2
 	destFile = origDir + string(os.PathSeparator) + "dirdelete02" + string(os.PathSeparator) + newFile2
 
-	err = fh.CopyToNewFile(srcFile, destFile)
+	err = fh.CopyFileByIo(srcFile, destFile)
 
 	if err != nil {
 		return "", fmt.Errorf("Error while Copying Source File, '%v' to  Destination File '%v', Error:'%v'", srcFile, destFile, err)
@@ -1411,7 +1416,7 @@ func MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
 	srcFile = dirNewFilesForTest + string(os.PathSeparator) + newFile3
 	destFile = origDir + string(os.PathSeparator) + "dirdelete02" + string(os.PathSeparator) + "dirdelete03" + string(os.PathSeparator) + newFile3
 
-	err = fh.CopyToNewFile(srcFile, destFile)
+	err = fh.CopyFileByIo(srcFile, destFile)
 
 	if err != nil {
 		return "", fmt.Errorf("Error while Copying Source File, '%v' to  Destination File '%v', Error:'%v'", srcFile, destFile, err)

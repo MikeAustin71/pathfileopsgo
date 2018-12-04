@@ -287,7 +287,7 @@ func TestFileHelper_CopyFile_01(t *testing.T) {
 		}
 	}
 
-	err := fh.CopyToNewFile(srcFile, destFile)
+	err := fh.CopyFileByIo(srcFile, destFile)
 
 	if err != nil {
 		t.Error(fmt.Sprintf("Error while Copying Source File, '%v' to  Destination File '%v', Error:", srcFile, destFile), err)

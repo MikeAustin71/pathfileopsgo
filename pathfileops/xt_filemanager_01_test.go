@@ -216,7 +216,7 @@ func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
 		}
 	}
 
-	err := fh.CopyToNewFile(setupSrcFile, srcFile)
+	err := fh.CopyFileByIo(setupSrcFile, srcFile)
 
 	if err != nil {
 		t.Errorf("Received error copying setup file '%v' to source file. srcFile '%v' does NOT Exist. Error='%v'", setupSrcFile, srcFile, err.Error())
@@ -297,7 +297,7 @@ func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
 		}
 	}
 
-	err := fh.CopyToNewFile(setupSrcFile, srcFile)
+	err := fh.CopyFileByIo(setupSrcFile, srcFile)
 
 	if err != nil {
 		t.Errorf("Received error copying setup file '%v' to source file. srcFile '%v' does NOT Exist. Error='%v'", setupSrcFile, srcFile, err.Error())

@@ -522,17 +522,74 @@ func (fh FileHelper) ChangeDir(dirPath string) error {
 	return nil
 }
 
-// CopyFile - Copies a file from source to destination
-// by means of creating a 'hard link' to the source file.
-// If that operation fails, the method will call CopyToNewFile().
+// CopyFileByLinkByIo - Copies a file from source to destination
+// using one of two techniques.
 //
-// CopyToNewFile() will create a new destination file and attempt
-// to write the contents of the source file to the new destination
-// file.
+// First, this method will attempt to copy the designated
+// file by means of creating a new destination file and using
+// "io.Copy(out, in)" to copy the contents. This is accomplished
+// by calling 'FileHelper.CopyFileByIo()'. If  the call to
+// 'FileHelper.CopyFileByIo()' fails, this method will attempt
+// a second copy method.
 //
-func (fh FileHelper) CopyFile(src, dst string) (err error) {
+// The second attempt to to copy the designated file will be
+// accomplished by creating a 'hard link' to the source file.
+// The second, 'hard link', attempt will call method,
+// 'FileHelper.CopyFileByLink()'.
+//
+// If that 'hard link' operation fails, this method will call
+// 'FileHelper.CopyFileByIo()'.
+//
+// If both attempted file copy operations fail, an error will be
+// returned.
+//
+func (fh FileHelper) CopyFileByIoByLink(src, dst string) (err error) {
 
-	ePrefix := "FileHelper.CopyFile() "
+	ePrefix := "FileHelper.CopyFileByIoByLink() "
+
+	err = fh.CopyFileByIo(src, dst)
+
+	if err == nil {
+		return err
+	}
+
+	// fh.CopyFileByIo() failed. Try
+	// fh.CopyFileByLink()
+
+	errX := fh.CopyFileByLink(src, dst)
+
+	if errX != nil {
+		err = fmt.Errorf(ePrefix+"%v", errX)
+		return err
+	}
+
+	err = nil
+
+	return err
+}
+
+// CopyFileByLinkByIo - Copies a file from source to destination
+// using one of two techniques.
+//
+// First, this method will attempt to copy the designated
+// file by means of creating a 'hard link' to the source file.
+// The 'hard link' attempt will call 'FileHelper.CopyFileByLink()'.
+//
+// If that 'hard link' operation fails, this method will call
+// 'FileHelper.CopyFileByIo()'.
+//
+// CopyFileByIo() will create a new destination file and attempt
+// to write the contents of the source file to the new destination
+// file using "io.Copy(out, in)".
+//
+// If both attempted file copy operations fail, an error will be
+// returned.
+//
+// See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+func (fh FileHelper) CopyFileByLinkByIo(src, dst string) (err error) {
+
+	ePrefix := "FileHelper.CopyFileByLinkByIo() "
 
 	err = fh.CopyFileByLink(src, dst)
 
@@ -540,8 +597,8 @@ func (fh FileHelper) CopyFile(src, dst string) (err error) {
 		return err
 	}
 
-	// Copy by Link Failed. Try CopyToNewFile()
-	errX := fh.CopyToNewFile(src, dst)
+	// Copy by Link Failed. Try CopyFileByIo()
+	errX := fh.CopyFileByIo(src, dst)
 
 	if errX != nil {
 		err = fmt.Errorf(ePrefix+"%v", errX)
@@ -554,14 +611,19 @@ func (fh FileHelper) CopyFile(src, dst string) (err error) {
 }
 
 // CopyFileByLink - Copies a file from source to destination
-// by means of creating a 'hard link' to the source file.
-// See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+// by means of creating a 'hard link' to the source file,
+// "os.Link(src, dst)".
 //
 // Note: This method of copying files does not create a new
 // destination file and write the contents of the source file
-// to destination file. (See CopyToNewFile Below).  Instead, this
+// to destination file. (See CopyFileByIo Below).  Instead, this
 // method performs the copy operation by creating a hard symbolic
 // link to the source file.
+//
+// "os.Link(src, dst)" is the only method employed to copy a
+// designated file. If "os.Link(src, dst)" fails, an err is returned.
+//
+// See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 //
 func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 
@@ -634,17 +696,20 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 	return
 }
 
-// CopyToNewFile - Copies file from source path & File Name
+// CopyFileByIo - Copies file from source path & File Name
 // to destination path & File Name.
 // See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 //
 // Note: Unlike the method CopyFileByLink above, this method
 // does NOT rely on the creation of symbolic links. Instead,
 // a new destination file is created and the contents of the source
-// file are written to the new destination file.
+// file are written to the new destination file using "io.Copy(out, in)".
 //
-func (fh FileHelper) CopyToNewFile(src, dst string) (err error) {
-	ePrefix := "FileHelper.CopyToNewFile() "
+// "io.Copy(out, in)" is the only method used to copy the designated
+// file. If this fails an error is returned.
+//
+func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
+	ePrefix := "FileHelper.CopyFileByIo() "
 	err = nil
 
 	if len(src) == 0 {
@@ -704,78 +769,7 @@ func (fh FileHelper) CopyToNewFile(src, dst string) (err error) {
 
 	// Create a new destination file and copy source
 	// file contents to the destination file.
-	err = fh.CopyFileContents(src, dst)
-	return
-}
-
-// CopyFileContents - Copies file contents from source to destination file.
-// Note: If 'src' file does NOT exist, an error will be returned.
-//
-// No validity checks are performed on 'dest' file. If 'dest' file currently
-// exists, it will be truncated to zero bytes and overwritten.
-//
-// This method is called by FileHelper:CopyToNewFile(). Use FileHelper:CopyToNewFile() for
-// ordinary file copy operations since it provides validity checks on 'src' and 'dest'
-// files.
-//
-// Reference: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
-//
-func (fh FileHelper) CopyFileContents(src, dst string) (err error) {
-	ePrefix := "FileHelper.CopyFileContents() "
-
-	err = nil
-
-	if len(src) == 0 {
-		err = errors.New(ePrefix + "Error: Input parameter 'src' is a ZERO length string!")
-		return
-	}
-
-	if len(dst) == 0 {
-		err = errors.New(ePrefix + "Error: Input parameter 'dst' is a ZERO length string!")
-		return
-	}
-
-	if !fh.DoesFileExist(src) {
-		err = fmt.Errorf(ePrefix+"Error: Source file does NOT exist! src='%v'", src)
-		return err
-	}
-
-	in, err2 := os.Open(src)
-
-	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error returned from os.Open(src) src='%v'  Error='%v'", src, err2.Error())
-		return err
-	}
-
-	out, err2 := os.Create(dst)
-
-	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error returned from os.Create(dst) dst='%v'  Error='%v'", dst, err2.Error())
-		_ = in.Close()
-		return err
-	}
-
-	if _, err2 = io.Copy(out, in); err2 != nil {
-		_ = in.Close()
-		_ = out.Close()
-		err = fmt.Errorf(ePrefix+"Error returned from io.Copy(dst, src) dst='%v'  src='%v'  Error='%v' ", dst, src, err2.Error())
-		return
-	}
-
-	// flush file buffers in memory
-	err2 = out.Sync()
-
-	if err2 != nil {
-		_ = in.Close()
-		_ = out.Close()
-		err = fmt.Errorf(ePrefix+"Error returned from out.Sync() out=dst='%v' Error='%v'", dst, err2.Error())
-		return
-	}
-
-	err = nil
-	_ = in.Close()
-	_ = out.Close()
-
+	err = fh.copyFileHardLink(src, dst)
 	return
 }
 
@@ -3253,14 +3247,14 @@ func (fh FileHelper) MakeDir(dirPath string) (bool, error) {
 // See FileHelper.CopyFileByLink().  If this fails, the method will seamlessly
 // attempt to copy the file the source file to the destination file by means
 // of writing the contents of the source file to a newly created destination
-// file. Reference Method FileHelper.CopyToNewFile().
+// file. Reference Method FileHelper.CopyFileByIo().
 //
 // If an error is encountered during this procedure it will be by means of the
 // return parameter 'err'.
 //
 // A boolean value is also returned. If 'copyByLink' is 'true', it signals that
 // the move operation was accomplished using the 'CopyFileByLink' technique. If
-// the return parameter 'copyByLink' is 'false', it signals that the 'CopyToNewFile'
+// the return parameter 'copyByLink' is 'false', it signals that the 'CopyFileByIo'
 // technique was used.
 //
 func (fh FileHelper) MoveFile(src, dst string) (copyByLink bool, err error) {
@@ -3287,11 +3281,11 @@ func (fh FileHelper) MoveFile(src, dst string) (copyByLink bool, err error) {
 	if err2 != nil {
 		copyByLink = false
 
-		err2 = fh.CopyToNewFile(src, dst)
+		err2 = fh.CopyFileByIo(src, dst)
 
 		if err2 != nil {
 
-			err = fmt.Errorf(ePrefix+"Error returned from fh.CopyToNewFile(src, dst). Error='%v'", err2.Error())
+			err = fmt.Errorf(ePrefix+"Error returned from fh.CopyFileByIo(src, dst). Error='%v'", err2.Error())
 		}
 
 		return
@@ -3533,8 +3527,84 @@ func (fh FileHelper) WriteFileStr(str string, fPtr *os.File) (int, error) {
 	FileHelper private methods
 */
 
-// makeFileHelperWalkDirDeleteFilesFunc - Used in conjunction with DirMgr.DeleteWalDirFiles to select and delete
-// files residing the directory tree identified by the current DirMgr object.
+// copyFileHardLink - Copies file from source to destination file.
+// Note: If 'src' file does NOT exist, an error will be returned.
+//
+// No validity checks are performed on 'dest' file. If 'dest' file currently
+// exists, it will be truncated to zero bytes and overwritten.
+//
+// This method is called by FileHelper:CopyFileByIo(). Use FileHelper:CopyFileByIo() for
+// ordinary file copy operations since it provides validity checks on 'src' and 'dest'
+// files.
+//
+// This method one method of file copy, "io.Copy(out, in)". If this fails an error will
+// be returned.
+//
+// Reference: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+func (fh FileHelper) copyFileHardLink(src, dst string) (err error) {
+	ePrefix := "FileHelper.copyFileHardLink() "
+
+	err = nil
+
+	if len(src) == 0 {
+		err = errors.New(ePrefix + "Error: Input parameter 'src' is a ZERO length string!")
+		return
+	}
+
+	if len(dst) == 0 {
+		err = errors.New(ePrefix + "Error: Input parameter 'dst' is a ZERO length string!")
+		return
+	}
+
+	if !fh.DoesFileExist(src) {
+		err = fmt.Errorf(ePrefix+"Error: Source file does NOT exist! src='%v'", src)
+		return err
+	}
+
+	in, err2 := os.Open(src)
+
+	if err2 != nil {
+		err = fmt.Errorf(ePrefix+"Error returned from os.Open(src) src='%v'  Error='%v'", src, err2.Error())
+		return err
+	}
+
+	out, err2 := os.Create(dst)
+
+	if err2 != nil {
+		err = fmt.Errorf(ePrefix+"Error returned from os.Create(dst) dst='%v'  Error='%v'", dst, err2.Error())
+		_ = in.Close()
+		return err
+	}
+
+	if _, err2 = io.Copy(out, in); err2 != nil {
+		_ = in.Close()
+		_ = out.Close()
+		err = fmt.Errorf(ePrefix+"Error returned from io.Copy(dst, src) dst='%v'  src='%v'  Error='%v' ", dst, src, err2.Error())
+		return
+	}
+
+	// flush file buffers in memory
+	err2 = out.Sync()
+
+	if err2 != nil {
+		_ = in.Close()
+		_ = out.Close()
+		err = fmt.Errorf(ePrefix+"Error returned from out.Sync() out=dst='%v' Error='%v'", dst, err2.Error())
+		return
+	}
+
+	err = nil
+	_ = in.Close()
+	_ = out.Close()
+
+	return
+}
+
+// makeFileHelperWalkDirDeleteFilesFunc - Used in conjunction with DirMgr.DeleteWalDirFiles
+// to select and delete files residing the directory tree identified by the current DirMgr
+// object.
+//
 func (fh *FileHelper) makeFileHelperWalkDirDeleteFilesFunc(dInfo *DirectoryDeleteFileInfo) func(string, os.FileInfo, error) error {
 	return func(pathFile string, info os.FileInfo, erIn error) error {
 
@@ -3596,7 +3666,8 @@ func (fh *FileHelper) makeFileHelperWalkDirDeleteFilesFunc(dInfo *DirectoryDelet
 
 			if err != nil {
 				ex := fmt.Errorf(ePrefix+
-					"Error returned from dInfo.DeletedFiles.AddFileInfo( pathFile,  info). pathFile='%v'  Error='%v'",
+					"Error returned from dInfo.DeletedFiles.AddFileInfo( pathFile,  info). "+
+					"pathFile='%v'  Error='%v'",
 					pathFile, err.Error())
 
 				dInfo.ErrReturns = append(dInfo.ErrReturns, ex.Error())
@@ -3618,7 +3689,8 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
 		ePrefix := "DirMgr.makeFileHelperWalkDirFindFilesFunc() "
 
 		if erIn != nil {
-			ex2 := fmt.Errorf(ePrefix+"Error returned from directory walk function. pathFile= '%v' Error='%v'", pathFile, erIn.Error())
+			ex2 := fmt.Errorf(ePrefix+"Error returned from directory walk function. "+
+				"pathFile= '%v' Error='%v'", pathFile, erIn.Error())
 			dInfo.ErrReturns = append(dInfo.ErrReturns, ex2.Error())
 			return nil
 		}
@@ -3631,7 +3703,8 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
 					dInfo.Directories.AddDirMgr(subDir)
 				}
 
-				er2 := fmt.Errorf(ePrefix+"Error returned by DirMgr{}.New(pathFile). pathFile='%v' Error='%v'", pathFile, err.Error())
+				er2 := fmt.Errorf(ePrefix+"Error returned by DirMgr{}.New(pathFile). "+
+					"pathFile='%v' Error='%v'", pathFile, err.Error())
 				dInfo.ErrReturns = append(dInfo.ErrReturns, er2.Error())
 				return nil
 			}

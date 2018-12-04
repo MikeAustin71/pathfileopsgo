@@ -743,7 +743,9 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(deleteFileSelectionCriteria FileSelection
 
 	} else {
 
-		return deleteFilesInfo, fmt.Errorf(ePrefix+"Path and AbsolutePath - PATH DOES NOT EXIST! dMgr.AbsolutePath='%v' dMgr.Path='%v'", dMgr.AbsolutePath, dMgr.Path)
+		return deleteFilesInfo,
+			fmt.Errorf(ePrefix+"Path and AbsolutePath - PATH DOES NOT EXIST! "+
+				"dMgr.AbsolutePath='%v' dMgr.Path='%v'", dMgr.AbsolutePath, dMgr.Path)
 	}
 
 	deleteFilesInfo.DeleteFileSelectCriteria = deleteFileSelectionCriteria
@@ -1816,10 +1818,10 @@ func (fMgr *FileMgr) CopyFileMgr(fMgrDest *FileMgr) error {
 
 	fh := FileHelper{}
 
-	err = fh.CopyFile(fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName)
+	err = fh.CopyFileByIoByLink(fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error returned by fh.CopyFile(fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName) fMgr.AbsolutePathFileName='%v'  fMgrDest.AbsolutePathFileName='%v'  Error='%v'", fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName, err.Error())
+		return fmt.Errorf(ePrefix+"Error returned by fh.CopyFileByLinkByIo(fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName) fMgr.AbsolutePathFileName='%v'  fMgrDest.AbsolutePathFileName='%v'  Error='%v'", fMgr.AbsolutePathFileName, fMgrDest.AbsolutePathFileName, err.Error())
 	}
 
 	destFileExists, err = fMgrDest.DoesThisFileExist()

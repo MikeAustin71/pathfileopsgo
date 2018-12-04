@@ -177,7 +177,7 @@ func TestFileHelper_MoveFile_01(t *testing.T) {
 		}
 	}
 
-	err := fh.CopyToNewFile(setupFile, srcFile)
+	err := fh.CopyFileByIo(setupFile, srcFile)
 
 	if err != nil {
 		t.Errorf("Received error copying setup file '%v' to destination file '%v' does NOT Exist. Error='%v'", setupFile, srcFile, err.Error())

@@ -229,6 +229,7 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 	}
 
 	filesNewerThan := time.Time{}
+	filesNewerThan.AddDate(0, 1, 0)
 
 	dMgr, err := DirMgr{}.New(dir)
 
@@ -405,7 +406,8 @@ func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 	}
 
 	if dWalker.Directories.GetArrayLength() != 3 {
-		t.Errorf("Expected the number of directories found would equal 3. It did NOT! Number of directories= '%v'", dWalker.Directories.GetArrayLength())
+		t.Errorf("Expected the number of directories found would equal 3. It did NOT! "+
+			"Number of directories= '%v'", dWalker.Directories.GetArrayLength())
 	}
 
 	dir3 := fh.AdjustPathSlash("/dirwalktests/dir01/dir02/dir03")
@@ -419,7 +421,8 @@ func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 	}
 
 	if !foundDir3 {
-		t.Errorf("Expected to find Directory %v in dWalker.DirMgrs. This directory was NOT found!", dir3)
+		t.Errorf("Expected to find Directory %v in dWalker.DirMgrs. This directory was NOT found!",
+			dir3)
 	}
 
 }
@@ -547,11 +550,13 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 	}
 
 	if len(dInfo.ErrReturns) != 0 {
-		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
+		t.Errorf("Expected zero Error Returns. "+
+			"Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
 	}
 
 	if dInfo.Directories.GetArrayLength() != 3 {
-		t.Errorf("Expected 3-directories to be found. Instead, number of directories found='%v'", dInfo.Directories.GetArrayLength())
+		t.Errorf("Expected 3-directories to be found. Instead, number of "+
+			"directories found='%v'", dInfo.Directories.GetArrayLength())
 	}
 
 	dir3 := fh.AdjustPathSlash("/dirwalkdeletetests/dirdelete01/dirdelete02/dirdelete03")
@@ -565,7 +570,8 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 	}
 
 	if !foundDir3 {
-		t.Errorf("Expected to find Directory %v in dInfo.DirMgrs. This directory was NOT found!", dir3)
+		t.Errorf("Expected to find Directory %v in dInfo.DirMgrs. "+
+			"This directory was NOT found!", dir3)
 	}
 
 }
@@ -590,7 +596,8 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(origDir). origDir='%v' Error='%v'", origDir, err.Error())
+		t.Errorf("Error returned by DirMgr{}.New(origDir). origDir='%v' Error='%v'",
+			origDir, err.Error())
 	}
 
 	searchPattern1 := "*.txt"
@@ -609,7 +616,8 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 	dInfo, err := dMgr.FindWalkDirFiles(fsc)
 
 	if dInfo.FoundFiles.GetArrayLength() != 6 {
-		t.Errorf("Expected to find 6-files deleted. Instead, %v-files were deleted.", dInfo.FoundFiles.GetArrayLength())
+		t.Errorf("Expected to find 6-files deleted. Instead, %v-files were deleted.",
+			dInfo.FoundFiles.GetArrayLength())
 	}
 
 	oldFile1 := "test.htm"
@@ -680,11 +688,13 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 	}
 
 	if len(dInfo.ErrReturns) != 0 {
-		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
+		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'",
+			len(dInfo.ErrReturns))
 	}
 
 	if dInfo.Directories.GetArrayLength() != 3 {
-		t.Errorf("Expected 3-directories to be found. Instead, number of directories found='%v'", dInfo.Directories.GetArrayLength())
+		t.Errorf("Expected 3-directories to be found. Instead, number of "+
+			"directories found='%v'", dInfo.Directories.GetArrayLength())
 	}
 
 	dir3 := fh.AdjustPathSlash("/dirwalkdeletetests/dirdelete01/dirdelete02/dirdelete03")
@@ -698,7 +708,8 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 	}
 
 	if !foundDir3 {
-		t.Errorf("Expected to find Directory %v in dInfo.DirMgrs. This directory was NOT found!", dir3)
+		t.Errorf("Expected to find Directory %v in dInfo.DirMgrs. "+
+			"This directory was NOT found!", dir3)
 	}
 
 }
@@ -722,7 +733,8 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(origDir). origDir='%v' Error='%v'", origDir, err.Error())
+		t.Errorf("Error returned by DirMgr{}.New(origDir). origDir='%v' Error='%v'",
+			origDir, err.Error())
 	}
 
 	searchPattern := ""
@@ -739,7 +751,8 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
 	if dInfo.DeletedFiles.GetArrayLength() != 6 {
-		t.Errorf("Expected to find 6-files deleted. Instead, %v-files were deleted.", dInfo.DeletedFiles.GetArrayLength())
+		t.Errorf("Expected to find 6-files deleted. Instead, %v-files were deleted.",
+			dInfo.DeletedFiles.GetArrayLength())
 	}
 
 	oldFile1 := "test.htm"
@@ -806,15 +819,18 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
 	}
 
 	if newFile3Found == false {
-		t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!", newFile3)
+		t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!",
+			newFile3)
 	}
 
 	if len(dInfo.ErrReturns) != 0 {
-		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
+		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'",
+			len(dInfo.ErrReturns))
 	}
 
 	if dInfo.Directories.GetArrayLength() != 3 {
-		t.Errorf("Expected 3-directories to be found. Instead, number of directories found='%v'", dInfo.Directories.GetArrayLength())
+		t.Errorf("Expected 3-directories to be found. Instead, number of directories found='%v'",
+			dInfo.Directories.GetArrayLength())
 	}
 
 }
@@ -1209,14 +1225,8 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 	searchPattern := ""
 	fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
 	fNewerThanStr := "2016-07-01 00:00:00.000000000 -0500 CDT"
-	fOlderThanStr := "2018-12-01 00:00:00.000000000 -0600 CST"
-
-	filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
-
-	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fOlderThanStr). "+
-			"fOlderThanStr='%v' Error='%v'", fOlderThanStr, err.Error())
-	}
+	filesOlderThan := time.Now()
+	filesOlderThan.AddDate(0, 1, 0)
 
 	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
 
@@ -1307,11 +1317,14 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 	}
 
 	if len(dInfo.ErrReturns) != 0 {
-		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
+		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'",
+			len(dInfo.ErrReturns))
 	}
 
 	if dInfo.Directories.GetArrayLength() != 3 {
-		t.Errorf("Expected 3-directories to be found. Instead, number of directories found='%v'", dInfo.Directories.GetArrayLength())
+		t.Errorf("Expected 3-directories to be found. Instead, number of "+
+			"directories found='%v'", dInfo.Directories.GetArrayLength())
+
 	}
 
 }
@@ -1698,7 +1711,7 @@ func DirMgr02TestCreateCheckFiles99DirFiles() (string, error) {
 
 func DirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 
-	ePrefix := "TestFile: xt_dirmgr_02_test.go Func: DirMgr02TestSetupFileWalkDeleteFiles() "
+	ePrefix := "xt_dirmgr_02_test.go Func: DirMgr02TestSetupFileWalkDeleteFiles() "
 
 	fh := FileHelper{}
 
@@ -1711,20 +1724,33 @@ func DirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 				"Error='%v'", err.Error())
 	}
 
+	err = os.RemoveAll(origDir)
+
+	if err != nil {
+		return "", fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(origDir). "+
+			"origDir='%v'  Error='%v'", origDir, err.Error())
+	}
+
+	time.Sleep(100 * time.Millisecond)
+
 	if fh.DoesFileExist(origDir) {
 
-		err := os.RemoveAll(origDir)
+		err = os.RemoveAll(origDir)
 
 		if err != nil {
 			return "", fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(origDir). "+
 				"origDir='%v'  Error='%v'", origDir, err.Error())
 		}
 
+		time.Sleep(100 * time.Millisecond)
+
 	}
 
 	if fh.DoesFileExist(origDir) {
+
 		return "", fmt.Errorf(ePrefix+"Error: Attempted to delete origDir='%v'. "+
 			"However, it still Exists!", origDir)
+
 	}
 
 	origFullDir := origDir + string(os.PathSeparator) + "dirdelete02" +
@@ -1768,7 +1794,7 @@ func DirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 	srcFile := dirOldFilesForTest + string(os.PathSeparator) + oldFile1
 	destFile := origDir + string(os.PathSeparator) + oldFile1
 
-	err = fh.CopyFile(srcFile, destFile)
+	err = fh.CopyFileByLinkByIo(srcFile, destFile)
 
 	if err != nil {
 		return "", fmt.Errorf(ePrefix+
@@ -1779,7 +1805,7 @@ func DirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 	srcFile = dirOldFilesForTest + string(os.PathSeparator) + oldFile2
 	destFile = origDir + string(os.PathSeparator) + "dirdelete02" + string(os.PathSeparator) + oldFile2
 
-	err = fh.CopyFileByLink(srcFile, destFile)
+	err = fh.CopyFileByLinkByIo(srcFile, destFile)
 
 	if err != nil {
 		return "", fmt.Errorf(ePrefix+
@@ -1793,7 +1819,7 @@ func DirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 	destFile = origDir + string(os.PathSeparator) + "dirdelete02" +
 		string(os.PathSeparator) + "dirdelete03" + string(os.PathSeparator) + oldFile3
 
-	err = fh.CopyFile(srcFile, destFile)
+	err = fh.CopyFileByLinkByIo(srcFile, destFile)
 
 	if err != nil {
 		return "",
@@ -1816,14 +1842,14 @@ func DirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 
 	if !fh.DoesFileExist(dirNewFilesForTest) {
 		return "", fmt.Errorf(ePrefix+
-			"Error: New Files Directory does NOT exist! dirNewFilesForTest='%v'",
+			"FATAL ERROR: New Files Directory does NOT exist! dirNewFilesForTest='%v'",
 			dirNewFilesForTest)
 	}
 
 	srcFile = dirNewFilesForTest + string(os.PathSeparator) + newFile1
 	destFile = origDir + string(os.PathSeparator) + newFile1
 
-	err = fh.CopyFileByLink(srcFile, destFile)
+	err = fh.CopyFileByLinkByIo(srcFile, destFile)
 
 	if err != nil {
 		return "",
@@ -1833,21 +1859,25 @@ func DirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 	}
 
 	srcFile = dirNewFilesForTest + string(os.PathSeparator) + newFile2
-	destFile = origDir + string(os.PathSeparator) + "dirdelete02" + string(os.PathSeparator) + newFile2
+	destFile = origDir + string(os.PathSeparator) + "dirdelete02" + string(os.PathSeparator) +
+		newFile2
 
-	err = fh.CopyFileByLink(srcFile, destFile)
+	err = fh.CopyFileByLinkByIo(srcFile, destFile)
 
 	if err != nil {
-		return "", fmt.Errorf("Error while Copying Source File, '%v' to  Destination File '%v', Error:'%v'", srcFile, destFile, err)
+		return "", fmt.Errorf("Error while Copying Source File, '%v' to  "+
+			"Destination File '%v', Error:'%v'", srcFile, destFile, err)
 	}
 
 	srcFile = dirNewFilesForTest + string(os.PathSeparator) + newFile3
-	destFile = origDir + string(os.PathSeparator) + "dirdelete02" + string(os.PathSeparator) + "dirdelete03" + string(os.PathSeparator) + newFile3
+	destFile = origDir + string(os.PathSeparator) + "dirdelete02" + string(os.PathSeparator) +
+		"dirdelete03" + string(os.PathSeparator) + newFile3
 
-	err = fh.CopyFile(srcFile, destFile)
+	err = fh.CopyFileByLinkByIo(srcFile, destFile)
 
 	if err != nil {
-		return "", fmt.Errorf("Error while Copying Source File, '%v' to  Destination File '%v', Error:'%v'", srcFile, destFile, err)
+		return "", fmt.Errorf("Error while Copying Source File, '%v' to  "+
+			"Destination File '%v', Error:'%v'", srcFile, destFile, err)
 	}
 
 	return origDir, nil
@@ -1981,90 +2011,59 @@ func DirMgr02SetupDirWalkTests() error {
 		return fmt.Errorf(ePrefix+"FATAL ERROR: Directory %v DOES NOT EXIST", dirOldFilesForTest)
 	}
 
-	filesToCopy := make([]FileMgr, 6, 10)
+	filesToCopySrc := make([]string, 6, 10)
+	filesToCopyDest := make([]string, 6, 10)
 
-	filesToCopy[0], err =
-		FileMgr{}.NewFromDirMgrFileNameExt(srcNewFilesForTest, "newerFileForTest_01.txt")
+	filesToCopySrc[0] = srcNewFilesForTest.GetAbsolutePathWithSeparator() +
+		"newerFileForTest_01.txt"
 
-	if err != nil {
-		return fmt.Errorf(ePrefix+
-			"Error returned by FileMgr{}.NewFromDirMgrFileNameExt(srcNewFilesForTest, "+
-			"\"newerFileForTest_01.txt\") "+
-			"srcNewFilesForTest='%v' Error='%v' ", srcNewFilesForTest.AbsolutePath, err.Error())
-	}
+	filesToCopyDest[0] = destDirMgr1.GetAbsolutePathWithSeparator() +
+		"newerFileForTest_01.txt"
 
-	filesToCopy[1], err =
-		FileMgr{}.NewFromDirMgrFileNameExt(srcNewFilesForTest, "newerFileForTest_02.txt")
+	filesToCopySrc[1] = srcNewFilesForTest.GetAbsolutePathWithSeparator() +
+		"newerFileForTest_02.txt"
 
-	if err != nil {
-		return fmt.Errorf(ePrefix+
-			"Error returned by FileMgr{}.NewFromDirMgrFileNameExt(srcNewFilesForTest, "+
-			"\"newerFileForTest_02.txt\") "+
-			"srcNewFilesForTest='%v' Error='%v' ", srcNewFilesForTest.AbsolutePath, err.Error())
-	}
+	filesToCopyDest[1] = destDirMgr1.GetAbsolutePathWithSeparator() +
+		"newerFileForTest_02.txt"
 
-	filesToCopy[2], err =
-		FileMgr{}.NewFromDirMgrFileNameExt(srcNewFilesForTest, "newerFileForTest_03.txt")
+	filesToCopySrc[2] = srcNewFilesForTest.GetAbsolutePathWithSeparator() +
+		"newerFileForTest_03.txt"
 
-	if err != nil {
-		return fmt.Errorf(ePrefix+
-			"Error returned by FileMgr{}.NewFromDirMgrFileNameExt(srcNewFilesForTest, "+
-			"\"newerFileForTest_03.txt\") "+
-			"srcNewFilesForTest='%v' Error='%v' ", srcNewFilesForTest.AbsolutePath, err.Error())
-	}
+	filesToCopyDest[2] = destDirMgr1.GetAbsolutePathWithSeparator() +
+		"newerFileForTest_03.txt"
 
-	filesToCopy[3], err =
-		FileMgr{}.NewFromDirMgrFileNameExt(srcOldFilesForTest, "test.htm")
+	filesToCopySrc[3] = srcOldFilesForTest.GetAbsolutePathWithSeparator() +
+		"test.htm"
 
-	if err != nil {
-		return fmt.Errorf(ePrefix+
-			"Error returned by FileMgr{}.NewFromDirMgrFileNameExt(srcOldFilesForTest, "+
-			"\"test.htm\") "+
-			"srcOldFilesForTest='%v' Error='%v' ", srcOldFilesForTest.AbsolutePath, err.Error())
-	}
+	filesToCopyDest[3] = destDirMgr1.GetAbsolutePathWithSeparator() +
+		"test.htm"
 
-	filesToCopy[4], err =
-		FileMgr{}.NewFromDirMgrFileNameExt(srcOldFilesForTest, "006890_WritingFiles.htm")
+	filesToCopySrc[4] = srcOldFilesForTest.GetAbsolutePathWithSeparator() +
+		"006890_WritingFiles.htm"
 
-	if err != nil {
-		return fmt.Errorf(ePrefix+
-			"Error returned by FileMgr{}.NewFromDirMgrFileNameExt(srcOldFilesForTest, "+
-			"\"006890_WritingFiles.htm\") "+
-			"srcOldFilesForTest='%v' Error='%v' ", srcOldFilesForTest.AbsolutePath, err.Error())
-	}
+	filesToCopyDest[4] = destDirMgr1.GetAbsolutePathWithSeparator() +
+		"006890_WritingFiles.htm"
 
-	filesToCopy[5], err =
-		FileMgr{}.NewFromDirMgrFileNameExt(srcOldFilesForTest, "006870_ReadingFiles.htm")
+	filesToCopySrc[5] = srcOldFilesForTest.GetAbsolutePathWithSeparator() +
+		"006870_ReadingFiles.htm"
 
-	if err != nil {
-		return fmt.Errorf(ePrefix+
-			"Error returned by FileMgr{}.NewFromDirMgrFileNameExt(srcOldFilesForTest, "+
-			"\"006870_ReadingFiles.htm\") "+
-			"srcOldFilesForTest='%v' Error='%v' ", srcOldFilesForTest.AbsolutePath, err.Error())
-	}
+	filesToCopyDest[5] = destDirMgr1.GetAbsolutePathWithSeparator() +
+		"006870_ReadingFiles.htm"
 
-	for i := 0; i < len(filesToCopy); i++ {
+	for i := 0; i < len(filesToCopySrc); i++ {
 
-		doesExist, err := filesToCopy[i].DoesThisFileExist()
+		if !fh.DoesFileExist(filesToCopySrc[i]) {
+			return fmt.Errorf(ePrefix+
+				"FATAL ERROR: Source File %v DOES NOT EXIST!!!", filesToCopySrc[i])
+		}
+
+		err = fh.CopyFileByLinkByIo(filesToCopySrc[i], filesToCopyDest[i])
 
 		if err != nil {
 			return fmt.Errorf(ePrefix+
-				"Error returned by filesToCopy[i].DoesThisFileExist(). "+
-				"i='%v' Source File Name='%v'  Error='%v' ", i, filesToCopy[i].AbsolutePathFileName, err.Error())
-		}
-
-		if !doesExist {
-			return fmt.Errorf(ePrefix+
-				"FATAL ERROR: %v DOES NOT EXIST!!!", filesToCopy[i].AbsolutePathFileName)
-		}
-
-		err = filesToCopy[i].CopyFileToDir(destDirMgr1)
-
-		if err != nil {
-			return fmt.Errorf(ePrefix+
-				"Error returned by filesToCopy[i].CopyFileToDir(destDirMgr1). "+
-				"destDirMgr1='%v' Source File Name='%v' Error='%v' ",
-				destDirMgr1.AbsolutePath, filesToCopy[i].AbsolutePathFileName, err.Error())
+				"Error returned by fh.CopyFileByLinkByIo(filesToCopySrc[i], filesToCopyDest[i]). \n"+
+				"filesToCopySrc[i]='%v' filesToCopyDest[i]='%v' Error='%v' ",
+				filesToCopySrc[i], filesToCopyDest[i], err.Error())
 		}
 
 	}
