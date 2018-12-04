@@ -187,7 +187,7 @@ func TestFileHelper_MoveFile_01(t *testing.T) {
 		t.Error(fmt.Sprintf("Source File '%v' does NOT EXIST!!", srcFile))
 	}
 
-	copyByLink, err := fh.MoveFile(srcFile, destFile)
+	_, err = fh.MoveFile(srcFile, destFile)
 
 	if err != nil {
 		t.Error(fmt.Sprintf("Error on FileHelper:MoveFile() moving src '%v' to destination '%v' ", srcFile, destFile), err)
@@ -199,10 +199,6 @@ func TestFileHelper_MoveFile_01(t *testing.T) {
 
 	if !fh.DoesFileExist(destFile) {
 		t.Error(fmt.Sprintf("FileHelper:MoveFile() FAILED! Destination File '%v' DOES NOT EXIST!", destFile))
-	}
-
-	if copyByLink != true {
-		t.Error("Expected copyByLink = 'true'. Instead, copyByLink='false'")
 	}
 }
 

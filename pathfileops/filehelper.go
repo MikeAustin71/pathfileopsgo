@@ -3276,32 +3276,39 @@ func (fh FileHelper) MoveFile(src, dst string) (copyByLink bool, err error) {
 		return
 	}
 
-	err2 := fh.CopyFileByLink(src, dst)
+	err2 := fh.CopyFileByIo(src, dst)
 
 	if err2 != nil {
-		copyByLink = false
 
-		err2 = fh.CopyFileByIo(src, dst)
+		err2 = fh.CopyFileByLink(src, dst)
 
 		if err2 != nil {
 
-			err = fmt.Errorf(ePrefix+"Error returned from fh.CopyFileByIo(src, dst). Error='%v'", err2.Error())
+			err = fmt.Errorf(ePrefix+"Error returned from fh.CopyFileByLink(src, dst). Error='%v'",
+				err2.Error())
 		}
 
-		return
+		copyByLink = true
+
+		err = nil
+
+		return copyByLink, err
 	}
 
-	copyByLink = true
+	copyByLink = false
 
 	err2 = fh.DeleteDirFile(src)
 
 	if err2 != nil {
-		err = fmt.Errorf("Successfully copied file from source, '%v', to destination '%v'; however deletion of source file failed! Error: %v", src, dst, err2.Error())
+		err = fmt.Errorf("Successfully copied file from source, '%v', to destination '%v'; "+
+			"however deletion of source file failed! Error: %v", src, dst, err2.Error())
+
 		return
 	}
 
 	err = nil
-	return
+
+	return copyByLink, err
 }
 
 // OpenFileForReading - Wrapper function for os.Open() method which opens
