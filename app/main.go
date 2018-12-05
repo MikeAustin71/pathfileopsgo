@@ -29,6 +29,15 @@ const (
 	// logFile          = "CmdrX.log"
 )
 
+func main() {
+ if, err := os.Open("/test.txt")
+    if err, ok := err.(*os.PathError); ok {
+        fmt.Println("File at path", err.Path, "failed to open")
+        return
+    }
+    fmt.Println(f.Name(), "opened successfully")
+}
+
 */
 
 var baseProjectPath = "D:/gowork/src/MikeAustin71/pathfileopsgo"

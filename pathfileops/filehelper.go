@@ -3669,11 +3669,11 @@ func (fh *FileHelper) makeFileHelperWalkDirDeleteFilesFunc(dInfo *DirectoryDelet
 				return nil
 			}
 
-			err = dInfo.DeletedFiles.AddFileInfo(pathFile, info)
+			err = dInfo.DeletedFiles.AddFileMgrByFileInfo(pathFile, info)
 
 			if err != nil {
 				ex := fmt.Errorf(ePrefix+
-					"Error returned from dInfo.DeletedFiles.AddFileInfo( pathFile,  info). "+
+					"Error returned from dInfo.DeletedFiles.AddFileMgrByFileInfo( pathFile,  info). "+
 					"pathFile='%v'  Error='%v'",
 					pathFile, err.Error())
 
@@ -3735,9 +3735,9 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
 
 		// TO DO - Fix this!
 		if isFoundFile {
-			err = dInfo.FoundFiles.AddFileInfo(pathFile, info)
+			err = dInfo.FoundFiles.AddFileMgrByFileInfo(pathFile, info)
 			if err != nil {
-				er2 := fmt.Errorf(ePrefix+"Error returned from  dInfo.FoundFiles.AddFileInfo( pathFile,  info) "+
+				er2 := fmt.Errorf(ePrefix+"Error returned from  dInfo.FoundFiles.AddFileMgrByFileInfo( pathFile,  info) "+
 					"pathFile='%v' info.Name()='%v' Error='%v' ",
 					pathFile, info.Name(), err.Error())
 

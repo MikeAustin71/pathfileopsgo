@@ -180,10 +180,10 @@ func TestFileMgrCollection_AddFileInfo_01(t *testing.T) {
 		t.Errorf("Error returned from fh.MakeAbsolutePath(adjustedPath). adjustedPath='%v' Error='%v'", adjustedPath, err.Error())
 	}
 
-	err = fMgrs.AddFileInfo(fPath, fic)
+	err = fMgrs.AddFileMgrByFileInfo(fPath, fic)
 
 	if err != nil {
-		t.Errorf("Error returned from fMgrs.AddFileInfo(fPath, fic). fPath='%v' Error='%v'", fPath, err.Error())
+		t.Errorf("Error returned from fMgrs.AddFileMgrByFileInfo(fPath, fic). fPath='%v' Error='%v'", fPath, err.Error())
 
 	}
 

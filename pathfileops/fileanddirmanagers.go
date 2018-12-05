@@ -59,11 +59,11 @@ func (dMgrs *DirMgrCollection) AddDirMgrByPathFile(pathFileName string) error {
 	return nil
 }
 
-// AddFileInfo - Adds a File Manager object to the collection based on input from
+// AddFileMgrByFileInfo - Adds a File Manager object to the collection based on input from
 // a directory path string and a os.FileInfo object.
 func (dMgrs *DirMgrCollection) AddFileInfo(pathFile string, info os.FileInfo) error {
 
-	ePrefix := "DirMgrCollection) AddFileInfo() "
+	ePrefix := "DirMgrCollection) AddFileMgrByFileInfo() "
 
 	dMgr, err := DirMgr{}.NewFromFileInfo(pathFile, info)
 
@@ -449,139 +449,81 @@ func (dMgr *DirMgr) DeleteAll() error {
 
 }
 
-func (dMgr *DirMgr) DoesDirectoryExist() (doesPathExist, doesAbsolutePathExist bool) {
-
-	doesPathExist = dMgr.DoesDirMgrPathExist()
-
-	doesAbsolutePathExist = dMgr.DoesDirMgrAbsolutePathExist()
-
-	return
-}
-
-// DoesDirMgrAbsolutePathExist - Performs two operations.
-// First the method determine whether the directory
-// path indicated by the DirMgr.AbsolutePath field
-// actually does exist on disk and returns a 'true'
-// or 'false' boolean value accordingly. In addition,
-// it also updates the DirMgr field
-// 'DirMgr.AbsolutePathDoesExist'.
+// DeleteDirFiles - deletes files in the current directory based
+// on input parameter, 'formatSpec'. This specification will be
+// used to match files in the current directory. If a match is
+// found that file will be deleted.
 //
-func (dMgr *DirMgr) DoesDirMgrAbsolutePathExist() bool {
+func (dMgr *DirMgr) DeleteDirFiles(formatSpec string) error {
 
-	if dMgr.AbsolutePath == "" {
-		dMgr.AbsolutePathDoesExist = false
-		return false
-	}
+	ePrefix := "DirMgr.DeleteDirFiles() "
+	target := dMgr.GetAbsolutePathWithSeparator() + formatSpec
 
-	info, err := os.Stat(dMgr.AbsolutePath)
+	err := os.Remove(target)
 
 	if err != nil {
-		dMgr.AbsolutePathDoesExist = false
-	} else {
-		dMgr.AbsolutePathDoesExist = true
-		dMgr.ActualDirFileInfo = FileInfoPlus{}.NewPathFileInfo(dMgr.AbsolutePath, info)
+		return fmt.Errorf(ePrefix+
+			"Error returned by os.Remove(target). "+
+			"target='%v' Error='%v' ", target, err.Error())
 	}
 
-	return dMgr.AbsolutePathDoesExist
-
+	return nil
 }
 
-// DoesDirMgrPathExist - Performs two operations.
-// First the method determine whether the directory
-// path indicated by the DirMgr.Path field actually
-// does exist on disk and returns a 'true' or 'false'
-// boolean value accordingly. In addition it also
-// updates the DirMgr field DirMgr.PathDoesExist field.
+// DeleteDirContents - Deletes all the files in the current
+// directory and ONLY the current directory.
 //
-func (dMgr *DirMgr) DoesDirMgrPathExist() bool {
+// Files in subdirectories are NOT deleted.
+//
+// Reference:
+// https://stackoverflow.com/questions/33450980/golang-remove-all-contents-of-a-directory
+//
+func (dMgr *DirMgr) DeleteDirContents() error {
 
-	if dMgr.Path == "" {
-		dMgr.PathIsPopulated = false
-		return false
-	}
+	ePrefix := "DirMgr.DeleteDirContents() "
 
-	info, err := os.Stat(dMgr.Path)
+	err := dMgr.IsDirMgrValid(ePrefix)
 
 	if err != nil {
-		dMgr.PathDoesExist = false
-	} else {
-		dMgr.PathDoesExist = true
-		dMgr.ActualDirFileInfo = FileInfoPlus{}.NewPathFileInfo(dMgr.Path, info)
+		return err
 	}
 
-	return dMgr.PathDoesExist
+	dir, err := os.Open(dMgr.AbsolutePath)
 
-}
-
-// Empty - Returns all DirMgr field values to their uninitialized
-// or original zero values.
-func (dMgr *DirMgr) Empty() {
-
-	dMgr.IsInitialized = false
-	dMgr.OriginalPath = ""
-	dMgr.Path = ""
-	dMgr.PathIsPopulated = false
-	dMgr.PathDoesExist = false
-	dMgr.ParentPath = ""
-	dMgr.ParentPathIsPopulated = false
-	dMgr.RelativePath = ""
-	dMgr.RelativePathIsPopulated = false
-	dMgr.AbsolutePath = ""
-	dMgr.AbsolutePathIsPopulated = false
-	dMgr.AbsolutePathDoesExist = false
-	dMgr.AbsolutePathDifferentFromPath = false
-	dMgr.DirectoryName = ""
-	dMgr.VolumeName = ""
-	dMgr.VolumeIsPopulated = false
-	dMgr.ActualDirFileInfo = FileInfoPlus{}
-
-}
-
-// Equal - Compares two DirMgr objects to determine if
-// they are equal.
-func (dMgr *DirMgr) Equal(dmgr2 *DirMgr) bool {
-
-	if dMgr.IsInitialized != dmgr2.IsInitialized ||
-		dMgr.OriginalPath != dmgr2.OriginalPath ||
-		dMgr.Path != dmgr2.Path ||
-		dMgr.PathIsPopulated != dmgr2.PathIsPopulated ||
-		dMgr.PathDoesExist != dmgr2.PathDoesExist ||
-		dMgr.ParentPath != dmgr2.ParentPath ||
-		dMgr.ParentPathIsPopulated != dmgr2.ParentPathIsPopulated ||
-		dMgr.RelativePath != dmgr2.RelativePath ||
-		dMgr.RelativePathIsPopulated != dmgr2.RelativePathIsPopulated ||
-		dMgr.AbsolutePath != dmgr2.AbsolutePath ||
-		dMgr.AbsolutePathIsPopulated != dmgr2.AbsolutePathIsPopulated ||
-		dMgr.AbsolutePathDoesExist != dmgr2.AbsolutePathDoesExist ||
-		dMgr.AbsolutePathDifferentFromPath != dmgr2.AbsolutePathDifferentFromPath ||
-		dMgr.DirectoryName != dmgr2.DirectoryName ||
-		dMgr.VolumeName != dmgr2.VolumeName ||
-		dMgr.VolumeIsPopulated != dmgr2.VolumeIsPopulated {
-
-		return false
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error return by os.Open(dMgr.AbsolutePath). "+
+			"dMgr.AbsolutePath='%v' Error='%v' ",
+			dMgr.AbsolutePath, err.Error())
 	}
 
-	if !dMgr.ActualDirFileInfo.Equal(&dmgr2.ActualDirFileInfo) {
-		return false
+	names, err := dir.Readdirnames(-1)
+
+	if err != nil {
+		_ = dir.Close()
+		return fmt.Errorf(ePrefix+
+			"Error returned by dir.Readdirnames(-1). "+
+			"dMgr.AbsolutePath='%v' Error='%v' ",
+			dMgr.AbsolutePath, err.Error())
 	}
 
-	return true
-}
+	for _, name := range names {
 
-// EqualPaths - Compares two DirMgr objects to determine
-// if their paths are equal.
-func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
+		err = os.RemoveAll(fp.Join(dMgr.AbsolutePath, name))
 
-	if dMgr.IsInitialized != dMgr2.IsInitialized {
-		return false
+		if err != nil {
+			_ = dir.Close()
+			return fmt.Errorf(ePrefix+
+				"Error returned by dir.Readdirnames(-1). "+
+				"dMgr.AbsolutePath='%v' fileName='%v' Error='%v' ",
+				dMgr.AbsolutePath, name, err.Error())
+		}
+
 	}
 
-	if dMgr.AbsolutePath == dMgr2.AbsolutePath &&
-		dMgr.Path == dMgr2.Path {
-		return true
-	}
+	_ = dir.Close()
 
-	return false
+	return nil
 }
 
 // DeleteWalkDirFiles - !!! BE CAREFUL !!! This method
@@ -782,6 +724,144 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(
 
 	return deleteFilesInfo, nil
 
+}
+
+// DoesDirectoryExist - Returns two boolean values indicating whether or not the
+// Directory path exists and whether or not the Directory absolute path exists.
+//
+func (dMgr *DirMgr) DoesDirectoryExist() (doesPathExist, doesAbsolutePathExist bool) {
+
+	doesPathExist = dMgr.DoesDirMgrPathExist()
+
+	doesAbsolutePathExist = dMgr.DoesDirMgrAbsolutePathExist()
+
+	return
+}
+
+// DoesDirMgrAbsolutePathExist - Performs two operations.
+// First the method determine whether the directory
+// path indicated by the DirMgr.AbsolutePath field
+// actually does exist on disk and returns a 'true'
+// or 'false' boolean value accordingly. In addition,
+// it also updates the DirMgr field
+// 'DirMgr.AbsolutePathDoesExist'.
+//
+func (dMgr *DirMgr) DoesDirMgrAbsolutePathExist() bool {
+
+	if dMgr.AbsolutePath == "" {
+		dMgr.AbsolutePathDoesExist = false
+		return false
+	}
+
+	info, err := os.Stat(dMgr.AbsolutePath)
+
+	if err != nil {
+		dMgr.AbsolutePathDoesExist = false
+	} else {
+		dMgr.AbsolutePathDoesExist = true
+		dMgr.ActualDirFileInfo = FileInfoPlus{}.NewPathFileInfo(dMgr.AbsolutePath, info)
+	}
+
+	return dMgr.AbsolutePathDoesExist
+
+}
+
+// DoesDirMgrPathExist - Performs two operations.
+// First the method determine whether the directory
+// path indicated by the DirMgr.Path field actually
+// does exist on disk and returns a 'true' or 'false'
+// boolean value accordingly. In addition it also
+// updates the DirMgr field DirMgr.PathDoesExist field.
+//
+func (dMgr *DirMgr) DoesDirMgrPathExist() bool {
+
+	if dMgr.Path == "" {
+		dMgr.PathIsPopulated = false
+		return false
+	}
+
+	info, err := os.Stat(dMgr.Path)
+
+	if err != nil {
+		dMgr.PathDoesExist = false
+	} else {
+		dMgr.PathDoesExist = true
+		dMgr.ActualDirFileInfo = FileInfoPlus{}.NewPathFileInfo(dMgr.Path, info)
+	}
+
+	return dMgr.PathDoesExist
+
+}
+
+// Empty - Returns all DirMgr field values to their uninitialized
+// or original zero values.
+func (dMgr *DirMgr) Empty() {
+
+	dMgr.IsInitialized = false
+	dMgr.OriginalPath = ""
+	dMgr.Path = ""
+	dMgr.PathIsPopulated = false
+	dMgr.PathDoesExist = false
+	dMgr.ParentPath = ""
+	dMgr.ParentPathIsPopulated = false
+	dMgr.RelativePath = ""
+	dMgr.RelativePathIsPopulated = false
+	dMgr.AbsolutePath = ""
+	dMgr.AbsolutePathIsPopulated = false
+	dMgr.AbsolutePathDoesExist = false
+	dMgr.AbsolutePathDifferentFromPath = false
+	dMgr.DirectoryName = ""
+	dMgr.VolumeName = ""
+	dMgr.VolumeIsPopulated = false
+	dMgr.ActualDirFileInfo = FileInfoPlus{}
+
+}
+
+// Equal - Compares two DirMgr objects to determine if
+// they are equal.
+func (dMgr *DirMgr) Equal(dmgr2 *DirMgr) bool {
+
+	if dMgr.IsInitialized != dmgr2.IsInitialized ||
+		dMgr.OriginalPath != dmgr2.OriginalPath ||
+		dMgr.Path != dmgr2.Path ||
+		dMgr.PathIsPopulated != dmgr2.PathIsPopulated ||
+		dMgr.PathDoesExist != dmgr2.PathDoesExist ||
+		dMgr.ParentPath != dmgr2.ParentPath ||
+		dMgr.ParentPathIsPopulated != dmgr2.ParentPathIsPopulated ||
+		dMgr.RelativePath != dmgr2.RelativePath ||
+		dMgr.RelativePathIsPopulated != dmgr2.RelativePathIsPopulated ||
+		dMgr.AbsolutePath != dmgr2.AbsolutePath ||
+		dMgr.AbsolutePathIsPopulated != dmgr2.AbsolutePathIsPopulated ||
+		dMgr.AbsolutePathDoesExist != dmgr2.AbsolutePathDoesExist ||
+		dMgr.AbsolutePathDifferentFromPath != dmgr2.AbsolutePathDifferentFromPath ||
+		dMgr.DirectoryName != dmgr2.DirectoryName ||
+		dMgr.VolumeName != dmgr2.VolumeName ||
+		dMgr.VolumeIsPopulated != dmgr2.VolumeIsPopulated {
+
+		return false
+	}
+
+	if !dMgr.ActualDirFileInfo.Equal(&dmgr2.ActualDirFileInfo) {
+		return false
+	}
+
+	return true
+}
+
+// EqualPaths - Compares two DirMgr objects to determine
+// if their paths are equal.
+func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
+
+	if dMgr.IsInitialized != dMgr2.IsInitialized {
+		return false
+	}
+
+	if dMgr.AbsolutePath == dMgr2.AbsolutePath &&
+		dMgr.Path == dMgr2.Path {
+		return true
+	}
+
+	return false
 }
 
 // FindWalkDirFiles - This method returns file information on files residing in a specific
@@ -1506,6 +1586,27 @@ func (fMgrs *FileMgrCollection) AddFileMgr(fMgr FileMgr) {
 	fMgrs.FMgrs = append(fMgrs.FMgrs, fMgr.CopyOut())
 }
 
+// AddFileMgrByDirFileNameExt - Add a new File Manager using
+// input parameters 'directory' and 'pathFileNameExt'.
+func (fMgrs *FileMgrCollection) AddFileMgrByDirFileNameExt(
+	directory DirMgr,
+	pathFileNameExt string) error {
+
+	ePrefix := "FileMgrCollection.AddFileMgrByDirFileNameExt() "
+
+	fMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(directory, pathFileNameExt)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	fMgrs.FMgrs = append(fMgrs.FMgrs, fMgr)
+
+	return nil
+}
+
+// AddFileMgrByPathFile - Add a new File Manager based on
+// input parameter pathFileName
 func (fMgrs *FileMgrCollection) AddFileMgrByPathFile(
 	pathFileName string) error {
 
@@ -1524,11 +1625,11 @@ func (fMgrs *FileMgrCollection) AddFileMgrByPathFile(
 	return nil
 }
 
-// AddFileInfo - Adds a File Manager object to the collection based on input from
+// AddFileMgrByFileInfo - Adds a File Manager object to the collection based on input from
 // a directory path string and a os.FileInfo object.
-func (fMgrs *FileMgrCollection) AddFileInfo(pathFile string, info os.FileInfo) error {
+func (fMgrs *FileMgrCollection) AddFileMgrByFileInfo(pathFile string, info os.FileInfo) error {
 
-	ePrefix := "FileMgrCollection) AddFileInfo() "
+	ePrefix := "FileMgrCollection) AddFileMgrByFileInfo() "
 
 	fMgr, err := FileMgr{}.NewFromFileInfo(pathFile, info)
 
@@ -1558,6 +1659,32 @@ func (fMgrs *FileMgrCollection) AddFileMgrCollection(fMgrs2 *FileMgrCollection) 
 	}
 
 	return
+}
+
+// CopyFilesToDir - Copies all the files in the File Manager Collection to
+// the specified target directory.
+//
+func (fMgrs *FileMgrCollection) CopyFilesToDir(targetDirectory DirMgr) error {
+
+	ePrefix := "FileMgrCollection.CopyFilesToDir() "
+	maxLen := len(fMgrs.FMgrs)
+
+	if maxLen == 0 {
+		return errors.New(ePrefix + "ERROR - Collection contains ZERO File Managers!")
+	}
+
+	for i := 0; i < maxLen; i++ {
+		err := fMgrs.FMgrs[i].CopyFileToDir(targetDirectory)
+
+		if err != nil {
+			return fmt.Errorf(ePrefix+
+				"Copy Failure on index='%v' file='%v'. Error='%v'",
+				i, fMgrs.FMgrs[i].AbsolutePathFileName, err.Error())
+		}
+
+	}
+
+	return nil
 }
 
 // CopyOut - Returns an FileMgrCollection which is an
@@ -1650,6 +1777,26 @@ func (fMgrs *FileMgrCollection) FindFiles(
 // FileMgrCollection File Managers (FMgrs) array.
 func (fMgrs *FileMgrCollection) GetArrayLength() int {
 	return len(fMgrs.FMgrs)
+}
+
+// Returns a deep copy of the File Manager at index 'idx'.
+//
+func (fMgrs *FileMgrCollection) GetFileMgrAtIdx(idx int) (FileMgr, error) {
+
+	ePrefix := "FileMgrCollection.GetFileMgrAtIdx() "
+
+	if idx < 0 {
+		return FileMgr{},
+			errors.New(ePrefix + "ERROR: 'idx' is LESS THAN ZERO!")
+	}
+
+	if idx > len(fMgrs.FMgrs)-1 {
+		return FileMgr{},
+			fmt.Errorf(ePrefix+"ERROR: 'idx' exceeds FileMgrCollection Array Boundary. \n"+
+				"Maximum Index='%v' Input parameter 'idx' = '%v' ", len(fMgrs.FMgrs)-1, idx)
+	}
+
+	return fMgrs.FMgrs[idx].CopyOut(), nil
 }
 
 // PopLastFMgr - Removes the last File Manager (FileMgr) object
