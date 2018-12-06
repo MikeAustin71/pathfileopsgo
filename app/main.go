@@ -40,26 +40,50 @@ func main() {
 
 */
 
-var baseProjectPath = "D:/gowork/src/MikeAustin71/pathfileopsgo"
-
 func main() {
 
-	TestingDirMgrDeleteWalkDirFiles06()
-	fmt.Println("Completed!")
+	basePath := GetBaseProjectPath()
 
-	/*
-		result, err := TestingDirMgr02TestSetupFileWalkDeleteFiles()
+	fmt.Println("Testing GetBaseProjectPath() ")
+	fmt.Println("basePath: ", basePath)
 
-		if err != nil {
-			fmt.Printf("Error returned from TestingDirMgr02TestSetupFileWalkDeleteFiles() "+
-				"\nError='%v \n", err.Error())
-			return
-		}
+}
 
-		fmt.Println("Success!")
-		fmt.Println("result= ", result)
+/*
+func MakeDirMgrTestsDirs() {
+	fh := pathFileOps.FileHelper{}
 
-	*/
+
+
+}
+*/
+
+func GetBaseProjectPath() string {
+
+	ePrefix := "GetBaseProjectPath() "
+	fh := pathFileOps.FileHelper{}
+	currDir, err := fh.GetAbsCurrDir()
+
+	if err != nil {
+		fmt.Printf(ePrefix+
+			"Error returned by fh.GetAbsCurrDir(). Error='%v' \n", err.Error())
+		return "Error"
+	}
+
+	target := "pathfileopsgo"
+	idx := strings.Index(currDir, target)
+
+	if idx < 0 {
+		fmt.Printf(ePrefix +
+			"Error: Unable to locate \"pathfileopsgo\" in current directory string! \n")
+		return "Error"
+	}
+
+	idx += len(target)
+
+	baseDir := currDir[0:idx]
+
+	return baseDir
 }
 
 func TestingDirMgrDeleteWalkDirFiles06() {
@@ -143,27 +167,27 @@ func TestingDirMgrDeleteWalkDirFiles06() {
 
 	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].GetFileNameExt(), oldFile1) {
 			oldFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].GetFileNameExt(), oldFile2) {
 			oldFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].GetFileNameExt(), oldFile3) {
 			oldFile3Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].GetFileNameExt(), newFile1) {
 			newFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].GetFileNameExt(), newFile2) {
 			newFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].GetFileNameExt(), newFile3) {
 			newFile3Found = true
 		}
 
@@ -437,7 +461,8 @@ func TestingfileinfoplusEqual01() {
 func TestWriteFile() {
 	fh := pathFileOps.FileHelper{}
 
-	filePath := fh.AdjustPathSlash(baseProjectPath + "/checkfiles/checkfiles03/testWrite2998.txt")
+	filePath := GetBaseProjectPath() +
+		fh.AdjustPathSlash("/checkfiles/checkfiles03/testWrite2998.txt")
 
 	fMgr, err := pathFileOps.FileMgr{}.New(filePath)
 
@@ -472,7 +497,7 @@ func TestWriteFile() {
 		bytesRead, err := fMgr.ReadAllFile()
 
 		if err != nil {
-			fmt.Printf("Error returned from fMgr.ReadAllFile(). filePathName='%v'  Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+			fmt.Printf("Error returned from fMgr.ReadAllFile(). filePathName='%v'  Error='%v'", fMgr.GetAbsolutePathFileName(), err.Error())
 			return
 		}
 
@@ -498,7 +523,7 @@ func TestWriteFile() {
 		doesFileExist := fh.DoesFileExist(filePath)
 
 		if !doesFileExist {
-			fmt.Printf("Error: After writing string, target file does NOT exist!. FileNameExt='%v'", fMgr.AbsolutePathFileName)
+			fmt.Printf("Error: After writing string, target file does NOT exist!. fileNameExt='%v'", fMgr.GetAbsolutePathFileName())
 			return
 		}
 
@@ -516,7 +541,7 @@ func TestWriteFile() {
 	// doesFileExist = fh.DoesFileExist(filePath)
 
 	if doesFileExist {
-		fmt.Printf("Error: Failed to DELETE FileNameExt='%v'", fMgr.AbsolutePathFileName)
+		fmt.Printf("Error: Failed to DELETE fileNameExt='%v'", fMgr.GetAbsolutePathFileName())
 		return
 	}
 
@@ -543,10 +568,10 @@ func TestOpenFile() {
 		return
 	}
 
-	b, err := ioutil.ReadAll(fMgr.FilePtr)
+	b, err := ioutil.ReadAll(fMgr.GetFilePtr())
 
 	if err != nil {
-		fmt.Printf(ePrefix+"Error returned from ioutil.ReadAll(fMgr.FilePtr) filePath='%v'  Error='%v'", filePath, err.Error())
+		fmt.Printf(ePrefix+"Error returned from ioutil.ReadAll(fMgr.filePtr) filePath='%v'  Error='%v'", filePath, err.Error())
 		_ = fMgr.CloseFile()
 		return
 	}
@@ -578,7 +603,7 @@ func TestDeleteDirectoryTree() {
 
 	ePrefix := "TestDeleteDirectoryTree() "
 	fh := pathFileOps.FileHelper{}
-	substituteDir := fh.AdjustPathSlash(baseProjectPath + "/testdestdir/destdir")
+	substituteDir := GetBaseProjectPath() + fh.AdjustPathSlash("/testdestdir/destdir")
 
 	substituteDMgr, err := pathFileOps.DirMgr{}.New(substituteDir)
 
@@ -602,7 +627,7 @@ func TestCopyDirectoryTree() {
 
 	ePrefix := "TestCopyDirectoryTree() "
 	fh := pathFileOps.FileHelper{}
-	dir := fh.AdjustPathSlash(baseProjectPath + "/testsrcdir")
+	dir := GetBaseProjectPath() + fh.AdjustPathSlash("/testsrcdir")
 
 	searchPattern := ""
 	filesOlderThan := time.Time{}
@@ -634,7 +659,7 @@ func TestCopyDirectoryTree() {
 		return
 	}
 
-	baseDir := fh.AdjustPathSlash(baseProjectPath + "/testsrcdir")
+	baseDir := GetBaseProjectPath() + fh.AdjustPathSlash("/testsrcdir")
 
 	baseDMgr, err := pathFileOps.DirMgr{}.New(baseDir)
 
@@ -643,7 +668,7 @@ func TestCopyDirectoryTree() {
 		return
 	}
 
-	substituteDir := fh.AdjustPathSlash(baseProjectPath + "/testdestdir/destdir")
+	substituteDir := GetBaseProjectPath() + fh.AdjustPathSlash("/testdestdir/destdir")
 
 	substituteDMgr, err := pathFileOps.DirMgr{}.New(substituteDir)
 
@@ -675,12 +700,12 @@ func TestCopyDirectoryTree() {
 		doesFileExist, err := newDirTree.FoundFiles.FMgrs[i].DoesThisFileExist()
 
 		if err != nil {
-			fmt.Printf(ePrefix+"Error returned by newDirTree.FoundFiles.FMgrs[i].DoesThisFileExist(). i='%v' FileNameExt='%v'  Error='%v'", i, newDirTree.FoundFiles.FMgrs[i].FileNameExt, err.Error())
+			fmt.Printf(ePrefix+"Error returned by newDirTree.FoundFiles.FMgrs[i].DoesThisFileExist(). i='%v' fileNameExt='%v'  Error='%v'", i, newDirTree.FoundFiles.FMgrs[i].GetFileNameExt(), err.Error())
 			return
 		}
 
 		if !doesFileExist {
-			fmt.Printf(ePrefix+"Error: Failed to create FileNameExt='%v'. It does NOT exist in target directory.", newDirTree.FoundFiles.FMgrs[i].FileNameExt)
+			fmt.Printf(ePrefix+"Error: Failed to create fileNameExt='%v'. It does NOT exist in target directory.", newDirTree.FoundFiles.FMgrs[i].GetFileNameExt())
 			return
 		}
 
@@ -787,7 +812,7 @@ func TestMainCleanFileNameExt(rawFileNameExt, expectedFileNameExt string) {
 	}
 
 	fmt.Println("=========================================")
-	fmt.Println("          Clean FileNameExt Tests")
+	fmt.Println("          Clean fileNameExt Tests")
 	fmt.Println("=========================================")
 	fmt.Println("      rawFileNameExt: ", rawFileNameExt)
 	fmt.Println(" adjustedFileNameExt: ", adjustedFileNameExt)
@@ -1052,27 +1077,27 @@ func TestDirMgrWalDirDeleteFiles() {
 
 	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].GetFileNameExt(), oldFile1) {
 			oldFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].GetFileNameExt(), oldFile2) {
 			oldFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].GetFileNameExt(), oldFile3) {
 			oldFile3Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].GetFileNameExt(), newFile1) {
 			newFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].GetFileNameExt(), newFile2) {
 			newFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].GetFileNameExt(), newFile3) {
 			newFile3Found = true
 		}
 
@@ -1198,7 +1223,7 @@ func TestMain901() {
 		}
 
 		doesFileExist, err := fMgr.DoesThisFileExist()
-		doesFileExist2 := fh.DoesFileExist(fMgr.AbsolutePathFileName)
+		doesFileExist2 := fh.DoesFileExist(fMgr.GetAbsolutePathFileName())
 
 		if err != nil {
 			fmt.Printf("Error returned by FileMgr{}.DoesThisFileExist(). srcFile='%v'. Error='%v'\n", srcFile, err.Error())
@@ -1206,12 +1231,12 @@ func TestMain901() {
 		}
 
 		if !doesFileExist {
-			fmt.Printf("Failed to create Source File == '%v'\n", fMgr.AbsolutePathFileName)
+			fmt.Printf("Failed to create Source File == '%v'\n", fMgr.GetAbsolutePathFileName())
 			return
 		}
 
 		if !doesFileExist2 {
-			fmt.Printf("Exist2: Failed to create Source File == '%v'\n", fMgr.AbsolutePathFileName)
+			fmt.Printf("Exist2: Failed to create Source File == '%v'\n", fMgr.GetAbsolutePathFileName())
 			return
 
 		}
@@ -1323,7 +1348,7 @@ func MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
 
 	fh := pathFileOps.FileHelper{}
 
-	origDir := fh.AdjustPathSlash(baseProjectPath + "/dirwalkdeletetests/dirdelete01")
+	origDir := GetBaseProjectPath() + fh.AdjustPathSlash("/dirwalkdeletetests/dirdelete01")
 
 	if fh.DoesFileExist(origDir) {
 
@@ -1355,7 +1380,7 @@ func MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
 	}
 
 	// Copy Old Files
-	dirOldFilesForTest := fh.AdjustPathSlash(baseProjectPath + "/filesfortest/oldfilesfortest")
+	dirOldFilesForTest := GetBaseProjectPath() + fh.AdjustPathSlash("/filesfortest/oldfilesfortest")
 
 	if !fh.DoesFileExist(dirOldFilesForTest) {
 		return "", fmt.Errorf(ePrefix+"Error: Old Files Directory does NOT exist! dirOldFilesForTest='%v'", dirOldFilesForTest)
@@ -1398,7 +1423,7 @@ func MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
 	newFile2 := "newerFileForTest_02.txt"
 	newFile3 := "newerFileForTest_03.txt"
 
-	dirNewFilesForTest := fh.AdjustPathSlash(baseProjectPath + "/filesfortest/newfilesfortest")
+	dirNewFilesForTest := GetBaseProjectPath() + fh.AdjustPathSlash("/filesfortest/newfilesfortest")
 
 	if !fh.DoesFileExist(dirNewFilesForTest) {
 		return "", fmt.Errorf(ePrefix+"Error: New Files Directory does NOT exist! dirNewFilesForTest='%v'", dirNewFilesForTest)

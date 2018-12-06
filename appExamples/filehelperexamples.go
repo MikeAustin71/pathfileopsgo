@@ -50,24 +50,42 @@ func PathElementsAnalysis(pathFile string) {
 }
 
 func PrintFileManagerFields(fileMgr pathFileOps.FileMgr) {
-
+	ePrefix := "PrintFileManagerFields() "
 	fmt.Println("======================================")
 	fmt.Println("            File Manager")
 	fmt.Println("======================================")
-	fmt.Println("IsInitialized:", fileMgr.IsInitialized)
-	fmt.Println("OriginalPathFileName:", fileMgr.OriginalPathFileName)
-	fmt.Println("AbsolutePathFileName:", fileMgr.AbsolutePathFileName)
-	fmt.Println("AbsolutePathFileNameIsPopulated:", fileMgr.AbsolutePathFileNameIsPopulated)
-	fmt.Println("AbsolutePathFileNameDoesExist:", fileMgr.AbsolutePathFileNameDoesExist)
-	fmt.Println("FileName:", fileMgr.FileName)
-	fmt.Println("FileNameIsPopulated:", fileMgr.FileNameIsPopulated)
-	fmt.Println("FileExt:", fileMgr.FileExt)
-	fmt.Println("FileExtIsPopulated:", fileMgr.FileExtIsPopulated)
-	fmt.Println("FileNameExt:", fileMgr.FileNameExt)
-	fmt.Println("FileNameExtIsPopulated:", fileMgr.FileNameExtIsPopulated)
-	fmt.Println("IsFilePtrOpen: ", fileMgr.IsFilePtrOpen)
-	PrintFileInfoPlusFields(fileMgr.ActualFileInfo)
-	PrintDirMgrFields(fileMgr.DMgr)
+	fmt.Println("isInitialized:", fileMgr.IsInitialized())
+	fmt.Println("originalPathFileName:", fileMgr.GetOriginalPathFileName())
+	fmt.Println("absolutePathFileName:", fileMgr.GetAbsolutePathFileName())
+	fmt.Println("isAbsolutePathFileNamePopulated:", fileMgr.IsAbsolutePathFileNamePopulated())
+
+	doesFileExist, err := fileMgr.DoesThisFileExist()
+	if err != nil {
+		fmt.Printf(ePrefix+
+			"Error from fileMgr.DoesThisFileExist(). Error='%v' \n", err.Error())
+		return
+	}
+
+	fmt.Println("DoesThisFileExist():", doesFileExist)
+	fmt.Println("fileName:", fileMgr.GetFileName())
+	fmt.Println("isFileNamePopulated:", fileMgr.IsFileNamePopulated())
+	fmt.Println("fileExt:", fileMgr.GetFileExt())
+	fmt.Println("isFileExtPopulated:", fileMgr.IsFileExtPopulated())
+	fmt.Println("fileNameExt:", fileMgr.GetFileNameExt())
+	fmt.Println("isFileNameExtPopulated:", fileMgr.IsFileNameExtPopulated())
+	fmt.Println("isFilePtrOpen: ", fileMgr.IsFilePointerOpen())
+
+	fileInfoPlus, err := fileMgr.GetFileInfoPlus()
+
+	if err != nil {
+		fmt.Printf(ePrefix+
+			"Error from fileMgr.GetFileInfoPlus(). Error='%v' \n", err.Error())
+		return
+
+	}
+
+	PrintFileInfoPlusFields(fileInfoPlus)
+	PrintDirMgrFields(fileMgr.GetDirMgr())
 }
 
 func PrintFileInfoPlusFields(info pathFileOps.FileInfoPlus) {

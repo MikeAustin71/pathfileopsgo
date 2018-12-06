@@ -392,15 +392,15 @@ func TestFileHelper_ExtractBlankFileExt(t *testing.T) {
 	result, isEmpty, err := fh.GetFileExtension(commonDir)
 
 	if err != nil {
-		t.Errorf("Error returned by fh.GetFileExtension(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+		t.Errorf("Error returned by fh.GetFileExt(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
 	}
 
 	if isEmpty != true {
-		t.Errorf("Expected isEmpty GetFileExtension for absent file extension to return 'true'. Instead, isEmpty='%v' ", isEmpty)
+		t.Errorf("Expected isEmpty GetFileExt for absent file extension to return 'true'. Instead, isEmpty='%v' ", isEmpty)
 	}
 
 	if result != "" {
-		t.Errorf("Expected GetFileExtension to return empty result for absent file extension. Instead file extension='%v' ", result)
+		t.Errorf("Expected GetFileExt to return empty result for absent file extension. Instead file extension='%v' ", result)
 	}
 
 }

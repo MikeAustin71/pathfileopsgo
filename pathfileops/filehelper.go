@@ -431,22 +431,22 @@ func (dirTree *DirectoryTreeInfo) CopyToDirectoryTree(baseDir, newBaseDir DirMgr
 
 	for j := 0; j < lAry; j++ {
 
-		fileDMgr, err2 := dirTree.FoundFiles.FMgrs[j].DMgr.SubstituteBaseDir(baseDir, newBaseDir)
+		fileDMgr, err2 := dirTree.FoundFiles.FMgrs[j].dMgr.SubstituteBaseDir(baseDir, newBaseDir)
 
 		if err2 != nil {
-			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by dirTree.FoundFiles.FMgrs[j].DMgr.SubstituteBaseDir(baseDir, newBaseDir). Error='%v'", err2.Error())
+			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by dirTree.FoundFiles.FMgrs[j].dMgr.SubstituteBaseDir(baseDir, newBaseDir). Error='%v'", err2.Error())
 		}
 
-		newFileMgr, err2 := FileMgr{}.NewFromDirMgrFileNameExt(fileDMgr, dirTree.FoundFiles.FMgrs[j].FileNameExt)
+		newFileMgr, err2 := FileMgr{}.NewFromDirMgrFileNameExt(fileDMgr, dirTree.FoundFiles.FMgrs[j].fileNameExt)
 
 		if err2 != nil {
-			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by FileMgr{}.NewFromDirMgrFileNameExt(dMgr, dirTree.FoundFiles.FMgrs[j].FileNameExt) dirTree.FoundFiles.FMgrs[j].FileNameExt='%v' j='%v' Error='%v'", dirTree.FoundFiles.FMgrs[j].FileNameExt, j, err2.Error())
+			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by FileMgr{}.NewFromDirMgrFileNameExt(dMgr, dirTree.FoundFiles.FMgrs[j].fileNameExt) dirTree.FoundFiles.FMgrs[j].fileNameExt='%v' j='%v' Error='%v'", dirTree.FoundFiles.FMgrs[j].fileNameExt, j, err2.Error())
 		}
 
 		err2 = dirTree.FoundFiles.FMgrs[j].CopyFileMgr(&newFileMgr)
 
 		if err2 != nil {
-			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by FMgrs[j].CopyFileMgr(&newFileMgr) SrcFileName:'%v'  DestFileName:'%v' Error='%v'", dirTree.FoundFiles.FMgrs[j].FileNameExt, newFileMgr.FileNameExt, err2.Error())
+			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by FMgrs[j].CopyFileMgr(&newFileMgr) SrcFileName:'%v'  DestFileName:'%v' Error='%v'", dirTree.FoundFiles.FMgrs[j].fileNameExt, newFileMgr.fileNameExt, err2.Error())
 
 		}
 
@@ -2031,7 +2031,7 @@ func (fh FileHelper) GetFileNameWithoutExt(pathFileNameExt string) (fName string
 	return
 }
 
-// GetFileExtension - Returns the File Extension with
+// GetFileExt - Returns the File Extension with
 // the dot. If there is no File Extension an empty
 // string is returned (NO dot included). If the returned
 // File Extension is an empty string, the returned
@@ -2040,7 +2040,7 @@ func (fh FileHelper) GetFileNameWithoutExt(pathFileNameExt string) (fName string
 // When an extension is returned in the 'ext' variable, this
 // extension includes a leading dot. Example: '.txt'
 func (fh FileHelper) GetFileExtension(pathFileNameExt string) (ext string, isEmpty bool, err error) {
-	ePrefix := "FileHelper.GetFileExtension() "
+	ePrefix := "FileHelper.GetFileExt() "
 
 	ext = ""
 	isEmpty = true
@@ -2327,7 +2327,7 @@ func (fh FileHelper) GetLastPathElement(pathName string) (string, error) {
 	return resultAry[lResultAry-1], nil
 }
 
-// GetPathAndFileNameExt - Breaks out path and FileName+Ext elements from
+// GetPathAndFileNameExt - Breaks out path and fileName+Ext elements from
 // a path string. If both path and fileName are empty strings, this method
 // returns an error.
 func (fh FileHelper) GetPathAndFileNameExt(pathFileNameExt string) (pathDir, fileNameExt string, bothAreEmpty bool, err error) {

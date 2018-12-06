@@ -23,11 +23,11 @@ func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
 		t.Errorf("Error returned from fMgr.OpenThisFileReadOnly(). filePath='%v'  Error='%v'", filePath, err.Error())
 	}
 
-	b, err := ioutil.ReadAll(fMgr.FilePtr)
+	b, err := ioutil.ReadAll(fMgr.filePtr)
 
 	if err != nil {
 		_ = fMgr.CloseFile()
-		t.Errorf("Error returned from ioutil.ReadAll(fMgr.FilePtr) filePath='%v'  Error='%v'", filePath, err.Error())
+		t.Errorf("Error returned from ioutil.ReadAll(fMgr.filePtr) filePath='%v'  Error='%v'", filePath, err.Error())
 		return
 	}
 
@@ -62,13 +62,13 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
 		return
 	}
 
-	b, err := ioutil.ReadAll(fMgr.FilePtr)
+	b, err := ioutil.ReadAll(fMgr.filePtr)
 
 	if err != nil {
 
 		_ = fMgr.CloseFile()
 
-		t.Errorf("Error returned from ioutil.ReadAll(fMgr.FilePtr) filePath='%v'  Error='%v'", filePath, err.Error())
+		t.Errorf("Error returned from ioutil.ReadAll(fMgr.filePtr) filePath='%v'  Error='%v'", filePath, err.Error())
 
 		return
 	}
@@ -171,12 +171,12 @@ func TestFileMgr_SetFileInfo(t *testing.T) {
 		t.Errorf("Error returned by fmgr.SetFileInfo(info). info.Name()='%v'  Error='%v'", info.Name(), err.Error())
 	}
 
-	if !fmgr.ActualFileInfo.IsFInfoInitialized {
+	if !fmgr.actualFileInfo.IsFInfoInitialized {
 		t.Error("Error - File Manager FileInfoPlus object is not initialized!")
 	}
 
-	if fmgr.ActualFileInfo.Name() != expectedFileNameExt {
-		t.Errorf("Error = Expected fmgr.ActualFileInfo.Name()='%v'.  Instead, fmgr.ActualFileInfo.Name()='%v'", expectedFileNameExt, fmgr.ActualFileInfo.Name())
+	if fmgr.actualFileInfo.Name() != expectedFileNameExt {
+		t.Errorf("Error = Expected fmgr.actualFileInfo.Name()='%v'.  Instead, fmgr.actualFileInfo.Name()='%v'", expectedFileNameExt, fmgr.actualFileInfo.Name())
 	}
 
 }
@@ -212,7 +212,7 @@ func TestFileMgr_WriteStrToFile_01(t *testing.T) {
 	bytesRead, err := fMgr.ReadAllFile()
 
 	if err != nil {
-		t.Errorf("Error returned from fMgr.ReadAllFile(). filePathName='%v'  Error='%v'", fMgr.AbsolutePathFileName, err.Error())
+		t.Errorf("Error returned from fMgr.ReadAllFile(). filePathName='%v'  Error='%v'", fMgr.absolutePathFileName, err.Error())
 	}
 
 	if lExpectedStr != bytesWritten {
@@ -244,7 +244,7 @@ func TestFileMgr_WriteStrToFile_01(t *testing.T) {
 	doesFileExist := fh.DoesFileExist(filePath)
 
 	if doesFileExist {
-		t.Errorf("Error: Failed to DELETE FileNameExt='%v'", fMgr.AbsolutePathFileName)
+		t.Errorf("Error: Failed to DELETE fileNameExt='%v'", fMgr.absolutePathFileName)
 	}
 
 }

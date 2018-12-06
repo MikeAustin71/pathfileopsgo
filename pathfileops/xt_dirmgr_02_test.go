@@ -71,11 +71,11 @@ func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
 	foundOldReadingFile := false
 
 	for i := 0; i < dirTreeInfo.FoundFiles.GetArrayLength(); i++ {
-		if dirTreeInfo.FoundFiles.FMgrs[i].FileNameExt == "newerFileForTest_03.txt" {
+		if dirTreeInfo.FoundFiles.FMgrs[i].fileNameExt == "newerFileForTest_03.txt" {
 			foundnewTestFile3 = true
 		}
 
-		if dirTreeInfo.FoundFiles.FMgrs[i].FileNameExt == "006870_ReadingFiles.htm" {
+		if dirTreeInfo.FoundFiles.FMgrs[i].fileNameExt == "006870_ReadingFiles.htm" {
 			foundOldReadingFile = true
 		}
 	}
@@ -162,11 +162,11 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
 	foundOldReadingFile := false
 
 	for i := 0; i < dWalker.FoundFiles.GetArrayLength(); i++ {
-		if dWalker.FoundFiles.FMgrs[i].FileNameExt == "006890_WritingFiles.htm" {
+		if dWalker.FoundFiles.FMgrs[i].fileNameExt == "006890_WritingFiles.htm" {
 			foundWritingFiles = true
 		}
 
-		if dWalker.FoundFiles.FMgrs[i].FileNameExt == "006870_ReadingFiles.htm" {
+		if dWalker.FoundFiles.FMgrs[i].fileNameExt == "006870_ReadingFiles.htm" {
 			foundOldReadingFile = true
 		}
 	}
@@ -266,15 +266,15 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 	foundOldTestHtmFile := false
 
 	for i := 0; i < dWalker.FoundFiles.GetArrayLength(); i++ {
-		if dWalker.FoundFiles.FMgrs[i].FileNameExt == "006890_WritingFiles.htm" {
+		if dWalker.FoundFiles.FMgrs[i].fileNameExt == "006890_WritingFiles.htm" {
 			foundOldWritingFiles = true
 		}
 
-		if dWalker.FoundFiles.FMgrs[i].FileNameExt == "006870_ReadingFiles.htm" {
+		if dWalker.FoundFiles.FMgrs[i].fileNameExt == "006870_ReadingFiles.htm" {
 			foundOldReadingFile = true
 		}
 
-		if dWalker.FoundFiles.FMgrs[i].FileNameExt == "test.htm" {
+		if dWalker.FoundFiles.FMgrs[i].fileNameExt == "test.htm" {
 			foundOldTestHtmFile = true
 		}
 
@@ -379,15 +379,15 @@ func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 	foundNewerFile3 := false
 
 	for i := 0; i < dWalker.FoundFiles.GetArrayLength(); i++ {
-		if dWalker.FoundFiles.FMgrs[i].FileNameExt == "newerFileForTest_01.txt" {
+		if dWalker.FoundFiles.FMgrs[i].fileNameExt == "newerFileForTest_01.txt" {
 			foundNewerFile1 = true
 		}
 
-		if dWalker.FoundFiles.FMgrs[i].FileNameExt == "newerFileForTest_02.txt" {
+		if dWalker.FoundFiles.FMgrs[i].fileNameExt == "newerFileForTest_02.txt" {
 			foundNewerFile2 = true
 		}
 
-		if dWalker.FoundFiles.FMgrs[i].FileNameExt == "newerFileForTest_03.txt" {
+		if dWalker.FoundFiles.FMgrs[i].fileNameExt == "newerFileForTest_03.txt" {
 			foundNewerFile3 = true
 		}
 
@@ -499,27 +499,27 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 
 	for i := 0; i < dInfo.FoundFiles.GetArrayLength(); i++ {
 
-		if strings.Contains(dInfo.FoundFiles.FMgrs[i].FileNameExt, oldFile1) {
+		if strings.Contains(dInfo.FoundFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
 		}
 
-		if strings.Contains(dInfo.FoundFiles.FMgrs[i].FileNameExt, oldFile2) {
+		if strings.Contains(dInfo.FoundFiles.FMgrs[i].fileNameExt, oldFile2) {
 			oldFile2Found = true
 		}
 
-		if strings.Contains(dInfo.FoundFiles.FMgrs[i].FileNameExt, oldFile3) {
+		if strings.Contains(dInfo.FoundFiles.FMgrs[i].fileNameExt, oldFile3) {
 			oldFile3Found = true
 		}
 
-		if strings.Contains(dInfo.FoundFiles.FMgrs[i].FileNameExt, newFile1) {
+		if strings.Contains(dInfo.FoundFiles.FMgrs[i].fileNameExt, newFile1) {
 			newFile1Found = true
 		}
 
-		if strings.Contains(dInfo.FoundFiles.FMgrs[i].FileNameExt, newFile2) {
+		if strings.Contains(dInfo.FoundFiles.FMgrs[i].fileNameExt, newFile2) {
 			newFile2Found = true
 		}
 
-		if strings.Contains(dInfo.FoundFiles.FMgrs[i].FileNameExt, newFile3) {
+		if strings.Contains(dInfo.FoundFiles.FMgrs[i].fileNameExt, newFile3) {
 			newFile3Found = true
 		}
 
@@ -637,27 +637,27 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 
 	for i := 0; i < dInfo.FoundFiles.GetArrayLength(); i++ {
 
-		if strings.Contains(dInfo.FoundFiles.FMgrs[i].FileNameExt, oldFile1) {
+		if strings.Contains(dInfo.FoundFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
 		}
 
-		if strings.Contains(dInfo.FoundFiles.FMgrs[i].FileNameExt, oldFile2) {
+		if strings.Contains(dInfo.FoundFiles.FMgrs[i].fileNameExt, oldFile2) {
 			oldFile2Found = true
 		}
 
-		if strings.Contains(dInfo.FoundFiles.FMgrs[i].FileNameExt, oldFile3) {
+		if strings.Contains(dInfo.FoundFiles.FMgrs[i].fileNameExt, oldFile3) {
 			oldFile3Found = true
 		}
 
-		if strings.Contains(dInfo.FoundFiles.FMgrs[i].FileNameExt, newFile1) {
+		if strings.Contains(dInfo.FoundFiles.FMgrs[i].fileNameExt, newFile1) {
 			newFile1Found = true
 		}
 
-		if strings.Contains(dInfo.FoundFiles.FMgrs[i].FileNameExt, newFile2) {
+		if strings.Contains(dInfo.FoundFiles.FMgrs[i].fileNameExt, newFile2) {
 			newFile2Found = true
 		}
 
-		if strings.Contains(dInfo.FoundFiles.FMgrs[i].FileNameExt, newFile3) {
+		if strings.Contains(dInfo.FoundFiles.FMgrs[i].fileNameExt, newFile3) {
 			newFile3Found = true
 		}
 
@@ -772,27 +772,27 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
 
 	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile2) {
 			oldFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile3) {
 			oldFile3Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile1) {
 			newFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile2) {
 			newFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile3) {
 			newFile3Found = true
 		}
 
@@ -887,15 +887,15 @@ func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
 
 	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile2) {
 			oldFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile3) {
 			oldFile3Found = true
 		}
 
@@ -991,15 +991,15 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
 
 	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile2) {
 			oldFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile3) {
 			oldFile3Found = true
 		}
 
@@ -1155,15 +1155,15 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
 
 	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile1) {
 			newFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile2) {
 			newFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile3) {
 			newFile3Found = true
 		}
 
@@ -1266,27 +1266,27 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 
 	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile2) {
 			oldFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile3) {
 			oldFile3Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile1) {
 			newFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile2) {
 			newFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile3) {
 			newFile3Found = true
 		}
 
@@ -1388,27 +1388,27 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
 
 	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile2) {
 			oldFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile3) {
 			oldFile3Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile1) {
 			newFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile2) {
 			newFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile3) {
 			newFile3Found = true
 		}
 
@@ -1516,27 +1516,27 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
 
 	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile2) {
 			oldFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile3) {
 			oldFile3Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile1) {
 			newFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile2) {
 			newFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile3) {
 			newFile3Found = true
 		}
 

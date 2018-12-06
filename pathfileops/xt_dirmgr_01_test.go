@@ -360,27 +360,27 @@ func TestDirMgr_DeleteWalkDirFiles_31(t *testing.T) {
 
 	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile2) {
 			oldFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile3) {
 			oldFile3Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile1) {
 			newFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile2) {
 			newFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile3) {
 			newFile3Found = true
 		}
 
@@ -480,27 +480,27 @@ func TestDirMgr_DeleteWalkDirFiles_32(t *testing.T) {
 
 	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile2) {
 			oldFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, oldFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile3) {
 			oldFile3Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile1) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile1) {
 			newFile1Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile2) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile2) {
 			newFile2Found = true
 		}
 
-		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].FileNameExt, newFile3) {
+		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile3) {
 			newFile3Found = true
 		}
 
