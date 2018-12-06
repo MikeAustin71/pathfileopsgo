@@ -32,7 +32,7 @@ const (
 func main() {
  if, err := os.Open("/test.txt")
     if err, ok := err.(*os.PathError); ok {
-        fmt.Println("File at path", err.Path, "failed to open")
+        fmt.Println("File at path", err.path, "failed to open")
         return
     }
     fmt.Println(f.Name(), "opened successfully")
@@ -412,7 +412,7 @@ func TestingfileinfoplusEqual01() {
 		fmt.Printf("Error returned by fh.GetAbsCurrDir(). %v\n", err.Error())
 	}
 
-	fmt.Println("Absolute Current Path: ", absCurrPath)
+	fmt.Println("Absolute Current path: ", absCurrPath)
 
 	absBaseDirPath, err := fh.MakeAbsolutePath(baseDirPath)
 
@@ -422,8 +422,8 @@ func TestingfileinfoplusEqual01() {
 		return
 	}
 
-	fmt.Printf("    Base Path: %v\n", baseDirPath)
-	fmt.Printf("Absolute Path: %v\n", absBaseDirPath)
+	fmt.Printf("    Base path: %v\n", baseDirPath)
+	fmt.Printf("Absolute path: %v\n", absBaseDirPath)
 	fmt.Println()
 
 	absPathFileName, _ := fh.AddPathSeparatorToEndOfPathStr(absBaseDirPath)
@@ -615,7 +615,9 @@ func TestDeleteDirectoryTree() {
 	err = substituteDMgr.DeleteAll()
 
 	if err != nil {
-		fmt.Printf(ePrefix+"Error returned by substituteDMgr.DeleteAll(). substituteDMgr.Path='%v'  Error='%v'\n", substituteDMgr.Path, err.Error())
+		fmt.Printf(ePrefix+
+			"Error returned by substituteDMgr.DeleteAll(). substituteDMgr.path='%v'  "+
+			"Error='%v'\n", substituteDMgr.GetPath(), err.Error())
 		return
 	}
 
@@ -640,8 +642,10 @@ func TestCopyDirectoryTree() {
 		return
 	}
 
-	if !dMgr.AbsolutePathDoesExist {
-		fmt.Printf("Expected target directory to exist. I does NOT exist. dMgr.Path='%v' dMgr.AbolutePath='%v'\n", dMgr.Path, dMgr.AbsolutePath)
+	if !dMgr.DoesDirMgrAbsolutePathExist() {
+		fmt.Printf("Expected target directory to exist. I does NOT exist. "+
+			"dMgr.path='%v' dMgr.AbolutePath='%v'\n",
+			dMgr.GetPath(), dMgr.GetAbsolutePath())
 		return
 	}
 
@@ -729,7 +733,7 @@ func TestMainCleanDirStr(rawPath string) {
 	fmt.Println("     Test Clean Directory String")
 	fmt.Println("=========================================")
 	fmt.Println()
-	fmt.Println("Returned Dir Path: ", dirPath)
+	fmt.Println("Returned Dir path: ", dirPath)
 	fmt.Println("          isEmpty: ", isEmpty)
 	fmt.Println("  raw path string: ", rawPath)
 
@@ -763,7 +767,8 @@ func TestNewFileMgrFromDirMgrFileNameExt(rawPath, rawFileNameExt string) {
 	fMgr, err := pathFileOps.FileMgr{}.NewFromDirMgrFileNameExt(dMgr, rawFileNameExt)
 
 	if err != nil {
-		fmt.Printf("Error returned by FileMgr{}.NewFromDirMgrFileNameExt(dMgr, rawFileNameExt). dMgr.Path='%v' rawFileNameExt='%v'  \n", dMgr.Path, rawFileNameExt)
+		fmt.Printf("Error returned by FileMgr{}.NewFromDirMgrFileNameExt(dMgr, rawFileNameExt). "+
+			"dMgr.path='%v' rawFileNameExt='%v'  \n", dMgr.GetPath(), rawFileNameExt)
 	}
 
 	appExamples.PrintFileManagerFields(fMgr)
@@ -842,7 +847,7 @@ func TestMainCleanPath(rawPath string) {
 	pathCleanedAbsolutePath := path.Clean(adjustedAbsolutePath)
 
 	fmt.Println("=========================================")
-	fmt.Println("           Clean Path Tests")
+	fmt.Println("           Clean path Tests")
 	fmt.Println("=========================================")
 	fmt.Println("                rawPath: ", rawPath)
 	fmt.Println("           adjustedPath: ", adjustedPath)
@@ -926,7 +931,9 @@ func TestDirMgrFileInfo() {
 	findfiles, err := dMgr.FindWalkDirFiles(fsc)
 
 	if err != nil {
-		fmt.Printf("Error returned from dMgr.FindWalkDirFiles(fsc) dMgr.AbsolutePath='%v'  Error='%v'. \n", dMgr.AbsolutePath, err.Error())
+		fmt.Printf("Error returned from dMgr.FindWalkDirFiles(fsc) "+
+			"dMgr.absolutePath='%v'  Error='%v'. \n",
+			dMgr.GetAbsolutePath(), err.Error())
 		return
 	}
 
@@ -944,7 +951,7 @@ func TestDirMgrFileInfo() {
 	}
 
 	fmt.Println("Success")
-	fmt.Println("AbsolutePath: ", dMgr.AbsolutePath)
+	fmt.Println("absolutePath: ", dMgr.GetAbsolutePath())
 
 }
 
@@ -1173,12 +1180,14 @@ func DeleteDir02() error {
 		return fmt.Errorf(ePrefix+"Error returned from DirMgr{}.New(dirToDelete). dirToDelete='%v' Error='%v'", origDir, err.Error())
 	}
 
-	if dMgr.AbsolutePathDoesExist {
-		return fmt.Errorf("Directory origDir still exists. dMgr.AbsolutePathDoesExist='%v' origDir='%v' ", dMgr.AbsolutePathDoesExist, origDir)
+	if dMgr.DoesDirMgrAbsolutePathExist() {
+		return fmt.Errorf("Directory origDir still exists. dMgr.doesAbsolutePathExist='%v' "+
+			"origDir='%v' ", dMgr.DoesDirMgrAbsolutePathExist(), origDir)
 	}
 
-	if dMgr.PathDoesExist {
-		return fmt.Errorf("Directory origDir still exists. dMgr.PathDoesExist='%v' origDir='%v' ", dMgr.PathDoesExist, origDir)
+	if dMgr.DoesDirMgrPathExist() {
+		return fmt.Errorf("Directory origDir still exists. dMgr.doesPathExist='%v' origDir='%v' ",
+			dMgr.DoesDirMgrPathExist(), origDir)
 	}
 
 	fmt.Println("Successfully Deleted Directory")

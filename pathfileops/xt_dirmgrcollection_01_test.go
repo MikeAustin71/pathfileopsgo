@@ -29,8 +29,8 @@ func TestDirMgrCollection_AddDirMgr_01(t *testing.T) {
 		t.Errorf("Expected DirMgrsCollection Array Length = '1'. Instead, Array Length = '%v'", dMgrs.GetArrayLength())
 	}
 
-	if dMgrs.DirMgrs[0].AbsolutePath != origAbsPath {
-		t.Errorf("Expected Addition #1 AbsolutePath='%v'. Instead, AbsolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].AbsolutePath)
+	if dMgrs.DirMgrs[0].absolutePath != origAbsPath {
+		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].absolutePath)
 	}
 
 	// # 2
@@ -114,12 +114,12 @@ func TestDirMgrCollection_AddDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by dMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
 	}
 
-	if dMgr.Path != origPath {
-		t.Errorf("Expected Last DirMgr Path='%v'. Instead, dMgr.Path='%v'", origPath, dMgr.Path)
+	if dMgr.path != origPath {
+		t.Errorf("Expected Last DirMgr path='%v'. Instead, dMgr.path='%v'", origPath, dMgr.path)
 	}
 
-	if dMgr.AbsolutePath != origAbsPath {
-		t.Errorf("Expected Last DirMgr AbsolutePath='%v'. Instead, dMgr.AbsolutePath='%v'", origAbsPath, dMgr.AbsolutePath)
+	if dMgr.absolutePath != origAbsPath {
+		t.Errorf("Expected Last DirMgr absolutePath='%v'. Instead, dMgr.absolutePath='%v'", origAbsPath, dMgr.absolutePath)
 	}
 
 	if dMgrs.GetArrayLength() != 6 {
@@ -152,8 +152,8 @@ func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
 		t.Errorf("Expected DirMgrsCollection Array Length = '1'. Instead, Array Length = '%v'", dMgrs.GetArrayLength())
 	}
 
-	if dMgrs.DirMgrs[0].AbsolutePath != origAbsPath {
-		t.Errorf("Expected Addition #1 AbsolutePath='%v'. Instead, AbsolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].AbsolutePath)
+	if dMgrs.DirMgrs[0].absolutePath != origAbsPath {
+		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].absolutePath)
 	}
 
 	// # 2
@@ -237,12 +237,12 @@ func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
 		t.Errorf("Error returned by dMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
 	}
 
-	if dMgr.Path != origPath {
-		t.Errorf("Expected Last DirMgr Path='%v'. Instead, dMgr.Path='%v'", origPath, dMgr.Path)
+	if dMgr.path != origPath {
+		t.Errorf("Expected Last DirMgr path='%v'. Instead, dMgr.path='%v'", origPath, dMgr.path)
 	}
 
-	if dMgr.AbsolutePath != origAbsPath {
-		t.Errorf("Expected Last DirMgr AbsolutePath='%v'. Instead, dMgr.AbsolutePath='%v'", origAbsPath, dMgr.AbsolutePath)
+	if dMgr.absolutePath != origAbsPath {
+		t.Errorf("Expected Last DirMgr absolutePath='%v'. Instead, dMgr.absolutePath='%v'", origAbsPath, dMgr.absolutePath)
 	}
 
 	if dMgrs.GetArrayLength() != 6 {
@@ -308,12 +308,12 @@ func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
 		t.Errorf("Error returned by Phase 2 dMgrs.PeekLastDirMgr().  Error='%v'", err.Error())
 	}
 
-	if dMgr2.Path != origPath {
-		t.Errorf("Expected Last DirMgr 2 Path='%v'. Instead, dMgr2.Path='%v'", origPath, dMgr2.Path)
+	if dMgr2.path != origPath {
+		t.Errorf("Expected Last DirMgr 2 path='%v'. Instead, dMgr2.path='%v'", origPath, dMgr2.path)
 	}
 
-	if dMgr2.AbsolutePath != origAbsPath {
-		t.Errorf("Expected Last DirMgr 2 AbsolutePath='%v'. Instead, dMgr2.AbsolutePath='%v'", origAbsPath, dMgr2.AbsolutePath)
+	if dMgr2.absolutePath != origAbsPath {
+		t.Errorf("Expected Last DirMgr 2 absolutePath='%v'. Instead, dMgr2.absolutePath='%v'", origAbsPath, dMgr2.absolutePath)
 	}
 
 }
@@ -342,8 +342,8 @@ func TestDirMgrCollection_PopLastDirMgr_01(t *testing.T) {
 		t.Errorf("Expected DirMgrsCollection Array Length = '1'. Instead, Array Length = '%v'", dMgrs.GetArrayLength())
 	}
 
-	if dMgrs.DirMgrs[0].AbsolutePath != origAbsPath {
-		t.Errorf("Expected Addition #1 AbsolutePath='%v'. Instead, AbsolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].AbsolutePath)
+	if dMgrs.DirMgrs[0].absolutePath != origAbsPath {
+		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].absolutePath)
 	}
 
 	// # 2
@@ -427,12 +427,12 @@ func TestDirMgrCollection_PopLastDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by dMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
 	}
 
-	if dMgr.Path != origPath {
-		t.Errorf("Expected Last DirMgr Path='%v'. Instead, dMgr.Path='%v'", origPath, dMgr.Path)
+	if dMgr.path != origPath {
+		t.Errorf("Expected Last DirMgr path='%v'. Instead, dMgr.path='%v'", origPath, dMgr.path)
 	}
 
-	if dMgr.AbsolutePath != origAbsPath {
-		t.Errorf("Expected Last DirMgr AbsolutePath='%v'. Instead, dMgr.AbsolutePath='%v'", origAbsPath, dMgr.AbsolutePath)
+	if dMgr.absolutePath != origAbsPath {
+		t.Errorf("Expected Last DirMgr absolutePath='%v'. Instead, dMgr.absolutePath='%v'", origAbsPath, dMgr.absolutePath)
 	}
 
 	if dMgrs.GetArrayLength() != 5 {
@@ -469,8 +469,8 @@ func TestDirMgrCollection_PopFirstDirMgr_01(t *testing.T) {
 		t.Errorf("Expected DirMgrsCollection Array Length = '1'. Instead, Array Length = '%v'", dMgrs.GetArrayLength())
 	}
 
-	if dMgrs.DirMgrs[0].AbsolutePath != origAbsPath {
-		t.Errorf("Expected Addition #1 AbsolutePath='%v'. Instead, AbsolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].AbsolutePath)
+	if dMgrs.DirMgrs[0].absolutePath != origAbsPath {
+		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].absolutePath)
 	}
 
 	// # 2
@@ -554,12 +554,12 @@ func TestDirMgrCollection_PopFirstDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by dMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
 	}
 
-	if dMgr.Path != firstDirPath {
-		t.Errorf("Expected Last DirMgr Path='%v'. Instead, dMgr.Path='%v'", firstDirPath, dMgr.Path)
+	if dMgr.path != firstDirPath {
+		t.Errorf("Expected Last DirMgr path='%v'. Instead, dMgr.path='%v'", firstDirPath, dMgr.path)
 	}
 
-	if dMgr.AbsolutePath != firstAbsDirPath {
-		t.Errorf("Expected Last DirMgr AbsolutePath='%v'. Instead, dMgr.AbsolutePath='%v'", firstAbsDirPath, dMgr.AbsolutePath)
+	if dMgr.absolutePath != firstAbsDirPath {
+		t.Errorf("Expected Last DirMgr absolutePath='%v'. Instead, dMgr.absolutePath='%v'", firstAbsDirPath, dMgr.absolutePath)
 	}
 
 	if dMgrs.GetArrayLength() != 5 {
@@ -591,8 +591,8 @@ func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
 		t.Errorf("Expected DirMgrsCollection Array Length = '1'. Instead, Array Length = '%v'", dMgrs.GetArrayLength())
 	}
 
-	if dMgrs.DirMgrs[0].AbsolutePath != origAbsPath {
-		t.Errorf("Expected Addition #1 AbsolutePath='%v'. Instead, AbsolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].AbsolutePath)
+	if dMgrs.DirMgrs[0].absolutePath != origAbsPath {
+		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].absolutePath)
 	}
 
 	// # 2
@@ -682,12 +682,12 @@ func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
 		t.Errorf("Error returned by dMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
 	}
 
-	if dMgr.Path != idx2Path {
-		t.Errorf("Expected Last DirMgr Path='%v'. Instead, dMgr.Path='%v'", idx2Path, dMgr.Path)
+	if dMgr.path != idx2Path {
+		t.Errorf("Expected Last DirMgr path='%v'. Instead, dMgr.path='%v'", idx2Path, dMgr.path)
 	}
 
-	if dMgr.AbsolutePath != idx2AbsPath {
-		t.Errorf("Expected Last DirMgr AbsolutePath='%v'. Instead, dMgr.AbsolutePath='%v'", idx2AbsPath, dMgr.AbsolutePath)
+	if dMgr.absolutePath != idx2AbsPath {
+		t.Errorf("Expected Last DirMgr absolutePath='%v'. Instead, dMgr.absolutePath='%v'", idx2AbsPath, dMgr.absolutePath)
 	}
 
 	if dMgrs.GetArrayLength() != 5 {
@@ -700,12 +700,12 @@ func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
 		t.Errorf("Error returned by dMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
 	}
 
-	if dMgr.Path != idx3Path {
-		t.Errorf("Expected Last DirMgr Path='%v'. Instead, dMgr.Path='%v'", idx3Path, dMgr.Path)
+	if dMgr.path != idx3Path {
+		t.Errorf("Expected Last DirMgr path='%v'. Instead, dMgr.path='%v'", idx3Path, dMgr.path)
 	}
 
-	if dMgr.AbsolutePath != idx3AbsPath {
-		t.Errorf("Expected Last DirMgr AbsolutePath='%v'. Instead, dMgr.AbsolutePath='%v'", idx3AbsPath, dMgr.AbsolutePath)
+	if dMgr.absolutePath != idx3AbsPath {
+		t.Errorf("Expected Last DirMgr absolutePath='%v'. Instead, dMgr.absolutePath='%v'", idx3AbsPath, dMgr.absolutePath)
 	}
 
 	if dMgrs.GetArrayLength() != 4 {
@@ -737,8 +737,8 @@ func TestDirMgrCollection_PeekDirMgrAtIndex_01(t *testing.T) {
 		t.Errorf("Expected DirMgrsCollection Array Length = '1'. Instead, Array Length = '%v'", dMgrs.GetArrayLength())
 	}
 
-	if dMgrs.DirMgrs[0].AbsolutePath != origAbsPath {
-		t.Errorf("Expected Addition #1 AbsolutePath='%v'. Instead, AbsolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].AbsolutePath)
+	if dMgrs.DirMgrs[0].absolutePath != origAbsPath {
+		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].absolutePath)
 	}
 
 	// # 2
@@ -828,12 +828,12 @@ func TestDirMgrCollection_PeekDirMgrAtIndex_01(t *testing.T) {
 		t.Errorf("Error returned by dMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
 	}
 
-	if dMgr.Path != idx2Path {
-		t.Errorf("Expected Last DirMgr Path='%v'. Instead, dMgr.Path='%v'", idx2Path, dMgr.Path)
+	if dMgr.path != idx2Path {
+		t.Errorf("Expected Last DirMgr path='%v'. Instead, dMgr.path='%v'", idx2Path, dMgr.path)
 	}
 
-	if dMgr.AbsolutePath != idx2AbsPath {
-		t.Errorf("Expected Last DirMgr AbsolutePath='%v'. Instead, dMgr.AbsolutePath='%v'", idx2AbsPath, dMgr.AbsolutePath)
+	if dMgr.absolutePath != idx2AbsPath {
+		t.Errorf("Expected Last DirMgr absolutePath='%v'. Instead, dMgr.absolutePath='%v'", idx2AbsPath, dMgr.absolutePath)
 	}
 
 	if dMgrs.GetArrayLength() != 6 {
@@ -846,12 +846,12 @@ func TestDirMgrCollection_PeekDirMgrAtIndex_01(t *testing.T) {
 		t.Errorf("Error returned by dMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
 	}
 
-	if dMgr.Path != idx3Path {
-		t.Errorf("Expected Last DirMgr Path='%v'. Instead, dMgr.Path='%v'", idx3Path, dMgr.Path)
+	if dMgr.path != idx3Path {
+		t.Errorf("Expected Last DirMgr path='%v'. Instead, dMgr.path='%v'", idx3Path, dMgr.path)
 	}
 
-	if dMgr.AbsolutePath != idx3AbsPath {
-		t.Errorf("Expected Last DirMgr AbsolutePath='%v'. Instead, dMgr.AbsolutePath='%v'", idx3AbsPath, dMgr.AbsolutePath)
+	if dMgr.absolutePath != idx3AbsPath {
+		t.Errorf("Expected Last DirMgr absolutePath='%v'. Instead, dMgr.absolutePath='%v'", idx3AbsPath, dMgr.absolutePath)
 	}
 
 	if dMgrs.GetArrayLength() != 6 {
@@ -877,8 +877,8 @@ func TestDirMgrCollection_FindDirectories_01(t *testing.T) {
 		t.Errorf("Error returned by DirMgr{}.New(origPath). origPath='%v'  Error='%v'", origPath, err.Error())
 	}
 
-	if origDirMgr.AbsolutePath != origAbsPath {
-		t.Errorf("Expected origDirMgr.AbsolutePath='%v'. Instead, origDirMgr.AbsolutePath='%v'", origAbsPath, origDirMgr.AbsolutePath)
+	if origDirMgr.absolutePath != origAbsPath {
+		t.Errorf("Expected origDirMgr.absolutePath='%v'. Instead, origDirMgr.absolutePath='%v'", origAbsPath, origDirMgr.absolutePath)
 	}
 
 	fsc := FileSelectionCriteria{}
@@ -897,11 +897,11 @@ func TestDirMgrCollection_FindDirectories_01(t *testing.T) {
 	isLevel01Found := false
 
 	for i := 0; i < dCol.GetArrayLength(); i++ {
-		if strings.Contains(dCol.DirMgrs[i].DirectoryName, "Level01") {
+		if strings.Contains(dCol.DirMgrs[i].directoryName, "Level01") {
 			isLevel01Found = true
 		}
 
-		if strings.Contains(dCol.DirMgrs[i].DirectoryName, "Level02") {
+		if strings.Contains(dCol.DirMgrs[i].directoryName, "Level02") {
 			isLevel02Found = true
 		}
 	}

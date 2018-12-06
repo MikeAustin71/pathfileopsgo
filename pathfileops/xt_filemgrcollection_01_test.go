@@ -409,8 +409,8 @@ func TestDirectoryTreeInfo_CopyToDirectoryTree_01(t *testing.T) {
 		t.Errorf("Error returned from DirMgr{}.New(dir). dir='%v' Error='%v'\n", dir, err.Error())
 	}
 
-	if !dMgr.AbsolutePathDoesExist {
-		t.Errorf("Expected target directory to exist. I does NOT exist. dMgr.Path='%v' dMgr.AbolutePath='%v'\n", dMgr.Path, dMgr.AbsolutePath)
+	if !dMgr.doesAbsolutePathExist {
+		t.Errorf("Expected target directory to exist. I does NOT exist. dMgr.path='%v' dMgr.AbolutePath='%v'\n", dMgr.path, dMgr.absolutePath)
 		return
 	}
 

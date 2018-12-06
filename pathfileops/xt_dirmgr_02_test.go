@@ -42,9 +42,9 @@ func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
 			dir, err.Error())
 	}
 
-	if !dMgr.AbsolutePathDoesExist {
+	if !dMgr.doesAbsolutePathExist {
 		t.Errorf("Expected target directory to exist. I does NOT exist. "+
-			"dMgr.Path='%v' dMgr.AbolutePath='%v'", dMgr.Path, dMgr.AbsolutePath)
+			"dMgr.path='%v' dMgr.AbolutePath='%v'", dMgr.path, dMgr.absolutePath)
 	}
 
 	fsc := FileSelectionCriteria{}
@@ -98,7 +98,7 @@ func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
 	foundDir3 := false
 
 	for j := 0; j < dirTreeInfo.Directories.GetArrayLength(); j++ {
-		if strings.Contains(dirTreeInfo.Directories.DirMgrs[j].Path, dir3) {
+		if strings.Contains(dirTreeInfo.Directories.DirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
 	}
@@ -134,9 +134,9 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
 			dir, err.Error())
 	}
 
-	if !dMgr.AbsolutePathDoesExist {
+	if !dMgr.doesAbsolutePathExist {
 		t.Errorf("Expected target directory to exist. I does NOT exist. "+
-			"dMgr.Path='%v' dMgr.AbolutePath='%v'", dMgr.Path, dMgr.AbsolutePath)
+			"dMgr.path='%v' dMgr.AbolutePath='%v'", dMgr.path, dMgr.absolutePath)
 	}
 
 	fsc := FileSelectionCriteria{}
@@ -192,7 +192,7 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
 	foundDir3 := false
 
 	for j := 0; j < dWalker.Directories.GetArrayLength(); j++ {
-		if strings.Contains(dWalker.Directories.DirMgrs[j].Path, dir3) {
+		if strings.Contains(dWalker.Directories.DirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
 	}
@@ -238,9 +238,9 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 			"dir='%v' Error='%v'", dir, err.Error())
 	}
 
-	if !dMgr.AbsolutePathDoesExist {
+	if !dMgr.doesAbsolutePathExist {
 		t.Errorf("Expected target directory to exist. I does NOT exist. "+
-			"dMgr.Path='%v' dMgr.AbolutePath='%v'", dMgr.Path, dMgr.AbsolutePath)
+			"dMgr.path='%v' dMgr.AbolutePath='%v'", dMgr.path, dMgr.absolutePath)
 	}
 	fsc := FileSelectionCriteria{}
 
@@ -306,7 +306,7 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 	foundDir3 := false
 
 	for j := 0; j < dWalker.Directories.GetArrayLength(); j++ {
-		if strings.Contains(dWalker.Directories.DirMgrs[j].Path, dir3) {
+		if strings.Contains(dWalker.Directories.DirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
 	}
@@ -350,9 +350,9 @@ func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 			dir, err.Error())
 	}
 
-	if !dMgr.AbsolutePathDoesExist {
+	if !dMgr.doesAbsolutePathExist {
 		t.Errorf("Expected target directory to exist. I does NOT exist. "+
-			"dMgr.Path='%v' dMgr.AbolutePath='%v'", dMgr.Path, dMgr.AbsolutePath)
+			"dMgr.path='%v' dMgr.AbolutePath='%v'", dMgr.path, dMgr.absolutePath)
 	}
 
 	fsc := FileSelectionCriteria{}
@@ -415,7 +415,7 @@ func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 	foundDir3 := false
 
 	for j := 0; j < dWalker.Directories.GetArrayLength(); j++ {
-		if strings.Contains(dWalker.Directories.DirMgrs[j].Path, dir3) {
+		if strings.Contains(dWalker.Directories.DirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
 	}
@@ -564,7 +564,7 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 	foundDir3 := false
 
 	for j := 0; j < dInfo.Directories.GetArrayLength(); j++ {
-		if strings.Contains(dInfo.Directories.DirMgrs[j].Path, dir3) {
+		if strings.Contains(dInfo.Directories.DirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
 	}
@@ -702,7 +702,7 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 	foundDir3 := false
 
 	for j := 0; j < dInfo.Directories.GetArrayLength(); j++ {
-		if strings.Contains(dInfo.Directories.DirMgrs[j].Path, dir3) {
+		if strings.Contains(dInfo.Directories.DirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
 	}
@@ -1945,7 +1945,7 @@ func DirMgr02SetupDirWalkTests() error {
 
 		if err != nil {
 			return fmt.Errorf(ePrefix+"Error returned by destDirMgr.MakeDir(). "+
-				"destDir='%v' Error='%v' ", destDirMgr3.AbsolutePath, err.Error())
+				"destDir='%v' Error='%v' ", destDirMgr3.absolutePath, err.Error())
 		}
 
 	}

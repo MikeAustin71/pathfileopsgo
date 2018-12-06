@@ -140,21 +140,21 @@ func (dMgrs *DirMgrCollection) FindDirectories(
 	for i := 0; i < lDirCol; i++ {
 		dMgr := dMgrs.DirMgrs[i]
 
-		if dMgr.ActualDirFileInfo.IsFInfoInitialized {
+		if dMgr.actualDirFileInfo.IsFInfoInitialized {
 
-			isMatchedFile, err = fh.FilterFileName(dMgr.ActualDirFileInfo, fileSelectionCriteria)
+			isMatchedFile, err = fh.FilterFileName(dMgr.actualDirFileInfo, fileSelectionCriteria)
 
 			if err != nil {
 				return DirMgrCollection{}, fmt.Errorf(ePrefix+"Error returned by fh.FilterFileName("+
-					"dMgr.ActualDirFileInfo, fileSelectionCriteria) dMgr.ActualDirFileInfo.Name()='%v' "+
-					"Error='%v'", dMgr.ActualDirFileInfo.Name(), err.Error())
+					"dMgr.actualDirFileInfo, fileSelectionCriteria) dMgr.actualDirFileInfo.Name()='%v' "+
+					"Error='%v'", dMgr.actualDirFileInfo.Name(), err.Error())
 			}
 
 		} else {
 
 			fip := FileInfoPlus{}
 
-			fip.SetName(dMgr.DirectoryName)
+			fip.SetName(dMgr.directoryName)
 
 			isMatchedFile, err = fh.FilterFileName(fip, fileSelectionCriteria)
 
@@ -319,23 +319,23 @@ func (dMgrs *DirMgrCollection) PeekDirMgrAtIndex(idx int) (DirMgr, error) {
 // DirMgr - This structure and associated methods
 // are used to manage a specific directory.
 type DirMgr struct {
-	IsInitialized                 bool
-	OriginalPath                  string
-	Path                          string // Stored with no trailing path separator
-	PathIsPopulated               bool
-	PathDoesExist                 bool
-	ParentPath                    string // Stored with no trailing path separator
-	ParentPathIsPopulated         bool
-	RelativePath                  string // Stored with no preceding path separator
-	RelativePathIsPopulated       bool
-	AbsolutePath                  string
-	AbsolutePathIsPopulated       bool
-	AbsolutePathDoesExist         bool
-	AbsolutePathDifferentFromPath bool
-	DirectoryName                 string // Name of directory with out parent path.
-	VolumeName                    string
-	VolumeIsPopulated             bool
-	ActualDirFileInfo             FileInfoPlus
+	isInitialized                   bool
+	originalPath                    string
+	path                            string // Stored with no trailing path separator
+	isPathPopulated                 bool
+	doesPathExist                   bool
+	parentPath                      string // Stored with no trailing path separator
+	isParentPathPopulated           bool
+	relativePath                    string // Stored with no preceding path separator
+	isRelativePathPopulated         bool
+	absolutePath                    string
+	isAbsolutePathPopulated         bool
+	doesAbsolutePathExist           bool
+	isAbsolutePathDifferentFromPath bool
+	directoryName                   string // Name of directory with out parent path.
+	volumeName                      string
+	isVolumePopulated               bool
+	actualDirFileInfo               FileInfoPlus
 }
 
 // CopyIn - Receives a pointer to a DirMgr object as an
@@ -345,23 +345,23 @@ type DirMgr struct {
 // incoming DirMgr object.
 func (dMgr *DirMgr) CopyIn(dmgrIn *DirMgr) {
 
-	dMgr.IsInitialized = dmgrIn.IsInitialized
-	dMgr.OriginalPath = dmgrIn.OriginalPath
-	dMgr.Path = dmgrIn.Path
-	dMgr.PathIsPopulated = dmgrIn.PathIsPopulated
-	dMgr.PathDoesExist = dmgrIn.PathDoesExist
-	dMgr.ParentPath = dmgrIn.ParentPath
-	dMgr.ParentPathIsPopulated = dmgrIn.ParentPathIsPopulated
-	dMgr.RelativePath = dmgrIn.RelativePath
-	dMgr.RelativePathIsPopulated = dmgrIn.RelativePathIsPopulated
-	dMgr.AbsolutePath = dmgrIn.AbsolutePath
-	dMgr.AbsolutePathIsPopulated = dmgrIn.AbsolutePathIsPopulated
-	dMgr.AbsolutePathDoesExist = dmgrIn.AbsolutePathDoesExist
-	dMgr.AbsolutePathDifferentFromPath = dmgrIn.AbsolutePathDifferentFromPath
-	dMgr.DirectoryName = dmgrIn.DirectoryName
-	dMgr.VolumeName = dmgrIn.VolumeName
-	dMgr.VolumeIsPopulated = dmgrIn.VolumeIsPopulated
-	dMgr.ActualDirFileInfo = dmgrIn.ActualDirFileInfo.CopyOut()
+	dMgr.isInitialized = dmgrIn.isInitialized
+	dMgr.originalPath = dmgrIn.originalPath
+	dMgr.path = dmgrIn.path
+	dMgr.isPathPopulated = dmgrIn.isPathPopulated
+	dMgr.doesPathExist = dmgrIn.doesPathExist
+	dMgr.parentPath = dmgrIn.parentPath
+	dMgr.isParentPathPopulated = dmgrIn.isParentPathPopulated
+	dMgr.relativePath = dmgrIn.relativePath
+	dMgr.isRelativePathPopulated = dmgrIn.isRelativePathPopulated
+	dMgr.absolutePath = dmgrIn.absolutePath
+	dMgr.isAbsolutePathPopulated = dmgrIn.isAbsolutePathPopulated
+	dMgr.doesAbsolutePathExist = dmgrIn.doesAbsolutePathExist
+	dMgr.isAbsolutePathDifferentFromPath = dmgrIn.isAbsolutePathDifferentFromPath
+	dMgr.directoryName = dmgrIn.directoryName
+	dMgr.volumeName = dmgrIn.volumeName
+	dMgr.isVolumePopulated = dmgrIn.isVolumePopulated
+	dMgr.actualDirFileInfo = dmgrIn.actualDirFileInfo.CopyOut()
 }
 
 // CopyOut - Makes a duplicate copy of the current DirMgr values and
@@ -370,23 +370,23 @@ func (dMgr *DirMgr) CopyOut() DirMgr {
 
 	dOut := DirMgr{}
 
-	dOut.IsInitialized = dMgr.IsInitialized
-	dOut.OriginalPath = dMgr.OriginalPath
-	dOut.Path = dMgr.Path
-	dOut.PathIsPopulated = dMgr.PathIsPopulated
-	dOut.PathDoesExist = dMgr.PathDoesExist
-	dOut.ParentPath = dMgr.ParentPath
-	dOut.ParentPathIsPopulated = dMgr.ParentPathIsPopulated
-	dOut.RelativePath = dMgr.RelativePath
-	dOut.RelativePathIsPopulated = dMgr.RelativePathIsPopulated
-	dOut.AbsolutePath = dMgr.AbsolutePath
-	dOut.AbsolutePathIsPopulated = dMgr.AbsolutePathIsPopulated
-	dOut.AbsolutePathDoesExist = dMgr.AbsolutePathDoesExist
-	dOut.AbsolutePathDifferentFromPath = dMgr.AbsolutePathDifferentFromPath
-	dOut.DirectoryName = dMgr.DirectoryName
-	dOut.VolumeName = dMgr.VolumeName
-	dOut.VolumeIsPopulated = dMgr.VolumeIsPopulated
-	dOut.ActualDirFileInfo = dMgr.ActualDirFileInfo.CopyOut()
+	dOut.isInitialized = dMgr.isInitialized
+	dOut.originalPath = dMgr.originalPath
+	dOut.path = dMgr.path
+	dOut.isPathPopulated = dMgr.isPathPopulated
+	dOut.doesPathExist = dMgr.doesPathExist
+	dOut.parentPath = dMgr.parentPath
+	dOut.isParentPathPopulated = dMgr.isParentPathPopulated
+	dOut.relativePath = dMgr.relativePath
+	dOut.isRelativePathPopulated = dMgr.isRelativePathPopulated
+	dOut.absolutePath = dMgr.absolutePath
+	dOut.isAbsolutePathPopulated = dMgr.isAbsolutePathPopulated
+	dOut.doesAbsolutePathExist = dMgr.doesAbsolutePathExist
+	dOut.isAbsolutePathDifferentFromPath = dMgr.isAbsolutePathDifferentFromPath
+	dOut.directoryName = dMgr.directoryName
+	dOut.volumeName = dMgr.volumeName
+	dOut.isVolumePopulated = dMgr.isVolumePopulated
+	dOut.actualDirFileInfo = dMgr.actualDirFileInfo.CopyOut()
 
 	return dOut
 }
@@ -410,13 +410,13 @@ func (dMgr *DirMgr) DeleteAll() error {
 		return err
 	}
 
-	if dMgr.AbsolutePathDoesExist {
+	if dMgr.doesAbsolutePathExist {
 
-		err = os.RemoveAll(dMgr.AbsolutePath)
+		err = os.RemoveAll(dMgr.absolutePath)
 
 		if err != nil {
-			return fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(dMgr.AbsolutePath) "+
-				"returned error. dMgr.AbsolutePath='%v' Error='%v' ", dMgr.AbsolutePath, err.Error())
+			return fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(dMgr.absolutePath) "+
+				"returned error. dMgr.absolutePath='%v' Error='%v' ", dMgr.absolutePath, err.Error())
 		}
 
 		dMgr.DoesDirMgrPathExist()
@@ -424,26 +424,26 @@ func (dMgr *DirMgr) DeleteAll() error {
 
 		return nil
 
-	} else if dMgr.PathDoesExist {
+	} else if dMgr.doesPathExist {
 
 		time.Sleep(time.Millisecond * 500)
 
-		err = os.RemoveAll(dMgr.Path)
+		err = os.RemoveAll(dMgr.path)
 
 		if err != nil {
 			return fmt.Errorf(ePrefix+"Error returned by "+
-				"os.RemoveAll(dMgr.AbsolutePath) returned error. "+
-				"dMgr.Path='%v' Error='%v' ", dMgr.Path, err.Error())
+				"os.RemoveAll(dMgr.absolutePath) returned error. "+
+				"dMgr.path='%v' Error='%v' ", dMgr.path, err.Error())
 		}
 
-		dMgr.AbsolutePathDoesExist = false
-		dMgr.PathDoesExist = false
+		dMgr.doesAbsolutePathExist = false
+		dMgr.doesPathExist = false
 
 		return nil
 
 	} else {
-		dMgr.AbsolutePathDoesExist = false
-		dMgr.PathDoesExist = false
+		dMgr.doesAbsolutePathExist = false
+		dMgr.doesPathExist = false
 		return nil
 	}
 
@@ -497,13 +497,13 @@ func (dMgr *DirMgr) DeleteDirContents() error {
 		return err
 	}
 
-	dir, err := os.Open(dMgr.AbsolutePath)
+	dir, err := os.Open(dMgr.absolutePath)
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+
-			"Error return by os.Open(dMgr.AbsolutePath). "+
-			"dMgr.AbsolutePath='%v' Error='%v' ",
-			dMgr.AbsolutePath, err.Error())
+			"Error return by os.Open(dMgr.absolutePath). "+
+			"dMgr.absolutePath='%v' Error='%v' ",
+			dMgr.absolutePath, err.Error())
 	}
 
 	names, err := dir.Readdirnames(-1)
@@ -512,20 +512,20 @@ func (dMgr *DirMgr) DeleteDirContents() error {
 		_ = dir.Close()
 		return fmt.Errorf(ePrefix+
 			"Error returned by dir.Readdirnames(-1). "+
-			"dMgr.AbsolutePath='%v' Error='%v' ",
-			dMgr.AbsolutePath, err.Error())
+			"dMgr.absolutePath='%v' Error='%v' ",
+			dMgr.absolutePath, err.Error())
 	}
 
 	for _, name := range names {
 
-		err = os.RemoveAll(fp.Join(dMgr.AbsolutePath, name))
+		err = os.RemoveAll(fp.Join(dMgr.absolutePath, name))
 
 		if err != nil {
 			_ = dir.Close()
 			return fmt.Errorf(ePrefix+
 				"Error returned by dir.Readdirnames(-1). "+
-				"dMgr.AbsolutePath='%v' fileName='%v' Error='%v' ",
-				dMgr.AbsolutePath, name, err.Error())
+				"dMgr.absolutePath='%v' fileName='%v' Error='%v' ",
+				dMgr.absolutePath, name, err.Error())
 		}
 
 	}
@@ -703,19 +703,19 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(
 		return deleteFilesInfo, err
 	}
 
-	if dMgr.AbsolutePathDoesExist {
+	if dMgr.doesAbsolutePathExist {
 
-		deleteFilesInfo.StartPath = dMgr.AbsolutePath
+		deleteFilesInfo.StartPath = dMgr.absolutePath
 
 	} else if dMgr.DoesDirMgrPathExist() {
 
-		deleteFilesInfo.StartPath = dMgr.Path
+		deleteFilesInfo.StartPath = dMgr.path
 
 	} else {
 
 		return deleteFilesInfo,
-			fmt.Errorf(ePrefix+"Path and AbsolutePath - PATH DOES NOT EXIST! "+
-				"dMgr.AbsolutePath='%v' dMgr.Path='%v'", dMgr.AbsolutePath, dMgr.Path)
+			fmt.Errorf(ePrefix+"path and absolutePath - PATH DOES NOT EXIST! "+
+				"dMgr.absolutePath='%v' dMgr.path='%v'", dMgr.absolutePath, dMgr.path)
 	}
 
 	deleteFilesInfo.DeleteFileSelectCriteria = deleteFileSelectionCriteria
@@ -749,56 +749,56 @@ func (dMgr *DirMgr) DoesDirectoryExist() (doesPathExist, doesAbsolutePathExist b
 
 // DoesDirMgrAbsolutePathExist - Performs two operations.
 // First the method determine whether the directory
-// path indicated by the DirMgr.AbsolutePath field
+// path indicated by the DirMgr.absolutePath field
 // actually does exist on disk and returns a 'true'
 // or 'false' boolean value accordingly. In addition,
 // it also updates the DirMgr field
-// 'DirMgr.AbsolutePathDoesExist'.
+// 'DirMgr.doesAbsolutePathExist'.
 //
 func (dMgr *DirMgr) DoesDirMgrAbsolutePathExist() bool {
 
-	if dMgr.AbsolutePath == "" {
-		dMgr.AbsolutePathDoesExist = false
+	if dMgr.absolutePath == "" {
+		dMgr.doesAbsolutePathExist = false
 		return false
 	}
 
-	info, err := os.Stat(dMgr.AbsolutePath)
+	info, err := os.Stat(dMgr.absolutePath)
 
 	if err != nil {
-		dMgr.AbsolutePathDoesExist = false
+		dMgr.doesAbsolutePathExist = false
 	} else {
-		dMgr.AbsolutePathDoesExist = true
-		dMgr.ActualDirFileInfo = FileInfoPlus{}.NewPathFileInfo(dMgr.AbsolutePath, info)
+		dMgr.doesAbsolutePathExist = true
+		dMgr.actualDirFileInfo = FileInfoPlus{}.NewPathFileInfo(dMgr.absolutePath, info)
 	}
 
-	return dMgr.AbsolutePathDoesExist
+	return dMgr.doesAbsolutePathExist
 
 }
 
 // DoesDirMgrPathExist - Performs two operations.
 // First the method determine whether the directory
-// path indicated by the DirMgr.Path field actually
+// path indicated by the DirMgr.path field actually
 // does exist on disk and returns a 'true' or 'false'
 // boolean value accordingly. In addition it also
-// updates the DirMgr field DirMgr.PathDoesExist field.
+// updates the DirMgr field DirMgr.doesPathExist field.
 //
 func (dMgr *DirMgr) DoesDirMgrPathExist() bool {
 
-	if dMgr.Path == "" {
-		dMgr.PathIsPopulated = false
+	if dMgr.path == "" {
+		dMgr.isPathPopulated = false
 		return false
 	}
 
-	info, err := os.Stat(dMgr.Path)
+	info, err := os.Stat(dMgr.path)
 
 	if err != nil {
-		dMgr.PathDoesExist = false
+		dMgr.doesPathExist = false
 	} else {
-		dMgr.PathDoesExist = true
-		dMgr.ActualDirFileInfo = FileInfoPlus{}.NewPathFileInfo(dMgr.Path, info)
+		dMgr.doesPathExist = true
+		dMgr.actualDirFileInfo = FileInfoPlus{}.NewPathFileInfo(dMgr.path, info)
 	}
 
-	return dMgr.PathDoesExist
+	return dMgr.doesPathExist
 
 }
 
@@ -806,23 +806,23 @@ func (dMgr *DirMgr) DoesDirMgrPathExist() bool {
 // or original zero values.
 func (dMgr *DirMgr) Empty() {
 
-	dMgr.IsInitialized = false
-	dMgr.OriginalPath = ""
-	dMgr.Path = ""
-	dMgr.PathIsPopulated = false
-	dMgr.PathDoesExist = false
-	dMgr.ParentPath = ""
-	dMgr.ParentPathIsPopulated = false
-	dMgr.RelativePath = ""
-	dMgr.RelativePathIsPopulated = false
-	dMgr.AbsolutePath = ""
-	dMgr.AbsolutePathIsPopulated = false
-	dMgr.AbsolutePathDoesExist = false
-	dMgr.AbsolutePathDifferentFromPath = false
-	dMgr.DirectoryName = ""
-	dMgr.VolumeName = ""
-	dMgr.VolumeIsPopulated = false
-	dMgr.ActualDirFileInfo = FileInfoPlus{}
+	dMgr.isInitialized = false
+	dMgr.originalPath = ""
+	dMgr.path = ""
+	dMgr.isPathPopulated = false
+	dMgr.doesPathExist = false
+	dMgr.parentPath = ""
+	dMgr.isParentPathPopulated = false
+	dMgr.relativePath = ""
+	dMgr.isRelativePathPopulated = false
+	dMgr.absolutePath = ""
+	dMgr.isAbsolutePathPopulated = false
+	dMgr.doesAbsolutePathExist = false
+	dMgr.isAbsolutePathDifferentFromPath = false
+	dMgr.directoryName = ""
+	dMgr.volumeName = ""
+	dMgr.isVolumePopulated = false
+	dMgr.actualDirFileInfo = FileInfoPlus{}
 
 }
 
@@ -830,27 +830,27 @@ func (dMgr *DirMgr) Empty() {
 // they are equal.
 func (dMgr *DirMgr) Equal(dmgr2 *DirMgr) bool {
 
-	if dMgr.IsInitialized != dmgr2.IsInitialized ||
-		dMgr.OriginalPath != dmgr2.OriginalPath ||
-		dMgr.Path != dmgr2.Path ||
-		dMgr.PathIsPopulated != dmgr2.PathIsPopulated ||
-		dMgr.PathDoesExist != dmgr2.PathDoesExist ||
-		dMgr.ParentPath != dmgr2.ParentPath ||
-		dMgr.ParentPathIsPopulated != dmgr2.ParentPathIsPopulated ||
-		dMgr.RelativePath != dmgr2.RelativePath ||
-		dMgr.RelativePathIsPopulated != dmgr2.RelativePathIsPopulated ||
-		dMgr.AbsolutePath != dmgr2.AbsolutePath ||
-		dMgr.AbsolutePathIsPopulated != dmgr2.AbsolutePathIsPopulated ||
-		dMgr.AbsolutePathDoesExist != dmgr2.AbsolutePathDoesExist ||
-		dMgr.AbsolutePathDifferentFromPath != dmgr2.AbsolutePathDifferentFromPath ||
-		dMgr.DirectoryName != dmgr2.DirectoryName ||
-		dMgr.VolumeName != dmgr2.VolumeName ||
-		dMgr.VolumeIsPopulated != dmgr2.VolumeIsPopulated {
+	if dMgr.isInitialized != dmgr2.isInitialized ||
+		dMgr.originalPath != dmgr2.originalPath ||
+		dMgr.path != dmgr2.path ||
+		dMgr.isPathPopulated != dmgr2.isPathPopulated ||
+		dMgr.doesPathExist != dmgr2.doesPathExist ||
+		dMgr.parentPath != dmgr2.parentPath ||
+		dMgr.isParentPathPopulated != dmgr2.isParentPathPopulated ||
+		dMgr.relativePath != dmgr2.relativePath ||
+		dMgr.isRelativePathPopulated != dmgr2.isRelativePathPopulated ||
+		dMgr.absolutePath != dmgr2.absolutePath ||
+		dMgr.isAbsolutePathPopulated != dmgr2.isAbsolutePathPopulated ||
+		dMgr.doesAbsolutePathExist != dmgr2.doesAbsolutePathExist ||
+		dMgr.isAbsolutePathDifferentFromPath != dmgr2.isAbsolutePathDifferentFromPath ||
+		dMgr.directoryName != dmgr2.directoryName ||
+		dMgr.volumeName != dmgr2.volumeName ||
+		dMgr.isVolumePopulated != dmgr2.isVolumePopulated {
 
 		return false
 	}
 
-	if !dMgr.ActualDirFileInfo.Equal(&dmgr2.ActualDirFileInfo) {
+	if !dMgr.actualDirFileInfo.Equal(&dmgr2.actualDirFileInfo) {
 		return false
 	}
 
@@ -861,12 +861,12 @@ func (dMgr *DirMgr) Equal(dmgr2 *DirMgr) bool {
 // if their paths are equal.
 func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 
-	if dMgr.IsInitialized != dMgr2.IsInitialized {
+	if dMgr.isInitialized != dMgr2.isInitialized {
 		return false
 	}
 
-	if dMgr.AbsolutePath == dMgr2.AbsolutePath &&
-		dMgr.Path == dMgr2.Path {
+	if dMgr.absolutePath == dMgr2.absolutePath &&
+		dMgr.path == dMgr2.path {
 		return true
 	}
 
@@ -1040,20 +1040,20 @@ func (dMgr *DirMgr) FindWalkDirFiles(
 		return findFilesInfo, err
 	}
 
-	if dMgr.AbsolutePathDoesExist {
+	if dMgr.doesAbsolutePathExist {
 
-		findFilesInfo.StartPath = dMgr.AbsolutePath
+		findFilesInfo.StartPath = dMgr.absolutePath
 
 	} else if dMgr.DoesDirMgrPathExist() {
 
-		findFilesInfo.StartPath = dMgr.Path
+		findFilesInfo.StartPath = dMgr.path
 
 	} else {
 
 		return findFilesInfo,
 			fmt.Errorf(ePrefix+
-				"Path and AbsolutePath - PATH DOES NOT EXIST! "+
-				"dMgr.AbsolutePath='%v' dMgr.Path='%v'", dMgr.AbsolutePath, dMgr.Path)
+				"path and absolutePath - PATH DOES NOT EXIST! "+
+				"dMgr.absolutePath='%v' dMgr.path='%v'", dMgr.absolutePath, dMgr.path)
 	}
 
 	findFilesInfo.FileSelectCriteria = fileSelectCriteria
@@ -1071,38 +1071,163 @@ func (dMgr *DirMgr) FindWalkDirFiles(
 	return findFilesInfo, nil
 }
 
+// GetAbsolutePath - Returns a string containing the
+// absolute path for the current Directory Manager
+// instance. This string returned by this method
+// will NOT have a trailing path separator.
+//
+func (dMgr *DirMgr) GetAbsolutePath() string {
+
+	return dMgr.absolutePath
+}
+
 // GetAbsolutePathWithSeparator - Returns the current
-// DirMgr.AbsolutePath with a trailing os.PathSeparator
+// DirMgr.absolutePath with a trailing os.PathSeparator
 // character.
 func (dMgr *DirMgr) GetAbsolutePathWithSeparator() string {
-	lPath := len(dMgr.AbsolutePath)
+	lPath := len(dMgr.absolutePath)
 
 	if lPath == 0 {
 		return ""
 	}
 
-	if dMgr.AbsolutePath[lPath-1] != os.PathSeparator {
-		return dMgr.AbsolutePath + string(os.PathSeparator)
+	if dMgr.absolutePath[lPath-1] != os.PathSeparator {
+		return dMgr.absolutePath + string(os.PathSeparator)
 	}
 
-	return dMgr.AbsolutePath
+	return dMgr.absolutePath
+}
+
+// GetDirectoryName - Returns a string containing the name
+// of the directory without out the parent path.
+//
+func (dMgr *DirMgr) GetDirectoryName() string {
+	return dMgr.directoryName
+}
+
+// GetFileInfoPlus - Returns a FileInfoPlus instance detailing file
+// system information on the directory identified by the current
+// Directory Manager instance.
+//
+func (dMgr *DirMgr) GetFileInfoPlus() (FileInfoPlus, error) {
+
+	ePrefix := "DirMgr.GetFileInfoPlus() "
+
+	err := dMgr.IsDirMgrValid(ePrefix)
+
+	if err != nil {
+		return FileInfoPlus{}, err
+	}
+
+	if dMgr.absolutePath == "" {
+
+		dMgr.doesAbsolutePathExist = false
+
+		return FileInfoPlus{},
+			errors.New(ePrefix + "Directory DOES NOT EXIST! FileInfoPlus is NOT available.")
+	}
+
+	info, err := os.Stat(dMgr.absolutePath)
+
+	if err != nil {
+
+		return FileInfoPlus{},
+			fmt.Errorf(ePrefix+
+				"Error returned by os.Stat(dMgr.absolutePath). Error='%v'",
+				err.Error())
+	}
+
+	dMgr.doesAbsolutePathExist = true
+	dMgr.actualDirFileInfo = FileInfoPlus{}.NewPathFileInfo(dMgr.absolutePath, info)
+
+	return dMgr.actualDirFileInfo.CopyOut(), nil
+}
+
+// GetOriginalPath - Returns the original path used to initialize
+// this Directory Manager instance.
+//
+func (dMgr *DirMgr) GetOriginalPath() string {
+	return dMgr.originalPath
+}
+
+// GetParentPath - Returns a string containing the
+// parent path for the current Directory Manager
+// instance. The Parent Path string will NOT contain
+// a trailing path separator.
+//
+func (dMgr *DirMgr) GetParentPath() string {
+	return dMgr.parentPath
+}
+
+// GetPath - Returns the path used to configure this
+// Directory Manager Instance. It will NOT contain a
+// trailing path separator. It may or may not be an
+// absolute path.
+//
+func (dMgr *DirMgr) GetPath() string {
+	return dMgr.path
 }
 
 // GetPathWithSeparator - Returns the current
-// DirMgr.AbsolutePath with a trailing os.PathSeparator
+// DirMgr.absolutePath with a trailing os.PathSeparator
 // character.
 func (dMgr *DirMgr) GetPathWithSeparator() string {
-	lPath := len(dMgr.Path)
+	lPath := len(dMgr.path)
 
 	if lPath == 0 {
 		return ""
 	}
 
-	if dMgr.Path[lPath-1] != os.PathSeparator {
-		return dMgr.Path + string(os.PathSeparator)
+	if dMgr.path[lPath-1] != os.PathSeparator {
+		return dMgr.path + string(os.PathSeparator)
 	}
 
-	return dMgr.Path
+	return dMgr.path
+}
+
+// GetRelativePath - Returns a string containing the relative path
+// for this Directory Manager instance.
+//
+func (dMgr *DirMgr) GetRelativePath() string {
+	return dMgr.relativePath
+}
+
+// GetVolumeName - Returns a string containing the volume name
+// of the directory identified by the current Directory Manager
+// instance.
+//
+func (dMgr *DirMgr) GetVolumeName() string {
+	return dMgr.volumeName
+}
+
+// IsAbsolutePathDifferentFromPath - Returns a boolean value indicating
+// whether the absolute path differs from the base path for this
+// Directory Manager instance.
+//
+func (dMgr *DirMgr) IsAbsolutePathDifferentFromPath() bool {
+
+	if dMgr.path != dMgr.absolutePath {
+		dMgr.isAbsolutePathDifferentFromPath = true
+	} else {
+		dMgr.isAbsolutePathDifferentFromPath = false
+	}
+
+	return dMgr.isAbsolutePathDifferentFromPath
+}
+
+// IsAbsolutePathPopulated - Returns a boolean value indicating
+// whether the absolute path for the current Directory Manager
+// instance is populated.
+//
+func (dMgr *DirMgr) IsAbsolutePathPopulated() bool {
+
+	if len(dMgr.absolutePath) == 0 {
+		dMgr.isAbsolutePathPopulated = false
+	} else {
+		dMgr.isAbsolutePathPopulated = true
+	}
+
+	return dMgr.isAbsolutePathPopulated
 }
 
 // IsDirMgrValid - This method examines the current DirMgr object
@@ -1116,26 +1241,95 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
 
 	ePrefix := strings.TrimRight(errPrefixStr, " ") + " DirMgr.IsDirMgrValid() "
 
-	if !dMgr.IsInitialized {
+	if !dMgr.isInitialized {
 		return fmt.Errorf(ePrefix + "Error: DirMgr is NOT Initialized.")
 	}
 
-	if dMgr.AbsolutePath == "" {
-		return fmt.Errorf(ePrefix + "Error: DirMgr.AbsolutePath is EMPTY!.")
+	if dMgr.absolutePath == "" {
+		return fmt.Errorf(ePrefix + "Error: DirMgr.absolutePath is EMPTY!.")
 	}
 
-	dMgr.AbsolutePathIsPopulated = true
+	dMgr.isAbsolutePathPopulated = true
 
-	if dMgr.Path == "" {
-		return fmt.Errorf(ePrefix + "Error: DirMgr.AbsolutePath is EMPTY!.")
+	if dMgr.path == "" {
+		return fmt.Errorf(ePrefix + "Error: DirMgr.absolutePath is EMPTY!.")
 	}
 
-	dMgr.PathIsPopulated = true
+	dMgr.isPathPopulated = true
 
 	dMgr.DoesDirMgrAbsolutePathExist()
 	dMgr.DoesDirMgrPathExist()
 
 	return nil
+}
+
+// IsInitialized - Returns a boolean value indicating
+// whether the Directory Manager instance is initialized.
+//
+func (dMgr *DirMgr) IsInitialized() bool {
+
+	return dMgr.isInitialized
+
+}
+
+// IsParentPathPopulated - Returns a boolean value
+// indicating whether the parent path for this Directory
+// Manager instance is populated.
+//
+func (dMgr *DirMgr) IsParentPathPopulated() bool {
+
+	if len(dMgr.parentPath) == 0 {
+		dMgr.isPathPopulated = false
+	} else {
+		dMgr.isPathPopulated = true
+	}
+
+	return dMgr.isPathPopulated
+}
+
+// IsPathPopulated - Returns a boolean value indicating
+// whether the current Directory Manager path string is
+// populated.
+//
+func (dMgr *DirMgr) IsPathPopulated() bool {
+
+	if len(dMgr.path) == 0 {
+		dMgr.isPathPopulated = false
+	} else {
+		dMgr.isPathPopulated = true
+	}
+
+	return dMgr.isPathPopulated
+}
+
+// IsRelativePathPopulated - Returns a boolean value indicating
+// whether the Relative Path for this Directory Manager
+// instance is populated.
+//
+func (dMgr *DirMgr) IsRelativePathPopulated() bool {
+
+	if len(dMgr.relativePath) == 0 {
+		dMgr.isRelativePathPopulated = false
+	} else {
+		dMgr.isRelativePathPopulated = true
+	}
+
+	return dMgr.isRelativePathPopulated
+}
+
+// IsVolumeNamePopulated - Returns a boolean value indicating
+// whether the Volume Name for the current Directory Manager
+// instance is populated.
+//
+func (dMgr *DirMgr) IsVolumeNamePopulated() bool {
+
+	if len(dMgr.volumeName) == 0 {
+		dMgr.isVolumePopulated = false
+	} else {
+		dMgr.isVolumePopulated = true
+	}
+
+	return dMgr.isVolumePopulated
 }
 
 // MakeDir - If the directory path identified
@@ -1154,21 +1348,21 @@ func (dMgr *DirMgr) MakeDir() error {
 
 	var ModePerm os.FileMode = 0777
 
-	if dMgr.AbsolutePathIsPopulated {
+	if dMgr.isAbsolutePathPopulated {
 
-		if dMgr.AbsolutePathDoesExist {
+		if dMgr.doesAbsolutePathExist {
 			// No need to create directory, it already
 			// exists.
 			return nil
 		}
 
-		err = os.MkdirAll(dMgr.AbsolutePath, ModePerm)
+		err = os.MkdirAll(dMgr.absolutePath, ModePerm)
 
 		if err != nil {
 			return fmt.Errorf(ePrefix+
-				"Error returned from os.MkdirAll(dMgr.AbsolutePath, "+
-				"ModePerm) dMgr.AbsolutePath='%v' ModePerm='%v'  Error='%v'",
-				dMgr.AbsolutePath, ModePerm, err.Error())
+				"Error returned from os.MkdirAll(dMgr.absolutePath, "+
+				"ModePerm) dMgr.absolutePath='%v' ModePerm='%v'  Error='%v'",
+				dMgr.absolutePath, ModePerm, err.Error())
 		}
 
 		dMgr.DoesDirMgrPathExist()
@@ -1178,21 +1372,21 @@ func (dMgr *DirMgr) MakeDir() error {
 		return nil
 	}
 
-	// dMgr.PathIsPopulated MUST equal 'true'
+	// dMgr.isPathPopulated MUST equal 'true'
 
-	if dMgr.PathDoesExist {
+	if dMgr.doesPathExist {
 		// No need to create directory, it already
 		// exists.
 		return nil
 	}
 
-	err = os.MkdirAll(dMgr.Path, ModePerm)
+	err = os.MkdirAll(dMgr.path, ModePerm)
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+
-			"Error returned from os.MkdirAll(dMgr.Path, ModePerm) "+
-			"dMgr.Path='%v' ModePerm='%v'  Error='%v'",
-			dMgr.Path, ModePerm, err.Error())
+			"Error returned from os.MkdirAll(dMgr.path, ModePerm) "+
+			"dMgr.path='%v' ModePerm='%v'  Error='%v'",
+			dMgr.path, ModePerm, err.Error())
 	}
 
 	dMgr.DoesDirMgrPathExist()
@@ -1220,21 +1414,21 @@ func (dMgr *DirMgr) MakeDir() error {
 //     ----------------------------
 //
 //		isInitialized:  true
-//		Original Path:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
-//		Path:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
+//		Original path:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
+//		path:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
 //		PathIsPopuslated:  true
-//		PathDoesExist:  true
-//		ParentPath:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest
-//		ParentPathIsPopulated:  true
-//		RelativePath:  testoverwrite
-//		RelativePathIsPopulated:  true
-//		AbsolutePath:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
-//		AbsolutePathIsPopulated:  true
-//		AbsolutePathDifferentFromPath:  false
-//		AbsolutePathDoesExist:  true
+//		doesPathExist:  true
+//		parentPath:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest
+//		isParentPathPopulated:  true
+//		relativePath:  testoverwrite
+//		isRelativePathPopulated:  true
+//		absolutePath:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
+//		isAbsolutePathPopulated:  true
+//		isAbsolutePathDifferentFromPath:  false
+//		doesAbsolutePathExist:  true
 //		Directory Name:  testoverwrite
-//		VolumeName:  D:
-//		VolumeIsPopulated:  true
+//		volumeName:  D:
+//		isVolumePopulated:  true
 //		========== File Info Data ==========
 //		File Info IsDir():  true
 //		File Info Name():  testoverwrite
@@ -1242,7 +1436,7 @@ func (dMgr *DirMgr) MakeDir() error {
 //		File Info ModTime():  2018-01-06 Sat 00:06:56.421236800 -0600 CST
 //		File Info Mode():  drwxrwxrwx
 //		File Info     Sys():  &{16 {617269082 30594119} {2388100752 30639796} {2388100752 30639796} 0 0}
-//		Dir Path:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
+//		Dir path:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
 //
 func (dMgr DirMgr) New(pathStr string) (DirMgr, error) {
 
@@ -1308,21 +1502,21 @@ func (dMgr DirMgr) NewFromFileInfo(pathStr string, info os.FileInfo) (DirMgr, er
 //     ----------------------------
 //
 //		isInitialized:  true
-//		Original Path:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
-//		Path:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
+//		Original path:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
+//		path:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
 //		PathIsPopuslated:  true
-//		PathDoesExist:  true
-//		ParentPath:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest
-//		ParentPathIsPopulated:  true
-//		RelativePath:  testoverwrite
-//		RelativePathIsPopulated:  true
-//		AbsolutePath:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
-//		AbsolutePathIsPopulated:  true
-//		AbsolutePathDifferentFromPath:  false
-//		AbsolutePathDoesExist:  true
+//		doesPathExist:  true
+//		parentPath:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest
+//		isParentPathPopulated:  true
+//		relativePath:  testoverwrite
+//		isRelativePathPopulated:  true
+//		absolutePath:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
+//		isAbsolutePathPopulated:  true
+//		isAbsolutePathDifferentFromPath:  false
+//		doesAbsolutePathExist:  true
 //		Directory Name:  testoverwrite
-//		VolumeName:  D:
-//		VolumeIsPopulated:  true
+//		volumeName:  D:
+//		isVolumePopulated:  true
 //		========== File Info Data ==========
 //		File Info IsDir():  true
 //		File Info Name():  testoverwrite
@@ -1330,7 +1524,7 @@ func (dMgr DirMgr) NewFromFileInfo(pathStr string, info os.FileInfo) (DirMgr, er
 //		File Info ModTime():  2018-01-06 Sat 00:06:56.421236800 -0600 CST
 //		File Info Mode():  drwxrwxrwx
 //		File Info     Sys():  &{16 {617269082 30594119} {2388100752 30639796} {2388100752 30639796} 0 0}
-//		Dir Path:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
+//		Dir path:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
 //
 func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
 	ePrefix := "DirMgr.SetDirMgr() "
@@ -1373,98 +1567,98 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
 	if isEmptyPath {
 		isEmpty = true
 		err = fmt.Errorf(ePrefix+
-			"Error: INVALID PATH. 'pathStr' generated an Empty Path! pathStr='%v' ",
+			"Error: INVALID PATH. 'pathStr' generated an Empty path! pathStr='%v' ",
 			pathStr)
 		return
 	}
 
 	if len(finalPathStr) == 0 {
 		err = fmt.Errorf(ePrefix+
-			"Error: Path returned from fh.GetPathFromPathFileName(pathStr) is EMPTY! "+
+			"Error: path returned from fh.GetPathFromPathFileName(pathStr) is EMPTY! "+
 			"pathStr='%v'", pathStr)
 		isEmpty = true
 		return
 	}
 
-	dMgr.OriginalPath = adjustedTrimmedPathStr
+	dMgr.originalPath = adjustedTrimmedPathStr
 
-	dMgr.Path = finalPathStr
+	dMgr.path = finalPathStr
 
-	dMgr.PathIsPopulated = true
+	dMgr.isPathPopulated = true
 	dMgr.DoesDirMgrPathExist()
 
-	if dMgr.Path == fp.VolumeName(dMgr.Path) {
+	if dMgr.path == fp.VolumeName(dMgr.path) {
 
-		dMgr.AbsolutePath = dMgr.Path
+		dMgr.absolutePath = dMgr.path
 
 	} else {
 
-		dMgr.AbsolutePath, err2 = fh.MakeAbsolutePath(dMgr.Path)
+		dMgr.absolutePath, err2 = fh.MakeAbsolutePath(dMgr.path)
 
 		if err2 != nil {
 			dMgr.Empty()
 			err = fmt.Errorf(ePrefix+
-				"- fh.MakeAbsolutePath(dMgr.Path) returned error. dMgr.Path='%v' Error='%v'",
-				dMgr.Path, err2.Error())
+				"- fh.MakeAbsolutePath(dMgr.path) returned error. dMgr.path='%v' Error='%v'",
+				dMgr.path, err2.Error())
 			isEmpty = true
 			return
 		}
 
 	}
 
-	dMgr.AbsolutePath = fh.AdjustPathSlash(dMgr.AbsolutePath)
+	dMgr.absolutePath = fh.AdjustPathSlash(dMgr.absolutePath)
 
-	dMgr.AbsolutePathIsPopulated = true
+	dMgr.isAbsolutePathPopulated = true
 	dMgr.DoesDirMgrAbsolutePathExist()
 
-	strAry := strings.Split(dMgr.AbsolutePath, string(os.PathSeparator))
+	strAry := strings.Split(dMgr.absolutePath, string(os.PathSeparator))
 	lStr := len(strAry)
 	idxStr := strAry[lStr-1]
 
-	idx := strings.Index(dMgr.AbsolutePath, idxStr)
-	dMgr.ParentPath = fh.RemovePathSeparatorFromEndOfPathString(dMgr.AbsolutePath[0:idx])
+	idx := strings.Index(dMgr.absolutePath, idxStr)
+	dMgr.parentPath = fh.RemovePathSeparatorFromEndOfPathString(dMgr.absolutePath[0:idx])
 
-	dMgr.ParentPathIsPopulated = true
+	dMgr.isParentPathPopulated = true
 
-	if dMgr.AbsolutePathIsPopulated && dMgr.ParentPathIsPopulated {
+	if dMgr.isAbsolutePathPopulated && dMgr.isParentPathPopulated {
 
-		dMgr.RelativePath, err2 = fp.Rel(dMgr.ParentPath, dMgr.AbsolutePath)
+		dMgr.relativePath, err2 = fp.Rel(dMgr.parentPath, dMgr.absolutePath)
 
 		if err2 != nil {
-			dMgr.RelativePath = ""
-			dMgr.ParentPathIsPopulated = false
+			dMgr.relativePath = ""
+			dMgr.isParentPathPopulated = false
 		} else {
-			dMgr.ParentPathIsPopulated = true
-			dMgr.RelativePathIsPopulated = true
+			dMgr.isParentPathPopulated = true
+			dMgr.isRelativePathPopulated = true
 
 		}
 
 	}
 
 	if idxStr != "" {
-		dMgr.DirectoryName = idxStr
+		dMgr.directoryName = idxStr
 	} else {
-		dMgr.DirectoryName = dMgr.AbsolutePath
+		dMgr.directoryName = dMgr.absolutePath
 	}
 
-	if dMgr.Path != dMgr.AbsolutePath {
-		dMgr.AbsolutePathDifferentFromPath = true
+	if dMgr.path != dMgr.absolutePath {
+		dMgr.isAbsolutePathDifferentFromPath = true
 	}
 
 	var vn string
-	if dMgr.AbsolutePathIsPopulated {
-		vn = fp.VolumeName(dMgr.AbsolutePath)
-	} else if dMgr.PathIsPopulated {
-		vn = fp.VolumeName(dMgr.Path)
+	if dMgr.isAbsolutePathPopulated {
+		vn = fp.VolumeName(dMgr.absolutePath)
+	} else if dMgr.isPathPopulated {
+		vn = fp.VolumeName(dMgr.path)
 	}
 
 	if vn != "" {
-		dMgr.VolumeIsPopulated = true
-		dMgr.VolumeName = vn
+		dMgr.isVolumePopulated = true
+		dMgr.volumeName = vn
 	}
 
-	if dMgr.AbsolutePathIsPopulated && dMgr.PathIsPopulated {
-		dMgr.IsInitialized = true
+	if dMgr.isAbsolutePathPopulated && dMgr.isPathPopulated {
+		dMgr.isInitialized = true
 		isEmpty = false
 	} else {
 		isEmpty = true
@@ -1494,8 +1688,8 @@ func (dMgr *DirMgr) SetDirMgrWithFileInfo(pathStr string, info os.FileInfo) erro
 			"pathStr='%v'  Error='%v'", pathStr, err.Error())
 	}
 
-	dMgr.ActualDirFileInfo = FileInfoPlus{}.NewPathFileInfo(pathStr, info)
-	dMgr.DirectoryName = info.Name()
+	dMgr.actualDirFileInfo = FileInfoPlus{}.NewPathFileInfo(pathStr, info)
+	dMgr.directoryName = info.Name()
 
 	return nil
 }
@@ -1512,12 +1706,12 @@ func (dMgr *DirMgr) SubstituteBaseDir(
 	newDMgr = DirMgr{}
 	err = nil
 
-	if !baseDir.IsInitialized {
+	if !baseDir.isInitialized {
 		err = errors.New(ePrefix + "Error: baseDir DirMgr is NOT Initialized!")
 		return
 	}
 
-	if !substituteBaseDir.IsInitialized {
+	if !substituteBaseDir.isInitialized {
 		err = errors.New(ePrefix + "Error: substituteBaseDir DirMgr is NOT Initialized!")
 		return
 	}
@@ -1539,9 +1733,9 @@ func (dMgr *DirMgr) SubstituteBaseDir(
 	var trimmedRemainingPath string
 	var newPath string
 
-	if strings.HasPrefix(dMgr.Path, baseDir.Path) {
+	if strings.HasPrefix(dMgr.path, baseDir.path) {
 
-		trimmedRemainingPath = strings.TrimPrefix(dMgr.Path, baseDir.Path)
+		trimmedRemainingPath = strings.TrimPrefix(dMgr.path, baseDir.path)
 
 		lPath := len(trimmedRemainingPath)
 
@@ -1551,9 +1745,9 @@ func (dMgr *DirMgr) SubstituteBaseDir(
 
 		newPath = substituteBaseDir.GetPathWithSeparator() + trimmedRemainingPath
 
-	} else if strings.HasPrefix(dMgr.AbsolutePath, baseDir.AbsolutePath) {
+	} else if strings.HasPrefix(dMgr.absolutePath, baseDir.absolutePath) {
 
-		trimmedRemainingPath = strings.TrimPrefix(dMgr.AbsolutePath, baseDir.AbsolutePath)
+		trimmedRemainingPath = strings.TrimPrefix(dMgr.absolutePath, baseDir.absolutePath)
 
 		lPath := len(trimmedRemainingPath)
 
@@ -1565,9 +1759,9 @@ func (dMgr *DirMgr) SubstituteBaseDir(
 
 	} else {
 		err = fmt.Errorf(ePrefix+
-			"Error: Could not locate baseDir.Path or "+
-			"baseDir.AbsolutePath in this dMgr. dMgr.Path='%v' dMgr.AbsolutePath='%v'",
-			dMgr.Path, dMgr.AbsolutePath)
+			"Error: Could not locate baseDir.path or "+
+			"baseDir.absolutePath in this dMgr. dMgr.path='%v' dMgr.absolutePath='%v'",
+			dMgr.path, dMgr.absolutePath)
 		return
 	}
 
@@ -1989,8 +2183,8 @@ func (fMgr *FileMgr) CopyFileToDir(dir DirMgr) error {
 	if err != nil {
 		return fmt.Errorf(ePrefix+
 			"Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dir, "+
-			"fMgr.fileNameExt) dir.AbsolutePath='%v'  fMgr.fileNameExt='%v'  Error='%v'",
-			dir.AbsolutePath, fMgr.fileNameExt, err.Error())
+			"fMgr.fileNameExt) dir.absolutePath='%v'  fMgr.fileNameExt='%v'  Error='%v'",
+			dir.absolutePath, fMgr.fileNameExt, err.Error())
 	}
 
 	err = fMgr.CopyFileMgr(&newFMgr)
@@ -2307,22 +2501,22 @@ func (fMgr *FileMgr) CreateDirAndFile() error {
 
 	fh := FileHelper{}
 
-	if !fh.DoesFileExist(fMgr.dMgr.AbsolutePath) {
+	if !fh.DoesFileExist(fMgr.dMgr.absolutePath) {
 		// Directory does NOT exist, create it!
 
-		err := fh.MakeDirAll(fMgr.dMgr.AbsolutePath)
+		err := fh.MakeDirAll(fMgr.dMgr.absolutePath)
 
 		if err != nil {
 			return fmt.Errorf(ePrefix+"Errors from FileHelper:"+
-				"MakeDirAll(fMgr.dMgr.AbsolutePath). fMgr.dMgr.AbsolutePath='%v'  Error='%v' ",
-				fMgr.dMgr.AbsolutePath, err.Error())
+				"MakeDirAll(fMgr.dMgr.absolutePath). fMgr.dMgr.absolutePath='%v'  Error='%v' ",
+				fMgr.dMgr.absolutePath, err.Error())
 		}
 
-		fMgr.dMgr.AbsolutePathDoesExist = true
+		fMgr.dMgr.doesAbsolutePathExist = true
 
 	} else {
 
-		fMgr.dMgr.AbsolutePathDoesExist = true
+		fMgr.dMgr.doesAbsolutePathExist = true
 
 	}
 
@@ -2362,8 +2556,8 @@ func (fMgr *FileMgr) CreateFile() error {
 		return errors.New(ePrefix + " FileMgr is NOT Initialized!")
 	}
 
-	if !fMgr.dMgr.AbsolutePathIsPopulated {
-		return errors.New(ePrefix + " FileMgrDMgr.AbsolutePathIsPopulated is NOT populated!")
+	if !fMgr.dMgr.isAbsolutePathPopulated {
+		return errors.New(ePrefix + " FileMgrDMgr.isAbsolutePathPopulated is NOT populated!")
 	}
 
 	if fMgr.absolutePathFileName == "" {
@@ -2371,11 +2565,11 @@ func (fMgr *FileMgr) CreateFile() error {
 		return errors.New(ePrefix + " FileMgr.absolutePathFileName is EMPTY!")
 	}
 
-	if !fh.DoesFileExist(fMgr.dMgr.AbsolutePath) {
-		fMgr.dMgr.AbsolutePathDoesExist = false
+	if !fh.DoesFileExist(fMgr.dMgr.absolutePath) {
+		fMgr.dMgr.doesAbsolutePathExist = false
 		return fmt.Errorf(ePrefix+
-			"FileMgr.dMgr.AbsolutePath Does NOT exist! Create the path. "+
-			"FileMgr.dMgr.AbsolutePath='%v'", fMgr.dMgr.AbsolutePath)
+			"FileMgr.dMgr.absolutePath Does NOT exist! Create the path. "+
+			"FileMgr.dMgr.absolutePath='%v'", fMgr.dMgr.absolutePath)
 	}
 
 	var err error
@@ -2571,9 +2765,9 @@ func (fMgr *FileMgr) GetFileInfoPlus() (FileInfoPlus, error) {
 				fMgr.absolutePathFileName, err.Error())
 	}
 
-	fMgr.actualFileInfo = FileInfoPlus{}.NewPathFileInfo(fMgr.dMgr.AbsolutePath, info)
+	fMgr.actualFileInfo = FileInfoPlus{}.NewPathFileInfo(fMgr.dMgr.absolutePath, info)
 
-	return fMgr.actualFileInfo, nil
+	return fMgr.actualFileInfo.CopyOut(), nil
 }
 
 // GetFileInfo - Wrapper function for os.Stat(). This method
@@ -2621,7 +2815,7 @@ func (fMgr *FileMgr) GetFileInfo() (os.FileInfo, error) {
 				fMgr.absolutePathFileName, err.Error())
 	}
 
-	fMgr.actualFileInfo = FileInfoPlus{}.NewPathFileInfo(fMgr.dMgr.AbsolutePath, info)
+	fMgr.actualFileInfo = FileInfoPlus{}.NewPathFileInfo(fMgr.dMgr.absolutePath, info)
 
 	return info, nil
 }
@@ -2758,7 +2952,7 @@ func (fMgr *FileMgr) IsFilePointerOpen() bool {
 	return fMgr.isFilePtrOpen
 }
 
-// IsInitialized - Returns a boolean indicating whether the FileMgr
+// isInitialized - Returns a boolean indicating whether the FileMgr
 // object is properly initialized.
 //
 func (fMgr *FileMgr) IsInitialized() bool {
@@ -2796,7 +2990,7 @@ func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err erro
 		return
 	}
 
-	if !dMgr.IsInitialized {
+	if !dMgr.isInitialized {
 		err = errors.New(ePrefix +
 			"Error: Input parameter 'dMgr' is NOT initialized. It is Empty!")
 		return
@@ -2809,11 +3003,11 @@ func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err erro
 		return
 	}
 
-	if !dMgr.AbsolutePathDoesExist && !dMgr.PathDoesExist {
+	if !dMgr.doesAbsolutePathExist && !dMgr.doesPathExist {
 		err = fmt.Errorf(ePrefix+
-			"Error: Destination Path DOES NOT EXIST!. "+
-			"For this DirMgr object, both AbsolutePath and Path DO NOT EXIST! "+
-			"dMgr.AbsolutePath='%v'  dMgr.Path='%v'", dMgr.AbsolutePath, dMgr.Path)
+			"Error: Destination path DOES NOT EXIST!. "+
+			"For this DirMgr object, both absolutePath and path DO NOT EXIST! "+
+			"dMgr.absolutePath='%v'  dMgr.path='%v'", dMgr.absolutePath, dMgr.path)
 		return
 	}
 
@@ -2835,7 +3029,7 @@ func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err erro
 
 	var destPathFileName string
 
-	if dMgr.AbsolutePathDoesExist {
+	if dMgr.doesAbsolutePathExist {
 		destPathFileName = dMgr.GetAbsolutePathWithSeparator() + fMgr.fileNameExt
 	} else {
 		destPathFileName = dMgr.GetPathWithSeparator() + fMgr.fileNameExt
@@ -2943,7 +3137,7 @@ func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (newFMgr FileMgr, err erro
 		return
 	}
 
-	if !dMgr.IsInitialized {
+	if !dMgr.isInitialized {
 		err = fmt.Errorf(ePrefix+
 			"Error: Input parameter 'dirPath' "+
 			"generated an empty DirMgr object. dirPath='%v'", dirPath)
@@ -2954,7 +3148,7 @@ func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (newFMgr FileMgr, err erro
 
 	if !pathExists && !absPathExists {
 		err = fmt.Errorf(ePrefix+
-			"Error: Target Destination Path DOES NOT EXIST! dirPath='%v'",
+			"Error: Target Destination path DOES NOT EXIST! dirPath='%v'",
 			dirPath)
 		return
 	}
@@ -2965,7 +3159,7 @@ func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (newFMgr FileMgr, err erro
 		newFMgr = FileMgr{}
 		err = fmt.Errorf(ePrefix+
 			"Error returned by fMgr.MoveFileToNewDirMgr(dMgr). "+
-			"dMgr.Path='%v' Error='%v'", dMgr.Path, err2.Error())
+			"dMgr.path='%v' Error='%v'", dMgr.path, err2.Error())
 		return
 	}
 
@@ -3077,7 +3271,7 @@ func (fMgr FileMgr) NewFromDirMgrFileNameExt(
 				"Error: Input Parameter fileNameExt is a zero length string!")
 	}
 
-	if dirMgr.IsInitialized {
+	if dirMgr.isInitialized {
 		err := dirMgr.IsDirMgrValid("")
 
 		if err != nil {
@@ -3101,7 +3295,7 @@ func (fMgr FileMgr) NewFromDirMgrFileNameExt(
 	if isEmpty {
 		return FileMgr{}, fmt.Errorf(ePrefix+
 			"Error: Empty FileMgr object returned by fmgr2.SetFileMgrFromDirMgrFileName("+
-			"dirMgr, fileNameExt) dirMgr.Path='%v' fileNameExt='%v'", dirMgr.Path, fileNameExt)
+			"dirMgr, fileNameExt) dirMgr.path='%v' fileNameExt='%v'", dirMgr.path, fileNameExt)
 	}
 
 	return fmgr2, nil
@@ -3456,14 +3650,14 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
 	fMgr.Empty()
 	fh := FileHelper{}
 
-	if dMgr.IsInitialized {
+	if dMgr.isInitialized {
 
 		err2 := dMgr.IsDirMgrValid("")
 
 		if err2 != nil {
 			err = fmt.Errorf(ePrefix+
-				"Error: Input parameter 'dMgr' is INVALID! dMgr.Path='%v'  Error='%v'",
-				dMgr.Path, err2.Error())
+				"Error: Input parameter 'dMgr' is INVALID! dMgr.path='%v'  Error='%v'",
+				dMgr.path, err2.Error())
 			return
 		}
 
@@ -3537,29 +3731,29 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
 		fMgr.fileNameExt = fMgr.fileName + fMgr.fileExt
 	}
 
-	lPath := len(fMgr.dMgr.AbsolutePath)
+	lPath := len(fMgr.dMgr.absolutePath)
 	if lPath == 0 {
 		fMgr.absolutePathFileName = fMgr.fileNameExt
 
-	} else if fMgr.dMgr.AbsolutePath[lPath-1] == os.PathSeparator {
-		fMgr.absolutePathFileName = fMgr.dMgr.AbsolutePath + fMgr.fileNameExt
+	} else if fMgr.dMgr.absolutePath[lPath-1] == os.PathSeparator {
+		fMgr.absolutePathFileName = fMgr.dMgr.absolutePath + fMgr.fileNameExt
 
 	} else {
 		fMgr.absolutePathFileName =
-			fMgr.dMgr.AbsolutePath + string(os.PathSeparator) + fMgr.fileNameExt
+			fMgr.dMgr.absolutePath + string(os.PathSeparator) + fMgr.fileNameExt
 
 	}
 
-	lPath = len(fMgr.dMgr.Path)
+	lPath = len(fMgr.dMgr.path)
 
 	if lPath == 0 {
 		fMgr.originalPathFileName = fMgr.fileNameExt
 
-	} else if fMgr.dMgr.Path[lPath-1] == os.PathSeparator {
-		fMgr.originalPathFileName = fMgr.dMgr.Path + fMgr.fileNameExt
+	} else if fMgr.dMgr.path[lPath-1] == os.PathSeparator {
+		fMgr.originalPathFileName = fMgr.dMgr.path + fMgr.fileNameExt
 
 	} else {
-		fMgr.originalPathFileName = fMgr.dMgr.Path + string(os.PathSeparator) + fMgr.fileNameExt
+		fMgr.originalPathFileName = fMgr.dMgr.path + string(os.PathSeparator) + fMgr.fileNameExt
 
 	}
 
@@ -3569,7 +3763,7 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
 
 	if err2 == nil {
 		fMgr.doesAbsolutePathFileNameExist = true
-		fMgr.actualFileInfo = FileInfoPlus{}.NewPathFileInfo(fMgr.dMgr.AbsolutePath, fInfo)
+		fMgr.actualFileInfo = FileInfoPlus{}.NewPathFileInfo(fMgr.dMgr.absolutePath, fInfo)
 	} else {
 		fMgr.doesAbsolutePathFileNameExist = false
 		fMgr.actualFileInfo = FileInfoPlus{}
@@ -3649,8 +3843,8 @@ func (fMgr *FileMgr) SetFileMgrFromPathFileName(
 	if isEmptyFMgr {
 		err = fmt.Errorf(ePrefix+
 			"Error: Empty FileMgr returned from fMgr.SetFileMgrFromDirMgrFileName("+
-			"dMgr, adjustedFileNameExt). dMgr.Path='%v'   adjustedFileNameExt='%v' ",
-			dMgr.Path, adjustedFileNameExt)
+			"dMgr, adjustedFileNameExt). dMgr.path='%v'   adjustedFileNameExt='%v' ",
+			dMgr.path, adjustedFileNameExt)
 		return
 	}
 

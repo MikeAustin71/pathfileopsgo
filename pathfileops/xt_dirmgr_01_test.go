@@ -98,74 +98,74 @@ func TestDirMgr_CopyIn_01(t *testing.T) {
 		t.Errorf("Error returned from DirMgr{}.New(origDir2). origDir2=='%v'  Error='%v'", origDir2, err.Error())
 	}
 
-	if dMgr2.Path != origDir2 {
-		t.Errorf("Expected original dMgr2.Path='%v'. Instead, dMgr2.Path='%v'", origDir2, dMgr2.Path)
+	if dMgr2.path != origDir2 {
+		t.Errorf("Expected original dMgr2.path='%v'. Instead, dMgr2.path='%v'", origDir2, dMgr2.path)
 	}
 
 	dMgr2.CopyIn(&dMgr)
 
-	if dMgr2.IsInitialized != dMgr.IsInitialized {
-		t.Errorf("After CopyIn(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.IsInitialized, dMgr2.IsInitialized)
+	if dMgr2.isInitialized != dMgr.isInitialized {
+		t.Errorf("After CopyIn(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.isInitialized, dMgr2.isInitialized)
 	}
 
-	if dMgr2.IsInitialized != dMgr.IsInitialized {
-		t.Errorf("After CopyIn(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.IsInitialized, dMgr2.IsInitialized)
+	if dMgr2.isInitialized != dMgr.isInitialized {
+		t.Errorf("After CopyIn(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.isInitialized, dMgr2.isInitialized)
 	}
 
-	if dMgr2.OriginalPath != dMgr.OriginalPath {
-		t.Errorf("After CopyIn(), expected dMgr2.OriginalPath='%v'.  Instead, dMgr2.OriginalPath='%v'.", dMgr.OriginalPath, dMgr2.OriginalPath)
+	if dMgr2.originalPath != dMgr.originalPath {
+		t.Errorf("After CopyIn(), expected dMgr2.originalPath='%v'.  Instead, dMgr2.originalPath='%v'.", dMgr.originalPath, dMgr2.originalPath)
 	}
 
-	if dMgr2.Path != dMgr.Path {
-		t.Errorf("After CopyIn(), expected dMgr2.Path='%v'.  Instead, dMgr2.Path='%v'.", dMgr.Path, dMgr2.Path)
+	if dMgr2.path != dMgr.path {
+		t.Errorf("After CopyIn(), expected dMgr2.path='%v'.  Instead, dMgr2.path='%v'.", dMgr.path, dMgr2.path)
 	}
 
-	if dMgr2.PathIsPopulated != dMgr.PathIsPopulated {
-		t.Errorf("After CopyIn(), expected dMgr2.PathIsPopulated='%v'.  Instead, dMgr2.PathIsPopulated='%v'.", dMgr.PathIsPopulated, dMgr2.PathIsPopulated)
+	if dMgr2.isPathPopulated != dMgr.isPathPopulated {
+		t.Errorf("After CopyIn(), expected dMgr2.isPathPopulated='%v'.  Instead, dMgr2.isPathPopulated='%v'.", dMgr.isPathPopulated, dMgr2.isPathPopulated)
 	}
 
-	if dMgr2.PathDoesExist != dMgr.PathDoesExist {
-		t.Errorf("After CopyIn(), expected dMgr2.PathDoesExist='%v'.  Instead, dMgr2.PathDoesExist='%v'.", dMgr.PathDoesExist, dMgr2.PathDoesExist)
+	if dMgr2.doesPathExist != dMgr.doesPathExist {
+		t.Errorf("After CopyIn(), expected dMgr2.doesPathExist='%v'.  Instead, dMgr2.doesPathExist='%v'.", dMgr.doesPathExist, dMgr2.doesPathExist)
 	}
 
-	if dMgr2.ParentPath != dMgr.ParentPath {
-		t.Errorf("After CopyIn(), expected dMgr2.ParentPath='%v'.  Instead, dMgr2.ParentPath='%v'.", dMgr.ParentPath, dMgr2.ParentPath)
+	if dMgr2.parentPath != dMgr.parentPath {
+		t.Errorf("After CopyIn(), expected dMgr2.parentPath='%v'.  Instead, dMgr2.parentPath='%v'.", dMgr.parentPath, dMgr2.parentPath)
 	}
 
-	if dMgr2.ParentPathIsPopulated != dMgr.ParentPathIsPopulated {
-		t.Errorf("After CopyIn(), expected dMgr2.ParentPathIsPopulated='%v'.  Instead, dMgr2.ParentPathIsPopulated='%v'.", dMgr.ParentPathIsPopulated, dMgr2.ParentPathIsPopulated)
+	if dMgr2.isParentPathPopulated != dMgr.isParentPathPopulated {
+		t.Errorf("After CopyIn(), expected dMgr2.isParentPathPopulated='%v'.  Instead, dMgr2.isParentPathPopulated='%v'.", dMgr.isParentPathPopulated, dMgr2.isParentPathPopulated)
 	}
 
-	if dMgr2.RelativePath != dMgr.RelativePath {
-		t.Errorf("After CopyIn(), expected dMgr2.RelativePath='%v'.  Instead, dMgr2.RelativePath='%v'.", dMgr.RelativePath, dMgr2.RelativePath)
+	if dMgr2.relativePath != dMgr.relativePath {
+		t.Errorf("After CopyIn(), expected dMgr2.relativePath='%v'.  Instead, dMgr2.relativePath='%v'.", dMgr.relativePath, dMgr2.relativePath)
 	}
 
-	if dMgr2.RelativePathIsPopulated != dMgr.RelativePathIsPopulated {
-		t.Errorf("After CopyIn(), expected dMgr2.RelativePathIsPopulated='%v'.  Instead, dMgr2.RelativePathIsPopulated='%v'.", dMgr.RelativePathIsPopulated, dMgr2.RelativePathIsPopulated)
+	if dMgr2.isRelativePathPopulated != dMgr.isRelativePathPopulated {
+		t.Errorf("After CopyIn(), expected dMgr2.isRelativePathPopulated='%v'.  Instead, dMgr2.isRelativePathPopulated='%v'.", dMgr.isRelativePathPopulated, dMgr2.isRelativePathPopulated)
 	}
 
-	if dMgr2.AbsolutePath != dMgr.AbsolutePath {
-		t.Errorf("After CopyIn(), expected dMgr2.AbsolutePath='%v'.  Instead, dMgr2.AbsolutePath='%v'.", dMgr.AbsolutePath, dMgr2.AbsolutePath)
+	if dMgr2.absolutePath != dMgr.absolutePath {
+		t.Errorf("After CopyIn(), expected dMgr2.absolutePath='%v'.  Instead, dMgr2.absolutePath='%v'.", dMgr.absolutePath, dMgr2.absolutePath)
 	}
 
-	if dMgr2.AbsolutePathIsPopulated != dMgr.AbsolutePathIsPopulated {
-		t.Errorf("After CopyIn(), expected dMgr2.AbsolutePathIsPopulated='%v'.  Instead, dMgr2.AbsolutePathIsPopulated='%v'.", dMgr.AbsolutePathIsPopulated, dMgr2.AbsolutePathIsPopulated)
+	if dMgr2.isAbsolutePathPopulated != dMgr.isAbsolutePathPopulated {
+		t.Errorf("After CopyIn(), expected dMgr2.isAbsolutePathPopulated='%v'.  Instead, dMgr2.isAbsolutePathPopulated='%v'.", dMgr.isAbsolutePathPopulated, dMgr2.isAbsolutePathPopulated)
 	}
 
-	if dMgr2.AbsolutePathDoesExist != dMgr.AbsolutePathDoesExist {
-		t.Errorf("After CopyIn(), expected dMgr2.AbsolutePathDoesExist='%v'.  Instead, dMgr2.AbsolutePathDoesExist='%v'.", dMgr.AbsolutePathDoesExist, dMgr2.AbsolutePathDoesExist)
+	if dMgr2.doesAbsolutePathExist != dMgr.doesAbsolutePathExist {
+		t.Errorf("After CopyIn(), expected dMgr2.doesAbsolutePathExist='%v'.  Instead, dMgr2.doesAbsolutePathExist='%v'.", dMgr.doesAbsolutePathExist, dMgr2.doesAbsolutePathExist)
 	}
 
-	if dMgr2.AbsolutePathDifferentFromPath != dMgr.AbsolutePathDifferentFromPath {
-		t.Errorf("After CopyIn(), expected dMgr2.AbsolutePathDifferentFromPath='%v'.  Instead, dMgr2.AbsolutePathDifferentFromPath='%v'.", dMgr.AbsolutePathDifferentFromPath, dMgr2.AbsolutePathDifferentFromPath)
+	if dMgr2.isAbsolutePathDifferentFromPath != dMgr.isAbsolutePathDifferentFromPath {
+		t.Errorf("After CopyIn(), expected dMgr2.isAbsolutePathDifferentFromPath='%v'.  Instead, dMgr2.isAbsolutePathDifferentFromPath='%v'.", dMgr.isAbsolutePathDifferentFromPath, dMgr2.isAbsolutePathDifferentFromPath)
 	}
 
-	if dMgr2.VolumeName != dMgr.VolumeName {
-		t.Errorf("After CopyIn(), expected dMgr2.VolumeName='%v'.  Instead, dMgr2.VolumeName='%v'.", dMgr.VolumeName, dMgr2.VolumeName)
+	if dMgr2.volumeName != dMgr.volumeName {
+		t.Errorf("After CopyIn(), expected dMgr2.volumeName='%v'.  Instead, dMgr2.volumeName='%v'.", dMgr.volumeName, dMgr2.volumeName)
 	}
 
-	if dMgr2.VolumeIsPopulated != dMgr.VolumeIsPopulated {
-		t.Errorf("After CopyIn(), expected dMgr2.VolumeIsPopulated='%v'.  Instead, dMgr2.VolumeIsPopulated='%v'.", dMgr.VolumeIsPopulated, dMgr2.VolumeIsPopulated)
+	if dMgr2.isVolumePopulated != dMgr.isVolumePopulated {
+		t.Errorf("After CopyIn(), expected dMgr2.isVolumePopulated='%v'.  Instead, dMgr2.isVolumePopulated='%v'.", dMgr.isVolumePopulated, dMgr2.isVolumePopulated)
 	}
 
 	if !dMgr2.Equal(&dMgr) {
@@ -192,74 +192,74 @@ func TestDirMgr_CopyOut_01(t *testing.T) {
 		t.Errorf("Error returned from DirMgr{}.New(origDir2). origDir2=='%v'  Error='%v'", origDir2, err.Error())
 	}
 
-	if dMgr2.Path != origDir2 {
-		t.Errorf("Expected original dMgr2.Path='%v'. Instead, dMgr2.Path='%v'", origDir2, dMgr2.Path)
+	if dMgr2.path != origDir2 {
+		t.Errorf("Expected original dMgr2.path='%v'. Instead, dMgr2.path='%v'", origDir2, dMgr2.path)
 	}
 
 	dMgr2 = dMgr.CopyOut()
 
-	if dMgr2.IsInitialized != dMgr.IsInitialized {
-		t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.IsInitialized, dMgr2.IsInitialized)
+	if dMgr2.isInitialized != dMgr.isInitialized {
+		t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.isInitialized, dMgr2.isInitialized)
 	}
 
-	if dMgr2.IsInitialized != dMgr.IsInitialized {
-		t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.IsInitialized, dMgr2.IsInitialized)
+	if dMgr2.isInitialized != dMgr.isInitialized {
+		t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.isInitialized, dMgr2.isInitialized)
 	}
 
-	if dMgr2.OriginalPath != dMgr.OriginalPath {
-		t.Errorf("After CopyOut(), expected dMgr2.OriginalPath='%v'.  Instead, dMgr2.OriginalPath='%v'.", dMgr.OriginalPath, dMgr2.OriginalPath)
+	if dMgr2.originalPath != dMgr.originalPath {
+		t.Errorf("After CopyOut(), expected dMgr2.originalPath='%v'.  Instead, dMgr2.originalPath='%v'.", dMgr.originalPath, dMgr2.originalPath)
 	}
 
-	if dMgr2.Path != dMgr.Path {
-		t.Errorf("After CopyOut(), expected dMgr2.Path='%v'.  Instead, dMgr2.Path='%v'.", dMgr.Path, dMgr2.Path)
+	if dMgr2.path != dMgr.path {
+		t.Errorf("After CopyOut(), expected dMgr2.path='%v'.  Instead, dMgr2.path='%v'.", dMgr.path, dMgr2.path)
 	}
 
-	if dMgr2.PathIsPopulated != dMgr.PathIsPopulated {
-		t.Errorf("After CopyOut(), expected dMgr2.PathIsPopulated='%v'.  Instead, dMgr2.PathIsPopulated='%v'.", dMgr.PathIsPopulated, dMgr2.PathIsPopulated)
+	if dMgr2.isPathPopulated != dMgr.isPathPopulated {
+		t.Errorf("After CopyOut(), expected dMgr2.isPathPopulated='%v'.  Instead, dMgr2.isPathPopulated='%v'.", dMgr.isPathPopulated, dMgr2.isPathPopulated)
 	}
 
-	if dMgr2.PathDoesExist != dMgr.PathDoesExist {
-		t.Errorf("After CopyOut(), expected dMgr2.PathDoesExist='%v'.  Instead, dMgr2.PathDoesExist='%v'.", dMgr.PathDoesExist, dMgr2.PathDoesExist)
+	if dMgr2.doesPathExist != dMgr.doesPathExist {
+		t.Errorf("After CopyOut(), expected dMgr2.doesPathExist='%v'.  Instead, dMgr2.doesPathExist='%v'.", dMgr.doesPathExist, dMgr2.doesPathExist)
 	}
 
-	if dMgr2.ParentPath != dMgr.ParentPath {
-		t.Errorf("After CopyOut(), expected dMgr2.ParentPath='%v'.  Instead, dMgr2.ParentPath='%v'.", dMgr.ParentPath, dMgr2.ParentPath)
+	if dMgr2.parentPath != dMgr.parentPath {
+		t.Errorf("After CopyOut(), expected dMgr2.parentPath='%v'.  Instead, dMgr2.parentPath='%v'.", dMgr.parentPath, dMgr2.parentPath)
 	}
 
-	if dMgr2.ParentPathIsPopulated != dMgr.ParentPathIsPopulated {
-		t.Errorf("After CopyOut(), expected dMgr2.ParentPathIsPopulated='%v'.  Instead, dMgr2.ParentPathIsPopulated='%v'.", dMgr.ParentPathIsPopulated, dMgr2.ParentPathIsPopulated)
+	if dMgr2.isParentPathPopulated != dMgr.isParentPathPopulated {
+		t.Errorf("After CopyOut(), expected dMgr2.isParentPathPopulated='%v'.  Instead, dMgr2.isParentPathPopulated='%v'.", dMgr.isParentPathPopulated, dMgr2.isParentPathPopulated)
 	}
 
-	if dMgr2.RelativePath != dMgr.RelativePath {
-		t.Errorf("After CopyOut(), expected dMgr2.RelativePath='%v'.  Instead, dMgr2.RelativePath='%v'.", dMgr.RelativePath, dMgr2.RelativePath)
+	if dMgr2.relativePath != dMgr.relativePath {
+		t.Errorf("After CopyOut(), expected dMgr2.relativePath='%v'.  Instead, dMgr2.relativePath='%v'.", dMgr.relativePath, dMgr2.relativePath)
 	}
 
-	if dMgr2.RelativePathIsPopulated != dMgr.RelativePathIsPopulated {
-		t.Errorf("After CopyOut(), expected dMgr2.RelativePathIsPopulated='%v'.  Instead, dMgr2.RelativePathIsPopulated='%v'.", dMgr.RelativePathIsPopulated, dMgr2.RelativePathIsPopulated)
+	if dMgr2.isRelativePathPopulated != dMgr.isRelativePathPopulated {
+		t.Errorf("After CopyOut(), expected dMgr2.isRelativePathPopulated='%v'.  Instead, dMgr2.isRelativePathPopulated='%v'.", dMgr.isRelativePathPopulated, dMgr2.isRelativePathPopulated)
 	}
 
-	if dMgr2.AbsolutePath != dMgr.AbsolutePath {
-		t.Errorf("After CopyOut(), expected dMgr2.AbsolutePath='%v'.  Instead, dMgr2.AbsolutePath='%v'.", dMgr.AbsolutePath, dMgr2.AbsolutePath)
+	if dMgr2.absolutePath != dMgr.absolutePath {
+		t.Errorf("After CopyOut(), expected dMgr2.absolutePath='%v'.  Instead, dMgr2.absolutePath='%v'.", dMgr.absolutePath, dMgr2.absolutePath)
 	}
 
-	if dMgr2.AbsolutePathIsPopulated != dMgr.AbsolutePathIsPopulated {
-		t.Errorf("After CopyOut(), expected dMgr2.AbsolutePathIsPopulated='%v'.  Instead, dMgr2.AbsolutePathIsPopulated='%v'.", dMgr.AbsolutePathIsPopulated, dMgr2.AbsolutePathIsPopulated)
+	if dMgr2.isAbsolutePathPopulated != dMgr.isAbsolutePathPopulated {
+		t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathPopulated='%v'.  Instead, dMgr2.isAbsolutePathPopulated='%v'.", dMgr.isAbsolutePathPopulated, dMgr2.isAbsolutePathPopulated)
 	}
 
-	if dMgr2.AbsolutePathDoesExist != dMgr.AbsolutePathDoesExist {
-		t.Errorf("After CopyOut(), expected dMgr2.AbsolutePathDoesExist='%v'.  Instead, dMgr2.AbsolutePathDoesExist='%v'.", dMgr.AbsolutePathDoesExist, dMgr2.AbsolutePathDoesExist)
+	if dMgr2.doesAbsolutePathExist != dMgr.doesAbsolutePathExist {
+		t.Errorf("After CopyOut(), expected dMgr2.doesAbsolutePathExist='%v'.  Instead, dMgr2.doesAbsolutePathExist='%v'.", dMgr.doesAbsolutePathExist, dMgr2.doesAbsolutePathExist)
 	}
 
-	if dMgr2.AbsolutePathDifferentFromPath != dMgr.AbsolutePathDifferentFromPath {
-		t.Errorf("After CopyOut(), expected dMgr2.AbsolutePathDifferentFromPath='%v'.  Instead, dMgr2.AbsolutePathDifferentFromPath='%v'.", dMgr.AbsolutePathDifferentFromPath, dMgr2.AbsolutePathDifferentFromPath)
+	if dMgr2.isAbsolutePathDifferentFromPath != dMgr.isAbsolutePathDifferentFromPath {
+		t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathDifferentFromPath='%v'.  Instead, dMgr2.isAbsolutePathDifferentFromPath='%v'.", dMgr.isAbsolutePathDifferentFromPath, dMgr2.isAbsolutePathDifferentFromPath)
 	}
 
-	if dMgr2.VolumeName != dMgr.VolumeName {
-		t.Errorf("After CopyOut(), expected dMgr2.VolumeName='%v'.  Instead, dMgr2.VolumeName='%v'.", dMgr.VolumeName, dMgr2.VolumeName)
+	if dMgr2.volumeName != dMgr.volumeName {
+		t.Errorf("After CopyOut(), expected dMgr2.volumeName='%v'.  Instead, dMgr2.volumeName='%v'.", dMgr.volumeName, dMgr2.volumeName)
 	}
 
-	if dMgr2.VolumeIsPopulated != dMgr.VolumeIsPopulated {
-		t.Errorf("After CopyOut(), expected dMgr2.VolumeIsPopulated='%v'.  Instead, dMgr2.VolumeIsPopulated='%v'.", dMgr.VolumeIsPopulated, dMgr2.VolumeIsPopulated)
+	if dMgr2.isVolumePopulated != dMgr.isVolumePopulated {
+		t.Errorf("After CopyOut(), expected dMgr2.isVolumePopulated='%v'.  Instead, dMgr2.isVolumePopulated='%v'.", dMgr.isVolumePopulated, dMgr2.isVolumePopulated)
 	}
 
 	if !dMgr2.Equal(&dMgr) {
@@ -287,11 +287,11 @@ func TestDirMgr_DeleteAll_01(t *testing.T) {
 	err = dMgr.DeleteAll()
 
 	if err != nil {
-		t.Errorf("Error returned by dMgr.DeleteAll(). dMgr.Path='%v'  dMgr.AbsolutePath='%v'  Error='%v'", dMgr.Path, dMgr.AbsolutePath, err.Error())
+		t.Errorf("Error returned by dMgr.DeleteAll(). dMgr.path='%v'  dMgr.absolutePath='%v'  Error='%v'", dMgr.path, dMgr.absolutePath, err.Error())
 	}
 
-	if dMgr.AbsolutePathDoesExist {
-		t.Errorf("Expected AbsolutePath to be deleted. Instead, it Exists! dMgr.AbsolutePath='%v'", dMgr.AbsolutePath)
+	if dMgr.doesAbsolutePathExist {
+		t.Errorf("Expected absolutePath to be deleted. Instead, it Exists! dMgr.absolutePath='%v'", dMgr.absolutePath)
 	}
 
 	if fh.DoesFileExist(origDir) {
@@ -560,74 +560,74 @@ func TestDirMgr_Equal_01(t *testing.T) {
 		t.Errorf("Error returned from DirMgr{}.New(origDir2). origDir2=='%v'  Error='%v'", origDir2, err.Error())
 	}
 
-	if dMgr2.Path != origDir2 {
-		t.Errorf("Expected original dMgr2.Path='%v'. Instead, dMgr2.Path='%v'", origDir2, dMgr2.Path)
+	if dMgr2.path != origDir2 {
+		t.Errorf("Expected original dMgr2.path='%v'. Instead, dMgr2.path='%v'", origDir2, dMgr2.path)
 	}
 
 	dMgr2 = dMgr.CopyOut()
 
-	if dMgr2.IsInitialized != dMgr.IsInitialized {
-		t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.IsInitialized, dMgr2.IsInitialized)
+	if dMgr2.isInitialized != dMgr.isInitialized {
+		t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.isInitialized, dMgr2.isInitialized)
 	}
 
-	if dMgr2.IsInitialized != dMgr.IsInitialized {
-		t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.IsInitialized, dMgr2.IsInitialized)
+	if dMgr2.isInitialized != dMgr.isInitialized {
+		t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.isInitialized, dMgr2.isInitialized)
 	}
 
-	if dMgr2.OriginalPath != dMgr.OriginalPath {
-		t.Errorf("After CopyOut(), expected dMgr2.OriginalPath='%v'.  Instead, dMgr2.OriginalPath='%v'.", dMgr.OriginalPath, dMgr2.OriginalPath)
+	if dMgr2.originalPath != dMgr.originalPath {
+		t.Errorf("After CopyOut(), expected dMgr2.originalPath='%v'.  Instead, dMgr2.originalPath='%v'.", dMgr.originalPath, dMgr2.originalPath)
 	}
 
-	if dMgr2.Path != dMgr.Path {
-		t.Errorf("After CopyOut(), expected dMgr2.Path='%v'.  Instead, dMgr2.Path='%v'.", dMgr.Path, dMgr2.Path)
+	if dMgr2.path != dMgr.path {
+		t.Errorf("After CopyOut(), expected dMgr2.path='%v'.  Instead, dMgr2.path='%v'.", dMgr.path, dMgr2.path)
 	}
 
-	if dMgr2.PathIsPopulated != dMgr.PathIsPopulated {
-		t.Errorf("After CopyOut(), expected dMgr2.PathIsPopulated='%v'.  Instead, dMgr2.PathIsPopulated='%v'.", dMgr.PathIsPopulated, dMgr2.PathIsPopulated)
+	if dMgr2.isPathPopulated != dMgr.isPathPopulated {
+		t.Errorf("After CopyOut(), expected dMgr2.isPathPopulated='%v'.  Instead, dMgr2.isPathPopulated='%v'.", dMgr.isPathPopulated, dMgr2.isPathPopulated)
 	}
 
-	if dMgr2.PathDoesExist != dMgr.PathDoesExist {
-		t.Errorf("After CopyOut(), expected dMgr2.PathDoesExist='%v'.  Instead, dMgr2.PathDoesExist='%v'.", dMgr.PathDoesExist, dMgr2.PathDoesExist)
+	if dMgr2.doesPathExist != dMgr.doesPathExist {
+		t.Errorf("After CopyOut(), expected dMgr2.doesPathExist='%v'.  Instead, dMgr2.doesPathExist='%v'.", dMgr.doesPathExist, dMgr2.doesPathExist)
 	}
 
-	if dMgr2.ParentPath != dMgr.ParentPath {
-		t.Errorf("After CopyOut(), expected dMgr2.ParentPath='%v'.  Instead, dMgr2.ParentPath='%v'.", dMgr.ParentPath, dMgr2.ParentPath)
+	if dMgr2.parentPath != dMgr.parentPath {
+		t.Errorf("After CopyOut(), expected dMgr2.parentPath='%v'.  Instead, dMgr2.parentPath='%v'.", dMgr.parentPath, dMgr2.parentPath)
 	}
 
-	if dMgr2.ParentPathIsPopulated != dMgr.ParentPathIsPopulated {
-		t.Errorf("After CopyOut(), expected dMgr2.ParentPathIsPopulated='%v'.  Instead, dMgr2.ParentPathIsPopulated='%v'.", dMgr.ParentPathIsPopulated, dMgr2.ParentPathIsPopulated)
+	if dMgr2.isParentPathPopulated != dMgr.isParentPathPopulated {
+		t.Errorf("After CopyOut(), expected dMgr2.isParentPathPopulated='%v'.  Instead, dMgr2.isParentPathPopulated='%v'.", dMgr.isParentPathPopulated, dMgr2.isParentPathPopulated)
 	}
 
-	if dMgr2.RelativePath != dMgr.RelativePath {
-		t.Errorf("After CopyOut(), expected dMgr2.RelativePath='%v'.  Instead, dMgr2.RelativePath='%v'.", dMgr.RelativePath, dMgr2.RelativePath)
+	if dMgr2.relativePath != dMgr.relativePath {
+		t.Errorf("After CopyOut(), expected dMgr2.relativePath='%v'.  Instead, dMgr2.relativePath='%v'.", dMgr.relativePath, dMgr2.relativePath)
 	}
 
-	if dMgr2.RelativePathIsPopulated != dMgr.RelativePathIsPopulated {
-		t.Errorf("After CopyOut(), expected dMgr2.RelativePathIsPopulated='%v'.  Instead, dMgr2.RelativePathIsPopulated='%v'.", dMgr.RelativePathIsPopulated, dMgr2.RelativePathIsPopulated)
+	if dMgr2.isRelativePathPopulated != dMgr.isRelativePathPopulated {
+		t.Errorf("After CopyOut(), expected dMgr2.isRelativePathPopulated='%v'.  Instead, dMgr2.isRelativePathPopulated='%v'.", dMgr.isRelativePathPopulated, dMgr2.isRelativePathPopulated)
 	}
 
-	if dMgr2.AbsolutePath != dMgr.AbsolutePath {
-		t.Errorf("After CopyOut(), expected dMgr2.AbsolutePath='%v'.  Instead, dMgr2.AbsolutePath='%v'.", dMgr.AbsolutePath, dMgr2.AbsolutePath)
+	if dMgr2.absolutePath != dMgr.absolutePath {
+		t.Errorf("After CopyOut(), expected dMgr2.absolutePath='%v'.  Instead, dMgr2.absolutePath='%v'.", dMgr.absolutePath, dMgr2.absolutePath)
 	}
 
-	if dMgr2.AbsolutePathIsPopulated != dMgr.AbsolutePathIsPopulated {
-		t.Errorf("After CopyOut(), expected dMgr2.AbsolutePathIsPopulated='%v'.  Instead, dMgr2.AbsolutePathIsPopulated='%v'.", dMgr.AbsolutePathIsPopulated, dMgr2.AbsolutePathIsPopulated)
+	if dMgr2.isAbsolutePathPopulated != dMgr.isAbsolutePathPopulated {
+		t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathPopulated='%v'.  Instead, dMgr2.isAbsolutePathPopulated='%v'.", dMgr.isAbsolutePathPopulated, dMgr2.isAbsolutePathPopulated)
 	}
 
-	if dMgr2.AbsolutePathDoesExist != dMgr.AbsolutePathDoesExist {
-		t.Errorf("After CopyOut(), expected dMgr2.AbsolutePathDoesExist='%v'.  Instead, dMgr2.AbsolutePathDoesExist='%v'.", dMgr.AbsolutePathDoesExist, dMgr2.AbsolutePathDoesExist)
+	if dMgr2.doesAbsolutePathExist != dMgr.doesAbsolutePathExist {
+		t.Errorf("After CopyOut(), expected dMgr2.doesAbsolutePathExist='%v'.  Instead, dMgr2.doesAbsolutePathExist='%v'.", dMgr.doesAbsolutePathExist, dMgr2.doesAbsolutePathExist)
 	}
 
-	if dMgr2.AbsolutePathDifferentFromPath != dMgr.AbsolutePathDifferentFromPath {
-		t.Errorf("After CopyOut(), expected dMgr2.AbsolutePathDifferentFromPath='%v'.  Instead, dMgr2.AbsolutePathDifferentFromPath='%v'.", dMgr.AbsolutePathDifferentFromPath, dMgr2.AbsolutePathDifferentFromPath)
+	if dMgr2.isAbsolutePathDifferentFromPath != dMgr.isAbsolutePathDifferentFromPath {
+		t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathDifferentFromPath='%v'.  Instead, dMgr2.isAbsolutePathDifferentFromPath='%v'.", dMgr.isAbsolutePathDifferentFromPath, dMgr2.isAbsolutePathDifferentFromPath)
 	}
 
-	if dMgr2.VolumeName != dMgr.VolumeName {
-		t.Errorf("After CopyOut(), expected dMgr2.VolumeName='%v'.  Instead, dMgr2.VolumeName='%v'.", dMgr.VolumeName, dMgr2.VolumeName)
+	if dMgr2.volumeName != dMgr.volumeName {
+		t.Errorf("After CopyOut(), expected dMgr2.volumeName='%v'.  Instead, dMgr2.volumeName='%v'.", dMgr.volumeName, dMgr2.volumeName)
 	}
 
-	if dMgr2.VolumeIsPopulated != dMgr.VolumeIsPopulated {
-		t.Errorf("After CopyOut(), expected dMgr2.VolumeIsPopulated='%v'.  Instead, dMgr2.VolumeIsPopulated='%v'.", dMgr.VolumeIsPopulated, dMgr2.VolumeIsPopulated)
+	if dMgr2.isVolumePopulated != dMgr.isVolumePopulated {
+		t.Errorf("After CopyOut(), expected dMgr2.isVolumePopulated='%v'.  Instead, dMgr2.isVolumePopulated='%v'.", dMgr.isVolumePopulated, dMgr2.isVolumePopulated)
 	}
 
 	if !dMgr2.Equal(&dMgr) {
@@ -660,77 +660,77 @@ func TestDirMgr_Equal_02(t *testing.T) {
 		t.Errorf("Error returned from DirMgr{}.New(origDir2). origDir2=='%v'  Error='%v'", origDir2, err.Error())
 	}
 
-	if dMgr2.Path != origDir2 {
-		t.Errorf("Expected original dMgr2.Path='%v'. Instead, dMgr2.Path='%v'", origDir2, dMgr2.Path)
+	if dMgr2.path != origDir2 {
+		t.Errorf("Expected original dMgr2.path='%v'. Instead, dMgr2.path='%v'", origDir2, dMgr2.path)
 	}
 
 	dMgr2 = dMgr.CopyOut()
 
 	// dMgr2 and dMgr are no longer EQUAL
-	dMgr2.AbsolutePath = dMgr2.AbsolutePath + "x"
+	dMgr2.absolutePath = dMgr2.absolutePath + "x"
 
-	if dMgr2.IsInitialized != dMgr.IsInitialized {
-		t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.IsInitialized, dMgr2.IsInitialized)
+	if dMgr2.isInitialized != dMgr.isInitialized {
+		t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.isInitialized, dMgr2.isInitialized)
 	}
 
-	if dMgr2.IsInitialized != dMgr.IsInitialized {
-		t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.IsInitialized, dMgr2.IsInitialized)
+	if dMgr2.isInitialized != dMgr.isInitialized {
+		t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.isInitialized, dMgr2.isInitialized)
 	}
 
-	if dMgr2.OriginalPath != dMgr.OriginalPath {
-		t.Errorf("After CopyOut(), expected dMgr2.OriginalPath='%v'.  Instead, dMgr2.OriginalPath='%v'.", dMgr.OriginalPath, dMgr2.OriginalPath)
+	if dMgr2.originalPath != dMgr.originalPath {
+		t.Errorf("After CopyOut(), expected dMgr2.originalPath='%v'.  Instead, dMgr2.originalPath='%v'.", dMgr.originalPath, dMgr2.originalPath)
 	}
 
-	if dMgr2.Path != dMgr.Path {
-		t.Errorf("After CopyOut(), expected dMgr2.Path='%v'.  Instead, dMgr2.Path='%v'.", dMgr.Path, dMgr2.Path)
+	if dMgr2.path != dMgr.path {
+		t.Errorf("After CopyOut(), expected dMgr2.path='%v'.  Instead, dMgr2.path='%v'.", dMgr.path, dMgr2.path)
 	}
 
-	if dMgr2.PathIsPopulated != dMgr.PathIsPopulated {
-		t.Errorf("After CopyOut(), expected dMgr2.PathIsPopulated='%v'.  Instead, dMgr2.PathIsPopulated='%v'.", dMgr.PathIsPopulated, dMgr2.PathIsPopulated)
+	if dMgr2.isPathPopulated != dMgr.isPathPopulated {
+		t.Errorf("After CopyOut(), expected dMgr2.isPathPopulated='%v'.  Instead, dMgr2.isPathPopulated='%v'.", dMgr.isPathPopulated, dMgr2.isPathPopulated)
 	}
 
-	if dMgr2.PathDoesExist != dMgr.PathDoesExist {
-		t.Errorf("After CopyOut(), expected dMgr2.PathDoesExist='%v'.  Instead, dMgr2.PathDoesExist='%v'.", dMgr.PathDoesExist, dMgr2.PathDoesExist)
+	if dMgr2.doesPathExist != dMgr.doesPathExist {
+		t.Errorf("After CopyOut(), expected dMgr2.doesPathExist='%v'.  Instead, dMgr2.doesPathExist='%v'.", dMgr.doesPathExist, dMgr2.doesPathExist)
 	}
 
-	if dMgr2.ParentPath != dMgr.ParentPath {
-		t.Errorf("After CopyOut(), expected dMgr2.ParentPath='%v'.  Instead, dMgr2.ParentPath='%v'.", dMgr.ParentPath, dMgr2.ParentPath)
+	if dMgr2.parentPath != dMgr.parentPath {
+		t.Errorf("After CopyOut(), expected dMgr2.parentPath='%v'.  Instead, dMgr2.parentPath='%v'.", dMgr.parentPath, dMgr2.parentPath)
 	}
 
-	if dMgr2.ParentPathIsPopulated != dMgr.ParentPathIsPopulated {
-		t.Errorf("After CopyOut(), expected dMgr2.ParentPathIsPopulated='%v'.  Instead, dMgr2.ParentPathIsPopulated='%v'.", dMgr.ParentPathIsPopulated, dMgr2.ParentPathIsPopulated)
+	if dMgr2.isParentPathPopulated != dMgr.isParentPathPopulated {
+		t.Errorf("After CopyOut(), expected dMgr2.isParentPathPopulated='%v'.  Instead, dMgr2.isParentPathPopulated='%v'.", dMgr.isParentPathPopulated, dMgr2.isParentPathPopulated)
 	}
 
-	if dMgr2.RelativePath != dMgr.RelativePath {
-		t.Errorf("After CopyOut(), expected dMgr2.RelativePath='%v'.  Instead, dMgr2.RelativePath='%v'.", dMgr.RelativePath, dMgr2.RelativePath)
+	if dMgr2.relativePath != dMgr.relativePath {
+		t.Errorf("After CopyOut(), expected dMgr2.relativePath='%v'.  Instead, dMgr2.relativePath='%v'.", dMgr.relativePath, dMgr2.relativePath)
 	}
 
-	if dMgr2.RelativePathIsPopulated != dMgr.RelativePathIsPopulated {
-		t.Errorf("After CopyOut(), expected dMgr2.RelativePathIsPopulated='%v'.  Instead, dMgr2.RelativePathIsPopulated='%v'.", dMgr.RelativePathIsPopulated, dMgr2.RelativePathIsPopulated)
+	if dMgr2.isRelativePathPopulated != dMgr.isRelativePathPopulated {
+		t.Errorf("After CopyOut(), expected dMgr2.isRelativePathPopulated='%v'.  Instead, dMgr2.isRelativePathPopulated='%v'.", dMgr.isRelativePathPopulated, dMgr2.isRelativePathPopulated)
 	}
 
-	if dMgr2.AbsolutePath == dMgr.AbsolutePath {
-		t.Error("After modification, expected dMgr2.AbsolutePath to be different from dMgr.AbsolutePath. ERROR= They ARE EQUAL!")
+	if dMgr2.absolutePath == dMgr.absolutePath {
+		t.Error("After modification, expected dMgr2.absolutePath to be different from dMgr.absolutePath. ERROR= They ARE EQUAL!")
 	}
 
-	if dMgr2.AbsolutePathIsPopulated != dMgr.AbsolutePathIsPopulated {
-		t.Errorf("After CopyOut(), expected dMgr2.AbsolutePathIsPopulated='%v'.  Instead, dMgr2.AbsolutePathIsPopulated='%v'.", dMgr.AbsolutePathIsPopulated, dMgr2.AbsolutePathIsPopulated)
+	if dMgr2.isAbsolutePathPopulated != dMgr.isAbsolutePathPopulated {
+		t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathPopulated='%v'.  Instead, dMgr2.isAbsolutePathPopulated='%v'.", dMgr.isAbsolutePathPopulated, dMgr2.isAbsolutePathPopulated)
 	}
 
-	if dMgr2.AbsolutePathDoesExist != dMgr.AbsolutePathDoesExist {
-		t.Errorf("After CopyOut(), expected dMgr2.AbsolutePathDoesExist='%v'.  Instead, dMgr2.AbsolutePathDoesExist='%v'.", dMgr.AbsolutePathDoesExist, dMgr2.AbsolutePathDoesExist)
+	if dMgr2.doesAbsolutePathExist != dMgr.doesAbsolutePathExist {
+		t.Errorf("After CopyOut(), expected dMgr2.doesAbsolutePathExist='%v'.  Instead, dMgr2.doesAbsolutePathExist='%v'.", dMgr.doesAbsolutePathExist, dMgr2.doesAbsolutePathExist)
 	}
 
-	if dMgr2.AbsolutePathDifferentFromPath != dMgr.AbsolutePathDifferentFromPath {
-		t.Errorf("After CopyOut(), expected dMgr2.AbsolutePathDifferentFromPath='%v'.  Instead, dMgr2.AbsolutePathDifferentFromPath='%v'.", dMgr.AbsolutePathDifferentFromPath, dMgr2.AbsolutePathDifferentFromPath)
+	if dMgr2.isAbsolutePathDifferentFromPath != dMgr.isAbsolutePathDifferentFromPath {
+		t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathDifferentFromPath='%v'.  Instead, dMgr2.isAbsolutePathDifferentFromPath='%v'.", dMgr.isAbsolutePathDifferentFromPath, dMgr2.isAbsolutePathDifferentFromPath)
 	}
 
-	if dMgr2.VolumeName != dMgr.VolumeName {
-		t.Errorf("After CopyOut(), expected dMgr2.VolumeName='%v'.  Instead, dMgr2.VolumeName='%v'.", dMgr.VolumeName, dMgr2.VolumeName)
+	if dMgr2.volumeName != dMgr.volumeName {
+		t.Errorf("After CopyOut(), expected dMgr2.volumeName='%v'.  Instead, dMgr2.volumeName='%v'.", dMgr.volumeName, dMgr2.volumeName)
 	}
 
-	if dMgr2.VolumeIsPopulated != dMgr.VolumeIsPopulated {
-		t.Errorf("After CopyOut(), expected dMgr2.VolumeIsPopulated='%v'.  Instead, dMgr2.VolumeIsPopulated='%v'.", dMgr.VolumeIsPopulated, dMgr2.VolumeIsPopulated)
+	if dMgr2.isVolumePopulated != dMgr.isVolumePopulated {
+		t.Errorf("After CopyOut(), expected dMgr2.isVolumePopulated='%v'.  Instead, dMgr2.isVolumePopulated='%v'.", dMgr.isVolumePopulated, dMgr2.isVolumePopulated)
 	}
 
 	if dMgr2.Equal(&dMgr) {

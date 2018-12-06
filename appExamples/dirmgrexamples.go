@@ -56,7 +56,7 @@ func WalkDirFindFiles(
 					err.Error())
 			}
 
-			fmt.Printf("  Name: %v Mod Date: %v Path: %v \n",
+			fmt.Printf("  Name: %v Mod Date: %v path: %v \n",
 				dWalkInfo.FoundFiles.FMgrs[i].GetFileNameExt(),
 				fInfoPlus.ModTime(), fInfoPlus.DirPath())
 		}
@@ -67,7 +67,7 @@ func WalkDirFindFiles(
 		fmt.Println("DirMgrs Found:")
 
 		for k := 0; k < dWalkInfo.Directories.GetArrayLength(); k++ {
-			fmt.Printf("Dir: %v \n", dWalkInfo.Directories.DirMgrs[k].Path)
+			fmt.Printf("Dir: %v \n", dWalkInfo.Directories.DirMgrs[k].GetPath())
 		}
 
 	}
@@ -144,7 +144,7 @@ func WalkDirFindFiles2(
 		fmt.Println("DirMgrs Found:")
 
 		for k := 0; k < dWalkInfo.Directories.GetArrayLength(); k++ {
-			fmt.Printf("Dir: %v \n", dWalkInfo.Directories.DirMgrs[k].Path)
+			fmt.Printf("Dir: %v \n", dWalkInfo.Directories.DirMgrs[k].GetPath())
 		}
 
 	}
@@ -162,39 +162,50 @@ func WalkDirFindFiles2(
 }
 
 func PrintDirMgrFields(dMgr pathFileOps.DirMgr) {
+
+	ePrefix := "PrintDirMgrFields() "
+
 	du := appLib.DateTimeUtility{}
 	fmt.Println("-----------------------------------------")
 	fmt.Println(" 	DirMgr Fields")
 	fmt.Println("-----------------------------------------")
 
-	fmt.Println("                isInitialized: ", dMgr.IsInitialized)
-	fmt.Println("                Original Path: ", dMgr.OriginalPath)
-	fmt.Println("                         Path: ", dMgr.Path)
-	fmt.Println("             PathIsPopuslated: ", dMgr.PathIsPopulated)
-	fmt.Println("                PathDoesExist: ", dMgr.PathDoesExist)
-	fmt.Println("                   ParentPath: ", dMgr.ParentPath)
-	fmt.Println("        ParentPathIsPopulated: ", dMgr.ParentPathIsPopulated)
-	fmt.Println("                 RelativePath: ", dMgr.RelativePath)
-	fmt.Println("      RelativePathIsPopulated: ", dMgr.RelativePathIsPopulated)
-	fmt.Println("                 AbsolutePath: ", dMgr.AbsolutePath)
-	fmt.Println("      AbsolutePathIsPopulated: ", dMgr.AbsolutePathIsPopulated)
-	fmt.Println("AbsolutePathDifferentFromPath: ", dMgr.AbsolutePathDifferentFromPath)
-	fmt.Println("        AbsolutePathDoesExist: ", dMgr.AbsolutePathDoesExist)
-	fmt.Println("               Directory Name: ", dMgr.DirectoryName)
-	fmt.Println("                   VolumeName: ", dMgr.VolumeName)
-	fmt.Println("            VolumeIsPopulated: ", dMgr.VolumeIsPopulated)
+	fmt.Println("                isInitialized: ", dMgr.IsInitialized())
+	fmt.Println("                Original path: ", dMgr.GetOriginalPath())
+	fmt.Println("                         path: ", dMgr.GetPath())
+	fmt.Println("             PathIsPopuslated: ", dMgr.IsPathPopulated())
+	fmt.Println("                doesPathExist: ", dMgr.DoesDirMgrPathExist())
+	fmt.Println("                   parentPath: ", dMgr.GetParentPath())
+	fmt.Println("        isParentPathPopulated: ", dMgr.IsParentPathPopulated())
+	fmt.Println("                 relativePath: ", dMgr.GetRelativePath())
+	fmt.Println("      isRelativePathPopulated: ", dMgr.IsRelativePathPopulated())
+	fmt.Println("                 absolutePath: ", dMgr.GetAbsolutePath())
+	fmt.Println("      isAbsolutePathPopulated: ", dMgr.IsAbsolutePathPopulated())
+	fmt.Println("isAbsolutePathDifferentFromPath: ", dMgr.IsAbsolutePathDifferentFromPath())
+	fmt.Println("        doesAbsolutePathExist: ", dMgr.DoesDirMgrAbsolutePathExist())
+	fmt.Println("               Directory Name: ", dMgr.GetDirectoryName())
+	fmt.Println("                   volumeName: ", dMgr.GetVolumeName())
+	fmt.Println("            isVolumePopulated: ", dMgr.IsVolumeNamePopulated())
 	fmt.Println("============== File Info Data ============")
 
-	if dMgr.ActualDirFileInfo.IsFInfoInitialized {
-		fmt.Println("            File Info IsDir(): ", dMgr.ActualDirFileInfo.IsDir())
-		fmt.Println("             File Info Name(): ", dMgr.ActualDirFileInfo.Name())
-		fmt.Println("             File Info Size(): ", dMgr.ActualDirFileInfo.Size())
+	actualDirFileInfo, err := dMgr.GetFileInfoPlus()
+
+	if err != nil {
+		fmt.Printf(ePrefix+
+			"Error returned by dMgr.GetFileInfoPlus() Error='%v' \n", err.Error())
+		return
+	}
+
+	if actualDirFileInfo.IsFInfoInitialized {
+		fmt.Println("            File Info IsDir(): ", actualDirFileInfo.IsDir())
+		fmt.Println("             File Info Name(): ", actualDirFileInfo.Name())
+		fmt.Println("             File Info Size(): ", actualDirFileInfo.Size())
 		fmt.Println("          File Info ModTime(): ", du.GetDateTimeYMDAbbrvDowNano(
-			dMgr.ActualDirFileInfo.ModTime()))
-		fmt.Println("             File Info Mode(): ", dMgr.ActualDirFileInfo.Mode())
-		fmt.Println("          File Info     Sys(): ", dMgr.ActualDirFileInfo.Sys())
-		if dMgr.ActualDirFileInfo.IsDirPathInitialized {
-			fmt.Println("                   Dir Path: ", dMgr.ActualDirFileInfo.DirPath())
+			actualDirFileInfo.ModTime()))
+		fmt.Println("             File Info Mode(): ", actualDirFileInfo.Mode())
+		fmt.Println("          File Info     Sys(): ", actualDirFileInfo.Sys())
+		if actualDirFileInfo.IsDirPathInitialized {
+			fmt.Println("                   Dir path: ", actualDirFileInfo.DirPath())
 		}
 	} else {
 		fmt.Println("File Info Data is NOT Initialized")

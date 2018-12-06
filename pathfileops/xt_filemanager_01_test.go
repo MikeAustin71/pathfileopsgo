@@ -36,8 +36,8 @@ func TestFileMgr_CopyOut_01(t *testing.T) {
 		t.Error(fmt.Sprintf("Expected CopyToThis to return fileNameExt == '%v', instead got: ", fileNameExt), fMgr2.fileNameExt)
 	}
 
-	if fMgr2.dMgr.Path != expectedDir {
-		t.Error(fmt.Sprintf("Expected CopyToThis to return Path == '%v', instead got: ", expectedDir), fMgr2.dMgr.Path)
+	if fMgr2.dMgr.path != expectedDir {
+		t.Error(fmt.Sprintf("Expected CopyToThis to return path == '%v', instead got: ", expectedDir), fMgr2.dMgr.path)
 	}
 
 	result := fMgr2.Equal(&fileMgr)
@@ -64,7 +64,7 @@ func TestFileMgr_CopyFileMgr_01(t *testing.T) {
 	srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
 	if err != nil {
-		t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt). dMgr.AbsolutePath='%v' expectedFileNameExt='%v'  Error='%v'", dMgr.AbsolutePath, adjustedPath, err.Error())
+		t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt). dMgr.absolutePath='%v' expectedFileNameExt='%v'  Error='%v'", dMgr.absolutePath, adjustedPath, err.Error())
 	}
 
 	rawDestPath := "../checkfiles/checkfiles02"
@@ -78,7 +78,7 @@ func TestFileMgr_CopyFileMgr_01(t *testing.T) {
 	destFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt)
 
 	if err != nil {
-		t.Errorf("Error returned from  FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt). destDMgr.AbsolutePath='%v'  expectedFileNameExt='%v'   Error='%v'", destDMgr.AbsolutePath, expectedFileNameExt, err.Error())
+		t.Errorf("Error returned from  FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt). destDMgr.absolutePath='%v'  expectedFileNameExt='%v'   Error='%v'", destDMgr.absolutePath, expectedFileNameExt, err.Error())
 	}
 
 	err = srcFMgr.CopyFileMgr(&destFMgr)
@@ -116,19 +116,19 @@ func TestFileMgr_CreateDirAndFile_01(t *testing.T) {
 		t.Errorf("Error thrown on FileHelper:GetPathFileNameElements():'%v'", err.Error())
 	}
 
-	if fh.DoesFileExist(fileMgr.dMgr.AbsolutePath) {
+	if fh.DoesFileExist(fileMgr.dMgr.absolutePath) {
 
-		err = fh.DeleteDirPathAll(fileMgr.dMgr.AbsolutePath)
+		err = fh.DeleteDirPathAll(fileMgr.dMgr.absolutePath)
 
 		if err != nil {
-			t.Errorf("Error thrown on fh.DeleteDirPathAll(fileMgr.dMgr.AbsolutePath). "+
-				" fileMgr.dMgr.AbsolutePath='%v'   Error='%v' ", fileMgr.dMgr.AbsolutePath, err.Error())
+			t.Errorf("Error thrown on fh.DeleteDirPathAll(fileMgr.dMgr.absolutePath). "+
+				" fileMgr.dMgr.absolutePath='%v'   Error='%v' ", fileMgr.dMgr.absolutePath, err.Error())
 		}
 
 	}
 
-	if fh.DoesFileExist(fileMgr.dMgr.AbsolutePath) {
-		t.Errorf(fmt.Sprintf("Error: Failed to delete existing path '%v'", fileMgr.dMgr.AbsolutePath))
+	if fh.DoesFileExist(fileMgr.dMgr.absolutePath) {
+		t.Errorf(fmt.Sprintf("Error: Failed to delete existing path '%v'", fileMgr.dMgr.absolutePath))
 	}
 
 	err = fileMgr.CreateDirAndFile()
@@ -177,7 +177,7 @@ func TestFileMgr_Equal_01(t *testing.T) {
 	fileMgr2 := fileMgr.CopyOut()
 
 	// fh is now NOT Equal to fileMgr
-	fileMgr2.dMgr.Path = ""
+	fileMgr2.dMgr.path = ""
 
 	if fileMgr2.Equal(&fileMgr) == true {
 		t.Error("Expected Equal to return 'false' for fh==fileMgr, instead got: ", "false")
@@ -241,7 +241,7 @@ func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
 	newFMgr, err := srcFileMgr.MoveFileToNewDirMgr(dMgr)
 
 	if err != nil {
-		t.Errorf("Error returned by srcFileMgr.MoveFileToNewDirMgr(dMgr). dMgr.Path='%v'  Error='%v'", dMgr.Path, err.Error())
+		t.Errorf("Error returned by srcFileMgr.MoveFileToNewDirMgr(dMgr). dMgr.path='%v'  Error='%v'", dMgr.path, err.Error())
 	}
 
 	if !fh.DoesFileExist(newFMgr.absolutePathFileName) {
@@ -418,9 +418,9 @@ func TestFileMgr_New_02(t *testing.T) {
 			fileMgr.fileExt)
 	}
 
-	if !fileMgr.dMgr.PathIsPopulated {
-		t.Errorf("Expected 'fileMgr.PathIsPopulated==true', instead got: fileMgr.PathIsPopulated==%v",
-			fileMgr.dMgr.PathIsPopulated)
+	if !fileMgr.dMgr.isPathPopulated {
+		t.Errorf("Expected 'fileMgr.isPathPopulated==true', instead got: fileMgr.isPathPopulated==%v",
+			fileMgr.dMgr.isPathPopulated)
 	}
 
 	if !fileMgr.doesAbsolutePathFileNameExist {
@@ -432,8 +432,8 @@ func TestFileMgr_New_02(t *testing.T) {
 		t.Error("Expected fileMgr.isAbsolutePathFileNamePopulated == 'true'.  Instead, it is 'false'")
 	}
 
-	if !fileMgr.dMgr.AbsolutePathDoesExist {
-		t.Error("Expected fileMgr.AbsolutePathDoesExist == 'true'.  Instead, it is 'false'")
+	if !fileMgr.dMgr.doesAbsolutePathExist {
+		t.Error("Expected fileMgr.doesAbsolutePathExist == 'true'.  Instead, it is 'false'")
 	}
 
 }
@@ -452,8 +452,8 @@ func TestFileMgr_New_03(t *testing.T) {
 		t.Error("Expected fileMgr.fileName=='dirmgr_test', instead got:", fileMgr.fileName)
 	}
 
-	if fileMgr.dMgr.PathIsPopulated {
-		t.Error("Expected fileMgr.PathIsPopulated==false, instead got:", fileMgr.dMgr.PathIsPopulated)
+	if fileMgr.dMgr.isPathPopulated {
+		t.Error("Expected fileMgr.isPathPopulated==false, instead got:", fileMgr.dMgr.isPathPopulated)
 	}
 
 	if fileMgr.isFileExtPopulated {
@@ -464,8 +464,8 @@ func TestFileMgr_New_03(t *testing.T) {
 		t.Error("Expected fileMgr.isAbsolutePathFileNamePopulated==true, instead got:", fileMgr.isAbsolutePathFileNamePopulated)
 	}
 
-	if fileMgr.dMgr.AbsolutePathIsPopulated {
-		t.Error("Expected fileMgr.AbsolutePathIsPopulated==false, instead got:", fileMgr.dMgr.AbsolutePathIsPopulated)
+	if fileMgr.dMgr.isAbsolutePathPopulated {
+		t.Error("Expected fileMgr.isAbsolutePathPopulated==false, instead got:", fileMgr.dMgr.isAbsolutePathPopulated)
 	}
 }
 
@@ -497,15 +497,15 @@ func TestFileMgr_New_04(t *testing.T) {
 			fileMgr.fileExt)
 	}
 
-	if !fileMgr.dMgr.PathIsPopulated {
-		t.Errorf("Expected 'fileMgr.dMgr.PathIsPopulated==true', instead got: "+
-			"fileMgr.PathIsPopulated==%v",
-			fileMgr.dMgr.PathIsPopulated)
+	if !fileMgr.dMgr.isPathPopulated {
+		t.Errorf("Expected 'fileMgr.dMgr.isPathPopulated==true', instead got: "+
+			"fileMgr.isPathPopulated==%v",
+			fileMgr.dMgr.isPathPopulated)
 	}
 
 	if !fileMgr.doesAbsolutePathFileNameExist {
 		t.Errorf("Expected 'fileMgr.doesAbsolutePathFileNameExist==true', instead got: "+
-			"fileMgr.doesAbsolutePathFileNameExist== %v", fileMgr.dMgr.PathIsPopulated)
+			"fileMgr.doesAbsolutePathFileNameExist== %v", fileMgr.dMgr.isPathPopulated)
 	}
 
 	if !fileMgr.isAbsolutePathFileNamePopulated {
@@ -513,9 +513,9 @@ func TestFileMgr_New_04(t *testing.T) {
 			"fileMgr.isAbsolutePathFileNamePopulated == '%v' ", fileMgr.isAbsolutePathFileNamePopulated)
 	}
 
-	if !fileMgr.dMgr.AbsolutePathDoesExist {
-		t.Errorf("Expected fileMgr.AbsolutePathDoesExist == 'true'.  Instead, it is '%v'",
-			fileMgr.dMgr.AbsolutePathDoesExist)
+	if !fileMgr.dMgr.doesAbsolutePathExist {
+		t.Errorf("Expected fileMgr.doesAbsolutePathExist == 'true'.  Instead, it is '%v'",
+			fileMgr.dMgr.doesAbsolutePathExist)
 	}
 
 }
@@ -560,8 +560,8 @@ func TestFileMgr_NewFromFileInfo_01(t *testing.T) {
 		t.Errorf("Expected fileMgr.fileExt== '%v', instead got: fileMgr.fileExt=='%v'", expectedExt, fileMgr.fileName)
 	}
 
-	if !fileMgr.dMgr.PathIsPopulated {
-		t.Errorf("Expected 'fileMgr.PathIsPopulated==true', instead got: fileMgr.PathIsPopulated=='%v'", fileMgr.dMgr.PathIsPopulated)
+	if !fileMgr.dMgr.isPathPopulated {
+		t.Errorf("Expected 'fileMgr.isPathPopulated==true', instead got: fileMgr.isPathPopulated=='%v'", fileMgr.dMgr.isPathPopulated)
 	}
 
 	if !fileMgr.doesAbsolutePathFileNameExist {
@@ -572,8 +572,8 @@ func TestFileMgr_NewFromFileInfo_01(t *testing.T) {
 		t.Error("Expected fileMgr.isAbsolutePathFileNamePopulated == 'true'.  Instead, it is 'false'")
 	}
 
-	if !fileMgr.dMgr.AbsolutePathDoesExist {
-		t.Error("Expected fileMgr.AbsolutePathDoesExist == 'true'.  Instead, it is 'false'")
+	if !fileMgr.dMgr.doesAbsolutePathExist {
+		t.Error("Expected fileMgr.doesAbsolutePathExist == 'true'.  Instead, it is 'false'")
 	}
 
 	if !fileMgr.actualFileInfo.IsFInfoInitialized {
@@ -635,8 +635,8 @@ func TestFileMgr_NewFromDirMgrFileNameExt_02(t *testing.T) {
 		t.Errorf("Error returned from DirMgr{}.New(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
 	}
 
-	if absolutePath != dMgr.AbsolutePath {
-		t.Errorf("Expected dMgr.AbsolutePath='%v'.  Instead, dMgr.AbsolutePath='%v'", absolutePath, dMgr.AbsolutePath)
+	if absolutePath != dMgr.absolutePath {
+		t.Errorf("Expected dMgr.absolutePath='%v'.  Instead, dMgr.absolutePath='%v'", absolutePath, dMgr.absolutePath)
 	}
 
 	fMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, rawFileNameExt)
@@ -688,20 +688,20 @@ func TestFileMgr_NewFromDirStrFileNameStr_01(t *testing.T) {
 		t.Errorf("Expected fileMgr.fileExt== '%v', instead got: fileMgr.fileExt=='%v'", expectedExt, fileMgr.fileName)
 	}
 
-	if !fileMgr.dMgr.PathIsPopulated {
-		t.Errorf("Expected 'fileMgr.PathIsPopulated==true', instead got: fileMgr.PathIsPopulated=='%v'", fileMgr.dMgr.PathIsPopulated)
+	if !fileMgr.dMgr.isPathPopulated {
+		t.Errorf("Expected 'fileMgr.isPathPopulated==true', instead got: fileMgr.isPathPopulated=='%v'", fileMgr.dMgr.isPathPopulated)
 	}
 
 	if !fileMgr.doesAbsolutePathFileNameExist {
-		t.Errorf("Expected 'fileMgr.doesAbsolutePathFileNameExist==true', instead got: fileMgr.doesAbsolutePathFileNameExist=='%v'", fileMgr.dMgr.PathIsPopulated)
+		t.Errorf("Expected 'fileMgr.doesAbsolutePathFileNameExist==true', instead got: fileMgr.doesAbsolutePathFileNameExist=='%v'", fileMgr.dMgr.isPathPopulated)
 	}
 
 	if !fileMgr.isAbsolutePathFileNamePopulated {
 		t.Error("Expected fileMgr.isAbsolutePathFileNamePopulated == 'true'.  Instead, it is 'false'")
 	}
 
-	if !fileMgr.dMgr.AbsolutePathDoesExist {
-		t.Error("Expected fileMgr.AbsolutePathDoesExist == 'true'.  Instead, it is 'false'")
+	if !fileMgr.dMgr.doesAbsolutePathExist {
+		t.Error("Expected fileMgr.doesAbsolutePathExist == 'true'.  Instead, it is 'false'")
 	}
 
 	if !fileMgr.actualFileInfo.IsFInfoInitialized {
@@ -712,12 +712,12 @@ func TestFileMgr_NewFromDirStrFileNameStr_01(t *testing.T) {
 		t.Errorf("Expected fileMgr.actualFileInfo.Name()=='%v'.  Instead, fileMgr.actualFileInfo.Name()=='%v'.", expectedFileNameExt, fileMgr.actualFileInfo.Name())
 	}
 
-	if expectedAbsPath != fileMgr.dMgr.AbsolutePath {
-		t.Errorf("Expected AbsolutePath='%v'.  Instead, AbsolutePath='%v' ", expectedAbsPath, fileMgr.dMgr.AbsolutePath)
+	if expectedAbsPath != fileMgr.dMgr.absolutePath {
+		t.Errorf("Expected absolutePath='%v'.  Instead, absolutePath='%v' ", expectedAbsPath, fileMgr.dMgr.absolutePath)
 	}
 
-	if expectedPath != fileMgr.dMgr.Path {
-		t.Errorf("Expected Path='%v'.  Instead, Path='%v' ", expectedPath, fileMgr.dMgr.Path)
+	if expectedPath != fileMgr.dMgr.path {
+		t.Errorf("Expected path='%v'.  Instead, path='%v' ", expectedPath, fileMgr.dMgr.path)
 	}
 
 }

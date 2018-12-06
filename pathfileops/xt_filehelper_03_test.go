@@ -17,7 +17,7 @@ func TestFileHelper_IsAbsolutePath(t *testing.T) {
 	result := fh.IsAbsolutePath(commonDir)
 
 	if result == true {
-		t.Error("IsAbsolutePath result is INVALID. Relative path classified as Absolute Path!")
+		t.Error("IsAbsolutePath result is INVALID. Relative path classified as Absolute path!")
 	}
 
 }

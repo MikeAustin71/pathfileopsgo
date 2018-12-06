@@ -180,7 +180,7 @@ func (fip *FileInfoPlus) Equal(fip2 *FileInfoPlus) bool {
 // NewFromFileInfo - Creates and returns a new FileInfoPlus object
 // populated with FileInfo data received from the input parameter.
 // Notice that this version of the 'New' method does NOT set the
-// Directory Path. This method is NOT part of the FileInfo interface.
+// Directory path. This method is NOT part of the FileInfo interface.
 //
 // Example Usage:
 //	fip := FileInfoPlus{}.NewFromFileInfo(info)
@@ -378,7 +378,7 @@ func (dirTree *DirectoryTreeInfo) CopyToDirectoryTree(baseDir, newBaseDir DirMgr
 
 	newDirTree := DirectoryTreeInfo{}
 
-	if !baseDir.IsInitialized {
+	if !baseDir.isInitialized {
 		return newDirTree, errors.New(ePrefix + "Error: Input parameter 'baseDir' is NOT initialized. It is EMPTY!")
 	}
 
@@ -388,7 +388,7 @@ func (dirTree *DirectoryTreeInfo) CopyToDirectoryTree(baseDir, newBaseDir DirMgr
 		return newDirTree, fmt.Errorf(ePrefix+"Error: Input Parameter 'baseDir' is INVALID! Error='%v'", err2.Error())
 	}
 
-	if !newBaseDir.IsInitialized {
+	if !newBaseDir.isInitialized {
 		return newDirTree, errors.New(ePrefix + "Error: Input parameter 'newBaseDir' is NOT initialized. It is EMPTY!")
 
 	}
@@ -402,7 +402,7 @@ func (dirTree *DirectoryTreeInfo) CopyToDirectoryTree(baseDir, newBaseDir DirMgr
 	err2 = newBaseDir.MakeDir()
 
 	if err2 != nil {
-		return newDirTree, fmt.Errorf(ePrefix+"Error returned from  newBaseDir.MakeDir(). newBaseDir.AbsolutePath='%v'  Error='%v'", newBaseDir.AbsolutePath, err2.Error())
+		return newDirTree, fmt.Errorf(ePrefix+"Error returned from  newBaseDir.MakeDir(). newBaseDir.absolutePath='%v'  Error='%v'", newBaseDir.absolutePath, err2.Error())
 	}
 
 	lAry := len(dirTree.Directories.DirMgrs)
@@ -662,8 +662,8 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 	if err2 != nil {
 
 		if !os.IsNotExist(err2) {
-			// Must be PathError - Path does not exist
-			err = fmt.Errorf(ePrefix+"Destination File Path Error - Path does NOT exist. Destination File='%v' Error: %v", dst, err2.Error())
+			// Must be PathError - path does not exist
+			err = fmt.Errorf(ePrefix+"Destination File path Error - path does NOT exist. Destination File='%v' Error: %v", dst, err2.Error())
 			return
 		}
 
@@ -746,8 +746,8 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
 	if err2 != nil {
 
 		if !os.IsNotExist(err2) {
-			// Must be PathError - Path does not exist
-			err = fmt.Errorf(ePrefix+"Destination File Path Error - Path does NOT exist. Destination File='%v' Error: %v", dst, err.Error())
+			// Must be PathError - path does not exist
+			err = fmt.Errorf(ePrefix+"Destination File path Error - path does NOT exist. Destination File='%v' Error: %v", dst, err.Error())
 			return
 		}
 
@@ -871,7 +871,7 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (dirName string, isEmpty boo
 			return
 
 		} else {
-			// The Path exists but it is
+			// The path exists but it is
 			// a File Name and NOT a directory name.
 			adjustedDirName = strings.TrimSuffix(adjustedDirName, fInfo.Name())
 			lAdjustedDirName = len(adjustedDirName)
@@ -1028,7 +1028,7 @@ func (fh FileHelper) CleanFileNameExtStr(fileNameExtStr string) (fileNameExt str
 			err = fmt.Errorf(ePrefix+"Error: adjustedFileNameExt exists as a 'Directory' - NOT A FILE NAME! adjustedFileNameExt='%v'", adjustedFileNameExt)
 			return
 		} else {
-			// The Path exists and it is a valid
+			// The path exists and it is a valid
 			// file name.
 			fileNameExt = fInfo.Name()
 			isEmpty = false
@@ -1702,7 +1702,7 @@ func (fh FileHelper) GetAbsPathFromFilePath(filePath string) (string, error) {
 	testFilePath := fh.AdjustPathSlash(filePath)
 
 	if len(testFilePath) == 0 {
-		return "", errors.New(ePrefix + "Error: After adjusting Path Separators, filePath resolves to an empty string!")
+		return "", errors.New(ePrefix + "Error: After adjusting path Separators, filePath resolves to an empty string!")
 	}
 
 	absPath, err := fh.MakeAbsolutePath(testFilePath)
@@ -1785,7 +1785,7 @@ func (fh FileHelper) GetExecutablePathFileName() (string, error) {
 //
 // pathFileNameExt string		- This input parameter is expected to contain a properly formatted directory
 //														path and File Name.  The File Name may or may not include a File Extension.
-//														The directory path must include the correct delimiters such as Path Separators
+//														The directory path must include the correct delimiters such as path Separators
 //														('/' or'\'), dots ('.') and in the case of Windows, a volume designation
 // 														(Example: 'F:').
 //
@@ -1932,7 +1932,7 @@ func (fh FileHelper) GetFileNameWithExt(pathFileNameExt string) (fNameExt string
 	}
 
 	// Must be lSlashIdxs == 0 && lDotIdxs ==  0
-	// There are no Path Separators and there are
+	// There are no path Separators and there are
 	// no dot separators ('.').
 
 	fNameExt = testPathFileNameExt[firstCharIdx:]
@@ -1978,7 +1978,7 @@ func (fh FileHelper) GetFileNameWithoutExt(pathFileNameExt string) (fName string
 	testPathFileNameExt := fh.AdjustPathSlash(pathFileNameExt)
 
 	if len(testPathFileNameExt) == 0 {
-		err = errors.New(ePrefix + "Error: Adjusted Path version of 'pathFileNameExt', 'testPathFileNameExt' is a ZERO Length string!")
+		err = errors.New(ePrefix + "Error: Adjusted path version of 'pathFileNameExt', 'testPathFileNameExt' is a ZERO Length string!")
 		return
 	}
 
@@ -2186,7 +2186,7 @@ func (fh FileHelper) GetFileLastModificationDate(pathFileName string, customTime
 // GetFirstLastNonSeparatorCharIndexInPathStr - Basically this method returns
 // the first index of the first alpha numeric character in a path string.
 //
-// Specifically, the character must not be a Path Separator ('\', '/') and
+// Specifically, the character must not be a path Separator ('\', '/') and
 // it must not be a dot ('.').
 //
 // If the first Non-Separator char is found, this method will return
@@ -2214,7 +2214,7 @@ func (fh FileHelper) GetFirstLastNonSeparatorCharIndexInPathStr(pathStr string) 
 	lPathStr = len(pathStr)
 
 	if lPathStr == 0 {
-		err = fmt.Errorf(ePrefix + "Error: After Path Separator adjustment, 'pathStr' is a Zero length string!")
+		err = fmt.Errorf(ePrefix + "Error: After path Separator adjustment, 'pathStr' is a Zero length string!")
 		return
 	}
 
@@ -2413,7 +2413,7 @@ func (fh FileHelper) GetPathAndFileNameExt(pathFileNameExt string) (pathDir, fil
 //
 // pathFileNameExt string		- This is an input parameter. The method expects to
 // 														receive a single, properly formatted path and file
-//														name string delimited by dots ('.') and Path Separators
+//														name string delimited by dots ('.') and path Separators
 //														('/' or '\'). On Windows the 'pathFileNameExt' string
 //														valid volume designations (Example: "D:")
 // Return Values:
@@ -2526,7 +2526,7 @@ func (fh FileHelper) GetPathFromPathFileName(pathFileNameExt string) (dirPath st
 		}
 
 		if absPath == "" {
-			err = fmt.Errorf(ePrefix+"Error: Could not convert 'testPathStr' to Absolute Path! tesPathStr='%v'", testPathStr)
+			err = fmt.Errorf(ePrefix+"Error: Could not convert 'testPathStr' to Absolute path! tesPathStr='%v'", testPathStr)
 			return
 		}
 
@@ -2540,7 +2540,7 @@ func (fh FileHelper) GetPathFromPathFileName(pathFileNameExt string) (dirPath st
 		return
 
 	} else if lDotIdxs == 0 {
-		//Path separators are present but there are no dots in the string
+		//path separators are present but there are no dots in the string
 
 		if slashIdxs[lSlashIdxs-1] == lTestPathStr-1 {
 			// Trailing path separator
@@ -2563,7 +2563,7 @@ func (fh FileHelper) GetPathFromPathFileName(pathFileNameExt string) (dirPath st
 	}
 
 	if len(finalPathStr) == 0 {
-		err = fmt.Errorf(ePrefix + "Error: Processed Path is a Zero Length String!")
+		err = fmt.Errorf(ePrefix + "Error: Processed path is a Zero Length String!")
 		return
 	}
 
@@ -2584,7 +2584,7 @@ func (fh FileHelper) GetPathFromPathFileName(pathFileNameExt string) (dirPath st
 }
 
 // GetPathSeparatorIndexesInPathStr - Returns an array containing the indexes of
-// Path Separators (Forward slashes or backward slashes depending on operating
+// path Separators (Forward slashes or backward slashes depending on operating
 // system).
 func (fh FileHelper) GetPathSeparatorIndexesInPathStr(pathStr string) ([]int, error) {
 
@@ -2621,7 +2621,7 @@ func (fh FileHelper) GetVolumeName(pathStr string) string {
 }
 
 // GetVolumeSeparatorIdxInPathStr - Returns the index of the
-// Windows volume separator from an Path string.
+// Windows volume separator from an path string.
 func (fh FileHelper) GetVolumeSeparatorIdxInPathStr(pathStr string) (volIdx int, err error) {
 
 	ePrefix := "FileHelper.GetVolumeSeparatorIdxInPathStr()"
@@ -2753,7 +2753,7 @@ func (fh FileHelper) IsPathString(pathStr string) (isPathStr bool, cannotDetermi
 	// Ok - We know the testPathStr does NOT exist on disk
 
 	if strings.Contains(testPathStr, "...") {
-		// This is an INVALID Path String
+		// This is an INVALID path String
 		isPathStr = false
 		cannotDetermine = false
 		err = fmt.Errorf("Error: INVALID PATH String! testPathStr='%v' ", testPathStr)
@@ -2854,7 +2854,7 @@ func (fh FileHelper) IsPathString(pathStr string) (isPathStr bool, cannotDetermi
 
 	if lenDotIdx == 0 && lenSlashIdx == 0 {
 		// Just text name with no path separators
-		// and no dots. This is not a Path
+		// and no dots. This is not a path
 		isPathStr = false
 		cannotDetermine = false // High confidence in result
 		err = nil
@@ -3188,7 +3188,7 @@ func (fh FileHelper) JoinPaths(p1 string, p2 string) string {
 }
 
 // MakeAbsolutePath - Supply a relative path or any path
-// string and resolve that path to an Absolute Path.
+// string and resolve that path to an Absolute path.
 // Note: Clean() is called on result by fp.Abs().
 func (fh FileHelper) MakeAbsolutePath(relPath string) (string, error) {
 
@@ -3202,7 +3202,7 @@ func (fh FileHelper) MakeAbsolutePath(relPath string) (string, error) {
 
 	if len(testRelPath) == 0 {
 		return "", errors.New(ePrefix +
-			"Error: Input Parameter 'relPath' adjusted for Path Separators is an EMPTY string!")
+			"Error: Input Parameter 'relPath' adjusted for path Separators is an EMPTY string!")
 	}
 
 	p, err := fp.Abs(testRelPath)
@@ -3320,8 +3320,8 @@ func (fh FileHelper) OpenFileForReading(fileName string) (*os.File, error) {
 	return os.Open(fileName)
 }
 
-// RemovePathSeparatorFromEndOfPathString - Remove Trailing Path Separator from
-// a path string - if said trailing Path Separator exists.
+// RemovePathSeparatorFromEndOfPathString - Remove Trailing path Separator from
+// a path string - if said trailing path Separator exists.
 func (fh FileHelper) RemovePathSeparatorFromEndOfPathString(pathStr string) string {
 	lPathStr := len(pathStr)
 
@@ -3631,15 +3631,15 @@ func (fh *FileHelper) makeFileHelperWalkDirDeleteFilesFunc(dInfo *DirectoryDelet
 
 				dInfo.ErrReturns = append(dInfo.ErrReturns, ex.Error())
 
-				if subDir.IsInitialized {
-					subDir.ActualDirFileInfo = FileInfoPlus{}.NewPathFileInfo(pathFile, info)
+				if subDir.isInitialized {
+					subDir.actualDirFileInfo = FileInfoPlus{}.NewPathFileInfo(pathFile, info)
 					dInfo.Directories.AddDirMgr(subDir)
 				}
 
 				return nil
 			}
 
-			subDir.ActualDirFileInfo = FileInfoPlus{}.NewPathFileInfo(pathFile, info)
+			subDir.actualDirFileInfo = FileInfoPlus{}.NewPathFileInfo(pathFile, info)
 			dInfo.Directories.AddDirMgr(subDir)
 
 			return nil
@@ -3706,7 +3706,7 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
 			subDir, err := DirMgr{}.NewFromFileInfo(pathFile, info)
 			if err != nil {
 
-				if subDir.IsInitialized {
+				if subDir.isInitialized {
 					dInfo.Directories.AddDirMgr(subDir)
 				}
 
