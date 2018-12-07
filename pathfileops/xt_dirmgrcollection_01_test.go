@@ -874,7 +874,7 @@ func TestDirMgrCollection_FindDirectories_01(t *testing.T) {
 	origDirMgr, err := DirMgr{}.New(origPath)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(origPath). origPath='%v'  Error='%v'", origPath, err.Error())
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origPath). origPath='%v'  Error='%v'", origPath, err.Error())
 	}
 
 	if origDirMgr.absolutePath != origAbsPath {

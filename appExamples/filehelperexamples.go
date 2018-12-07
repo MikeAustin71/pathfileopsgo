@@ -13,7 +13,7 @@ func ExampleExtractPathElements() {
 	fh := pathFileOps.FileHelper{}
 	commonDir := fh.AdjustPathSlash("..\\..\\003_filehelper\\common\\xt_dirmgr_01_test.go")
 
-	fileMgr, err := pathFileOps.FileMgr{}.New(commonDir)
+	fileMgr, err := pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(commonDir)
 
 	if err != nil {
 		panic(errors.New("ExampleExtractPathElements()- Error returned on fh.GetPathFileNameElements(), Error:" + err.Error()))
@@ -32,7 +32,7 @@ func PathElementsAnalysis(pathFile string) {
 	fh := pathFileOps.FileHelper{}
 	commonDir := fh.AdjustPathSlash(pathFile)
 
-	fMgr, err := pathFileOps.FileMgr{}.New(commonDir)
+	fMgr, err := pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(commonDir)
 
 	if err != nil {
 		panic(errors.New("PathElementsAnalysis()- Error returned on fh.GetPathFileNameElements(), Error:" +
@@ -107,13 +107,13 @@ func PrintFileInfoPlusFields(info pathFileOps.FileInfoPlus) {
 
 func CreateFileOnTopOfExistingFile() {
 	tstFile := "..//logTest//testoverwrite//TestOverwrite001.txt"
-	fMgr, err := pathFileOps.FileMgr{}.New(tstFile)
+	fMgr, err := pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(tstFile)
 	ePrefix := "CreateFileOnTopOfExistingFile() "
 
 	if err != nil {
 		_ = fMgr.CloseFile()
 		panic(fmt.Errorf(ePrefix+
-			"- Error: FileMgr{}.New(tstFile) Failed. tstFile='%v' Error='%v'",
+			"- Error: FileMgr{}.NewFromPathFileNameExtStr(tstFile) Failed. tstFile='%v' Error='%v'",
 			tstFile, err.Error()))
 	}
 

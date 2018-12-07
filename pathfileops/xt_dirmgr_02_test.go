@@ -38,7 +38,7 @@ func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
 	dMgr, err := DirMgr{}.New(dir)
 
 	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.New(dir). dir='%v' Error='%v'",
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(dir). dir='%v' Error='%v'",
 			dir, err.Error())
 	}
 
@@ -130,7 +130,7 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
 	dMgr, err := DirMgr{}.New(dir)
 
 	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.New(dir). dir='%v' Error='%v'",
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(dir). dir='%v' Error='%v'",
 			dir, err.Error())
 	}
 
@@ -234,7 +234,7 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 	dMgr, err := DirMgr{}.New(dir)
 
 	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.New(dir). "+
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(dir). "+
 			"dir='%v' Error='%v'", dir, err.Error())
 	}
 
@@ -346,7 +346,7 @@ func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 	dMgr, err := DirMgr{}.New(dir)
 
 	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.New(dir). dir='%v' Error='%v'",
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(dir). dir='%v' Error='%v'",
 			dir, err.Error())
 	}
 
@@ -446,7 +446,7 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(origDir). origDir='%v' "+
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' "+
 			"Error='%v'", origDir, err.Error())
 	}
 
@@ -596,7 +596,7 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(origDir). origDir='%v' Error='%v'",
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'",
 			origDir, err.Error())
 	}
 
@@ -733,7 +733,7 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(origDir). origDir='%v' Error='%v'",
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'",
 			origDir, err.Error())
 	}
 
@@ -855,7 +855,7 @@ func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(origDir). origDir='%v' Error='%v'",
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'",
 			origDir, err.Error())
 	}
 
@@ -949,7 +949,7 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(origDir). origDir='%v' Error='%v'",
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'",
 			origDir, err.Error())
 	}
 
@@ -1051,7 +1051,7 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(origDir). origDir='%v' "+
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' "+
 			"Error='%v'", origDir, err.Error())
 	}
 
@@ -1113,7 +1113,7 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(origDir). origDir='%v' Error='%v'",
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'",
 			origDir, err.Error())
 	}
 
@@ -1218,7 +1218,7 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(origDir). origDir='%v' "+
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' "+
 			"Error='%v'", origDir, err.Error())
 	}
 
@@ -1348,7 +1348,7 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(origDir). origDir='%v' "+
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' "+
 			"Error='%v'", origDir, err.Error())
 	}
 
@@ -1475,7 +1475,7 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(origDir). origDir='%v' "+
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' "+
 			"Error='%v'", origDir, err.Error())
 	}
 
@@ -1827,7 +1827,7 @@ func DirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 				"Error:'%v'", srcFile, destFile, err)
 	}
 
-	// Copy New Files
+	// Copy NewFromPathFileNameExtStr Files
 	newFile1 := "newerFileForTest_01.txt"
 	newFile2 := "newerFileForTest_02.txt"
 	newFile3 := "newerFileForTest_03.txt"
@@ -1842,7 +1842,7 @@ func DirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 
 	if !fh.DoesFileExist(dirNewFilesForTest) {
 		return "", fmt.Errorf(ePrefix+
-			"FATAL ERROR: New Files Directory does NOT exist! dirNewFilesForTest='%v'",
+			"FATAL ERROR: NewFromPathFileNameExtStr Files Directory does NOT exist! dirNewFilesForTest='%v'",
 			dirNewFilesForTest)
 	}
 
@@ -1903,7 +1903,7 @@ func DirMgr02SetupDirWalkTests() error {
 	destDirMgr3, err := DirMgr{}.New(dest3)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error from DirMgr{}.New(dest3) "+
+		return fmt.Errorf(ePrefix+"Error from DirMgr{}.NewFromPathFileNameExtStr(dest3) "+
 			"dest3='%v' Error='%v' ", dest3, err.Error())
 	}
 
@@ -1918,7 +1918,7 @@ func DirMgr02SetupDirWalkTests() error {
 	destDirMgr1, err := DirMgr{}.New(dest1)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error from DirMgr{}.New(dest1) "+
+		return fmt.Errorf(ePrefix+"Error from DirMgr{}.NewFromPathFileNameExtStr(dest1) "+
 			"dest1='%v' Error='%v' ", dest1, err.Error())
 	}
 
@@ -1933,7 +1933,7 @@ func DirMgr02SetupDirWalkTests() error {
 	destDirMgr0, err := DirMgr{}.New(dest0)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error from DirMgr{}.New(dest1) "+
+		return fmt.Errorf(ePrefix+"Error from DirMgr{}.NewFromPathFileNameExtStr(dest1) "+
 			"dest1='%v' Error='%v' ", dest0, err.Error())
 	}
 
@@ -1989,7 +1989,7 @@ func DirMgr02SetupDirWalkTests() error {
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+
-			"Error returned by DirMgr{}.New(dirNewFilesForTest). "+
+			"Error returned by DirMgr{}.NewFromPathFileNameExtStr(dirNewFilesForTest). "+
 			"dirNewFilesForTest='%v' Error='%v' ", dirNewFilesForTest, err.Error())
 	}
 
@@ -2003,7 +2003,7 @@ func DirMgr02SetupDirWalkTests() error {
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+
-			"Error returned by DirMgr{}.New(dirOldFilesForTest). "+
+			"Error returned by DirMgr{}.NewFromPathFileNameExtStr(dirOldFilesForTest). "+
 			"dirOldFilesForTest='%v' Error='%v' ", dirOldFilesForTest, err.Error())
 	}
 

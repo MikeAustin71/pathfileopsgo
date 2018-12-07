@@ -11,10 +11,10 @@ func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
 
 	filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
 
-	fMgr, err := FileMgr{}.New(filePath)
+	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
 	if err != nil {
-		t.Errorf("Error returned from common.FileMgr{}.New(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
 	}
 
 	err = fMgr.OpenThisFileReadOnly()
@@ -48,10 +48,10 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
 
 	filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
 
-	fMgr, err := FileMgr{}.New(filePath)
+	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
 	if err != nil {
-		t.Errorf("Error returned from common.FileMgr{}.New(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
 	}
 
 	err = fMgr.OpenThisFileReadWrite()
@@ -95,10 +95,10 @@ func TestFileMgr_ReadFileBytes_01(t *testing.T) {
 
 	filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
 
-	fMgr, err := FileMgr{}.New(filePath)
+	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
 	if err != nil {
-		t.Errorf("Error returned from common.FileMgr{}.New(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
 	}
 
 	byteBuff := make([]byte, 2048, 2048)
@@ -159,10 +159,10 @@ func TestFileMgr_SetFileInfo(t *testing.T) {
 		t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
 	}
 
-	fmgr, err := FileMgr{}.New(absPathFileNameExt)
+	fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt)
 
 	if err != nil {
-		t.Errorf("Error returned from FileMgr{}.New(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+		t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
 	}
 
 	err = fmgr.SetFileInfo(info)
@@ -187,10 +187,10 @@ func TestFileMgr_WriteStrToFile_01(t *testing.T) {
 
 	filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testWrite2998.txt")
 
-	fMgr, err := FileMgr{}.New(filePath)
+	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
 	if err != nil {
-		t.Errorf("Error returned from common.FileMgr{}.New(filePath). filePathName='%v'  Error='%v'", filePath, err.Error())
+		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePathName='%v'  Error='%v'", filePath, err.Error())
 	}
 
 	expectedStr := "Test Write File. Do NOT alter the contents of this file."

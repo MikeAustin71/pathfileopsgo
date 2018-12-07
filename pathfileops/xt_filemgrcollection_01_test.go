@@ -345,27 +345,27 @@ func FileMgrCollectionTestSetup01() FileMgrCollection {
 	FMgrs := FileMgrCollection{}
 
 	fPath, _ := fh.MakeAbsolutePath(fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt"))
-	fmgr, _ := FileMgr{}.New(fPath)
+	fmgr, _ := FileMgr{}.NewFromPathFileNameExtStr(fPath)
 	FMgrs.AddFileMgr(fmgr)
 
 	fPath, _ = fh.MakeAbsolutePath(fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_02.txt"))
-	fmgr, _ = FileMgr{}.New(fPath)
+	fmgr, _ = FileMgr{}.NewFromPathFileNameExtStr(fPath)
 	FMgrs.AddFileMgr(fmgr)
 
 	fPath, _ = fh.MakeAbsolutePath(fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_03.txt"))
-	fmgr, _ = FileMgr{}.New(fPath)
+	fmgr, _ = FileMgr{}.NewFromPathFileNameExtStr(fPath)
 	FMgrs.AddFileMgr(fmgr)
 
 	fPath, _ = fh.MakeAbsolutePath(fh.AdjustPathSlash("../filesfortest/oldfilesfortest/006870_ReadingFiles.htm"))
-	fmgr, _ = FileMgr{}.New(fPath)
+	fmgr, _ = FileMgr{}.NewFromPathFileNameExtStr(fPath)
 	FMgrs.AddFileMgr(fmgr)
 
 	fPath, _ = fh.MakeAbsolutePath("../filesfortest/oldfilesfortest/006890_WritingFiles.htm")
-	fmgr, _ = FileMgr{}.New(fPath)
+	fmgr, _ = FileMgr{}.NewFromPathFileNameExtStr(fPath)
 	FMgrs.AddFileMgr(fmgr)
 
 	fPath, _ = fh.MakeAbsolutePath("../filesfortest/oldfilesfortest/test.htm")
-	fmgr, _ = FileMgr{}.New(fPath)
+	fmgr, _ = FileMgr{}.NewFromPathFileNameExtStr(fPath)
 	FMgrs.AddFileMgr(fmgr)
 
 	return FMgrs
@@ -384,10 +384,10 @@ func FileMgrCollectionTestSetupFmgr01(fileNameExt string) (FileMgr, error) {
 		return FileMgr{}, fmt.Errorf(ePrefix+"Error return by fh.MakeAbsolutePath(adjustedPathFileName). adjustedPathFileName='%v'  Error='%v'", adjustedPathFileName, err.Error())
 	}
 
-	fmgr, err := FileMgr{}.New(fPath)
+	fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(fPath)
 
 	if err != nil {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error return by FileMgr{}.New(fPath). fPath='%v'  Error='%v'", fPath, err.Error())
+		return FileMgr{}, fmt.Errorf(ePrefix+"Error return by FileMgr{}.NewFromPathFileNameExtStr(fPath). fPath='%v'  Error='%v'", fPath, err.Error())
 	}
 
 	return fmgr, nil
@@ -406,7 +406,7 @@ func TestDirectoryTreeInfo_CopyToDirectoryTree_01(t *testing.T) {
 	dMgr, err := DirMgr{}.New(dir)
 
 	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.New(dir). dir='%v' Error='%v'\n", dir, err.Error())
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(dir). dir='%v' Error='%v'\n", dir, err.Error())
 	}
 
 	if !dMgr.doesAbsolutePathExist {
@@ -432,7 +432,7 @@ func TestDirectoryTreeInfo_CopyToDirectoryTree_01(t *testing.T) {
 	baseDMgr, err := DirMgr{}.New(baseDir)
 
 	if err != nil {
-		t.Errorf("Error returned by common.DirMgr{}.New(baseDir) baseDir='%v' Error='%v'", baseDir, err.Error())
+		t.Errorf("Error returned by common.DirMgr{}.NewFromPathFileNameExtStr(baseDir) baseDir='%v' Error='%v'", baseDir, err.Error())
 	}
 
 	substituteDir := fh.AdjustPathSlash("../testdestdir/destdir")
@@ -440,7 +440,7 @@ func TestDirectoryTreeInfo_CopyToDirectoryTree_01(t *testing.T) {
 	substituteDMgr, err := DirMgr{}.New(substituteDir)
 
 	if err != nil {
-		t.Errorf("Error returned by common.DirMgr{}.New(substituteDir). substituteDir='%v'  Error='%v'", substituteDir, err.Error())
+		t.Errorf("Error returned by common.DirMgr{}.NewFromPathFileNameExtStr(substituteDir). substituteDir='%v'  Error='%v'", substituteDir, err.Error())
 	}
 
 	newDirTree, err := dirTreeInfo.CopyToDirectoryTree(baseDMgr, substituteDMgr)
@@ -452,11 +452,11 @@ func TestDirectoryTreeInfo_CopyToDirectoryTree_01(t *testing.T) {
 
 	if len(dirTreeInfo.Directories.DirMgrs) != len(newDirTree.Directories.DirMgrs) {
 
-		t.Errorf("Error: Expected Number of Directories = '%v'.  Instead, Number of New Directories = '%v'", len(dirTreeInfo.Directories.DirMgrs), len(newDirTree.Directories.DirMgrs))
+		t.Errorf("Error: Expected Number of Directories = '%v'.  Instead, Number of NewFromPathFileNameExtStr Directories = '%v'", len(dirTreeInfo.Directories.DirMgrs), len(newDirTree.Directories.DirMgrs))
 	}
 
 	if len(dirTreeInfo.FoundFiles.FMgrs) != len(newDirTree.FoundFiles.FMgrs) {
-		t.Errorf("Error: Expected Number of Files = '%v'.  Instead, actual Number of New Files = '%v'", len(dirTreeInfo.FoundFiles.FMgrs), len(newDirTree.FoundFiles.FMgrs))
+		t.Errorf("Error: Expected Number of Files = '%v'.  Instead, actual Number of NewFromPathFileNameExtStr Files = '%v'", len(dirTreeInfo.FoundFiles.FMgrs), len(newDirTree.FoundFiles.FMgrs))
 	}
 
 	for i := 0; i < len(newDirTree.FoundFiles.FMgrs); i++ {

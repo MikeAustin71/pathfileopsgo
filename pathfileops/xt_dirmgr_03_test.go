@@ -15,7 +15,7 @@ func TestDirMgr_MakeDir_01(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.New(origDir). origDir='%v'  Error='%v'", origDir, err.Error())
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v'  Error='%v'", origDir, err.Error())
 	}
 
 	if dMgr.doesAbsolutePathExist {
@@ -79,7 +79,7 @@ func TestDirMgr_New_01(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.New(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
 	}
 
 	if true != dMgr.isInitialized {
@@ -166,7 +166,7 @@ func TestDirMgr_New_02(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.New(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
 	}
 
 	if true != dMgr.isInitialized {
@@ -245,7 +245,7 @@ func TestDirMgr_New_03(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.New(origDir). origDir=='%v' Error='%v'",
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'",
 			origDir, err.Error())
 	}
 
@@ -344,7 +344,7 @@ func TestDirMgr_New_04(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.New(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
 	}
 
 	if true != dMgr.isInitialized {
@@ -436,7 +436,7 @@ func TestDirMgr_New_05(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.New(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
 	}
 
 	if true != dMgr.isInitialized {
@@ -526,7 +526,7 @@ func TestDirMgr_New_06(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.New(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
 	}
 
 	if true != dMgr.isInitialized {
@@ -634,7 +634,7 @@ func TestDirMgr_New_07(t *testing.T) {
 	dMgr, err := DirMgr{}.New(origDir)
 
 	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.New(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
 	}
 
 	if true != dMgr.isInitialized {
@@ -735,7 +735,7 @@ func TestDirMgr_New_08(t *testing.T) {
 	dMgr, err := DirMgr{}.New(rawDir)
 
 	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.New(rawDir). rawDir=='%v' Error='%v'", rawDir, err.Error())
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawDir). rawDir=='%v' Error='%v'", rawDir, err.Error())
 	}
 
 	if true != dMgr.isInitialized {
@@ -846,7 +846,7 @@ func TestDirMgr_New_09(t *testing.T) {
 	dMgr, err := DirMgr{}.New(rawPath)
 
 	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.New(rawPath). rawPath=='%v' Error='%v'",
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawPath). rawPath=='%v' Error='%v'",
 			rawPath, err.Error())
 	}
 
@@ -943,19 +943,19 @@ func TestDirMgr_SubstituteBaseDir_01(t *testing.T) {
 	dMgrOrig, err := DirMgr{}.New(rawOrigPath)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(rawOrigPath). rawOrigPath='%v'  Error='%v'", rawOrigPath, err.Error())
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawOrigPath). rawOrigPath='%v'  Error='%v'", rawOrigPath, err.Error())
 	}
 
 	dMgrBase, err := DirMgr{}.New(rawBasePath)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(rawBasePath). rawBasePath='%v'  Error='%v'", rawBasePath, err.Error())
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawBasePath). rawBasePath='%v'  Error='%v'", rawBasePath, err.Error())
 	}
 
 	dMgrSubstitute, err := DirMgr{}.New(substitutePath)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(substitutePath). substitutePath='%v'  Error='%v'", substitutePath, err.Error())
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(substitutePath). substitutePath='%v'  Error='%v'", substitutePath, err.Error())
 	}
 
 	dMgrResult, err := dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute)
@@ -1001,19 +1001,19 @@ func TestDirMgr_SubstituteBaseDir_02(t *testing.T) {
 	dMgrOrig, err := DirMgr{}.New(rawOrigPath)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(rawOrigPath). rawOrigPath='%v'  Error='%v'", rawOrigPath, err.Error())
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawOrigPath). rawOrigPath='%v'  Error='%v'", rawOrigPath, err.Error())
 	}
 
 	dMgrBase, err := DirMgr{}.New(rawBasePath)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(rawBasePath). rawBasePath='%v'  Error='%v'", rawBasePath, err.Error())
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawBasePath). rawBasePath='%v'  Error='%v'", rawBasePath, err.Error())
 	}
 
 	dMgrSubstitute, err := DirMgr{}.New(substitutePath)
 
 	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(substitutePath). substitutePath='%v'  Error='%v'", substitutePath, err.Error())
+		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(substitutePath). substitutePath='%v'  Error='%v'", substitutePath, err.Error())
 	}
 
 	dMgrResult, err := dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute)

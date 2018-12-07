@@ -253,10 +253,10 @@ func TestFileHelper_CopyFile_01(t *testing.T) {
 	fh := FileHelper{}
 	srcFile := fh.AdjustPathSlash("..\\logTest\\Level01\\Level02\\TestFile001.txt")
 	if !fh.DoesFileExist(srcFile) {
-		fmgr, err := FileMgr{}.New(srcFile)
+		fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(srcFile)
 
 		if err != nil {
-			t.Errorf("Error returned by FileMgr{}.New(srcFile). srcFile='%v'. Error='%v'", srcFile, err.Error())
+			t.Errorf("Error returned by FileMgr{}.NewFromPathFileNameExtStr(srcFile). srcFile='%v'. Error='%v'", srcFile, err.Error())
 		}
 
 		err = fmgr.CreateDirAndFile()

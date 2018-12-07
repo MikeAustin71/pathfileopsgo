@@ -108,7 +108,7 @@ func TestingDirMgrDeleteWalkDirFiles06() {
 	dMgr, err := pathFileOps.DirMgr{}.New(origDir)
 
 	if err != nil {
-		fmt.Printf("Error returned by DirMgr{}.New(origDir). origDir='%v' "+
+		fmt.Printf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' "+
 			"Error='%v'", origDir, err.Error())
 		return
 	}
@@ -347,7 +347,7 @@ func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 				"Error:'%v'", srcFile, destFile, err)
 	}
 
-	// Copy New Files
+	// Copy NewFromPathFileNameExtStr Files
 	newFile1 := "newerFileForTest_01.txt"
 	newFile2 := "newerFileForTest_02.txt"
 	newFile3 := "newerFileForTest_03.txt"
@@ -362,7 +362,7 @@ func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 
 	if !fh.DoesFileExist(dirNewFilesForTest) {
 		return "", fmt.Errorf(ePrefix+
-			"Error: New Files Directory does NOT exist! dirNewFilesForTest='%v'",
+			"Error: NewFromPathFileNameExtStr Files Directory does NOT exist! dirNewFilesForTest='%v'",
 			dirNewFilesForTest)
 	}
 
@@ -464,10 +464,10 @@ func TestWriteFile() {
 	filePath := GetBaseProjectPath() +
 		fh.AdjustPathSlash("/checkfiles/checkfiles03/testWrite2998.txt")
 
-	fMgr, err := pathFileOps.FileMgr{}.New(filePath)
+	fMgr, err := pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
 	if err != nil {
-		fmt.Printf("Error returned from pathFileOps.FileMgr{}.New(filePath). filePathName='%v'  Error='%v'", filePath, err.Error())
+		fmt.Printf("Error returned from pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePathName='%v'  Error='%v'", filePath, err.Error())
 		return
 	}
 
@@ -554,10 +554,10 @@ func TestOpenFile() {
 
 	filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
 
-	fMgr, err := pathFileOps.FileMgr{}.New(filePath)
+	fMgr, err := pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
 	if err != nil {
-		fmt.Printf(ePrefix+"Error returned from pathFileOps.FileMgr{}.New(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+		fmt.Printf(ePrefix+"Error returned from pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
 		return
 	}
 
@@ -608,7 +608,7 @@ func TestDeleteDirectoryTree() {
 	substituteDMgr, err := pathFileOps.DirMgr{}.New(substituteDir)
 
 	if err != nil {
-		fmt.Printf(ePrefix+"Error returned by pathFileOps.DirMgr{}.New(substituteDir). substituteDir='%v'  Error='%v'\n", substituteDir, err.Error())
+		fmt.Printf(ePrefix+"Error returned by pathFileOps.DirMgr{}.NewFromPathFileNameExtStr(substituteDir). substituteDir='%v'  Error='%v'\n", substituteDir, err.Error())
 		return
 	}
 
@@ -638,7 +638,7 @@ func TestCopyDirectoryTree() {
 	dMgr, err := pathFileOps.DirMgr{}.New(dir)
 
 	if err != nil {
-		fmt.Printf("Error returned from DirMgr{}.New(dir). dir='%v' Error='%v'\n", dir, err.Error())
+		fmt.Printf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(dir). dir='%v' Error='%v'\n", dir, err.Error())
 		return
 	}
 
@@ -668,7 +668,7 @@ func TestCopyDirectoryTree() {
 	baseDMgr, err := pathFileOps.DirMgr{}.New(baseDir)
 
 	if err != nil {
-		fmt.Printf("Error returned by pathFileOps.DirMgr{}.New(baseDir) baseDir='%v' Error='%v'", baseDir, err.Error())
+		fmt.Printf("Error returned by pathFileOps.DirMgr{}.NewFromPathFileNameExtStr(baseDir) baseDir='%v' Error='%v'", baseDir, err.Error())
 		return
 	}
 
@@ -677,7 +677,7 @@ func TestCopyDirectoryTree() {
 	substituteDMgr, err := pathFileOps.DirMgr{}.New(substituteDir)
 
 	if err != nil {
-		fmt.Printf(ePrefix+"Error returned by pathFileOps.DirMgr{}.New(substituteDir). substituteDir='%v'  Error='%v'", substituteDir, err.Error())
+		fmt.Printf(ePrefix+"Error returned by pathFileOps.DirMgr{}.NewFromPathFileNameExtStr(substituteDir). substituteDir='%v'  Error='%v'", substituteDir, err.Error())
 		return
 	}
 
@@ -691,12 +691,12 @@ func TestCopyDirectoryTree() {
 
 	if len(dirTreeInfo.Directories.DirMgrs) != len(newDirTree.Directories.DirMgrs) {
 
-		fmt.Printf(ePrefix+"Error: Expected Number of Directories = '%v'.  Instead, Number of New Directories = '%v'", len(dirTreeInfo.Directories.DirMgrs), len(newDirTree.Directories.DirMgrs))
+		fmt.Printf(ePrefix+"Error: Expected Number of Directories = '%v'.  Instead, Number of NewFromPathFileNameExtStr Directories = '%v'", len(dirTreeInfo.Directories.DirMgrs), len(newDirTree.Directories.DirMgrs))
 		return
 	}
 
 	if len(dirTreeInfo.FoundFiles.FMgrs) != len(newDirTree.FoundFiles.FMgrs) {
-		fmt.Printf(ePrefix+"Error: Expected Number of Files = '%v'.  Instead, actual Number of New Files = '%v'", len(dirTreeInfo.FoundFiles.FMgrs), len(newDirTree.FoundFiles.FMgrs))
+		fmt.Printf(ePrefix+"Error: Expected Number of Files = '%v'.  Instead, actual Number of NewFromPathFileNameExtStr Files = '%v'", len(dirTreeInfo.FoundFiles.FMgrs), len(newDirTree.FoundFiles.FMgrs))
 		return
 	}
 
@@ -741,10 +741,10 @@ func TestMainCleanDirStr(rawPath string) {
 
 func TestNewFileMgrFromPathFileNameStr(pathFileNameExt string) {
 
-	fMgr, err := pathFileOps.FileMgr{}.New(pathFileNameExt)
+	fMgr, err := pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(pathFileNameExt)
 
 	if err != nil {
-		fmt.Printf("Error returned from pathFileOps.FileMgr{}.New(pathFileNameExt) pathFileNameExt='%v'  Error='%v' \n", pathFileNameExt, err.Error())
+		fmt.Printf("Error returned from pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(pathFileNameExt) pathFileNameExt='%v'  Error='%v' \n", pathFileNameExt, err.Error())
 	}
 
 	appExamples.PrintFileManagerFields(fMgr)
@@ -759,7 +759,7 @@ func TestNewFileMgrFromDirMgrFileNameExt(rawPath, rawFileNameExt string) {
 	dMgr, err := pathFileOps.DirMgr{}.New(adjustedPath)
 
 	if err != nil {
-		fmt.Printf("Error returned from DirMgr{}.New(adjustedPath). adjustedPath='%v'  Error='%v' \n",
+		fmt.Printf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). adjustedPath='%v'  Error='%v' \n",
 			adjustedPath, err.Error())
 		return
 	}
@@ -789,7 +789,7 @@ func TestDirMgr(rawPath string, expectedPath string) {
 	dMgr, err := pathFileOps.DirMgr{}.New(rawPath)
 
 	if err != nil {
-		fmt.Printf("Error returned from DirMgr{}.New(rawPath) rawPath='%v' Error='%v'", rawPath, err.Error())
+		fmt.Printf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawPath) rawPath='%v' Error='%v'", rawPath, err.Error())
 		return
 	}
 
@@ -922,7 +922,7 @@ func TestDirMgrFileInfo() {
 	dMgr, err := pathFileOps.DirMgr{}.New(origDir)
 
 	if err != nil {
-		fmt.Printf("Error returned from pathFileOps.DirMgr{}.New(origDir). origDir='%v' Error='%v'", origDir, err.Error())
+		fmt.Printf("Error returned from pathFileOps.DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'", origDir, err.Error())
 		return
 	}
 
@@ -1036,7 +1036,7 @@ func TestDirMgrWalDirDeleteFiles() {
 	dMgr, err := pathFileOps.DirMgr{}.New(origDir)
 
 	if err != nil {
-		fmt.Printf("Error returned by DirMgr{}.New(origDir). origDir='%v' Error='%v'\n", origDir, err.Error())
+		fmt.Printf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'\n", origDir, err.Error())
 		return
 	}
 
@@ -1171,13 +1171,13 @@ func DeleteDir02() error {
 	dMgr, err := pathFileOps.DirMgr{}.New(origDir)
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error returned from DirMgr{}.New(dirToDelete). dirToDelete='%v' Error='%v'", origDir, err.Error())
+		return fmt.Errorf(ePrefix+"Error returned from DirMgr{}.NewFromPathFileNameExtStr(dirToDelete). dirToDelete='%v' Error='%v'", origDir, err.Error())
 	}
 
 	err = dMgr.DeleteAll()
 
 	if err != nil {
-		return fmt.Errorf(ePrefix+"Error returned from DirMgr{}.New(dirToDelete). dirToDelete='%v' Error='%v'", origDir, err.Error())
+		return fmt.Errorf(ePrefix+"Error returned from DirMgr{}.NewFromPathFileNameExtStr(dirToDelete). dirToDelete='%v' Error='%v'", origDir, err.Error())
 	}
 
 	if dMgr.DoesDirMgrAbsolutePathExist() {
@@ -1217,10 +1217,10 @@ func TestMain901() {
 	srcFile := fh.AdjustPathSlash("..\\logTest\\Level01\\Level02\\TestFile001.txt")
 
 	if !fh.DoesFileExist(srcFile) {
-		fMgr, err := pathFileOps.FileMgr{}.New(srcFile)
+		fMgr, err := pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(srcFile)
 
 		if err != nil {
-			fmt.Printf("Error returned by FileMgr{}.New(srcFile). srcFile='%v'. Error='%v'\n", srcFile, err.Error())
+			fmt.Printf("Error returned by FileMgr{}.NewFromPathFileNameExtStr(srcFile). srcFile='%v'. Error='%v'\n", srcFile, err.Error())
 			return
 		}
 
@@ -1427,7 +1427,7 @@ func MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
 		return "", fmt.Errorf("Error while Copying Source File, '%v' to  Destination File '%v', Error:'%v'", srcFile, destFile, err)
 	}
 
-	// Copy New Files
+	// Copy NewFromPathFileNameExtStr Files
 	newFile1 := "newerFileForTest_01.txt"
 	newFile2 := "newerFileForTest_02.txt"
 	newFile3 := "newerFileForTest_03.txt"
@@ -1435,7 +1435,7 @@ func MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
 	dirNewFilesForTest := GetBaseProjectPath() + fh.AdjustPathSlash("/filesfortest/newfilesfortest")
 
 	if !fh.DoesFileExist(dirNewFilesForTest) {
-		return "", fmt.Errorf(ePrefix+"Error: New Files Directory does NOT exist! dirNewFilesForTest='%v'", dirNewFilesForTest)
+		return "", fmt.Errorf(ePrefix+"Error: NewFromPathFileNameExtStr Files Directory does NOT exist! dirNewFilesForTest='%v'", dirNewFilesForTest)
 	}
 
 	srcFile = dirNewFilesForTest + string(os.PathSeparator) + newFile1
