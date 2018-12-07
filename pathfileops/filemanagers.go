@@ -122,7 +122,7 @@ func (fMgrs *FileMgrCollection) CopyFilesToDir(targetDirectory DirMgr) error {
 	}
 
 	for i := 0; i < maxLen; i++ {
-		err := fMgrs.FMgrs[i].CopyFileToDir(targetDirectory)
+		err := fMgrs.FMgrs[i].CopyFileToDirByIoByLink(targetDirectory)
 
 		if err != nil {
 			return fmt.Errorf(ePrefix+
@@ -407,16 +407,33 @@ type FileMgr struct {
 	filePtr                         *os.File
 	isFilePtrOpen                   bool
 	actualFileInfo                  FileInfoPlus
-	targetDirectory                 DirMgr
-	targetFileNameExt               string
 }
 
-// CopyFileToDir - Copies the file identified by the current File Manager
-// (FileMgr) object to another directory specified by input parameter
-// 'dir', a 'DirMgr' object.
-func (fMgr *FileMgr) CopyFileToDir(dir DirMgr) error {
+// CopyFileToDirByIoByLink - Copies the file identified by the current File Manager
+// (FileMgr) instance to another directory specified by input parameter 'dir',
+// an instance of type 'DirMgr'.
+//
+// Note that if the destination directory does not exist, this method will
+// attempt to create it.
+//
+// The copy operation will be carried out in two attempts. The first attempt
+// will try to copy the file to the destination by creating a new file and
+// copying the source file contents to the new destination file using a
+// technique known as 'io.Copy'.
+//
+// If that attempted file copy operation fails, a second attempt will be made
+// using a technique known as a 'Hard Link'. This technique will utilize a hard
+// symbolic link to the existing source file in order to create the destination
+// file.
+//
+// If both attempted copy operations fail, and error will be returned.
+//
+// Reference:
+// https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+func (fMgr *FileMgr) CopyFileToDirByIoByLink(dir DirMgr) error {
 
-	ePrefix := "FileMgr.CopyFileToDir() "
+	ePrefix := "FileMgr.CopyFileToDirByIoByLink() "
 	err := dir.IsDirMgrValid("")
 
 	if err != nil {
@@ -446,19 +463,173 @@ func (fMgr *FileMgr) CopyFileToDir(dir DirMgr) error {
 	return nil
 }
 
-// CopyFileMgrByIoByLink - Copies the file represented by the current
-// File Manager instance to a location specified by a destination input
-// parameter File Manager, 'fMgrDest'.
+// CopyFileToDirByLinkByIo - Copies the file identified by the current File Manager
+// (FileMgr) instance to another directory specified by input parameter 'dir',
+// an instance of type 'DirMgr'.
 //
 // Note that if the destination directory does not exist, this method will
 // attempt to create it.
 //
 // The copy operation will be carried out in two attempts. The first attempt
-// will try to copy the file to the destination by creating a new file and
-// copying the source file contents to the new destination file ('io.Copy').
+// will try to copy the source file to the destination directory using a
+// technique known as a 'Hard Link'.  This technique will utilize a hard
+// symbolic link to the existing source file in order to create the destination
+// file.
 //
-// If that attempted file copy operation fails, a second attempt will be made
-// using the technique 'Copy By Hard Link'.
+// If the first copy attempt fails, this method will try to copy the file to the
+// destination directory by creating a new file and copying the source file contents
+// to the new destination file. This technique is known as 'io.Copy'.
+//
+// If both attempted copy operations fail, and error will be returned.
+//
+// Reference:
+// https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+func (fMgr *FileMgr) CopyFileToDirByLinkByIo(dir DirMgr) error {
+
+	ePrefix := "FileMgr.CopyFileToDirByLinkByIo() "
+	err := dir.IsDirMgrValid("")
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error: Input parmater dir is INVALID! Error='%v'",
+			err.Error())
+	}
+
+	newFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dir, fMgr.fileNameExt)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dir, "+
+			"fMgr.fileNameExt) dir.absolutePath='%v'  fMgr.fileNameExt='%v'  Error='%v'",
+			dir.absolutePath, fMgr.fileNameExt, err.Error())
+	}
+
+	err = fMgr.CopyFileMgrByLinkByIo(&newFMgr)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned from fMgr.CopyFileMgrByLinkByIo(&newFMgr) "+
+			"newFMgr.absolutePathFileName='%v'  Error='%v'",
+			newFMgr.absolutePathFileName, err.Error())
+	}
+
+	return nil
+}
+
+// CopyFileToDirByIo - Copies the file identified by the current File Manager
+// (FileMgr) instance to another directory specified by input parameter 'dir',
+// an instance of type 'DirMgr'.
+//
+// Note that if the destination directory does not exist, this method will
+// attempt to create it.
+//
+// One attempt will be made to copy the source file to the specified destination
+// directory using a technique known as 'io.Copy'. This technique create a new
+// destination file and copies the source file contents to that new destination file.
+//
+// If this attempted 'io.Copy' operation fails, and error will be returned.
+//
+// Reference:
+// https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+func (fMgr *FileMgr) CopyFileToDirByIo(dir DirMgr) error {
+
+	ePrefix := "FileMgr.CopyFileToDirByIo() "
+	err := dir.IsDirMgrValid("")
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error: Input parmater dir is INVALID! Error='%v'",
+			err.Error())
+	}
+
+	newFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dir, fMgr.fileNameExt)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dir, "+
+			"fMgr.fileNameExt) dir.absolutePath='%v'  fMgr.fileNameExt='%v'  Error='%v'",
+			dir.absolutePath, fMgr.fileNameExt, err.Error())
+	}
+
+	err = fMgr.CopyFileMgrByIo(&newFMgr)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned from fMgr.CopyFileMgrByIo(&newFMgr) "+
+			"newFMgr.absolutePathFileName='%v'  Error='%v'",
+			newFMgr.absolutePathFileName, err.Error())
+	}
+
+	return nil
+}
+
+// CopyFileToDirByLink - Copies the file identified by the current File Manager
+// (FileMgr) instance to another directory specified by input parameter 'dir',
+// an instance of type 'DirMgr'.
+//
+// Note that if the destination directory does not exist, this method will
+// attempt to create it.
+//
+// This method will make one attempt to copy the source file to the specified
+// destination directory using a technique known as a 'Hard Link'. This technique
+// will utilize a hard symbolic link to the existing source file in order to
+// create the destination file.
+//
+// If the 'Hard Link' copy operation fails, and error will be returned.
+//
+// Reference:
+// https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+func (fMgr *FileMgr) CopyFileToDirByLink(dir DirMgr) error {
+
+	ePrefix := "FileMgr.CopyFileToDirByLink() "
+	err := dir.IsDirMgrValid("")
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error: Input parmater dir is INVALID! Error='%v'",
+			err.Error())
+	}
+
+	newFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dir, fMgr.fileNameExt)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dir, "+
+			"fMgr.fileNameExt) dir.absolutePath='%v'  fMgr.fileNameExt='%v'  Error='%v'",
+			dir.absolutePath, fMgr.fileNameExt, err.Error())
+	}
+
+	err = fMgr.CopyFileMgrByLink(&newFMgr)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned from fMgr.CopyFileMgrByLink(&newFMgr) "+
+			"newFMgr.absolutePathFileName='%v'  Error='%v'",
+			newFMgr.absolutePathFileName, err.Error())
+	}
+
+	return nil
+}
+
+// CopyFileMgrByIoByLink - Copies the file represented by the current
+// File Manager instance to a location specified by a destination input
+// parameter 'fMgrDest', an instance of type FileMgr.
+//
+// Note that if the destination directory does not exist, this method will
+// attempt to create it.
+//
+// The copy operation will be carried out in two attempts. The first attempt
+// will try to copy the source file to the destination by creating a new file
+// and copying the source file contents to the new destination file using a
+// technique known as 'io.Copy'.
+//
+// If that first file copy operation fails, a second attempt will be made
+// using a technique known as a 'Hard Link'. This technique will utilize a hard
+// symbolic link to the existing source file in order to create the destination
+// file.
 //
 // If both attempted copy operations fail, and error will be returned.
 //
@@ -543,7 +714,7 @@ func (fMgr *FileMgr) CopyFileMgrByIoByLink(fMgrDest *FileMgr) error {
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+
-			"Error returned by fh.CopyFileByLinkByIo(fMgr.absolutePathFileName, "+
+			"Error returned by fh.CopyFileByIoByLink(fMgr.absolutePathFileName, "+
 			"fMgrDest.absolutePathFileName) fMgr.absolutePathFileName='%v' "+
 			"fMgrDest.absolutePathFileName='%v' Error='%v'",
 			fMgr.absolutePathFileName, fMgrDest.absolutePathFileName, err.Error())
@@ -570,18 +741,19 @@ func (fMgr *FileMgr) CopyFileMgrByIoByLink(fMgrDest *FileMgr) error {
 
 // CopyFileMgrByLinkByIo - Copies the file represented by the current
 // File Manager instance to a location specified by a destination input
-// parameter File Manager, 'fMgrDest'.
+// parameter 'fMgrDest', an instance of type FileMgr.
 //
 // Note that if the destination directory does not exist, this method will
 // attempt to create it.
 //
 // The copy operation will be carried out in two attempts. The first attempt
-// will try to copy the source file to the specified destination by means
-// of a 'hard link'.
+// will try to copy the source file to the destination using a technique known
+// as a 'Hard Link'.  This technique will utilize a hard symbolic link to the
+// existing source file in order to create the destination file.
 //
-// The 'hard link' copy operation fails, a second attempt to copy the file
-// will be made by creating a new file and copying the source file contents
-// to the new destination file ('io.Copy').
+// If the first copy attempt fails, this method will try to copy the file to the
+// destination by creating a new file and copying the source file contents to that
+// new destination file. This technique is known as 'io.Copy'.
 //
 // If both attempted copy operations fail, and error will be returned.
 //
@@ -693,17 +865,17 @@ func (fMgr *FileMgr) CopyFileMgrByLinkByIo(fMgrDest *FileMgr) error {
 
 // CopyFileMgrByIo - Copies the file represented by the current File
 // Manager instance to a location specified by a destination input
-// parameter File Manager, 'fMgrDest'.
+// parameter 'fMgrDest', an instance of type FileMgr.
 //
 // Note that if the destination directory does not exist, this method will
 // attempt to create it.
 //
-// This method will make one attempt to copy the source file to the specified
-// destination by means of the 'Copy Io' technique. This technique will first
-// create a new destination file and then copying the source file contents
-// to that destination file.
+// One attempt will be made to copy the source file to the specified destination
+// file using a technique known as 'io.Copy'. This technique create a new
+// destination file and copies the source file contents to that new destination
+// file.
 //
-// If this attempted copy operation fails, and error will be returned.
+// If this attempted 'io.Copy' operation fails, and error will be returned.
 //
 // Reference:
 // https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
@@ -813,24 +985,24 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
 
 // CopyFileMgrByLink - Copies the file represented by the current File
 // Manager instance to a location specified by a destination input
-// parameter File Manager, 'fMgrDest'.
+// parameter 'fMgrDest', an instance of type FileMgr.
 //
 // Note that if the destination directory does not exist, this method will
 // attempt to create it.
 //
 // This method will make one attempt to copy the source file to the specified
-// destination by means of the 'Copy by Hard Link' technique. This technique
-// will first utilize a hard symbolic link to the existing source file in order
-// to create the destination file.
+// destination using a technique known as a 'Hard Link'. This technique will
+// utilize a hard symbolic link to the existing source file in order to create
+// the destination file.
 //
-// If this attempted 'hard link' copy operation fails, and error will be returned.
+// If the 'Hard Link' copy operation fails, and error will be returned.
 //
 // Reference:
 // https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 //
 func (fMgr *FileMgr) CopyFileMgrByLink(fMgrDest *FileMgr) error {
 
-	ePrefix := "FileMgr.CopyFileMgrByIo() "
+	ePrefix := "FileMgr.CopyFileMgrByLink() "
 
 	err := fMgr.IsFileMgrValid("")
 
@@ -931,20 +1103,40 @@ func (fMgr *FileMgr) CopyFileMgrByLink(fMgrDest *FileMgr) error {
 	return nil
 }
 
-// CopyFileStrByIoByLink - Copies file from fMgr.absolutePathFileName to
-// to destination path & File Name.
-// See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+// CopyFileStrByIoByLink - Copies the file represented by the current
+// File Manager instance to a location specified by a destination input
+// parameter. The destination input parameter, 'dstPathFileNameExt' is
+// a string containing the path, file name and file extension of the
+// destination file.
 //
-func (fMgr *FileMgr) CopyFileStrByIoByLink(dstPathFileName string) error {
+// Note that if the destination directory does not exist, this method will
+// attempt to create it.
+//
+// The copy operation will be carried out in two attempts. The first attempt
+// will try to copy the file to the destination by creating a new file and
+// copying the source file contents to the new destination file. This technique
+// is known as 'io.Copy'.
+//
+// If that attempted file copy operation fails, a second attempt will be made
+// using a technique known as a 'Hard Link'. This technique will utilize a hard
+// symbolic link to the existing source file in order to create the destination
+// file.
+//
+// If both attempted copy operations fail, and error will be returned.
+//
+// Reference:
+// https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+func (fMgr *FileMgr) CopyFileStrByIoByLink(dstPathFileNameExt string) error {
 
 	ePrefix := "FileMgr.CopyFileStrByIoByLink() "
 
-	fMgrDest, err := FileMgr{}.NewFromPathFileNameExtStr(dstPathFileName)
+	fMgrDest, err := FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt)
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+
-			"Error returned by FileMgr{}.NewFromPathFileNameExtStr(dstPathFileName). "+
-			"dstPathFileName='%v' Error='%v'", dstPathFileName, err.Error())
+			"Error returned by FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt). "+
+			"dstPathFileNameExt='%v' Error='%v'", dstPathFileNameExt, err.Error())
 	}
 
 	err = fMgr.CopyFileMgrByIoByLink(&fMgrDest)
@@ -952,6 +1144,135 @@ func (fMgr *FileMgr) CopyFileStrByIoByLink(dstPathFileName string) error {
 	if err != nil {
 		return fmt.Errorf(ePrefix+
 			"Error returned from fMgr.CopyFileMgrByIoByLink(&fMgrDest) "+
+			"fMgrDest.absolutePathFileName='%v'  Error='%v'", fMgrDest.absolutePathFileName, err.Error())
+	}
+
+	return nil
+}
+
+// CopyFileStrByLinkByIo - Copies the file represented by the current
+// File Manager instance to a location specified by a destination input
+// parameter. The destination input parameter, 'dstPathFileNameExt' is
+// a string containing the path, file name and file extension of the
+// destination file.
+//
+// Note that if the destination directory does not exist, this method will
+// attempt to create it.
+//
+// The copy operation will be carried out in two attempts. The first attempt
+// will try to copy the source file to the destination using a technique known
+// as a 'Hard Link'.  This technique will utilize a hard symbolic link to the
+// existing source file in order to create the destination file.
+//
+// If the first copy attempt fails, this method will try to copy the file to the
+// destination by creating a new file and copying the source file contents to the
+// new destination file. This technique is known as 'io.Copy'.
+//
+// If both attempted copy operations fail, and error will be returned.
+//
+// Reference:
+// https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+func (fMgr *FileMgr) CopyFileStrByLinkByIo(dstPathFileNameExt string) error {
+
+	ePrefix := "FileMgr.CopyFileStrByLinkByIo() "
+
+	fMgrDest, err := FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned by FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt). "+
+			"dstPathFileNameExt='%v' Error='%v'", dstPathFileNameExt, err.Error())
+	}
+
+	err = fMgr.CopyFileMgrByLinkByIo(&fMgrDest)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned from fMgr.CopyFileMgrByLinkByIo(&fMgrDest) "+
+			"fMgrDest.absolutePathFileName='%v'  Error='%v'", fMgrDest.absolutePathFileName, err.Error())
+	}
+
+	return nil
+}
+
+// CopyFileStrByIo - Copies the file represented by the current File
+// Manager instance to a location specified by a destination input
+// parameter. The destination input parameter, 'dstPathFileNameExt' is
+// a string containing the path, file name and file extension of the
+// destination file.
+//
+// Note that if the destination directory does not exist, this method will
+// attempt to create it.
+//
+// One attempt will be made to copy the source file to the specified destination
+// using a technique known as 'io.Copy'. This technique create a new destination
+// file and copies the source file contents to that new destination file.
+//
+// If this attempted 'io.Copy' operation fails, and error will be returned.
+//
+// Reference:
+// https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+func (fMgr *FileMgr) CopyFileStrByIo(dstPathFileNameExt string) error {
+
+	ePrefix := "FileMgr.CopyFileStrByIo() "
+
+	fMgrDest, err := FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned by FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt). "+
+			"dstPathFileNameExt='%v' Error='%v'", dstPathFileNameExt, err.Error())
+	}
+
+	err = fMgr.CopyFileMgrByIo(&fMgrDest)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned from fMgr.CopyFileMgrByIo(&fMgrDest) "+
+			"fMgrDest.absolutePathFileName='%v'  Error='%v'", fMgrDest.absolutePathFileName, err.Error())
+	}
+
+	return nil
+}
+
+// CopyFileStrByLink - Copies the file represented by the current File
+// Manager instance to a location specified by a destination input
+// parameter. The destination input parameter, 'dstPathFileNameExt' is
+// a string containing the path, file name and file extension of the
+// destination file.
+//
+// Note that if the destination directory does not exist, this method will
+// attempt to create it.
+//
+// This method will make one attempt to copy the source file to the specified
+// destination using a technique known as a 'Hard Link'. This technique will
+// utilize a hard symbolic link to the existing source file in order to create
+// the destination file.
+//
+// If 'Hard Link' copy operation fails, and error will be returned.
+//
+// Reference:
+// https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+func (fMgr *FileMgr) CopyFileStrByLink(dstPathFileNameExt string) error {
+
+	ePrefix := "FileMgr.CopyFileStrByLink() "
+
+	fMgrDest, err := FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned by FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt). "+
+			"dstPathFileNameExt='%v' Error='%v'", dstPathFileNameExt, err.Error())
+	}
+
+	err = fMgr.CopyFileMgrByLink(&fMgrDest)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned from fMgr.CopyFileMgrByLink(&fMgrDest) "+
 			"fMgrDest.absolutePathFileName='%v'  Error='%v'", fMgrDest.absolutePathFileName, err.Error())
 	}
 
