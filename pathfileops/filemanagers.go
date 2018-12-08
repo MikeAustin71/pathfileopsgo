@@ -2976,6 +2976,13 @@ type FileOps struct {
 	opToExecute   FileOperation
 }
 
+// IsInitialized - Returns a boolean value indicating whether
+// this FileOps instance has been properly initialized.
+//
+func (fops *FileOps) IsInitialized() bool {
+
+}
+
 // NewByFileMgrs - Creates and returns a new FileOps
 // instance based on input parameters 'source' and
 // 'destination' File Managers.
@@ -3004,6 +3011,7 @@ func (fops FileOps) NewByFileMgrs(
 
 	fOpsNew.source = source.CopyOut()
 	fOpsNew.destination = destination.CopyOut()
+	fOpsNew.isInitialized = true
 
 	return fOpsNew, nil
 }
@@ -3045,6 +3053,8 @@ func (fops FileOps) NewByDirMgrFileName(
 			fmt.Errorf(ePrefix+"Destination File Error: %v", err.Error())
 	}
 
+	fOpsNew.isInitialized = true
+
 	return fOpsNew, nil
 }
 
@@ -3076,6 +3086,8 @@ func (fops FileOps) NewByPathFileNameExtStrs(
 		return FileOps{},
 			fmt.Errorf(ePrefix+"Destination File Error: %v", err.Error())
 	}
+
+	fOpsNew.isInitialized = true
 
 	return fOpsNew, nil
 }
@@ -3124,6 +3136,8 @@ func (fops FileOps) NewByDirStrsAndFileNameExtStrs(
 		return FileOps{},
 			fmt.Errorf(ePrefix+"Destination File Error: %v", err.Error())
 	}
+
+	fOpsNew.isInitialized = true
 
 	return fOpsNew, nil
 

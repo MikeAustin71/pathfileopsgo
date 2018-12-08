@@ -322,7 +322,7 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
 
 	// Create a new destination file and copy source
 	// file contents to the destination file.
-	err = fh.copyFileHardLink(src, dst)
+	err = fh.copyFileByIOCopy(src, dst)
 	return
 }
 
@@ -3087,23 +3087,23 @@ func (fh FileHelper) WriteFileStr(str string, fPtr *os.File) (int, error) {
 	FileHelper private methods
 */
 
-// copyFileHardLink - Copies file from source to destination file.
+// copyFileByIOCopy - Copies file from source to destination file.
 // Note: If 'src' file does NOT exist, an error will be returned.
 //
 // No validity checks are performed on 'dest' file. If 'dest' file currently
 // exists, it will be truncated to zero bytes and overwritten.
 //
-// This method is called by FileHelper:CopyFileByIo(). Use FileHelper:CopyFileByIo() for
-// ordinary file copy operations since it provides validity checks on 'src' and 'dest'
-// files.
+// This method is called by FileHelper:CopyFileByIo(). Use FileHelper:CopyFileByIo()
+// for ordinary file copy operations since it provides validity checks on 'src' and
+// 'dest' files.
 //
-// This method one method of file copy, "io.Copy(out, in)". If this fails an error will
-// be returned.
+// This method utilizes one method of file copy, "io.Copy(out, in)". If this fails an
+// error will be returned.
 //
 // Reference: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 //
-func (fh FileHelper) copyFileHardLink(src, dst string) (err error) {
-	ePrefix := "FileHelper.copyFileHardLink() "
+func (fh FileHelper) copyFileByIOCopy(src, dst string) (err error) {
+	ePrefix := "FileHelper.copyFileByIOCopy() "
 
 	err = nil
 
