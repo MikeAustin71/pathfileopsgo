@@ -441,47 +441,31 @@ func (dMgr *DirMgr) DeleteAll() error {
 
 }
 
-// DeleteDirFiles - deletes files in the current directory based
-// on input parameter, 'formatSpec'. This specification will be
-// used to match files in the current directory. If a match is
-// found that file will be deleted.
+// DeleteFilesInDir - Receives a string defining a pattern to use
+// in searching file names for all files in the directory identified
+// by the current DirMgr instance. If a file name matches the pattern
+// specified by input parameter, 'fileSearchPattern', it will be deleted.
 //
-// Examples:
+// Only files in the directory identified by the current DirMgr instance
+// will be subject to deletion. Files in sub-directories will not be
+// deleted.
 //
-//   formatSpec
-//     *.*				Delete all files in directory
-//     *.txt			Delete all files in directory with
-//     							file extension = '.txt'
-//     wilson.*		Delete all files in directory with
-//                  file name = 'wilson'
+// If the 'filePattern' is improperly formatted, an error will be returned.
 //
-func (dMgr *DirMgr) DeleteDirFiles(formatSpec string) error {
-
-	ePrefix := "DirMgr.DeleteDirFiles() "
-	target := dMgr.GetAbsolutePathWithSeparator() + formatSpec
-
-	err := os.Remove(target)
-
-	if err != nil {
-		return fmt.Errorf(ePrefix+
-			"Error returned by os.Remove(target). "+
-			"target='%v' Error='%v' ", target, err.Error())
-	}
-
-	return nil
-}
-
-// DeleteDirContents - Deletes all the files in the current
-// directory and ONLY the current directory.
+// Example 'filePatterns'
+// =====================
+// *.*              will match all files in directory.
+// *.html    				will match  anyfilename.html
+// a*								will match  appleJack.txt
+// j????row.txt     will match  j1x34row.txt
+// data[0-9]*				will match 	data123.csv
 //
-// Files in subdirectories are NOT deleted.
+// Reference For Matching Details:
+//  https://golang.org/pkg/path/filepath/#Match
 //
-// Reference:
-// https://stackoverflow.com/questions/33450980/golang-remove-all-contents-of-a-directory
-//
-func (dMgr *DirMgr) DeleteDirContents() error {
+func (dMgr *DirMgr) DeleteFilesInDirByPattern(fileSearchPattern string) error {
 
-	ePrefix := "DirMgr.DeleteDirContents() "
+	ePrefix := "DirMgr.DeleteFilesInDir() "
 
 	err := dMgr.IsDirMgrValid(ePrefix)
 
@@ -498,7 +482,7 @@ func (dMgr *DirMgr) DeleteDirContents() error {
 			dMgr.absolutePath, err.Error())
 	}
 
-	names, err := dir.Readdirnames(-1)
+	nameFileInfos, err := dir.Readdir(-1)
 
 	if err != nil {
 		_ = dir.Close()
@@ -508,18 +492,118 @@ func (dMgr *DirMgr) DeleteDirContents() error {
 			dMgr.absolutePath, err.Error())
 	}
 
-	for _, name := range names {
+	fh := FileHelper{}
 
-		err = os.RemoveAll(fp.Join(dMgr.absolutePath, name))
+	for _, nameFInfo := range nameFileInfos {
 
-		if err != nil {
-			_ = dir.Close()
-			return fmt.Errorf(ePrefix+
-				"Error returned by dir.Readdirnames(-1). "+
-				"dMgr.absolutePath='%v' fileName='%v' Error='%v' ",
-				dMgr.absolutePath, name, err.Error())
+		if nameFInfo.IsDir() {
+			continue
+
+		} else {
+
+			fName := nameFInfo.Name()
+
+			isMatch, err := fp.Match(fileSearchPattern, fName)
+
+			if err != nil {
+
+				_ = dir.Close()
+
+				return fmt.Errorf(ePrefix+
+					"Error returned by fp.Match(fileSearchPattern, fileName). "+
+					"directorySearched='%v' fileSearchPattern='%v' fileName='%v' Error='%v' ",
+					dMgr.absolutePath, fileSearchPattern, fName, err.Error())
+			}
+
+			if !isMatch {
+				continue
+			} else {
+
+				fullName := fh.JoinPathsAdjustSeparators(dMgr.absolutePath, fName)
+
+				err = os.Remove(fullName)
+
+				if err != nil {
+					_ = dir.Close()
+					return fmt.Errorf(ePrefix+
+						"Error returned by os.Remove(fullName). "+
+						"fullName='%v' Error='%v' ",
+						fullName, err.Error())
+				}
+			}
 		}
+	}
 
+	err = dir.Close()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned by dir.Close(). "+
+			"dir='%v' Error='%v' ",
+			dMgr.absolutePath, err.Error())
+	}
+
+	return nil
+}
+
+// DeleteAllFilesInDir - Deletes all the files in the current
+// directory. ONLY files are deleted NOT directories.
+//
+// Files in subdirectories are NOT deleted.
+//
+// Reference:
+// https://stackoverflow.com/questions/33450980/golang-remove-all-contents-of-a-directory
+//
+func (dMgr *DirMgr) DeleteAllFilesInDir() error {
+
+	ePrefix := "DirMgr.DeleteAllFilesInDir() "
+
+	err := dMgr.IsDirMgrValid(ePrefix)
+
+	if err != nil {
+		return err
+	}
+
+	dir, err := os.Open(dMgr.absolutePath)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error return by os.Open(dMgr.absolutePath). "+
+			"dMgr.absolutePath='%v' Error='%v' ",
+			dMgr.absolutePath, err.Error())
+	}
+
+	fh := FileHelper{}
+
+	nameFileInfos, err := dir.Readdir(-1)
+
+	if err != nil {
+		_ = dir.Close()
+		return fmt.Errorf(ePrefix+
+			"Error returned by dir.Readdirnames(-1). "+
+			"dMgr.absolutePath='%v' Error='%v' ",
+			dMgr.absolutePath, err.Error())
+	}
+
+	for _, nameFInfo := range nameFileInfos {
+
+		if nameFInfo.IsDir() {
+			continue
+
+		} else {
+			name := fh.JoinPathsAdjustSeparators(dMgr.absolutePath, nameFInfo.Name())
+
+			err = os.Remove(name)
+
+			if err != nil {
+				_ = dir.Close()
+				return fmt.Errorf(ePrefix+
+					"Error returned by os.Remove(name). "+
+					"name='%v' Error='%v' ",
+					name, err.Error())
+			}
+
+		}
 	}
 
 	_ = dir.Close()
@@ -863,6 +947,96 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 	}
 
 	return false
+}
+
+// FindFilesInDirByPattern - Searches files in the current directory. An attempt
+// will be made to match the file name with the specified search pattern string.
+// All matched files will be returned in a FileMgrCollection.
+//
+func (dMgr *DirMgr) FindFilesInDirByPattern(fileSearchPattern string) (FileMgrCollection, error) {
+
+	ePrefix := "DirMgr.FindFilesInDirByPattern() "
+
+	err := dMgr.IsDirMgrValid(ePrefix)
+
+	if err != nil {
+		return FileMgrCollection{}, err
+	}
+
+	dir, err := os.Open(dMgr.absolutePath)
+
+	if err != nil {
+		return FileMgrCollection{},
+			fmt.Errorf(ePrefix+
+				"Error return by os.Open(dMgr.absolutePath). "+
+				"dMgr.absolutePath='%v' Error='%v' ",
+				dMgr.absolutePath, err.Error())
+	}
+
+	nameFileInfos, err := dir.Readdir(-1)
+
+	if err != nil {
+		_ = dir.Close()
+		return FileMgrCollection{},
+			fmt.Errorf(ePrefix+
+				"Error returned by dir.Readdirnames(-1). "+
+				"dMgr.absolutePath='%v' Error='%v' ",
+				dMgr.absolutePath, err.Error())
+	}
+
+	fMgrCol := FileMgrCollection{}
+
+	for _, nameFInfo := range nameFileInfos {
+
+		if nameFInfo.IsDir() {
+			continue
+
+		} else {
+
+			fName := nameFInfo.Name()
+
+			isMatch, err := fp.Match(fileSearchPattern, fName)
+
+			if err != nil {
+
+				_ = dir.Close()
+
+				return FileMgrCollection{},
+					fmt.Errorf(ePrefix+
+						"Error returned by fp.Match(fileSearchPattern, fileName). "+
+						"directorySearched='%v' fileSearchPattern='%v' fileName='%v' Error='%v' ",
+						dMgr.absolutePath, fileSearchPattern, fName, err.Error())
+			}
+
+			if !isMatch {
+				continue
+			} else {
+
+				err = fMgrCol.AddFileMgrByFileInfo(dMgr.absolutePath, nameFInfo)
+
+				if err != nil {
+					_ = dir.Close()
+					return FileMgrCollection{},
+						fmt.Errorf(ePrefix+
+							"Error returned by fMgrCol.AddFileMgrByFileInfo(dMgr.absolutePath, nameFInfo). "+
+							"Directory='%v' FileName='%v' Error='%v' ",
+							dMgr.absolutePath, fName, err.Error())
+				}
+			}
+		}
+	}
+
+	err = dir.Close()
+
+	if err != nil {
+		return FileMgrCollection{},
+			fmt.Errorf(ePrefix+
+				"Error returned by dir.Close(). "+
+				"dir='%v' Error='%v' ",
+				dMgr.absolutePath, err.Error())
+	}
+
+	return fMgrCol, nil
 }
 
 // FindWalkDirFiles - This method returns file information on files residing in a specific

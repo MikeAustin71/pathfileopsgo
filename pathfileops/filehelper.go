@@ -1049,7 +1049,7 @@ func (fh *FileHelper) FilterFileName(info os.FileInfo, fileSelectionCriteria Fil
 	isPatternSet, isPatternMatch, err2 := fh.SearchFilePatternMatch(info, fileSelectionCriteria)
 
 	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error returned from dMgr.searchFilePatternMatch(info, fileSelectionCriteria) info.Name()='%v' Error='%v'", info.Name(), err.Error())
+		err = fmt.Errorf(ePrefix+"Error returned from fh.SearchFilePatternMatch(info, fileSelectionCriteria) info.Name()='%v' Error='%v'", info.Name(), err.Error())
 		isMatchedFile = false
 		return
 	}

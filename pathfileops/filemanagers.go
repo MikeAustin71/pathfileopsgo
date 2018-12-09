@@ -38,11 +38,11 @@ func (fMgrs *FileMgrCollection) AddFileMgr(fMgr FileMgr) {
 // input parameters 'directory' and 'pathFileNameExt'.
 func (fMgrs *FileMgrCollection) AddFileMgrByDirFileNameExt(
 	directory DirMgr,
-	pathFileNameExt string) error {
+	fileNameExt string) error {
 
 	ePrefix := "FileMgrCollection.AddFileMgrByDirFileNameExt() "
 
-	fMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(directory, pathFileNameExt)
+	fMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(directory, fileNameExt)
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+"%v", err.Error())
@@ -71,6 +71,28 @@ func (fMgrs *FileMgrCollection) AddFileMgrByPathFile(
 	fMgrs.FMgrs = append(fMgrs.FMgrs, fMgr)
 
 	return nil
+}
+
+// AddFileMgrByDirStrFileNameStr - Adds a FileMgr object to the
+// collection based on input parameter strings, 'pathName' and
+// 'fileNameExt'.
+//
+func (fMgrs *FileMgrCollection) AddFileMgrByDirStrFileNameStr(
+	pathName string,
+	fileNameExt string) error {
+
+	ePrefix := "FileMgrCollection.AddFileMgrByDirStrFileNameStr() "
+
+	fMgr, err := FileMgr{}.NewFromDirStrFileNameStr(pathName, fileNameExt)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"Error creating FileMgr: %v", err.Error())
+	}
+
+	fMgrs.FMgrs = append(fMgrs.FMgrs, fMgr)
+
+	return nil
+
 }
 
 // AddFileMgrByFileInfo - Adds a File Manager object to the collection based on input from
