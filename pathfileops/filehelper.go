@@ -249,49 +249,63 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 	return
 }
 
-// CopyFileByIo - Copies file from source path & File Name
-// to destination path & File Name.
-// See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+// CopyFileByIo - Copies file from source path and file name
+// to destination path and file name.
+//
+// Reference:
+// https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 //
 // Note: Unlike the method CopyFileByLink above, this method
 // does NOT rely on the creation of symbolic links. Instead,
 // a new destination file is created and the contents of the source
-// file are written to the new destination file using "io.Copy(out, in)".
+// file are written to the new destination file using "io.Copy()".
 //
-// "io.Copy(out, in)" is the only method used to copy the designated
-// file. If this fails an error is returned.
+// "io.Copy()" is the only method used to copy the designated source
+// file. If this method fails, an error is returned.
 //
 func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
 	ePrefix := "FileHelper.CopyFileByIo() "
 	err = nil
 
 	if len(src) == 0 {
-		err = errors.New(ePrefix + "Error: Input parameter 'src' is a ZERO length string!")
-		return
+		err = errors.New(ePrefix +
+			"Error: Input parameter 'src' is a ZERO length string!")
+		return err
 	}
 
 	if len(dst) == 0 {
-		err = errors.New(ePrefix + "Error: Input parameter 'dst' is a ZERO length string!")
-		return
+		err = errors.New(ePrefix +
+			"Error: Input parameter 'dst' is a ZERO length string!")
+		return err
 	}
 
 	if !fh.DoesFileExist(src) {
-		err = fmt.Errorf(ePrefix+"Error: Input parameter 'src' file DOES NOT EXIST! src='%v'", src)
-		return
+		err = fmt.Errorf(ePrefix+
+			"Error: Input parameter 'src' file DOES NOT EXIST! src='%v'", src)
+		return err
 	}
 
 	sfi, err2 := os.Stat(src)
 
 	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error returned from os.Stat(src). src='%v'  Error='%v'", src, err2.Error())
-		return
+		if os.IsNotExist(err2) {
+			// Must be PathError - source path & file name do not exist!
+			err = fmt.Errorf(ePrefix+
+				"Source File path Error - path does NOT exist. Source File='%v' Error: %v",
+				src, err.Error())
+			return err
+		}
+
+		err = fmt.Errorf(ePrefix+
+			"Error returned from os.Stat(src). src='%v'  Error='%v'", src, err2.Error())
+		return err
 	}
 
 	if !sfi.Mode().IsRegular() {
 		// cannot copy non-regular files (e.g., directories,
 		// symlinks, devices, etc.)
 		err = fmt.Errorf(ePrefix+"Error non-regular source file ='%v' source file Mode='%v'", sfi.Name(), sfi.Mode().String())
-		return
+		return err
 	}
 
 	dfi, err2 := os.Stat(dst)
@@ -301,29 +315,104 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
 		if !os.IsNotExist(err2) {
 			// Must be PathError - path does not exist
 			err = fmt.Errorf(ePrefix+"Destination File path Error - path does NOT exist. Destination File='%v' Error: %v", dst, err.Error())
-			return
+			return err
 		}
 
-	} else {
+		// The destination file does not exist
 
+	} else {
+		// The destination file already exists!
 		if !dfi.Mode().IsRegular() {
 			err = fmt.Errorf(ePrefix+"Error: non-regular destination file. Cannot Overwrite destination file. Destination file='%v' destination file mode='%v'", dfi.Name(), dfi.Mode().String())
-			return
+			return err
 		}
 
 		if os.SameFile(sfi, dfi) {
 			// Source and destination are the same
 			// path and file name.
 			err = nil
-			return
+			return err
 		}
 
 	}
 
 	// Create a new destination file and copy source
 	// file contents to the destination file.
-	err = fh.copyFileByIOCopy(src, dst)
-	return
+
+	//err = fh.copyFileByIOCopy(src, dst)
+	//return
+
+	in, err2 := os.Open(src)
+
+	if err2 != nil {
+		err = fmt.Errorf(ePrefix+
+			"Error returned from os.Open(src) src='%v'  Error='%v'",
+			src, err2.Error())
+		return err
+	}
+
+	out, err2 := os.Create(dst)
+
+	if err2 != nil {
+		err = fmt.Errorf(ePrefix+
+			"Error returned from os.Create(destinationFile) "+
+			"destinationFile='%v'  Error='%v'",
+			dst, err2.Error())
+
+		_ = in.Close()
+
+		return err
+	}
+
+	if _, err2 = io.Copy(out, in); err2 != nil {
+		_ = in.Close()
+		_ = out.Close()
+		err = fmt.Errorf(ePrefix+
+			"Error returned from io.Copy(destination, source) destination='%v' "+
+			"source='%v'  Error='%v' ",
+			dst, src, err2.Error())
+		return
+	}
+
+	// flush file buffers in memory
+	err2 = out.Sync()
+
+	if err2 != nil {
+		_ = in.Close()
+		_ = out.Close()
+		err = fmt.Errorf(ePrefix+
+			"Error returned from out.Sync() out=destination='%v' Error='%v'",
+			dst, err2.Error())
+		return
+	}
+
+	err2 = in.Close()
+
+	if err2 != nil {
+		_ = out.Close()
+
+		err = fmt.Errorf(ePrefix+
+			"Error returned from in.Close() in=source='%v' Error='%v'",
+			src, err2.Error())
+
+		return err
+	}
+
+	err2 = out.Close()
+
+	if err2 != nil {
+
+		err = fmt.Errorf(ePrefix+
+			"Error returned from out.Close() out=destination='%v' Error='%v'",
+			dst, err2.Error())
+
+		return err
+	}
+
+	err = nil
+
+	return err
+
 }
 
 // CleanPathStr - Wrapper Function for filepath.Clean()
@@ -3102,6 +3191,7 @@ func (fh FileHelper) WriteFileStr(str string, fPtr *os.File) (int, error) {
 //
 // Reference: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 //
+/*
 func (fh FileHelper) copyFileByIOCopy(src, dst string) (err error) {
 	ePrefix := "FileHelper.copyFileByIOCopy() "
 
@@ -3160,6 +3250,7 @@ func (fh FileHelper) copyFileByIOCopy(src, dst string) (err error) {
 
 	return
 }
+*/
 
 // makeFileHelperWalkDirDeleteFilesFunc - Used in conjunction with DirMgr.DeleteWalDirFiles
 // to select and delete files residing the directory tree identified by the current DirMgr

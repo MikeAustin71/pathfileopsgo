@@ -42,10 +42,49 @@ func main() {
 
 func main() {
 
-	basePath := GetBaseProjectPath()
+	testDirStr := "../dirmgrtests"
 
-	fmt.Println("Testing GetBaseProjectPath() ")
-	fmt.Println("basePath: ", basePath)
+	fh := pathFileOps.FileHelper{}
+
+	absPath, err := fh.GetAbsPathFromFilePath(testDirStr)
+
+	if err != nil {
+		fmt.Printf("Error from fh.GetAbsPathFromFilePath(testDirStr). "+
+			"testDirStr='%v' Error='%v'n", testDirStr, err.Error())
+		return
+	}
+
+	pathFileName := fh.JoinPaths(absPath, "testFile.txt")
+
+	fmt.Println("main()")
+	fmt.Println("pathFileName: ", pathFileName)
+
+	dfi, _ := os.Stat(pathFileName)
+	/*
+		if err != nil {
+			fmt.Printf("Error from os.Stat(pathFileName). " +
+				"pathFileName='%v' Error='%v'\n", pathFileName, err.Error())
+
+			if os.IsNotExist(err) {
+				fmt.Printf("Error from os.Stat(pathFileName) is NotExist Error!. " +
+					"pathFileName='%v' Error='%v'\n", pathFileName, err.Error())
+			}
+
+			return
+		}
+	*/
+
+	if dfi == nil {
+		fmt.Println("dfi is 'nil'")
+		return
+	}
+
+	fmt.Println("dfi.Name(): ", dfi.Name())
+	/*
+		fmt.Println("dfi.IsDir", dfi.IsDir())
+		fmt.Println("dfi.Mode()", dfi.Mode())
+	*/
+	fmt.Println("dfi.Mode()", dfi.Size())
 
 }
 

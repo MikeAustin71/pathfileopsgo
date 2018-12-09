@@ -2980,7 +2980,7 @@ type FileOps struct {
 // this FileOps instance has been properly initialized.
 //
 func (fops *FileOps) IsInitialized() bool {
-
+	return fops.isInitialized
 }
 
 // NewByFileMgrs - Creates and returns a new FileOps
