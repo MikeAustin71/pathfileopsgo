@@ -46,10 +46,10 @@ func TestChangeDir(t *testing.T) {
 		t.Error("MakeAbsolutePath() Failed:", err)
 	}
 
-	err = fh.ChangeDir(targetDir)
+	err = fh.ChangeWorkingDir(targetDir)
 
 	if err != nil {
-		t.Error("ChangeDir() Failed:", err)
+		t.Error("ChangeWorkingDir() Failed:", err)
 	}
 
 	checkDir, err = fh.GetAbsCurrDir()
@@ -62,7 +62,7 @@ func TestChangeDir(t *testing.T) {
 		t.Error("Target Dir != CheckDir")
 	}
 
-	err = fh.ChangeDir(startDir)
+	err = fh.ChangeWorkingDir(startDir)
 
 	if err != nil {
 		t.Error("Change To Start Dir Failed:", err)

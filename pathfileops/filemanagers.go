@@ -1366,61 +1366,6 @@ func (fMgr *FileMgr) CopyOut() FileMgr {
 	return fmgr2
 }
 
-// Equal - Compares a second FileHelper data structure
-// to the current FileHelper data structure and returns
-// a boolean value indicating whether they are equal
-// in all respects.
-func (fMgr *FileMgr) Equal(fmgr2 *FileMgr) bool {
-
-	if fMgr.isInitialized != fmgr2.isInitialized ||
-		fMgr.originalPathFileName != fmgr2.originalPathFileName ||
-		fMgr.isAbsolutePathFileNamePopulated != fmgr2.isAbsolutePathFileNamePopulated ||
-		fMgr.doesAbsolutePathFileNameExist != fmgr2.doesAbsolutePathFileNameExist ||
-		fMgr.absolutePathFileName != fmgr2.absolutePathFileName ||
-		fMgr.fileName != fmgr2.fileName ||
-		fMgr.isFileNamePopulated != fmgr2.isFileNamePopulated ||
-		fMgr.fileExt != fmgr2.fileExt ||
-		fMgr.isFileExtPopulated != fmgr2.isFileExtPopulated ||
-		fMgr.fileNameExt != fmgr2.fileNameExt ||
-		fMgr.isFileNameExtPopulated != fmgr2.isFileNameExtPopulated ||
-		fMgr.filePtr != fmgr2.filePtr ||
-		fMgr.isFilePtrOpen != fmgr2.isFilePtrOpen {
-
-		return false
-	}
-
-	if !fMgr.dMgr.Equal(&fmgr2.dMgr) {
-		return false
-	}
-
-	if !fMgr.actualFileInfo.Equal(&fmgr2.actualFileInfo) {
-		return false
-	}
-
-	return true
-}
-
-// Empty - resets all data fields in the FileMgr structure to
-// their uninitialized or zero state.
-func (fMgr *FileMgr) Empty() {
-	fMgr.isInitialized = false
-	fMgr.dMgr = DirMgr{}
-	fMgr.originalPathFileName = ""
-	fMgr.absolutePathFileName = ""
-	fMgr.isAbsolutePathFileNamePopulated = false
-	fMgr.doesAbsolutePathFileNameExist = false
-	fMgr.fileName = ""
-	fMgr.isFileNamePopulated = false
-	fMgr.fileExt = ""
-	fMgr.isFileExtPopulated = false
-	fMgr.fileNameExt = ""
-	fMgr.isFileNameExtPopulated = false
-	fMgr.filePtr = nil
-	fMgr.isFilePtrOpen = false
-	fMgr.actualFileInfo = FileInfoPlus{}
-
-}
-
 // CreateDirAndFile - Performs two operations:
 // This is a Wrapper function for os.Create - Create a file.
 //
@@ -1628,6 +1573,61 @@ func (fMgr *FileMgr) DoesThisFileExist() (bool, error) {
 	fMgr.dMgr.DoesDirMgrPathExist()
 
 	return fMgr.doesAbsolutePathFileNameExist, nil
+}
+
+// Equal - Compares a second FileHelper data structure
+// to the current FileHelper data structure and returns
+// a boolean value indicating whether they are equal
+// in all respects.
+func (fMgr *FileMgr) Equal(fmgr2 *FileMgr) bool {
+
+	if fMgr.isInitialized != fmgr2.isInitialized ||
+		fMgr.originalPathFileName != fmgr2.originalPathFileName ||
+		fMgr.isAbsolutePathFileNamePopulated != fmgr2.isAbsolutePathFileNamePopulated ||
+		fMgr.doesAbsolutePathFileNameExist != fmgr2.doesAbsolutePathFileNameExist ||
+		fMgr.absolutePathFileName != fmgr2.absolutePathFileName ||
+		fMgr.fileName != fmgr2.fileName ||
+		fMgr.isFileNamePopulated != fmgr2.isFileNamePopulated ||
+		fMgr.fileExt != fmgr2.fileExt ||
+		fMgr.isFileExtPopulated != fmgr2.isFileExtPopulated ||
+		fMgr.fileNameExt != fmgr2.fileNameExt ||
+		fMgr.isFileNameExtPopulated != fmgr2.isFileNameExtPopulated ||
+		fMgr.filePtr != fmgr2.filePtr ||
+		fMgr.isFilePtrOpen != fmgr2.isFilePtrOpen {
+
+		return false
+	}
+
+	if !fMgr.dMgr.Equal(&fmgr2.dMgr) {
+		return false
+	}
+
+	if !fMgr.actualFileInfo.Equal(&fmgr2.actualFileInfo) {
+		return false
+	}
+
+	return true
+}
+
+// Empty - resets all data fields in the FileMgr structure to
+// their uninitialized or zero state.
+func (fMgr *FileMgr) Empty() {
+	fMgr.isInitialized = false
+	fMgr.dMgr = DirMgr{}
+	fMgr.originalPathFileName = ""
+	fMgr.absolutePathFileName = ""
+	fMgr.isAbsolutePathFileNamePopulated = false
+	fMgr.doesAbsolutePathFileNameExist = false
+	fMgr.fileName = ""
+	fMgr.isFileNamePopulated = false
+	fMgr.fileExt = ""
+	fMgr.isFileExtPopulated = false
+	fMgr.fileNameExt = ""
+	fMgr.isFileNameExtPopulated = false
+	fMgr.filePtr = nil
+	fMgr.isFilePtrOpen = false
+	fMgr.actualFileInfo = FileInfoPlus{}
+
 }
 
 // FlushBytesToDisk - After Writing bytes to a file, use this

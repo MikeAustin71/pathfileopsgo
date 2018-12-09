@@ -61,8 +61,10 @@ func (fh FileHelper) AdjustPathSlash(path string) string {
 	return fp.FromSlash(path)
 }
 
-// ChangeDir - Chdir changes the current working directory to the named directory. If there is an error, it will be of type *PathError.
-func (fh FileHelper) ChangeDir(dirPath string) error {
+// ChangeWorkingDir - Changes the current working directory to the
+// named directory passed in input parameter, 'dirPath'. If there
+// is an error, it will be of type *PathError.
+func (fh FileHelper) ChangeWorkingDir(dirPath string) error {
 
 	err := os.Chdir(dirPath)
 
@@ -3154,6 +3156,24 @@ func (fh *FileHelper) SearchFilePatternMatch(info os.FileInfo, fileSelectCriteri
 	isPatternMatch = false
 	err = nil
 	return
+}
+
+// SetCurrentWorkingDir - Similar to FileHelper.ChangeWorkingDir().
+// However, this method receives a file pointer of type *os.File.
+// The input parameter, 'fPtr' must point to a directory. If an
+// error is returned, it will be of type *PathError.
+func (fh FileHelper) SetCurrentWorkingDir(fPtr *os.File) error {
+
+	err := fPtr.Chdir()
+
+	if err != nil {
+		ePrefix := "FileHelper.SetCurrentWorkingDir() "
+
+		return fmt.Errorf(ePrefix+
+			"Error returned by fPtr.Chdir(). Error='%v' ", err.Error())
+	}
+
+	return nil
 }
 
 // WriteBytes - Wrapper for os.File.Write(). Writes an array of bytes

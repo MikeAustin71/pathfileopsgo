@@ -46,7 +46,7 @@ func main() {
 
 	fh := pathFileOps.FileHelper{}
 
-	absPath, err := fh.GetAbsPathFromFilePath(testDirStr)
+	dirPath, err := fh.GetAbsPathFromFilePath(testDirStr)
 
 	if err != nil {
 		fmt.Printf("Error from fh.GetAbsPathFromFilePath(testDirStr). "+
@@ -54,48 +54,40 @@ func main() {
 		return
 	}
 
-	pathFileName := fh.JoinPaths(absPath, "testFile.txt")
+	dir, err := os.Open(dirPath)
 
-	fmt.Println("main()")
-	fmt.Println("pathFileName: ", pathFileName)
-
-	dfi, _ := os.Stat(pathFileName)
-	/*
-		if err != nil {
-			fmt.Printf("Error from os.Stat(pathFileName). " +
-				"pathFileName='%v' Error='%v'\n", pathFileName, err.Error())
-
-			if os.IsNotExist(err) {
-				fmt.Printf("Error from os.Stat(pathFileName) is NotExist Error!. " +
-					"pathFileName='%v' Error='%v'\n", pathFileName, err.Error())
-			}
-
-			return
-		}
-	*/
-
-	if dfi == nil {
-		fmt.Println("dfi is 'nil'")
+	if err != nil {
+		fmt.Printf("Error from os.Open(dirPath). "+
+			"dirPath='%v' Error='%v'n", dirPath, err.Error())
 		return
 	}
 
-	fmt.Println("dfi.Name(): ", dfi.Name())
-	/*
-		fmt.Println("dfi.IsDir", dfi.IsDir())
-		fmt.Println("dfi.Mode()", dfi.Mode())
-	*/
-	fmt.Println("dfi.Mode()", dfi.Size())
+	namesFInfos, err := dir.Readdir(-1)
+
+	if err != nil {
+		_ = dir.Close()
+		fmt.Printf("Error returned by dir.Readdirnames(-1). "+
+			"dirPath='%v' Error='%v' ",
+			dirPath, err.Error())
+	}
+
+	i := 0
+	fmt.Println("main()")
+	fmt.Println("dirPath: ", dirPath)
+	fmt.Println()
+	for _, name := range namesFInfos {
+		i++
+		fmt.Println(i, "name: ", name.Name(), "  IsDir: ", name.Mode().IsDir(), " IsRegular: ", name.Mode().IsRegular())
+		fmt.Println("   name.Mode.String(): ", name.Mode().String())
+		fmt.Println()
+
+	}
+
+	_ = dir.Close()
+
+	return
 
 }
-
-/*
-func MakeDirMgrTestsDirs() {
-	fh := pathFileOps.FileHelper{}
-
-
-
-}
-*/
 
 func GetBaseProjectPath() string {
 
