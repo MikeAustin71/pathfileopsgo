@@ -42,7 +42,7 @@ func main() {
 
 func main() {
 
-	testDirStr := "../dirmgrtests"
+	testDirStr := "../dirmgrtests/dir01"
 
 	fh := pathFileOps.FileHelper{}
 
@@ -54,36 +54,23 @@ func main() {
 		return
 	}
 
-	dir, err := os.Open(dirPath)
+	searchPath := dirPath + string(os.PathSeparator) + "*"
+
+	strs, err := fp.Glob(searchPath)
 
 	if err != nil {
-		fmt.Printf("Error from os.Open(dirPath). "+
-			"dirPath='%v' Error='%v'n", dirPath, err.Error())
+		fmt.Printf("Error from fp.Glob(searchPath). "+
+			"searchPath='%v' Error='%v'n", searchPath, err.Error())
 		return
+
 	}
 
-	namesFInfos, err := dir.Readdir(-1)
-
-	if err != nil {
-		_ = dir.Close()
-		fmt.Printf("Error returned by dir.Readdirnames(-1). "+
-			"dirPath='%v' Error='%v' ",
-			dirPath, err.Error())
-	}
-
-	i := 0
 	fmt.Println("main()")
-	fmt.Println("dirPath: ", dirPath)
-	fmt.Println()
-	for _, name := range namesFInfos {
-		i++
-		fmt.Println(i, "name: ", name.Name(), "  IsDir: ", name.Mode().IsDir(), " IsRegular: ", name.Mode().IsRegular())
-		fmt.Println("   name.Mode.String(): ", name.Mode().String())
-		fmt.Println()
+	fmt.Println("searchPath: ", searchPath)
 
+	for i := 0; i < len(strs); i++ {
+		fmt.Println(i, "  FoundStr: ", strs[i])
 	}
-
-	_ = dir.Close()
 
 	return
 
