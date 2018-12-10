@@ -243,7 +243,7 @@ func (fMgrs *FileMgrCollection) FindFiles(
 	return fMgrs2, nil
 }
 
-// GetArrayLength - returns the array length of the
+// GetNumOfDirs - returns the array length of the
 // FileMgrCollection File Managers (FMgrs) array.
 func (fMgrs *FileMgrCollection) GetArrayLength() int {
 	return len(fMgrs.FMgrs)

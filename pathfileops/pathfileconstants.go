@@ -107,7 +107,7 @@ const (
 var FileSelectCriterionModeNames = [...]string{"AND File Select Criterion", "OR File Select Criterion"}
 
 // FileSelectionCriteria - Used is selecting file names. These
-// data fields specify the crierion used to determine if a
+// data fields specify the criterion used to determine if a
 // file should be selected for some type of operation.
 // Example: find files or delete files operations
 type FileSelectionCriteria struct {

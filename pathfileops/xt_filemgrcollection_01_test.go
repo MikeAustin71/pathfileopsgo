@@ -23,7 +23,7 @@ func TestFileMgrCollection_AddFileMgrCollection(t *testing.T) {
 	}
 
 	if fMgrs1.GetArrayLength() != 10 {
-		t.Errorf("Expected fMgrs1 Array Length == 10. Instead fMgrs1.GetArrayLength()=='%v'", fMgrs1.GetArrayLength())
+		t.Errorf("Expected fMgrs1 Array Length == 10. Instead fMgrs1.GetNumOfDirs()=='%v'", fMgrs1.GetArrayLength())
 	}
 
 	fMgrs2 := FileMgrCollection{}
@@ -39,13 +39,13 @@ func TestFileMgrCollection_AddFileMgrCollection(t *testing.T) {
 	}
 
 	if fMgrs2.GetArrayLength() != 15 {
-		t.Errorf("Expected fMgrs2 Array Length == 15. Instead fMgrs2.GetArrayLength()=='%v'", fMgrs2.GetArrayLength())
+		t.Errorf("Expected fMgrs2 Array Length == 15. Instead fMgrs2.GetNumOfDirs()=='%v'", fMgrs2.GetArrayLength())
 	}
 
 	fMgrs1.AddFileMgrCollection(&fMgrs2)
 
 	if fMgrs1.GetArrayLength() != 25 {
-		t.Errorf("Expected augmented fMgrs1 Array Length == 25. Instead fMgrs1.GetArrayLength()=='%v'", fMgrs1.GetArrayLength())
+		t.Errorf("Expected augmented fMgrs1 Array Length == 25. Instead fMgrs1.GetNumOfDirs()=='%v'", fMgrs1.GetArrayLength())
 	}
 
 	fMgr, err := fMgrs1.PeekLastFMgr()
@@ -76,7 +76,7 @@ func TestFileMgrCollection_AddFileMgr_01(t *testing.T) {
 	}
 
 	if fMgrs.GetArrayLength() != 10 {
-		t.Errorf("Expected fMgrs Array Length == 10. Instead fMgrs.GetArrayLength()=='%v'", fMgrs.GetArrayLength())
+		t.Errorf("Expected fMgrs Array Length == 10. Instead fMgrs.GetNumOfDirs()=='%v'", fMgrs.GetArrayLength())
 	}
 
 	lastFmgr, err := fMgrs.PeekLastFMgr()
@@ -109,7 +109,7 @@ func TestFileMgrCollection_AddFileMgrByPathFile(t *testing.T) {
 	}
 
 	if fMgrs.GetArrayLength() != 10 {
-		t.Errorf("Expected fMgrs Array Length == 10. Instead fMgrs.GetArrayLength()=='%v'", fMgrs.GetArrayLength())
+		t.Errorf("Expected fMgrs Array Length == 10. Instead fMgrs.GetNumOfDirs()=='%v'", fMgrs.GetArrayLength())
 	}
 
 	adjustedPath := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
@@ -157,7 +157,7 @@ func TestFileMgrCollection_AddFileInfo_01(t *testing.T) {
 	}
 
 	if fMgrs.GetArrayLength() != 10 {
-		t.Errorf("Expected fMgrs Array Length == 10. Instead fMgrs.GetArrayLength()=='%v'",
+		t.Errorf("Expected fMgrs Array Length == 10. Instead fMgrs.GetNumOfDirs()=='%v'",
 			fMgrs.GetArrayLength())
 	}
 
@@ -188,7 +188,7 @@ func TestFileMgrCollection_AddFileInfo_01(t *testing.T) {
 	}
 
 	if fMgrs.GetArrayLength() != 11 {
-		t.Errorf("Expected fMgrs Array Length == 11. Instead fMgrs.GetArrayLength()=='%v'", fMgrs.GetArrayLength())
+		t.Errorf("Expected fMgrs Array Length == 11. Instead fMgrs.GetNumOfDirs()=='%v'", fMgrs.GetArrayLength())
 	}
 
 	fmgrLast, err := fMgrs.PopLastFMgr()
@@ -216,7 +216,7 @@ func TestFileMgrCollection_PopFMgrAtIndex(t *testing.T) {
 	}
 
 	if fMgrs.GetArrayLength() != 10 {
-		t.Errorf("Expected fMgrs Array Length == 10. Instead fMgrs.GetArrayLength()=='%v'", fMgrs.GetArrayLength())
+		t.Errorf("Expected fMgrs Array Length == 10. Instead fMgrs.GetNumOfDirs()=='%v'", fMgrs.GetArrayLength())
 	}
 
 	fmgrOut, err := fMgrs.PopFMgrAtIndex(5)
@@ -226,7 +226,7 @@ func TestFileMgrCollection_PopFMgrAtIndex(t *testing.T) {
 	}
 
 	if fMgrs.GetArrayLength() != 9 {
-		t.Errorf("Expected after Pop Array fMgrs Array Length == 9. Instead fMgrs.GetArrayLength()=='%v'", fMgrs.GetArrayLength())
+		t.Errorf("Expected after Pop Array fMgrs Array Length == 9. Instead fMgrs.GetNumOfDirs()=='%v'", fMgrs.GetArrayLength())
 	}
 
 	if fmgrOut.fileNameExt != "testAddFile_006.txt" {
@@ -252,7 +252,7 @@ func TestFileMgrCollection_PeekFMgrAtIndex(t *testing.T) {
 	}
 
 	if fMgrs.GetArrayLength() != 10 {
-		t.Errorf("Expected fMgrs Array Length == 10. Instead fMgrs.GetArrayLength()=='%v'", fMgrs.GetArrayLength())
+		t.Errorf("Expected fMgrs Array Length == 10. Instead fMgrs.GetNumOfDirs()=='%v'", fMgrs.GetArrayLength())
 	}
 
 	fmgrOut, err := fMgrs.PeekFMgrAtIndex(5)
@@ -262,7 +262,7 @@ func TestFileMgrCollection_PeekFMgrAtIndex(t *testing.T) {
 	}
 
 	if fMgrs.GetArrayLength() != 10 {
-		t.Errorf("Expected after Peek Array fMgrs Array Length == 10. Instead fMgrs.GetArrayLength()=='%v'", fMgrs.GetArrayLength())
+		t.Errorf("Expected after Peek Array fMgrs Array Length == 10. Instead fMgrs.GetNumOfDirs()=='%v'", fMgrs.GetArrayLength())
 	}
 
 	if fmgrOut.fileNameExt != "testAddFile_006.txt" {
@@ -288,7 +288,7 @@ func TestFileMgrCollection_PopLastFMgr(t *testing.T) {
 	}
 
 	if fMgrs.GetArrayLength() != 10 {
-		t.Errorf("Expected fMgrs Array Length == 10. Instead fMgrs.GetArrayLength()=='%v'", fMgrs.GetArrayLength())
+		t.Errorf("Expected fMgrs Array Length == 10. Instead fMgrs.GetNumOfDirs()=='%v'", fMgrs.GetArrayLength())
 	}
 
 	fmgrLast, err := fMgrs.PopLastFMgr()
@@ -318,7 +318,7 @@ func TestFileMgrCollection_FindFiles(t *testing.T) {
 	}
 
 	if fmgrCol2.GetArrayLength() != 3 {
-		t.Errorf("Expected fmgrCol2.GetArrayLength()==3 . Instead, fmgrCol2.GetArrayLength()='%v' ",
+		t.Errorf("Expected fmgrCol2.GetNumOfDirs()==3 . Instead, fmgrCol2.GetNumOfDirs()='%v' ",
 			fmgrCol2.GetArrayLength())
 	}
 

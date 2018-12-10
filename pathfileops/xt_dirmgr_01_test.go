@@ -414,8 +414,8 @@ func TestDirMgr_DeleteWalkDirFiles_31(t *testing.T) {
 		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
 	}
 
-	if dInfo.Directories.GetArrayLength() != 3 {
-		t.Errorf("Expected 3-directories to be found. Instead, number of directories found='%v'", dInfo.Directories.GetArrayLength())
+	if dInfo.Directories.GetNumOfDirs() != 3 {
+		t.Errorf("Expected 3-directories to be found. Instead, number of directories found='%v'", dInfo.Directories.GetNumOfDirs())
 	}
 
 }
@@ -534,8 +534,8 @@ func TestDirMgr_DeleteWalkDirFiles_32(t *testing.T) {
 		t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
 	}
 
-	if dInfo.Directories.GetArrayLength() != 3 {
-		t.Errorf("Expected 3-directories to be found. Instead, number of directories found='%v'", dInfo.Directories.GetArrayLength())
+	if dInfo.Directories.GetNumOfDirs() != 3 {
+		t.Errorf("Expected 3-directories to be found. Instead, number of directories found='%v'", dInfo.Directories.GetNumOfDirs())
 	}
 
 }

@@ -63,10 +63,10 @@ func WalkDirFindFiles(
 		fmt.Println()
 	}
 
-	if dWalkInfo.Directories.GetArrayLength() > 0 {
+	if dWalkInfo.Directories.GetNumOfDirs() > 0 {
 		fmt.Println("DirMgrs Found:")
 
-		for k := 0; k < dWalkInfo.Directories.GetArrayLength(); k++ {
+		for k := 0; k < dWalkInfo.Directories.GetNumOfDirs(); k++ {
 			fmt.Printf("Dir: %v \n", dWalkInfo.Directories.DirMgrs[k].GetPath())
 		}
 
@@ -140,10 +140,10 @@ func WalkDirFindFiles2(
 		fmt.Println()
 	}
 
-	if dWalkInfo.Directories.GetArrayLength() > 0 {
+	if dWalkInfo.Directories.GetNumOfDirs() > 0 {
 		fmt.Println("DirMgrs Found:")
 
-		for k := 0; k < dWalkInfo.Directories.GetArrayLength(); k++ {
+		for k := 0; k < dWalkInfo.Directories.GetNumOfDirs(); k++ {
 			fmt.Printf("Dir: %v \n", dWalkInfo.Directories.DirMgrs[k].GetPath())
 		}
 

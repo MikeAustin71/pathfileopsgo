@@ -51,8 +51,10 @@ func (dMgrs *DirMgrCollection) AddDirMgrByPathFile(pathFileName string) error {
 	return nil
 }
 
-// AddFileMgrByFileInfo - Adds a File Manager object to the collection based on input from
-// a directory path string and a os.FileInfo object.
+// AddFileMgrByFileInfo - Adds a Directory Manager object to the
+// collection based on input from a directory path string and an
+// os.FileInfo object.
+//
 func (dMgrs *DirMgrCollection) AddFileInfo(pathFile string, info os.FileInfo) error {
 
 	ePrefix := "DirMgrCollection) AddFileMgrByFileInfo() "
@@ -168,9 +170,10 @@ func (dMgrs *DirMgrCollection) FindDirectories(
 	return dMgrs2, nil
 }
 
-// GetArrayLength - returns the array length of the
-// DirMgrCollection File Managers (FMgrs) array.
-func (dMgrs *DirMgrCollection) GetArrayLength() int {
+// GetNumOfDirs - returns the number of directories
+// contained in this Directory Manager Collection.
+//
+func (dMgrs *DirMgrCollection) GetNumOfDirs() int {
 	return len(dMgrs.DirMgrs)
 }
 
@@ -208,7 +211,7 @@ func (dMgrs *DirMgrCollection) PopFirstDirMgr() (DirMgr, error) {
 
 	om := dMgrs.DirMgrs[0].CopyOut()
 
-	dMgrs.DirMgrs = dMgrs.DirMgrs[1:l1]
+	dMgrs.DirMgrs = dMgrs.DirMgrs[1 : l1-1]
 
 	return om, nil
 }
@@ -1595,6 +1598,98 @@ func (dMgr *DirMgr) GetPathWithSeparator() string {
 //
 func (dMgr *DirMgr) GetRelativePath() string {
 	return dMgr.relativePath
+}
+
+// GetThisDirectoryTree - Returns a DirMgrCollection containing all
+// the directories in the path of the parent directory identified by
+// the current DirMgr instance.
+//
+// The returned DirMgrCollection will always contain the parent directory
+// and will therefore always consist of at least one directory. If
+// sub-directories are found, then the returned DirMgrCollection will
+// contain more than one directory.
+//
+func (dMgr *DirMgr) GetThisDirectoryTree() (DirMgrCollection, error) {
+
+	ePrefix := "DirMgr.GetThisDirectoryTree() "
+
+	dMgrs := DirMgrCollection{}
+
+	err := dMgr.IsDirMgrValid(ePrefix)
+
+	if err != nil {
+		return dMgrs, err
+	}
+
+	dMgrs.AddDirMgr(dMgr.CopyOut())
+
+	fh := FileHelper{}
+
+	maxLen := 1
+
+	for i := 0; i < maxLen; i++ {
+
+		dir, err := os.Open(dMgrs.DirMgrs[i].absolutePath)
+
+		if err != nil {
+			return DirMgrCollection{},
+				fmt.Errorf(ePrefix+
+					"Error return by os.Open(dMgrs.DirMgrs[i].absolutePath). "+
+					"dMgr.absolutePath='%v' Error='%v' ",
+					dMgrs.DirMgrs[i].absolutePath, err.Error())
+		}
+
+		nameFileInfos, err := dir.Readdir(-1)
+
+		if err != nil {
+			_ = dir.Close()
+			return DirMgrCollection{},
+				fmt.Errorf(ePrefix+
+					"Error returned by dir.Readdirnames(-1). "+
+					"dMgr.absolutePath='%v' Error='%v' ",
+					dMgr.absolutePath, err.Error())
+		}
+
+		for _, nameFInfo := range nameFileInfos {
+
+			if nameFInfo.IsDir() {
+
+				newDirPathFileName :=
+					fh.JoinPathsAdjustSeparators(dMgrs.DirMgrs[i].absolutePath, nameFInfo.Name())
+
+				fmt.Println("Next Dir: ", newDirPathFileName)
+
+				// err = dMgrs.AddFileInfo(newDirPathFileName, nameFInfo)
+				err = dMgrs.AddDirMgrByPathFile(newDirPathFileName)
+
+				if err != nil {
+					return DirMgrCollection{},
+						fmt.Errorf(ePrefix+
+							"Error returned by dMgrs.AddDirMgrByPathFile(newDirPathFileName). "+
+							"dir='%v' Error='%v' ",
+							newDirPathFileName, err.Error())
+				}
+
+				fmt.Println("dMgrs Length", dMgrs.GetNumOfDirs())
+
+				maxLen++
+
+			}
+		}
+
+		err = dir.Close()
+
+		if err != nil {
+			return DirMgrCollection{},
+				fmt.Errorf(ePrefix+
+					"Error returned by dir.Close(). "+
+					"dir='%v' Error='%v' ",
+					dMgr.absolutePath, err.Error())
+		}
+
+	}
+
+	return dMgrs, nil
 }
 
 // GetVolumeName - Returns a string containing the volume name

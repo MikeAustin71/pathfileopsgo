@@ -42,7 +42,7 @@ func main() {
 
 func main() {
 
-	testDirStr := "../dirmgrtests/dir01"
+	testDirStr := "../dirmgrtests"
 
 	fh := pathFileOps.FileHelper{}
 
@@ -54,24 +54,35 @@ func main() {
 		return
 	}
 
-	searchPath := dirPath + string(os.PathSeparator) + "*"
-
-	strs, err := fp.Glob(searchPath)
+	dMgr, err := pathFileOps.DirMgr{}.New(dirPath)
 
 	if err != nil {
-		fmt.Printf("Error from fp.Glob(searchPath). "+
-			"searchPath='%v' Error='%v'n", searchPath, err.Error())
+		fmt.Printf("Error from DirMgr{}.New(dirPath). "+
+			"dirPath='%v' Error='%v'n", dirPath, err.Error())
 		return
 
 	}
 
-	fmt.Println("main()")
-	fmt.Println("searchPath: ", searchPath)
+	dMgrCol, err := dMgr.GetThisDirectoryTree()
+	maxDirs := dMgrCol.GetNumOfDirs()
+	fmt.Println("Returned dMgrCol Length", maxDirs)
 
-	for i := 0; i < len(strs); i++ {
-		fmt.Println(i, "  FoundStr: ", strs[i])
+	fmt.Println("main()")
+
+	for i := 0; i < maxDirs; i++ {
+
+		foundDir, err := dMgrCol.PeekDirMgrAtIndex(i)
+
+		if err != nil {
+			fmt.Printf("Error from dMgrCol.PopDirMgrAtIndex(i). "+
+				"i='%v' Error='%v'n", i, err.Error())
+			return
+		}
+
+		fmt.Println(i, "  FoundDir: ", foundDir.GetAbsolutePath())
 	}
 
+	fmt.Println("Num Of Dirs In Collection: ", dMgrCol.GetNumOfDirs())
 	return
 
 }
@@ -239,9 +250,9 @@ func TestingDirMgrDeleteWalkDirFiles06() {
 		fmt.Printf("Expected zero Error Returns. Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
 	}
 
-	if dInfo.Directories.GetArrayLength() != 3 {
+	if dInfo.Directories.GetNumOfDirs() != 3 {
 		fmt.Printf("Expected 3-directories to be found. Instead, number of directories found='%v'",
-			dInfo.Directories.GetArrayLength())
+			dInfo.Directories.GetNumOfDirs())
 	}
 
 }
@@ -955,7 +966,7 @@ func TestDirMgrFileInfo() {
 		return
 	}
 
-	lDirs := findfiles.Directories.GetArrayLength()
+	lDirs := findfiles.Directories.GetNumOfDirs()
 
 	if lDirs == 0 {
 		fmt.Println("Didn't find any directories")
@@ -1157,8 +1168,8 @@ func TestDirMgrWalDirDeleteFiles() {
 		return
 	}
 
-	if dInfo.Directories.GetArrayLength() != 3 {
-		fmt.Printf("Expected 3-directories to be found. Instead, number of directories found='%v'\n", dInfo.Directories.GetArrayLength())
+	if dInfo.Directories.GetNumOfDirs() != 3 {
+		fmt.Printf("Expected 3-directories to be found. Instead, number of directories found='%v'\n", dInfo.Directories.GetNumOfDirs())
 		return
 	}
 

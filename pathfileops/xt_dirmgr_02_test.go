@@ -88,16 +88,16 @@ func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
 		t.Error("Expected FoundFiles would include 006870_ReadingFiles.htm. It did NOT!")
 	}
 
-	if dirTreeInfo.Directories.GetArrayLength() != 3 {
+	if dirTreeInfo.Directories.GetNumOfDirs() != 3 {
 		t.Errorf("Expected the number of directories found would equal 3. It did NOT! "+
-			"Number of directories= '%v'", dirTreeInfo.Directories.GetArrayLength())
+			"Number of directories= '%v'", dirTreeInfo.Directories.GetNumOfDirs())
 	}
 
 	dir3 := fh.AdjustPathSlash("/dirwalktests/dir01/dir02/dir03")
 
 	foundDir3 := false
 
-	for j := 0; j < dirTreeInfo.Directories.GetArrayLength(); j++ {
+	for j := 0; j < dirTreeInfo.Directories.GetNumOfDirs(); j++ {
 		if strings.Contains(dirTreeInfo.Directories.DirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
@@ -181,17 +181,17 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
 			"It did NOT!")
 	}
 
-	if dWalker.Directories.GetArrayLength() != 3 {
+	if dWalker.Directories.GetNumOfDirs() != 3 {
 		t.Errorf("Expected the number of directories found would equal 3. "+
 			"It did NOT! Number of directories= '%v'",
-			dWalker.Directories.GetArrayLength())
+			dWalker.Directories.GetNumOfDirs())
 	}
 
 	dir3 := fh.AdjustPathSlash("/dirwalktests/dir01/dir02/dir03")
 
 	foundDir3 := false
 
-	for j := 0; j < dWalker.Directories.GetArrayLength(); j++ {
+	for j := 0; j < dWalker.Directories.GetNumOfDirs(); j++ {
 		if strings.Contains(dWalker.Directories.DirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
@@ -295,17 +295,17 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 			"It did NOT!")
 	}
 
-	if dWalker.Directories.GetArrayLength() != 3 {
+	if dWalker.Directories.GetNumOfDirs() != 3 {
 		t.Errorf("Expected the number of directories found would equal 3. "+
 			"It did NOT! Number of directories= '%v'",
-			dWalker.Directories.GetArrayLength())
+			dWalker.Directories.GetNumOfDirs())
 	}
 
 	dir3 := fh.AdjustPathSlash("/dirwalktests/dir01/dir02/dir03")
 
 	foundDir3 := false
 
-	for j := 0; j < dWalker.Directories.GetArrayLength(); j++ {
+	for j := 0; j < dWalker.Directories.GetNumOfDirs(); j++ {
 		if strings.Contains(dWalker.Directories.DirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
@@ -405,16 +405,16 @@ func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 		t.Error("Expected FoundFiles would include newerFileForTest_03.txt. File was NOT found!")
 	}
 
-	if dWalker.Directories.GetArrayLength() != 3 {
+	if dWalker.Directories.GetNumOfDirs() != 3 {
 		t.Errorf("Expected the number of directories found would equal 3. It did NOT! "+
-			"Number of directories= '%v'", dWalker.Directories.GetArrayLength())
+			"Number of directories= '%v'", dWalker.Directories.GetNumOfDirs())
 	}
 
 	dir3 := fh.AdjustPathSlash("/dirwalktests/dir01/dir02/dir03")
 
 	foundDir3 := false
 
-	for j := 0; j < dWalker.Directories.GetArrayLength(); j++ {
+	for j := 0; j < dWalker.Directories.GetNumOfDirs(); j++ {
 		if strings.Contains(dWalker.Directories.DirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
@@ -554,16 +554,16 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 			"Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
 	}
 
-	if dInfo.Directories.GetArrayLength() != 3 {
+	if dInfo.Directories.GetNumOfDirs() != 3 {
 		t.Errorf("Expected 3-directories to be found. Instead, number of "+
-			"directories found='%v'", dInfo.Directories.GetArrayLength())
+			"directories found='%v'", dInfo.Directories.GetNumOfDirs())
 	}
 
 	dir3 := fh.AdjustPathSlash("/dirwalkdeletetests/dirdelete01/dirdelete02/dirdelete03")
 
 	foundDir3 := false
 
-	for j := 0; j < dInfo.Directories.GetArrayLength(); j++ {
+	for j := 0; j < dInfo.Directories.GetNumOfDirs(); j++ {
 		if strings.Contains(dInfo.Directories.DirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
@@ -692,16 +692,16 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 			len(dInfo.ErrReturns))
 	}
 
-	if dInfo.Directories.GetArrayLength() != 3 {
+	if dInfo.Directories.GetNumOfDirs() != 3 {
 		t.Errorf("Expected 3-directories to be found. Instead, number of "+
-			"directories found='%v'", dInfo.Directories.GetArrayLength())
+			"directories found='%v'", dInfo.Directories.GetNumOfDirs())
 	}
 
 	dir3 := fh.AdjustPathSlash("/dirwalkdeletetests/dirdelete01/dirdelete02/dirdelete03")
 
 	foundDir3 := false
 
-	for j := 0; j < dInfo.Directories.GetArrayLength(); j++ {
+	for j := 0; j < dInfo.Directories.GetNumOfDirs(); j++ {
 		if strings.Contains(dInfo.Directories.DirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
@@ -828,9 +828,9 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
 			len(dInfo.ErrReturns))
 	}
 
-	if dInfo.Directories.GetArrayLength() != 3 {
+	if dInfo.Directories.GetNumOfDirs() != 3 {
 		t.Errorf("Expected 3-directories to be found. Instead, number of directories found='%v'",
-			dInfo.Directories.GetArrayLength())
+			dInfo.Directories.GetNumOfDirs())
 	}
 
 }
@@ -921,9 +921,9 @@ func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
 			len(dInfo.ErrReturns))
 	}
 
-	if dInfo.Directories.GetArrayLength() != 3 {
+	if dInfo.Directories.GetNumOfDirs() != 3 {
 		t.Errorf("Expected 3-directories to be found. Instead, number of "+
-			"directories found='%v'", dInfo.Directories.GetArrayLength())
+			"directories found='%v'", dInfo.Directories.GetNumOfDirs())
 	}
 
 }
@@ -1025,9 +1025,9 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
 			"Error Returns='%v'", len(dInfo.ErrReturns))
 	}
 
-	if dInfo.Directories.GetArrayLength() != 3 {
+	if dInfo.Directories.GetNumOfDirs() != 3 {
 		t.Errorf("Expected 3-directories to be found. Instead, number "+
-			"of directories found='%v'", dInfo.Directories.GetArrayLength())
+			"of directories found='%v'", dInfo.Directories.GetNumOfDirs())
 	}
 
 }
@@ -1087,9 +1087,9 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
 			len(dInfo.ErrReturns))
 	}
 
-	if dInfo.Directories.GetArrayLength() != 3 {
+	if dInfo.Directories.GetNumOfDirs() != 3 {
 		t.Errorf("Expected 3-directories to be found. Instead, number of directories "+
-			"found='%v'", dInfo.Directories.GetArrayLength())
+			"found='%v'", dInfo.Directories.GetNumOfDirs())
 	}
 
 }
@@ -1189,9 +1189,9 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
 			"Error Returns='%v'", len(dInfo.ErrReturns))
 	}
 
-	if dInfo.Directories.GetArrayLength() != 3 {
+	if dInfo.Directories.GetNumOfDirs() != 3 {
 		t.Errorf("Expected 3-directories to be found. Instead, number of "+
-			"directories found='%v'", dInfo.Directories.GetArrayLength())
+			"directories found='%v'", dInfo.Directories.GetNumOfDirs())
 	}
 
 }
@@ -1321,9 +1321,9 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 			len(dInfo.ErrReturns))
 	}
 
-	if dInfo.Directories.GetArrayLength() != 3 {
+	if dInfo.Directories.GetNumOfDirs() != 3 {
 		t.Errorf("Expected 3-directories to be found. Instead, number of "+
-			"directories found='%v'", dInfo.Directories.GetArrayLength())
+			"directories found='%v'", dInfo.Directories.GetNumOfDirs())
 
 	}
 
@@ -1449,9 +1449,9 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
 			"Returns='%v'", len(dInfo.ErrReturns))
 	}
 
-	if dInfo.Directories.GetArrayLength() != 3 {
+	if dInfo.Directories.GetNumOfDirs() != 3 {
 		t.Errorf("Expected 3-directories to be found. Instead, number of "+
-			"directories found='%v'", dInfo.Directories.GetArrayLength())
+			"directories found='%v'", dInfo.Directories.GetNumOfDirs())
 	}
 
 }
@@ -1577,9 +1577,9 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
 			"Error Returns='%v'", len(dInfo.ErrReturns))
 	}
 
-	if dInfo.Directories.GetArrayLength() != 3 {
+	if dInfo.Directories.GetNumOfDirs() != 3 {
 		t.Errorf("Expected 3-directories to be found. Instead, number of "+
-			"directories found='%v'", dInfo.Directories.GetArrayLength())
+			"directories found='%v'", dInfo.Directories.GetNumOfDirs())
 	}
 
 }
