@@ -40,11 +40,11 @@ func WalkDirFindFiles(
 	fmt.Println("filesOlderThan: ", du.GetDateTimeYMDAbbrvDowNano(filesOlderThan))
 	fmt.Println("filesNewerThan: ", du.GetDateTimeYMDAbbrvDowNano(filesNewerThan))
 
-	if dWalkInfo.FoundFiles.GetArrayLength() == 0 {
+	if dWalkInfo.FoundFiles.GetNumOfFileMgrs() == 0 {
 		fmt.Println("No Files Found")
 	} else {
 		fmt.Println("Files Found: ")
-		for i := 0; i < dWalkInfo.FoundFiles.GetArrayLength(); i++ {
+		for i := 0; i < dWalkInfo.FoundFiles.GetNumOfFileMgrs(); i++ {
 
 			fInfoPlus, err := dWalkInfo.FoundFiles.FMgrs[i].GetFileInfoPlus()
 
@@ -119,11 +119,11 @@ func WalkDirFindFiles2(
 	fmt.Println("filesOlderThan: ", du.GetDateTimeYMDAbbrvDowNano(filesOlderThan))
 	fmt.Println("filesNewerThan: ", du.GetDateTimeYMDAbbrvDowNano(filesNewerThan))
 
-	if dWalkInfo.FoundFiles.GetArrayLength() == 0 {
+	if dWalkInfo.FoundFiles.GetNumOfFileMgrs() == 0 {
 		fmt.Println("No Files Found")
 	} else {
 		fmt.Println("Files Found: ")
-		for i := 0; i < dWalkInfo.FoundFiles.GetArrayLength(); i++ {
+		for i := 0; i < dWalkInfo.FoundFiles.GetNumOfFileMgrs(); i++ {
 			fileInfoPlus, err := dWalkInfo.FoundFiles.FMgrs[i].GetFileInfoPlus()
 
 			if err != nil {

@@ -62,15 +62,15 @@ func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
 			dir, err.Error())
 	}
 
-	if dirTreeInfo.FoundFiles.GetArrayLength() != 6 {
+	if dirTreeInfo.FoundFiles.GetNumOfFileMgrs() != 6 {
 		t.Errorf("Expected to find 6-files in directory tree. Instead, found %v files.",
-			dirTreeInfo.FoundFiles.GetArrayLength())
+			dirTreeInfo.FoundFiles.GetNumOfFileMgrs())
 	}
 
 	foundnewTestFile3 := false
 	foundOldReadingFile := false
 
-	for i := 0; i < dirTreeInfo.FoundFiles.GetArrayLength(); i++ {
+	for i := 0; i < dirTreeInfo.FoundFiles.GetNumOfFileMgrs(); i++ {
 		if dirTreeInfo.FoundFiles.FMgrs[i].fileNameExt == "newerFileForTest_03.txt" {
 			foundnewTestFile3 = true
 		}
@@ -153,15 +153,15 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
 			"filesOlderThan, filesNewerThan). dir='%v' Error='%v'", dir, err.Error())
 	}
 
-	if dWalker.FoundFiles.GetArrayLength() != 2 {
+	if dWalker.FoundFiles.GetNumOfFileMgrs() != 2 {
 		t.Errorf("Expected to find 2-files in directory tree. Instead, "+
-			"found %v files.", dWalker.FoundFiles.GetArrayLength())
+			"found %v files.", dWalker.FoundFiles.GetNumOfFileMgrs())
 	}
 
 	foundWritingFiles := false
 	foundOldReadingFile := false
 
-	for i := 0; i < dWalker.FoundFiles.GetArrayLength(); i++ {
+	for i := 0; i < dWalker.FoundFiles.GetNumOfFileMgrs(); i++ {
 		if dWalker.FoundFiles.FMgrs[i].fileNameExt == "006890_WritingFiles.htm" {
 			foundWritingFiles = true
 		}
@@ -256,16 +256,16 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 			"filesOlderThan, filesNewerThan). dir='%v' Error='%v'", dir, err.Error())
 	}
 
-	if dWalker.FoundFiles.GetArrayLength() != 3 {
+	if dWalker.FoundFiles.GetNumOfFileMgrs() != 3 {
 		t.Errorf("Expected to find 3-files in directory tree. Instead, "+
-			"found %v files.", dWalker.FoundFiles.GetArrayLength())
+			"found %v files.", dWalker.FoundFiles.GetNumOfFileMgrs())
 	}
 
 	foundOldWritingFiles := false
 	foundOldReadingFile := false
 	foundOldTestHtmFile := false
 
-	for i := 0; i < dWalker.FoundFiles.GetArrayLength(); i++ {
+	for i := 0; i < dWalker.FoundFiles.GetNumOfFileMgrs(); i++ {
 		if dWalker.FoundFiles.FMgrs[i].fileNameExt == "006890_WritingFiles.htm" {
 			foundOldWritingFiles = true
 		}
@@ -369,16 +369,16 @@ func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 			"filesOlderThan, filesNewerThan). dir='%v' Error='%v'", dir, err.Error())
 	}
 
-	if dWalker.FoundFiles.GetArrayLength() != 3 {
+	if dWalker.FoundFiles.GetNumOfFileMgrs() != 3 {
 		t.Errorf("Expected to find 3-files in directory tree. Instead, "+
-			"found %v files.", dWalker.FoundFiles.GetArrayLength())
+			"found %v files.", dWalker.FoundFiles.GetNumOfFileMgrs())
 	}
 
 	foundNewerFile1 := false
 	foundNewerFile2 := false
 	foundNewerFile3 := false
 
-	for i := 0; i < dWalker.FoundFiles.GetArrayLength(); i++ {
+	for i := 0; i < dWalker.FoundFiles.GetNumOfFileMgrs(); i++ {
 		if dWalker.FoundFiles.FMgrs[i].fileNameExt == "newerFileForTest_01.txt" {
 			foundNewerFile1 = true
 		}
@@ -477,9 +477,9 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 
 	dInfo, err := dMgr.FindWalkDirFiles(fsc)
 
-	if dInfo.FoundFiles.GetArrayLength() != 6 {
+	if dInfo.FoundFiles.GetNumOfFileMgrs() != 6 {
 		t.Errorf("Expected to find 6-files deleted. Instead, %v-files were deleted.",
-			dInfo.FoundFiles.GetArrayLength())
+			dInfo.FoundFiles.GetNumOfFileMgrs())
 	}
 
 	oldFile1 := "test.htm"
@@ -497,7 +497,7 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 	newFile2Found := false
 	newFile3Found := false
 
-	for i := 0; i < dInfo.FoundFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.FoundFiles.GetNumOfFileMgrs(); i++ {
 
 		if strings.Contains(dInfo.FoundFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
@@ -615,9 +615,9 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 
 	dInfo, err := dMgr.FindWalkDirFiles(fsc)
 
-	if dInfo.FoundFiles.GetArrayLength() != 6 {
+	if dInfo.FoundFiles.GetNumOfFileMgrs() != 6 {
 		t.Errorf("Expected to find 6-files deleted. Instead, %v-files were deleted.",
-			dInfo.FoundFiles.GetArrayLength())
+			dInfo.FoundFiles.GetNumOfFileMgrs())
 	}
 
 	oldFile1 := "test.htm"
@@ -635,7 +635,7 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 	newFile2Found := false
 	newFile3Found := false
 
-	for i := 0; i < dInfo.FoundFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.FoundFiles.GetNumOfFileMgrs(); i++ {
 
 		if strings.Contains(dInfo.FoundFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
@@ -750,9 +750,9 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
-	if dInfo.DeletedFiles.GetArrayLength() != 6 {
+	if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
 		t.Errorf("Expected to find 6-files deleted. Instead, %v-files were deleted.",
-			dInfo.DeletedFiles.GetArrayLength())
+			dInfo.DeletedFiles.GetNumOfFileMgrs())
 	}
 
 	oldFile1 := "test.htm"
@@ -770,7 +770,7 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
 	newFile2Found := false
 	newFile3Found := false
 
-	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.DeletedFiles.GetNumOfFileMgrs(); i++ {
 
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
@@ -872,9 +872,9 @@ func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
-	if dInfo.DeletedFiles.GetArrayLength() != 3 {
+	if dInfo.DeletedFiles.GetNumOfFileMgrs() != 3 {
 		t.Errorf("Expected to find 3-files deleted. Instead, %v-files were deleted.",
-			dInfo.DeletedFiles.GetArrayLength())
+			dInfo.DeletedFiles.GetNumOfFileMgrs())
 	}
 
 	oldFile1 := "test.htm"
@@ -885,7 +885,7 @@ func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
 	oldFile2Found := false
 	oldFile3Found := false
 
-	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.DeletedFiles.GetNumOfFileMgrs(); i++ {
 
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
@@ -975,9 +975,9 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
-	if dInfo.DeletedFiles.GetArrayLength() != 3 {
+	if dInfo.DeletedFiles.GetNumOfFileMgrs() != 3 {
 		t.Errorf("Expected to find 3-files deleted. Instead, "+
-			"%v-files were deleted.", dInfo.DeletedFiles.GetArrayLength())
+			"%v-files were deleted.", dInfo.DeletedFiles.GetNumOfFileMgrs())
 
 	}
 
@@ -989,7 +989,7 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
 	oldFile2Found := false
 	oldFile3Found := false
 
-	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.DeletedFiles.GetNumOfFileMgrs(); i++ {
 
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
@@ -1077,9 +1077,9 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
-	if dInfo.DeletedFiles.GetArrayLength() != 0 {
+	if dInfo.DeletedFiles.GetNumOfFileMgrs() != 0 {
 		t.Errorf("Expected to find 0-files deleted. Instead, %v-files were deleted.",
-			dInfo.DeletedFiles.GetArrayLength())
+			dInfo.DeletedFiles.GetNumOfFileMgrs())
 	}
 
 	if len(dInfo.ErrReturns) != 0 {
@@ -1139,9 +1139,9 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
-	if dInfo.DeletedFiles.GetArrayLength() != 3 {
+	if dInfo.DeletedFiles.GetNumOfFileMgrs() != 3 {
 		t.Errorf("Expected to find 3-files deleted. Instead, %v-files "+
-			"were deleted.", dInfo.DeletedFiles.GetArrayLength())
+			"were deleted.", dInfo.DeletedFiles.GetNumOfFileMgrs())
 
 	}
 
@@ -1153,7 +1153,7 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
 	newFile2Found := false
 	newFile3Found := false
 
-	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.DeletedFiles.GetNumOfFileMgrs(); i++ {
 
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, newFile1) {
 			newFile1Found = true
@@ -1244,9 +1244,9 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
-	if dInfo.DeletedFiles.GetArrayLength() != 6 {
+	if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
 		t.Errorf("Expected to find 6-files deleted. Instead, %v-files "+
-			"were deleted.", dInfo.DeletedFiles.GetArrayLength())
+			"were deleted.", dInfo.DeletedFiles.GetNumOfFileMgrs())
 	}
 
 	oldFile1 := "test.htm"
@@ -1264,7 +1264,7 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 	newFile2Found := false
 	newFile3Found := false
 
-	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.DeletedFiles.GetNumOfFileMgrs(); i++ {
 
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
@@ -1366,9 +1366,9 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
-	if dInfo.DeletedFiles.GetArrayLength() != 6 {
+	if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
 		t.Errorf("Expected to find 6-files deleted. Instead, "+
-			"%v-files were deleted.", dInfo.DeletedFiles.GetArrayLength())
+			"%v-files were deleted.", dInfo.DeletedFiles.GetNumOfFileMgrs())
 	}
 
 	oldFile1 := "test.htm"
@@ -1386,7 +1386,7 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
 	newFile2Found := false
 	newFile3Found := false
 
-	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.DeletedFiles.GetNumOfFileMgrs(); i++ {
 
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
@@ -1494,9 +1494,9 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
-	if dInfo.DeletedFiles.GetArrayLength() != 6 {
+	if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
 		t.Errorf("Expected to find 6-files deleted. Instead, %v-files "+
-			"were deleted.", dInfo.DeletedFiles.GetArrayLength())
+			"were deleted.", dInfo.DeletedFiles.GetNumOfFileMgrs())
 	}
 
 	oldFile1 := "test.htm"
@@ -1514,7 +1514,7 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
 	newFile2Found := false
 	newFile3Found := false
 
-	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.DeletedFiles.GetNumOfFileMgrs(); i++ {
 
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].fileNameExt, oldFile1) {
 			oldFile1Found = true
@@ -1966,7 +1966,7 @@ func DirMgr02SetupDirWalkTests() error {
 
 	// If directory tree ../dirwalktests contains files,
 	// delete them.
-	if dirTree0Info.FoundFiles.GetArrayLength() > 0 {
+	if dirTree0Info.FoundFiles.GetNumOfFileMgrs() > 0 {
 
 		_, err = destDirMgr0.DeleteWalkDirFiles(deleteCriteria)
 

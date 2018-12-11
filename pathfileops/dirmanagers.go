@@ -35,15 +35,18 @@ func (dMgrs *DirMgrCollection) AddDirMgr(dMgr DirMgr) {
 	dMgrs.DirMgrs = append(dMgrs.DirMgrs, dMgr.CopyOut())
 }
 
-func (dMgrs *DirMgrCollection) AddDirMgrByPathFile(pathFileName string) error {
+// AddDirMgrByPathFile - Adds a Directory Manager (DirMgr) to the
+// collections based on a string input parameter, 'pathName'.
+//
+func (dMgrs *DirMgrCollection) AddDirMgrByPathFile(pathName string) error {
 	ePrefix := "DirMgrCollection.AddDirMgrByPathFile() "
 
-	dMgr, err := DirMgr{}.New(pathFileName)
+	dMgr, err := DirMgr{}.New(pathName)
 
 	if err != nil {
 		s := ePrefix +
-			"Error returned from DirMgr{}.NewFromPathFileNameExtStr(pathFileName). pathFileName='%v' Error='%v'"
-		return fmt.Errorf(s, pathFileName, err.Error())
+			"Error returned from DirMgr{}.NewFromPathFileNameExtStr(pathName). pathName='%v' Error='%v'"
+		return fmt.Errorf(s, pathName, err.Error())
 	}
 
 	dMgrs.DirMgrs = append(dMgrs.DirMgrs, dMgr)
@@ -183,17 +186,17 @@ func (dMgrs *DirMgrCollection) PopLastDirMgr() (DirMgr, error) {
 
 	ePrefix := "DirMgrCollection.PopLastDirMgr() "
 
-	l1 := len(dMgrs.DirMgrs)
+	arrayLen := len(dMgrs.DirMgrs)
 
-	if l1 == 0 {
+	if arrayLen == 0 {
 		return DirMgr{}, errors.New(ePrefix + "Error: Empty DirMgrCollection. No messages available!")
 	}
 
-	fmgr := dMgrs.DirMgrs[l1-1].CopyOut()
+	dmgr := dMgrs.DirMgrs[arrayLen-1].CopyOut()
 
-	dMgrs.DirMgrs = dMgrs.DirMgrs[0 : l1-1]
+	dMgrs.DirMgrs = dMgrs.DirMgrs[0 : arrayLen-1]
 
-	return fmgr, nil
+	return dmgr, nil
 }
 
 // PopFirstDirMgr - Removes the first OpsMsgDto object
@@ -203,22 +206,25 @@ func (dMgrs *DirMgrCollection) PopFirstDirMgr() (DirMgr, error) {
 
 	ePrefix := "DirMgrCollection.PopFirstDirMgr() "
 
-	l1 := len(dMgrs.DirMgrs)
-
-	if l1 == 0 {
-		return DirMgr{}, errors.New(ePrefix + "Error: Empty DirMgrCollection. No messages available!")
+	if len(dMgrs.DirMgrs) == 0 {
+		return DirMgr{},
+			errors.New(ePrefix + "Error: The Directory Manger Collection is EMPTY!")
 	}
 
-	om := dMgrs.DirMgrs[0].CopyOut()
+	dMgr := dMgrs.DirMgrs[0].CopyOut()
 
-	dMgrs.DirMgrs = dMgrs.DirMgrs[1 : l1-1]
+	dMgrs.DirMgrs = dMgrs.DirMgrs[1:]
 
-	return om, nil
+	return dMgr, nil
 }
 
 // PopDirMgrAtIndex - Returns a copy of the File Manager (DirMgr) object located
 // at index, 'idx', in the DirMgrCollection array. As a 'Pop' method, the original
 // DirMgr object is deleted from the DirMgrCollection array.
+//
+// Therefore a the completion of this method, the Directory Manager Collection
+// array has a length which is one less than the starting array length.
+//
 func (dMgrs *DirMgrCollection) PopDirMgrAtIndex(idx int) (DirMgr, error) {
 	ePrefix := "DirMgrCollection.PopDirMgrAtIndex() "
 
@@ -227,34 +233,25 @@ func (dMgrs *DirMgrCollection) PopDirMgrAtIndex(idx int) (DirMgr, error) {
 			"Index Out-Of-Range! idx='%v'", idx)
 	}
 
-	lDirMgrs := len(dMgrs.DirMgrs)
+	arrayLen := len(dMgrs.DirMgrs)
 
-	if idx >= lDirMgrs {
-		return DirMgr{}, fmt.Errorf(ePrefix+"Error: Input Parameter is greater than the "+
-			"length of the collection index. Index Out-Of-Range! idx='%v' Array Length='%v' ", idx, lDirMgrs)
+	if idx >= arrayLen {
+		return DirMgr{}, fmt.Errorf(ePrefix+
+			"Error: Input Parameter is greater than the "+
+			"length of the collection index. Index Out-Of-Range! idx='%v' Array Length='%v' ", idx, arrayLen)
 	}
 
 	if idx == 0 {
 		return dMgrs.PopFirstDirMgr()
 	}
 
-	if idx == lDirMgrs-1 {
+	if idx == arrayLen-1 {
 		return dMgrs.PopLastDirMgr()
 	}
 
 	dMgr := dMgrs.DirMgrs[idx].CopyOut()
 
-	dirCol2 := DirMgrCollection{}
-
-	for i := 0; i < lDirMgrs; i++ {
-
-		if i != idx {
-			dirCol2.DirMgrs = append(dirCol2.DirMgrs, dMgrs.DirMgrs[i].CopyOut())
-		}
-
-	}
-
-	dMgrs.DirMgrs = dirCol2.DirMgrs
+	dMgrs.DirMgrs = append(dMgrs.DirMgrs[0:idx], dMgrs.DirMgrs[idx+1:]...)
 
 	return dMgr, nil
 }
@@ -280,13 +277,14 @@ func (dMgrs *DirMgrCollection) PeekLastDirMgr() (DirMgr, error) {
 
 	ePrefix := "DirMgrCollection.PeekLastDirMgr()"
 
-	l1 := len(dMgrs.DirMgrs)
+	arrayLen := len(dMgrs.DirMgrs)
 
-	if l1 == 0 {
-		return DirMgr{}, errors.New(ePrefix + "Error: Empty DirMgrCollection. No messages available!")
+	if arrayLen == 0 {
+		return DirMgr{}, errors.New(ePrefix +
+			"Error: The Directory Manager Collection, 'DirMgrCollection' is EMPTY!")
 	}
 
-	return dMgrs.DirMgrs[l1-1].CopyOut(), nil
+	return dMgrs.DirMgrs[arrayLen-1].CopyOut(), nil
 }
 
 // PeekDirMgrAtIndex - Returns a copy of the File Manager (DirMgr) object located

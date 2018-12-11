@@ -69,12 +69,25 @@ func main() {
 
 	fmt.Println("main()")
 
+	foundDir, err := dMgrCol.PopDirMgrAtIndex(2)
+
+	if err != nil {
+		fmt.Printf("Error from dMgrCol.PopDirMgrAtIndex(2). "+
+			"Error='%v'n", err.Error())
+		return
+	}
+
+	fmt.Println("Expected \\dirmgrtests\\dir01\\dir02 - Found, ", foundDir.GetAbsolutePath())
+
+	maxDirs = dMgrCol.GetNumOfDirs()
+	fmt.Println("New dMgrCol Length", maxDirs)
+
 	for i := 0; i < maxDirs; i++ {
 
-		foundDir, err := dMgrCol.PeekDirMgrAtIndex(i)
+		foundDir, err := dMgrCol.PopFirstDirMgr()
 
 		if err != nil {
-			fmt.Printf("Error from dMgrCol.PopDirMgrAtIndex(i). "+
+			fmt.Printf("Error from dMgrCol.PopFirstDirMgr(). "+
 				"i='%v' Error='%v'n", i, err.Error())
 			return
 		}
@@ -174,9 +187,9 @@ func TestingDirMgrDeleteWalkDirFiles06() {
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
-	if dInfo.DeletedFiles.GetArrayLength() != 6 {
+	if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
 		fmt.Printf("Expected to find 6-files deleted. Instead, %v-files "+
-			"were deleted.", dInfo.DeletedFiles.GetArrayLength())
+			"were deleted.", dInfo.DeletedFiles.GetNumOfFileMgrs())
 	}
 
 	oldFile1 := "test.htm"
@@ -194,7 +207,7 @@ func TestingDirMgrDeleteWalkDirFiles06() {
 	newFile2Found := false
 	newFile3Found := false
 
-	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.DeletedFiles.GetNumOfFileMgrs(); i++ {
 
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].GetFileNameExt(), oldFile1) {
 			oldFile1Found = true
@@ -1091,8 +1104,8 @@ func TestDirMgrWalDirDeleteFiles() {
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
-	if dInfo.DeletedFiles.GetArrayLength() != 6 {
-		fmt.Printf("Expected to find 6-files deleted. Instead, %v-files were deleted.\n", dInfo.DeletedFiles.GetArrayLength())
+	if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
+		fmt.Printf("Expected to find 6-files deleted. Instead, %v-files were deleted.\n", dInfo.DeletedFiles.GetNumOfFileMgrs())
 		return
 	}
 
@@ -1111,7 +1124,7 @@ func TestDirMgrWalDirDeleteFiles() {
 	newFile2Found := false
 	newFile3Found := false
 
-	for i := 0; i < dInfo.DeletedFiles.GetArrayLength(); i++ {
+	for i := 0; i < dInfo.DeletedFiles.GetNumOfFileMgrs(); i++ {
 
 		if strings.Contains(dInfo.DeletedFiles.FMgrs[i].GetFileNameExt(), oldFile1) {
 			oldFile1Found = true
