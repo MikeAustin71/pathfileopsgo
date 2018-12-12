@@ -882,7 +882,7 @@ func (fh FileHelper) CreateFile(pathFileName string) (*os.File, error) {
 // 				type DirectoryDeleteFileInfo struct {
 //							StartPath            	string			// Starting directory path submitted as an input parameter
 // 																								//     to this method
-//							DirMgrs          	[]DirMgr		// Returned information on directories found in directory tree
+//							dirMgrs          	[]DirMgr		// Returned information on directories found in directory tree
 //							ErrReturns           	[]string		// Internal System Errors encountered
 //							DeleteFileSelectCriteria FileSelectionCriteria // File Selection Criteria submitted as an
 //																														 //   input parameter to this method.
@@ -1285,7 +1285,7 @@ func (fh *FileHelper) FilterFileName(info os.FileInfo, fileSelectionCriteria Fil
 //	DirectoryTreeInfo structure	-
 //					type DirectoryTreeInfo struct {
 //						StartPath            	string								// The starting path or directory for the file search
-//						DirMgrs          	[]DirMgr							// DirMgrs found during directory tree search
+//						dirMgrs          	[]DirMgr							// dirMgrs found during directory tree search
 //						FoundFiles           	[]FileWalkInfo				// Found Files matching file selection criteria
 //						ErrReturns           	[]string							// Internal System errors encountered
 //						FileSelectCriteria    FileSelectionCriteria // The File Selection Criteria submitted as an

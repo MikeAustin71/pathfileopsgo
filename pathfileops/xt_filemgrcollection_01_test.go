@@ -450,9 +450,9 @@ func TestDirectoryTreeInfo_CopyToDirectoryTree_01(t *testing.T) {
 			err.Error())
 	}
 
-	if len(dirTreeInfo.Directories.DirMgrs) != len(newDirTree.Directories.DirMgrs) {
+	if len(dirTreeInfo.Directories.dirMgrs) != len(newDirTree.Directories.dirMgrs) {
 
-		t.Errorf("Error: Expected Number of Directories = '%v'.  Instead, Number of NewFromPathFileNameExtStr Directories = '%v'", len(dirTreeInfo.Directories.DirMgrs), len(newDirTree.Directories.DirMgrs))
+		t.Errorf("Error: Expected Number of Directories = '%v'.  Instead, Number of NewFromPathFileNameExtStr Directories = '%v'", len(dirTreeInfo.Directories.dirMgrs), len(newDirTree.Directories.dirMgrs))
 	}
 
 	if len(dirTreeInfo.FoundFiles.fileMgrs) != len(newDirTree.FoundFiles.fileMgrs) {

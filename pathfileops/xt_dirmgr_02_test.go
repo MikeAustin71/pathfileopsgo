@@ -98,13 +98,13 @@ func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
 	foundDir3 := false
 
 	for j := 0; j < dirTreeInfo.Directories.GetNumOfDirs(); j++ {
-		if strings.Contains(dirTreeInfo.Directories.DirMgrs[j].path, dir3) {
+		if strings.Contains(dirTreeInfo.Directories.dirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
 	}
 
 	if !foundDir3 {
-		t.Errorf("Expected to find Directory %v in dirTreeInfo.DirMgrs. "+
+		t.Errorf("Expected to find Directory %v in dirTreeInfo.dirMgrs. "+
 			"This directory was NOT found!", dir3)
 	}
 
@@ -192,13 +192,13 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
 	foundDir3 := false
 
 	for j := 0; j < dWalker.Directories.GetNumOfDirs(); j++ {
-		if strings.Contains(dWalker.Directories.DirMgrs[j].path, dir3) {
+		if strings.Contains(dWalker.Directories.dirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
 	}
 
 	if !foundDir3 {
-		t.Errorf("Expected to find Directory %v in dWalker.DirMgrs. "+
+		t.Errorf("Expected to find Directory %v in dWalker.dirMgrs. "+
 			"This directory was NOT found!", dir3)
 	}
 
@@ -306,13 +306,13 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 	foundDir3 := false
 
 	for j := 0; j < dWalker.Directories.GetNumOfDirs(); j++ {
-		if strings.Contains(dWalker.Directories.DirMgrs[j].path, dir3) {
+		if strings.Contains(dWalker.Directories.dirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
 	}
 
 	if !foundDir3 {
-		t.Errorf("Expected to find Directory %v in dWalker.DirMgrs. "+
+		t.Errorf("Expected to find Directory %v in dWalker.dirMgrs. "+
 			"This directory was NOT found!", dir3)
 	}
 
@@ -415,13 +415,13 @@ func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 	foundDir3 := false
 
 	for j := 0; j < dWalker.Directories.GetNumOfDirs(); j++ {
-		if strings.Contains(dWalker.Directories.DirMgrs[j].path, dir3) {
+		if strings.Contains(dWalker.Directories.dirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
 	}
 
 	if !foundDir3 {
-		t.Errorf("Expected to find Directory %v in dWalker.DirMgrs. This directory was NOT found!",
+		t.Errorf("Expected to find Directory %v in dWalker.dirMgrs. This directory was NOT found!",
 			dir3)
 	}
 
@@ -564,13 +564,13 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 	foundDir3 := false
 
 	for j := 0; j < dInfo.Directories.GetNumOfDirs(); j++ {
-		if strings.Contains(dInfo.Directories.DirMgrs[j].path, dir3) {
+		if strings.Contains(dInfo.Directories.dirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
 	}
 
 	if !foundDir3 {
-		t.Errorf("Expected to find Directory %v in dInfo.DirMgrs. "+
+		t.Errorf("Expected to find Directory %v in dInfo.dirMgrs. "+
 			"This directory was NOT found!", dir3)
 	}
 
@@ -702,13 +702,13 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 	foundDir3 := false
 
 	for j := 0; j < dInfo.Directories.GetNumOfDirs(); j++ {
-		if strings.Contains(dInfo.Directories.DirMgrs[j].path, dir3) {
+		if strings.Contains(dInfo.Directories.dirMgrs[j].path, dir3) {
 			foundDir3 = true
 		}
 	}
 
 	if !foundDir3 {
-		t.Errorf("Expected to find Directory %v in dInfo.DirMgrs. "+
+		t.Errorf("Expected to find Directory %v in dInfo.dirMgrs. "+
 			"This directory was NOT found!", dir3)
 	}
 

@@ -27,12 +27,12 @@ import (
 */
 
 type DirMgrCollection struct {
-	DirMgrs []DirMgr
+	dirMgrs []DirMgr
 }
 
 // AddDirMgr - Adds a DirMgr object to the collection
 func (dMgrs *DirMgrCollection) AddDirMgr(dMgr DirMgr) {
-	dMgrs.DirMgrs = append(dMgrs.DirMgrs, dMgr.CopyOut())
+	dMgrs.dirMgrs = append(dMgrs.dirMgrs, dMgr.CopyOut())
 }
 
 // AddDirMgrByPathFile - Adds a Directory Manager (DirMgr) to the
@@ -49,7 +49,7 @@ func (dMgrs *DirMgrCollection) AddDirMgrByPathFile(pathName string) error {
 		return fmt.Errorf(s, pathName, err.Error())
 	}
 
-	dMgrs.DirMgrs = append(dMgrs.DirMgrs, dMgr)
+	dMgrs.dirMgrs = append(dMgrs.dirMgrs, dMgr)
 
 	return nil
 }
@@ -70,7 +70,7 @@ func (dMgrs *DirMgrCollection) AddFileInfo(pathFile string, info os.FileInfo) er
 			pathFile, info.Name(), err.Error())
 	}
 
-	dMgrs.DirMgrs = append(dMgrs.DirMgrs, dMgr)
+	dMgrs.dirMgrs = append(dMgrs.dirMgrs, dMgr)
 
 	return nil
 }
@@ -79,14 +79,14 @@ func (dMgrs *DirMgrCollection) AddFileInfo(pathFile string, info os.FileInfo) er
 // objects to the current collection.
 func (dMgrs *DirMgrCollection) AddDirMgrCollection(dMgrs2 *DirMgrCollection) {
 
-	lOmc2 := len(dMgrs2.DirMgrs)
+	lOmc2 := len(dMgrs2.dirMgrs)
 
 	if lOmc2 == 0 {
 		return
 	}
 
 	for i := 0; i < lOmc2; i++ {
-		dMgrs.AddDirMgr(dMgrs2.DirMgrs[i].CopyOut())
+		dMgrs.AddDirMgr(dMgrs2.dirMgrs[i].CopyOut())
 	}
 
 	return
@@ -100,7 +100,7 @@ func (dMgrs *DirMgrCollection) CopyOut() (DirMgrCollection, error) {
 
 	dMgrs2 := DirMgrCollection{}
 
-	lOmc := len(dMgrs.DirMgrs)
+	lOmc := len(dMgrs.dirMgrs)
 
 	if lOmc == 0 {
 		return DirMgrCollection{},
@@ -108,7 +108,7 @@ func (dMgrs *DirMgrCollection) CopyOut() (DirMgrCollection, error) {
 	}
 
 	for i := 0; i < lOmc; i++ {
-		dMgrs2.AddDirMgr(dMgrs.DirMgrs[i].CopyOut())
+		dMgrs2.AddDirMgr(dMgrs.dirMgrs[i].CopyOut())
 	}
 
 	return dMgrs2, nil
@@ -121,7 +121,7 @@ func (dMgrs *DirMgrCollection) FindDirectories(
 
 	ePrefix := "DirMgrCollection.FindDirectories() "
 
-	lDirCol := len(dMgrs.DirMgrs)
+	lDirCol := len(dMgrs.dirMgrs)
 
 	if lDirCol == 0 {
 		return DirMgrCollection{}, nil
@@ -135,7 +135,7 @@ func (dMgrs *DirMgrCollection) FindDirectories(
 	dMgrs2 := DirMgrCollection{}
 
 	for i := 0; i < lDirCol; i++ {
-		dMgr := dMgrs.DirMgrs[i]
+		dMgr := dMgrs.dirMgrs[i]
 
 		if dMgr.actualDirFileInfo.IsFInfoInitialized {
 
@@ -177,7 +177,7 @@ func (dMgrs *DirMgrCollection) FindDirectories(
 // contained in this Directory Manager Collection.
 //
 func (dMgrs *DirMgrCollection) GetNumOfDirs() int {
-	return len(dMgrs.DirMgrs)
+	return len(dMgrs.dirMgrs)
 }
 
 // PopLastDirMgr - Removes the last File Manager (DirMgr) object
@@ -186,15 +186,15 @@ func (dMgrs *DirMgrCollection) PopLastDirMgr() (DirMgr, error) {
 
 	ePrefix := "DirMgrCollection.PopLastDirMgr() "
 
-	arrayLen := len(dMgrs.DirMgrs)
+	arrayLen := len(dMgrs.dirMgrs)
 
 	if arrayLen == 0 {
 		return DirMgr{}, errors.New(ePrefix + "Error: Empty DirMgrCollection. No messages available!")
 	}
 
-	dmgr := dMgrs.DirMgrs[arrayLen-1].CopyOut()
+	dmgr := dMgrs.dirMgrs[arrayLen-1].CopyOut()
 
-	dMgrs.DirMgrs = dMgrs.DirMgrs[0 : arrayLen-1]
+	dMgrs.dirMgrs = dMgrs.dirMgrs[0 : arrayLen-1]
 
 	return dmgr, nil
 }
@@ -206,14 +206,14 @@ func (dMgrs *DirMgrCollection) PopFirstDirMgr() (DirMgr, error) {
 
 	ePrefix := "DirMgrCollection.PopFirstDirMgr() "
 
-	if len(dMgrs.DirMgrs) == 0 {
+	if len(dMgrs.dirMgrs) == 0 {
 		return DirMgr{},
 			errors.New(ePrefix + "Error: The Directory Manger Collection is EMPTY!")
 	}
 
-	dMgr := dMgrs.DirMgrs[0].CopyOut()
+	dMgr := dMgrs.dirMgrs[0].CopyOut()
 
-	dMgrs.DirMgrs = dMgrs.DirMgrs[1:]
+	dMgrs.dirMgrs = dMgrs.dirMgrs[1:]
 
 	return dMgr, nil
 }
@@ -233,7 +233,7 @@ func (dMgrs *DirMgrCollection) PopDirMgrAtIndex(idx int) (DirMgr, error) {
 			"Index Out-Of-Range! idx='%v'", idx)
 	}
 
-	arrayLen := len(dMgrs.DirMgrs)
+	arrayLen := len(dMgrs.dirMgrs)
 
 	if idx >= arrayLen {
 		return DirMgr{}, fmt.Errorf(ePrefix+
@@ -249,9 +249,9 @@ func (dMgrs *DirMgrCollection) PopDirMgrAtIndex(idx int) (DirMgr, error) {
 		return dMgrs.PopLastDirMgr()
 	}
 
-	dMgr := dMgrs.DirMgrs[idx].CopyOut()
+	dMgr := dMgrs.dirMgrs[idx].CopyOut()
 
-	dMgrs.DirMgrs = append(dMgrs.DirMgrs[0:idx], dMgrs.DirMgrs[idx+1:]...)
+	dMgrs.dirMgrs = append(dMgrs.dirMgrs[0:idx], dMgrs.dirMgrs[idx+1:]...)
 
 	return dMgr, nil
 }
@@ -263,11 +263,11 @@ func (dMgrs *DirMgrCollection) PeekFirstDirMgr() (DirMgr, error) {
 
 	ePrefix := "DirMgrCollection.PeekFirstDirMgr() "
 
-	if len(dMgrs.DirMgrs) == 0 {
+	if len(dMgrs.dirMgrs) == 0 {
 		return DirMgr{}, errors.New(ePrefix + "Error: Empty DirMgrCollection. No messages available!")
 	}
 
-	return dMgrs.DirMgrs[0].CopyOut(), nil
+	return dMgrs.dirMgrs[0].CopyOut(), nil
 }
 
 // PeekLastDirMgr - Returns the last element from the
@@ -277,14 +277,14 @@ func (dMgrs *DirMgrCollection) PeekLastDirMgr() (DirMgr, error) {
 
 	ePrefix := "DirMgrCollection.PeekLastDirMgr()"
 
-	arrayLen := len(dMgrs.DirMgrs)
+	arrayLen := len(dMgrs.dirMgrs)
 
 	if arrayLen == 0 {
 		return DirMgr{}, errors.New(ePrefix +
 			"Error: The Directory Manager Collection, 'DirMgrCollection' is EMPTY!")
 	}
 
-	return dMgrs.DirMgrs[arrayLen-1].CopyOut(), nil
+	return dMgrs.dirMgrs[arrayLen-1].CopyOut(), nil
 }
 
 // PeekDirMgrAtIndex - Returns a copy of the File Manager (DirMgr) object located
@@ -299,14 +299,14 @@ func (dMgrs *DirMgrCollection) PeekDirMgrAtIndex(idx int) (DirMgr, error) {
 			"Error: Input Parameter is less than zero. Index Out-Of-Range! idx='%v'", idx)
 	}
 
-	if idx >= len(dMgrs.DirMgrs) {
+	if idx >= len(dMgrs.dirMgrs) {
 		return DirMgr{}, fmt.Errorf(ePrefix+"Error: Input Parameter is greater than the "+
 			"length of the collection index. Index Out-Of-Range! idx='%v' Array Length='%v' ",
-			idx, len(dMgrs.DirMgrs))
+			idx, len(dMgrs.dirMgrs))
 
 	}
 
-	return dMgrs.DirMgrs[idx].CopyOut(), nil
+	return dMgrs.dirMgrs[idx].CopyOut(), nil
 }
 
 // DirMgr - This structure and associated methods
@@ -748,7 +748,7 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() error {
 //
 // 				type DirectoryDeleteFileInfo struct {
 //									StartPath            	string
-//									DirMgrs          	[]DirMgr
+//									dirMgrs          	[]DirMgr
 //									FoundFiles           	[]FileWalkInfo
 //									ErrReturns           	[]string
 //									DeleteFileSelectCriteria FileSelectionCriteria
@@ -1413,7 +1413,7 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 //	DirectoryTreeInfo structure	-
 //					type DirectoryTreeInfo struct {
 //						StartPath            	string								// The starting path or directory for the file search
-//						DirMgrs          	[]DirMgr									// DirMgrs found during directory tree search
+//						dirMgrs          	[]DirMgr									// dirMgrs found during directory tree search
 //						FoundFiles           	[]FileWalkInfo				// Found Files matching file selection criteria
 //						ErrReturns           	[]string							// Internal System errors encountered
 //						FileSelectCriteria    FileSelectionCriteria // The File Selection Criteria submitted as an
@@ -1627,14 +1627,14 @@ func (dMgr *DirMgr) GetThisDirectoryTree() (DirMgrCollection, error) {
 
 	for i := 0; i < maxLen; i++ {
 
-		dir, err := os.Open(dMgrs.DirMgrs[i].absolutePath)
+		dir, err := os.Open(dMgrs.dirMgrs[i].absolutePath)
 
 		if err != nil {
 			return DirMgrCollection{},
 				fmt.Errorf(ePrefix+
-					"Error return by os.Open(dMgrs.DirMgrs[i].absolutePath). "+
+					"Error return by os.Open(dMgrs.dirMgrs[i].absolutePath). "+
 					"dMgr.absolutePath='%v' Error='%v' ",
-					dMgrs.DirMgrs[i].absolutePath, err.Error())
+					dMgrs.dirMgrs[i].absolutePath, err.Error())
 		}
 
 		nameFileInfos, err := dir.Readdir(-1)
@@ -1653,7 +1653,7 @@ func (dMgr *DirMgr) GetThisDirectoryTree() (DirMgrCollection, error) {
 			if nameFInfo.IsDir() {
 
 				newDirPathFileName :=
-					fh.JoinPathsAdjustSeparators(dMgrs.DirMgrs[i].absolutePath, nameFInfo.Name())
+					fh.JoinPathsAdjustSeparators(dMgrs.dirMgrs[i].absolutePath, nameFInfo.Name())
 
 				fmt.Println("Next Dir: ", newDirPathFileName)
 

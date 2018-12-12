@@ -475,12 +475,12 @@ func (dirTree *DirectoryTreeInfo) CopyToDirectoryTree(baseDir, newBaseDir DirMgr
 		return newDirTree, fmt.Errorf(ePrefix+"Error returned from  newBaseDir.MakeDir(). newBaseDir.absolutePath='%v'  Error='%v'", newBaseDir.absolutePath, err2.Error())
 	}
 
-	lAry := len(dirTree.Directories.DirMgrs)
+	lAry := len(dirTree.Directories.dirMgrs)
 
 	// Make the new Directory Tree
 	for i := 0; i < lAry; i++ {
 
-		newDMgr, err2 := dirTree.Directories.DirMgrs[i].SubstituteBaseDir(baseDir, newBaseDir)
+		newDMgr, err2 := dirTree.Directories.dirMgrs[i].SubstituteBaseDir(baseDir, newBaseDir)
 
 		if err2 != nil {
 			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned from SubstituteBaseDir(baseDir, newBaseDir). i='%v' Error='%v'", i, err2.Error())

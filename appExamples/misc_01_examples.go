@@ -809,9 +809,11 @@ func TestCopyDirectoryTree() {
 		return
 	}
 
-	if len(dirTreeInfo.Directories.DirMgrs) != len(newDirTree.Directories.DirMgrs) {
+	if dirTreeInfo.Directories.GetNumOfDirs() != newDirTree.Directories.GetNumOfDirs() {
 
-		fmt.Printf(ePrefix+"Error: Expected Number of Directories = '%v'.  Instead, Number of NewFromPathFileNameExtStr Directories = '%v'", len(dirTreeInfo.Directories.DirMgrs), len(newDirTree.Directories.DirMgrs))
+		fmt.Printf(ePrefix+"Error: Expected Number of Directories = '%v'.  "+
+			"Instead, Number of NewFromPathFileNameExtStr Directories = '%v'",
+			dirTreeInfo.Directories.GetNumOfDirs(), newDirTree.Directories.GetNumOfDirs())
 		return
 	}
 
@@ -1084,7 +1086,14 @@ func TestDirMgrFileInfo() {
 	}
 
 	for i := 0; i < lDirs; i++ {
-		foundDMgr := findfiles.Directories.DirMgrs[i]
+
+		foundDMgr, err := findfiles.Directories.PeekDirMgrAtIndex(i)
+
+		if err != nil {
+			fmt.Printf(
+				"Error returned by findfiles.Directories.PeekDirMgrAtIndex(i). "+
+					"i='%v' Error='%v' ", i, err.Error())
+		}
 
 		PrintDirMgrFields(foundDMgr)
 	}

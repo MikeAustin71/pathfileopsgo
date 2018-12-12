@@ -29,8 +29,8 @@ func TestDirMgrCollection_AddDirMgr_01(t *testing.T) {
 		t.Errorf("Expected DirMgrsCollection Array Length = '1'. Instead, Array Length = '%v'", dMgrs.GetNumOfDirs())
 	}
 
-	if dMgrs.DirMgrs[0].absolutePath != origAbsPath {
-		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].absolutePath)
+	if dMgrs.dirMgrs[0].absolutePath != origAbsPath {
+		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.dirMgrs[0].absolutePath)
 	}
 
 	// # 2
@@ -152,8 +152,8 @@ func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
 		t.Errorf("Expected DirMgrsCollection Array Length = '1'. Instead, Array Length = '%v'", dMgrs.GetNumOfDirs())
 	}
 
-	if dMgrs.DirMgrs[0].absolutePath != origAbsPath {
-		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].absolutePath)
+	if dMgrs.dirMgrs[0].absolutePath != origAbsPath {
+		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.dirMgrs[0].absolutePath)
 	}
 
 	// # 2
@@ -342,8 +342,8 @@ func TestDirMgrCollection_PopLastDirMgr_01(t *testing.T) {
 		t.Errorf("Expected DirMgrsCollection Array Length = '1'. Instead, Array Length = '%v'", dMgrs.GetNumOfDirs())
 	}
 
-	if dMgrs.DirMgrs[0].absolutePath != origAbsPath {
-		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].absolutePath)
+	if dMgrs.dirMgrs[0].absolutePath != origAbsPath {
+		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.dirMgrs[0].absolutePath)
 	}
 
 	// # 2
@@ -469,8 +469,8 @@ func TestDirMgrCollection_PopFirstDirMgr_01(t *testing.T) {
 		t.Errorf("Expected DirMgrsCollection Array Length = '1'. Instead, Array Length = '%v'", dMgrs.GetNumOfDirs())
 	}
 
-	if dMgrs.DirMgrs[0].absolutePath != origAbsPath {
-		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].absolutePath)
+	if dMgrs.dirMgrs[0].absolutePath != origAbsPath {
+		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.dirMgrs[0].absolutePath)
 	}
 
 	// # 2
@@ -591,8 +591,8 @@ func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
 		t.Errorf("Expected DirMgrsCollection Array Length = '1'. Instead, Array Length = '%v'", dMgrs.GetNumOfDirs())
 	}
 
-	if dMgrs.DirMgrs[0].absolutePath != origAbsPath {
-		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].absolutePath)
+	if dMgrs.dirMgrs[0].absolutePath != origAbsPath {
+		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.dirMgrs[0].absolutePath)
 	}
 
 	// # 2
@@ -737,8 +737,8 @@ func TestDirMgrCollection_PeekDirMgrAtIndex_01(t *testing.T) {
 		t.Errorf("Expected DirMgrsCollection Array Length = '1'. Instead, Array Length = '%v'", dMgrs.GetNumOfDirs())
 	}
 
-	if dMgrs.DirMgrs[0].absolutePath != origAbsPath {
-		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.DirMgrs[0].absolutePath)
+	if dMgrs.dirMgrs[0].absolutePath != origAbsPath {
+		t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.dirMgrs[0].absolutePath)
 	}
 
 	// # 2
@@ -897,11 +897,11 @@ func TestDirMgrCollection_FindDirectories_01(t *testing.T) {
 	isLevel01Found := false
 
 	for i := 0; i < dCol.GetNumOfDirs(); i++ {
-		if strings.Contains(dCol.DirMgrs[i].directoryName, "Level01") {
+		if strings.Contains(dCol.dirMgrs[i].directoryName, "Level01") {
 			isLevel01Found = true
 		}
 
-		if strings.Contains(dCol.DirMgrs[i].directoryName, "Level02") {
+		if strings.Contains(dCol.dirMgrs[i].directoryName, "Level02") {
 			isLevel02Found = true
 		}
 	}
