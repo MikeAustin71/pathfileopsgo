@@ -1013,6 +1013,65 @@ func (fh FileHelper) DoesStringEndWithPathSeparator(pathStr string) bool {
 	return false
 }
 
+// FindFilesInPath - Will apply a search pattern to files and directories
+// in the path designated by input parameter, 'pathName'. If the files
+// and or directory names match the input parameter, 'fileSearchPattern'
+// they will be returned in an array of strings.
+//
+// Be Advised!  The names returned in the string array may consist of both
+// files and directory names, depending on the specified, 'fileSearchPattern'.
+//
+// This method uses the "path/filepath" function, 'Glob'. Reference:
+//				https://golang.org/pkg/path/filepath/#Glob
+//
+// The File matching patterns depend on the 'go' "path/filepath" function,
+// 'Match'.  Reference
+// https://golang.org/pkg/path/filepath/#Match
+//
+// Note: This method will NOT search sub-directories. It will return the names
+// of directories existing in the designated, 'pathName', depending on the
+// 'fileSearchPattern' passed as an input parameter.
+//
+func (fh FileHelper) FindFilesInPath(pathName, fileSearchPattern string) ([]string, error) {
+
+	ePrefix := "FileHelper) FindFilesInPath()"
+
+	fInfo, err := os.Stat(pathName)
+
+	if err != nil && os.IsNotExist(err) {
+		return []string{},
+			errors.New(ePrefix + "Error: Input parameter 'pathName' DOES NOT EXIST!")
+	}
+
+	if err != nil {
+		return []string{},
+			fmt.Errorf(ePrefix+
+				"Error returned by os.Stat(pathName). "+
+				"pathName='%v' Error='%v' ", pathName, err.Error())
+	}
+
+	if !fInfo.IsDir() {
+		return []string{},
+			fmt.Errorf(ePrefix+"Error: The path exists, but it NOT a directory! "+
+				"pathName='%v' ", pathName)
+	}
+
+	// fInfo is a Directory.
+
+	searchStr := fh.JoinPathsAdjustSeparators(pathName, fileSearchPattern)
+
+	results, err := fp.Glob(searchStr)
+
+	if err != nil {
+		return []string{},
+			fmt.Errorf(ePrefix+
+				"Error returned by fp.Glob(searchStr). "+
+				"searchStr='%v' Error='%v' ", searchStr, err.Error())
+	}
+
+	return results, nil
+}
+
 // FilterFileName - Utility method designed to determine whether a file described by a filePath string
 // and an os.FileInfo object meets any one of three criteria: A string pattern match, a modification time
 // which is older than the 'findFileOlderThan' parameter or a modification time which is newer than the
