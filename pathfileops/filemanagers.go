@@ -2970,11 +2970,90 @@ type FileOpsCollection struct {
 	fileOps []FileOps
 }
 
+// AddByFileOps - Adds a FileOps object to the existing collection
+// based on the 'FileOps' Input parameter.
+func (fOpsCol *FileOpsCollection) AddByFileOps(fileOp FileOps) {
+
+	fOpsCol.fileOps = append(fOpsCol.fileOps, fileOp.CopyOut())
+
+}
+
+// AddByFileMgrs - Adds another FileOps object to the collection based source
+// and destination input parameters of type 'FileMgr'.
+//
+func (fOpsCol *FileOpsCollection) AddByFileMgrs(
+	sourceFileMgr,
+	destinationFileMgr FileMgr) error {
+
+	ePrefix := "FileOpsCollection.AddByFileMgrs() "
+
+	newFileOps, err := FileOps{}.NewByFileMgrs(sourceFileMgr, destinationFileMgr)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned by FileOps{}.NewByFileMgrs(sourceFileMgr, destinationFileMgr). "+
+			"Error='%v' ", err.Error())
+	}
+
+	fOpsCol.fileOps = append(fOpsCol.fileOps, newFileOps)
+
+	return nil
+}
+
+// AddByDirMgrFileName - Adds another FileOps object to the collection
+// based on input parameters consisting of a pair of DirMgr and file name
+// extension strings for source and destination.
+//
+func (fOpsCol *FileOpsCollection) AddByDirMgrFileName(
+	sourceDirMgr DirMgr,
+	sourceFileNameExt string,
+	destinationDirMgr DirMgr,
+	destinationFileNameExt string) error {
+
+	ePrefix := "FileOpsCollection.AddByDirMgrFileName() "
+
+	newFileOps, err := FileOps{}.NewByDirMgrFileName(
+		sourceDirMgr,
+		sourceFileNameExt,
+		destinationDirMgr,
+		destinationFileNameExt)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned by FileOps{}.NewByDirMgrFileName(...). "+
+			"Error='%v' ", err.Error())
+	}
+
+	fOpsCol.fileOps = append(fOpsCol.fileOps, newFileOps)
+
+	return nil
+}
+
 type FileOps struct {
 	isInitialized bool
 	source        FileMgr
 	destination   FileMgr
 	opToExecute   FileOperation
+}
+
+// CopyOut - Returns a deep copy of the current
+// FileOps instance.
+//
+func (fops *FileOps) CopyOut() FileOps {
+
+	if !fops.isInitialized {
+		return FileOps{}
+	}
+
+	newFOps := FileOps{}
+
+	newFOps.source = fops.source.CopyOut()
+	newFOps.destination = fops.destination.CopyOut()
+
+	newFOps.isInitialized = true
+
+	return newFOps
+
 }
 
 // IsInitialized - Returns a boolean value indicating whether
@@ -2994,14 +3073,14 @@ func (fops FileOps) NewByFileMgrs(
 
 	ePrefix := "FileOps.NewByFileMgrs() "
 
-	err := source.IsFileMgrValid(ePrefix)
+	err := source.IsFileMgrValid(ePrefix + "sourceFileMgr Error: ")
 
 	if err != nil {
 		return FileOps{},
 			fmt.Errorf("Source File Manager INVALID! %v", err.Error())
 	}
 
-	err = destination.IsFileMgrValid(ePrefix)
+	err = destination.IsFileMgrValid(ePrefix + "destinationFileMgr Error:")
 
 	if err != nil {
 		return FileOps{},
@@ -3036,6 +3115,13 @@ func (fops FileOps) NewByDirMgrFileName(
 
 	fOpsNew := FileOps{}
 
+	err = sourceDir.IsDirMgrValid(ePrefix + "sourceDir Error: ")
+
+	if err != nil {
+		return FileOps{},
+			err
+	}
+
 	fOpsNew.source, err = FileMgr{}.NewFromDirMgrFileNameExt(sourceDir, sourceFileNameExt)
 
 	if err != nil {
@@ -3045,6 +3131,12 @@ func (fops FileOps) NewByDirMgrFileName(
 
 	if len(destinationFileNameExt) == 0 {
 		destinationFileNameExt = sourceFileNameExt
+	}
+
+	err = destinationDir.IsDirMgrValid(ePrefix + "destinationDir Error: ")
+
+	if err != nil {
+		return FileOps{}, err
 	}
 
 	fOpsNew.destination, err = FileMgr{}.NewFromDirMgrFileNameExt(destinationDir, destinationFileNameExt)
