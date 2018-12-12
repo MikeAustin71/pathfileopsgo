@@ -46,18 +46,26 @@ func WalkDirFindFiles(
 		fmt.Println("Files Found: ")
 		for i := 0; i < dWalkInfo.FoundFiles.GetNumOfFileMgrs(); i++ {
 
-			fInfoPlus, err := dWalkInfo.FoundFiles.FMgrs[i].GetFileInfoPlus()
+			fileMgr, err := dWalkInfo.FoundFiles.PeekFileMgrAtIndex(i)
 
 			if err != nil {
 				return fmt.Errorf(ePrefix+
-					"Error returned from dWalkInfo.FoundFiles.FMgrs[i].GetFileInfoPlus() \n"+
+					"Error returned by dWalkInfo.FoundFiles.PeekFileMgrAtIndex(i). "+
+					"i='%v' Error='%v' ", i, err.Error())
+			}
+
+			fInfoPlus, err := fileMgr.GetFileInfoPlus()
+
+			if err != nil {
+				return fmt.Errorf(ePrefix+
+					"Error returned from fileMgr.GetFileInfoPlus() \n"+
 					"i='%v' FileName='%v' Error='%v' \n", i,
-					dWalkInfo.FoundFiles.FMgrs[i].GetAbsolutePathFileName(),
+					fileMgr.GetAbsolutePathFileName(),
 					err.Error())
 			}
 
 			fmt.Printf("  Name: %v Mod Date: %v path: %v \n",
-				dWalkInfo.FoundFiles.FMgrs[i].GetFileNameExt(),
+				fileMgr.GetFileNameExt(),
 				fInfoPlus.ModTime(), fInfoPlus.DirPath())
 		}
 		fmt.Println()
@@ -122,21 +130,33 @@ func WalkDirFindFiles2(
 	if dWalkInfo.FoundFiles.GetNumOfFileMgrs() == 0 {
 		fmt.Println("No Files Found")
 	} else {
+
 		fmt.Println("Files Found: ")
+
 		for i := 0; i < dWalkInfo.FoundFiles.GetNumOfFileMgrs(); i++ {
-			fileInfoPlus, err := dWalkInfo.FoundFiles.FMgrs[i].GetFileInfoPlus()
+
+			fileMgr, err := dWalkInfo.FoundFiles.PeekFileMgrAtIndex(i)
 
 			if err != nil {
 				return fmt.Errorf(ePrefix+
-					"Error returned by dWalkInfo.FoundFiles.FMgrs[i].GetFileInfoPlus(). "+
+					"Error returned by dWalkInfo.FoundFiles.PeekFileMgrAtIndex(i). "+
+					"i='%v' Error='%v' ", i, err.Error())
+			}
+
+			fileInfoPlus, err := fileMgr.GetFileInfoPlus()
+
+			if err != nil {
+				return fmt.Errorf(ePrefix+
+					"Error returned by fileMgr.GetFileInfoPlus(). "+
 					"i='%v' FileName='%v' Error='%v' ",
-					i, dWalkInfo.FoundFiles.FMgrs[i].GetAbsolutePathFileName(), err.Error())
+					i, fileMgr.GetAbsolutePathFileName(), err.Error())
 			}
 
 			fmt.Printf("  Name: %v SysInfo: %v \n",
-				dWalkInfo.FoundFiles.FMgrs[i].GetFileNameExt(),
+				fileMgr.GetFileNameExt(),
 				fileInfoPlus.Sys())
 		}
+
 		fmt.Println()
 	}
 

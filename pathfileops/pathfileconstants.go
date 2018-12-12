@@ -244,6 +244,17 @@ func (fip FileInfoPlus) Sys() interface{} {
 	return fip.dataSrc
 }
 
+// Sys - underlying data source (can return nil)
+func (fip FileInfoPlus) SysAsString() string {
+	if fip.dataSrc == nil {
+		return ""
+	}
+
+	str := fmt.Sprintf("%v", fip.dataSrc)
+
+	return str
+}
+
 // CopyOut - Creates a copy of the current FileInfoPlus
 // instance and returns it.
 func (fip *FileInfoPlus) CopyOut() FileInfoPlus {
@@ -486,26 +497,26 @@ func (dirTree *DirectoryTreeInfo) CopyToDirectoryTree(baseDir, newBaseDir DirMgr
 
 	}
 
-	lAry = len(dirTree.FoundFiles.FMgrs)
+	lAry = len(dirTree.FoundFiles.fileMgrs)
 
 	for j := 0; j < lAry; j++ {
 
-		fileDMgr, err2 := dirTree.FoundFiles.FMgrs[j].dMgr.SubstituteBaseDir(baseDir, newBaseDir)
+		fileDMgr, err2 := dirTree.FoundFiles.fileMgrs[j].dMgr.SubstituteBaseDir(baseDir, newBaseDir)
 
 		if err2 != nil {
-			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by dirTree.FoundFiles.FMgrs[j].dMgr.SubstituteBaseDir(baseDir, newBaseDir). Error='%v'", err2.Error())
+			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by dirTree.FoundFiles.fileMgrs[j].dMgr.SubstituteBaseDir(baseDir, newBaseDir). Error='%v'", err2.Error())
 		}
 
-		newFileMgr, err2 := FileMgr{}.NewFromDirMgrFileNameExt(fileDMgr, dirTree.FoundFiles.FMgrs[j].fileNameExt)
+		newFileMgr, err2 := FileMgr{}.NewFromDirMgrFileNameExt(fileDMgr, dirTree.FoundFiles.fileMgrs[j].fileNameExt)
 
 		if err2 != nil {
-			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by FileMgr{}.NewFromDirMgrFileNameExt(dMgr, dirTree.FoundFiles.FMgrs[j].fileNameExt) dirTree.FoundFiles.FMgrs[j].fileNameExt='%v' j='%v' Error='%v'", dirTree.FoundFiles.FMgrs[j].fileNameExt, j, err2.Error())
+			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by FileMgr{}.NewFromDirMgrFileNameExt(dMgr, dirTree.FoundFiles.fileMgrs[j].fileNameExt) dirTree.FoundFiles.fileMgrs[j].fileNameExt='%v' j='%v' Error='%v'", dirTree.FoundFiles.fileMgrs[j].fileNameExt, j, err2.Error())
 		}
 
-		err2 = dirTree.FoundFiles.FMgrs[j].CopyFileMgrByIoByLink(&newFileMgr)
+		err2 = dirTree.FoundFiles.fileMgrs[j].CopyFileMgrByIoByLink(&newFileMgr)
 
 		if err2 != nil {
-			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by FMgrs[j].CopyFileMgrByIoByLink(&newFileMgr) SrcFileName:'%v'  DestFileName:'%v' Error='%v'", dirTree.FoundFiles.FMgrs[j].fileNameExt, newFileMgr.fileNameExt, err2.Error())
+			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by fileMgrs[j].CopyFileMgrByIoByLink(&newFileMgr) SrcFileName:'%v'  DestFileName:'%v' Error='%v'", dirTree.FoundFiles.fileMgrs[j].fileNameExt, newFileMgr.fileNameExt, err2.Error())
 
 		}
 

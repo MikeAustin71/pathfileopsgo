@@ -26,12 +26,12 @@ import (
 
 // FileMgrCollection - A collection of FileMgr objects
 type FileMgrCollection struct {
-	FMgrs []FileMgr
+	fileMgrs []FileMgr
 }
 
 // AddFileMgr - Adds a FileMgr object to the collection
 func (fMgrs *FileMgrCollection) AddFileMgr(fMgr FileMgr) {
-	fMgrs.FMgrs = append(fMgrs.FMgrs, fMgr.CopyOut())
+	fMgrs.fileMgrs = append(fMgrs.fileMgrs, fMgr.CopyOut())
 }
 
 // AddFileMgrByDirFileNameExt - Add a new File Manager using
@@ -48,7 +48,7 @@ func (fMgrs *FileMgrCollection) AddFileMgrByDirFileNameExt(
 		return fmt.Errorf(ePrefix+"%v", err.Error())
 	}
 
-	fMgrs.FMgrs = append(fMgrs.FMgrs, fMgr)
+	fMgrs.fileMgrs = append(fMgrs.fileMgrs, fMgr)
 
 	return nil
 }
@@ -68,7 +68,7 @@ func (fMgrs *FileMgrCollection) AddFileMgrByPathFile(
 			"pathFileName='%v' Error='%v'", pathFileName, err.Error())
 	}
 
-	fMgrs.FMgrs = append(fMgrs.FMgrs, fMgr)
+	fMgrs.fileMgrs = append(fMgrs.fileMgrs, fMgr)
 
 	return nil
 }
@@ -89,7 +89,7 @@ func (fMgrs *FileMgrCollection) AddFileMgrByDirStrFileNameStr(
 		return fmt.Errorf(ePrefix+"Error creating FileMgr: %v", err.Error())
 	}
 
-	fMgrs.FMgrs = append(fMgrs.FMgrs, fMgr)
+	fMgrs.fileMgrs = append(fMgrs.fileMgrs, fMgr)
 
 	return nil
 
@@ -109,7 +109,7 @@ func (fMgrs *FileMgrCollection) AddFileMgrByFileInfo(pathFile string, info os.Fi
 			"pathFile='%v' info.Name()='%v'  Error='%v'", pathFile, info.Name(), err.Error())
 	}
 
-	fMgrs.FMgrs = append(fMgrs.FMgrs, fMgr)
+	fMgrs.fileMgrs = append(fMgrs.fileMgrs, fMgr)
 
 	return nil
 }
@@ -118,14 +118,14 @@ func (fMgrs *FileMgrCollection) AddFileMgrByFileInfo(pathFile string, info os.Fi
 // objects to the current collection.
 func (fMgrs *FileMgrCollection) AddFileMgrCollection(fMgrs2 *FileMgrCollection) {
 
-	lOmc2 := len(fMgrs2.FMgrs)
+	lOmc2 := len(fMgrs2.fileMgrs)
 
 	if lOmc2 == 0 {
 		return
 	}
 
 	for i := 0; i < lOmc2; i++ {
-		fMgrs.AddFileMgr(fMgrs2.FMgrs[i].CopyOut())
+		fMgrs.AddFileMgr(fMgrs2.fileMgrs[i].CopyOut())
 	}
 
 	return
@@ -137,19 +137,19 @@ func (fMgrs *FileMgrCollection) AddFileMgrCollection(fMgrs2 *FileMgrCollection) 
 func (fMgrs *FileMgrCollection) CopyFilesToDir(targetDirectory DirMgr) error {
 
 	ePrefix := "FileMgrCollection.CopyFilesToDir() "
-	maxLen := len(fMgrs.FMgrs)
+	maxLen := len(fMgrs.fileMgrs)
 
 	if maxLen == 0 {
 		return errors.New(ePrefix + "ERROR - Collection contains ZERO File Managers!")
 	}
 
 	for i := 0; i < maxLen; i++ {
-		err := fMgrs.FMgrs[i].CopyFileToDirByIoByLink(targetDirectory)
+		err := fMgrs.fileMgrs[i].CopyFileToDirByIoByLink(targetDirectory)
 
 		if err != nil {
 			return fmt.Errorf(ePrefix+
 				"Copy Failure on index='%v' file='%v'. Error='%v'",
-				i, fMgrs.FMgrs[i].absolutePathFileName, err.Error())
+				i, fMgrs.fileMgrs[i].absolutePathFileName, err.Error())
 		}
 
 	}
@@ -165,7 +165,7 @@ func (fMgrs *FileMgrCollection) CopyOut() (FileMgrCollection, error) {
 
 	fMgrs2 := FileMgrCollection{}
 
-	lOmc := len(fMgrs.FMgrs)
+	lOmc := len(fMgrs.fileMgrs)
 
 	if lOmc == 0 {
 		return FileMgrCollection{},
@@ -174,7 +174,7 @@ func (fMgrs *FileMgrCollection) CopyOut() (FileMgrCollection, error) {
 	}
 
 	for i := 0; i < lOmc; i++ {
-		fMgrs2.AddFileMgr(fMgrs.FMgrs[i].CopyOut())
+		fMgrs2.AddFileMgr(fMgrs.fileMgrs[i].CopyOut())
 	}
 
 	return fMgrs2, nil
@@ -189,7 +189,7 @@ func (fMgrs *FileMgrCollection) FindFiles(
 
 	ePrefix := "FileMgrCollection.FindFiles() "
 
-	lDirCol := len(fMgrs.FMgrs)
+	lDirCol := len(fMgrs.fileMgrs)
 
 	if lDirCol == 0 {
 		return FileMgrCollection{}, nil
@@ -203,7 +203,7 @@ func (fMgrs *FileMgrCollection) FindFiles(
 	fMgrs2 := FileMgrCollection{}
 
 	for i := 0; i < lDirCol; i++ {
-		fMgr := fMgrs.FMgrs[i]
+		fMgr := fMgrs.fileMgrs[i]
 
 		if fMgr.actualFileInfo.IsFInfoInitialized {
 
@@ -249,66 +249,66 @@ func (fMgrs *FileMgrCollection) FindFiles(
 // number of File Managers (FileMgr's) in the Collection.
 //
 func (fMgrs *FileMgrCollection) GetNumOfFileMgrs() int {
-	return len(fMgrs.FMgrs)
+	return len(fMgrs.fileMgrs)
 }
 
-// PopLastFMgr - Removes the last File Manager (FileMgr) object
+// PopLastFileMgr - Removes the last File Manager (FileMgr) object
 // from the collections array, and returns it to the calling method.
-func (fMgrs *FileMgrCollection) PopLastFMgr() (FileMgr, error) {
+func (fMgrs *FileMgrCollection) PopLastFileMgr() (FileMgr, error) {
 
-	ePrefix := "FileMgrCollection.PopLastFMgr() "
+	ePrefix := "FileMgrCollection.PopLastFileMgr() "
 
-	arrayLen := len(fMgrs.FMgrs)
+	arrayLen := len(fMgrs.fileMgrs)
 
 	if arrayLen == 0 {
 		return FileMgr{}, errors.New(ePrefix +
 			"Error: The File Manager Collection, 'FileMgrCollection' is EMPTY!")
 	}
 
-	fmgr := fMgrs.FMgrs[arrayLen-1].CopyOut()
+	fmgr := fMgrs.fileMgrs[arrayLen-1].CopyOut()
 
-	fMgrs.FMgrs = fMgrs.FMgrs[0 : arrayLen-1]
+	fMgrs.fileMgrs = fMgrs.fileMgrs[0 : arrayLen-1]
 
 	return fmgr, nil
 }
 
-// PopFirstFMgr - Removes the first OpsMsgDto object
+// PopFirstFileMgr - Removes the first OpsMsgDto object
 // from the collections array, and returns it to
 // the calling method.
-func (fMgrs *FileMgrCollection) PopFirstFMgr() (FileMgr, error) {
+func (fMgrs *FileMgrCollection) PopFirstFileMgr() (FileMgr, error) {
 
-	ePrefix := "FileMgrCollection.PopFirstFMgr() "
+	ePrefix := "FileMgrCollection.PopFirstFileMgr() "
 
-	if len(fMgrs.FMgrs) == 0 {
+	if len(fMgrs.fileMgrs) == 0 {
 		return FileMgr{},
 			errors.New(ePrefix +
 				"Error: The File Manager Collection, 'FileMgrCollection' is EMPTY!")
 	}
 
-	fMgr := fMgrs.FMgrs[0].CopyOut()
+	fMgr := fMgrs.fileMgrs[0].CopyOut()
 
-	fMgrs.FMgrs = fMgrs.FMgrs[1:]
+	fMgrs.fileMgrs = fMgrs.fileMgrs[1:]
 
 	return fMgr, nil
 }
 
-// PopFMgrAtIndex - Returns a copy of the File Manager (FileMgr) object located
+// PopFileMgrAtIndex - Returns a copy of the File Manager (FileMgr) object located
 // at index, 'idx', in the FileMgrCollection array. As a 'Pop' method, the original
 // FileMgr object is deleted from the FileMgrCollection array.
 //
 // Therefore a the completion of this method, the File Manager Collection array
 // has a length which is one less than the starting array length.
 //
-func (fMgrs *FileMgrCollection) PopFMgrAtIndex(idx int) (FileMgr, error) {
+func (fMgrs *FileMgrCollection) PopFileMgrAtIndex(idx int) (FileMgr, error) {
 
-	ePrefix := "FileMgrCollection.PopFMgrAtIndex() "
+	ePrefix := "FileMgrCollection.PopFileMgrAtIndex() "
 
 	if idx < 0 {
 		return FileMgr{}, fmt.Errorf(ePrefix+
 			"Error: Input Parameter is less than zero. Index Out-Of-Range! idx='%v'", idx)
 	}
 
-	arrayLen := len(fMgrs.FMgrs)
+	arrayLen := len(fMgrs.fileMgrs)
 
 	if idx >= arrayLen {
 		return FileMgr{}, fmt.Errorf(ePrefix+
@@ -318,62 +318,62 @@ func (fMgrs *FileMgrCollection) PopFMgrAtIndex(idx int) (FileMgr, error) {
 	}
 
 	if idx == 0 {
-		return fMgrs.PopFirstFMgr()
+		return fMgrs.PopFirstFileMgr()
 	}
 
 	if idx == arrayLen-1 {
-		return fMgrs.PopLastFMgr()
+		return fMgrs.PopLastFileMgr()
 	}
 
-	fmgr := fMgrs.FMgrs[idx].CopyOut()
+	fmgr := fMgrs.fileMgrs[idx].CopyOut()
 
-	fMgrs.FMgrs = append(fMgrs.FMgrs[0:idx], fMgrs.FMgrs[idx+1:]...)
+	fMgrs.fileMgrs = append(fMgrs.fileMgrs[0:idx], fMgrs.fileMgrs[idx+1:]...)
 
 	return fmgr, nil
 }
 
-// PeekFirstFMgr - Returns the first element from the
+// PeekFirstFileMgr - Returns the first element from the
 // FileMgrCollection, but does NOT remove
 // it from the OpsMessages array.
 //
-func (fMgrs *FileMgrCollection) PeekFirstFMgr() (FileMgr, error) {
+func (fMgrs *FileMgrCollection) PeekFirstFileMgr() (FileMgr, error) {
 
-	ePrefix := "FileMgrCollection.PeekFirstFMgr() "
+	ePrefix := "FileMgrCollection.PeekFirstFileMgr() "
 
-	if len(fMgrs.FMgrs) == 0 {
+	if len(fMgrs.fileMgrs) == 0 {
 		return FileMgr{},
 			errors.New(ePrefix +
 				"Error: Empty FileMgrCollection. No messages available!")
 	}
 
-	return fMgrs.FMgrs[0].CopyOut(), nil
+	return fMgrs.fileMgrs[0].CopyOut(), nil
 }
 
-// PeekLastFMgr - Returns the last element from the
+// PeekLastFileMgr - Returns the last element from the
 // Operation Messages Collection, but does NOT remove
 // it from the OpsMessages array.
 //
-func (fMgrs *FileMgrCollection) PeekLastFMgr() (FileMgr, error) {
+func (fMgrs *FileMgrCollection) PeekLastFileMgr() (FileMgr, error) {
 
-	ePrefix := "FileMgrCollection.PeekLastFMgr()"
+	ePrefix := "FileMgrCollection.PeekLastFileMgr()"
 
-	l1 := len(fMgrs.FMgrs)
+	l1 := len(fMgrs.fileMgrs)
 
 	if l1 == 0 {
 		return FileMgr{}, errors.New(ePrefix +
 			"Error: Empty FileMgrCollection. No messages available!")
 	}
 
-	return fMgrs.FMgrs[l1-1].CopyOut(), nil
+	return fMgrs.fileMgrs[l1-1].CopyOut(), nil
 }
 
-// PeekFMgrAtIndex - Returns a copy of the File Manager (FileMgr) object located
+// PeekFileMgrAtIndex - Returns a copy of the File Manager (FileMgr) object located
 // at array index 'idx' in the FileMgrCollection. This is a 'Peek' method and the
 // original FileMgr object is not deleted from the FileMgrCollection array.
 //
-func (fMgrs *FileMgrCollection) PeekFMgrAtIndex(idx int) (FileMgr, error) {
+func (fMgrs *FileMgrCollection) PeekFileMgrAtIndex(idx int) (FileMgr, error) {
 
-	ePrefix := "FileMgrCollection.PeekFMgrAtIndex() "
+	ePrefix := "FileMgrCollection.PeekFileMgrAtIndex() "
 
 	if idx < 0 {
 		return FileMgr{}, fmt.Errorf(ePrefix+
@@ -381,13 +381,13 @@ func (fMgrs *FileMgrCollection) PeekFMgrAtIndex(idx int) (FileMgr, error) {
 			"Index Out-Of-Range! idx='%v'", idx)
 	}
 
-	if idx >= len(fMgrs.FMgrs) {
+	if idx >= len(fMgrs.fileMgrs) {
 		return FileMgr{}, fmt.Errorf(ePrefix+
 			"Error: Input Parameter is greater than the length of the collection index. "+
-			"Index Out-Of-Range! idx='%v' Array Length='%v' ", idx, len(fMgrs.FMgrs))
+			"Index Out-Of-Range! idx='%v' Array Length='%v' ", idx, len(fMgrs.fileMgrs))
 	}
 
-	return fMgrs.FMgrs[idx].CopyOut(), nil
+	return fMgrs.fileMgrs[idx].CopyOut(), nil
 }
 
 // FileMgr - This structure and associated methods
