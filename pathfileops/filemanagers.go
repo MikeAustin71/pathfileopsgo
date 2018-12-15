@@ -53,19 +53,20 @@ func (fMgrs *FileMgrCollection) AddFileMgrByDirFileNameExt(
 	return nil
 }
 
-// AddFileMgrByPathFile - Add a new File Manager based on
-// input parameter pathFileName
-func (fMgrs *FileMgrCollection) AddFileMgrByPathFile(
-	pathFileName string) error {
+// AddFileMgrByPathFileNameExt - Add a new File Manager based on
+// input parameter 'pathFileNameExt' which includes the full path
+// name, file name and file extension.
+func (fMgrs *FileMgrCollection) AddFileMgrByPathFileNameExt(
+	pathFileNameExt string) error {
 
-	ePrefix := "FileMgrCollection.AddFileMgrByPathFile() "
+	ePrefix := "FileMgrCollection.AddFileMgrByPathFileNameExt() "
 
-	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(pathFileName)
+	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(pathFileNameExt)
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+
-			"Error returned from FileMgr{}.NewFromPathFileNameExtStr(pathFileName). "+
-			"pathFileName='%v' Error='%v'", pathFileName, err.Error())
+			"Error returned from FileMgr{}.NewFromPathFileNameExtStr(pathFileNameExt). "+
+			"pathFileNameExt='%v' Error='%v'", pathFileNameExt, err.Error())
 	}
 
 	fMgrs.fileMgrs = append(fMgrs.fileMgrs, fMgr)
@@ -170,7 +171,7 @@ func (fMgrs *FileMgrCollection) CopyOut() (FileMgrCollection, error) {
 	if lOmc == 0 {
 		return FileMgrCollection{},
 			errors.New(ePrefix +
-				"Error: Empty FileMgrCollection. No messages available!")
+				"Error: This File Manager Collection ('FileMgrCollection') is EMPTY! ")
 	}
 
 	for i := 0; i < lOmc; i++ {
@@ -178,6 +179,55 @@ func (fMgrs *FileMgrCollection) CopyOut() (FileMgrCollection, error) {
 	}
 
 	return fMgrs2, nil
+}
+
+// DeleteAtIndex - Deletes a member File Manager from the
+// collection at the index specified by input parameter 'idx'.
+//
+// If successful, at the completion of this method, the File
+// Manager Collection array will have a length which is one
+// less than the starting array length.
+//
+func (fMgrs *FileMgrCollection) DeleteAtIndex(idx int) error {
+
+	ePrefix := "FileMgrCollection.DeleteAtIndex() "
+
+	if idx < 0 {
+		return fmt.Errorf(ePrefix+
+			"Error: Input Parameter 'idx' is less than zero. "+
+			"Index Out-Of-Range! idx='%v'", idx)
+	}
+
+	arrayLen := len(fMgrs.fileMgrs)
+
+	if arrayLen == 0 {
+		return errors.New(ePrefix +
+			"Error: The File Manager Collection, 'FileMgrCollection', is EMPTY!")
+	}
+
+	if idx >= arrayLen {
+		return fmt.Errorf(ePrefix+
+			"Error: Input Parameter 'idx' is greater than the "+
+			"length of the collection index. Index Out-Of-Range! "+
+			"idx='%v' Array Length='%v' ", idx, arrayLen)
+	}
+
+	if arrayLen == 1 {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 100)
+	} else if idx == 0 {
+		// arrayLen > 1 and requested idx = 0
+		fMgrs.fileMgrs = fMgrs.fileMgrs[1:]
+	} else if idx == arrayLen-1 {
+		// arrayLen > 1 and requested idx = last element index
+		fMgrs.fileMgrs = fMgrs.fileMgrs[0 : arrayLen-1]
+	} else {
+		// arrayLen > 1 and idx is in between
+		// first and last elements
+		fMgrs.fileMgrs =
+			append(fMgrs.fileMgrs[0:idx], fMgrs.fileMgrs[idx+1:]...)
+	}
+
+	return nil
 }
 
 // FindFiles - Searches the current FileMgrCollection and returns a new
@@ -252,52 +302,28 @@ func (fMgrs *FileMgrCollection) GetNumOfFileMgrs() int {
 	return len(fMgrs.fileMgrs)
 }
 
-// PopLastFileMgr - Removes the last File Manager (FileMgr) object
-// from the collections array, and returns it to the calling method.
-func (fMgrs *FileMgrCollection) PopLastFileMgr() (FileMgr, error) {
+// New - Creates and returns a new, properly initialized
+// File Manager Collection ('FileMgrCollection').
+func (fMgrs FileMgrCollection) New() FileMgrCollection {
 
-	ePrefix := "FileMgrCollection.PopLastFileMgr() "
+	newFMgrCol := FileMgrCollection{}
 
-	arrayLen := len(fMgrs.fileMgrs)
+	newFMgrCol.fileMgrs = make([]FileMgr, 0, 100)
 
-	if arrayLen == 0 {
-		return FileMgr{}, errors.New(ePrefix +
-			"Error: The File Manager Collection, 'FileMgrCollection' is EMPTY!")
-	}
-
-	fmgr := fMgrs.fileMgrs[arrayLen-1].CopyOut()
-
-	fMgrs.fileMgrs = fMgrs.fileMgrs[0 : arrayLen-1]
-
-	return fmgr, nil
+	return newFMgrCol
 }
 
-// PopFirstFileMgr - Removes the first OpsMsgDto object
-// from the collections array, and returns it to
-// the calling method.
-func (fMgrs *FileMgrCollection) PopFirstFileMgr() (FileMgr, error) {
-
-	ePrefix := "FileMgrCollection.PopFirstFileMgr() "
-
-	if len(fMgrs.fileMgrs) == 0 {
-		return FileMgr{},
-			errors.New(ePrefix +
-				"Error: The File Manager Collection, 'FileMgrCollection' is EMPTY!")
-	}
-
-	fMgr := fMgrs.fileMgrs[0].CopyOut()
-
-	fMgrs.fileMgrs = fMgrs.fileMgrs[1:]
-
-	return fMgr, nil
-}
-
-// PopFileMgrAtIndex - Returns a copy of the File Manager (FileMgr) object located
-// at index, 'idx', in the FileMgrCollection array. As a 'Pop' method, the original
-// FileMgr object is deleted from the FileMgrCollection array.
+// PopFileMgrAtIndex - Returns a deep copy of the File Manager
+// ('FileMgr') object located at index, 'idx', in the
+// File Manager Collection ('FileMgrCollection') array.
 //
-// Therefore a the completion of this method, the File Manager Collection array
-// has a length which is one less than the starting array length.
+// As a 'Pop' method, the original File Manager ('FileMgr')
+// object is deleted from the File Manager Collection
+// ('FileMgrCollection') array.
+//
+// Therefore, at the completion of this method, the File Manager
+// Collection array has a length which is one less than the
+// starting array length.
 //
 func (fMgrs *FileMgrCollection) PopFileMgrAtIndex(idx int) (FileMgr, error) {
 
@@ -309,6 +335,12 @@ func (fMgrs *FileMgrCollection) PopFileMgrAtIndex(idx int) (FileMgr, error) {
 	}
 
 	arrayLen := len(fMgrs.fileMgrs)
+
+	if arrayLen == 0 {
+		return FileMgr{},
+			errors.New(ePrefix +
+				"Error: The File Manager Collection, 'FileMgrCollection', is EMPTY!")
+	}
 
 	if idx >= arrayLen {
 		return FileMgr{}, fmt.Errorf(ePrefix+
@@ -332,9 +364,113 @@ func (fMgrs *FileMgrCollection) PopFileMgrAtIndex(idx int) (FileMgr, error) {
 	return fmgr, nil
 }
 
-// PeekFirstFileMgr - Returns the first element from the
-// FileMgrCollection, but does NOT remove
-// it from the OpsMessages array.
+// PopFirstFileMgr - Returns a deep copy of the first File Manager
+// ('FileMgr') object in the File Manager Collection array. As a
+// 'Pop' method, the original File Manager ('FileMgr') object is
+// deleted from the File Manager Collection ('FileMgrCollection')
+// array.
+//
+// Therefore at the completion of this method, the File Manager
+// Collection array has a length which is one less than the starting
+// array length.
+//
+func (fMgrs *FileMgrCollection) PopFirstFileMgr() (FileMgr, error) {
+
+	ePrefix := "FileMgrCollection.PopFirstFileMgr() "
+
+	if len(fMgrs.fileMgrs) == 0 {
+		return FileMgr{},
+			errors.New(ePrefix +
+				"Error: The File Manager Collection, 'FileMgrCollection' is EMPTY!")
+	}
+
+	fMgr := fMgrs.fileMgrs[0].CopyOut()
+
+	fMgrs.fileMgrs = fMgrs.fileMgrs[1:]
+
+	return fMgr, nil
+}
+
+// PopLastFileMgr - Returns a deep copy of the last File Manager
+// ('FileMgr') object in the File Manager Collection array. As a
+// 'Pop' method, the original File Manager ('FileMgr') object is
+// deleted from the File Manager Collection ('FileMgrCollection')
+// array.
+//
+// Therefore at the completion of this method, the File Manager
+// Collection array has a length which is one less than the starting
+// array length.
+//
+func (fMgrs *FileMgrCollection) PopLastFileMgr() (FileMgr, error) {
+
+	ePrefix := "FileMgrCollection.PopLastFileMgr() "
+
+	arrayLen := len(fMgrs.fileMgrs)
+
+	if arrayLen == 0 {
+		return FileMgr{}, errors.New(ePrefix +
+			"Error: The File Manager Collection, 'FileMgrCollection', is EMPTY!")
+	}
+
+	fmgr := fMgrs.fileMgrs[arrayLen-1].CopyOut()
+
+	fMgrs.fileMgrs = fMgrs.fileMgrs[0 : arrayLen-1]
+
+	return fmgr, nil
+}
+
+// PeekFileMgrAtIndex - Returns a deep copy of the File Manager
+// ('FileMgr') object located at array index 'idx' in the File
+// Manager Collection ('FileMgrCollection'). This is a 'Peek'
+// method and therefore the original File Manager ('FileMgr')
+// object is NOT deleted from the File Manager Collection
+// ('FileMgrCollection') array.
+//
+// At the completion of this method, the length of the File
+// Manager Collection ('FileMgrCollection') array will remain
+// unchanged.
+//
+func (fMgrs *FileMgrCollection) PeekFileMgrAtIndex(idx int) (FileMgr, error) {
+
+	ePrefix := "FileMgrCollection.PeekFileMgrAtIndex() "
+
+	arrayLen := len(fMgrs.fileMgrs)
+
+	if arrayLen == 0 {
+		return FileMgr{},
+			errors.New(ePrefix +
+				"Error: The File Manager Collection, 'FileMgrCollection' is EMPTY!")
+	}
+
+	if idx < 0 {
+		return FileMgr{},
+			fmt.Errorf(ePrefix+
+				"Error: Input Parameter 'idx' is less than zero. "+
+				"Index Out-Of-Range! idx='%v'", idx)
+	}
+
+	if idx >= arrayLen {
+		return FileMgr{},
+			fmt.Errorf(ePrefix+
+				"Error: Input Parameter 'idx' is greater than the length "+
+				"of the collection array. "+
+				"Index Out-Of-Range! idx='%v' Array Length='%v' ",
+				idx, arrayLen)
+	}
+
+	return fMgrs.fileMgrs[idx].CopyOut(), nil
+}
+
+// PeekFirstFileMgr - Returns a deep copy of the first File
+// Manager ('FileMgr') object in the File Manager Collection
+// ('FileMgrCollection'). This is a 'Peek' method and therefore
+// the original File Manager ('FileMgr') object is NOT deleted
+// from the File Manager Collection ('FileMgrCollection')
+// array.
+//
+// At the completion of this method, the length of the File
+// Manager Collection ('FileMgrCollection') array will remain
+// unchanged.
 //
 func (fMgrs *FileMgrCollection) PeekFirstFileMgr() (FileMgr, error) {
 
@@ -343,51 +479,36 @@ func (fMgrs *FileMgrCollection) PeekFirstFileMgr() (FileMgr, error) {
 	if len(fMgrs.fileMgrs) == 0 {
 		return FileMgr{},
 			errors.New(ePrefix +
-				"Error: Empty FileMgrCollection. No messages available!")
+				"Error: The File Manager Collection ('FileMgrCollection') is EMPTY!")
 	}
 
 	return fMgrs.fileMgrs[0].CopyOut(), nil
 }
 
-// PeekLastFileMgr - Returns the last element from the
-// Operation Messages Collection, but does NOT remove
-// it from the OpsMessages array.
+// PeekLastFileMgr - Returns a deep copy of the last File Manager
+// ('FileMgr') object in the File Manager Collection
+// ('FileMgrCollection').
+//
+// This is a 'Peek' method and therefore the original File Manager
+// ('FileMgr') object is NOT deleted from the File Manager Collection
+// ('FileMgrCollection') array.
+//
+// At the completion of this method, the length of the File Manager
+// Collection ('FileMgrCollection') array will remain unchanged.
 //
 func (fMgrs *FileMgrCollection) PeekLastFileMgr() (FileMgr, error) {
 
 	ePrefix := "FileMgrCollection.PeekLastFileMgr()"
 
-	l1 := len(fMgrs.fileMgrs)
+	arrayLen := len(fMgrs.fileMgrs)
 
-	if l1 == 0 {
-		return FileMgr{}, errors.New(ePrefix +
-			"Error: Empty FileMgrCollection. No messages available!")
+	if arrayLen == 0 {
+		return FileMgr{},
+			errors.New(ePrefix +
+				"Error: The File Manager Collection ('FileMgrCollection') is EMPTY!")
 	}
 
-	return fMgrs.fileMgrs[l1-1].CopyOut(), nil
-}
-
-// PeekFileMgrAtIndex - Returns a copy of the File Manager (FileMgr) object located
-// at array index 'idx' in the FileMgrCollection. This is a 'Peek' method and the
-// original FileMgr object is not deleted from the FileMgrCollection array.
-//
-func (fMgrs *FileMgrCollection) PeekFileMgrAtIndex(idx int) (FileMgr, error) {
-
-	ePrefix := "FileMgrCollection.PeekFileMgrAtIndex() "
-
-	if idx < 0 {
-		return FileMgr{}, fmt.Errorf(ePrefix+
-			"Error: Input Parameter is less than zero. "+
-			"Index Out-Of-Range! idx='%v'", idx)
-	}
-
-	if idx >= len(fMgrs.fileMgrs) {
-		return FileMgr{}, fmt.Errorf(ePrefix+
-			"Error: Input Parameter is greater than the length of the collection index. "+
-			"Index Out-Of-Range! idx='%v' Array Length='%v' ", idx, len(fMgrs.fileMgrs))
-	}
-
-	return fMgrs.fileMgrs[idx].CopyOut(), nil
+	return fMgrs.fileMgrs[arrayLen-1].CopyOut(), nil
 }
 
 // FileMgr - This structure and associated methods
@@ -3000,9 +3121,9 @@ func (fOpsCol *FileOpsCollection) AddByFileMgrs(
 	return nil
 }
 
-// AddByDirMgrFileName - Adds another FileOps object to the collection
-// based on input parameters consisting of a pair of DirMgr and file name
-// extension strings for source and destination.
+// AddByDirMgrFileName - Creates and Adds another FileOps object to the
+// collection based on input parameters consisting of a pair of DirMgr
+// and file name extension strings for source and destination.
 //
 func (fOpsCol *FileOpsCollection) AddByDirMgrFileName(
 	sourceDirMgr DirMgr,
@@ -3027,6 +3148,356 @@ func (fOpsCol *FileOpsCollection) AddByDirMgrFileName(
 	fOpsCol.fileOps = append(fOpsCol.fileOps, newFileOps)
 
 	return nil
+}
+
+// AddByPathFileNameExtStrs - Creates and adds another File Operations
+// object to the collection based on two input strings which contain the
+// full path name, file name and file extension for the source and
+// destination respectively.
+//
+func (fOpsCol *FileOpsCollection) AddByPathFileNameExtStrs(
+	sourcePathFileNameExt,
+	destinationPathFileNameExt string) error {
+
+	ePrefix := "FileOpsCollection.AddByPathFileNameExtStrs() "
+
+	newFileOps, err :=
+		FileOps{}.NewByPathFileNameExtStrs(
+			sourcePathFileNameExt, destinationPathFileNameExt)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned by FileOps{}.NewByPathFileNameExtStrs(...) "+
+			"sourcePathFileNameExt='%v' destinationPathFileNameExt='%v' Error='%v' ",
+			sourcePathFileNameExt, destinationPathFileNameExt, err.Error())
+	}
+
+	fOpsCol.fileOps = append(fOpsCol.fileOps, newFileOps)
+
+	return nil
+}
+
+// CopyOut - Returns an FileMgrCollection which is an
+// exact duplicate of the current FileMgrCollection.
+// The copy is operation is a 'deep copy'.
+func (fOpsCol *FileOpsCollection) CopyOut() (FileOpsCollection, error) {
+
+	ePrefix := "FileOpsCollection.CopyOut() "
+
+	fOpsCol2 := FileOpsCollection{}
+
+	arrayLen := len(fOpsCol.fileOps)
+
+	if arrayLen == 0 {
+		return FileOpsCollection{},
+			errors.New(ePrefix +
+				"Error: This File Operations Collection ('FileOpsCollection') is EMPTY! ")
+	}
+
+	for i := 0; i < arrayLen; i++ {
+		fOpsCol2.AddByFileOps(fOpsCol.fileOps[i].CopyOut())
+	}
+
+	return fOpsCol2, nil
+}
+
+// DeleteAtIndex - Deletes a member File Operations element
+// from the collection at the index specified by input
+// parameter, 'idx'.
+//
+// If successful, at the completion of this method, the File
+// Operations Collection array will have a length which is one
+// less than the starting array length.
+//
+func (fOpsCol *FileOpsCollection) DeleteAtIndex(idx int) error {
+
+	ePrefix := "FileOpsCollection.DeleteAtIndex() "
+
+	if idx < 0 {
+		return fmt.Errorf(ePrefix+
+			"Error: Input Parameter 'idx' is less than zero. "+
+			"Index Out-Of-Range! idx='%v'", idx)
+	}
+
+	arrayLen := len(fOpsCol.fileOps)
+
+	if arrayLen == 0 {
+		return errors.New(ePrefix +
+			"Error: The File Operations Collection, 'FileOpsCollection', is EMPTY!")
+	}
+
+	if idx >= arrayLen {
+		return fmt.Errorf(ePrefix+
+			"Error: Input Parameter 'idx' is greater than the "+
+			"length of the collection index. Index Out-Of-Range! "+
+			"idx='%v' Array Length='%v' ", idx, arrayLen)
+	}
+
+	if arrayLen == 1 {
+		fOpsCol.fileOps = make([]FileOps, 0, 100)
+	} else if idx == 0 {
+		// arrayLen > 1 and requested idx = 0
+		fOpsCol.fileOps = fOpsCol.fileOps[1:]
+	} else if idx == arrayLen-1 {
+		// arrayLen > 1 and requested idx = last element index
+		fOpsCol.fileOps = fOpsCol.fileOps[0 : arrayLen-1]
+	} else {
+		// arrayLen > 1 and idx is in between
+		// first and last elements
+		fOpsCol.fileOps =
+			append(fOpsCol.fileOps[0:idx], fOpsCol.fileOps[idx+1:]...)
+	}
+
+	return nil
+}
+
+// ExecuteFileOperations - Executes a file operation on
+// each member of the File Operations Collection. Any
+// errors are collected and returned in an error array.
+//
+// The type of file operation performed is specified by
+// input parameter, 'fileOp'. 'fileOp' is of type
+// 'FileOperation'.
+//
+func (fOpsCol *FileOpsCollection) ExecuteFileOperations(
+	fileOp FileOperation) (errs []error) {
+
+	ePrefix := "FileOpsCollection.ExecuteFileOperation() "
+
+	errs = make([]error, 0, 50)
+
+	arrayLen := len(fOpsCol.fileOps)
+
+	if arrayLen == 0 {
+		errs = append(errs, errors.New(ePrefix+
+			"Error: This File Operations Collection ('FileOpsCollection') is EMPTY! "))
+		return errs
+	}
+
+	for i := 0; i < arrayLen; i++ {
+
+		err := fOpsCol.fileOps[i].ExecuteFileOperation(fileOp)
+
+		if err != nil {
+			errs = append(errs, err)
+		}
+	}
+
+	return errs
+}
+
+// New - Creates and returns a new, properly initialized
+// instance of 'FileOpsCollection'
+func (fOpsCol FileOpsCollection) New() FileOpsCollection {
+
+	newFileOpsCol := FileOpsCollection{}
+
+	newFileOpsCol.fileOps = make([]FileOps, 0, 100)
+
+	return newFileOpsCol
+}
+
+// PopFileOpsAtIndex - Returns a copy of the File Operations (FileOps)
+// object located at index, 'idx', in the File Operations Collection
+// ('FileOpsCollection') array. As a 'Pop' method, the original File
+// Operations ('FileOps') object is deleted from the File Operations
+// Collection ('FileOpsCollection') array.
+//
+// Therefore at the completion of this method, the File Operations
+// Collection array has a length which is one less than the starting
+// array length.
+//
+func (fOpsCol *FileOpsCollection) PopFileOpsAtIndex(idx int) (FileOps, error) {
+
+	ePrefix := "FileOpsCollection.PopFileOpsAtIndex() "
+
+	if idx < 0 {
+		return FileOps{}, fmt.Errorf(
+			ePrefix+
+				"Error: Input Parameter is less than zero. "+
+				"Index Out-Of-Range! idx='%v'", idx)
+	}
+
+	arrayLen := len(fOpsCol.fileOps)
+
+	if arrayLen == 0 {
+		return FileOps{},
+			errors.New(ePrefix +
+				"Error: The File Operations Collection, 'FileOpsCollection', is EMPTY!")
+	}
+
+	if idx >= arrayLen {
+		return FileOps{},
+			fmt.Errorf(ePrefix+
+				"Error: Input Parameter is greater than the "+
+				"length of the collection index. Index Out-Of-Range! "+
+				"idx='%v' Array Length='%v' ", idx, arrayLen)
+	}
+
+	if idx == 0 {
+		return fOpsCol.PopFirstFileOps()
+	}
+
+	if idx == arrayLen-1 {
+		return fOpsCol.PopLastFileOps()
+	}
+
+	fileOps := fOpsCol.fileOps[idx].CopyOut()
+
+	fOpsCol.fileOps =
+		append(fOpsCol.fileOps[0:idx], fOpsCol.fileOps[idx+1:]...)
+
+	return fileOps, nil
+}
+
+// PopFirstFileOps  - Returns a deep copy of the first File Operations
+// ('FileOps') object in the File Operations Collection array. As a
+// 'Pop' method, the original File Operations ('FileOps') object is
+// deleted from the File Operations Collection ('FileOpsCollection')
+// array.
+//
+// Therefore at the completion of this method, the File Operations
+// Collection array has a length which is one less than the starting
+// array length.
+//
+func (fOpsCol *FileOpsCollection) PopFirstFileOps() (FileOps, error) {
+
+	ePrefix := "DirMgrCollection.PopFirstDirMgr() "
+
+	if len(fOpsCol.fileOps) == 0 {
+		return FileOps{},
+			errors.New(ePrefix +
+				"Error: The File Operations Collection is EMPTY!")
+	}
+
+	fileOps := fOpsCol.fileOps[0].CopyOut()
+
+	fOpsCol.fileOps = fOpsCol.fileOps[1:]
+
+	return fileOps, nil
+}
+
+// PopLastFileOps - Returns a deep copy of the last File Operations
+// ('FileOps') object in the File Operations Collection array. As a
+// 'Pop' method, the original File Operations ('FileOps') object is
+// deleted from the File Operations Collection ('FileOpsCollection')
+// array.
+//
+// Therefore, at the completion of this method, the File Operations
+// Collection array has a length which is one less than the starting
+// array length.
+//
+func (fOpsCol *FileOpsCollection) PopLastFileOps() (FileOps, error) {
+
+	ePrefix := "FileOpsCollection.PopLastFileOps() "
+
+	arrayLen := len(fOpsCol.fileOps)
+
+	if arrayLen == 0 {
+		return FileOps{},
+			errors.New(ePrefix +
+				"Error: The File Operations Collection, 'FileOpsCollection', is EMPTY!")
+	}
+
+	fileOps := fOpsCol.fileOps[arrayLen-1].CopyOut()
+
+	fOpsCol.fileOps = fOpsCol.fileOps[0 : arrayLen-1]
+
+	return fileOps, nil
+
+}
+
+// PeekFileOpsAtIndex - Returns a deep copy of the File Operations
+// ('FileOps') object located at array index 'idx' in the File
+// Operations Collection ('FileOpsCollection'). This is a 'Peek'
+// method and therefore the original File Operations ('FileOps')
+// object is NOT deleted from the File Operations Collection
+// ('FileOpsCollection') array.
+//
+// At the completion of this method, the length of the File
+// Operations Collection ('FileOpsCollection') array will remain
+// unchanged.
+//
+func (fOpsCol *FileOpsCollection) PeekFileOpsAtIndex(idx int) (FileOps, error) {
+
+	ePrefix := "FileOpsCollection.PeekFileOpsAtIndex() "
+
+	arrayLen := len(fOpsCol.fileOps)
+
+	if arrayLen == 0 {
+		return FileOps{},
+			errors.New(ePrefix +
+				"Error: The File Operations Collection, 'FileOpsCollection' is EMPTY!")
+	}
+
+	if idx < 0 {
+		return FileOps{}, fmt.Errorf(ePrefix+
+			"Error: Input Parameter 'idx' is less than zero. "+
+			"Index Out-Of-Range! idx='%v'", idx)
+	}
+
+	if idx >= arrayLen {
+		return FileOps{},
+			fmt.Errorf(ePrefix+
+				"Error: Input Parameter 'idx' is greater than the "+
+				"length of the collection array. Index Out-Of-Range! "+
+				"idx='%v' Array Length='%v' ",
+				idx, arrayLen)
+
+	}
+
+	return fOpsCol.fileOps[idx].CopyOut(), nil
+}
+
+// PeekFirstFileOps - Returns a deep copy of the first File
+// Operations ('FileOps') object in the File Operations Collection
+// ('FileOpsCollection'). This is a 'Peek' method and therefore
+// the original File Operations ('FileOps') object is NOT
+// deleted from the File Operations Collection ('FileOpsCollection')
+// array.
+//
+// At the completion of this method, the length of the File
+// Operations Collection ('FileOpsCollection') array will remain
+// unchanged.
+//
+func (fOpsCol *FileOpsCollection) PeekFirstFileOps() (FileOps, error) {
+
+	ePrefix := "FileOpsCollection.PeekFirstFileOps() "
+
+	if len(fOpsCol.fileOps) == 0 {
+		return FileOps{},
+			errors.New(ePrefix +
+				"Error: The File Operations Collection ('FileOpsCollection') is EMPTY!")
+	}
+
+	return fOpsCol.fileOps[0].CopyOut(), nil
+}
+
+// PeekLastFileOps - Returns a deep copy of the last File
+// Operations ('FileOps') object in the File Operations
+// Collection ('FileOpsCollection').
+//
+// This is a 'Peek' method and therefore the original File
+// Operations ('FileOps') object is NOT deleted from the
+// File Operations Collection ('FileOpsCollection') array.
+//
+// At the completion of this method, the length of the File
+// Operations Collection ('FileOpsCollection') array will
+// remain unchanged.
+//
+func (fOpsCol *FileOpsCollection) PeekLastFileOps() (FileOps, error) {
+
+	ePrefix := "FileOpsCollection.PeekLastFileOps()"
+
+	arrayLen := len(fOpsCol.fileOps)
+
+	if arrayLen == 0 {
+		return FileOps{},
+			errors.New(ePrefix +
+				"Error: The File Operations Collection, 'FileOpsCollection' is EMPTY!")
+	}
+
+	return fOpsCol.fileOps[arrayLen-1].CopyOut(), nil
 }
 
 type FileOps struct {

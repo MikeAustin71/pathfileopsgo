@@ -119,10 +119,10 @@ func TestFileMgrCollection_AddFileMgrByPathFile(t *testing.T) {
 		t.Errorf("Error returned from fh.MakeAbsolutePath(adjustedPath). adjustedPath='%v' Error='%v'", adjustedPath, err.Error())
 	}
 
-	err = fMgrs.AddFileMgrByPathFile(fPath)
+	err = fMgrs.AddFileMgrByPathFileNameExt(fPath)
 
 	if err != nil {
-		t.Errorf("Error returned from fMgrs.AddFileMgrByPathFile(fPath). fPath='%v' Error='%v'", fPath, err.Error())
+		t.Errorf("Error returned from fMgrs.AddFileMgrByPathFileNameExt(fPath). fPath='%v' Error='%v'", fPath, err.Error())
 	}
 
 	fmgr2, err := fMgrs.PeekLastFileMgr()

@@ -114,6 +114,55 @@ func (dMgrs *DirMgrCollection) CopyOut() (DirMgrCollection, error) {
 	return dMgrs2, nil
 }
 
+// DeleteAtIndex - Deletes a member Directory Manager from
+// the collection at the index specified by input parameter 'idx'.
+//
+// If successful, at the completion of this method, the Directory
+// Manager Collection array will have a length which is one less
+// than the starting array length.
+//
+func (dMgrs *DirMgrCollection) DeleteAtIndex(idx int) error {
+
+	ePrefix := "DirMgrCollection.DeleteAtIndex() "
+
+	if idx < 0 {
+		return fmt.Errorf(ePrefix+
+			"Error: Input Parameter 'idx' is less than zero. "+
+			"Index Out-Of-Range! idx='%v'", idx)
+	}
+
+	arrayLen := len(dMgrs.dirMgrs)
+
+	if arrayLen == 0 {
+		return errors.New(ePrefix +
+			"Error: The Directory Manager Collection, 'DirMgrCollection', is EMPTY!")
+	}
+
+	if idx >= arrayLen {
+		return fmt.Errorf(ePrefix+
+			"Error: Input Parameter 'idx' is greater than the "+
+			"length of the collection index. Index Out-Of-Range! "+
+			"idx='%v' Array Length='%v' ", idx, arrayLen)
+	}
+
+	if arrayLen == 1 {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	} else if idx == 0 {
+		// arrayLen > 1
+		dMgrs.dirMgrs = dMgrs.dirMgrs[1:]
+	} else if idx == arrayLen-1 {
+		// arrayLen > 1
+		dMgrs.dirMgrs = dMgrs.dirMgrs[0 : arrayLen-1]
+	} else {
+		// arrayLen > 1 and idx is in between
+		// first and last elements
+		dMgrs.dirMgrs =
+			append(dMgrs.dirMgrs[0:idx], dMgrs.dirMgrs[idx+1:]...)
+	}
+
+	return nil
+}
+
 // FindDirectories - searches through the DirMgrCollection to find
 // DirMgr objects matching specified search criteria.
 func (dMgrs *DirMgrCollection) FindDirectories(
@@ -180,65 +229,53 @@ func (dMgrs *DirMgrCollection) GetNumOfDirs() int {
 	return len(dMgrs.dirMgrs)
 }
 
-// PopLastDirMgr - Removes the last File Manager (DirMgr) object
-// from the collections array, and returns it to the calling method.
-func (dMgrs *DirMgrCollection) PopLastDirMgr() (DirMgr, error) {
+// New - Creates and returns a new and properly initialized
+// Directory Manager Collection ('DirMgrCollection').
+//
+func (dMgrs DirMgrCollection) New() DirMgrCollection {
 
-	ePrefix := "DirMgrCollection.PopLastDirMgr() "
+	newDirMgrCol := DirMgrCollection{}
+	newDirMgrCol.dirMgrs = make([]DirMgr, 0, 100)
+
+	return newDirMgrCol
+}
+
+// PopDirMgrAtIndex - Returns a copy of the Directory Manager
+// ('DirMgr') object located at index, 'idx', in the Directory
+// Manager Collection ('DirMgrCollection') array.
+//
+// As a 'Pop' method, the original Directory Manager ('DirMgr')
+// object is deleted from the Directory Manager Collection
+// ('DirMgrCollection') array.
+//
+// Therefore at the completion of this method, the Directory
+// Manager Collection array has a length which is one less
+// than the starting array length.
+//
+func (dMgrs *DirMgrCollection) PopDirMgrAtIndex(idx int) (DirMgr, error) {
+
+	ePrefix := "DirMgrCollection.PopDirMgrAtIndex() "
+
+	if idx < 0 {
+		return DirMgr{},
+			fmt.Errorf(ePrefix+
+				"Error: Input Parameter 'idx' is less than zero. "+
+				"Index Out-Of-Range! idx='%v'", idx)
+	}
 
 	arrayLen := len(dMgrs.dirMgrs)
 
 	if arrayLen == 0 {
-		return DirMgr{}, errors.New(ePrefix + "Error: Empty DirMgrCollection. No messages available!")
-	}
-
-	dmgr := dMgrs.dirMgrs[arrayLen-1].CopyOut()
-
-	dMgrs.dirMgrs = dMgrs.dirMgrs[0 : arrayLen-1]
-
-	return dmgr, nil
-}
-
-// PopFirstDirMgr - Removes the first OpsMsgDto object
-// from the collections array, and returns it to
-// the calling method.
-func (dMgrs *DirMgrCollection) PopFirstDirMgr() (DirMgr, error) {
-
-	ePrefix := "DirMgrCollection.PopFirstDirMgr() "
-
-	if len(dMgrs.dirMgrs) == 0 {
 		return DirMgr{},
-			errors.New(ePrefix + "Error: The Directory Manger Collection is EMPTY!")
+			errors.New(ePrefix +
+				"Error: The Directory Manager Collection, 'DirMgrCollection', is EMPTY!")
 	}
-
-	dMgr := dMgrs.dirMgrs[0].CopyOut()
-
-	dMgrs.dirMgrs = dMgrs.dirMgrs[1:]
-
-	return dMgr, nil
-}
-
-// PopDirMgrAtIndex - Returns a copy of the File Manager (DirMgr) object located
-// at index, 'idx', in the DirMgrCollection array. As a 'Pop' method, the original
-// DirMgr object is deleted from the DirMgrCollection array.
-//
-// Therefore a the completion of this method, the Directory Manager Collection
-// array has a length which is one less than the starting array length.
-//
-func (dMgrs *DirMgrCollection) PopDirMgrAtIndex(idx int) (DirMgr, error) {
-	ePrefix := "DirMgrCollection.PopDirMgrAtIndex() "
-
-	if idx < 0 {
-		return DirMgr{}, fmt.Errorf(ePrefix+"Error: Input Parameter is less than zero. "+
-			"Index Out-Of-Range! idx='%v'", idx)
-	}
-
-	arrayLen := len(dMgrs.dirMgrs)
 
 	if idx >= arrayLen {
 		return DirMgr{}, fmt.Errorf(ePrefix+
-			"Error: Input Parameter is greater than the "+
-			"length of the collection index. Index Out-Of-Range! idx='%v' Array Length='%v' ", idx, arrayLen)
+			"Error: Input Parameter 'idx' is greater than the "+
+			"length of the collection index. Index Out-Of-Range! "+
+			"idx='%v' Array Length='%v' ", idx, arrayLen)
 	}
 
 	if idx == 0 {
@@ -251,28 +288,160 @@ func (dMgrs *DirMgrCollection) PopDirMgrAtIndex(idx int) (DirMgr, error) {
 
 	dMgr := dMgrs.dirMgrs[idx].CopyOut()
 
-	dMgrs.dirMgrs = append(dMgrs.dirMgrs[0:idx], dMgrs.dirMgrs[idx+1:]...)
+	dMgrs.dirMgrs =
+		append(dMgrs.dirMgrs[0:idx], dMgrs.dirMgrs[idx+1:]...)
 
 	return dMgr, nil
 }
 
-// PeekFirstDirMgr - Returns the first element from the
-// DirMgrCollection, but does NOT remove
-// it from the OpsMessages array.
+// PopFirstDirMgr  - Returns a deep copy of the first Directory Manager
+// ('DirMgr') object in the Directory Manager Collection array. As a
+// 'Pop' method, the original Directory Manager ('DirMgr') object is
+// deleted from the Directory Manager Collection ('DirMgrCollection')
+// array.
+//
+// Therefore at the completion of this method, the Directory Manager
+// Collection array has a length which is one less than the starting
+// array length.
+//
+func (dMgrs *DirMgrCollection) PopFirstDirMgr() (DirMgr, error) {
+
+	ePrefix := "DirMgrCollection.PopFirstDirMgr() "
+
+	arrayLen := len(dMgrs.dirMgrs)
+
+	if arrayLen == 0 {
+		return DirMgr{},
+			errors.New(ePrefix +
+				"Error: The Directory Manger Collection is EMPTY!")
+	}
+
+	dMgr := dMgrs.dirMgrs[0].CopyOut()
+
+	if arrayLen == 1 {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+
+	} else {
+		// arrayLen > 1
+		dMgrs.dirMgrs = dMgrs.dirMgrs[1:]
+	}
+
+	return dMgr, nil
+}
+
+// PopLastDirMgr - Returns a deep copy of the last Directory Manager
+// ('DirMgr') object in the Directory Manager Collection array. As a
+// 'Pop' method, the original Directory Manager ('DirMgr') object is
+// deleted from the Directory Manager Collection ('DirMgrCollection')
+// array.
+//
+// Therefore at the completion of this method, the Directory Manager
+// Collection array has a length which is one less than the starting
+// array length.
+//
+func (dMgrs *DirMgrCollection) PopLastDirMgr() (DirMgr, error) {
+
+	ePrefix := "DirMgrCollection.PopLastDirMgr() "
+
+	arrayLen := len(dMgrs.dirMgrs)
+
+	if arrayLen == 0 {
+		return DirMgr{},
+			errors.New(ePrefix +
+				"Error: The Directory Manager Collection, 'DirMgrCollection' is EMPTY!")
+	}
+
+	dmgr := dMgrs.dirMgrs[arrayLen-1].CopyOut()
+
+	if arrayLen == 1 {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+
+	} else {
+		// arrayLen > 1
+		dMgrs.dirMgrs = dMgrs.dirMgrs[0 : arrayLen-1]
+	}
+
+	return dmgr, nil
+}
+
+// PeekDirMgrAtIndex - Returns a deep copy of the Directory Manager
+// ('DirMgr') object located at array index 'idx' in the Directory
+// Manager Collection ('DirMgrCollection'). This is a 'Peek' method
+// and therefore the original Directory Manager ('DirMgr') object
+// is NOT deleted from the Directory Manager Collection
+// ('DirMgrCollection') array.
+//
+// At the completion of this method, the length of the Directory
+// Manager Collection ('DirMgrCollection') array will remain
+// unchanged.
+//
+func (dMgrs *DirMgrCollection) PeekDirMgrAtIndex(idx int) (DirMgr, error) {
+
+	ePrefix := "DirMgrCollection.PeekDirMgrAtIndex() "
+
+	arrayLen := len(dMgrs.dirMgrs)
+
+	if arrayLen == 0 {
+		return DirMgr{},
+			errors.New(ePrefix +
+				"Error: The Directory Manager Collection, 'DirMgrCollection' is EMPTY!")
+	}
+
+	if idx < 0 {
+		return DirMgr{}, fmt.Errorf(ePrefix+
+			"Error: Input Parameter 'idx' is less than zero. "+
+			"Index Out-Of-Range! idx='%v'", idx)
+	}
+
+	if idx >= arrayLen {
+		return DirMgr{},
+			fmt.Errorf(ePrefix+
+				"Error: Input Parameter 'idx' is greater than the "+
+				"length of the collection array. Index Out-Of-Range! "+
+				"idx='%v' Array Length='%v' ",
+				idx, arrayLen)
+
+	}
+
+	return dMgrs.dirMgrs[idx].CopyOut(), nil
+}
+
+// PeekFirstDirMgr - Returns a deep copy of the first Directory
+// Manager ('DirMgr') object in the Directory Manager Collection
+// ('DirMgrCollection'). This is a 'Peek' method and therefore
+// the original Directory Manager ('DirMgr') object is NOT
+// deleted from the Directory Manager Collection
+// ('DirMgrCollection') array.
+//
+// At the completion of this method, the length of the Directory
+// Manager Collection ('DirMgrCollection') array will remain
+// unchanged.
+//
 func (dMgrs *DirMgrCollection) PeekFirstDirMgr() (DirMgr, error) {
 
 	ePrefix := "DirMgrCollection.PeekFirstDirMgr() "
 
 	if len(dMgrs.dirMgrs) == 0 {
-		return DirMgr{}, errors.New(ePrefix + "Error: Empty DirMgrCollection. No messages available!")
+		return DirMgr{},
+			errors.New(ePrefix +
+				"Error: The Director Manager Collection ('DirMgrCollection') is EMPTY!")
 	}
 
 	return dMgrs.dirMgrs[0].CopyOut(), nil
 }
 
-// PeekLastDirMgr - Returns the last element from the
-// Operation Messages Collection, but does NOT remove
-// it from the OpsMessages array.
+// PeekLastDirMgr - Returns a deep copy of the last Directory
+// Manager ('DirMgr') object in the Directory Manager Collection
+// ('DirMgrCollection').
+//
+// This is a 'Peek' method and therefore the original Directory
+// Manager ('DirMgr') object is NOT deleted from the Directory
+// Manager Collection ('DirMgrCollection') array.
+//
+// At the completion of this method, the length of the Directory
+// Manager Collection ('DirMgrCollection') array will remain
+// unchanged.
+//
 func (dMgrs *DirMgrCollection) PeekLastDirMgr() (DirMgr, error) {
 
 	ePrefix := "DirMgrCollection.PeekLastDirMgr()"
@@ -280,33 +449,12 @@ func (dMgrs *DirMgrCollection) PeekLastDirMgr() (DirMgr, error) {
 	arrayLen := len(dMgrs.dirMgrs)
 
 	if arrayLen == 0 {
-		return DirMgr{}, errors.New(ePrefix +
-			"Error: The Directory Manager Collection, 'DirMgrCollection' is EMPTY!")
+		return DirMgr{},
+			errors.New(ePrefix +
+				"Error: The Directory Manager Collection, 'DirMgrCollection' is EMPTY!")
 	}
 
 	return dMgrs.dirMgrs[arrayLen-1].CopyOut(), nil
-}
-
-// PeekDirMgrAtIndex - Returns a copy of the File Manager (DirMgr) object located
-// at array index 'idx' in the DirMgrCollection. This is a 'Peek' method and the
-// original DirMgr object is not deleted from the DirMgrCollection array.
-func (dMgrs *DirMgrCollection) PeekDirMgrAtIndex(idx int) (DirMgr, error) {
-
-	ePrefix := "DirMgrCollection.PeekDirMgrAtIndex() "
-
-	if idx < 0 {
-		return DirMgr{}, fmt.Errorf(ePrefix+
-			"Error: Input Parameter is less than zero. Index Out-Of-Range! idx='%v'", idx)
-	}
-
-	if idx >= len(dMgrs.dirMgrs) {
-		return DirMgr{}, fmt.Errorf(ePrefix+"Error: Input Parameter is greater than the "+
-			"length of the collection index. Index Out-Of-Range! idx='%v' Array Length='%v' ",
-			idx, len(dMgrs.dirMgrs))
-
-	}
-
-	return dMgrs.dirMgrs[idx].CopyOut(), nil
 }
 
 // DirMgr - This structure and associated methods
