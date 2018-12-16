@@ -35,17 +35,17 @@ func (dMgrs *DirMgrCollection) AddDirMgr(dMgr DirMgr) {
 	dMgrs.dirMgrs = append(dMgrs.dirMgrs, dMgr.CopyOut())
 }
 
-// AddDirMgrByPathFile - Adds a Directory Manager (DirMgr) to the
+// AddDirMgrByPathNameStr - Adds a Directory Manager (DirMgr) to the
 // collections based on a string input parameter, 'pathName'.
 //
-func (dMgrs *DirMgrCollection) AddDirMgrByPathFile(pathName string) error {
-	ePrefix := "DirMgrCollection.AddDirMgrByPathFile() "
+func (dMgrs *DirMgrCollection) AddDirMgrByPathNameStr(pathName string) error {
+	ePrefix := "DirMgrCollection.AddDirMgrByPathNameStr() "
 
 	dMgr, err := DirMgr{}.New(pathName)
 
 	if err != nil {
 		s := ePrefix +
-			"Error returned from DirMgr{}.NewFromPathFileNameExtStr(pathName). pathName='%v' Error='%v'"
+			"Error returned from DirMgr{}.New(pathName). pathName='%v' Error='%v'"
 		return fmt.Errorf(s, pathName, err.Error())
 	}
 
@@ -1806,12 +1806,12 @@ func (dMgr *DirMgr) GetThisDirectoryTree() (DirMgrCollection, error) {
 				fmt.Println("Next Dir: ", newDirPathFileName)
 
 				// err = dMgrs.AddFileInfo(newDirPathFileName, nameFInfo)
-				err = dMgrs.AddDirMgrByPathFile(newDirPathFileName)
+				err = dMgrs.AddDirMgrByPathNameStr(newDirPathFileName)
 
 				if err != nil {
 					return DirMgrCollection{},
 						fmt.Errorf(ePrefix+
-							"Error returned by dMgrs.AddDirMgrByPathFile(newDirPathFileName). "+
+							"Error returned by dMgrs.AddDirMgrByPathNameStr(newDirPathFileName). "+
 							"dir='%v' Error='%v' ",
 							newDirPathFileName, err.Error())
 				}

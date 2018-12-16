@@ -19,7 +19,7 @@ func TestDirMgrCollection_AddDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -42,7 +42,7 @@ func TestDirMgrCollection_AddDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -57,7 +57,7 @@ func TestDirMgrCollection_AddDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (3) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -72,7 +72,7 @@ func TestDirMgrCollection_AddDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (3) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -87,7 +87,7 @@ func TestDirMgrCollection_AddDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (4) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -102,7 +102,7 @@ func TestDirMgrCollection_AddDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (4) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -142,7 +142,7 @@ func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
 		t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -165,7 +165,7 @@ func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
 		t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -180,7 +180,7 @@ func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
 		t.Errorf("Error returned by (3) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -195,7 +195,7 @@ func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
 		t.Errorf("Error returned by (3) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -210,7 +210,7 @@ func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
 		t.Errorf("Error returned by (4) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -225,7 +225,7 @@ func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
 		t.Errorf("Error returned by (4) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -260,7 +260,7 @@ func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
 		t.Errorf("Error returned by Phase2-1 fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs2.AddDirMgrByPathFile(origPath)
+	err = dMgrs2.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -275,7 +275,7 @@ func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
 		t.Errorf("Error returned by Phase2-2 fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs2.AddDirMgrByPathFile(origPath)
+	err = dMgrs2.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -290,7 +290,7 @@ func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
 		t.Errorf("Error returned by Phase2-3 fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs2.AddDirMgrByPathFile(origPath)
+	err = dMgrs2.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -332,7 +332,7 @@ func TestDirMgrCollection_PopLastDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -355,7 +355,7 @@ func TestDirMgrCollection_PopLastDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -370,7 +370,7 @@ func TestDirMgrCollection_PopLastDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (3) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -385,7 +385,7 @@ func TestDirMgrCollection_PopLastDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (3) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -400,7 +400,7 @@ func TestDirMgrCollection_PopLastDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (4) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -415,7 +415,7 @@ func TestDirMgrCollection_PopLastDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (4) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -459,7 +459,7 @@ func TestDirMgrCollection_PopFirstDirMgr_01(t *testing.T) {
 
 	firstAbsDirPath := origAbsPath
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -482,7 +482,7 @@ func TestDirMgrCollection_PopFirstDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -497,7 +497,7 @@ func TestDirMgrCollection_PopFirstDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (3) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -512,7 +512,7 @@ func TestDirMgrCollection_PopFirstDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (3) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -527,7 +527,7 @@ func TestDirMgrCollection_PopFirstDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (4) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -542,7 +542,7 @@ func TestDirMgrCollection_PopFirstDirMgr_01(t *testing.T) {
 		t.Errorf("Error returned by (4) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -581,7 +581,7 @@ func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
 		t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -604,7 +604,7 @@ func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
 		t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -622,7 +622,7 @@ func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
 	idx2Path := origPath
 	idx2AbsPath := origAbsPath
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -640,7 +640,7 @@ func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
 	idx3Path := origPath
 	idx3AbsPath := origAbsPath
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -655,7 +655,7 @@ func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
 		t.Errorf("Error returned by (4) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -670,7 +670,7 @@ func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
 		t.Errorf("Error returned by (4) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -727,7 +727,7 @@ func TestDirMgrCollection_PeekDirMgrAtIndex_01(t *testing.T) {
 		t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -750,7 +750,7 @@ func TestDirMgrCollection_PeekDirMgrAtIndex_01(t *testing.T) {
 		t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -768,7 +768,7 @@ func TestDirMgrCollection_PeekDirMgrAtIndex_01(t *testing.T) {
 	idx2Path := origPath
 	idx2AbsPath := origAbsPath
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -786,7 +786,7 @@ func TestDirMgrCollection_PeekDirMgrAtIndex_01(t *testing.T) {
 	idx3Path := origPath
 	idx3AbsPath := origAbsPath
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -801,7 +801,7 @@ func TestDirMgrCollection_PeekDirMgrAtIndex_01(t *testing.T) {
 		t.Errorf("Error returned by (4) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
@@ -816,7 +816,7 @@ func TestDirMgrCollection_PeekDirMgrAtIndex_01(t *testing.T) {
 		t.Errorf("Error returned by (4) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
 	}
 
-	err = dMgrs.AddDirMgrByPathFile(origPath)
+	err = dMgrs.AddDirMgrByPathNameStr(origPath)
 
 	if err != nil {
 		t.Errorf("%v", err.Error())
