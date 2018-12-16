@@ -283,3 +283,95 @@ func TestFileOpsCollection_AddByFileMgrs_01(t *testing.T) {
 		}
 	}
 }
+
+func TestFileOpsCollection_AddByDirMgrFileName_01(t *testing.T) {
+
+	srcDir := "../filesfortest/levelfilesfortest/"
+
+	srcDirMgr, err := DirMgr{}.New(srcDir)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.New(srcDir). "+
+			"srcDir='%v' Error='%v' ", srcDir, err.Error())
+	}
+
+	sf := make([]string, 5, 10)
+
+	sf[0] = "level_0_0_test.txt"
+	sf[1] = "level_0_1_test.txt"
+	sf[2] = "level_0_2_test.txt"
+	sf[3] = "level_0_3_test.txt"
+	sf[4] = "level_0_4_test.txt"
+
+	destDir := "../dirmgrtests"
+
+	destDirMgr, err := DirMgr{}.New(destDir)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.New(destDir). "+
+			"destDir='%v' Error='%v' ", destDir, err.Error())
+	}
+
+	df := make([]string, 5, 10)
+
+	df[0] = "level_0_0_test.txt"
+	df[1] = "level_0_1_test.txt"
+	df[2] = "level_0_2_test.txt"
+	df[3] = "level_0_3_test.txt"
+	df[4] = "level_0_4_test.txt"
+
+	fh := FileHelper{}
+	fOpsCol := FileOpsCollection{}.New()
+
+	for i := 0; i < 5; i++ {
+		err := fOpsCol.AddByDirMgrFileName(
+			srcDirMgr.CopyOut(),
+			sf[i],
+			destDirMgr.CopyOut(),
+			df[i])
+
+		if err != nil {
+			t.Errorf("Error returned by fOpsCol.AddByDirMgrFileName(...). "+
+				"i='%v' Error='%v'  ", i, err.Error())
+		}
+
+		sf[i] = fh.JoinPathsAdjustSeparators(srcDirMgr.GetAbsolutePath(), sf[i])
+
+		df[i] = fh.JoinPathsAdjustSeparators(destDirMgr.GetAbsolutePath(), df[i])
+
+	}
+
+	arrayLen := fOpsCol.GetNumOfFileOps()
+
+	if arrayLen != 5 {
+		t.Errorf("Error: Expected file fOpsCol array length='5'. "+
+			"Instead, array length='%v' ", arrayLen)
+	}
+
+	for j := 0; j < arrayLen; j++ {
+
+		fileOps, err := fOpsCol.PeekFileOpsAtIndex(j)
+
+		if err != nil {
+			t.Errorf("Error returned by fOpsCol.PeekFileOpsAtIndex(j). "+
+				"j='%v' Error='%v' ", j, err.Error())
+		}
+
+		srcFileMgr := fileOps.GetSource()
+
+		if sf[j] != srcFileMgr.GetAbsolutePathFileName() {
+			t.Errorf("Error: Expected source file manager[j]='%v'. "+
+				"Instead, source file manger[j]='%v' ",
+				sf[j], srcFileMgr.GetAbsolutePathFileName())
+		}
+
+		destFileMgr := fileOps.GetDestination()
+
+		if df[j] != destFileMgr.GetAbsolutePathFileName() {
+			t.Errorf("Error: Expected destination file manager[j]='%v'. "+
+				"Instead, destination file manger[j]='%v' ",
+				df[j], destFileMgr.GetAbsolutePathFileName())
+		}
+
+	}
+}
