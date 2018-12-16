@@ -181,3 +181,105 @@ func TestFileOpsCollection_AddByDirStrsAndFileNameExtStrs_01(t *testing.T) {
 	}
 
 }
+
+func TestFileOpsCollection_AddByFileMgrs_01(t *testing.T) {
+
+	sf := make([]string, 5, 10)
+
+	sf[0] = "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+	sf[1] = "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+	sf[2] = "../filesfortest/levelfilesfortest/level_0_2_test.txt"
+	sf[3] = "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+	sf[4] = "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+
+	df := make([]string, 5, 10)
+
+	df[0] = "../dirmgrtests/level_0_0_test.txt"
+	df[1] = "../dirmgrtests/level_0_1_test.txt"
+	df[2] = "../dirmgrtests/level_0_2_test.txt"
+	df[3] = "../dirmgrtests/level_0_3_test.txt"
+	df[4] = "../dirmgrtests/level_0_4_test.txt"
+
+	fh := FileHelper{}
+	fileOpsCol := FileOpsCollection{}.New()
+
+	for i := 0; i < 5; i++ {
+
+		srcFileMgr, err :=
+			FileMgr{}.NewFromPathFileNameExtStr(sf[i])
+
+		if err != nil {
+			t.Errorf("Error returned by FileMgr{}.NewFromPathFileNameExtStr(sf[i]). "+
+				"sf[i]='%v' Error='%v' ", sf[i], err.Error())
+			return
+		}
+
+		destFileMgr, err :=
+			FileMgr{}.NewFromPathFileNameExtStr(df[i])
+
+		if err != nil {
+			t.Errorf("Error returned by FileMgr{}.NewFromPathFileNameExtStr(df[i]). "+
+				"df[i]='%v' Error='%v' ", df[i], err.Error())
+			return
+		}
+
+		err = fileOpsCol.AddByFileMgrs(srcFileMgr, destFileMgr)
+
+		if err != nil {
+			t.Errorf("Error returned by fileOpsCol.AddByFileMgrs(srcFileMgr, destFileMgr). "+
+				"srcFileMgr='%v' destFileMgr='%v' Error='%v' ",
+				srcFileMgr.GetAbsolutePathFileName(), destFileMgr.GetAbsolutePathFileName(),
+				err.Error())
+		}
+
+		sf[i], err = fh.GetAbsPathFromFilePath(sf[i])
+
+		if err != nil {
+			t.Errorf("Error returned by fh.GetAbsPathFromFilePath(sf[i]). "+
+				"i='%v', sf[i]='%v' Error='%v' ", i, sf[i], err.Error())
+			return
+		}
+
+		df[i], err = fh.GetAbsPathFromFilePath(df[i])
+
+		if err != nil {
+			t.Errorf("Error returned by fh.GetAbsPathFromFilePath(df[i]). "+
+				"i='%v', df[i]='%v' Error='%v' ", i, df[i], err.Error())
+			return
+		}
+
+	}
+
+	arrayLen := fileOpsCol.GetNumOfFileOps()
+
+	if arrayLen != 5 {
+		t.Errorf("Expected final FileOpsCol array length='5'. "+
+			"Instead, final array length='%v' ", arrayLen)
+	}
+
+	for j := 0; j < arrayLen; j++ {
+
+		fileOps, err := fileOpsCol.PeekFileOpsAtIndex(j)
+
+		if err != nil {
+			t.Errorf("Error returned by fileOpsCol.PeekFileOpsAtIndex(j). "+
+				"j='%v' Error='%v' ", j, err.Error())
+		}
+
+		srcFileMgr := fileOps.GetSource()
+
+		if sf[j] != srcFileMgr.GetAbsolutePathFileName() {
+			t.Errorf("Expected srcFileMgr['%v']='%v'. "+
+				"Instead, srcFileMgr='%v' ", j, sf[j],
+				srcFileMgr.GetAbsolutePathFileName())
+		}
+
+		destFileMgr := fileOps.GetDestination()
+
+		if df[j] != destFileMgr.GetAbsolutePathFileName() {
+			t.Errorf("Expected destFileMgr['%v']='%v'. "+
+				"Instead, destFileMgr='%v' ", j, df[j],
+				destFileMgr.GetAbsolutePathFileName())
+		}
+	}
+}
