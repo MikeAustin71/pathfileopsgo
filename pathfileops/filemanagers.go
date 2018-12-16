@@ -3150,6 +3150,36 @@ func (fOpsCol *FileOpsCollection) AddByDirMgrFileName(
 	return nil
 }
 
+// AddByDirStrsAndFileNameExtStrs - Creates and adds another File Operations
+// object to the collection based on two pairs of directory name and file name
+// extension strings for both source and destination respectively.
+//
+func (fOpsCol *FileOpsCollection) AddByDirStrsAndFileNameExtStrs(
+	sourceDirStr,
+	sourceFileNameExtStr,
+	destinationDirStr,
+	destinationFileNameExtStr string) error {
+
+	ePrefix := "FileOpsCollection.AddByDirStrsAndFileNameExtStrs() "
+
+	newFileOps, err :=
+		FileOps{}.NewByDirStrsAndFileNameExtStrs(
+			sourceDirStr,
+			sourceFileNameExtStr,
+			destinationDirStr,
+			destinationFileNameExtStr)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned by FileOps{}.NewByDirStrsAndFileNameExtStrs(...) "+
+			"Error='%v' ", err.Error())
+	}
+
+	fOpsCol.fileOps = append(fOpsCol.fileOps, newFileOps)
+
+	return nil
+}
+
 // AddByPathFileNameExtStrs - Creates and adds another File Operations
 // object to the collection based on two input strings which contain the
 // full path name, file name and file extension for the source and
@@ -3284,6 +3314,16 @@ func (fOpsCol *FileOpsCollection) ExecuteFileOperations(
 	}
 
 	return errs
+}
+
+// GetNumOfFileOps - Returns the number of File Operations objects
+// in the collection.  Effectively, this is the array length of
+// internal field FileOpsCollection.fileOps.
+//
+func (fOpsCol *FileOpsCollection) GetNumOfFileOps() int {
+
+	return len(fOpsCol.fileOps)
+
 }
 
 // New - Creates and returns a new, properly initialized
@@ -3532,6 +3572,18 @@ func (fops *FileOps) CopyOut() FileOps {
 //
 func (fops *FileOps) IsInitialized() bool {
 	return fops.isInitialized
+}
+
+// GetSource - Returns a deep copy of the
+// source FileMgr instance.
+func (fops *FileOps) GetSource() FileMgr {
+	return fops.source.CopyOut()
+}
+
+// GetSource - Returns a deep copy of the
+// destination FileMgr instance.
+func (fops *FileOps) GetDestination() FileMgr {
+	return fops.destination.CopyOut()
 }
 
 // NewByFileMgrs - Creates and returns a new FileOps
