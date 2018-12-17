@@ -375,3 +375,83 @@ func TestFileOpsCollection_AddByDirMgrFileName_01(t *testing.T) {
 
 	}
 }
+
+func TestFileOpsCollection_GetFileOpsAtIndex_01(t *testing.T) {
+
+	sf := make([]string, 5, 10)
+
+	sf[0] = "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+	sf[1] = "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+	sf[2] = "../filesfortest/levelfilesfortest/level_0_2_test.txt"
+	sf[3] = "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+	sf[4] = "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+
+	df := make([]string, 5, 10)
+
+	df[0] = "../dirmgrtests/level_0_0_test.txt"
+	df[1] = "../dirmgrtests/level_0_1_test.txt"
+	df[2] = "../dirmgrtests/level_0_2_test.txt"
+	df[3] = "../dirmgrtests/level_0_3_test.txt"
+	df[4] = "../dirmgrtests/level_0_4_test.txt"
+
+	fh := FileHelper{}
+	fOpsCol := FileOpsCollection{}.New()
+
+	for i := 0; i < 5; i++ {
+
+		err := fOpsCol.AddByPathFileNameExtStrs(sf[i], df[i])
+
+		if err != nil {
+			t.Errorf("Error returned by fOpsCol.AddByPathFileNameExtStrs(sf[i], df[i]). "+
+				"i='%v' Error='%v' ", i, err.Error())
+			return
+		}
+
+		sf[i], err = fh.GetAbsPathFromFilePath(sf[i])
+
+		if err != nil {
+			t.Errorf("Error returned by fh.GetAbsPathFromFilePath(sf[i]). "+
+				"i='%v', sf[i]='%v' Error='%v' ", i, sf[i], err.Error())
+			return
+		}
+
+		df[i], err = fh.GetAbsPathFromFilePath(df[i])
+
+		if err != nil {
+			t.Errorf("Error returned by fh.GetAbsPathFromFilePath(df[i]). "+
+				"i='%v', df[i]='%v' Error='%v' ", i, df[i], err.Error())
+			return
+		}
+
+	}
+
+	arrayLen := fOpsCol.GetNumOfFileOps()
+
+	if arrayLen != 5 {
+		t.Errorf("Error: Expected intial array length='5'. "+
+			"Instead, array length='%v' ", arrayLen)
+	}
+
+	fOps, err := fOpsCol.GetFileOpsAtIndex(2)
+
+	if err != nil {
+		t.Errorf("Error returned by fOpsCol.GetFileOpsAtIndex(2). "+
+			"Error='%v' ", err.Error())
+		return
+	}
+
+	srcFile := fOps.GetSource()
+
+	if sf[2] != srcFile.GetAbsolutePathFileName() {
+		t.Errorf("Error: Expected source file[2]='%v'. "+
+			"Instead, source file[2]='%v' ", sf[2], srcFile.GetAbsolutePathFileName())
+	}
+
+	destFile := fOps.GetDestination()
+
+	if df[2] != destFile.GetAbsolutePathFileName() {
+		t.Errorf("Error: Expected destination file[2]='%v'. "+
+			"Instead, destination file[2]='%v' ", df[2], destFile.GetAbsolutePathFileName())
+	}
+
+}

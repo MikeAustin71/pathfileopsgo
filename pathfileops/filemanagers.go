@@ -1488,6 +1488,53 @@ func (fMgr *FileMgr) CopyOut() FileMgr {
 	return fmgr2
 }
 
+// CreateDir - Creates the directory previously configured
+// for this file manager instance.
+//
+func (fMgr *FileMgr) CreateDir() error {
+
+	ePrefix := "FileMgr.CreateDir() "
+
+	var err error
+
+	err = fMgr.IsFileMgrValid(ePrefix)
+
+	if err != nil {
+		return err
+	}
+
+	err = fMgr.dMgr.IsDirMgrValid(ePrefix)
+
+	if err != nil {
+		return err
+	}
+
+	fh := FileHelper{}
+
+	if !fh.DoesFileExist(fMgr.dMgr.absolutePath) {
+		// Directory does NOT exist, create it!
+
+		err := fh.MakeDirAll(fMgr.dMgr.absolutePath)
+
+		if err != nil {
+			return fmt.Errorf(ePrefix+
+				"Errors from FileHelper:"+
+				"MakeDirAll(fMgr.dMgr.absolutePath). "+
+				"fMgr.dMgr.absolutePath='%v'  Error='%v' ",
+				fMgr.dMgr.absolutePath, err.Error())
+		}
+
+		fMgr.dMgr.doesAbsolutePathExist = true
+
+	} else {
+
+		fMgr.dMgr.doesAbsolutePathExist = true
+
+	}
+
+	return nil
+}
+
 // CreateDirAndFile - Performs two operations:
 // This is a Wrapper function for os.Create - Create a file.
 //
@@ -1508,6 +1555,12 @@ func (fMgr *FileMgr) CreateDirAndFile() error {
 	var err error
 
 	err = fMgr.IsFileMgrValid(ePrefix)
+
+	if err != nil {
+		return err
+	}
+
+	err = fMgr.dMgr.IsDirMgrValid(ePrefix)
 
 	if err != nil {
 		return err
@@ -3326,6 +3379,37 @@ func (fOpsCol *FileOpsCollection) GetNumOfFileOps() int {
 
 }
 
+// GetFileOpsAtIndex - If successful, this method returns a pointer to
+// the FileOps instance at the array index specified. The 'Peek' and 'Pop'
+// methods below return FileOps objects using a 'deep' copy and are therefore
+// safer to use.
+func (fOpsCol *FileOpsCollection) GetFileOpsAtIndex(idx int) (*FileOps, error) {
+
+	ePrefix := "FileOpsCollection.GetFileOpsAtIndex() "
+
+	emptyFileOps := FileOps{}
+
+	arrayLen := len(fOpsCol.fileOps)
+
+	if arrayLen == 0 {
+		return &emptyFileOps,
+			fmt.Errorf(ePrefix +
+				"Error: This File Operations Collection ('FileOpsCollection') is EMPTY!")
+	}
+
+	if idx < 0 || idx >= arrayLen {
+
+		return &emptyFileOps,
+			fmt.Errorf(ePrefix+
+				"Error: The input parameter, 'idx', is OUT OF RANGE! idx='%v'.  \n"+
+				"The minimum index is '0'. "+
+				"The maximum index is '%v'. ", idx, arrayLen-1)
+
+	}
+
+	return &fOpsCol.fileOps[idx], nil
+}
+
 // New - Creates and returns a new, properly initialized
 // instance of 'FileOpsCollection'
 func (fOpsCol FileOpsCollection) New() FileOpsCollection {
@@ -3759,6 +3843,10 @@ func (fops FileOps) NewByDirStrsAndFileNameExtStrs(
 
 }
 
+// ExecuteFileOperation - Executes specific operations on the source
+// and/or destination files configured and identified in the current
+// FileOps instance.
+//
 func (fops *FileOps) ExecuteFileOperation(fileOp FileOperation) error {
 
 	ePrefix := "FileOps.ExecuteFileOperation() "
@@ -3770,14 +3858,14 @@ func (fops *FileOps) ExecuteFileOperation(fileOp FileOperation) error {
 
 	switch fops.opToExecute {
 
-	case DELETEDESTINATION:
-		err = fops.deleteDestination()
+	case DELETEDESTINATIONFILE:
+		err = fops.deleteDestinationFile()
 
-	case DELETESOURCE:
-		err = fops.deleteSource()
+	case DELETESOURCEFILE:
+		err = fops.deleteSourceFile()
 
-	case DELETESOURCEandDESTINATION:
-		err = fops.deleteSourceAndDestination()
+	case DELETESOURCEandDESTINATIONFILES:
+		err = fops.deleteSourceAndDestinationFiles()
 
 	case COPYSOURCETODESTINATIONByIoByHardLink:
 		err = fops.copySrcToDestByIoByHardLink()
@@ -3791,6 +3879,18 @@ func (fops *FileOps) ExecuteFileOperation(fileOp FileOperation) error {
 	case COPYSOURCETODESTINATIONByHardLink:
 		err = fops.copySrcToDestByHardLink()
 
+	case CREATE_SOURCE_DIR:
+		err = fops.createSrcDirectory()
+
+	case CREATE_SOURCE_DIR_AND_FILE:
+		err = fops.createSrcDirectoryAndFile()
+
+	case CREATE_DESTINATION_DIR:
+		err = fops.createDestDirectory()
+
+	case CREATE_DESTINATION_DIR_AND_FILE:
+		err = fops.createDestDirectoryAndFile()
+
 	default:
 		err = errors.New("Invalid 'FileOperation' Execution Command! ")
 	}
@@ -3802,9 +3902,11 @@ func (fops *FileOps) ExecuteFileOperation(fileOp FileOperation) error {
 	return nil
 }
 
-func (fops *FileOps) deleteDestination() error {
+// deleteDestinationFile - Deletes the destination file in the
+// current FileOps instance.
+func (fops *FileOps) deleteDestinationFile() error {
 
-	ePrefix := "FileOps.deleteDestination() Destination Deletion Failed: "
+	ePrefix := "FileOps.deleteDestinationFile() Destination Deletion Failed: "
 
 	err := fops.destination.DeleteThisFile()
 
@@ -3815,9 +3917,11 @@ func (fops *FileOps) deleteDestination() error {
 	return nil
 }
 
-func (fops *FileOps) deleteSource() error {
+// deleteSourceFile - Deletes the source file in the current
+// FileOps instance.
+func (fops *FileOps) deleteSourceFile() error {
 
-	ePrefix := "FileOps.deleteSource() Source Deletion Failed: "
+	ePrefix := "FileOps.deleteSourceFile() Source Deletion Failed: "
 
 	err := fops.source.DeleteThisFile()
 
@@ -3828,9 +3932,12 @@ func (fops *FileOps) deleteSource() error {
 	return nil
 }
 
-func (fops *FileOps) deleteSourceAndDestination() error {
+// deleteSourceAndDestinationFiles - Deletes both the source
+// and destination files configured in the current FileOps
+// instance.
+func (fops *FileOps) deleteSourceAndDestinationFiles() error {
 
-	cumErrMsg := "FileOps.deleteSourceAndDestination()- "
+	cumErrMsg := "FileOps.deleteSourceAndDestinationFiles()- "
 
 	cumErrLen := len(cumErrMsg)
 
@@ -3897,6 +4004,105 @@ func (fops *FileOps) copySrcToDestByHardLink() error {
 	ePrefix := "FileOps.copySrcToDestByHardLink() "
 
 	err := fops.source.CopyFileMgrByLink(&fops.destination)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	return nil
+}
+
+// createSrcDirectory - Creates the source directory using
+// information from the FileOps source file manager.
+//
+func (fops *FileOps) createSrcDirectory() error {
+
+	ePrefix := "FileOps.createSrcDirectory() "
+
+	err := fops.source.CreateDir()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	return nil
+}
+
+// createSrcDirectoryAndFile - Creates the source file
+// and directory using information from the FileOps
+// source file manager.
+//
+func (fops *FileOps) createSrcDirectoryAndFile() error {
+
+	ePrefix := "FileOps.createSrcDirectoryAndFile() "
+
+	err := fops.source.CreateDirAndFile()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	return nil
+}
+
+// createSrcFile - Creates the source file using
+// information from the FileOps source file manager.
+//
+func (fops *FileOps) createSrcFile() error {
+
+	ePrefix := "FileOps.createSrcFile() "
+
+	err := fops.source.CreateFile()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	return nil
+}
+
+// createDestDirectory - Creates the destination
+// directory using information from the FileOps
+// destination file manager.
+//
+func (fops *FileOps) createDestDirectory() error {
+
+	ePrefix := "FileOps.createSrcDirectory() "
+
+	err := fops.destination.CreateDir()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	return nil
+}
+
+// createDestDirectoryAndFile - Creates the destination
+// directory and file using information from the FileOps
+// destination file manager.
+//
+func (fops *FileOps) createDestDirectoryAndFile() error {
+
+	ePrefix := "FileOps.createDestDirectoryAndFile() "
+
+	err := fops.destination.CreateDirAndFile()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	return nil
+}
+
+// createDestFile - Creates the destination file using
+// information from the FileOps destination file manager.
+//
+func (fops *FileOps) createDestFile() error {
+
+	ePrefix := "FileOps.createDestFile() "
+
+	err := fops.destination.CreateFile()
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+"%v", err.Error())

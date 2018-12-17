@@ -17,14 +17,14 @@ const (
 
 	// Deletes the Destination file if it exists
 	//
-	DELETEDESTINATION
+	DELETEDESTINATIONFILE
 
 	// Deletes the Source file if it exists
-	DELETESOURCE
+	DELETESOURCEFILE
 
 	// Deletes both the Source and Destination files
 	// if they exist.
-	DELETESOURCEandDESTINATION
+	DELETESOURCEandDESTINATIONFILES
 
 	// Copies the Source File to the Destination
 	// using two copy attempts. The first copy is
@@ -65,6 +65,24 @@ const (
 	// The source file is unaffected.
 	//
 	COPYSOURCETODESTINATIONByIo
+
+	// Creates the Source Directory
+	CREATE_SOURCE_DIR
+
+	// Creates the Source Directory and File
+	CREATE_SOURCE_DIR_AND_FILE
+
+	// Creates the Source File
+	CREATE_SOURCE_FILE
+
+	// Creates the Destination Directory
+	CREATE_DESTINATION_DIR
+
+	// Creates the Destination Directory and File
+	CREATE_DESTINATION_DIR_AND_FILE
+
+	// Creates the Destination File
+	CREATE_DESTINATION_FILE
 )
 
 func (pathFileOp FileOperation) String() string {
