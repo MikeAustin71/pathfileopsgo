@@ -336,64 +336,6 @@ func TestFileMgrCollection_FindFiles(t *testing.T) {
 
 }
 
-// //////////////////////////////////////////////////////////////
-// Test Setup Functions
-// //////////////////////////////////////////////////////////////
-func FileMgrCollectionTestSetup01() FileMgrCollection {
-
-	fh := FileHelper{}
-	FMgrs := FileMgrCollection{}
-
-	fPath, _ := fh.MakeAbsolutePath(fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt"))
-	fmgr, _ := FileMgr{}.NewFromPathFileNameExtStr(fPath)
-	FMgrs.AddFileMgr(fmgr)
-
-	fPath, _ = fh.MakeAbsolutePath(fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_02.txt"))
-	fmgr, _ = FileMgr{}.NewFromPathFileNameExtStr(fPath)
-	FMgrs.AddFileMgr(fmgr)
-
-	fPath, _ = fh.MakeAbsolutePath(fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_03.txt"))
-	fmgr, _ = FileMgr{}.NewFromPathFileNameExtStr(fPath)
-	FMgrs.AddFileMgr(fmgr)
-
-	fPath, _ = fh.MakeAbsolutePath(fh.AdjustPathSlash("../filesfortest/oldfilesfortest/006870_ReadingFiles.htm"))
-	fmgr, _ = FileMgr{}.NewFromPathFileNameExtStr(fPath)
-	FMgrs.AddFileMgr(fmgr)
-
-	fPath, _ = fh.MakeAbsolutePath("../filesfortest/oldfilesfortest/006890_WritingFiles.htm")
-	fmgr, _ = FileMgr{}.NewFromPathFileNameExtStr(fPath)
-	FMgrs.AddFileMgr(fmgr)
-
-	fPath, _ = fh.MakeAbsolutePath("../filesfortest/oldfilesfortest/test.htm")
-	fmgr, _ = FileMgr{}.NewFromPathFileNameExtStr(fPath)
-	FMgrs.AddFileMgr(fmgr)
-
-	return FMgrs
-}
-
-func FileMgrCollectionTestSetupFmgr01(fileNameExt string) (FileMgr, error) {
-
-	ePrefix := "Src File: xt_filemgrcollection_01_test.go  Function: FileMgrCollectionTestSetupFmgr01() "
-	fh := FileHelper{}
-
-	pathFileName := "../dirwalktests/dir01/dir02/" + fileNameExt
-	adjustedPathFileName := fh.AdjustPathSlash(pathFileName)
-	fPath, err := fh.MakeAbsolutePath(adjustedPathFileName)
-
-	if err != nil {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error return by fh.MakeAbsolutePath(adjustedPathFileName). adjustedPathFileName='%v'  Error='%v'", adjustedPathFileName, err.Error())
-	}
-
-	fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(fPath)
-
-	if err != nil {
-		return FileMgr{}, fmt.Errorf(ePrefix+"Error return by FileMgr{}.NewFromPathFileNameExtStr(fPath). fPath='%v'  Error='%v'", fPath, err.Error())
-	}
-
-	return fmgr, nil
-
-}
-
 func TestDirectoryTreeInfo_CopyToDirectoryTree_01(t *testing.T) {
 
 	fh := FileHelper{}
@@ -477,5 +419,117 @@ func TestDirectoryTreeInfo_CopyToDirectoryTree_01(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error returned from substituteDMgr.DeleteAll(). Error='%v'", err.Error())
 	}
+
+}
+
+func TestFileMgrCollection_GetFileMgrAtIndex_01(t *testing.T) {
+
+	fm := make([]string, 5, 50)
+
+	fm[0] = "../filesfortest/newfilesfortest/newerFileForTest_02.txt"
+	fm[1] = "../filesfortest/newfilesfortest/newerFileForTest_03.txt"
+	fm[2] = "../filesfortest/oldfilesfortest/006870_ReadingFiles.htm"
+	fm[3] = "../filesfortest/oldfilesfortest/006890_WritingFiles.htm"
+	fm[4] = "../filesfortest/oldfilesfortest/test.htm"
+
+	fMgrCol := FileMgrCollection{}.New()
+	var err error
+	fh := FileHelper{}
+
+	for i := 0; i < 5; i++ {
+
+		err = fMgrCol.AddFileMgrByPathFileNameExt(fm[i])
+
+		if err != nil {
+			t.Errorf("Error returned by fMgrCol.AddFileMgrByPathFileNameExt(fm[i]). "+
+				"i='%v' fm[i]='%v' Error='%v' ", i, fm[i], err.Error())
+		}
+
+		fm[i], err = fh.MakeAbsolutePath(fm[i])
+
+		if err != nil {
+			t.Errorf("Error returned by fh.MakeAbsolutePath(fm[i]). "+
+				"i='%v' fm[i]='%v' Error='%v' ", i, fm[i], err.Error())
+
+		}
+
+	}
+
+	arrayLen := fMgrCol.GetNumOfFileMgrs()
+
+	if arrayLen != 5 {
+		t.Errorf("Error: Expected Collection array length='5'. "+
+			"Instead, array length='%v'. ", arrayLen)
+	}
+
+	fMgr, err := fMgrCol.GetFileMgrAtIndex(2)
+
+	if err != nil {
+		t.Errorf("Error returned by fMgrCol.GetFileMgrAtIndex(2). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if fm[2] != fMgr.GetAbsolutePathFileName() {
+		t.Errorf("Error: Expected fMgr[2]='%v'. "+
+			"Instead, fMgr[2]='%v' ", fm[2], fMgr.GetAbsolutePathFileName())
+	}
+
+}
+
+// //////////////////////////////////////////////////////////////
+// Test Setup Functions
+// //////////////////////////////////////////////////////////////
+func FileMgrCollectionTestSetup01() FileMgrCollection {
+
+	fh := FileHelper{}
+	FMgrs := FileMgrCollection{}
+
+	fPath, _ := fh.MakeAbsolutePath(fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt"))
+	fmgr, _ := FileMgr{}.NewFromPathFileNameExtStr(fPath)
+	FMgrs.AddFileMgr(fmgr)
+
+	fPath, _ = fh.MakeAbsolutePath(fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_02.txt"))
+	fmgr, _ = FileMgr{}.NewFromPathFileNameExtStr(fPath)
+	FMgrs.AddFileMgr(fmgr)
+
+	fPath, _ = fh.MakeAbsolutePath(fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_03.txt"))
+	fmgr, _ = FileMgr{}.NewFromPathFileNameExtStr(fPath)
+	FMgrs.AddFileMgr(fmgr)
+
+	fPath, _ = fh.MakeAbsolutePath(fh.AdjustPathSlash("../filesfortest/oldfilesfortest/006870_ReadingFiles.htm"))
+	fmgr, _ = FileMgr{}.NewFromPathFileNameExtStr(fPath)
+	FMgrs.AddFileMgr(fmgr)
+
+	fPath, _ = fh.MakeAbsolutePath("../filesfortest/oldfilesfortest/006890_WritingFiles.htm")
+	fmgr, _ = FileMgr{}.NewFromPathFileNameExtStr(fPath)
+	FMgrs.AddFileMgr(fmgr)
+
+	fPath, _ = fh.MakeAbsolutePath("../filesfortest/oldfilesfortest/test.htm")
+	fmgr, _ = FileMgr{}.NewFromPathFileNameExtStr(fPath)
+	FMgrs.AddFileMgr(fmgr)
+
+	return FMgrs
+}
+
+func FileMgrCollectionTestSetupFmgr01(fileNameExt string) (FileMgr, error) {
+
+	ePrefix := "Src File: xt_filemgrcollection_01_test.go  Function: FileMgrCollectionTestSetupFmgr01() "
+	fh := FileHelper{}
+
+	pathFileName := "../dirwalktests/dir01/dir02/" + fileNameExt
+	adjustedPathFileName := fh.AdjustPathSlash(pathFileName)
+	fPath, err := fh.MakeAbsolutePath(adjustedPathFileName)
+
+	if err != nil {
+		return FileMgr{}, fmt.Errorf(ePrefix+"Error return by fh.MakeAbsolutePath(adjustedPathFileName). adjustedPathFileName='%v'  Error='%v'", adjustedPathFileName, err.Error())
+	}
+
+	fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(fPath)
+
+	if err != nil {
+		return FileMgr{}, fmt.Errorf(ePrefix+"Error return by FileMgr{}.NewFromPathFileNameExtStr(fPath). fPath='%v'  Error='%v'", fPath, err.Error())
+	}
+
+	return fmgr, nil
 
 }

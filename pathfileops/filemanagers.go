@@ -293,6 +293,39 @@ func (fMgrs *FileMgrCollection) FindFiles(
 	return fMgrs2, nil
 }
 
+// GetFileMgrAtIndex - If successful, this method returns a pointer to
+// the FileMgr instance at the array index specified. The 'Peek' and 'Pop'
+// methods below return FileMgr objects using a 'deep' copy and therefore
+// offer better protection against data corruption.
+//
+func (fMgrs *FileMgrCollection) GetFileMgrAtIndex(idx int) (*FileMgr, error) {
+
+	ePrefix := "FileMgrCollection.GetFileMgrAtIndex() "
+
+	emptyFileMgr := FileMgr{}
+
+	arrayLen := len(fMgrs.fileMgrs)
+
+	if arrayLen == 0 {
+		return &emptyFileMgr,
+			fmt.Errorf(ePrefix +
+				"Error: This File Manager Collection ('FileMgrCollection') is EMPTY!")
+	}
+
+	if idx < 0 || idx >= arrayLen {
+
+		return &emptyFileMgr,
+			fmt.Errorf(ePrefix+
+				"Error: The input parameter, 'idx', is OUT OF RANGE! idx='%v'.  \n"+
+				"The minimum index is '0'. "+
+				"The maximum index is '%v'. ", idx, arrayLen-1)
+
+	}
+
+	return &fMgrs.fileMgrs[idx], nil
+
+}
+
 // GetNumOfFileMgrs - returns the array length of the
 // of the File Manager Collection, 'FileMgrCollection'.
 // Effectively the returned integer is a count of the
@@ -3369,20 +3402,11 @@ func (fOpsCol *FileOpsCollection) ExecuteFileOperations(
 	return errs
 }
 
-// GetNumOfFileOps - Returns the number of File Operations objects
-// in the collection.  Effectively, this is the array length of
-// internal field FileOpsCollection.fileOps.
-//
-func (fOpsCol *FileOpsCollection) GetNumOfFileOps() int {
-
-	return len(fOpsCol.fileOps)
-
-}
-
 // GetFileOpsAtIndex - If successful, this method returns a pointer to
 // the FileOps instance at the array index specified. The 'Peek' and 'Pop'
-// methods below return FileOps objects using a 'deep' copy and are therefore
-// safer to use.
+// methods below return FileOps objects using a 'deep' copy and therefore
+// offer better protection against data corruption.
+//
 func (fOpsCol *FileOpsCollection) GetFileOpsAtIndex(idx int) (*FileOps, error) {
 
 	ePrefix := "FileOpsCollection.GetFileOpsAtIndex() "
@@ -3408,6 +3432,16 @@ func (fOpsCol *FileOpsCollection) GetFileOpsAtIndex(idx int) (*FileOps, error) {
 	}
 
 	return &fOpsCol.fileOps[idx], nil
+}
+
+// GetNumOfFileOps - Returns the number of File Operations objects
+// in the collection.  Effectively, this is the array length of
+// internal field FileOpsCollection.fileOps.
+//
+func (fOpsCol *FileOpsCollection) GetNumOfFileOps() int {
+
+	return len(fOpsCol.fileOps)
+
 }
 
 // New - Creates and returns a new, properly initialized
