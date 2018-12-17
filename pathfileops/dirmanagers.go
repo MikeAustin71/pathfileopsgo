@@ -222,6 +222,38 @@ func (dMgrs *DirMgrCollection) FindDirectories(
 	return dMgrs2, nil
 }
 
+// GetFileMgrAtIndex - If successful, this method returns a pointer to
+// the DirMgr instance at the array index specified. The 'Peek' and 'Pop'
+// methods below return DirMgr objects using a 'deep' copy and therefore
+// offer better protection against data corruption.
+//
+func (dMgrs *DirMgrCollection) GetFileMgrAtIndex(idx int) (*DirMgr, error) {
+
+	ePrefix := "DirMgrCollection.GetFileMgrAtIndex() "
+
+	emptyDirMgr := DirMgr{}
+
+	arrayLen := len(dMgrs.dirMgrs)
+
+	if arrayLen == 0 {
+		return &emptyDirMgr,
+			fmt.Errorf(ePrefix +
+				"Error: This Directory Manager Collection ('DirMgrCollection') is EMPTY!")
+	}
+
+	if idx < 0 || idx >= arrayLen {
+
+		return &emptyDirMgr,
+			fmt.Errorf(ePrefix+
+				"Error: The input parameter, 'idx', is OUT OF RANGE! idx='%v'.  \n"+
+				"The minimum index is '0'. "+
+				"The maximum index is '%v'. ", idx, arrayLen-1)
+
+	}
+
+	return &dMgrs.dirMgrs[idx], nil
+}
+
 // GetNumOfDirs - returns the number of directories
 // contained in this Directory Manager Collection.
 //

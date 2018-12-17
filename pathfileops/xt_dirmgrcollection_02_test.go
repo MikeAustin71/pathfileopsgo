@@ -507,3 +507,51 @@ func TestDirMgrCollection_DeleteAtIndex_05(t *testing.T) {
 	}
 
 }
+
+func TestDirMgrCollection_GetFileMgrAtIndex_01(t *testing.T) {
+
+	df := make([]string, 5, 10)
+
+	df[0] = "..\\dirmgrtests"
+	df[1] = "..\\dirmgrtests\\dir01"
+	df[2] = "..\\dirmgrtests\\dir01\\dir02"
+	df[3] = "..\\dirmgrtests\\dir01\\dir02\\dir03"
+	df[4] = "..\\dirmgrtests\\dir01\\dir02\\dir03\\dir04"
+
+	dmgrCol := DirMgrCollection{}.New()
+
+	fh := FileHelper{}
+
+	var err error
+
+	for i := 0; i < 5; i++ {
+
+		err = dmgrCol.AddDirMgrByPathNameStr(df[i])
+
+		if err != nil {
+			t.Errorf("Error returned by dmgrCol.AddDirMgrByPathNameStr(df[i]). "+
+				"i='%v', df[i]='%v' Error='%v' ", i, df[i], err.Error())
+		}
+
+		df[i], err = fh.MakeAbsolutePath(df[i])
+
+		if err != nil {
+			t.Errorf("Error returned by fh.MakeAbsolutePath(df[i]). "+
+				"i='%v', df[i]='%v' Error='%v' ", i, df[i], err.Error())
+		}
+
+	}
+
+	dirMgr, err := dmgrCol.GetFileMgrAtIndex(2)
+
+	if err != nil {
+		t.Errorf("Error returned by dmgrCol.GetFileMgrAtIndex(2). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if df[2] != dirMgr.GetAbsolutePath() {
+		t.Errorf("Error: Expected dirMgr[2]='%v'. "+
+			"Instead, dirMgr[2]='%v' ", df[2], dirMgr.GetAbsolutePath())
+	}
+
+}
