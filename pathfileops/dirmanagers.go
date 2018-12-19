@@ -515,7 +515,10 @@ type DirMgr struct {
 // directory tree to another target directory tree. Specify the type of
 // copy operation to be performed using the Type 'FileOperation'.
 //
-func (dMgr *DirMgr) CopyDirectoryTree(targetBaseDir DirMgr, fileOp FileOperation) error {
+func (dMgr *DirMgr) CopyDirectoryTree(
+	targetBaseDir DirMgr,
+	fileOp FileOperation) error {
+
 	ePrefix := "DirMgr.CopyDirectoryTree()"
 
 	fsc := FileSelectionCriteria{}

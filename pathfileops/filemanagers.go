@@ -3407,7 +3407,7 @@ func (fOpsCol *FileOpsCollection) ExecuteFileOperations(
 
 			errNo++
 
-			_, err2 := fmt.Fprint(&b, "%d. %s  ", errNo, err.Error())
+			_, err2 := fmt.Fprintf(&b, "%d. %v  ", errNo, err.Error())
 
 			if err2 != nil {
 				return fmt.Errorf(ePrefix+
