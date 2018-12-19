@@ -511,6 +511,43 @@ type DirMgr struct {
 	actualDirFileInfo               FileInfoPlus
 }
 
+// CopyDirectoryTree - Copy all files and subdirectories in the current
+// directory tree to another target directory tree. Specify the type of
+// copy operation to be performed using the Type 'FileOperation'.
+//
+func (dMgr *DirMgr) CopyDirectoryTree(targetBaseDir DirMgr, fileOp FileOperation) error {
+	ePrefix := "DirMgr.CopyDirectoryTree()"
+
+	fsc := FileSelectionCriteria{}
+	origDirsAndFiles, err := dMgr.FindWalkDirFiles(fsc)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error retured from dMgr.FindWalkDirFiles(fsc).  Error='%v'",
+			err.Error())
+	}
+
+	fileOpsCol, err := FileOpsCollection{}.NewFromFileMgrCollection(
+		&origDirsAndFiles.FoundFiles,
+		dMgr,
+		&targetBaseDir)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned by FileOpsCollection{}.NewFromFileMgrCollection(..). "+
+			"Error='%v' ", err.Error())
+	}
+
+	err = fileOpsCol.ExecuteFileOperations(fileOp)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+" %v ", err.Error())
+	}
+
+	return nil
+
+}
+
 // CopyIn - Receives a pointer to a DirMgr object as an
 // input parameter and copies the values from the incoming
 // object to the current DirMgr object. When the copy operation
@@ -1593,8 +1630,8 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 //	DirectoryTreeInfo structure	-
 //					type DirectoryTreeInfo struct {
 //						StartPath            	string								// The starting path or directory for the file search
-//						dirMgrs          	[]DirMgr									// dirMgrs found during directory tree search
-//						FoundFiles           	[]FileWalkInfo				// Found Files matching file selection criteria
+//						Directories      	    DirMgrCollection	   	// dirMgrs found during directory tree search
+//						FoundFiles           	FileMgrCollection		 // Found Files matching file selection criteria
 //						ErrReturns           	[]string							// Internal System errors encountered
 //						FileSelectCriteria    FileSelectionCriteria // The File Selection Criteria submitted as an
 // 																												// input parameter to this method.

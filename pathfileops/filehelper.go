@@ -1659,7 +1659,9 @@ func (fh FileHelper) GetFileNameWithExt(pathFileNameExt string) (fNameExt string
 // pathFileNameExt = ./pathfilego/003_filehelper/common/xt_dirmgr_01_test.go
 // Returned 'fName' = dirmgr_01_test
 //
-func (fh FileHelper) GetFileNameWithoutExt(pathFileNameExt string) (fName string, isEmpty bool, err error) {
+func (fh FileHelper) GetFileNameWithoutExt(
+	pathFileNameExt string) (fName string, isEmpty bool, err error) {
+
 	ePrefix := "FileHelper.GetFileNameWithoutExt()"
 
 	isEmpty = true

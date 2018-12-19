@@ -2795,6 +2795,7 @@ func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (int, error) {
 
 // SetFileMgrFromDirMgrFileName - Sets the data fields of the current FileMgr object
 // based on a DirMgr object and a File Name string which are passed as input parameters.
+//
 func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
 	dMgr DirMgr,
 	fileNameExt string) (isEmpty bool, err error) {
@@ -3376,30 +3377,51 @@ func (fOpsCol *FileOpsCollection) DeleteAtIndex(idx int) error {
 // 'FileOperation'.
 //
 func (fOpsCol *FileOpsCollection) ExecuteFileOperations(
-	fileOp FileOperation) (errs []error) {
+	fileOp FileOperation) error {
 
 	ePrefix := "FileOpsCollection.ExecuteFileOperation() "
-
-	errs = make([]error, 0, 50)
 
 	arrayLen := len(fOpsCol.fileOps)
 
 	if arrayLen == 0 {
-		errs = append(errs, errors.New(ePrefix+
-			"Error: This File Operations Collection ('FileOpsCollection') is EMPTY! "))
-		return errs
+		return errors.New(ePrefix +
+			"Error: This File Operations Collection ('FileOpsCollection') is EMPTY! ")
 	}
+
+	var b strings.Builder
+
+	_, err := fmt.Fprintf(&b, "%s Errors Returned by ExecuteFileOperations()", ePrefix)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned by initial fmt.Fprint(). %v", err.Error())
+	}
+
+	errNo := 0
 
 	for i := 0; i < arrayLen; i++ {
 
-		err := fOpsCol.fileOps[i].ExecuteFileOperation(fileOp)
+		err = fOpsCol.fileOps[i].ExecuteFileOperation(fileOp)
 
 		if err != nil {
-			errs = append(errs, err)
+
+			errNo++
+
+			_, err2 := fmt.Fprint(&b, "%d. %s  ", errNo, err.Error())
+
+			if err2 != nil {
+				return fmt.Errorf(ePrefix+
+					"Error returned by fmt.Fprint(). %s", err2.Error())
+			}
+
 		}
 	}
 
-	return errs
+	if errNo > 0 {
+		return errors.New(b.String())
+	}
+
+	return nil
 }
 
 // GetFileOpsAtIndex - If successful, this method returns a pointer to
@@ -3453,6 +3475,94 @@ func (fOpsCol FileOpsCollection) New() FileOpsCollection {
 	newFileOpsCol.fileOps = make([]FileOps, 0, 100)
 
 	return newFileOpsCol
+}
+
+// NewFromFileMgrCollection - Creates and returns a new
+// File Operations Collection ('FileOpsCollection')
+// generated from an existing File Manger Collection
+// ('FileMgrCollection') and a target base directory.
+//
+// The source files for the new File Operations Collection
+// are taken from the input parameter 'fMgrCol', the
+// incoming File Manager Collection.
+//
+// The destination files for the new File Operations Collection
+// are created from the source file names. The destination file
+// directories are created by substituting the target base
+// directory ('targetBaseDir') for the source base directory
+// ('sourceBaseDir') in the source directory tree.
+//
+// This substitution is helpful when copying one directory tree
+// to another directory tree.
+//
+func (fOpsCol FileOpsCollection) NewFromFileMgrCollection(
+	fMgrCol *FileMgrCollection,
+	sourceBaseDir,
+	targetBaseDir *DirMgr) (FileOpsCollection, error) {
+
+	ePrefix := "FileOpsCollection.NewFromFileMgrCollection() "
+
+	srcBaseDir := sourceBaseDir.GetAbsolutePath()
+
+	targBaseDir := targetBaseDir.GetAbsolutePath()
+
+	srcBaseDirLen := len(srcBaseDir)
+
+	arrayLen := fMgrCol.GetNumOfFileMgrs()
+
+	newFileOpsCol := FileOpsCollection{}
+
+	newFileOpsCol.fileOps = make([]FileOps, 0, arrayLen+10)
+
+	for i := 0; i < arrayLen; i++ {
+
+		srcFMgr, err := fMgrCol.PeekFileMgrAtIndex(i)
+
+		if err != nil {
+			return FileOpsCollection{},
+				fmt.Errorf(ePrefix+
+					"Error returned by fMgrCol.PeekFileMgrAtIndex(i). "+
+					"i='%v' Error='%v' ", i, err.Error())
+		}
+
+		srcPathFileName := srcFMgr.GetAbsolutePathFileName()
+
+		idx := strings.Index(srcPathFileName, srcBaseDir)
+
+		if idx < 0 {
+			return FileOpsCollection{},
+				fmt.Errorf(ePrefix+
+					"Error: Could not locate source base directory in source file path! "+
+					"Source Base Directory:='%v' Source Path File Name='%v'",
+					srcBaseDir, srcPathFileName)
+		}
+
+		// targetDir + pathFile[lenSrcBaseDir:]
+		targetPathFileName := targBaseDir + srcPathFileName[srcBaseDirLen:]
+
+		destFMgr, err := FileMgr{}.NewFromPathFileNameExtStr(targetPathFileName)
+
+		if err != nil {
+			return FileOpsCollection{},
+				fmt.Errorf(ePrefix+
+					"Error returned by FileMgr{}.NewFromPathFileNameExtStr(targetPathFileName). "+
+					"targetPathFileName='%v' Error='%v' ", targetPathFileName, err.Error())
+		}
+
+		err = newFileOpsCol.AddByFileMgrs(srcFMgr, destFMgr)
+
+		if err != nil {
+			return FileOpsCollection{},
+				fmt.Errorf(ePrefix+
+					"Error returned by newFileOpsCol.AddByFileMgrs(srcFMgr, destFMgr). "+
+					"srcFMgr='%v' destFMgr='%v' Error='%v' ",
+					srcFMgr.GetAbsolutePathFileName(), destFMgr.GetAbsolutePathFileName(),
+					err.Error())
+		}
+
+	}
+
+	return newFileOpsCol, nil
 }
 
 // PopFileOpsAtIndex - Returns a copy of the File Operations (FileOps)
