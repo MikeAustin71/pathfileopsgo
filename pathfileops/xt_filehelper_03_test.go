@@ -283,6 +283,26 @@ func TestFileHelper_SwapBasePath_02(t *testing.T) {
 
 }
 
+func TestFileHelper_SwapBasePath_03(t *testing.T) {
+
+	targetPath := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+
+	oldBasePath := "../filesforTest/levelfilesfortest"
+
+	newBasePath := "../dirmgrtests"
+
+	_, err := FileHelper{}.SwapBasePath(
+		oldBasePath,
+		newBasePath,
+		targetPath)
+
+	if err == nil {
+		t.Error("Expected an error return from FileHelper{}.SwapBasePath(...) " +
+			"NO ERROR WAS GENERATED!")
+	}
+
+}
+
 func createTargetDir() error {
 	fh := FileHelper{}
 	targetDir, err1 := fh.MakeAbsolutePath(fh.AdjustPathSlash(alogTestBottomDir))
