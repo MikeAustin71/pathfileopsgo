@@ -3237,6 +3237,48 @@ func (fh FileHelper) SetCurrentWorkingDir(fPtr *os.File) error {
 	return nil
 }
 
+// SwapBasePath - Searches the 'targetPath' string for
+// the existence of 'oldBasePath'. If 'oldBasePath' is
+// found, it is replaced with 'newBasePath'.
+//
+// If 'oldBasePath' is not found in 'targetPath' an
+// error is returned.
+//
+// Likewise, if 'oldBasePath' is not located at the beginning
+// of 'targetPath', an error will be returned.
+//
+func (fh FileHelper) SwapBasePath(
+	oldBasePath,
+	newBasePath,
+	targetPath string) (string, error) {
+
+	ePrefix := "FileHelper.SwapBasePath() "
+
+	oldBaseLen := len(oldBasePath)
+
+	idx := strings.Index(
+		strings.ToLower(targetPath),
+		strings.ToLower(oldBasePath))
+
+	if idx < 0 {
+		return "",
+			fmt.Errorf(ePrefix+
+				"Error: Could not locate 'oldBasePath' in 'targetPath'. "+
+				"oldBasePath='%v' targetPath='%v' ",
+				oldBasePath, targetPath)
+	}
+
+	if idx != 0 {
+		return "",
+			fmt.Errorf(ePrefix+
+				"Error: 'oldBasePath' is NOT located at the beginning of 'targetPath'. "+
+				"oldBasePath='%v' targetPath='%v' ",
+				oldBasePath, targetPath)
+	}
+
+	return newBasePath + targetPath[oldBaseLen:], nil
+}
+
 // WriteBytes - Wrapper for os.File.Write(). Writes an array of bytes
 // to an open file pointed to by 'fPtr' (*os.File)
 func (fh FileHelper) WriteBytes(b []byte, fPtr *os.File) (int, error) {

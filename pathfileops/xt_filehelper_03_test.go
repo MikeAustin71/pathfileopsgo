@@ -229,6 +229,60 @@ func TestFileHelper_OpenFile_01(t *testing.T) {
 	_ = f.Close()
 }
 
+func TestFileHelper_SwapBasePath_01(t *testing.T) {
+
+	targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+
+	oldBasePath := "../filesfortest/levelfilesfortest"
+
+	newBasePath := "../dirmgrtests"
+
+	expectedTargetPath := "../dirmgrtests/level_0_0_test.txt"
+
+	newPath, err := FileHelper{}.SwapBasePath(
+		oldBasePath,
+		newBasePath,
+		targetPath)
+
+	if err != nil {
+		t.Errorf("Error returned from FileHelper{}.SwapBasePath(...) "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedTargetPath != newPath {
+		t.Errorf("Error: Expected newPath='%v'. Instead, newPath='%v' ",
+			expectedTargetPath, newPath)
+	}
+
+}
+
+func TestFileHelper_SwapBasePath_02(t *testing.T) {
+
+	targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+
+	oldBasePath := "../filesforTest/levelfilesfortest"
+
+	newBasePath := "../dirmgrtests"
+
+	expectedTargetPath := "../dirmgrtests/level_0_0_test.txt"
+
+	newPath, err := FileHelper{}.SwapBasePath(
+		oldBasePath,
+		newBasePath,
+		targetPath)
+
+	if err != nil {
+		t.Errorf("Error returned from FileHelper{}.SwapBasePath(...) "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedTargetPath != newPath {
+		t.Errorf("Error: Expected newPath='%v'. Instead, newPath='%v' ",
+			expectedTargetPath, newPath)
+	}
+
+}
+
 func createTargetDir() error {
 	fh := FileHelper{}
 	targetDir, err1 := fh.MakeAbsolutePath(fh.AdjustPathSlash(alogTestBottomDir))

@@ -3502,7 +3502,7 @@ func (fOpsCol FileOpsCollection) NewFromFileMgrCollection(
 
 	ePrefix := "FileOpsCollection.NewFromFileMgrCollection() "
 
-	srcBaseDir := sourceBaseDir.GetAbsolutePath()
+	srcBaseDir := strings.ToLower(sourceBaseDir.GetAbsolutePath())
 
 	targBaseDir := targetBaseDir.GetAbsolutePath()
 
@@ -3527,7 +3527,7 @@ func (fOpsCol FileOpsCollection) NewFromFileMgrCollection(
 
 		srcPathFileName := srcFMgr.GetAbsolutePathFileName()
 
-		idx := strings.Index(srcPathFileName, srcBaseDir)
+		idx := strings.Index(strings.ToLower(srcPathFileName), srcBaseDir)
 
 		if idx < 0 {
 			return FileOpsCollection{},
@@ -3559,7 +3559,6 @@ func (fOpsCol FileOpsCollection) NewFromFileMgrCollection(
 					srcFMgr.GetAbsolutePathFileName(), destFMgr.GetAbsolutePathFileName(),
 					err.Error())
 		}
-
 	}
 
 	return newFileOpsCol, nil
