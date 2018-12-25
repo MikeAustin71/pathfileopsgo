@@ -521,7 +521,14 @@ func (dMgr *DirMgr) CopyDirectoryTree(
 
 	ePrefix := "DirMgr.CopyDirectoryTree()"
 
+	err := dMgr.IsDirMgrValid(ePrefix)
+
+	if err != nil {
+		return err
+	}
+
 	fsc := FileSelectionCriteria{}
+
 	origDirsAndFiles, err := dMgr.FindWalkDirFiles(fsc)
 
 	if err != nil {
@@ -530,25 +537,70 @@ func (dMgr *DirMgr) CopyDirectoryTree(
 			err.Error())
 	}
 
-	fileOpsCol, err := FileOpsCollection{}.NewFromFileMgrCollection(
-		&origDirsAndFiles.FoundFiles,
-		dMgr,
-		&targetBaseDir)
+	thisBasePath := strings.ToLower(dMgr.GetAbsolutePath())
 
-	if err != nil {
-		return fmt.Errorf(ePrefix+
-			"Error returned by FileOpsCollection{}.NewFromFileMgrCollection(..). "+
-			"Error='%v' ", err.Error())
+	lenThisBasePath := len(dMgr.GetAbsolutePath())
+
+	if lenThisBasePath < 1 {
+		return errors.New(ePrefix +
+			"Error: This directory has a ZERO LENGTH directory path!")
 	}
 
-	err = fileOpsCol.ExecuteFileOperations(fileOp)
+	newBasePath := targetBaseDir.GetAbsolutePath()
 
-	if err != nil {
-		return fmt.Errorf(ePrefix+" %v ", err.Error())
+	maxLen := origDirsAndFiles.FoundFiles.GetNumOfFileMgrs()
+
+	for i := 0; i < maxLen; i++ {
+
+		fMgr, err := origDirsAndFiles.FoundFiles.PopFirstFileMgr()
+
+		if err != nil {
+			return fmt.Errorf(ePrefix+
+				"Error returned from origDirsAndFiles.FoundFiles.PopFirstFileMgr(). "+
+				"Index='%v' ", i)
+		}
+
+		srcPathFileName := fMgr.GetAbsolutePathFileName()
+
+		idx := strings.Index(strings.ToLower(srcPathFileName), thisBasePath)
+
+		if idx < 0 {
+			return fmt.Errorf(ePrefix+
+				"Error: Could not locate 'thisBasePath' in 'sourceFileName'. "+
+				"thisBasePath='%v' sourceFileName='%v' ",
+				dMgr.GetAbsolutePath(), srcPathFileName)
+		}
+
+		if idx > 0 {
+			return fmt.Errorf(ePrefix+
+				"Error: Could not locate 'thisBasePath' in 'sourceFileName' "+
+				"at the beginning of 'sourceFileName'. "+
+				"thisBasePath='%v' sourceFileName='%v' ",
+				dMgr.GetAbsolutePath(), srcPathFileName)
+		}
+
+		targetPathFileName := newBasePath + srcPathFileName[lenThisBasePath:]
+
+		fOp, err := FileOps{}.NewByPathFileNameExtStrs(srcPathFileName, targetPathFileName)
+
+		if err != nil {
+			return fmt.Errorf(ePrefix+
+				"Error returned from FileOps{}.NewByPathFileNameExtStrs(srcPathFileName, targetPathFileName) ."+
+				"srcPathFileName='%v' targetPathFileName='%v' Error='%v' ",
+				srcPathFileName, targetPathFileName, err.Error())
+		}
+
+		err = fOp.ExecuteFileOperation(fileOp)
+
+		if err != nil {
+			return fmt.Errorf(ePrefix+
+				"Error returned by fOp.ExecuteFileOperation(fileOp). "+
+				"fileOp=%s Error='%v' ", fileOp.String(), err.Error())
+		}
+
 	}
 
 	return nil
-
 }
 
 // CopyIn - Receives a pointer to a DirMgr object as an
