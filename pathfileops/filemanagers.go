@@ -3990,6 +3990,82 @@ func (fops FileOps) NewByDirStrsAndFileNameExtStrs(
 // and/or destination files configured and identified in the current
 // FileOps instance.
 //
+// Input Parameter: FileOperation
+//
+// The FileOperation type consists of the following
+// constants.
+//
+//	MOVESOURCETODESTINATION FileOperation = iota
+// 		Moves the source file to the destination file and
+// 		then deletes the original source file
+//
+// 	DELETEDESTINATIONFILE
+// 		Deletes the Destination file if it exists
+//
+// 	DELETESOURCEFILE
+// 		Deletes the Source file if it exists
+//
+// 	DELETESOURCEandDESTINATIONFILES
+// 		Deletes both the Source and Destination files
+// 		if they exist.
+//
+// 	COPYSOURCETODESTINATIONByHardLinkByIo
+// 		Copies the Source File to the Destination
+// 		using two copy attempts. The first copy is
+// 		by Hard Link. If the first copy attempt fails,
+// 		a second copy attempt is initiated/ by creating
+// 		a new file and copying the contents by 'io.Copy'.
+// 		An error is returned only if both copy attempts
+// 		fail. The source file is unaffected.
+//
+// 		See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+//
+// 	COPYSOURCETODESTINATIONByIoByHardLink
+// 		Copies the Source File to the Destination
+// 		using two copy attempts. The first copy is
+// 		by 'io.Copy' which creates a new file and copies
+// 		the contents to the new file. If the first attempt
+// 		fails, a second copy attempt is initiated using
+// 		'copy by hard link'. An error is returned only
+// 		if both copy attempts fail. The source file is
+// 		unaffected.
+//
+// 		See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+//
+// 	COPYSOURCETODESTINATIONByHardLink
+// 		Copies the Source File to the Destination
+// 		using one copy mode. The only copy attempt
+// 		utilizes 'Copy by Hard Link'. If this fails
+// 		an error is returned.  The source file is
+// 		unaffected.
+//
+// 	COPYSOURCETODESTINATIONByIo
+// 		Copies the Source File to the Destination
+// 		using only one copy mode. The only copy
+// 		attempt is initiated using 'Copy by IO' or
+// 		'io.Copy'.  If this fails an error is returned.
+// 		The source file is unaffected.
+//
+// 	CREATE_SOURCE_DIR
+// 		Creates the Source Directory
+//
+// 	CREATE_SOURCE_DIR_AND_FILE
+// 		Creates the Source Directory and File
+//
+// 	CREATE_SOURCE_FILE
+// 		Creates the Source File
+//
+// 	CREATE_DESTINATION_DIR
+// 		Creates the Destination Directory
+//
+// 	CREATE_DESTINATION_DIR_AND_FILE
+// 		Creates the Destination Directory and File
+//
+// 	CREATE_DESTINATION_FILE
+// 		Creates the Destination File
+//
 func (fops *FileOps) ExecuteFileOperation(fileOp FileOperation) error {
 
 	ePrefix := "FileOps.ExecuteFileOperation() "
