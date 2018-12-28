@@ -34,60 +34,58 @@ func main() {
 
 func main() {
 
-	testDirStr := "../dirmgrtests"
+	sourceDirStr := "D:\\T10\\levelfilesfortest"
+	targetDirStr := "D:\\T09"
 
 	fh := pathFileOps.FileHelper{}
 
-	dirPath, err := fh.GetAbsPathFromFilePath(testDirStr)
+	srcDirPath, err := fh.GetAbsPathFromFilePath(sourceDirStr)
 
 	if err != nil {
-		fmt.Printf("Error from fh.GetAbsPathFromFilePath(testDirStr). "+
-			"testDirStr='%v' Error='%v'n", testDirStr, err.Error())
+		fmt.Printf("Error from fh.GetAbsPathFromFilePath(sourceDirStr). "+
+			"sourceDirStr='%v' Error='%v'n", sourceDirStr, err.Error())
 		return
 	}
 
-	dMgr, err := pathFileOps.DirMgr{}.New(dirPath)
+	targetDirPath, err := fh.GetAbsPathFromFilePath(targetDirStr)
 
 	if err != nil {
-		fmt.Printf("Error from DirMgr{}.New(dirPath). "+
-			"dirPath='%v' Error='%v'n", dirPath, err.Error())
-		return
-
-	}
-
-	dMgrCol, err := dMgr.GetThisDirectoryTree()
-	maxDirs := dMgrCol.GetNumOfDirs()
-	fmt.Println("Returned dMgrCol Length", maxDirs)
-
-	fmt.Println("main()")
-
-	foundDir, err := dMgrCol.PopDirMgrAtIndex(2)
-
-	if err != nil {
-		fmt.Printf("Error from dMgrCol.PopDirMgrAtIndex(2). "+
-			"Error='%v'n", err.Error())
+		fmt.Printf("Error from fh.GetAbsPathFromFilePath(targetDirStr). "+
+			"targetDirStr='%v' Error='%v'n", targetDirStr, err.Error())
 		return
 	}
 
-	fmt.Println("Expected \\dirmgrtests\\dir01\\dir02 - Found, ", foundDir.GetAbsolutePath())
+	srcDirMgr, err := pathFileOps.DirMgr{}.New(srcDirPath)
 
-	maxDirs = dMgrCol.GetNumOfDirs()
-	fmt.Println("New dMgrCol Length", maxDirs)
+	fileSelect := pathFileOps.FileSelectionCriteria{}
 
-	for i := 0; i < maxDirs; i++ {
+	fileSelect.SelectCriterionMode = pathFileOps.ORFILESELECTCRITERION
 
-		foundDir, err := dMgrCol.PopFirstDirMgr()
+	fileOps := make([]pathFileOps.FileOperation, 2, 5)
 
-		if err != nil {
-			fmt.Printf("Error from dMgrCol.PopFirstDirMgr(). "+
-				"i='%v' Error='%v'n", i, err.Error())
-			return
+	fileOps[0] = pathFileOps.COPYSOURCETODESTINATIONByIo
+	fileOps[1] = pathFileOps.DELETESOURCEFILE
+
+	errStrs := srcDirMgr.ExecuteDirectoryTreeOp(fileSelect, fileOps, targetDirPath)
+
+	lenErrStrs := len(errStrs)
+
+	if lenErrStrs > 0 {
+		fmt.Printf(" %v-Errors from ExecuteDirectoryTreeOp() \n", lenErrStrs)
+		for i := 0; i < lenErrStrs; i++ {
+			fmt.Printf("%v. %v \n", i, errStrs[i])
 		}
 
-		fmt.Println(i, "  FoundDir: ", foundDir.GetAbsolutePath())
+		return
 	}
 
-	fmt.Println("Num Of Dirs In Collection: ", dMgrCol.GetNumOfDirs())
-	return
+	err = srcDirMgr.DeleteAll()
 
+	if err != nil {
+		fmt.Printf("Error returned by srcDirMgr.DeleteAll(). Error='%v'  \n", err.Error())
+	}
+
+	fmt.Println("Success ExecuteDirectoryTreeOp() Test = NO Errors!")
+
+	return
 }
