@@ -1,1 +1,0 @@
-level_4_4_test.txt file used in directory manager tests.

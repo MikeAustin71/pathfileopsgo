@@ -35,7 +35,7 @@ func main() {
 func main() {
 
 	sourceDirStr := "D:\\T10\\levelfilesfortest"
-	targetDirStr := "D:\\T09"
+	targetDirStr := "D:\\T09\\levelfilesfortest"
 
 	fh := pathFileOps.FileHelper{}
 

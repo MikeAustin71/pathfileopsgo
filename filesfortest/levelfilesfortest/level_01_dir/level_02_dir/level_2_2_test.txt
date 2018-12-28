@@ -1,1 +1,0 @@
-level_2_2_test.txt used for directory testing.

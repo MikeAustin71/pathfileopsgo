@@ -1453,7 +1453,7 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOp(
 	dirOp.SourceBaseDir = dMgr.GetAbsolutePath()
 	dirOp.FileSelectCriteria = fileSelectCriteria
 
-	err := fp.Walk(dMgr.GetAbsolutePath(), dMgr.executeOpOnFindFilesFunc(&dirOp))
+	err := fp.Walk(dMgr.GetAbsolutePath(), dMgr.executeFileOpsOnFoundFiles(&dirOp))
 
 	if err != nil {
 		errStr := ePrefix +
@@ -2791,13 +2791,18 @@ func (dMgr *DirMgr) SubstituteBaseDir(
 	return
 }
 
-// makeFileHelperWalkDirFindFilesFunc - This function is designed to work in conjunction
+// executeFileOpsOnFoundFiles - This function is designed to work in conjunction
 // with a walk directory function like FindWalkDirFiles. It will process
-// files extracted from a 'Directory Walk' operation initiated by the 'filepath.Walk' method.
-func (dMgr *DirMgr) executeOpOnFindFilesFunc(dirOp *DirTreeOp) func(string, os.FileInfo, error) error {
+// files extracted from a 'Directory Walk' operation initiated by the
+// 'filepath.Walk' method.
+//
+// Thereafter, file operations will be performed on files in the directory
+// tree as specified by the 'dirOp' parameter.
+//
+func (dMgr *DirMgr) executeFileOpsOnFoundFiles(dirOp *DirTreeOp) func(string, os.FileInfo, error) error {
 	return func(pathFile string, info os.FileInfo, erIn error) error {
 
-		ePrefix := "DirMgr.executeOpOnFindFilesFunc() "
+		ePrefix := "DirMgr.executeFileOpsOnFoundFiles() "
 		var err2 error
 
 		if erIn != nil {
