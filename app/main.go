@@ -34,6 +34,7 @@ func main() {
 
 func main() {
 
+	// 25-files and 4 sub-folders
 	sourceDirStr := "D:\\T10\\levelfilesfortest"
 	targetDirStr := "D:\\T09\\levelfilesfortest"
 
@@ -57,16 +58,29 @@ func main() {
 
 	srcDirMgr, err := pathFileOps.DirMgr{}.New(srcDirPath)
 
+	if err != nil {
+		fmt.Printf("Error returned by DirMgr{}.New(srcDirPath). "+
+			"srcDirPath='%v' Error='%v' ", srcDirPath, err.Error())
+		return
+	}
+
+	targetDirMgr, err := pathFileOps.DirMgr{}.New(targetDirPath)
+
+	if err != nil {
+		fmt.Printf("Error returned by DirMgr{}.New(targetDirPath). "+
+			"targetDirPath='%v' Error='%v' ", srcDirPath, err.Error())
+		return
+	}
+
 	fileSelect := pathFileOps.FileSelectionCriteria{}
 
 	fileSelect.SelectCriterionMode = pathFileOps.ORFILESELECTCRITERION
 
-	fileOps := make([]pathFileOps.FileOperation, 2, 5)
+	fileOps := make([]pathFileOps.FileOperation, 1, 5)
 
 	fileOps[0] = pathFileOps.COPYSOURCETODESTINATIONByIo
-	fileOps[1] = pathFileOps.DELETESOURCEFILE
 
-	errStrs := srcDirMgr.ExecuteDirectoryTreeOp(fileSelect, fileOps, targetDirPath)
+	errStrs := srcDirMgr.ExecuteDirectoryTreeOp(fileSelect, fileOps, targetDirMgr)
 
 	lenErrStrs := len(errStrs)
 
@@ -77,12 +91,6 @@ func main() {
 		}
 
 		return
-	}
-
-	err = srcDirMgr.DeleteAll()
-
-	if err != nil {
-		fmt.Printf("Error returned by srcDirMgr.DeleteAll(). Error='%v'  \n", err.Error())
 	}
 
 	fmt.Println("Success ExecuteDirectoryTreeOp() Test = NO Errors!")

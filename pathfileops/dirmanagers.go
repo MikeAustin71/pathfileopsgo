@@ -30,8 +30,8 @@ type DirTreeOp struct {
 	CallingFunc        string
 	FileOps            []FileOperation
 	FileSelectCriteria FileSelectionCriteria
-	SourceBaseDir      string
-	TargetBaseDir      string
+	SourceBaseDir      DirMgr
+	TargetBaseDir      DirMgr
 	ErrReturns         []string
 }
 
@@ -526,98 +526,6 @@ type DirMgr struct {
 	volumeName                      string
 	isVolumePopulated               bool
 	actualDirFileInfo               FileInfoPlus
-}
-
-// CopyDirectoryTree - Copy all files and subdirectories in the current
-// directory tree to another target directory tree. Specify the type of
-// copy operation to be performed using the Type 'FileOperation'.
-//
-func (dMgr *DirMgr) CopyDirectoryTree(
-	targetBaseDir DirMgr,
-	fileOp FileOperation) error {
-
-	ePrefix := "DirMgr.CopyDirectoryTree()"
-
-	err := dMgr.IsDirMgrValid(ePrefix)
-
-	if err != nil {
-		return err
-	}
-
-	fsc := FileSelectionCriteria{}
-
-	origDirsAndFiles, err := dMgr.FindWalkDirFiles(fsc)
-
-	if err != nil {
-		return fmt.Errorf(ePrefix+
-			"Error retured from dMgr.FindWalkDirFiles(fsc).  Error='%v'",
-			err.Error())
-	}
-
-	thisBasePath := strings.ToLower(dMgr.GetAbsolutePath())
-
-	lenThisBasePath := len(dMgr.GetAbsolutePath())
-
-	if lenThisBasePath < 1 {
-		return errors.New(ePrefix +
-			"Error: This directory has a ZERO LENGTH directory path!")
-	}
-
-	newBasePath := targetBaseDir.GetAbsolutePath()
-
-	maxLen := origDirsAndFiles.FoundFiles.GetNumOfFileMgrs()
-
-	for i := 0; i < maxLen; i++ {
-
-		fMgr, err := origDirsAndFiles.FoundFiles.PopFirstFileMgr()
-
-		if err != nil {
-			return fmt.Errorf(ePrefix+
-				"Error returned from origDirsAndFiles.FoundFiles.PopFirstFileMgr(). "+
-				"Index='%v' ", i)
-		}
-
-		srcPathFileName := fMgr.GetAbsolutePathFileName()
-
-		idx := strings.Index(strings.ToLower(srcPathFileName), thisBasePath)
-
-		if idx < 0 {
-			return fmt.Errorf(ePrefix+
-				"Error: Could not locate 'thisBasePath' in 'sourceFileName'. "+
-				"thisBasePath='%v' sourceFileName='%v' ",
-				dMgr.GetAbsolutePath(), srcPathFileName)
-		}
-
-		if idx > 0 {
-			return fmt.Errorf(ePrefix+
-				"Error: Could not locate 'thisBasePath' in 'sourceFileName' "+
-				"at the beginning of 'sourceFileName'. "+
-				"thisBasePath='%v' sourceFileName='%v' ",
-				dMgr.GetAbsolutePath(), srcPathFileName)
-		}
-
-		targetPathFileName := newBasePath + srcPathFileName[lenThisBasePath:]
-
-		fOp, err := FileOps{}.NewByPathFileNameExtStrs(srcPathFileName, targetPathFileName)
-
-		if err != nil {
-			return fmt.Errorf(ePrefix+
-				"Error returned from FileOps{}.NewByPathFileNameExtStrs(srcPathFileName, targetPathFileName) ."+
-				"srcPathFileName='%v' targetPathFileName='%v' Error='%v' ",
-				srcPathFileName, targetPathFileName, err.Error())
-		}
-
-		err = fOp.ExecuteFileOperation(fileOp)
-
-		if err != nil {
-			return fmt.Errorf(ePrefix+
-				"Error returned by fOp.ExecuteFileOperation(fileOp). "+
-				"fileOp=%s Error='%v' ", fileOp.String(), err.Error())
-		}
-
-	}
-
-	return nil
 }
 
 // CopyIn - Receives a pointer to a DirMgr object as an
@@ -1248,10 +1156,14 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 // Input Parameters:
 // ================
 //
+// ---------------------------------------------------------------------------
 // fileSelectCriteria FileSelectionCriteria
+// ---------------------------------------------------------------------------
+
 //			This input parameter should be configured with the desired file
-//      selection criteria. Files matching this criteria will be returned as
-// 			'Found Files'.
+//      selection criteria. Files matching this criteria will be identified
+// 			as 'Selected Files'. The specified File Operations (fileOps) will be
+// 			performed on these selected files.
 //
 //			type FileSelectionCriteria struct {
 //					FileNamePatterns						[]string		// An array of strings containing File Name Patterns
@@ -1363,7 +1275,10 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //
 // ---------------------------------------------------------------------------
 // fileOps []FileOperation - An array of file operations to be performed
-//                           on each selected file.
+//                           on each selected file. Selected files are
+//                           identified by matching the file selection
+//                           criteria specified by input parameter,
+//                           'fileSelectCriteria'. See above.
 // ---------------------------------------------------------------------------
 // The FileOperation type consists of the following
 // constants.
@@ -1393,7 +1308,6 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //
 // 		See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 //
-//
 // 	COPYSOURCETODESTINATIONByIoByHardLink
 // 		Copies the Source File to the Destination
 // 		using two copy attempts. The first copy is
@@ -1405,7 +1319,6 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 // 		unaffected.
 //
 // 		See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
-//
 //
 // 	COPYSOURCETODESTINATIONByHardLink
 // 		Copies the Source File to the Destination
@@ -1439,21 +1352,59 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 // 	CREATE_DESTINATION_FILE
 // 		Creates the Destination File
 //
+// ---------------------------------------------------------------------------
+// targetBaseDir - 	The file selection criteria, 'fileSelectCriteria', and
+// 									the File Operations, 'fileOps' are applied to files in
+// 									the target base directory. This input parameter is of
+//                  type 'DirMgr'.
+// ---------------------------------------------------------------------------
+//
 func (dMgr *DirMgr) ExecuteDirectoryTreeOp(
 	fileSelectCriteria FileSelectionCriteria,
 	fileOps []FileOperation,
-	targetBaseDir string) []string {
+	targetBaseDir DirMgr) []string {
 
 	ePrefix := "DirMgr.ExecuteDirectoryTreeOp() "
-	dirOp := DirTreeOp{}.New()
 
+	err := dMgr.IsDirMgrValid(ePrefix)
+	dirOp := DirTreeOp{}.New()
 	dirOp.CallingFunc = ePrefix
+
+	if err != nil {
+		errStr := fmt.Sprintf("%v ", err.Error())
+		dirOp.ErrReturns = append(dirOp.ErrReturns, errStr)
+		return dirOp.ErrReturns
+	}
+
+	err = targetBaseDir.IsDirMgrValid("")
+
+	if err != nil {
+
+		errStr := fmt.Sprintf(ePrefix+
+			"Input parameter 'targetBaseDir' is INVALID!. Error='%v' ",
+			err.Error())
+
+		dirOp.ErrReturns = append(dirOp.ErrReturns, errStr)
+
+		return dirOp.ErrReturns
+	}
+
+	if len(fileOps) == 0 {
+
+		errStr := ePrefix +
+			"Error: The input parameter 'fileOps' is a ZERO LENGTH ARRAY!"
+
+		dirOp.ErrReturns = append(dirOp.ErrReturns, errStr)
+
+		return dirOp.ErrReturns
+	}
+
 	dirOp.FileOps = append(dirOp.FileOps, fileOps...)
-	dirOp.TargetBaseDir = targetBaseDir
-	dirOp.SourceBaseDir = dMgr.GetAbsolutePath()
+	dirOp.TargetBaseDir = targetBaseDir.CopyOut()
+	dirOp.SourceBaseDir = dMgr.CopyOut()
 	dirOp.FileSelectCriteria = fileSelectCriteria
 
-	err := fp.Walk(dMgr.GetAbsolutePath(), dMgr.executeFileOpsOnFoundFiles(&dirOp))
+	err = fp.Walk(dMgr.GetAbsolutePath(), dMgr.executeFileOpsOnFoundFiles(&dirOp))
 
 	if err != nil {
 		errStr := ePrefix +
@@ -2840,14 +2791,20 @@ func (dMgr *DirMgr) executeFileOpsOnFoundFiles(dirOp *DirTreeOp) func(string, os
 
 		srcFileNameExt := info.Name()
 
-		destDir, err := fh.SwapBasePath(dirOp.SourceBaseDir, dirOp.TargetBaseDir, pathFile)
+		destDir, err := fh.SwapBasePath(
+			dirOp.SourceBaseDir.GetAbsolutePath(),
+			dirOp.TargetBaseDir.GetAbsolutePath(),
+			pathFile)
 
 		if err != nil {
 			err2 = fmt.Errorf(ePrefix+
 				"Error returned by fh.SwapBasePath(dirOp.SourceBaseDir, "+
 				"dirOp.TargetBaseDir, pathFile). dirOp.SourceBaseDir='%v' "+
-				"dirOp.TargetBaseDir='%v' pathFile='%v' Error='%v' ", dirOp.SourceBaseDir,
-				dirOp.TargetBaseDir, pathFile, err.Error())
+				"dirOp.TargetBaseDir='%v' pathFile='%v' Error='%v' ",
+				dirOp.SourceBaseDir.GetAbsolutePath(),
+				dirOp.TargetBaseDir.GetAbsolutePath(),
+				pathFile,
+				err.Error())
 
 			dirOp.ErrReturns = append(dirOp.ErrReturns, err2.Error())
 			return nil
