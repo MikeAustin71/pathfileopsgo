@@ -519,7 +519,155 @@ func TestFileHelper_FilterFileName_11(t *testing.T) {
 
 }
 
-func TestFileHelper_FindFilesInPath(t *testing.T) {
+func TestFileHelper_FindFilesInPath_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath("+
+			"\"../dirmgrtests/levelfilesfortest \") "+
+			"Error='%v' ", err.Error())
+	}
+
+	sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath("+
+			"\"..../filesfortest/levelfilesfortest \") "+
+			"Error='%v' ", err.Error())
+	}
+
+	targetDir, err := DirMgr{}.New(targetDirStr)
+
+	if err != nil {
+		t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
+			"targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
+	}
+
+	sourceDir, err := DirMgr{}.New(sourceDirStr)
+
+	if err != nil {
+		t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
+			"sourceDir='%v' Error='%v' ", sourceDir, err.Error())
+	}
+
+	if targetDir.DoesDirMgrAbsolutePathExist() {
+
+		err = targetDir.DeleteAll()
+
+		if err != nil {
+			t.Errorf("Error returned by targetDir.DeleteAll() "+
+				"targetDir='%v' Error='%v' ",
+				targetDir.GetAbsolutePath(), err.Error())
+		}
+	}
+
+	// Target Directory does NOT Exist
+
+	fileSelect := FileSelectionCriteria{}
+
+	fileSelect.SelectCriterionMode = ORFILESELECTCRITERION
+
+	fileOps := make([]FileOperation, 1, 5)
+
+	fileOps[0] = COPYSOURCETODESTINATIONByIo
+
+	errStrs := sourceDir.ExecuteDirectoryFileOps(fileSelect, fileOps, targetDir)
+
+	if len(errStrs) > 0 {
+		for i := 0; i < len(errStrs); i++ {
+			t.Errorf("sourceDir.ExecuteDirectoryFileOps-Error: %v", errStrs[i])
+		}
+	}
+
+	foundFiles, err := fh.FindFilesInPath(targetDir.GetAbsolutePath(), "*.*")
+
+	lenFoundFiles := len(foundFiles)
+
+	if lenFoundFiles != 5 {
+		t.Errorf("Error: Expected to find 5-files. Instead, found %v-files! ",
+			lenFoundFiles)
+	}
+
+	_ = targetDir.DeleteAll()
+
+}
+
+func TestFileHelper_FindFilesInPath_02(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath("+
+			"\"../dirmgrtests/levelfilesfortest \") "+
+			"Error='%v' ", err.Error())
+	}
+
+	sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath("+
+			"\"..../filesfortest/levelfilesfortest \") "+
+			"Error='%v' ", err.Error())
+	}
+
+	targetDir, err := DirMgr{}.New(targetDirStr)
+
+	if err != nil {
+		t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
+			"targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
+	}
+
+	sourceDir, err := DirMgr{}.New(sourceDirStr)
+
+	if err != nil {
+		t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
+			"sourceDir='%v' Error='%v' ", sourceDir, err.Error())
+	}
+
+	if targetDir.DoesDirMgrAbsolutePathExist() {
+
+		err = targetDir.DeleteAll()
+
+		if err != nil {
+			t.Errorf("Error returned by targetDir.DeleteAll() "+
+				"targetDir='%v' Error='%v' ",
+				targetDir.GetAbsolutePath(), err.Error())
+		}
+	}
+
+	// Target Directory does NOT Exist
+
+	fileSelect := FileSelectionCriteria{}
+
+	fileSelect.SelectCriterionMode = ORFILESELECTCRITERION
+
+	fileOps := make([]FileOperation, 1, 5)
+
+	fileOps[0] = COPYSOURCETODESTINATIONByIo
+
+	errStrs := sourceDir.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDir)
+
+	if len(errStrs) > 0 {
+		for i := 0; i < len(errStrs); i++ {
+			t.Errorf("sourceDir.ExecuteDirectoryTreeOps-Error: %v", errStrs[i])
+		}
+	}
+
+	foundFiles, err := fh.FindFilesInPath(targetDir.GetAbsolutePath(), "*")
+
+	lenFoundFiles := len(foundFiles)
+
+	if lenFoundFiles != 6 {
+		t.Errorf("Error: Expected to find 6-files. Instead, found %v-files! ",
+			lenFoundFiles)
+	}
+
+	_ = targetDir.DeleteAll()
 
 }
 
