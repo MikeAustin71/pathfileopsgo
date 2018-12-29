@@ -1147,7 +1147,7 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 	return false
 }
 
-// ExecuteDirectoryTreeOp - Performs a a file operation
+// ExecuteDirectoryTreeOps - Performs a a file operation
 // on specified 'selected' files in the current directory
 // tree. The type of file operation performed is specified
 // by input parameter 'fileOp'. The 'selected' files are
@@ -1359,12 +1359,12 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //                  type 'DirMgr'.
 // ---------------------------------------------------------------------------
 //
-func (dMgr *DirMgr) ExecuteDirectoryTreeOp(
+func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 	fileSelectCriteria FileSelectionCriteria,
 	fileOps []FileOperation,
 	targetBaseDir DirMgr) []string {
 
-	ePrefix := "DirMgr.ExecuteDirectoryTreeOp() "
+	ePrefix := "DirMgr.ExecuteDirectoryTreeOps() "
 
 	err := dMgr.IsDirMgrValid(ePrefix)
 	dirOp := DirTreeOp{}.New()

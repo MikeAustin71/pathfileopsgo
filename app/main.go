@@ -80,12 +80,12 @@ func main() {
 
 	fileOps[0] = pathFileOps.COPYSOURCETODESTINATIONByIo
 
-	errStrs := srcDirMgr.ExecuteDirectoryTreeOp(fileSelect, fileOps, targetDirMgr)
+	errStrs := srcDirMgr.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDirMgr)
 
 	lenErrStrs := len(errStrs)
 
 	if lenErrStrs > 0 {
-		fmt.Printf(" %v-Errors from ExecuteDirectoryTreeOp() \n", lenErrStrs)
+		fmt.Printf(" %v-Errors from ExecuteDirectoryTreeOps() \n", lenErrStrs)
 		for i := 0; i < lenErrStrs; i++ {
 			fmt.Printf("%v. %v \n", i, errStrs[i])
 		}
@@ -93,7 +93,7 @@ func main() {
 		return
 	}
 
-	fmt.Println("Success ExecuteDirectoryTreeOp() Test = NO Errors!")
+	fmt.Println("Success ExecuteDirectoryTreeOps() Test = NO Errors!")
 
 	return
 }
