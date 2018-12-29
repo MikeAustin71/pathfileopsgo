@@ -1147,11 +1147,37 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 	return false
 }
 
-// ExecuteDirectoryTreeOps - Performs a a file operation
-// on specified 'selected' files in the current directory
-// tree. The type of file operation performed is specified
-// by input parameter 'fileOp'. The 'selected' files are
-// identified by input parameter 'fileSelectCriteria'.
+// ExecuteDirectoryTreeOps - Performs File Operations
+// on specified 'selected' files in the directory tree
+// identified by the current 'DirMgr' instance.
+//
+// If you wish to perform File Operations ONLY on the
+// current directory and NOT THE ENTIRE DIRECTORY TREE,
+// see Function "ExecuteDirectoryFileOps(), below.
+//
+// The types of File Operations performed are generally
+// classified as 'file copy' and 'file deletion' operations.
+// The precise file operation applied is defined by the
+// the type, 'FileOperation' which provides a series of
+// constants used to identify the specific file operation
+// applied. Input parameter, 'fileOps' is an array of type
+// 'FileOperation' elements. Multiple file operations can
+// be applied to a single file. For instance, a 'copy source
+// to destination' operation can be followed by a 'delete
+// source file' operation.
+//
+// The 'selected' files are identified by input parameter
+// 'fileSelectCriteria' of type 'FileSelectionCriteria'.
+// This file selection criteria is compared against all files
+// in the directory tree identified by the current 'DirMgr'
+// instance. When a match is found, that file is treated as
+// a 'selected' file and designated file operations are
+// performed on that file.
+//
+// IMPORTANT:
+// ==========
+// This method performs File Operations on THE ENTIRE DIRECTORY
+// TREE identified by this DirMgr instance.
 //
 // Input Parameters:
 // ================
@@ -1359,6 +1385,15 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //                  type 'DirMgr'.
 // ---------------------------------------------------------------------------
 //
+// Function Returns:
+// =================
+//
+// This function will return an array of strings containing error messages
+// generated during the performance of specified File Operations on the
+// designated directory tree. If the string array returned is empty or has
+// a zero length, it signals that no errors were encountered and all operations
+// completed successfully.
+//
 func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 	fileSelectCriteria FileSelectionCriteria,
 	fileOps []FileOperation,
@@ -1413,6 +1448,402 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 	}
 
 	return dirOp.ErrReturns
+}
+
+// ExecuteDirectoryFileOps - Performs a a file operation
+// on specified 'selected' files in the current directory
+// ONLY. This function does NOT perform operations on the
+// Directory Tree.
+//
+// To perform file operations on the entire Directory Tree,
+// see Function 'ExecuteDirectoryTreeOps()', above.
+//
+// The types of File Operations performed are generally
+// classified as 'file copy' and 'file deletion' operations.
+// The precise file operation applied is defined by the
+// the type, 'FileOperation' which provides a series of
+// constants used to identify the specific file operation
+// applied. Input parameter, 'fileOps' is an array of type
+// 'FileOperation' elements. Multiple file operations can
+// be applied to a single file. For instance, a 'copy source
+// to destination' operation can be followed by a 'delete
+// source file' operation.
+//
+// The 'selected' files are identified by input parameter
+// 'fileSelectCriteria' of type 'FileSelectionCriteria'.
+// This file selection criteria is compared against all files
+// in the directory (NOT the Directory Tree) identified by
+// the current 'DirMgr' instance. When a match is found,
+// that file is treated as a 'selected' file and designated
+// file operations are performed on that file.
+//
+// IMPORTANT:
+// ==========
+// This method performs File Operations ONLY on the directory
+// identified by the current DirMgr instance.
+//
+// Input Parameters:
+// ================
+//
+// ---------------------------------------------------------------------------
+// fileSelectCriteria FileSelectionCriteria
+// ---------------------------------------------------------------------------
+
+//			This input parameter should be configured with the desired file
+//      selection criteria. Files matching this criteria will be identified
+// 			as 'Selected Files'. The specified File Operations (fileOps) will be
+// 			performed on these selected files.
+//
+//			type FileSelectionCriteria struct {
+//					FileNamePatterns						[]string		// An array of strings containing File Name Patterns
+//					FilesOlderThan							time.Time		// Match files with older modification date times
+//					FilesNewerThan							time.Time		// Match files with newer modification date times
+//					SelectByFileMode						os.FileMode	// Match file mode. Zero if inactive
+//					SelectCriterionMode					FileSelectCriterionMode // Specifies 'AND' or 'OR' selection mode
+//				}
+//
+//			The FileSelectionCriteria type allows for configuration of single or multiple file
+// 			selection criterion. The 'SelectCriterionMode' can be used to specify whether the
+// 			file must match all, or any one, of the active file selection criterion.
+//
+//			Elements of the FileSelectionCriteria are described below:
+//
+// 			FileNamePatterns []string		- An array of strings which may define one or more
+//																		search patterns. If a file name matches any one of the
+// 																		search pattern strings, it is deemed to be a 'match'
+//																		for the search pattern criterion.
+//																		Example Patterns:
+//																				"*.log"
+//																				"current*.txt"
+//
+//														  			If this string array has zero length or if
+//																		all the strings are empty strings, then this
+//																		file search criterion is considered 'Inactive'
+//																		or 'Not Set'.
+//
+//
+//        FilesOlderThan	time.Time	- This date time type is compared to file
+//																		modification date times in order to determine
+//																		whether the file is older than the 'FilesOlderThan'
+//																		file selection criterion. If the file modification
+// 																		date time is older than the 'FilesOlderThan' date time,
+// 																		that file is considered a 'match'	for this file selection
+// 																		criterion.
+//
+//																	  If the value of 'FilesOlderThan' is set to time zero,
+//																		the default value for type time.Time{}, then this
+//																		file selection criterion is considered to be 'Inactive'
+//																		or 'Not Set'.
+//
+//        FilesNewerThan	time.Time	- This date time type is compared to the file
+//																		modification date time in order to determine
+//																		whether the file is newer than the 'FilesNewerThan'
+//																		file selection criterion. If the file modification date time
+// 																		is newer than the 'FilesNewerThan' date time, that file is
+// 																		considered a 'match' for this file selection criterion.
+//
+//																	  If the value of 'FilesNewerThan' is set to time zero,
+//																		the default value for type time.Time{}, then this
+//																		file selection criterion is considered to be 'Inactive'
+//																		or 'Not Set'.
+//
+// 		 SelectByFileMode os.FileMode - os.FileMode is an uint32 value. This file selection criterion
+// 																		allows for the selection of files by File Mode. File Modes
+// 																		are compared to the value	of 'SelectByFileMode'. If the File
+// 																		Mode for a given file is equal to the value of 'SelectByFileMode',
+//																		that file is considered to be a 'match' for this file selection
+// 																		criterion.
+//
+//																		If the value of 'SelectByFileMode' is set equal to zero, then
+//																		this file selection criterion is considered 'Inactive' or
+//																		'Not Set'.
+//
+//	SelectCriterionMode	FileSelectCriterionMode -
+//																		This parameter selects the manner in which the file selection
+//																		criteria above are applied in determining a 'match' for file
+// 																		selection purposes. 'SelectCriterionMode' may be set to one of
+//																		two constant values:
+//
+//																		ANDFILESELECTCRITERION	- File selected if all active selection criteria
+//																			are satisfied.
+//
+// 																			If this constant value is specified for the file selection mode,
+// 																			then a given file will not be judged as 'selected' unless all of
+// 																			the active selection criterion are satisfied. In other words, if
+// 																			three active search criterion are provided for 'FileNamePatterns',
+//																			'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//																			selected unless it has satisfied all three criterion in this example.
+//
+//																		ORFILESELECTCRITERION 	- File selected if any active selection criterion
+//																			is satisfied.
+//
+// 																			If this constant value is specified for the file selection mode,
+// 																			then a given file will be selected if any one of the active file
+// 																			selection criterion is satisfied. In other words, if three active
+// 																			search criterion are provided for 'FileNamePatterns', 'FilesOlderThan'
+// 																			and 'FilesNewerThan', then a file will be selected if it satisfies any
+// 																			one of the three criterion in this example.
+//
+// IMPORTANT
+// *********
+// If all of the file selection criterion in the FileSelectionCriteria object are
+// 'Inactive' or 'Not Set' (set to their zero or default values), then all of
+// the files processed in the directory tree will be selected and returned as
+// 'Found Files'.
+//
+// 			Example:
+//					FileNamePatterns 	= ZERO Length Array
+//          filesOlderThan 		= time.Time{}
+//					filesNewerThan 		= time.Time{}
+//					SelectByFileMode 	= uint32(0)
+//
+//					In this example, all of the selection criterion are
+//					'Inactive' and therefore all of the files encountered
+//					in the target directory will be selected and returned
+//					as 'Found Files'.
+//
+// ---------------------------------------------------------------------------
+// fileOps []FileOperation - An array of file operations to be performed
+//                           on each selected file. Selected files are
+//                           identified by matching the file selection
+//                           criteria specified by input parameter,
+//                           'fileSelectCriteria'. See above.
+// ---------------------------------------------------------------------------
+// The FileOperation type consists of the following
+// constants.
+//
+//	MOVESOURCETODESTINATION FileOperation = iota
+// 		Moves the source file to the destination file and
+// 		then deletes the original source file
+//
+// 	DELETEDESTINATIONFILE
+// 		Deletes the Destination file if it exists
+//
+// 	DELETESOURCEFILE
+// 		Deletes the Source file if it exists
+//
+// 	DELETESOURCEandDESTINATIONFILES
+// 		Deletes both the Source and Destination files
+// 		if they exist.
+//
+// 	COPYSOURCETODESTINATIONByHardLinkByIo
+// 		Copies the Source File to the Destination
+// 		using two copy attempts. The first copy is
+// 		by Hard Link. If the first copy attempt fails,
+// 		a second copy attempt is initiated/ by creating
+// 		a new file and copying the contents by 'io.Copy'.
+// 		An error is returned only if both copy attempts
+// 		fail. The source file is unaffected.
+//
+// 		See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+// 	COPYSOURCETODESTINATIONByIoByHardLink
+// 		Copies the Source File to the Destination
+// 		using two copy attempts. The first copy is
+// 		by 'io.Copy' which creates a new file and copies
+// 		the contents to the new file. If the first attempt
+// 		fails, a second copy attempt is initiated using
+// 		'copy by hard link'. An error is returned only
+// 		if both copy attempts fail. The source file is
+// 		unaffected.
+//
+// 		See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+// 	COPYSOURCETODESTINATIONByHardLink
+// 		Copies the Source File to the Destination
+// 		using one copy mode. The only copy attempt
+// 		utilizes 'Copy by Hard Link'. If this fails
+// 		an error is returned.  The source file is
+// 		unaffected.
+//
+// 	COPYSOURCETODESTINATIONByIo
+// 		Copies the Source File to the Destination
+// 		using only one copy mode. The only copy
+// 		attempt is initiated using 'Copy by IO' or
+// 		'io.Copy'.  If this fails an error is returned.
+// 		The source file is unaffected.
+//
+// 	CREATE_SOURCE_DIR
+// 		Creates the Source Directory
+//
+// 	CREATE_SOURCE_DIR_AND_FILE
+// 		Creates the Source Directory and File
+//
+// 	CREATE_SOURCE_FILE
+// 		Creates the Source File
+//
+// 	CREATE_DESTINATION_DIR
+// 		Creates the Destination Directory
+//
+// 	CREATE_DESTINATION_DIR_AND_FILE
+// 		Creates the Destination Directory and File
+//
+// 	CREATE_DESTINATION_FILE
+// 		Creates the Destination File
+//
+// ---------------------------------------------------------------------------
+// targetBaseDir - 	The file selection criteria, 'fileSelectCriteria', and
+// 									the File Operations, 'fileOps' are applied to files in
+// 									the target base directory. This input parameter is of
+//                  type 'DirMgr'.
+// ---------------------------------------------------------------------------
+//
+// Function Returns:
+// =================
+//
+// This function will return an array of strings containing error messages
+// generated during the performance of specified File Operations on the
+// designated directory tree. If the string array returned is empty or has
+// a zero length, it signals that no errors were encountered and all operations
+// completed successfully.
+//
+func (dMgr *DirMgr) ExecuteDirectoryFileOps(
+	fileSelectCriteria FileSelectionCriteria,
+	fileOps []FileOperation,
+	targetBaseDir DirMgr) []string {
+
+	ePrefix := "DirMgr.ExecuteDirectoryFileOps() "
+	errStrs := make([]string, 0, 50)
+	var errStr string
+
+	err := dMgr.IsDirMgrValid(ePrefix)
+
+	if err != nil {
+		errStr = fmt.Sprintf("%v ", err.Error())
+		errStrs = append(errStrs, errStr)
+		return errStrs
+	}
+
+	err = targetBaseDir.IsDirMgrValid("")
+
+	if err != nil {
+
+		errStr = fmt.Sprintf(ePrefix+
+			"Input parameter 'targetBaseDir' is INVALID!. Error='%v' ",
+			err.Error())
+
+		errStrs = append(errStrs, errStr)
+
+		return errStrs
+	}
+
+	if len(fileOps) == 0 {
+
+		errStr = ePrefix +
+			"Error: The input parameter 'fileOps' is a ZERO LENGTH ARRAY!"
+
+		errStrs = append(errStrs, errStr)
+
+		return errStrs
+	}
+
+	dir, err := os.Open(dMgr.absolutePath)
+
+	if err != nil {
+		errStr = fmt.Sprintf(ePrefix+
+			"Error return by os.Open(dMgr.absolutePath). "+
+			"dMgr.absolutePath='%v' Error='%v' ",
+			dMgr.absolutePath, err.Error())
+
+		errStrs = append(errStrs, errStr)
+		return errStrs
+	}
+
+	nameFileInfos, err := dir.Readdir(-1)
+
+	if err != nil {
+		_ = dir.Close()
+		errStr = fmt.Sprintf(ePrefix+
+			"Error returned by dir.Readdirnames(-1). "+
+			"dMgr.absolutePath='%v' Error='%v' ",
+			dMgr.absolutePath, err.Error())
+
+		errStrs = append(errStrs, errStr)
+		return errStrs
+
+	}
+
+	fh := FileHelper{}
+
+	for _, nameFInfo := range nameFileInfos {
+
+		if nameFInfo.IsDir() {
+			continue
+		}
+
+		// Must be a file - process it!
+
+		// This is not a directory. It is a file.
+		// Determine if it matches the find file criteria.
+		isMatch, err := fh.FilterFileName(nameFInfo, fileSelectCriteria)
+
+		if err != nil {
+
+			_ = dir.Close()
+
+			errStr = fmt.Sprintf(ePrefix+
+				"Error returned by fh.FilterFileName(nameFInfo, fileSelectCriteria). "+
+				"directorySearched='%v'  fileName='%v' Error='%v' ",
+				dMgr.absolutePath, nameFInfo.Name(), err.Error())
+
+			errStrs = append(errStrs, errStr)
+			return errStrs
+		}
+
+		if !isMatch {
+
+			continue
+
+		}
+
+		// Must be a match - this is a 'selected' file!
+
+		srcFileNameExt := nameFInfo.Name()
+
+		fileOp, err := FileOps{}.NewByDirStrsAndFileNameExtStrs(
+			dMgr.GetAbsolutePath(),
+			nameFInfo.Name(),
+			targetBaseDir.GetAbsolutePath(),
+			srcFileNameExt)
+
+		if err != nil {
+
+			_ = dir.Close()
+
+			errStr = fmt.Sprintf(ePrefix+
+				"Error returned by FileOps{}.NewByDirStrsAndFileNameExtStrs() "+
+				"sourcePath='%v' srcFileNameExt='%v' destDir='%v' Error='%v' ",
+				dMgr.GetAbsolutePath(), srcFileNameExt, targetBaseDir.GetAbsolutePath(),
+				err.Error())
+			errStrs = append(errStrs, errStr)
+			return errStrs
+		}
+
+		maxOps := len(fileOps)
+
+		for i := 0; i < maxOps; i++ {
+
+			err = fileOp.ExecuteFileOperation(fileOps[i])
+
+			if err != nil {
+				errStr = fmt.Sprintf(ePrefix+
+					"Error returned by fileOp.ExecuteFileOperation(fileOps[i]). "+
+					"i='%v' FileOps='%v' Error='%v' ",
+					i, fileOps[i].String(), err.Error())
+
+				// Store the error and continue processing
+				// file operations.
+				errStrs = append(errStrs, errStr)
+			}
+		}
+
+		// finished applying file operations to this file.
+		// Get another one and continue...
+	}
+
+	_ = dir.Close()
+
+	return errStrs
 }
 
 // FindFilesByNamePattern - Searches files in the current directory ONLY. An attempt
@@ -2837,11 +3268,11 @@ func (dMgr *DirMgr) executeFileOpsOnFoundFiles(dirOp *DirTreeOp) func(string, os
 					i, dirOp.FileOps[i].String(), err.Error())
 
 				dirOp.ErrReturns = append(dirOp.ErrReturns, err2.Error())
-				return nil
-			}
 
+			}
 		}
 
 		return nil
 	}
+
 }
