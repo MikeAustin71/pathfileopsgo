@@ -793,6 +793,200 @@ func TestDirMgr_EqualPaths_02(t *testing.T) {
 
 }
 
+func TestDirMgr_ExecuteDirectoryFileOps_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath("+
+			"\"../dirmgrtests/levelfilesfortest \") "+
+			"Error='%v' ", err.Error())
+	}
+
+	sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath("+
+			"\"..../filesfortest/levelfilesfortest \") "+
+			"Error='%v' ", err.Error())
+	}
+
+	targetDir, err := DirMgr{}.New(targetDirStr)
+
+	if err != nil {
+		t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
+			"targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
+	}
+
+	sourceDir, err := DirMgr{}.New(sourceDirStr)
+
+	if err != nil {
+		t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
+			"sourceDir='%v' Error='%v' ", sourceDir, err.Error())
+	}
+
+	if targetDir.DoesDirMgrAbsolutePathExist() {
+
+		err = targetDir.DeleteAll()
+
+		if err != nil {
+			t.Errorf("Error returned by targetDir.DeleteAll() "+
+				"targetDir='%v' Error='%v' ",
+				targetDir.GetAbsolutePath(), err.Error())
+		}
+	}
+
+	// Target Directory does NOT Exist
+
+	fileSelect := FileSelectionCriteria{}
+
+	fileSelect.SelectCriterionMode = ORFILESELECTCRITERION
+
+	fileOps := make([]FileOperation, 1, 5)
+
+	fileOps[0] = COPYSOURCETODESTINATIONByIo
+
+	errStrs := sourceDir.ExecuteDirectoryFileOps(fileSelect, fileOps, targetDir)
+
+	if len(errStrs) > 0 {
+		for i := 0; i < len(errStrs); i++ {
+			t.Errorf("sourceDir.ExecuteDirectoryFileOps-Error: %v", errStrs[i])
+		}
+	}
+
+	dTreeInfo, err := targetDir.FindWalkDirFiles(fileSelect)
+
+	if err != nil {
+		t.Errorf("Error returned by targetDir.FindWalkDirFiles(fileSelect) "+
+			"targetDir='%v' Error='%v' ",
+			targetDir.GetAbsolutePath(), err.Error())
+	}
+
+	lenErrs := len(dTreeInfo.ErrReturns)
+
+	if lenErrs > 0 {
+		for i := 0; i < len(dTreeInfo.ErrReturns); i++ {
+			t.Errorf("targetDir.FindWalkDirFiles-Errors: %v", dTreeInfo.ErrReturns[i])
+		}
+	}
+
+	lenDirs := dTreeInfo.Directories.GetNumOfDirs()
+
+	if lenDirs != 1 {
+		t.Errorf("Error: Expected number of directories found='%v'. "+
+			"Instead, number of directories found='%v' ", 1, lenDirs)
+	}
+
+	numOfFiles := dTreeInfo.FoundFiles.GetNumOfFileMgrs()
+
+	if numOfFiles != 5 {
+		t.Errorf("Error: Expected number of found files='%v'. "+
+			"Instead, number of found files='%v' ", 5, numOfFiles)
+	}
+
+	_ = targetDir.DeleteAll()
+
+}
+
+func TestDirMgr_ExecuteDirectoryTreeOps_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath("+
+			"\"../dirmgrtests/levelfilesfortest \") "+
+			"Error='%v' ", err.Error())
+	}
+
+	sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath("+
+			"\"..../filesfortest/levelfilesfortest \") "+
+			"Error='%v' ", err.Error())
+	}
+
+	targetDir, err := DirMgr{}.New(targetDirStr)
+
+	if err != nil {
+		t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
+			"targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
+	}
+
+	sourceDir, err := DirMgr{}.New(sourceDirStr)
+
+	if err != nil {
+		t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
+			"sourceDir='%v' Error='%v' ", sourceDir, err.Error())
+	}
+
+	if targetDir.DoesDirMgrAbsolutePathExist() {
+
+		err = targetDir.DeleteAll()
+
+		if err != nil {
+			t.Errorf("Error returned by targetDir.DeleteAll() "+
+				"targetDir='%v' Error='%v' ",
+				targetDir.GetAbsolutePath(), err.Error())
+		}
+	}
+
+	// Target Directory does NOT Exist
+
+	fileSelect := FileSelectionCriteria{}
+
+	fileSelect.SelectCriterionMode = ORFILESELECTCRITERION
+
+	fileOps := make([]FileOperation, 1, 5)
+
+	fileOps[0] = COPYSOURCETODESTINATIONByIo
+
+	errStrs := sourceDir.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDir)
+
+	if len(errStrs) > 0 {
+		for i := 0; i < len(errStrs); i++ {
+			t.Errorf("sourceDir.ExecuteDirectoryTreeOps-Error: %v", errStrs[i])
+		}
+	}
+
+	dTreeInfo, err := targetDir.FindWalkDirFiles(fileSelect)
+
+	if err != nil {
+		t.Errorf("Error returned by targetDir.FindWalkDirFiles(fileSelect) "+
+			"targetDir='%v' Error='%v' ",
+			targetDir.GetAbsolutePath(), err.Error())
+	}
+
+	lenErrs := len(dTreeInfo.ErrReturns)
+
+	if lenErrs > 0 {
+		for i := 0; i < len(dTreeInfo.ErrReturns); i++ {
+			t.Errorf("targetDir.FindWalkDirFiles-Errors: %v", dTreeInfo.ErrReturns[i])
+		}
+	}
+
+	lenDirs := dTreeInfo.Directories.GetNumOfDirs()
+
+	if lenDirs != 5 {
+		t.Errorf("Error: Expected number of directories found='%v'. "+
+			"Instead, number of directories found='%v' ", 5, lenDirs)
+	}
+
+	numOfFiles := dTreeInfo.FoundFiles.GetNumOfFileMgrs()
+
+	if numOfFiles != 25 {
+		t.Errorf("Error: Expected number of found files='%v'. "+
+			"Instead, number of found files='%v' ", 25, numOfFiles)
+	}
+
+	_ = targetDir.DeleteAll()
+
+}
+
 func DirMgr01TestCreateCheckFiles03DirFiles() (string, error) {
 	ePrefix := "TestFile: xt_dirmgr_01_test.go Func: DirMgr01TestCreateCheckFiles03DirFiles() "
 	fh := FileHelper{}
