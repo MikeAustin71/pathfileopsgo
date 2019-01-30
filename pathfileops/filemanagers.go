@@ -357,6 +357,11 @@ func (fMgrs *FileMgrCollection) GetFileMgrAtIndex(idx int) (*FileMgr, error) {
 // number of File Managers (FileMgr's) in the Collection.
 //
 func (fMgrs *FileMgrCollection) GetNumOfFileMgrs() int {
+
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
+
 	return len(fMgrs.fileMgrs)
 }
 

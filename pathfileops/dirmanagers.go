@@ -300,6 +300,11 @@ func (dMgrs *DirMgrCollection) GetDirMgrAtIndex(idx int) (*DirMgr, error) {
 // contained in this Directory Manager Collection.
 //
 func (dMgrs *DirMgrCollection) GetNumOfDirs() int {
+
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
+
 	return len(dMgrs.dirMgrs)
 }
 
