@@ -293,6 +293,32 @@ func (fMgrs *FileMgrCollection) FindFiles(
 	return fMgrs2, nil
 }
 
+// GetFileMgrArray - Returns the entire Directory Manager Array managed
+// by this collection.
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameter
+//
+//	None
+//
+// ------------------------------------------------------------------------
+//
+// Return Values
+//
+//	[]FileMgr      - The array of of FileMgr instances maintained by this
+//	                 collection.
+//
+
+func (fMgrs *FileMgrCollection) GetFileMgrArray() []FileMgr {
+
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 10)
+	}
+
+	return fMgrs.fileMgrs
+
+}
 // GetFileMgrAtIndex - If successful, this method returns a pointer to
 // the FileMgr instance at the array index specified. The 'Peek' and 'Pop'
 // methods below return FileMgr objects using a 'deep' copy and therefore

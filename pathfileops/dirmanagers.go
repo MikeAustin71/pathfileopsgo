@@ -239,7 +239,8 @@ func (dMgrs *DirMgrCollection) FindDirectories(
 	return dMgrs2, nil
 }
 
-// GetDirMgrArray - Returns the entire Directory Manager Array.
+// GetDirMgrArray - Returns the entire Directory Manager Array managed
+// by this collection.
 //
 // ------------------------------------------------------------------------
 //
