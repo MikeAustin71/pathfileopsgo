@@ -542,10 +542,10 @@ func TestDirMgrCollection_GetFileMgrAtIndex_01(t *testing.T) {
 
 	}
 
-	dirMgr, err := dmgrCol.GetFileMgrAtIndex(2)
+	dirMgr, err := dmgrCol.GetDirMgrAtIndex(2)
 
 	if err != nil {
-		t.Errorf("Error returned by dmgrCol.GetFileMgrAtIndex(2). "+
+		t.Errorf("Error returned by dmgrCol.GetDirMgrAtIndex(2). "+
 			"Error='%v' ", err.Error())
 	}
 
