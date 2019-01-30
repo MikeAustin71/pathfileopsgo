@@ -203,7 +203,7 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
 	}
 
 }
-
+/*
 func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 
 	err := DirMgr02SetupDirWalkTests()
@@ -318,6 +318,9 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 
 }
 
+*/
+
+/*
 func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 
 	err := DirMgr02SetupDirWalkTests()
@@ -426,6 +429,7 @@ func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 	}
 
 }
+*/
 
 func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 
@@ -927,7 +931,7 @@ func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
 	}
 
 }
-
+/*
 func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
 
 	origDir, err := DirMgr02TestSetupFileWalkDeleteFiles()
@@ -1093,7 +1097,8 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
 	}
 
 }
-
+*/
+/*
 func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
 	origDir, err := DirMgr02TestSetupFileWalkDeleteFiles()
 
@@ -1195,6 +1200,7 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
 	}
 
 }
+*/
 
 func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 

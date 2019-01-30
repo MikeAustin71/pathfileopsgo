@@ -1,8 +1,25 @@
-# pathfilego
+# pathfileops
 This code demonstrates path and file operations in 'golang', the go programming language.
 
 The path for this source code repository is:
-  https://github.com/MikeAustin71/pathfilego.git
+  https://github.com/MikeAustin71/pathfileopsgo.git
+
+#### Installing 'pathfileops' Library
+Use this command to down load and install the datetime library
+locally. 
+
+    go get github.com/MikeAustin71/pathfileopsgo/pathfileops
+
+To update the library run:
+    
+    go get -u github.com/MikeAustin71/pathfileopsgo/pathfileops
+        
+After installation, you may import and reference the library
+as follows:
+
+        import (
+            "MikeAustin71/pathfileopsgo/pathfileops"
+        )    
 
 All of the active production files are located in directory path:
   **./pathfilego/003_filehelper**

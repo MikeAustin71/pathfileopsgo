@@ -3500,9 +3500,22 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
 			return nil
 		}
 
-		// TO DO - Fix this!
 		if isFoundFile {
-			err = dInfo.FoundFiles.AddFileMgrByFileInfo(pathFile, info)
+
+			fMgr, err2 := FileMgr{}.NewFromPathFileNameExtStr(pathFile)
+
+			if err2 != nil {
+				err = fmt.Errorf(ePrefix +
+					"Error returned by FileMgr{}.NewFromPathFileNameExtStr(pathFile) " +
+					"pathFile='%v' Error='%v' ", pathFile, err2.Error())
+
+				dInfo.ErrReturns = append(dInfo.ErrReturns, err.Error())
+
+				return nil
+			}
+
+			err = dInfo.FoundFiles.AddFileMgrByFileInfo(fMgr.dMgr.GetAbsolutePath(), info)
+
 			if err != nil {
 				er2 := fmt.Errorf(ePrefix+"Error returned from  dInfo.FoundFiles.AddFileMgrByFileInfo( pathFile,  info) "+
 					"pathFile='%v' info.Name()='%v' Error='%v' ",

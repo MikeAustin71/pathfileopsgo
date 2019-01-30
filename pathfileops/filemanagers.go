@@ -2364,6 +2364,31 @@ func (fMgr FileMgr) NewFromPathFileNameExtStr(pathFileNameExt string) (FileMgr, 
 
 // NewFromFileInfo - Creates and returns a new FileMgr object based on input from a
 // directory path string and an os.FileInfo object.
+//
+// ----------------------------------------------------------------------------------
+//
+// Input Parameters
+//
+//	pathStr         string - The directory path. NOTE: This does NOT contain the
+//	                         file name.
+//
+//	info       os.FileInfo - A valid and populated FileInfo structure containing the
+//	                         file name.
+//
+// ------------------------------------------------------------------------
+//
+// Return Values
+//
+//	FileMgr       - If the method completes successfully, a valid FileMgr instance
+//	                is returned containing information on the file specified in the
+//	                input parameter 'info'.
+//
+//
+//	error         - If this method completes successfully, the returned error
+//	                Type is set equal to 'nil'. If an error condition is encountered,
+//	                this method will return an error Type which encapsulates an
+//	                appropriate error message.
+//
 func (fMgr FileMgr) NewFromFileInfo(pathStr string, info os.FileInfo) (FileMgr, error) {
 
 	ePrefix := "FileMgr.NewFromFInfo() "

@@ -34,66 +34,44 @@ func main() {
 
 func main() {
 
-	// 25-files and 4 sub-folders
-	sourceDirStr := "D:\\T10\\levelfilesfortest"
-	targetDirStr := "D:\\T09\\levelfilesfortest"
+	targetDirStr := "D:/TimeZoneDb06/zoneinfo"
 
-	fh := pathFileOps.FileHelper{}
-
-	srcDirPath, err := fh.GetAbsPathFromFilePath(sourceDirStr)
+	targetDirMgr, err := pathFileOps.DirMgr{}.New(targetDirStr)
 
 	if err != nil {
-		fmt.Printf("Error from fh.GetAbsPathFromFilePath(sourceDirStr). "+
-			"sourceDirStr='%v' Error='%v'n", sourceDirStr, err.Error())
-		return
-	}
-
-	targetDirPath, err := fh.GetAbsPathFromFilePath(targetDirStr)
-
-	if err != nil {
-		fmt.Printf("Error from fh.GetAbsPathFromFilePath(targetDirStr). "+
-			"targetDirStr='%v' Error='%v'n", targetDirStr, err.Error())
-		return
-	}
-
-	srcDirMgr, err := pathFileOps.DirMgr{}.New(srcDirPath)
-
-	if err != nil {
-		fmt.Printf("Error returned by DirMgr{}.New(srcDirPath). "+
-			"srcDirPath='%v' Error='%v' ", srcDirPath, err.Error())
-		return
-	}
-
-	targetDirMgr, err := pathFileOps.DirMgr{}.New(targetDirPath)
-
-	if err != nil {
-		fmt.Printf("Error returned by DirMgr{}.New(targetDirPath). "+
-			"targetDirPath='%v' Error='%v' ", srcDirPath, err.Error())
+		fmt.Printf("Error returned by pathFileOps.DirMgr{}.New(targetDirStr). "+
+			"targetDirStr='%v' Error='%v' \n", targetDirStr, err.Error())
 		return
 	}
 
 	fileSelect := pathFileOps.FileSelectionCriteria{}
 
-	fileSelect.SelectCriterionMode = pathFileOps.ORFILESELECTCRITERION
+	//fileSelect.SelectCriterionMode = pathFileOps.ORFILESELECTCRITERION
 
-	fileOps := make([]pathFileOps.FileOperation, 1, 5)
+	dirInfo, err := targetDirMgr.FindWalkDirFiles(fileSelect)
 
-	fileOps[0] = pathFileOps.COPYSOURCETODESTINATIONByIo
-
-	errStrs := srcDirMgr.ExecuteDirectoryFileOps(fileSelect, fileOps, targetDirMgr)
-
-	lenErrStrs := len(errStrs)
-
-	if lenErrStrs > 0 {
-		fmt.Printf(" %v-Errors from ExecuteDirectoryFileOps() \n", lenErrStrs)
-		for i := 0; i < lenErrStrs; i++ {
-			fmt.Printf("%v. %v \n", i, errStrs[i])
-		}
-
+	if err != nil {
+		fmt.Printf("Error returned by targetDirMgr.FindWalkDirFiles(fileSelect) " +
+			"Error='%v' \n", err.Error())
 		return
 	}
 
-	fmt.Println("Success ExecuteDirectoryFileOps() Test = NO Errors!")
+	numOfFiles := dirInfo.FoundFiles.GetNumOfFileMgrs()
+
+	fmt.Println("                  Found Files")
+	fmt.Println("==================================================")
+	fmt.Println()
+	for i:=0; i < numOfFiles; i++ {
+
+		fMgr, err := dirInfo.FoundFiles.PeekFileMgrAtIndex(i)
+
+		if err != nil {
+			fmt.Printf("Found Files Error: Index='%v' Error='%v' \n", i, err.Error())
+			return
+		}
+
+		fmt.Printf("%03d File: %v \n", i, fMgr.GetAbsolutePathFileName())
+	}
 
 	return
 }

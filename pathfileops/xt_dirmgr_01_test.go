@@ -4,7 +4,6 @@ import (
 	appLib "MikeAustin71/pathfileopsgo/appLibs"
 	"fmt"
 	"os"
-	"strings"
 	"testing"
 	"time"
 )
@@ -300,6 +299,7 @@ func TestDirMgr_DeleteAll_01(t *testing.T) {
 
 }
 
+/*
 func TestDirMgr_DeleteWalkDirFiles_31(t *testing.T) {
 
 	origDir, err := DirMgr02TestSetupFileWalkDeleteFiles()
@@ -420,6 +420,7 @@ func TestDirMgr_DeleteWalkDirFiles_31(t *testing.T) {
 
 }
 
+
 func TestDirMgr_DeleteWalkDirFiles_32(t *testing.T) {
 
 	origDir, err := DirMgr02TestSetupFileWalkDeleteFiles()
@@ -539,6 +540,7 @@ func TestDirMgr_DeleteWalkDirFiles_32(t *testing.T) {
 	}
 
 }
+*/
 
 func TestDirMgr_Equal_01(t *testing.T) {
 
