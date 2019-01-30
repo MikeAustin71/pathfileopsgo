@@ -309,7 +309,6 @@ func (fMgrs *FileMgrCollection) FindFiles(
 //	[]FileMgr      - The array of of FileMgr instances maintained by this
 //	                 collection.
 //
-
 func (fMgrs *FileMgrCollection) GetFileMgrArray() []FileMgr {
 
 	if fMgrs.fileMgrs == nil {
