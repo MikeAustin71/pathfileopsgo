@@ -26,6 +26,7 @@ import (
 
 */
 
+// DirTreeOp - Contains parameters used in Directory Operations
 type DirTreeOp struct {
 	CallingFunc        string
 	FileOps            []FileOperation
@@ -43,6 +44,17 @@ func (dTreeOp DirTreeOp) New() DirTreeOp {
 	return newDTreeOp
 }
 
+// DirMgrCollection - Holds a collection of Type DirMgr.
+//
+// The Source Repository for this source code file is :
+// https://github.com/MikeAustin71/pathfileopsgo.git
+//
+// Dependencies:
+//
+// Type 'DirMgrCollection' depend on types, 'FileHelper' and
+// 'FileMgr' which are contained in source code files: 'filehelper.go'
+// and 'filemanagers.go' located in this directory.
+//
 type DirMgrCollection struct {
 	dirMgrs []DirMgr
 }
@@ -275,6 +287,10 @@ func (dMgrs *DirMgrCollection) GetDirMgrAtIndex(idx int) (*DirMgr, error) {
 
 	emptyDirMgr := DirMgr{}
 
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
+
 	arrayLen := len(dMgrs.dirMgrs)
 
 	if arrayLen == 0 {
@@ -342,6 +358,10 @@ func (dMgrs *DirMgrCollection) PopDirMgrAtIndex(idx int) (DirMgr, error) {
 				"Index Out-Of-Range! idx='%v'", idx)
 	}
 
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
+
 	arrayLen := len(dMgrs.dirMgrs)
 
 	if arrayLen == 0 {
@@ -387,6 +407,10 @@ func (dMgrs *DirMgrCollection) PopFirstDirMgr() (DirMgr, error) {
 
 	ePrefix := "DirMgrCollection.PopFirstDirMgr() "
 
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
+
 	arrayLen := len(dMgrs.dirMgrs)
 
 	if arrayLen == 0 {
@@ -421,6 +445,10 @@ func (dMgrs *DirMgrCollection) PopFirstDirMgr() (DirMgr, error) {
 func (dMgrs *DirMgrCollection) PopLastDirMgr() (DirMgr, error) {
 
 	ePrefix := "DirMgrCollection.PopLastDirMgr() "
+
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
 
 	arrayLen := len(dMgrs.dirMgrs)
 
@@ -457,6 +485,10 @@ func (dMgrs *DirMgrCollection) PopLastDirMgr() (DirMgr, error) {
 func (dMgrs *DirMgrCollection) PeekDirMgrAtIndex(idx int) (DirMgr, error) {
 
 	ePrefix := "DirMgrCollection.PeekDirMgrAtIndex() "
+
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
 
 	arrayLen := len(dMgrs.dirMgrs)
 
@@ -500,6 +532,10 @@ func (dMgrs *DirMgrCollection) PeekFirstDirMgr() (DirMgr, error) {
 
 	ePrefix := "DirMgrCollection.PeekFirstDirMgr() "
 
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
+
 	if len(dMgrs.dirMgrs) == 0 {
 		return DirMgr{},
 			errors.New(ePrefix +
@@ -525,6 +561,10 @@ func (dMgrs *DirMgrCollection) PeekLastDirMgr() (DirMgr, error) {
 
 	ePrefix := "DirMgrCollection.PeekLastDirMgr()"
 
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
+
 	arrayLen := len(dMgrs.dirMgrs)
 
 	if arrayLen == 0 {
@@ -536,8 +576,19 @@ func (dMgrs *DirMgrCollection) PeekLastDirMgr() (DirMgr, error) {
 	return dMgrs.dirMgrs[arrayLen-1].CopyOut(), nil
 }
 
-// DirMgr - This structure and associated methods
-// are used to manage a specific directory.
+// DirMgr - This structure and associated methods are used to
+// manage a specific directory.
+//
+// The Source Repository for this source code file is:
+//
+//	https://github.com/MikeAustin71/pathfileopsgo.git
+//
+// Dependencies:
+//
+// Type 'DirMgr' depend on types, 'FileHelper' and 'FileMgr'
+// which are contained in source code files, 'filehelper.go'
+// and 'filemanagers.go' located in this directory.
+//
 type DirMgr struct {
 	isInitialized                   bool
 	originalPath                    string

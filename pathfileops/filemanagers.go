@@ -329,6 +329,10 @@ func (fMgrs *FileMgrCollection) GetFileMgrAtIndex(idx int) (*FileMgr, error) {
 
 	emptyFileMgr := FileMgr{}
 
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
+
 	arrayLen := len(fMgrs.fileMgrs)
 
 	if arrayLen == 0 {
@@ -397,6 +401,10 @@ func (fMgrs *FileMgrCollection) PopFileMgrAtIndex(idx int) (FileMgr, error) {
 			"Error: Input Parameter is less than zero. Index Out-Of-Range! idx='%v'", idx)
 	}
 
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
+
 	arrayLen := len(fMgrs.fileMgrs)
 
 	if arrayLen == 0 {
@@ -441,6 +449,10 @@ func (fMgrs *FileMgrCollection) PopFirstFileMgr() (FileMgr, error) {
 
 	ePrefix := "FileMgrCollection.PopFirstFileMgr() "
 
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
+
 	if len(fMgrs.fileMgrs) == 0 {
 		return FileMgr{},
 			errors.New(ePrefix +
@@ -467,6 +479,10 @@ func (fMgrs *FileMgrCollection) PopFirstFileMgr() (FileMgr, error) {
 func (fMgrs *FileMgrCollection) PopLastFileMgr() (FileMgr, error) {
 
 	ePrefix := "FileMgrCollection.PopLastFileMgr() "
+
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
 
 	arrayLen := len(fMgrs.fileMgrs)
 
@@ -496,6 +512,10 @@ func (fMgrs *FileMgrCollection) PopLastFileMgr() (FileMgr, error) {
 func (fMgrs *FileMgrCollection) PeekFileMgrAtIndex(idx int) (FileMgr, error) {
 
 	ePrefix := "FileMgrCollection.PeekFileMgrAtIndex() "
+
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
 
 	arrayLen := len(fMgrs.fileMgrs)
 
@@ -539,6 +559,10 @@ func (fMgrs *FileMgrCollection) PeekFirstFileMgr() (FileMgr, error) {
 
 	ePrefix := "FileMgrCollection.PeekFirstFileMgr() "
 
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
+
 	if len(fMgrs.fileMgrs) == 0 {
 		return FileMgr{},
 			errors.New(ePrefix +
@@ -562,6 +586,10 @@ func (fMgrs *FileMgrCollection) PeekFirstFileMgr() (FileMgr, error) {
 func (fMgrs *FileMgrCollection) PeekLastFileMgr() (FileMgr, error) {
 
 	ePrefix := "FileMgrCollection.PeekLastFileMgr()"
+
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
 
 	arrayLen := len(fMgrs.fileMgrs)
 
@@ -3391,6 +3419,10 @@ func (fOpsCol *FileOpsCollection) DeleteAtIndex(idx int) error {
 			"Index Out-Of-Range! idx='%v'", idx)
 	}
 
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 50)
+	}
+
 	arrayLen := len(fOpsCol.fileOps)
 
 	if arrayLen == 0 {
@@ -3435,6 +3467,10 @@ func (fOpsCol *FileOpsCollection) ExecuteFileOperations(
 	fileOp FileOperation) error {
 
 	ePrefix := "FileOpsCollection.ExecuteFileOperation() "
+
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 50)
+	}
 
 	arrayLen := len(fOpsCol.fileOps)
 
@@ -3490,6 +3526,10 @@ func (fOpsCol *FileOpsCollection) GetFileOpsAtIndex(idx int) (*FileOps, error) {
 
 	emptyFileOps := FileOps{}
 
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 50)
+	}
+
 	arrayLen := len(fOpsCol.fileOps)
 
 	if arrayLen == 0 {
@@ -3516,6 +3556,10 @@ func (fOpsCol *FileOpsCollection) GetFileOpsAtIndex(idx int) (*FileOps, error) {
 // internal field FileOpsCollection.fileOps.
 //
 func (fOpsCol *FileOpsCollection) GetNumOfFileOps() int {
+
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 50)
+	}
 
 	return len(fOpsCol.fileOps)
 
@@ -3640,6 +3684,10 @@ func (fOpsCol *FileOpsCollection) PopFileOpsAtIndex(idx int) (FileOps, error) {
 				"Index Out-Of-Range! idx='%v'", idx)
 	}
 
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 50)
+	}
+
 	arrayLen := len(fOpsCol.fileOps)
 
 	if arrayLen == 0 {
@@ -3685,6 +3733,10 @@ func (fOpsCol *FileOpsCollection) PopFileOpsAtIndex(idx int) (FileOps, error) {
 func (fOpsCol *FileOpsCollection) PopFirstFileOps() (FileOps, error) {
 
 	ePrefix := "DirMgrCollection.PopFirstDirMgr() "
+
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 50)
+	}
 
 	if len(fOpsCol.fileOps) == 0 {
 		return FileOps{},
@@ -3744,6 +3796,10 @@ func (fOpsCol *FileOpsCollection) PeekFileOpsAtIndex(idx int) (FileOps, error) {
 
 	ePrefix := "FileOpsCollection.PeekFileOpsAtIndex() "
 
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 50)
+	}
+
 	arrayLen := len(fOpsCol.fileOps)
 
 	if arrayLen == 0 {
@@ -3786,6 +3842,10 @@ func (fOpsCol *FileOpsCollection) PeekFirstFileOps() (FileOps, error) {
 
 	ePrefix := "FileOpsCollection.PeekFirstFileOps() "
 
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 50)
+	}
+
 	if len(fOpsCol.fileOps) == 0 {
 		return FileOps{},
 			errors.New(ePrefix +
@@ -3811,8 +3871,11 @@ func (fOpsCol *FileOpsCollection) PeekLastFileOps() (FileOps, error) {
 
 	ePrefix := "FileOpsCollection.PeekLastFileOps()"
 
-	arrayLen := len(fOpsCol.fileOps)
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 50)
+	}
 
+	arrayLen := len(fOpsCol.fileOps)
 	if arrayLen == 0 {
 		return FileOps{},
 			errors.New(ePrefix +
