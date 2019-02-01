@@ -2464,6 +2464,38 @@ func (dMgr *DirMgr) GetAbsolutePath() string {
 	return dMgr.absolutePath
 }
 
+// GetAbsolutePathElements - Returns all of the directories and drive
+// specifications as an array of strings.
+//
+// Example
+//
+// Path = "D:\ADir\BDir\CDir\EDir"
+//
+// Returned pathElements string array:
+//   pathElements[0] = "D:"
+//   pathElements[1] = "ADir"
+//   pathElements[2] = "BDir"
+//   pathElements[3] = "CDir"
+//   pathElements[4] = "DDir"
+//   pathElements[4] = "EDir"
+//
+func (dMgr *DirMgr) GetAbsolutePathElements() (pathElements []string) {
+
+	pathElements = make([]string, 0, 50)
+
+	pathStr := dMgr.GetAbsolutePath()
+
+	if len(pathStr) == 0 {
+		return pathElements
+	}
+
+	pathStr = strings.Replace(pathStr, "\\", "/", -1)
+
+	pathElements = strings.Split(pathStr, "/")
+
+	return pathElements
+}
+
 // GetAbsolutePathWithSeparator - Returns the current
 // DirMgr.absolutePath with a trailing os.PathSeparator
 // character.

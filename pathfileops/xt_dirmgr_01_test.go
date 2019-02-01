@@ -989,6 +989,56 @@ func TestDirMgr_ExecuteDirectoryTreeOps_01(t *testing.T) {
 
 }
 
+func TestDirMgr_GetAbsolutePathElements(t *testing.T) {
+
+	testDir := "D:\\Adir\\Bdir\\Cdir\\Ddir\\Edir"
+
+	dMgr, err := DirMgr{}.New(testDir)
+
+	if err != nil {
+		t.Errorf("Error returned by DirMgr{}.New(testDir). Error='%v' ",
+			err.Error())
+	}
+
+	elementsArray := dMgr.GetAbsolutePathElements()
+
+	if len(elementsArray) != 6 {
+		t.Errorf("Error: Expected length of Elements Array='6'. Instead, "+
+			"Elements Array length='%v'", len(elementsArray))
+	}
+
+	if "D:" != elementsArray[0] {
+		t.Errorf("Error. Expected elementsArray[0]=\"D:\". Instead, "+
+			"elementsArray[0]=\"%v\"", elementsArray[0])
+	}
+
+	if "Adir" != elementsArray[1] {
+		t.Errorf("Error. Expected elementsArray[1]=\"Adir\". Instead, "+
+			"elementsArray[1]=\"%v\"", elementsArray[1])
+	}
+
+	if "Bdir" != elementsArray[2] {
+		t.Errorf("Error. Expected elementsArray[2]=\"Bdir\". Instead, "+
+			"elementsArray[2]=\"%v\"", elementsArray[2])
+	}
+
+	if "Cdir" != elementsArray[3] {
+		t.Errorf("Error. Expected elementsArray[3]=\"Cdir\". Instead, "+
+			"elementsArray[3]=\"%v\"", elementsArray[3])
+	}
+
+	if "Ddir" != elementsArray[4] {
+		t.Errorf("Error. Expected elementsArray[4]=\"Ddir\". Instead, "+
+			"elementsArray[4]=\"%v\"", elementsArray[4])
+	}
+
+	if "Edir" != elementsArray[5] {
+		t.Errorf("Error. Expected elementsArray[4]=\"Edir\". Instead, "+
+			"elementsArray[4]=\"%v\"", elementsArray[4])
+	}
+
+}
+
 func DirMgr01TestCreateCheckFiles03DirFiles() (string, error) {
 	ePrefix := "TestFile: xt_dirmgr_01_test.go Func: DirMgr01TestCreateCheckFiles03DirFiles() "
 	fh := FileHelper{}
