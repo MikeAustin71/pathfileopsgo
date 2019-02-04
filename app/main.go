@@ -1,7 +1,7 @@
 package main
 
-import (
-	pathFileOps "../pathfileops"
+import(
+	pf "../pathfileops"
 	"fmt"
 )
 
@@ -34,44 +34,28 @@ func main() {
 
 func main() {
 
-	targetDirStr := "D:/TimeZoneDb06/zoneinfo"
+	testDir := "D:\\test1"
 
-	targetDirMgr, err := pathFileOps.DirMgr{}.New(targetDirStr)
-
-	if err != nil {
-		fmt.Printf("Error returned by pathFileOps.DirMgr{}.New(targetDirStr). "+
-			"targetDirStr='%v' Error='%v' \n", targetDirStr, err.Error())
-		return
-	}
-
-	fileSelect := pathFileOps.FileSelectionCriteria{}
-
-	//fileSelect.SelectCriterionMode = pathFileOps.ORFILESELECTCRITERION
-
-	dirInfo, err := targetDirMgr.FindWalkDirFiles(fileSelect)
+	testDirMgr, err := pf.DirMgr{}.New(testDir)
 
 	if err != nil {
-		fmt.Printf("Error returned by targetDirMgr.FindWalkDirFiles(fileSelect) " +
+		fmt.Printf("Error returned by pf.DirMgr{}.New(testDir). " +
 			"Error='%v' \n", err.Error())
 		return
 	}
 
-	numOfFiles := dirInfo.FoundFiles.GetNumOfFileMgrs()
+	fmt.Println("testDirMgr Path: ", testDirMgr.GetAbsolutePath())
 
-	fmt.Println("                  Found Files")
-	fmt.Println("==================================================")
-	fmt.Println()
-	for i:=0; i < numOfFiles; i++ {
+	parentDirMgr, hasParent, err := testDirMgr.GetParentDirMgr()
 
-		fMgr, err := dirInfo.FoundFiles.PeekFileMgrAtIndex(i)
-
-		if err != nil {
-			fmt.Printf("Found Files Error: Index='%v' Error='%v' \n", i, err.Error())
-			return
-		}
-
-		fmt.Printf("%03d File: %v \n", i, fMgr.GetAbsolutePathFileName())
+	if err != nil {
+		fmt.Printf("Error returned by testDirMgr.GetParentDirMgr(). " +
+			"Error='%v' \n", err.Error())
+		return
 	}
+
+	fmt.Println("parentDirMgr Path: ", parentDirMgr.GetAbsolutePath())
+	fmt.Println("  hasParent Value: ", hasParent)
 
 	return
 }

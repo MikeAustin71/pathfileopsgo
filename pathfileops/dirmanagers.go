@@ -2558,11 +2558,73 @@ func (dMgr *DirMgr) GetFileInfoPlus() (FileInfoPlus, error) {
 	return dMgr.actualDirFileInfo.CopyOut(), nil
 }
 
+// GetNumberOfAbsPathElements - Returns the number of elements
+// or path components in the absolute path of the current
+// Directory Manager instance.
+func (dMgr *DirMgr) GetNumberOfAbsPathElements() int {
+
+	pathElements := dMgr.GetAbsolutePathElements()
+
+	return len(pathElements)
+}
+
 // GetOriginalPath - Returns the original path used to initialize
 // this Directory Manager instance.
 //
 func (dMgr *DirMgr) GetOriginalPath() string {
 	return dMgr.originalPath
+}
+
+// GetParentDirMgr - Returns a new Directory Manager instance
+// which represents the the parent path for the current
+// Directory Manager. The current Directory Manager absolute
+// path is used in extracting the parent Directory Manager.
+//
+// Return Values:
+//
+//	dirMgr   DirMgr - If successful, this methods returns a Directory Manager
+//	                  which is a parent of the current Directory Manager.
+//
+//	hasParent  bool - If 'true', it signals that the current Directory Manager
+//	                  has a valid parent directory. If 'false', it signals that
+//	                  the current Directory Manager represents a top level directory
+//	                  which has no parent directory. In that case a copy of the
+//	                  current Directory will be returned.
+//
+//	err       error - If an error is encountered this error type will be populated
+//	                  with an appropriate error message. Otherwise, a value of 'nil'
+//	                  will be returned.
+//
+//	                  If 'hasParent' is 'false', no error will be returned.
+//
+func (dMgr *DirMgr) GetParentDirMgr() (dirMgr DirMgr, hasParent bool, err error) {
+
+	ePrefix := "DirMgr.GetParentDirMgr() Error: "
+	dirMgr = DirMgr{}
+	hasParent = true
+	err = nil
+
+	if len(dMgr.parentPath) == 0 {
+
+		return dMgr.CopyOut(), false, nil
+
+	}
+
+	var err2 error
+
+	dirMgr, err2 = DirMgr{}.New(dMgr.parentPath)
+
+	if err2 != nil {
+
+		err =	fmt.Errorf(ePrefix + "%v", err.Error())
+		hasParent = true
+		dirMgr = DirMgr{}
+		return dirMgr, hasParent, err
+	}
+
+	err = nil
+
+	return dirMgr, hasParent, err
 }
 
 // GetParentPath - Returns a string containing the
