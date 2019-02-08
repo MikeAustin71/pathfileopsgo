@@ -1212,20 +1212,57 @@ func (dMgr *DirMgr) Equal(dmgr2 *DirMgr) bool {
 	return true
 }
 
+// EqualAbsPaths - compares the absolute paths for the current
+// directory manager and the input directory manager ('dMgr2').
+// If the two absolute paths are equal, the method returns 'true'.
+// If the two absolute paths are NOT equal, the method returns 'false'.
+// The comparison is NOT case sensitive. In other words, both paths
+// are converted to lower case before making the comparision.
+func (dMgr *DirMgr) EqualAbsPaths(dMgr2 *DirMgr) bool {
+
+	if dMgr.isInitialized != dMgr2.isInitialized {
+		return false
+	}
+
+	lcDMgrPath := strings.ToLower(dMgr.absolutePath)
+	lcDMgr2Path := strings.ToLower(dMgr2.absolutePath)
+
+	if lcDMgrPath != lcDMgr2Path {
+		return false
+	}
+
+	return true
+}
+
 // EqualPaths - Compares two DirMgr objects to determine
-// if their paths are equal.
+// if their paths are equal. Both Directory Path and
+// absolute path must be equivalent.
+//
+// If the compared paths are equal, the method returns 'true'.
+// If the paths are NOT equal, the method returns 'false'.
+// The comparisons are NOT case sensitive. In other words, all paths
+// are converted to lower case before making the comparisions.
 func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 
 	if dMgr.isInitialized != dMgr2.isInitialized {
 		return false
 	}
 
-	if dMgr.absolutePath == dMgr2.absolutePath &&
-		dMgr.path == dMgr2.path {
-		return true
+	lcDMgrPath := strings.ToLower(dMgr.absolutePath)
+	lcDMgr2Path := strings.ToLower(dMgr2.absolutePath)
+
+	if lcDMgrPath != lcDMgr2Path {
+		return false
 	}
 
-	return false
+	lcDMgrPath = strings.ToLower(dMgr.path)
+	lcDMgr2Path = strings.ToLower(dMgr2.path)
+
+	if lcDMgrPath != lcDMgr2Path {
+		return false
+	}
+
+	return true
 }
 
 // ExecuteDirectoryTreeOps - Performs File Operations
@@ -2616,7 +2653,7 @@ func (dMgr *DirMgr) GetParentDirMgr() (dirMgr DirMgr, hasParent bool, err error)
 
 	if err2 != nil {
 
-		err =	fmt.Errorf(ePrefix + "%v", err.Error())
+		err = fmt.Errorf(ePrefix+"%v", err.Error())
 		hasParent = true
 		dirMgr = DirMgr{}
 		return dirMgr, hasParent, err

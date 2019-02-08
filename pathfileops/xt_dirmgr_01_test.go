@@ -745,6 +745,126 @@ func TestDirMgr_Equal_02(t *testing.T) {
 
 }
 
+func TestDirMgr_EqualAbsPaths_01(t *testing.T) {
+	fh := FileHelper{}
+
+	origDir := "../testfiles/testfiles2"
+
+	origDir, err := fh.MakeAbsolutePath(origDir)
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath(origDir). "+
+			"origDir='%v' Error='%v' ", origDir, err.Error())
+	}
+
+	dMgr, err := DirMgr{}.New(origDir)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
+	}
+
+	origDir2 := "../testfiles/testfiles2"
+
+	origDir2, err = fh.MakeAbsolutePath(origDir2)
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath(origDir2). "+
+			"origDir2='%v' Error='%v' ", origDir2, err.Error())
+	}
+
+	dMgr2, err := DirMgr{}.New(origDir2)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir2). "+
+			"origDir2=='%v'  Error='%v'", origDir2, err.Error())
+	}
+
+	if !dMgr.EqualAbsPaths(&dMgr2) {
+		t.Error("Expected two paths to be EQUAL. Error: They were NOT!")
+	}
+
+}
+
+func TestDirMgr_EqualAbsPaths_02(t *testing.T) {
+	fh := FileHelper{}
+
+	origDir := "../testfiles/testfiles2"
+
+	origDir, err := fh.MakeAbsolutePath(origDir)
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath(origDir). "+
+			"origDir='%v' Error='%v' ", origDir, err.Error())
+	}
+
+	dMgr, err := DirMgr{}.New(origDir)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
+	}
+
+	origDir2 := "../testfiles/testfilesx"
+
+	origDir2, err = fh.MakeAbsolutePath(origDir2)
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath(origDir2). "+
+			"origDir2='%v' Error='%v' ", origDir2, err.Error())
+	}
+
+	dMgr2, err := DirMgr{}.New(origDir2)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir2). "+
+			"origDir2=='%v'  Error='%v'", origDir2, err.Error())
+	}
+
+	if dMgr.EqualAbsPaths(&dMgr2) {
+		t.Error("Expected two paths to be NOT EQUAL. Error: They were EQUAL!")
+	}
+
+}
+
+func TestDirMgr_EqualAbsPaths_03(t *testing.T) {
+	fh := FileHelper{}
+
+	origDir := "../TESTfiles/TESTfiles2"
+
+	origDir, err := fh.MakeAbsolutePath(origDir)
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath(origDir). "+
+			"origDir='%v' Error='%v' ", origDir, err.Error())
+	}
+
+	dMgr, err := DirMgr{}.New(origDir)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
+	}
+
+	origDir2 := "../testfiles/testfiles2"
+
+	origDir2, err = fh.MakeAbsolutePath(origDir2)
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath(origDir2). "+
+			"origDir2='%v' Error='%v' ", origDir2, err.Error())
+	}
+
+	dMgr2, err := DirMgr{}.New(origDir2)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir2). "+
+			"origDir2=='%v'  Error='%v'", origDir2, err.Error())
+	}
+
+	if !dMgr.EqualAbsPaths(&dMgr2) {
+		t.Error("Expected two paths to be EQUAL. Error: They were NOT!")
+	}
+
+}
+
 func TestDirMgr_EqualPaths_01(t *testing.T) {
 	fh := FileHelper{}
 
@@ -791,6 +911,31 @@ func TestDirMgr_EqualPaths_02(t *testing.T) {
 
 	if dMgr.EqualPaths(&dMgr2) {
 		t.Error("Expected two paths to be NOT EQUAL. Error: They were EQUAL!")
+	}
+
+}
+
+func TestDirMgr_EqualPaths_03(t *testing.T) {
+	fh := FileHelper{}
+
+	origDir := fh.AdjustPathSlash("../Testfiles/Testfiles2")
+
+	dMgr, err := DirMgr{}.New(origDir)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
+	}
+
+	origDir2 := fh.AdjustPathSlash("../testfiles/testfiles2")
+
+	dMgr2, err := DirMgr{}.New(origDir2)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir2). origDir2=='%v'  Error='%v'", origDir2, err.Error())
+	}
+
+	if !dMgr.EqualPaths(&dMgr2) {
+		t.Error("Expected two paths to be EQUAL. Error: They were NOT!")
 	}
 
 }
