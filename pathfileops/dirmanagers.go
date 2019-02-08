@@ -61,6 +61,11 @@ type DirMgrCollection struct {
 
 // AddDirMgr - Adds a DirMgr object to the collection
 func (dMgrs *DirMgrCollection) AddDirMgr(dMgr DirMgr) {
+
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
+
 	dMgrs.dirMgrs = append(dMgrs.dirMgrs, dMgr.CopyOut())
 }
 
@@ -69,6 +74,10 @@ func (dMgrs *DirMgrCollection) AddDirMgr(dMgr DirMgr) {
 //
 func (dMgrs *DirMgrCollection) AddDirMgrByPathNameStr(pathName string) error {
 	ePrefix := "DirMgrCollection.AddDirMgrByPathNameStr() "
+
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
 
 	dMgr, err := DirMgr{}.New(pathName)
 
@@ -91,6 +100,10 @@ func (dMgrs *DirMgrCollection) AddFileInfo(pathFile string, info os.FileInfo) er
 
 	ePrefix := "DirMgrCollection) AddFileMgrByFileInfo() "
 
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
+
 	dMgr, err := DirMgr{}.NewFromFileInfo(pathFile, info)
 
 	if err != nil {
@@ -107,6 +120,10 @@ func (dMgrs *DirMgrCollection) AddFileInfo(pathFile string, info os.FileInfo) er
 // AddDirMgrCollection - Adds another collection of File Manager (DirMgr)
 // objects to the current collection.
 func (dMgrs *DirMgrCollection) AddDirMgrCollection(dMgrs2 *DirMgrCollection) {
+
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
 
 	lOmc2 := len(dMgrs2.dirMgrs)
 
@@ -126,6 +143,10 @@ func (dMgrs *DirMgrCollection) AddDirMgrCollection(dMgrs2 *DirMgrCollection) {
 func (dMgrs *DirMgrCollection) CopyOut() (DirMgrCollection, error) {
 
 	ePrefix := "DirMgrCollection.CopyOut() "
+
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
 
 	dMgrs2 := DirMgrCollection{}
 
@@ -158,6 +179,10 @@ func (dMgrs *DirMgrCollection) DeleteAtIndex(idx int) error {
 		return fmt.Errorf(ePrefix+
 			"Error: Input Parameter 'idx' is less than zero. "+
 			"Index Out-Of-Range! idx='%v'", idx)
+	}
+
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
 	}
 
 	arrayLen := len(dMgrs.dirMgrs)
@@ -198,6 +223,10 @@ func (dMgrs *DirMgrCollection) FindDirectories(
 	fileSelectionCriteria FileSelectionCriteria) (DirMgrCollection, error) {
 
 	ePrefix := "DirMgrCollection.FindDirectories() "
+
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
 
 	lDirCol := len(dMgrs.dirMgrs)
 
@@ -322,6 +351,49 @@ func (dMgrs *DirMgrCollection) GetNumOfDirs() int {
 	}
 
 	return len(dMgrs.dirMgrs)
+}
+
+// InsertDirMgrAtIndex - Inserts a new Directory Manager into the collection at
+// array 'index'. The new Directory Manager is passed as input parameter 'dMgr'.
+//
+// If input parameter 'index' is less than zero, an error will be returned. If
+// 'index' exceeds the value of the last index in the collection, 'dMgr' will be
+// added to the end of the collection at the next legal index.
+func (dMgrs *DirMgrCollection) InsertDirMgrAtIndex(dMgr DirMgr, index int) error {
+
+	ePrefix := "DirMgrCollection.InsertDirMgrAtIndex() "
+
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
+
+	if index < 0 {
+		return fmt.Errorf(ePrefix+
+			"Error: Input parameter 'index' is LESS THAN ZERO! "+
+			"index='%v' ", index)
+	}
+
+	lenDgrs := len(dMgrs.dirMgrs)
+
+	if index >= lenDgrs {
+		dMgrs.dirMgrs = append(dMgrs.dirMgrs, dMgr.CopyOut())
+	}
+
+	newDirMgrs := make([]DirMgr, 1, 100)
+
+	if index == 0 {
+		newDirMgrs[0] = dMgr.CopyOut()
+		dMgrs.dirMgrs = append(newDirMgrs, dMgrs.dirMgrs...)
+		return nil
+	}
+
+	newDirMgrs = append(newDirMgrs, dMgrs.dirMgrs[index:]...)
+
+	dMgrs.dirMgrs = append(dMgrs.dirMgrs[:index])
+	dMgrs.dirMgrs = append(dMgrs.dirMgrs, dMgr.CopyOut())
+	dMgrs.dirMgrs = append(dMgrs.dirMgrs, newDirMgrs...)
+
+	return nil
 }
 
 // New - Creates and returns a new and properly initialized
