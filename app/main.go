@@ -1,6 +1,6 @@
 package main
 
-import(
+import (
 	pf "../pathfileops"
 	"fmt"
 )
@@ -39,7 +39,7 @@ func main() {
 	testDirMgr, err := pf.DirMgr{}.New(testDir)
 
 	if err != nil {
-		fmt.Printf("Error returned by pf.DirMgr{}.New(testDir). " +
+		fmt.Printf("Error returned by pf.DirMgr{}.New(testDir). "+
 			"Error='%v' \n", err.Error())
 		return
 	}
@@ -49,7 +49,7 @@ func main() {
 	parentDirMgr, hasParent, err := testDirMgr.GetParentDirMgr()
 
 	if err != nil {
-		fmt.Printf("Error returned by testDirMgr.GetParentDirMgr(). " +
+		fmt.Printf("Error returned by testDirMgr.GetParentDirMgr(). "+
 			"Error='%v' \n", err.Error())
 		return
 	}

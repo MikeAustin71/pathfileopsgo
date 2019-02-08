@@ -572,7 +572,7 @@ func TestFileHelper_FindFilesInPath_01(t *testing.T) {
 
 	fileOps := make([]FileOperation, 1, 5)
 
-	fileOps[0] = COPYSOURCETODESTINATIONByIo
+	fileOps[0] = FileOperation(0).CopySourceToDestinationByIo()
 
 	errStrs := sourceDir.ExecuteDirectoryFileOps(fileSelect, fileOps, targetDir)
 
@@ -648,7 +648,7 @@ func TestFileHelper_FindFilesInPath_02(t *testing.T) {
 
 	fileOps := make([]FileOperation, 1, 5)
 
-	fileOps[0] = COPYSOURCETODESTINATIONByIo
+	fileOps[0] = FileOperation(0).CopySourceToDestinationByIo()
 
 	errStrs := sourceDir.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDir)
 

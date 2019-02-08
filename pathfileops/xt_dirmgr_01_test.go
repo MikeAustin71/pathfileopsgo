@@ -993,7 +993,7 @@ func TestDirMgr_ExecuteDirectoryFileOps_01(t *testing.T) {
 
 	fileOps := make([]FileOperation, 1, 5)
 
-	fileOps[0] = COPYSOURCETODESTINATIONByIo
+	fileOps[0] = FileOperation(0).CopySourceToDestinationByIo()
 
 	errStrs := sourceDir.ExecuteDirectoryFileOps(fileSelect, fileOps, targetDir)
 
@@ -1090,7 +1090,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_01(t *testing.T) {
 
 	fileOps := make([]FileOperation, 1, 5)
 
-	fileOps[0] = COPYSOURCETODESTINATIONByIo
+	fileOps[0] = FileOperation(0).CopySourceToDestinationByIo()
 
 	errStrs := sourceDir.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDir)
 

@@ -4213,21 +4213,21 @@ func (fops FileOps) NewByDirStrsAndFileNameExtStrs(
 // The FileOperation type consists of the following
 // constants.
 //
-//	MOVESOURCETODESTINATION FileOperation = iota
+//	FileOperation(0).MoveSourceFileToDestination() FileOperation = iota
 // 		Moves the source file to the destination file and
 // 		then deletes the original source file
 //
-// 	DELETEDESTINATIONFILE
+// 	FileOperation(0).DeleteDestinationFile()
 // 		Deletes the Destination file if it exists
 //
-// 	DELETESOURCEFILE
+// 	FileOperation(0).DeleteSourceFile()
 // 		Deletes the Source file if it exists
 //
-// 	DELETESOURCEandDESTINATIONFILES
+// 	FileOperation(0).DeleteSourceAndDestinationFiles
 // 		Deletes both the Source and Destination files
 // 		if they exist.
 //
-// 	COPYSOURCETODESTINATIONByHardLinkByIo
+// 	FileOperation(0).CopySourceToDestinationByHardLinkByIo()
 // 		Copies the Source File to the Destination
 // 		using two copy attempts. The first copy is
 // 		by Hard Link. If the first copy attempt fails,
@@ -4239,7 +4239,7 @@ func (fops FileOps) NewByDirStrsAndFileNameExtStrs(
 // 		See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 //
 //
-// 	COPYSOURCETODESTINATIONByIoByHardLink
+// 	FileOperation(0).CopySourceToDestinationByIoByHardLink()
 // 		Copies the Source File to the Destination
 // 		using two copy attempts. The first copy is
 // 		by 'io.Copy' which creates a new file and copies
@@ -4252,36 +4252,36 @@ func (fops FileOps) NewByDirStrsAndFileNameExtStrs(
 // 		See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 //
 //
-// 	COPYSOURCETODESTINATIONByHardLink
+// 	FileOperation(0).CopySourceToDestinationByHardLink()
 // 		Copies the Source File to the Destination
 // 		using one copy mode. The only copy attempt
 // 		utilizes 'Copy by Hard Link'. If this fails
 // 		an error is returned.  The source file is
 // 		unaffected.
 //
-// 	COPYSOURCETODESTINATIONByIo
+// 	FileOperation(0).CopySourceToDestinationByIo()
 // 		Copies the Source File to the Destination
 // 		using only one copy mode. The only copy
 // 		attempt is initiated using 'Copy by IO' or
 // 		'io.Copy'.  If this fails an error is returned.
 // 		The source file is unaffected.
 //
-// 	CREATE_SOURCE_DIR
+// 	FileOperation(0).CreateSourceDir()
 // 		Creates the Source Directory
 //
-// 	CREATE_SOURCE_DIR_AND_FILE
+// 	FileOperation(0).CreateSourceDirAndFile()
 // 		Creates the Source Directory and File
 //
-// 	CREATE_SOURCE_FILE
+// 	FileOperation(0).CreateSourceFile()
 // 		Creates the Source File
 //
-// 	CREATE_DESTINATION_DIR
+// 	FileOperation(0).CreateDestinationDir()
 // 		Creates the Destination Directory
 //
-// 	CREATE_DESTINATION_DIR_AND_FILE
+// 	FileOperation(0).CreateDestinationDirAndFile()
 // 		Creates the Destination Directory and File
 //
-// 	CREATE_DESTINATION_FILE
+// 	FileOperation(0).CreateDestinationFile()
 // 		Creates the Destination File
 //
 func (fops *FileOps) ExecuteFileOperation(fileOp FileOperation) error {
@@ -4295,37 +4295,37 @@ func (fops *FileOps) ExecuteFileOperation(fileOp FileOperation) error {
 
 	switch fops.opToExecute {
 
-	case DELETEDESTINATIONFILE:
+	case FileOperation(0).DeleteDestinationFile():
 		err = fops.deleteDestinationFile()
 
-	case DELETESOURCEFILE:
+	case FileOperation(0).DeleteSourceFile():
 		err = fops.deleteSourceFile()
 
-	case DELETESOURCEandDESTINATIONFILES:
+	case FileOperation(0).DeleteSourceAndDestinationFiles():
 		err = fops.deleteSourceAndDestinationFiles()
 
-	case COPYSOURCETODESTINATIONByIoByHardLink:
+	case FileOperation(0).CopySourceToDestinationByIoByHardLink():
 		err = fops.copySrcToDestByIoByHardLink()
 
-	case COPYSOURCETODESTINATIONByHardLinkByIo:
+	case FileOperation(0).CopySourceToDestinationByHardLinkByIo():
 		err = fops.copySrcToDestByHardLinkByIo()
 
-	case COPYSOURCETODESTINATIONByIo:
+	case FileOperation(0).CopySourceToDestinationByIo():
 		err = fops.copySrcToDestByIo()
 
-	case COPYSOURCETODESTINATIONByHardLink:
+	case FileOperation(0).CopySourceToDestinationByHardLink():
 		err = fops.copySrcToDestByHardLink()
 
-	case CREATE_SOURCE_DIR:
+	case FileOperation(0).CreateSourceDir():
 		err = fops.createSrcDirectory()
 
-	case CREATE_SOURCE_DIR_AND_FILE:
+	case FileOperation(0).CreateSourceDirAndFile():
 		err = fops.createSrcDirectoryAndFile()
 
-	case CREATE_DESTINATION_DIR:
+	case FileOperation(0).CreateDestinationDir():
 		err = fops.createDestDirectory()
 
-	case CREATE_DESTINATION_DIR_AND_FILE:
+	case FileOperation(0).CreateDestinationDirAndFile():
 		err = fops.createDestDirectoryAndFile()
 
 	default:
@@ -4358,7 +4358,7 @@ func (fops *FileOps) deleteDestinationFile() error {
 // FileOps instance.
 func (fops *FileOps) deleteSourceFile() error {
 
-	ePrefix := "FileOps.deleteSourceFile() Source Deletion Failed: "
+	ePrefix := "FileOps.FileOperation(0).DeleteSourceFile()() Source Deletion Failed: "
 
 	err := fops.source.DeleteThisFile()
 
@@ -4374,7 +4374,7 @@ func (fops *FileOps) deleteSourceFile() error {
 // instance.
 func (fops *FileOps) deleteSourceAndDestinationFiles() error {
 
-	cumErrMsg := "FileOps.deleteSourceAndDestinationFiles()- "
+	cumErrMsg := "FileOps.FileOperation(0).DeleteSourceAndDestinationFiles()- "
 
 	cumErrLen := len(cumErrMsg)
 
