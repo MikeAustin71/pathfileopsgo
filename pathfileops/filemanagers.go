@@ -31,6 +31,11 @@ type FileMgrCollection struct {
 
 // AddFileMgr - Adds a FileMgr object to the collection
 func (fMgrs *FileMgrCollection) AddFileMgr(fMgr FileMgr) {
+
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
+
 	fMgrs.fileMgrs = append(fMgrs.fileMgrs, fMgr.CopyOut())
 }
 
@@ -41,6 +46,10 @@ func (fMgrs *FileMgrCollection) AddFileMgrByDirFileNameExt(
 	fileNameExt string) error {
 
 	ePrefix := "FileMgrCollection.AddFileMgrByDirFileNameExt() "
+
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
 
 	fMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(directory, fileNameExt)
 
@@ -60,6 +69,10 @@ func (fMgrs *FileMgrCollection) AddFileMgrByPathFileNameExt(
 	pathFileNameExt string) error {
 
 	ePrefix := "FileMgrCollection.AddFileMgrByPathFileNameExt() "
+
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
 
 	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(pathFileNameExt)
 
@@ -84,6 +97,10 @@ func (fMgrs *FileMgrCollection) AddFileMgrByDirStrFileNameStr(
 
 	ePrefix := "FileMgrCollection.AddFileMgrByDirStrFileNameStr() "
 
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
+
 	fMgr, err := FileMgr{}.NewFromDirStrFileNameStr(pathName, fileNameExt)
 
 	if err != nil {
@@ -102,6 +119,10 @@ func (fMgrs *FileMgrCollection) AddFileMgrByFileInfo(pathFile string, info os.Fi
 
 	ePrefix := "FileMgrCollection) AddFileMgrByFileInfo() "
 
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
+
 	fMgr, err := FileMgr{}.NewFromFileInfo(pathFile, info)
 
 	if err != nil {
@@ -118,6 +139,14 @@ func (fMgrs *FileMgrCollection) AddFileMgrByFileInfo(pathFile string, info os.Fi
 // AddFileMgrCollection - Adds another collection of File Manager (FileMgr)
 // objects to the current collection.
 func (fMgrs *FileMgrCollection) AddFileMgrCollection(fMgrs2 *FileMgrCollection) {
+
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
+
+	if fMgrs2.fileMgrs == nil {
+		fMgrs2.fileMgrs = make([]FileMgr, 0, 50)
+	}
 
 	lOmc2 := len(fMgrs2.fileMgrs)
 
@@ -138,6 +167,11 @@ func (fMgrs *FileMgrCollection) AddFileMgrCollection(fMgrs2 *FileMgrCollection) 
 func (fMgrs *FileMgrCollection) CopyFilesToDir(targetDirectory DirMgr) error {
 
 	ePrefix := "FileMgrCollection.CopyFilesToDir() "
+
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
+
 	maxLen := len(fMgrs.fileMgrs)
 
 	if maxLen == 0 {
@@ -166,6 +200,12 @@ func (fMgrs *FileMgrCollection) CopyOut() (FileMgrCollection, error) {
 
 	fMgrs2 := FileMgrCollection{}
 
+	fMgrs2.fileMgrs = make([]FileMgr, 0, 50)
+
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
+
 	lOmc := len(fMgrs.fileMgrs)
 
 	if lOmc == 0 {
@@ -191,6 +231,10 @@ func (fMgrs *FileMgrCollection) CopyOut() (FileMgrCollection, error) {
 func (fMgrs *FileMgrCollection) DeleteAtIndex(idx int) error {
 
 	ePrefix := "FileMgrCollection.DeleteAtIndex() "
+
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
 
 	if idx < 0 {
 		return fmt.Errorf(ePrefix+
@@ -239,6 +283,10 @@ func (fMgrs *FileMgrCollection) FindFiles(
 
 	ePrefix := "FileMgrCollection.FindFiles() "
 
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
+
 	lDirCol := len(fMgrs.fileMgrs)
 
 	if lDirCol == 0 {
@@ -250,7 +298,7 @@ func (fMgrs *FileMgrCollection) FindFiles(
 	var isMatchedFile bool
 	var err error
 
-	fMgrs2 := FileMgrCollection{}
+	fMgrs2 := FileMgrCollection{}.New()
 
 	for i := 0; i < lDirCol; i++ {
 		fMgr := fMgrs.fileMgrs[i]
@@ -318,6 +366,7 @@ func (fMgrs *FileMgrCollection) GetFileMgrArray() []FileMgr {
 	return fMgrs.fileMgrs
 
 }
+
 // GetFileMgrAtIndex - If successful, this method returns a pointer to
 // the FileMgr instance at the array index specified. The 'Peek' and 'Pop'
 // methods below return FileMgr objects using a 'deep' copy and therefore
@@ -373,6 +422,10 @@ func (fMgrs *FileMgrCollection) GetNumOfFileMgrs() int {
 // File Manager Collection ('FileMgrCollection').
 func (fMgrs FileMgrCollection) New() FileMgrCollection {
 
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
+
 	newFMgrCol := FileMgrCollection{}
 
 	newFMgrCol.fileMgrs = make([]FileMgr, 0, 100)
@@ -396,13 +449,13 @@ func (fMgrs *FileMgrCollection) PopFileMgrAtIndex(idx int) (FileMgr, error) {
 
 	ePrefix := "FileMgrCollection.PopFileMgrAtIndex() "
 
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
+
 	if idx < 0 {
 		return FileMgr{}, fmt.Errorf(ePrefix+
 			"Error: Input Parameter is less than zero. Index Out-Of-Range! idx='%v'", idx)
-	}
-
-	if fMgrs.fileMgrs == nil {
-		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
 	}
 
 	arrayLen := len(fMgrs.fileMgrs)
@@ -3265,6 +3318,10 @@ type FileOpsCollection struct {
 // based on the 'FileOps' Input parameter.
 func (fOpsCol *FileOpsCollection) AddByFileOps(fileOp FileOps) {
 
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 100)
+	}
+
 	fOpsCol.fileOps = append(fOpsCol.fileOps, fileOp.CopyOut())
 
 }
@@ -3277,6 +3334,10 @@ func (fOpsCol *FileOpsCollection) AddByFileMgrs(
 	destinationFileMgr FileMgr) error {
 
 	ePrefix := "FileOpsCollection.AddByFileMgrs() "
+
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 100)
+	}
 
 	newFileOps, err := FileOps{}.NewByFileMgrs(sourceFileMgr, destinationFileMgr)
 
@@ -3302,6 +3363,10 @@ func (fOpsCol *FileOpsCollection) AddByDirMgrFileName(
 	destinationFileNameExt string) error {
 
 	ePrefix := "FileOpsCollection.AddByDirMgrFileName() "
+
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 100)
+	}
 
 	newFileOps, err := FileOps{}.NewByDirMgrFileName(
 		sourceDirMgr,
@@ -3332,6 +3397,10 @@ func (fOpsCol *FileOpsCollection) AddByDirStrsAndFileNameExtStrs(
 
 	ePrefix := "FileOpsCollection.AddByDirStrsAndFileNameExtStrs() "
 
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 100)
+	}
+
 	newFileOps, err :=
 		FileOps{}.NewByDirStrsAndFileNameExtStrs(
 			sourceDirStr,
@@ -3361,6 +3430,10 @@ func (fOpsCol *FileOpsCollection) AddByPathFileNameExtStrs(
 
 	ePrefix := "FileOpsCollection.AddByPathFileNameExtStrs() "
 
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 100)
+	}
+
 	newFileOps, err :=
 		FileOps{}.NewByPathFileNameExtStrs(
 			sourcePathFileNameExt, destinationPathFileNameExt)
@@ -3384,7 +3457,13 @@ func (fOpsCol *FileOpsCollection) CopyOut() (FileOpsCollection, error) {
 
 	ePrefix := "FileOpsCollection.CopyOut() "
 
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 100)
+	}
+
 	fOpsCol2 := FileOpsCollection{}
+
+	fOpsCol2.fileOps = make([]FileOps, 0, 100)
 
 	arrayLen := len(fOpsCol.fileOps)
 
@@ -3569,6 +3648,10 @@ func (fOpsCol *FileOpsCollection) GetNumOfFileOps() int {
 // instance of 'FileOpsCollection'
 func (fOpsCol FileOpsCollection) New() FileOpsCollection {
 
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 100)
+	}
+
 	newFileOpsCol := FileOpsCollection{}
 
 	newFileOpsCol.fileOps = make([]FileOps, 0, 100)
@@ -3600,6 +3683,14 @@ func (fOpsCol FileOpsCollection) NewFromFileMgrCollection(
 	targetBaseDir *DirMgr) (FileOpsCollection, error) {
 
 	ePrefix := "FileOpsCollection.NewFromFileMgrCollection() "
+
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 100)
+	}
+
+	if fMgrCol.fileMgrs == nil {
+		fMgrCol.fileMgrs = make([]FileMgr, 0, 100)
+	}
 
 	srcBaseDir := strings.ToLower(sourceBaseDir.GetAbsolutePath())
 
@@ -3677,15 +3768,15 @@ func (fOpsCol *FileOpsCollection) PopFileOpsAtIndex(idx int) (FileOps, error) {
 
 	ePrefix := "FileOpsCollection.PopFileOpsAtIndex() "
 
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 100)
+	}
+
 	if idx < 0 {
 		return FileOps{}, fmt.Errorf(
 			ePrefix+
 				"Error: Input Parameter is less than zero. "+
 				"Index Out-Of-Range! idx='%v'", idx)
-	}
-
-	if fOpsCol.fileOps == nil {
-		fOpsCol.fileOps = make([]FileOps, 0, 50)
 	}
 
 	arrayLen := len(fOpsCol.fileOps)
@@ -3764,6 +3855,10 @@ func (fOpsCol *FileOpsCollection) PopFirstFileOps() (FileOps, error) {
 func (fOpsCol *FileOpsCollection) PopLastFileOps() (FileOps, error) {
 
 	ePrefix := "FileOpsCollection.PopLastFileOps() "
+
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 100)
+	}
 
 	arrayLen := len(fOpsCol.fileOps)
 

@@ -150,6 +150,8 @@ func (dMgrs *DirMgrCollection) CopyOut() (DirMgrCollection, error) {
 
 	dMgrs2 := DirMgrCollection{}
 
+	dMgrs2.dirMgrs = make([]DirMgr, 0, 100)
+
 	lOmc := len(dMgrs.dirMgrs)
 
 	if lOmc == 0 {
@@ -175,14 +177,14 @@ func (dMgrs *DirMgrCollection) DeleteAtIndex(idx int) error {
 
 	ePrefix := "DirMgrCollection.DeleteAtIndex() "
 
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
+
 	if idx < 0 {
 		return fmt.Errorf(ePrefix+
 			"Error: Input Parameter 'idx' is less than zero. "+
 			"Index Out-Of-Range! idx='%v'", idx)
-	}
-
-	if dMgrs.dirMgrs == nil {
-		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
 	}
 
 	arrayLen := len(dMgrs.dirMgrs)
@@ -231,7 +233,7 @@ func (dMgrs *DirMgrCollection) FindDirectories(
 	lDirCol := len(dMgrs.dirMgrs)
 
 	if lDirCol == 0 {
-		return DirMgrCollection{}, nil
+		return DirMgrCollection{}.New(), nil
 	}
 
 	fh := FileHelper{}
@@ -239,7 +241,7 @@ func (dMgrs *DirMgrCollection) FindDirectories(
 	var isMatchedFile bool
 	var err error
 
-	dMgrs2 := DirMgrCollection{}
+	dMgrs2 := DirMgrCollection{}.New()
 
 	for i := 0; i < lDirCol; i++ {
 		dMgr := dMgrs.dirMgrs[i]
@@ -402,6 +404,10 @@ func (dMgrs *DirMgrCollection) InsertDirMgrAtIndex(dMgr DirMgr, index int) error
 //
 func (dMgrs DirMgrCollection) New() DirMgrCollection {
 
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
+
 	newDirMgrCol := DirMgrCollection{}
 	newDirMgrCol.dirMgrs = make([]DirMgr, 0, 100)
 
@@ -424,15 +430,15 @@ func (dMgrs *DirMgrCollection) PopDirMgrAtIndex(idx int) (DirMgr, error) {
 
 	ePrefix := "DirMgrCollection.PopDirMgrAtIndex() "
 
+	if dMgrs.dirMgrs == nil {
+		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+	}
+
 	if idx < 0 {
 		return DirMgr{},
 			fmt.Errorf(ePrefix+
 				"Error: Input Parameter 'idx' is less than zero. "+
 				"Index Out-Of-Range! idx='%v'", idx)
-	}
-
-	if dMgrs.dirMgrs == nil {
-		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
 	}
 
 	arrayLen := len(dMgrs.dirMgrs)
