@@ -991,9 +991,9 @@ func TestDirMgr_ExecuteDirectoryFileOps_01(t *testing.T) {
 
 	fileSelect.SelectCriterionMode = ORFILESELECTCRITERION
 
-	fileOps := make([]FileOperation, 1, 5)
+	fileOps := make([]FileOperationCode, 1, 5)
 
-	fileOps[0] = FileOperation(0).CopySourceToDestinationByIo()
+	fileOps[0] = FileOperationCode(0).CopySourceToDestinationByIo()
 
 	errStrs := sourceDir.ExecuteDirectoryFileOps(fileSelect, fileOps, targetDir)
 
@@ -1088,9 +1088,9 @@ func TestDirMgr_ExecuteDirectoryTreeOps_01(t *testing.T) {
 
 	fileSelect.SelectCriterionMode = ORFILESELECTCRITERION
 
-	fileOps := make([]FileOperation, 1, 5)
+	fileOps := make([]FileOperationCode, 1, 5)
 
-	fileOps[0] = FileOperation(0).CopySourceToDestinationByIo()
+	fileOps[0] = FileOperationCode(0).CopySourceToDestinationByIo()
 
 	errStrs := sourceDir.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDir)
 

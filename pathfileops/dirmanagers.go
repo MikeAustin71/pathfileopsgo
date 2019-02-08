@@ -29,7 +29,7 @@ import (
 // DirTreeOp - Contains parameters used in Directory Operations
 type DirTreeOp struct {
 	CallingFunc        string
-	FileOps            []FileOperation
+	FileOps            []FileOperationCode
 	FileSelectCriteria FileSelectionCriteria
 	SourceBaseDir      DirMgr
 	TargetBaseDir      DirMgr
@@ -1357,13 +1357,13 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 // The types of File Operations performed are generally
 // classified as 'file copy' and 'file deletion' operations.
 // The precise file operation applied is defined by the
-// the type, 'FileOperation' which provides a series of
-// constants used to identify the specific file operation
-// applied. Input parameter, 'fileOps' is an array of type
-// 'FileOperation' elements. Multiple file operations can
-// be applied to a single file. For instance, a 'copy source
-// to destination' operation can be followed by a 'delete
-// source file' operation.
+// the type, 'FileOperationCode' which provides a series of
+// constants, or enumerations, used to identify the specific
+// file operation applied. Input parameter, 'fileOps' is an
+// array of type 'FileOperationCode' elements. Multiple file
+// operations can be applied to a single file. For instance,
+// a 'copy source to destination' operation can be followed
+// by a 'delete source file' operation.
 //
 // The 'selected' files are identified by input parameter
 // 'fileSelectCriteria' of type 'FileSelectionCriteria'.
@@ -1499,33 +1499,33 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //					as 'Found Files'.
 //
 // ---------------------------------------------------------------------------
-// fileOps []FileOperation - An array of file operations to be performed
-//                           on each selected file. Selected files are
-//                           identified by matching the file selection
-//                           criteria specified by input parameter,
-//                           'fileSelectCriteria'. See above.
+//	fileOps []FileOperationCode - An array of file operations to be performed
+//	                              on each selected file. Selected files are
+//	                              identified by matching the file selection
+//	                              criteria specified by input parameter,
+//	                              'fileSelectCriteria'. See above.
 // ---------------------------------------------------------------------------
-// The FileOperation type consists of the following
+// The FileOperationCode type consists of the following
 // constants.
 //
-//	FileOperation(0).None()
+//	FileOperationCode(0).None()
 //	  No Action
 //
-//	FileOperation(0).MoveSourceFileToDestination()
+//	FileOperationCode(0).MoveSourceFileToDestination()
 //	  Moves the source file to the destination file and
 //	  then deletes the original source file
 //
-// 	FileOperation(0).DeleteDestinationFile()
+// 	FileOperationCode(0).DeleteDestinationFile()
 //	  Deletes the Destination file if it exists
 //
-// 	FileOperation(0).DeleteSourceFile()
+// 	FileOperationCode(0).DeleteSourceFile()
 //	  Deletes the Source file if it exists
 //
-// 	FileOperation(0).DeleteSourceAndDestinationFiles
+// 	FileOperationCode(0).DeleteSourceAndDestinationFiles
 //	  Deletes both the Source and Destination files
 //	  if they exist.
 //
-// 	FileOperation(0).CopySourceToDestinationByHardLinkByIo()
+// 	FileOperationCode(0).CopySourceToDestinationByHardLinkByIo()
 //	  Copies the Source File to the Destination
 //	  using two copy attempts. The first copy is
 //	  by Hard Link. If the first copy attempt fails,
@@ -1536,7 +1536,7 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //
 //	  See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 //
-// 	FileOperation(0).CopySourceToDestinationByIoByHardLink()
+// 	FileOperationCode(0).CopySourceToDestinationByIoByHardLink()
 // 		Copies the Source File to the Destination
 // 		using two copy attempts. The first copy is
 // 		by 'io.Copy' which creates a new file and copies
@@ -1548,36 +1548,36 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //
 // 		See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 //
-// 	FileOperation(0).CopySourceToDestinationByHardLink()
+// 	FileOperationCode(0).CopySourceToDestinationByHardLink()
 // 		Copies the Source File to the Destination
 // 		using one copy mode. The only copy attempt
 // 		utilizes 'Copy by Hard Link'. If this fails
 // 		an error is returned.  The source file is
 // 		unaffected.
 //
-// 	FileOperation(0).CopySourceToDestinationByIo()
+// 	FileOperationCode(0).CopySourceToDestinationByIo()
 // 		Copies the Source File to the Destination
 // 		using only one copy mode. The only copy
 // 		attempt is initiated using 'Copy by IO' or
 // 		'io.Copy'.  If this fails an error is returned.
 // 		The source file is unaffected.
 //
-// 	FileOperation(0).CreateSourceDir()
+// 	FileOperationCode(0).CreateSourceDir()
 // 		Creates the Source Directory
 //
-// 	FileOperation(0).CreateSourceDirAndFile()
+// 	FileOperationCode(0).CreateSourceDirAndFile()
 // 		Creates the Source Directory and File
 //
-// 	FileOperation(0).CreateSourceFile()
+// 	FileOperationCode(0).CreateSourceFile()
 // 		Creates the Source File
 //
-// 	FileOperation(0).CreateDestinationDir()
+// 	FileOperationCode(0).CreateDestinationDir()
 // 		Creates the Destination Directory
 //
-// 	FileOperation(0).CreateDestinationDirAndFile()
+// 	FileOperationCode(0).CreateDestinationDirAndFile()
 // 		Creates the Destination Directory and File
 //
-// 	FileOperation(0).CreateDestinationFile()
+// 	FileOperationCode(0).CreateDestinationFile()
 // 		Creates the Destination File
 //
 // ---------------------------------------------------------------------------
@@ -1598,7 +1598,7 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //
 func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 	fileSelectCriteria FileSelectionCriteria,
-	fileOps []FileOperation,
+	fileOps []FileOperationCode,
 	targetBaseDir DirMgr) []string {
 
 	ePrefix := "DirMgr.ExecuteDirectoryTreeOps() "
@@ -1663,10 +1663,10 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 // The types of File Operations performed are generally
 // classified as 'file copy' and 'file deletion' operations.
 // The precise file operation applied is defined by the
-// the type, 'FileOperation' which provides a series of
+// the type, 'FileOperationCode' which provides a series of
 // constants used to identify the specific file operation
 // applied. Input parameter, 'fileOps' is an array of type
-// 'FileOperation' elements. Multiple file operations can
+// 'FileOperationCode' elements. Multiple file operations can
 // be applied to a single file. For instance, a 'copy source
 // to destination' operation can be followed by a 'delete
 // source file' operation.
@@ -1805,30 +1805,30 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 //					as 'Found Files'.
 //
 // ---------------------------------------------------------------------------
-// fileOps []FileOperation - An array of file operations to be performed
+// fileOps []FileOperationCode - An array of file operations to be performed
 //                           on each selected file. Selected files are
 //                           identified by matching the file selection
 //                           criteria specified by input parameter,
 //                           'fileSelectCriteria'. See above.
 // ---------------------------------------------------------------------------
-// The FileOperation type consists of the following
+// The FileOperationCode type consists of the following
 // constants.
 //
-//	FileOperation(0).MoveSourceFileToDestination() FileOperation = iota
+//	FileOperationCode(0).MoveSourceFileToDestination() FileOperationCode = iota
 // 		Moves the source file to the destination file and
 // 		then deletes the original source file
 //
-// 	FileOperation(0).DeleteDestinationFile()
+// 	FileOperationCode(0).DeleteDestinationFile()
 // 		Deletes the Destination file if it exists
 //
-// 	FileOperation(0).DeleteSourceFile()
+// 	FileOperationCode(0).DeleteSourceFile()
 // 		Deletes the Source file if it exists
 //
-// 	FileOperation(0).DeleteSourceAndDestinationFiles
+// 	FileOperationCode(0).DeleteSourceAndDestinationFiles
 // 		Deletes both the Source and Destination files
 // 		if they exist.
 //
-// 	FileOperation(0).CopySourceToDestinationByHardLinkByIo()
+// 	FileOperationCode(0).CopySourceToDestinationByHardLinkByIo()
 // 		Copies the Source File to the Destination
 // 		using two copy attempts. The first copy is
 // 		by Hard Link. If the first copy attempt fails,
@@ -1839,7 +1839,7 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 //
 // 		See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 //
-// 	FileOperation(0).CopySourceToDestinationByIoByHardLink()
+// 	FileOperationCode(0).CopySourceToDestinationByIoByHardLink()
 // 		Copies the Source File to the Destination
 // 		using two copy attempts. The first copy is
 // 		by 'io.Copy' which creates a new file and copies
@@ -1851,36 +1851,36 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 //
 // 		See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 //
-// 	FileOperation(0).CopySourceToDestinationByHardLink()
+// 	FileOperationCode(0).CopySourceToDestinationByHardLink()
 // 		Copies the Source File to the Destination
 // 		using one copy mode. The only copy attempt
 // 		utilizes 'Copy by Hard Link'. If this fails
 // 		an error is returned.  The source file is
 // 		unaffected.
 //
-// 	FileOperation(0).CopySourceToDestinationByIo()
+// 	FileOperationCode(0).CopySourceToDestinationByIo()
 // 		Copies the Source File to the Destination
 // 		using only one copy mode. The only copy
 // 		attempt is initiated using 'Copy by IO' or
 // 		'io.Copy'.  If this fails an error is returned.
 // 		The source file is unaffected.
 //
-// 	FileOperation(0).CreateSourceDir()
+// 	FileOperationCode(0).CreateSourceDir()
 // 		Creates the Source Directory
 //
-// 	FileOperation(0).CreateSourceDirAndFile()
+// 	FileOperationCode(0).CreateSourceDirAndFile()
 // 		Creates the Source Directory and File
 //
-// 	FileOperation(0).CreateSourceFile()
+// 	FileOperationCode(0).CreateSourceFile()
 // 		Creates the Source File
 //
-// 	FileOperation(0).CreateDestinationDir()
+// 	FileOperationCode(0).CreateDestinationDir()
 // 		Creates the Destination Directory
 //
-// 	FileOperation(0).CreateDestinationDirAndFile()
+// 	FileOperationCode(0).CreateDestinationDirAndFile()
 // 		Creates the Destination Directory and File
 //
-// 	FileOperation(0).CreateDestinationFile()
+// 	FileOperationCode(0).CreateDestinationFile()
 // 		Creates the Destination File
 //
 // ---------------------------------------------------------------------------
@@ -1901,7 +1901,7 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 //
 func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 	fileSelectCriteria FileSelectionCriteria,
-	fileOps []FileOperation,
+	fileOps []FileOperationCode,
 	targetBaseDir DirMgr) []string {
 
 	ePrefix := "DirMgr.ExecuteDirectoryFileOps() "
