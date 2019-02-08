@@ -24,7 +24,12 @@ import (
 
 */
 
-// FileMgrCollection - A collection of FileMgr objects
+// FileMgrCollection - Manages a collection of FileMgr
+// instances.
+//
+// Dependencies:
+// 'FileMgrCollection' depends on type, 'FileHelper'
+// which is located in source code file 'filehelper.go'.
 type FileMgrCollection struct {
 	fileMgrs []FileMgr
 }

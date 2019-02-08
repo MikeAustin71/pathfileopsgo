@@ -125,6 +125,10 @@ func (dMgrs *DirMgrCollection) AddDirMgrCollection(dMgrs2 *DirMgrCollection) {
 		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
 	}
 
+	if dMgrs2.dirMgrs == nil {
+		dMgrs2.dirMgrs = make([]DirMgr, 0, 100)
+	}
+
 	lOmc2 := len(dMgrs2.dirMgrs)
 
 	if lOmc2 == 0 {
@@ -148,9 +152,7 @@ func (dMgrs *DirMgrCollection) CopyOut() (DirMgrCollection, error) {
 		dMgrs.dirMgrs = make([]DirMgr, 0, 100)
 	}
 
-	dMgrs2 := DirMgrCollection{}
-
-	dMgrs2.dirMgrs = make([]DirMgr, 0, 100)
+	dMgrs2 := DirMgrCollection{}.New()
 
 	lOmc := len(dMgrs.dirMgrs)
 
