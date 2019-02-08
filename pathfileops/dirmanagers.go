@@ -377,6 +377,7 @@ func (dMgrs *DirMgrCollection) InsertDirMgrAtIndex(dMgr DirMgr, index int) error
 
 	if index >= lenDgrs {
 		dMgrs.dirMgrs = append(dMgrs.dirMgrs, dMgr.CopyOut())
+		return nil
 	}
 
 	newDirMgrs := make([]DirMgr, 1, 100)
