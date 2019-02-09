@@ -363,6 +363,7 @@ func (dMgrs *DirMgrCollection) GetNumOfDirs() int {
 // If input parameter 'index' is less than zero, an error will be returned. If
 // 'index' exceeds the value of the last index in the collection, 'dMgr' will be
 // added to the end of the collection at the next legal index.
+//
 func (dMgrs *DirMgrCollection) InsertDirMgrAtIndex(dMgr DirMgr, index int) error {
 
 	ePrefix := "DirMgrCollection.InsertDirMgrAtIndex() "
@@ -392,11 +393,13 @@ func (dMgrs *DirMgrCollection) InsertDirMgrAtIndex(dMgr DirMgr, index int) error
 		return nil
 	}
 
+	newDirMgrs = make([]DirMgr, 0, 100)
+
 	newDirMgrs = append(newDirMgrs, dMgrs.dirMgrs[index:]...)
 
 	dMgrs.dirMgrs = append(dMgrs.dirMgrs[:index])
 	dMgrs.dirMgrs = append(dMgrs.dirMgrs, dMgr.CopyOut())
-	dMgrs.dirMgrs = append(dMgrs.dirMgrs, newDirMgrs...)
+	dMgrs.dirMgrs = append(dMgrs.dirMgrs, newDirMgrs[1:]...)
 
 	return nil
 }

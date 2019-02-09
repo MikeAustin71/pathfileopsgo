@@ -423,6 +423,51 @@ func (fMgrs *FileMgrCollection) GetNumOfFileMgrs() int {
 	return len(fMgrs.fileMgrs)
 }
 
+// InsertFileMgrAtIndex - Inserts a new File Manager into the collection at
+// array 'index'. The new File Manager is passed as input parameter 'fMgr'.
+//
+// If input parameter 'index' is less than zero, an error will be returned. If
+// 'index' exceeds the value of the last index in the collection, 'fMgr' will be
+// added to the end of the collection at the next legal index.
+//
+func (fMgrs *FileMgrCollection) InsertFileMgrAtIndex(fMgr FileMgr, index int) error {
+
+	ePrefix := "FileMgrCollection.InsertFileMgrAtIndex() "
+
+	if fMgrs.fileMgrs == nil {
+		fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+	}
+
+	if index < 0 {
+		return fmt.Errorf(ePrefix+
+			"Error: Input parameter 'index' is LESS THAN ZERO! "+
+			"index='%v' ", index)
+	}
+
+	lenDgrs := len(fMgrs.fileMgrs)
+
+	if index >= lenDgrs {
+		fMgrs.fileMgrs = append(fMgrs.fileMgrs, fMgr.CopyOut())
+		return nil
+	}
+
+	newFileMgrs := make([]FileMgr, 0, 100)
+
+	if index == 0 {
+		newFileMgrs = append(newFileMgrs, fMgr.CopyOut())
+		fMgrs.fileMgrs = append(newFileMgrs, fMgrs.fileMgrs...)
+		return nil
+	}
+
+	newFileMgrs = append(newFileMgrs, fMgrs.fileMgrs[index:]...)
+
+	fMgrs.fileMgrs = append(fMgrs.fileMgrs[:index])
+	fMgrs.fileMgrs = append(fMgrs.fileMgrs, fMgr.CopyOut())
+	fMgrs.fileMgrs = append(fMgrs.fileMgrs, newFileMgrs...)
+
+	return nil
+}
+
 // New - Creates and returns a new, properly initialized
 // File Manager Collection ('FileMgrCollection').
 func (fMgrs FileMgrCollection) New() FileMgrCollection {
@@ -1933,6 +1978,93 @@ func (fMgr *FileMgr) Equal(fmgr2 *FileMgr) bool {
 	return true
 }
 
+// EqualAbsPaths - Returns 'true' if both the current File Manager
+// and the input File Manager ('fmgr2') have the same file paths.
+//
+// In other words, this method answers the question, 'Do Both Files
+// have the same directory?'.
+//
+// The path comparisons are case insensitive. This means that both
+// paths will be converted to lower case before making the comparison.
+//
+// Also, the path comparison will be performed on the absolute paths
+// associated with the two File Managers.
+//
+// If the file paths are NOT equal, this method returns 'false.
+//
+// NOTE: This method will NOT test the equality of file names and
+// extensions. ONLY the file paths (directories) will be compared.
+//
+func (fMgr *FileMgr) EqualAbsPaths(fmgr2 *FileMgr) bool {
+
+	fDirMgr := fMgr.GetDirMgr()
+
+	fDirMgr2 := fmgr2.GetDirMgr()
+
+	return fDirMgr.EqualAbsPaths(&fDirMgr2)
+}
+
+// EqualFileNameExt - Returns 'true' if both the current File Manager
+// and the input File Manager ('fmgr2') have the same file name and file
+// extension.
+//
+// The File Name and File Extension comparisons are case insensitive. This
+// means that both file name and file extension will be converted to lower
+// case before making the comparision.
+//
+//	Example: xray.txt is considered equal to XRAY.TXT
+//
+// If the either the File Name or File Extension are NOT equal, this method
+// will return 'false'.
+//
+// NOTE: This method will NOT test the equality of the file paths or directories.
+// ONLY the file name and file extension are tested for equaltiy.
+//
+func (fMgr *FileMgr) EqualFileNameExt(fmgr2 *FileMgr) bool {
+
+	f1 := strings.ToLower(fMgr.GetFileName())
+
+	f2 := strings.ToLower(fmgr2.GetFileName())
+
+	if f1 != f2 {
+		return false
+	}
+
+	f1 = strings.ToLower(fMgr.GetFileExt())
+	f2 = strings.ToLower(fmgr2.GetFileExt())
+
+	if f1 != f2 {
+		return false
+	}
+
+	return true
+}
+
+// EqualPathFileNameExt - Returns 'true' if both the current File Manager
+// and the input File Manager ('fmgr2') have the same absolute path,
+// file name and file extension.
+//
+// The string comparisons are case insensitive. This means that the paths,
+// file names and file extensions will all be converted to lower case
+// before making the comparision.
+//
+//	Example: d:\dir1\xray.txt is considered equal to D:\DIR1\XRAY.TXT
+//
+// If the path, file name or file extensions are NOT equal, this method
+// will return 'false'.
+//
+func (fMgr *FileMgr) EqualPathFileNameExt(fmgr2 *FileMgr) bool {
+
+	f1 := strings.ToLower(fMgr.GetAbsolutePathFileName())
+	f2 := strings.ToLower(fmgr2.GetAbsolutePathFileName())
+
+	if f1 != f2 {
+		return false
+	}
+
+	return true
+}
+
 // Empty - resets all data fields in the FileMgr structure to
 // their uninitialized or zero state.
 func (fMgr *FileMgr) Empty() {
@@ -2230,12 +2362,99 @@ func (fMgr *FileMgr) IsInitialized() bool {
 	return fMgr.isInitialized
 }
 
+// MoveFileToNewDir - This method will move the current file
+// identified by this FileMgr object to a new path designated
+// by input parameter string, 'dirPath'.
+//
+// IMPORTANT:
+//
+// The current file identified by the current FileMgr object will
+// be DELETED!
+//
+// The new file located in the new directory will be returned in the return
+// parameter 'newFMgr'.
+//
+func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (newFMgr FileMgr, err error) {
+
+	newFMgr = FileMgr{}
+	err = nil
+
+	ePrefix := "FileMgr.MoveFileToNewDir() "
+
+	lPath := len(dirPath)
+
+	if lPath == 0 {
+		err = errors.New(ePrefix +
+			"Error: Input parameter 'dirPath' is a Zero length string!")
+		return
+	}
+
+	if !fMgr.isInitialized {
+		err = errors.New(ePrefix +
+			"Error: The current FileMgr object is NOT Initialized! It is EMPTY!")
+		return
+	}
+
+	err2 := fMgr.IsFileMgrValid("")
+
+	if err2 != nil {
+		err = fmt.Errorf(ePrefix+
+			"Error: Current FileMgr object is INVALID!. Error='%v'",
+			err2.Error())
+		return
+	}
+
+	if !fMgr.doesAbsolutePathFileNameExist {
+		err = fmt.Errorf(ePrefix+
+			"Error: The source files does NOT exist. srcFile='%v' ",
+			fMgr.absolutePathFileName)
+		return
+	}
+
+	dMgr, err2 := DirMgr{}.New(dirPath)
+
+	if err2 != nil {
+		err = fmt.Errorf(ePrefix+
+			"Error returned from DirMgr{}.NewFromPathFileNameExtStr(dirPath). dirPath='%v'  Error='%v'",
+			dirPath, err2.Error())
+		return
+	}
+
+	if !dMgr.isInitialized {
+		err = fmt.Errorf(ePrefix+
+			"Error: Input parameter 'dirPath' "+
+			"generated an empty DirMgr object. dirPath='%v'", dirPath)
+		return
+	}
+
+	pathExists, absPathExists := dMgr.DoesDirectoryExist()
+
+	if !pathExists && !absPathExists {
+		err = fmt.Errorf(ePrefix+
+			"Error: Target Destination path DOES NOT EXIST! dirPath='%v'",
+			dirPath)
+		return
+	}
+
+	newFMgr, err2 = fMgr.MoveFileToNewDirMgr(dMgr)
+
+	if err2 != nil {
+		newFMgr = FileMgr{}
+		err = fmt.Errorf(ePrefix+
+			"Error returned by fMgr.MoveFileToNewDirMgr(dMgr). "+
+			"dMgr.path='%v' Error='%v'", dMgr.path, err2.Error())
+		return
+	}
+
+	return newFMgr, nil
+}
+
 // MoveFileToNewDirMgr - This method will move the file identified
 // by the current FileMgr to a new path contained in the input parameter
 // 'dMgr'.
 //
 // IMPORTANT:
-// ==========
+//
 // The current file identified by the current FileMgr object will
 // be DELETED!
 //
@@ -2348,93 +2567,6 @@ func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err erro
 
 	return newFMgr, err
 
-}
-
-// MoveFileToNewDir - This method will move the current file
-// identified by this FileMgr object to a new path designated
-// by input parameter string, 'dirPath'.
-//
-// IMPORTANT:
-// ==========
-// The current file identified by the current FileMgr object will
-// be DELETED!
-//
-// The new file located in the new directory will be returned in the return
-// parameter 'newFMgr'.
-//
-func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (newFMgr FileMgr, err error) {
-
-	newFMgr = FileMgr{}
-	err = nil
-
-	ePrefix := "FileMgr.MoveFileToNewDir() "
-
-	lPath := len(dirPath)
-
-	if lPath == 0 {
-		err = errors.New(ePrefix +
-			"Error: Input parameter 'dirPath' is a Zero length string!")
-		return
-	}
-
-	if !fMgr.isInitialized {
-		err = errors.New(ePrefix +
-			"Error: The current FileMgr object is NOT Initialized! It is EMPTY!")
-		return
-	}
-
-	err2 := fMgr.IsFileMgrValid("")
-
-	if err2 != nil {
-		err = fmt.Errorf(ePrefix+
-			"Error: Current FileMgr object is INVALID!. Error='%v'",
-			err2.Error())
-		return
-	}
-
-	if !fMgr.doesAbsolutePathFileNameExist {
-		err = fmt.Errorf(ePrefix+
-			"Error: The source files does NOT exist. srcFile='%v' ",
-			fMgr.absolutePathFileName)
-		return
-	}
-
-	dMgr, err2 := DirMgr{}.New(dirPath)
-
-	if err2 != nil {
-		err = fmt.Errorf(ePrefix+
-			"Error returned from DirMgr{}.NewFromPathFileNameExtStr(dirPath). dirPath='%v'  Error='%v'",
-			dirPath, err2.Error())
-		return
-	}
-
-	if !dMgr.isInitialized {
-		err = fmt.Errorf(ePrefix+
-			"Error: Input parameter 'dirPath' "+
-			"generated an empty DirMgr object. dirPath='%v'", dirPath)
-		return
-	}
-
-	pathExists, absPathExists := dMgr.DoesDirectoryExist()
-
-	if !pathExists && !absPathExists {
-		err = fmt.Errorf(ePrefix+
-			"Error: Target Destination path DOES NOT EXIST! dirPath='%v'",
-			dirPath)
-		return
-	}
-
-	newFMgr, err2 = fMgr.MoveFileToNewDirMgr(dMgr)
-
-	if err2 != nil {
-		newFMgr = FileMgr{}
-		err = fmt.Errorf(ePrefix+
-			"Error returned by fMgr.MoveFileToNewDirMgr(dMgr). "+
-			"dMgr.path='%v' Error='%v'", dMgr.path, err2.Error())
-		return
-	}
-
-	return newFMgr, nil
 }
 
 // NewFromPathFileNameExtStr - Creates a new FileMgr object. Input parameter parses out the

@@ -34,28 +34,113 @@ func main() {
 
 func main() {
 
-	testDir := "D:\\test1"
+	mainTest20()
 
-	testDirMgr, err := pf.DirMgr{}.New(testDir)
+}
+
+func mainTest20() {
+
+	fh := pf.FileHelper{}
+
+	relPath := "../testfiles"
+	origPath := fh.AdjustPathSlash(relPath)
+
+	origAbsPath, err := fh.MakeAbsolutePath(origPath)
 
 	if err != nil {
-		fmt.Printf("Error returned by pf.DirMgr{}.New(testDir). "+
+		fmt.Printf("Error returned by (1) fh.MakeAbsolutePath(origPath). "+
+			"origPath= '%v'  Error='%v'", origPath, err.Error())
+		return
+	}
+
+	testDMgr, err := pf.DirMgr{}.New(origAbsPath)
+
+	if err != nil {
+		fmt.Printf("Error returned by pf.DirMgr{}.New(origAbsPath). "+
+			"origAbsPath= '%v'  Error='%v'", origAbsPath, err.Error())
+		return
+	}
+
+	var fileNameExt string
+
+	fMgrs1 := pf.FileMgrCollection{}
+
+	for i := 0; i < 10; i++ {
+
+		fileNameExt = fmt.Sprintf(testDMgr.GetAbsolutePathWithSeparator()+"testAddFile_%03d.txt", i+1)
+
+		fMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(fileNameExt)
+
+		if err != nil {
+			fmt.Printf("Error returned by pf.FileMgr{}.NewFromPathFileNameExtStr(fileNameExt). "+
+				"fileNameExt='%v' Error='%v' ", fileNameExt, err.Error())
+			return
+		}
+
+		fMgrs1.AddFileMgr(fMgr)
+	}
+
+	if fMgrs1.GetNumOfFileMgrs() != 10 {
+		fmt.Printf("Expected fMgrs1 Array Length == 10. "+
+			"Instead fMgrs1.GetNumOfDirs()=='%v'", fMgrs1.GetNumOfFileMgrs())
+		return
+	}
+
+	origPath = fh.AdjustPathSlash("../logTest/CmdrX/CmdrX.log")
+
+	origAbsPath, err = fh.MakeAbsolutePath(origPath)
+
+	if err != nil {
+		fmt.Printf("Error returned by (1) fh.MakeAbsolutePath(origPath). "+
+			"origPath= '%v'  Error='%v'\n", origPath, err.Error())
+		return
+	}
+
+	insertedFMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(origAbsPath)
+
+	if err != nil {
+		fmt.Printf("Error returned by FileMgr{}.NewFromPathFileNameExtStr(origAbsPath). \n"+
+			"origAbsPath='%v' \nError='%v' \n", origAbsPath, err.Error())
+		return
+	}
+
+	err = fMgrs1.InsertFileMgrAtIndex(insertedFMgr, 5)
+
+	if err != nil {
+		fmt.Printf("Error returned by fMgrs1.InsertFileMgrAtIndex(insertedFMgr, 5) "+
 			"Error='%v' \n", err.Error())
 		return
 	}
 
-	fmt.Println("testDirMgr Path: ", testDirMgr.GetAbsolutePath())
+	numOfFileMgrs := fMgrs1.GetNumOfFileMgrs()
 
-	parentDirMgr, hasParent, err := testDirMgr.GetParentDirMgr()
+	for i := 0; i < numOfFileMgrs; i++ {
 
-	if err != nil {
-		fmt.Printf("Error returned by testDirMgr.GetParentDirMgr(). "+
-			"Error='%v' \n", err.Error())
+		xFmgr, err := fMgrs1.PeekFileMgrAtIndex(i)
+
+		if err != nil {
+			fmt.Printf("Error returned by fMgrs1.PeekFileMgrAtIndex(i). "+
+				"i='%v' Error='%v' \n", i, err.Error())
+		}
+
+		fmt.Printf("i='%v' xFmgr='%v' \n", i, xFmgr.GetAbsolutePathFileName())
+	}
+
+	if fMgrs1.GetNumOfFileMgrs() != 11 {
+		fmt.Printf("After insertion, expected fMgrs1 Array Length == 11. "+
+			"Instead fMgrs1.GetNumOfDirs()=='%v'\n", fMgrs1.GetNumOfFileMgrs())
 		return
 	}
 
-	fmt.Println("parentDirMgr Path: ", parentDirMgr.GetAbsolutePath())
-	fmt.Println("  hasParent Value: ", hasParent)
+	fMgr5, err := fMgrs1.PeekFileMgrAtIndex(5)
 
-	return
+	if err != nil {
+		fmt.Printf("Error returned by fMgrs1.PeekFileMgrAtIndex(5). Error='%v' \n", err.Error())
+		return
+	}
+
+	if !insertedFMgr.Equal(&fMgr5) {
+		fmt.Printf("Error: Expected insertedFMgr == fMgr5. They WERE NOT EQUAL!\n")
+	}
+
 }
