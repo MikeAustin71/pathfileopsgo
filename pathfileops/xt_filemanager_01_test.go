@@ -930,6 +930,112 @@ func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
 
 }
 
+func TestFileMgr_New_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	relPath := "..\\logTest\\CmdrX\\CmdrX.log"
+	commonDir, err := fh.MakeAbsolutePath(relPath)
+
+	if err != nil {
+		t.Errorf("Received Error on fh.MakeAbsolutePath(relPath). "+
+			"relPath='%v'  Error='%v'", relPath, err.Error())
+	}
+
+	fileName := "CmdrX"
+	fileNameExt := "CmdrX.log"
+	extName := ".log"
+
+	fileMgr, err := FileMgr{}.New(commonDir)
+
+	if err != nil {
+		t.Errorf("Received Error on FileMgr{}.New(commonDir)  Error='%v'", err.Error())
+	}
+
+	if fileMgr.fileName != fileName {
+		t.Error(fmt.Sprintf("Expected File Name, %v, got:", fileName), fileMgr.fileName)
+	}
+
+	if fileMgr.fileExt != extName {
+		t.Error(fmt.Sprintf("Expected File Extension, %v, got:", extName), fileMgr.fileExt)
+	}
+
+	if fileMgr.fileNameExt != fileNameExt {
+		t.Error(fmt.Sprintf("Expected File Name + Extension, %v, got:", fileNameExt), fileMgr.fileNameExt)
+	}
+
+	if !fileMgr.isInitialized {
+		t.Error("Expected fileMgr.isInitialized=='true', got:", fileMgr.isInitialized)
+	}
+
+	if !fileMgr.isFileNamePopulated {
+		t.Error("Expected fileMgr.isFileNamePopulated=='true', got:", fileMgr.isFileNamePopulated)
+	}
+
+	if !fileMgr.isFileNameExtPopulated {
+		t.Error("Expected fileMgr.isFileNameExtPopulated=='true', got:", fileMgr.isFileNameExtPopulated)
+	}
+
+	if !fileMgr.isFileExtPopulated {
+		t.Error("Expected fileMgr.isFileExtPopulated=='true', got:", fileMgr.isFileExtPopulated)
+	}
+
+	if !fileMgr.isAbsolutePathFileNamePopulated {
+		t.Error("Expected fileMgr.isAbsolutePathFileNamePopulated=='true', got:", fileMgr.isAbsolutePathFileNamePopulated)
+	}
+
+}
+
+func TestFileMgr_New_02(t *testing.T) {
+
+	fh := FileHelper{}
+
+	commonDir := fh.AdjustPathSlash("..\\logTest\\CmdrX\\CmdrX.log")
+
+	fileName := "CmdrX"
+	fileNameExt := "CmdrX.log"
+	extName := ".log"
+
+	fileMgr, err := FileMgr{}.New(commonDir)
+
+	if err != nil {
+		t.Errorf("Received Error on FileMgr{}.New(commonDir)  Error='%v'", err.Error())
+	}
+
+	if fileMgr.fileName != fileName {
+		t.Error(fmt.Sprintf("Expected File Name, %v, got:", fileName), fileMgr.fileName)
+	}
+
+	if fileMgr.fileExt != extName {
+		t.Error(fmt.Sprintf("Expected File Extension, %v, got:", extName), fileMgr.fileExt)
+	}
+
+	if fileMgr.fileNameExt != fileNameExt {
+		t.Error(fmt.Sprintf("Expected File Name + Extension, %v, got:", fileNameExt), fileMgr.fileNameExt)
+	}
+
+	if !fileMgr.isInitialized {
+		t.Error("Expected fileMgr.isInitialized=='true', got:", fileMgr.isInitialized)
+	}
+
+	if !fileMgr.isFileNamePopulated {
+		t.Error("Expected fileMgr.isFileNamePopulated=='true', got:", fileMgr.isFileNamePopulated)
+	}
+
+	if !fileMgr.isFileNameExtPopulated {
+		t.Error("Expected fileMgr.isFileNameExtPopulated=='true', got:", fileMgr.isFileNameExtPopulated)
+	}
+
+	if !fileMgr.isFileExtPopulated {
+		t.Error("Expected fileMgr.isFileExtPopulated=='true', got:", fileMgr.isFileExtPopulated)
+	}
+
+	if !fileMgr.isAbsolutePathFileNamePopulated {
+		t.Error("Expected fileMgr.isAbsolutePathFileNamePopulated=='true', got:", fileMgr.isAbsolutePathFileNamePopulated)
+	}
+
+}
+
 func TestFileMgr_NewFromPathFileNameExtStr_01(t *testing.T) {
 
 	fh := FileHelper{}
