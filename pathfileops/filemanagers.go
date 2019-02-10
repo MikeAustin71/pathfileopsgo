@@ -2109,6 +2109,17 @@ func (fMgr *FileMgr) FlushBytesToDisk() error {
 	return nil
 }
 
+// GetAbsolutePathFileName - Returns the absolute path
+// for the current File Manager instance.
+//
+// Note: The file name and file extension are NOT included.
+// Only the absolute path is returned as a 'string'.
+//
+func (fMgr *FileMgr) GetAbsolutePath() string {
+	dMgr := fMgr.GetDirMgr()
+	return dMgr.GetAbsolutePath()
+}
+
 // GetAbsolutePathFileName - Returns the absolute path,
 // file name and file extension for the current File Manager
 // instance.
