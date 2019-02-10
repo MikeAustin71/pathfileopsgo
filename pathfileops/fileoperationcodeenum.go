@@ -303,12 +303,6 @@ func (fop FileOperationCode) ParseString(
 					"'valueString' did NOT MATCH a FileOperationCode. valueString='%v' ", valueString)
 		}
 
-		if !ok {
-			return FileOperationCode(0),
-				fmt.Errorf(ePrefix+
-					"'valueString' did NOT MATCH a FileOperationCode. valueString='%v' ", valueString)
-		}
-
 		result = FileOperationCode(idx)
 
 	} else {

@@ -132,12 +132,6 @@ func (fSel FileSelectCriterionMode) ParseString(
 					"'valueString' did NOT MATCH a FileSelectCriterionMode. valueString='%v' ", valueString)
 		}
 
-		if !ok {
-			return FileSelectCriterionMode(0),
-				fmt.Errorf(ePrefix+
-					"'valueString' did NOT MATCH a FileSelectCriterionMode. valueString='%v' ", valueString)
-		}
-
 		result = FileSelectCriterionMode(idx)
 
 	} else {

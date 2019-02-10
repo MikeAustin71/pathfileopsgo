@@ -223,9 +223,9 @@ func TestFileSelectionCriteria_01(t *testing.T) {
 	fsc := FileSelectionCriteria{}
 
 	// DEFAULT SHOULD BE FileSelectCriterion.ANDSelect()
-	if fsc.SelectCriterionMode != FileSelectCriterion.ANDSelect() {
+	if fsc.SelectCriterionMode != FileSelectCriterion.None() {
 		t.Errorf("Expected default FileSelectionCriteria.SelectCriterionMode="+
-			"FileSelectCriterion.ANDSelect(). Instead, FileSelectionCriteria.SelectCriterionMode='%v'",
+			"FileSelectCriterion.None(). Instead, FileSelectionCriteria.SelectCriterionMode='%v'",
 			fsc.SelectCriterionMode)
 	}
 
@@ -273,6 +273,131 @@ func TestFileSelectCriterionMode_Text_03(t *testing.T) {
 	}
 }
 
+func TestFileSelectCriterionMode_Text_04(t *testing.T) {
+
+	s := "None"
+
+	r, err := FileSelectCriterion.ParseString(s, true)
+
+	if err != nil {
+		t.Errorf("Error returned by FileSelectCriterion.ParseString(s, false). "+
+			"s='%v' Error='%v' ", s, err.Error())
+	}
+
+	if s != r.String() {
+		t.Errorf("Expected string '%v'. Instead, got %v", s, r.String())
+	}
+}
+
+func TestFileSelectCriterionMode_Text_05(t *testing.T) {
+
+	s := "ANDSelect"
+
+	r, err := FileSelectCriterion.ParseString(s, true)
+
+	if err != nil {
+		t.Errorf("Error returned by FileSelectCriterion.ParseString(s, false). "+
+			"s='%v' Error='%v' ", s, err.Error())
+	}
+
+	if s != r.String() {
+		t.Errorf("Expected string '%v'. Instead, got %v", s, r.String())
+	}
+}
+
+func TestFileSelectCriterionMode_Text_06(t *testing.T) {
+
+	s := "ORSelect"
+
+	r, err := FileSelectCriterion.ParseString(s, true)
+
+	if err != nil {
+		t.Errorf("Error returned by FileSelectCriterion.ParseString(s, true). "+
+			"s='%v' Error='%v' ", s, err.Error())
+	}
+
+	if s != r.String() {
+		t.Errorf("Expected string '%v'. Instead, got %v", s, r.String())
+	}
+}
+
+func TestFileSelectCriterionMode_Text_07(t *testing.T) {
+
+	s := "XXXXX"
+
+	_, err := FileSelectCriterion.ParseString(s, true)
+
+	if err == nil {
+		t.Error("Error: Expected an error return from ParseString() " +
+			"NO ERROR WAS RETURNED!")
+	}
+
+}
+
+func TestFileSelectCriterionMode_Text_08(t *testing.T) {
+
+	expectedStr := "None"
+	s := "none"
+
+	r, err := FileSelectCriterion.ParseString(s, false)
+
+	if err != nil {
+		t.Errorf("Error returned by FileSelectCriterion.ParseString(s, false). "+
+			"s='%v' Error='%v' ", s, err.Error())
+	}
+
+	if expectedStr != r.String() {
+		t.Errorf("Expected string '%v'. Instead, got %v", expectedStr, r.String())
+	}
+}
+
+func TestFileSelectCriterionMode_Text_09(t *testing.T) {
+
+	expectedStr := "ANDSelect"
+	s := "andseLect"
+
+	r, err := FileSelectCriterion.ParseString(s, false)
+
+	if err != nil {
+		t.Errorf("Error returned by FileSelectCriterion.ParseString(s, false). "+
+			"s='%v' Error='%v' ", s, err.Error())
+	}
+
+	if expectedStr != r.String() {
+		t.Errorf("Expected string '%v'. Instead, got %v", expectedStr, r.String())
+	}
+}
+
+func TestFileSelectCriterionMode_Text_10(t *testing.T) {
+
+	expectedStr := "ORSelect"
+	s := "orseleCt"
+
+	r, err := FileSelectCriterion.ParseString(s, false)
+
+	if err != nil {
+		t.Errorf("Error returned by FileSelectCriterion.ParseString(s, false). "+
+			"s='%v' Error='%v' ", s, err.Error())
+	}
+
+	if expectedStr != r.String() {
+		t.Errorf("Expected string '%v'. Instead, got %v", expectedStr, r.String())
+	}
+}
+
+func TestFileSelectCriterionMode_Text_11(t *testing.T) {
+
+	s := "ANDSelxct"
+
+	_, err := FileSelectCriterion.ParseString(s, false)
+
+	if err == nil {
+		t.Error("Error: Expected an error return from ParseString() " +
+			"NO ERROR WAS RETURNED!")
+	}
+
+}
+
 func TestFileSelectCriterionMode_Value_01(t *testing.T) {
 	var r FileSelectCriterionMode
 
@@ -311,6 +436,48 @@ func TestFileSelectCriterionMode_Value_03(t *testing.T) {
 	i = int(r)
 
 	if i != 2 {
+		t.Errorf("Expected 'FileSelectCriterion.ORSelect()' value = 2. Instead, got %v", i)
+	}
+}
+
+func TestFileSelectCriterionMode_Value_04(t *testing.T) {
+	var r FileSelectCriterionMode
+
+	var i int
+
+	r = FileSelectCriterion.None()
+
+	i = int(r)
+
+	if i != r.Value() {
+		t.Errorf("Expected 'FileSelectCriterion.None()' value = 0. Instead, got %v", i)
+	}
+}
+
+func TestFileSelectCriterionMode_Value_05(t *testing.T) {
+	var r FileSelectCriterionMode
+
+	var i int
+
+	r = FileSelectCriterion.ANDSelect()
+
+	i = int(r)
+
+	if i != r.Value() {
+		t.Errorf("Expected 'FileSelectCriterion.ANDSelect()' value = 1. Instead, got %v", i)
+	}
+}
+
+func TestFileSelectCriterionMode_Value_06(t *testing.T) {
+	var r FileSelectCriterionMode
+
+	var i int
+
+	r = FileSelectCriterion.ORSelect()
+
+	i = int(r)
+
+	if i != r.Value() {
 		t.Errorf("Expected 'FileSelectCriterion.ORSelect()' value = 2. Instead, got %v", i)
 	}
 }
