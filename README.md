@@ -1,7 +1,10 @@
 # pathfileops
-This code demonstrates path and file operations in 'golang', the go programming language.
+This package provides software types and methods used in the management
+organization and control of disk files and directories.
 
-The path for this source code repository is:
+*pathfileops* is written in the Go programming language, 'golang'.
+
+The source code repository for this package is located at:
   https://github.com/MikeAustin71/pathfileopsgo.git
 
 #### Installing 'pathfileops' Library
@@ -22,9 +25,9 @@ as follows:
         )    
 
 All of the active production files are located in directory path:
-  **./pathfilego/003_filehelper**
+  **github.com/MikeAustin71/pathfileopsgo/pathfileops**
 
-The utilities incorporate three primary types: 
+This package incorporate three primary types: 
     
     1. FileHelper
     
@@ -57,7 +60,7 @@ managers.
 
 2. FileMgrCollection - Processes and manages collections of type 'FileMgr' 
 
-3. FileOpsCollection - Manages collections of operations performed on disc
+3. FileOpsCollection - Manages collections of operations performed on disk
  files.
  
 ### Dependencies

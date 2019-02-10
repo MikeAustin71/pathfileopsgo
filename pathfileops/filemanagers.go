@@ -444,9 +444,9 @@ func (fMgrs *FileMgrCollection) InsertFileMgrAtIndex(fMgr FileMgr, index int) er
 			"index='%v' ", index)
 	}
 
-	lenDgrs := len(fMgrs.fileMgrs)
+	lenfMgrs := len(fMgrs.fileMgrs)
 
-	if index >= lenDgrs {
+	if index >= lenfMgrs {
 		fMgrs.fileMgrs = append(fMgrs.fileMgrs, fMgr.CopyOut())
 		return nil
 	}
@@ -705,8 +705,9 @@ func (fMgrs *FileMgrCollection) PeekLastFileMgr() (FileMgr, error) {
 	return fMgrs.fileMgrs[arrayLen-1].CopyOut(), nil
 }
 
-// FileMgr - This structure and associated methods
-// are used to manage a specific file.
+// FileMgr - This type and its associated methods are used to manage
+// organize and control disk files.
+//
 type FileMgr struct {
 	isInitialized                   bool
 	originalPathFileName            string
@@ -2569,20 +2570,74 @@ func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err erro
 
 }
 
-// NewFromPathFileNameExtStr - Creates a new FileMgr object. Input parameter parses out the
-// path, file name and file extension. The file data is returned in
-// the data fields of the new FileMgr object.
+// New - Creates a new File Manager ('FileMgr') instance. This method receives an
+// input parameter of type string and parses out the path, file name and file
+// extension.
 //
-// Input Parameter
-// ===============
+// The file data is returned in the data fields of the new FileMgr object.
 //
-// pathFileNameExt string - Must consist of a valid path, file name
-// 													and file extension. The file need not exist.
-//													Failure to provide a properly formatted path
-//													path, file name will result in an error.
+// This method is identical to method 'NewFromPathFileNameExtStr()'.
 //
-// Example Usage:
-// fmgr := FileMgr{}.NewFromPathFileNameExtStr("../common/fileName.ext")
+// Input Parameter:
+//
+//	pathFileNameExt string - Must consist of a valid path, file name
+//	                         and file extension. The file need not exist.
+//	                         Failure to provide a properly formatted path
+//	                         path, file name will result in an error.
+//
+// Usage:
+//
+//	fmgr := FileMgr{}.New("../common/fileName.ext")
+//
+func (fMgr FileMgr) New(pathFileNameExt string) (FileMgr, error) {
+
+	ePrefix := "FileMgr.New() "
+
+	if pathFileNameExt == "" {
+		return FileMgr{}, errors.New(ePrefix + "-Error: pathFileNameExt is Empty!")
+	}
+
+	fMgrOut := FileMgr{}
+
+	isEmpty, err := fMgrOut.SetFileMgrFromPathFileName(pathFileNameExt)
+
+	if err != nil {
+		return FileMgr{}, fmt.Errorf(ePrefix+
+			"Error returned from fMgrOut.SetFileMgrFromPathFileName(pathFileNameExt) "+
+			"pathFileNameExt='%v'  Error='%v'", pathFileNameExt, err.Error())
+	}
+
+	if isEmpty {
+		return FileMgr{}, fmt.Errorf(ePrefix+
+			"Error: Returned FileMgr is Empty! pathFileNameExt='%v' ", pathFileNameExt)
+	}
+
+	if !fMgrOut.isInitialized {
+		return FileMgr{}, fmt.Errorf(ePrefix+
+			"Error: New File Manager is NOT properly initialized! pathFileNameExt='%v' ", pathFileNameExt)
+	}
+
+	return fMgrOut, nil
+}
+
+// NewFromPathFileNameExtStr - Creates a new File Manager ('FileMgr') instance. This
+// method receives an input parameter of type string and parses out the path, file
+// name and file extension.
+//
+// The file data is returned in the data fields of the new FileMgr object.
+//
+// This method is identical to method 'New()'.
+//
+// Input Parameter:
+//
+//	pathFileNameExt string - Must consist of a valid path, file name
+//	                         and file extension. The file need not exist.
+//	                         Failure to provide a properly formatted path
+//	                         path, file name will result in an error.
+//
+// Usage:
+//
+//	fmgr := FileMgr{}.NewFromPathFileNameExtStr("../common/fileName.ext")
 //
 func (fMgr FileMgr) NewFromPathFileNameExtStr(pathFileNameExt string) (FileMgr, error) {
 
@@ -2605,6 +2660,11 @@ func (fMgr FileMgr) NewFromPathFileNameExtStr(pathFileNameExt string) (FileMgr, 
 	if isEmpty {
 		return FileMgr{}, fmt.Errorf(ePrefix+
 			"Error: Returned FileMgr is Empty! pathFileNameExt='%v' ", pathFileNameExt)
+	}
+
+	if !fMgrOut.isInitialized {
+		return FileMgr{}, fmt.Errorf(ePrefix+
+			"Error: New File Manager is NOT properly initialized! pathFileNameExt='%v' ", pathFileNameExt)
 	}
 
 	return fMgrOut, nil
@@ -3447,6 +3507,8 @@ func (fMgr *FileMgr) WriteStrToFile(str string) (int, error) {
 	return bytesWritten, nil
 }
 
+// FileOpsCollection - A collection of files and file operations which are designed
+// to perform specific actions on disk files.
 type FileOpsCollection struct {
 	fileOps []FileOps
 }
@@ -3781,6 +3843,52 @@ func (fOpsCol *FileOpsCollection) GetNumOfFileOps() int {
 
 }
 
+// InsertFileOpsAtIndex - Inserts a new File Operations type ('FileOps') into
+// the collection at array 'index'. The new File Operations instance is passed
+// as input parameter 'fOps'.
+//
+// If input parameter 'index' is less than zero, an error will be returned. If
+// 'index' exceeds the value of the last index in the collection, 'fOps' will be
+// added to the end of the collection at the next legal index.
+//
+func (fOpsCol *FileOpsCollection) InsertFileOpsAtIndex(fOps FileOps, index int) error {
+
+	ePrefix := "FileMgrCollection.InsertFileOpsAtIndex() "
+
+	if fOpsCol.fileOps == nil {
+		fOpsCol.fileOps = make([]FileOps, 0, 100)
+	}
+
+	if index < 0 {
+		return fmt.Errorf(ePrefix+
+			"Error: Input parameter 'index' is LESS THAN ZERO! "+
+			"index='%v' ", index)
+	}
+
+	lenfMgrs := len(fOpsCol.fileOps)
+
+	if index >= lenfMgrs {
+		fOpsCol.fileOps = append(fOpsCol.fileOps, fOps.CopyOut())
+		return nil
+	}
+
+	newFileMgrs := make([]FileOps, 0, 100)
+
+	if index == 0 {
+		newFileMgrs = append(newFileMgrs, fOps.CopyOut())
+		fOpsCol.fileOps = append(newFileMgrs, fOpsCol.fileOps...)
+		return nil
+	}
+
+	newFileMgrs = append(newFileMgrs, fOpsCol.fileOps[index:]...)
+
+	fOpsCol.fileOps = append(fOpsCol.fileOps[:index])
+	fOpsCol.fileOps = append(fOpsCol.fileOps, fOps.CopyOut())
+	fOpsCol.fileOps = append(fOpsCol.fileOps, newFileMgrs...)
+
+	return nil
+}
+
 // New - Creates and returns a new, properly initialized
 // instance of 'FileOpsCollection'
 func (fOpsCol FileOpsCollection) New() FileOpsCollection {
@@ -3837,7 +3945,7 @@ func (fOpsCol FileOpsCollection) NewFromFileMgrCollection(
 
 	arrayLen := fMgrCol.GetNumOfFileMgrs()
 
-	newFileOpsCol := FileOpsCollection{}
+	newFileOpsCol := FileOpsCollection{}.New()
 
 	newFileOpsCol.fileOps = make([]FileOps, 0, arrayLen+10)
 
@@ -4142,6 +4250,53 @@ func (fops *FileOps) CopyOut() FileOps {
 
 	return newFOps
 
+}
+
+// Equal - Returns 'true' if source, destination and opToExecute are
+// equivalent. In other words both the current File Operations instance
+// and the File Operations instance passed as an input parameter must
+// have data fields which are equal in all respects.
+//
+// If any data field is found to be unequal, this method returns 'false'.
+func (fops *FileOps) Equal(fops2 *FileOps) bool {
+
+	if !fops.source.Equal(&fops2.source) {
+		return false
+	}
+
+	if !fops.destination.Equal(&fops2.destination) {
+		return false
+	}
+
+	if fops.opToExecute != fops2.opToExecute {
+		return false
+	}
+
+	return true
+}
+
+// EqualPathFileNameExt - Compares two File Operations Types, 'FileOps'. The method
+// returns 'true' if source and destination absolute paths, file
+// names and file extensions are equivalent. Data Field 'opToExecute' is
+// not included in the comparison.
+//
+// The absolute path, file name and file extension comparisons are case
+// insensitive. This means that all strings used in the comparisons are
+// first converted to lower case before testing for equivalency.
+//
+// If the absolute paths, file names and file extensions are NOT equal,
+// this method returns 'false'.
+func (fops *FileOps) EqualPathFileNameExt(fops2 *FileOps) bool {
+
+	if !fops.source.EqualPathFileNameExt(&fops2.source) {
+		return false
+	}
+
+	if !fops.destination.EqualPathFileNameExt(&fops2.destination) {
+		return false
+	}
+
+	return true
 }
 
 // IsInitialized - Returns a boolean value indicating whether

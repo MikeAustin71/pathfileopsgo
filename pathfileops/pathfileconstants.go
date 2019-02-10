@@ -1,3 +1,32 @@
+/*
+Package 'pathfileops' provides software types and methods used in
+the management, organization and control of disk files and directories.
+
+This package incorporates three primary types:
+
+	1. FileHelper - A series of generalized file maintenance utilities
+
+	2. DirMgr     - Directory Manager: Designed for the creation, management
+	                and control of directory paths.
+
+	3. FileMgr    - File Manager: Designed for the creation, management and
+	                control of disk files.
+
+In addition, the following are used to manage collections of
+'DirMgr' and 'FileMgr' types.
+
+	1. DirMgrCollection  - Processes and manages collections of type 'DirMgr'
+
+	2. FileMgrCollection - Processes and manages collections of type 'FileMgr'
+
+	3. FileOpsCollection - Manages collections of operations performed on disk
+	                       files and directories.
+
+
+The source code repository for this package is located at:
+  https://github.com/MikeAustin71/pathfileopsgo.git
+
+*/
 package pathfileops
 
 import (
