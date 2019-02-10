@@ -117,9 +117,9 @@ func (fsc *FileSelectionCriteria) ArePatternsActive() bool {
 // FileInfo information plus additional information related to a file or directory.
 type FileInfoPlus struct {
 	IsFInfoInitialized bool // Not part of FileInfo interface.
-	// 'true' = structure fields have been properly initialized
+	//   'true' = structure fields have been properly initialized
 	IsDirPathInitialized bool // Not part of FileInfo interface.
-	// 'true' = structure field 'dirPath' has been successfully initialized
+	//   'true' = structure field 'dirPath' has been successfully initialized
 	CreateTimeStamp time.Time // Not part of FileInfo interface.
 	// Date time at which this instance was initialized
 	dirPath  string      // Not part of FileInfo interface. Directory path associated with file name
@@ -282,9 +282,12 @@ func (fip *FileInfoPlus) Equal(fip2 *FileInfoPlus) bool {
 // Notice that this version of the 'NewFromPathFileNameExtStr' method does NOT set the
 // Directory path. This method is NOT part of the FileInfo interface.
 //
+// ------------------------------------------------------------------------
+//
 // Example Usage:
-//	fip := FileInfoPlus{}.NewFromFileInfo(info)
-//  -- fip is now a newly populated FileInfoPlus instance.
+//
+//  fip := FileInfoPlus{}.NewFromFileInfo(info)
+//  fip is now a newly populated FileInfoPlus instance.
 //
 func (fip FileInfoPlus) NewFromFileInfo(info os.FileInfo) FileInfoPlus {
 	newInfo := FileInfoPlus{}
@@ -303,9 +306,12 @@ func (fip FileInfoPlus) NewFromFileInfo(info os.FileInfo) FileInfoPlus {
 // populated with directory path and FileInfo data received from
 // the input parameters.
 //
+// ------------------------------------------------------------------------
+//
 // Example Usage:
-//	fip := FileInfoPlus{}.NewFromPathFileInfo(dirPath, info)
-//  -- fip is now a newly populated FileInfoPlus instance.
+//
+//  fip := FileInfoPlus{}.NewFromPathFileInfo(dirPath, info)
+//  fip is now a newly populated FileInfoPlus instance.
 //
 func (fip FileInfoPlus) NewFromPathFileInfo(
 	dirPath string,
