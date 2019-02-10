@@ -21,7 +21,7 @@ func WalkDirFindFiles(
 	fsc.FileNamePatterns = []string{filePattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = pathFileOps.FileSelectCriterion.ANDSelect()
+	fsc.SelectCriterionMode = pathFileOps.FileSelectMode.ANDSelect()
 
 	dWalkInfo, err := dMgr.FindWalkDirFiles(fsc)
 
@@ -116,7 +116,7 @@ func WalkDirFindFiles2(
 	fsc.FileNamePatterns = []string{filePattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = pathFileOps.FileSelectCriterion.ANDSelect()
+	fsc.SelectCriterionMode = pathFileOps.FileSelectMode.ANDSelect()
 
 	dWalkInfo, err := dMgr.FindWalkDirFiles(fsc)
 

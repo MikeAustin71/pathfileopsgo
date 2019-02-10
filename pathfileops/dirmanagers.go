@@ -1064,7 +1064,7 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() error {
 // 																		selection purposes. 'SelectCriterionMode' may be set to one of
 //																		two constant values:
 //
-//																		FileSelectCriterion.ANDSelect()	- File selected if all active selection criteria
+//																		FileSelectMode.ANDSelect()	- File selected if all active selection criteria
 //																			are satisfied.
 //
 // 																			If this constant value is specified for the file selection mode,
@@ -1074,7 +1074,7 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() error {
 //																			'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
 //																			selected unless it has satisfied all three criterion in this example.
 //
-//																		FileSelectCriterion.ORSelect() 	- File selected if any active selection criterion
+//																		FileSelectMode.ORSelect() 	- File selected if any active selection criterion
 //																			is satisfied.
 //
 // 																			If this constant value is specified for the file selection mode,
@@ -1466,7 +1466,7 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 // 																		selection purposes. 'SelectCriterionMode' may be set to one of
 //																		two constant values:
 //
-//																		FileSelectCriterion.ANDSelect()	- File selected if all active selection criteria
+//																		FileSelectMode.ANDSelect()	- File selected if all active selection criteria
 //																			are satisfied.
 //
 // 																			If this constant value is specified for the file selection mode,
@@ -1476,7 +1476,7 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //																			'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
 //																			selected unless it has satisfied all three criterion in this example.
 //
-//																		FileSelectCriterion.ORSelect() 	- File selected if any active selection criterion
+//																		FileSelectMode.ORSelect() 	- File selected if any active selection criterion
 //																			is satisfied.
 //
 // 																			If this constant value is specified for the file selection mode,
@@ -1781,7 +1781,7 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 // 																		selection purposes. 'SelectCriterionMode' may be set to one of
 //																		two constant values:
 //
-//																		FileSelectCriterion.ANDSelect()	- File selected if all active selection criteria
+//																		FileSelectMode.ANDSelect()	- File selected if all active selection criteria
 //																			are satisfied.
 //
 // 																			If this constant value is specified for the file selection mode,
@@ -1791,7 +1791,7 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 //																			'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
 //																			selected unless it has satisfied all three criterion in this example.
 //
-//																		FileSelectCriterion.ORSelect() 	- File selected if any active selection criterion
+//																		FileSelectMode.ORSelect() 	- File selected if any active selection criterion
 //																			is satisfied.
 //
 // 																			If this constant value is specified for the file selection mode,
@@ -2270,7 +2270,7 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
 // 																		selection purposes. 'SelectCriterionMode' may be set to one of
 //																		two constant values:
 //
-//																		FileSelectCriterion.ANDSelect()	- File selected if all active selection criteria
+//																		FileSelectMode.ANDSelect()	- File selected if all active selection criteria
 //																			are satisfied.
 //
 // 																			If this constant value is specified for the file selection mode,
@@ -2280,7 +2280,7 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
 //																			'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
 //																			selected unless it has satisfied all three criterion in this example.
 //
-//																		FileSelectCriterion.ORSelect() 	- File selected if any active selection criterion
+//																		FileSelectMode.ORSelect() 	- File selected if any active selection criterion
 //																			is satisfied.
 //
 // 																			If this constant value is specified for the file selection mode,
@@ -2490,7 +2490,7 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 // 																		selection purposes. 'SelectCriterionMode' may be set to one of
 //																		two constant values:
 //
-//																		FileSelectCriterion.ANDSelect()	- File selected if all active selection criteria
+//																		FileSelectMode.ANDSelect()	- File selected if all active selection criteria
 //																			are satisfied.
 //
 // 																			If this constant value is specified for the file selection mode,
@@ -2500,7 +2500,7 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 //																			'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
 //																			selected unless it has satisfied all three criterion in this example.
 //
-//																		FileSelectCriterion.ORSelect() 	- File selected if any active selection criterion
+//																		FileSelectMode.ORSelect() 	- File selected if any active selection criterion
 //																			is satisfied.
 //
 // 																			If this constant value is specified for the file selection mode,
@@ -2811,7 +2811,10 @@ func (dMgr *DirMgr) GetPathWithSeparator() string {
 }
 
 // GetRelativePath - Returns a string containing the relative path
-// for this Directory Manager instance.
+// for this Directory Manager instance. The relative path is derived
+// through comparison to the current Directory Managers parent
+// directory. Therefore, the relative path of the current Directory
+// Manger is relative to its parent.
 //
 func (dMgr *DirMgr) GetRelativePath() string {
 	return dMgr.relativePath

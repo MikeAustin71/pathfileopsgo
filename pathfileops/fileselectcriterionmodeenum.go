@@ -35,7 +35,7 @@ func (fSel FileSelectCriterionMode) ANDSelect() FileSelectCriterionMode {
 // ORSelect() - File Selection Criterion are Or'd together.
 // If there are three file selection criterion then satisfying any
 // one of the three criterion will cause the file to be selected.
-// FileSelectCriterion.ORSelect()
+// FileSelectMode.ORSelect()
 func (fSel FileSelectCriterionMode) ORSelect() FileSelectCriterionMode {
 	return FileSelectCriterionMode(2)
 }
@@ -222,6 +222,6 @@ func (fSel FileSelectCriterionMode) checkInitializeMaps(reInitialize bool) {
 
 }
 
-var fileSelectCriterion FileSelectCriterionMode
+var fileSelectMode FileSelectCriterionMode
 
-var FileSelectCriterion FileSelectCriterionMode
+var FileSelectMode FileSelectCriterionMode

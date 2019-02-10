@@ -224,7 +224,7 @@ func TestDirectoryTreeInfo_CopyToDirectoryTree_01(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
+	fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
 
 	dirTreeInfo, err := dMgr.FindWalkDirFiles(fsc)
 

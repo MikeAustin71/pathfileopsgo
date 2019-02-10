@@ -63,7 +63,7 @@ func TestDirMgrWalDirDeleteFiles() {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = pathFileOp.FileSelectCriterion.ORSelect()
+	fsc.SelectCriterionMode = pathFileOp.FileSelectMode.ORSelect()
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
@@ -259,7 +259,7 @@ func TestingDirMgrDeleteWalkDirFiles06() {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = pathFileOp.FileSelectCriterion.ANDSelect()
+	fsc.SelectCriterionMode = pathFileOp.FileSelectMode.ANDSelect()
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
@@ -774,7 +774,7 @@ func TestCopyDirectoryTree() {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = pathFileOp.FileSelectCriterion.ANDSelect()
+	fsc.SelectCriterionMode = pathFileOp.FileSelectMode.ANDSelect()
 
 	dirTreeInfo, err := dMgr.FindWalkDirFiles(fsc)
 
@@ -1136,7 +1136,7 @@ func TestFilterFile() {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = pathFileOp.FileSelectCriterion.ORSelect()
+	fsc.SelectCriterionMode = pathFileOp.FileSelectMode.ORSelect()
 
 	fh := pathFileOp.FileHelper{}
 	isFound, err := fh.FilterFileName(fia, fsc)

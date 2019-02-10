@@ -37,55 +37,38 @@ import (
 	"time"
 )
 
-/*
-// FileSelectCriterionMode - Used in conjunction with the
-// FileSelectionCriteria structure, below
-type FileSelectCriterionMode int
-
-// String - Method used to display the text
-// name of an Operations Message Type.
-func (fSelectMode FileSelectCriterionMode) String() string {
-	return FileSelectCriterionModeNames[fSelectMode]
-}
-
-const (
-
-	// FileSelectCriterion.ANDSelect() - 0 File Selection Criterion are And'ed
-	// together. If there are three file selection criterion then
-	// all three must be satisfied before a file is selected.
-	FileSelectCriterion.ANDSelect() FileSelectCriterionMode = iota
-
-	// FileSelectCriterion.ORSelect() - 1 File Selection Criterion are Or'd together.
-	// If there are three file selection criterion then satisfying any
-	// one of the three criterion will cause the file to be selected.
-	FileSelectCriterion.ORSelect()
-)
-
-// FileSelectCriterionModeNames - String Array holding File Select Criteria  names.
-var FileSelectCriterionModeNames = [...]string{"AND File Select Criterion", "OR File Select Criterion"}
-*/
-
 // FileSelectionCriteria - Used is selecting file names. These
 // data fields specify the criterion used to determine if a
 // file should be selected for some type of operation.
 // Example: find files or delete files operations
 type FileSelectionCriteria struct {
-	FileNamePatterns []string // a string array containing one or more file matching
+	// FileNamePatterns - a string array containing one or more file matching
 	// patterns. Example '*.txt' '*.log' 'common*.*'
-	FilesOlderThan   time.Time   // Used to select files with a modification less than this date time
-	FilesNewerThan   time.Time   // Used to select files with a modification greater than this date time
-	SelectByFileMode os.FileMode // Used to select files with equivalent FileMode values
-	//   Note: os.FileMode is an uint32 type
-	SelectCriterionMode FileSelectCriterionMode // Can be one of two values:
-	// FileSelectCriterion.ANDSelect() or FileSelectCriterion.ORSelect()
+	FileNamePatterns []string
+
+	// FilesOlderThan - Used to select files with a modification less than this date time
+	FilesOlderThan time.Time
+
+	// FilesNewerThan - // Used to select files with a modification greater than this date time
+	FilesNewerThan time.Time
+
+	// SelectByFileMode - Used to select files with equivalent os.FileMode values
+	// Note: os.FileMode is an uint32 type.
+	SelectByFileMode os.FileMode
+
+	// SelectCriterionMode - Can be one of three values:
 	//
-	// FileSelectCriterion.ANDSelect() = select a file only if ALL
-	//										      the selection criterion
-	//                          are satisfied.
+	// FileSelectMode.None()      = No Operation - No File Select Criterion
+	//                                   mode selected
 	//
-	// FileSelectCriterion.ORSelect()  = select a file if only ONE
-	//													of the selection criterion
-	//													are satisfied.
+	// FileSelectMode.ANDSelect() = select a file only if ALL
+	//                                   the selection criterion are satisfied.
+	//
+	// FileSelectMode.ORSelect()  = select a file if only ONE
+	//                                   of the selection criterion are satisfied.
+	//
+	// SEE TYPE 'FileSelectCriterionMode'
+	SelectCriterionMode FileSelectCriterionMode
 }
 
 // ArePatternsActive - surveys the FileNamePatterns string
@@ -105,7 +88,8 @@ func (fsc *FileSelectionCriteria) ArePatternsActive() bool {
 	isActive := false
 
 	for i := 0; i < lPats; i++ {
-		fsc.FileNamePatterns[i] = strings.TrimRight(strings.TrimLeft(fsc.FileNamePatterns[i], " "), " ")
+		fsc.FileNamePatterns[i] =
+			strings.TrimRight(strings.TrimLeft(fsc.FileNamePatterns[i], " "), " ")
 		if fsc.FileNamePatterns[i] != "" {
 			isActive = true
 		}
@@ -116,14 +100,22 @@ func (fsc *FileSelectionCriteria) ArePatternsActive() bool {
 }
 
 // FileInfoPlus - Conforms to the os.FileInfo interface. This structure will store
-// FileInfo information plus additional information related to a file or directory.
+// os.FileInfo information plus additional information related to a file or directory.
+//
 type FileInfoPlus struct {
-	IsFInfoInitialized bool // Not part of FileInfo interface.
-	//   'true' = structure fields have been properly initialized
-	IsDirPathInitialized bool // Not part of FileInfo interface.
+
+	// IsFInfoInitialized - Not part of FileInfo interface.
+	// 'true' = structure fields have been properly initialized
+	IsFInfoInitialized bool
+
+	// IsDirPathInitialized - Not part of FileInfo interface.
 	//   'true' = structure field 'dirPath' has been successfully initialized
-	CreateTimeStamp time.Time // Not part of FileInfo interface.
-	// Date time at which this instance was initialized
+	IsDirPathInitialized bool
+
+	// CreateTimeStamp - Not part of FileInfo interface.
+	// Date time at which this instance of Type 'FileInfoPlus' was initialized
+	CreateTimeStamp time.Time
+
 	dirPath  string      // Not part of FileInfo interface. Directory path associated with file name
 	fName    string      // FileInfo.Name() base name of the file
 	fSize    int64       // FileInfo.Size() length in bytes for regular files; system-dependent for others
