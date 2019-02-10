@@ -37,6 +37,7 @@ import (
 	"time"
 )
 
+/*
 // FileSelectCriterionMode - Used in conjunction with the
 // FileSelectionCriteria structure, below
 type FileSelectCriterionMode int
@@ -49,19 +50,20 @@ func (fSelectMode FileSelectCriterionMode) String() string {
 
 const (
 
-	// ANDFILESELECTCRITERION - 0 File Selection Criterion are And'ed
+	// FileSelectCriterion.ANDSelect() - 0 File Selection Criterion are And'ed
 	// together. If there are three file selection criterion then
 	// all three must be satisfied before a file is selected.
-	ANDFILESELECTCRITERION FileSelectCriterionMode = iota
+	FileSelectCriterion.ANDSelect() FileSelectCriterionMode = iota
 
-	// ORFILESELECTCRITERION - 1 File Selection Criterion are Or'd together.
+	// FileSelectCriterion.ORSelect() - 1 File Selection Criterion are Or'd together.
 	// If there are three file selection criterion then satisfying any
 	// one of the three criterion will cause the file to be selected.
-	ORFILESELECTCRITERION
+	FileSelectCriterion.ORSelect()
 )
 
 // FileSelectCriterionModeNames - String Array holding File Select Criteria  names.
 var FileSelectCriterionModeNames = [...]string{"AND File Select Criterion", "OR File Select Criterion"}
+*/
 
 // FileSelectionCriteria - Used is selecting file names. These
 // data fields specify the criterion used to determine if a
@@ -75,13 +77,13 @@ type FileSelectionCriteria struct {
 	SelectByFileMode os.FileMode // Used to select files with equivalent FileMode values
 	//   Note: os.FileMode is an uint32 type
 	SelectCriterionMode FileSelectCriterionMode // Can be one of two values:
-	// ANDFILESELECTCRITERION or ORFILESELECTCRITERION
+	// FileSelectCriterion.ANDSelect() or FileSelectCriterion.ORSelect()
 	//
-	// ANDFILESELECTCRITERION = select a file only if ALL
+	// FileSelectCriterion.ANDSelect() = select a file only if ALL
 	//										      the selection criterion
 	//                          are satisfied.
 	//
-	// ORFILESELECTCRITERION  = select a file if only ONE
+	// FileSelectCriterion.ORSelect()  = select a file if only ONE
 	//													of the selection criterion
 	//													are satisfied.
 }

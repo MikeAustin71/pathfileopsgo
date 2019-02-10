@@ -854,7 +854,7 @@ func (fh FileHelper) CreateFile(pathFileName string) (*os.File, error) {
 //
 //	                          _________________________________________________________________
 //
-//	                          ANDFILESELECTCRITERION - File selected if all active selection criteria
+//	                          FileSelectCriterion.ANDSelect() - File selected if all active selection criteria
 //	                                                   are satisfied.
 //
 //	                                    If this constant value is specified for the file selection mode,
@@ -864,7 +864,7 @@ func (fh FileHelper) CreateFile(pathFileName string) (*os.File, error) {
 //	                                    'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
 //	                                    selected unless it has satisfied all three criterion in this example.
 //
-//	                          ORFILESELECTCRITERION  - File selected if any active selection criterion
+//	                          FileSelectCriterion.ORSelect()  - File selected if any active selection criterion
 //	                                                   is satisfied.
 //
 //	                                    If this constant value is specified for the file selection mode,
@@ -1175,7 +1175,7 @@ func (fh *FileHelper) FilterFileName(info os.FileInfo, fileSelectionCriteria Fil
 
 	// If using the AND File Select Criterion Mode, then for criteria that
 	// are set and active, they must all be 'matched'.
-	if fileSelectionCriteria.SelectCriterionMode == ANDFILESELECTCRITERION {
+	if fileSelectionCriteria.SelectCriterionMode == fileSelectCriterion.ANDSelect() {
 
 		if isPatternSet && !isPatternMatch {
 			isMatchedFile = false
@@ -1205,9 +1205,9 @@ func (fh *FileHelper) FilterFileName(info os.FileInfo, fileSelectionCriteria Fil
 		err = nil
 		return
 
-	} // End of ANDFILESELECTCRITERION
+	} // End of fileSelectCriterion.ANDSelect()
 
-	// Must be ORFILESELECTCRITERION Mode
+	// Must be fileSelectCriterion.ORSelect() Mode
 	// If ANY of the section criterion are active and 'matched', then
 	// classify the file as matched.
 
@@ -1335,7 +1335,7 @@ func (fh *FileHelper) FilterFileName(info os.FileInfo, fileSelectionCriteria Fil
 //
 //                                   _____________________________________________________________________
 //
-//                                   ANDFILESELECTCRITERION -
+//                                   FileSelectCriterionMode(0).ANDSelect() -
 //                                      File selected if all active selection criteria
 //                                      are satisfied.
 //
@@ -1346,7 +1346,7 @@ func (fh *FileHelper) FilterFileName(info os.FileInfo, fileSelectionCriteria Fil
 //                                      'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
 //                                      selected unless it has satisfied all three criterion in this example.
 //
-//                                   ORFILESELECTCRITERION -
+//                                   FileSelectCriterionMode(0).ORSelect() -
 //                                      File selected if any active selection criterion is satisfied.
 //
 //                                      If this constant value is specified for the file selection mode,

@@ -335,7 +335,7 @@ func TestDirMgr_DeleteWalkDirFiles_31(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern1}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ORFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ORSelect()
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
@@ -456,7 +456,7 @@ func TestDirMgr_DeleteWalkDirFiles_32(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern1}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ORFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ORSelect()
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
@@ -989,7 +989,7 @@ func TestDirMgr_ExecuteDirectoryFileOps_01(t *testing.T) {
 
 	fileSelect := FileSelectionCriteria{}
 
-	fileSelect.SelectCriterionMode = ORFILESELECTCRITERION
+	fileSelect.SelectCriterionMode = FileSelectCriterion.ORSelect()
 
 	fileOps := make([]FileOperationCode, 1, 5)
 
@@ -1086,7 +1086,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_01(t *testing.T) {
 
 	fileSelect := FileSelectionCriteria{}
 
-	fileSelect.SelectCriterionMode = ORFILESELECTCRITERION
+	fileSelect.SelectCriterionMode = FileSelectCriterion.ORSelect()
 
 	fileOps := make([]FileOperationCode, 1, 5)
 

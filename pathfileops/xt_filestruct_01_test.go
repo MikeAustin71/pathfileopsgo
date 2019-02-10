@@ -222,9 +222,11 @@ func TestFileSelectionCriteria_01(t *testing.T) {
 
 	fsc := FileSelectionCriteria{}
 
-	// DEFAULT SHOULD BE ANDFILESELECTCRITERION
-	if fsc.SelectCriterionMode != ANDFILESELECTCRITERION {
-		t.Errorf("Expected default FileSelectionCriteria.SelectCriterionMode=ANDFILESELECTCRITERION. Instead, FileSelectionCriteria.SelectCriterionMode='%v'", fsc.SelectCriterionMode)
+	// DEFAULT SHOULD BE FileSelectCriterion.ANDSelect()
+	if fsc.SelectCriterionMode != FileSelectCriterion.ANDSelect() {
+		t.Errorf("Expected default FileSelectionCriteria.SelectCriterionMode="+
+			"FileSelectCriterion.ANDSelect(). Instead, FileSelectionCriteria.SelectCriterionMode='%v'",
+			fsc.SelectCriterionMode)
 	}
 
 }
@@ -232,28 +234,42 @@ func TestFileSelectionCriteria_01(t *testing.T) {
 func TestFileSelectCriterionMode_Text_01(t *testing.T) {
 	var r FileSelectCriterionMode
 
-	r = ANDFILESELECTCRITERION
+	r = FileSelectCriterion.None()
 
 	var s string
 
 	s = r.String()
 
-	if s != "AND File Select Criterion" {
-		t.Errorf("Expected string 'AND File Select Criterion'. Instead, got %v", s)
+	if s != "None" {
+		t.Errorf("Expected string 'None'. Instead, got %v", s)
 	}
 }
 
 func TestFileSelectCriterionMode_Text_02(t *testing.T) {
 	var r FileSelectCriterionMode
 
-	r = ORFILESELECTCRITERION
+	r = FileSelectCriterion.ANDSelect()
 
 	var s string
 
 	s = r.String()
 
-	if s != "OR File Select Criterion" {
-		t.Errorf("Expected string 'OR File Select Criterion'. Instead, got %v", s)
+	if s != "ANDSelect" {
+		t.Errorf("Expected string 'ANDSelect'. Instead, got %v", s)
+	}
+}
+
+func TestFileSelectCriterionMode_Text_03(t *testing.T) {
+	var r FileSelectCriterionMode
+
+	r = FileSelectCriterion.ORSelect()
+
+	var s string
+
+	s = r.String()
+
+	if s != "ORSelect" {
+		t.Errorf("Expected string 'ORSelect'. Instead, got %v", s)
 	}
 }
 
@@ -262,12 +278,12 @@ func TestFileSelectCriterionMode_Value_01(t *testing.T) {
 
 	var i int
 
-	r = ANDFILESELECTCRITERION
+	r = FileSelectCriterion.None()
 
 	i = int(r)
 
 	if i != 0 {
-		t.Errorf("Expected 'ANDFILESELECTCRITERIA' value = 0. Instead, got %v", i)
+		t.Errorf("Expected 'FileSelectCriterion.None()' value = 0. Instead, got %v", i)
 	}
 }
 
@@ -276,11 +292,25 @@ func TestFileSelectCriterionMode_Value_02(t *testing.T) {
 
 	var i int
 
-	r = ORFILESELECTCRITERION
+	r = FileSelectCriterion.ANDSelect()
 
 	i = int(r)
 
 	if i != 1 {
-		t.Errorf("Expected 'ORFILESELECTCRITERION' value = 1. Instead, got %v", i)
+		t.Errorf("Expected 'FileSelectCriterion.ANDSelect()' value = 1. Instead, got %v", i)
+	}
+}
+
+func TestFileSelectCriterionMode_Value_03(t *testing.T) {
+	var r FileSelectCriterionMode
+
+	var i int
+
+	r = FileSelectCriterion.ORSelect()
+
+	i = int(r)
+
+	if i != 2 {
+		t.Errorf("Expected 'FileSelectCriterion.ORSelect()' value = 2. Instead, got %v", i)
 	}
 }

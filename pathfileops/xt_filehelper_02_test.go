@@ -33,7 +33,7 @@ func TestFileHelper_FilterFileName_01(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	fh := FileHelper{}
 	isFound, err := fh.FilterFileName(fia, fsc)
@@ -81,7 +81,7 @@ func TestFileHelper_FilterFileName_02(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	fh := FileHelper{}
 	isFound, err := fh.FilterFileName(fia, fsc)
@@ -127,7 +127,7 @@ func TestFileHelper_FilterFileName_03(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	fh := FileHelper{}
 	isFound, err := fh.FilterFileName(fia, fsc)
@@ -172,7 +172,7 @@ func TestFileHelper_FilterFileName_04(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	fh := FileHelper{}
 	isFound, err := fh.FilterFileName(fia, fsc)
@@ -219,7 +219,7 @@ func TestFileHelper_FilterFileName_05(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	fh := FileHelper{}
 	isFound, err := fh.FilterFileName(fia, fsc)
@@ -269,7 +269,7 @@ func TestFileHelper_FilterFileName_06(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	fh := FileHelper{}
 	isFound, err := fh.FilterFileName(fia, fsc)
@@ -318,7 +318,7 @@ func TestFileHelper_FilterFileName_07(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	fh := FileHelper{}
 	isFound, err := fh.FilterFileName(fia, fsc)
@@ -368,7 +368,7 @@ func TestFileHelper_FilterFileName_08(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	fh := FileHelper{}
 	isFound, err := fh.FilterFileName(fia, fsc)
@@ -418,7 +418,7 @@ func TestFileHelper_FilterFileName_09(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	fh := FileHelper{}
 	isFound, err := fh.FilterFileName(fia, fsc)
@@ -466,7 +466,7 @@ func TestFileHelper_FilterFileName_10(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	fh := FileHelper{}
 	isFound, err := fh.FilterFileName(fia, fsc)
@@ -507,7 +507,7 @@ func TestFileHelper_FilterFileName_11(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	fh := FileHelper{}
 	isFound, err := fh.FilterFileName(fia, fsc)
@@ -568,7 +568,7 @@ func TestFileHelper_FindFilesInPath_01(t *testing.T) {
 
 	fileSelect := FileSelectionCriteria{}
 
-	fileSelect.SelectCriterionMode = ORFILESELECTCRITERION
+	fileSelect.SelectCriterionMode = FileSelectCriterion.ORSelect()
 
 	fileOps := make([]FileOperationCode, 1, 5)
 
@@ -644,7 +644,7 @@ func TestFileHelper_FindFilesInPath_02(t *testing.T) {
 
 	fileSelect := FileSelectionCriteria{}
 
-	fileSelect.SelectCriterionMode = ORFILESELECTCRITERION
+	fileSelect.SelectCriterionMode = FileSelectCriterion.ORSelect()
 
 	fileOps := make([]FileOperationCode, 1, 5)
 

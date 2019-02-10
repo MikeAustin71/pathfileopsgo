@@ -52,7 +52,7 @@ func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	dirTreeInfo, err := dMgr.FindWalkDirFiles(fsc)
 
@@ -144,7 +144,7 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	dWalker, err := dMgr.FindWalkDirFiles(fsc)
 
@@ -203,6 +203,7 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
 	}
 
 }
+
 /*
 func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 
@@ -247,7 +248,7 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	dWalker, err := dMgr.FindWalkDirFiles(fsc)
 
@@ -363,7 +364,7 @@ func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	dWalker, err := dMgr.FindWalkDirFiles(fsc)
 
@@ -477,7 +478,7 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ORFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ORSelect()
 
 	dInfo, err := dMgr.FindWalkDirFiles(fsc)
 
@@ -615,7 +616,7 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern1, searchPattern2}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ORFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ORSelect()
 
 	dInfo, err := dMgr.FindWalkDirFiles(fsc)
 
@@ -750,7 +751,7 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
@@ -872,7 +873,7 @@ func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
@@ -931,6 +932,7 @@ func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
 	}
 
 }
+
 /*
 func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
 
@@ -975,7 +977,7 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
@@ -1077,7 +1079,7 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
@@ -1140,7 +1142,7 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
@@ -1246,7 +1248,7 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 	fsc.FileNamePatterns = []string{searchPattern}
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
@@ -1368,7 +1370,7 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
 	fsc.SelectByFileMode = 0666
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
@@ -1496,7 +1498,7 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
 	fsc.FilesOlderThan = filesOlderThan
 	fsc.FilesNewerThan = filesNewerThan
 	fsc.SelectByFileMode = 0666
-	fsc.SelectCriterionMode = ANDFILESELECTCRITERION
+	fsc.SelectCriterionMode = FileSelectCriterion.ANDSelect()
 
 	dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
