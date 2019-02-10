@@ -351,13 +351,13 @@ func (fMgrs *FileMgrCollection) FindFiles(
 //
 // ------------------------------------------------------------------------
 //
-// Input Parameter
+// Input Parameters:
 //
 //	None
 //
 // ------------------------------------------------------------------------
 //
-// Return Values
+// Return Values:
 //
 //	[]FileMgr      - The array of of FileMgr instances maintained by this
 //	                 collection.
@@ -2589,12 +2589,16 @@ func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err erro
 //
 // This method is identical to method 'NewFromPathFileNameExtStr()'.
 //
+// ------------------------------------------------------------------------
+//
 // Input Parameter:
 //
 //	pathFileNameExt string - Must consist of a valid path, file name
 //	                         and file extension. The file need not exist.
 //	                         Failure to provide a properly formatted path
 //	                         path, file name will result in an error.
+//
+// ------------------------------------------------------------------------
 //
 // Usage:
 //
@@ -2639,12 +2643,16 @@ func (fMgr FileMgr) New(pathFileNameExt string) (FileMgr, error) {
 //
 // This method is identical to method 'New()'.
 //
+// ------------------------------------------------------------------------
+//
 // Input Parameter:
 //
 //	pathFileNameExt string - Must consist of a valid path, file name
 //	                         and file extension. The file need not exist.
 //	                         Failure to provide a properly formatted path
 //	                         path, file name will result in an error.
+//
+// ------------------------------------------------------------------------
 //
 // Usage:
 //
@@ -4506,12 +4514,16 @@ func (fops FileOps) NewByDirStrsAndFileNameExtStrs(
 // and/or destination files configured and identified in the current
 // FileOps instance.
 //
-// Input Parameter: FileOperationCode
+// ------------------------------------------------------------------------
 //
-// The FileOperationCode type consists of the following
-// constants.
+// Input Parameters:
 //
-//	FileOperationCode(0).MoveSourceFileToDestination() FileOperationCode = iota
+//	FileOperationCode
+//
+// 	The FileOperationCode type consists of the following
+//	constants.
+//
+//	FileOperationCode(0).MoveSourceFileToDestination()
 // 		Moves the source file to the destination file and
 // 		then deletes the original source file
 //

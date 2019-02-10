@@ -808,8 +808,10 @@ func (dMgr *DirMgr) DeleteAll() error {
 //
 // If the 'fileSearchPattern' is improperly formatted, an error will be returned.
 //
+// ------------------------------------------------------------------------
+//
 // Example 'filePatterns'
-// =====================
+//
 // *.*              will match all files in directory.
 // *.html    				will match  anyfilename.html
 // a*								will match  appleJack.txt
@@ -983,8 +985,9 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() error {
 // A record of file deletions is included in the returned DirectoryDeleteFileInfo
 // structure (DirectoryDeleteFileInfo.DeletedFiles).
 //
+// ------------------------------------------------------------------------
+//
 // Input Parameter:
-// ================
 //
 // deleteFileSelectionCriteria FileSelectionCriteria
 //			This input parameter should be configured with the desired file
@@ -1081,8 +1084,10 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() error {
 // 																			and 'FilesNewerThan', then a file will be selected if it satisfies any
 // 																			one of the three criterion in this example.
 //
-// IMPORTANT
-// *********
+// ------------------------------------------------------------------------
+//
+// IMPORTANT:
+//
 // If all of the file selection criterion in the FileSelectionCriteria object are
 // 'Inactive' or 'Not Set' (set to their zero or default values), then all of
 // the files processed will be selected and DELETED.
@@ -1098,8 +1103,10 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() error {
 //					will be SELECTED FOR DELETION!
 //
 //
+// ------------------------------------------------------------------------
+//
 // Return Value:
-// =============
+//
 //
 // 				type DirectoryDeleteFileInfo struct {
 //									StartPath            	string
@@ -1369,18 +1376,21 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 // a 'selected' file and designated file operations are
 // performed on that file.
 //
+// ------------------------------------------------------------------------
+//
 // IMPORTANT:
-// ==========
+//
 // This method performs File Operations on THE ENTIRE DIRECTORY
 // TREE identified by this DirMgr instance.
 //
-// Input Parameters:
-// ================
+// ------------------------------------------------------------------------
 //
-// ---------------------------------------------------------------------------
-// fileSelectCriteria FileSelectionCriteria
-// ---------------------------------------------------------------------------
-
+// Input Parameters:
+//
+//
+//
+//	fileSelectCriteria FileSelectionCriteria
+//
 //			This input parameter should be configured with the desired file
 //      selection criteria. Files matching this criteria will be identified
 // 			as 'Selected Files'. The specified File Operations (fileOps) will be
@@ -1476,8 +1486,10 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 // 																			and 'FilesNewerThan', then a file will be selected if it satisfies any
 // 																			one of the three criterion in this example.
 //
-// IMPORTANT
-// *********
+// ------------------------------------------------------------------------
+//
+// IMPORTANT:
+//
 // If all of the file selection criterion in the FileSelectionCriteria object are
 // 'Inactive' or 'Not Set' (set to their zero or default values), then all of
 // the files processed in the directory tree will be selected and returned as
@@ -1495,12 +1507,15 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //					as 'Found Files'.
 //
 // ---------------------------------------------------------------------------
+//
 //	fileOps []FileOperationCode - An array of file operations to be performed
 //	                              on each selected file. Selected files are
 //	                              identified by matching the file selection
 //	                              criteria specified by input parameter,
 //	                              'fileSelectCriteria'. See above.
+//
 // ---------------------------------------------------------------------------
+//
 // The FileOperationCode type consists of the following
 // constants.
 //
@@ -1577,14 +1592,15 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 // 		Creates the Destination File
 //
 // ---------------------------------------------------------------------------
+//
 // targetBaseDir - 	The file selection criteria, 'fileSelectCriteria', and
 // 									the File Operations, 'fileOps' are applied to files in
 // 									the target base directory. This input parameter is of
 //                  type 'DirMgr'.
+//
 // ---------------------------------------------------------------------------
 //
-// Function Returns:
-// =================
+// Return Values:
 //
 // This function will return an array of strings containing error messages
 // generated during the performance of specified File Operations on the
@@ -1675,18 +1691,21 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 // that file is treated as a 'selected' file and designated
 // file operations are performed on that file.
 //
+// ------------------------------------------------------------------------
+//
 // IMPORTANT:
-// ==========
+//
 // This method performs File Operations ONLY on the directory
 // identified by the current DirMgr instance.
 //
-// Input Parameters:
-// ================
+// ------------------------------------------------------------------------
 //
-// ---------------------------------------------------------------------------
-// fileSelectCriteria FileSelectionCriteria
-// ---------------------------------------------------------------------------
-
+// Input Parameters:
+//
+//
+//
+//	fileSelectCriteria FileSelectionCriteria
+//
 //			This input parameter should be configured with the desired file
 //      selection criteria. Files matching this criteria will be identified
 // 			as 'Selected Files'. The specified File Operations (fileOps) will be
@@ -1782,8 +1801,10 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 // 																			and 'FilesNewerThan', then a file will be selected if it satisfies any
 // 																			one of the three criterion in this example.
 //
+// ------------------------------------------------------------------------
+//
 // IMPORTANT
-// *********
+//
 // If all of the file selection criterion in the FileSelectionCriteria object are
 // 'Inactive' or 'Not Set' (set to their zero or default values), then all of
 // the files processed in the directory tree will be selected and returned as
@@ -1800,15 +1821,15 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 //					in the target directory will be selected and returned
 //					as 'Found Files'.
 //
-// ---------------------------------------------------------------------------
-// fileOps []FileOperationCode - An array of file operations to be performed
-//                           on each selected file. Selected files are
-//                           identified by matching the file selection
-//                           criteria specified by input parameter,
-//                           'fileSelectCriteria'. See above.
-// ---------------------------------------------------------------------------
-// The FileOperationCode type consists of the following
-// constants.
+//
+//	fileOps []FileOperationCode - An array of file operations to be performed
+//	                              on each selected file. Selected files are
+//	                              identified by matching the file selection
+//	                              criteria specified by input parameter,
+//	                              'fileSelectCriteria'. See above.
+//
+//	The FileOperationCode type consists of the following
+//	constants.
 //
 //	FileOperationCode(0).MoveSourceFileToDestination() FileOperationCode = iota
 // 		Moves the source file to the destination file and
@@ -1879,15 +1900,16 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 // 	FileOperationCode(0).CreateDestinationFile()
 // 		Creates the Destination File
 //
-// ---------------------------------------------------------------------------
+//
 // targetBaseDir - 	The file selection criteria, 'fileSelectCriteria', and
 // 									the File Operations, 'fileOps' are applied to files in
 // 									the target base directory. This input parameter is of
 //                  type 'DirMgr'.
-// ---------------------------------------------------------------------------
 //
-// Function Returns:
-// =================
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
 //
 // This function will return an array of strings containing error messages
 // generated during the performance of specified File Operations on the
@@ -2056,8 +2078,10 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 //
 // If the 'fileSearchPattern' is improperly formatted, an error will be returned.
 //
+// ------------------------------------------------------------------------
+//
 // Example 'filePatterns'
-// =====================
+//
 // *.*              will match all files in directory.
 // *.html    				will match  anyfilename.html
 // a*								will match  appleJack.txt
@@ -2167,10 +2191,11 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
 // The use of a 'FileSelectionCriteria' structure allows for very flexible
 // and granular file searches.
 //
-// Input Parameter:
-// ================
+// ------------------------------------------------------------------------
 //
-// fileSelectCriteria FileSelectionCriteria
+// Input Parameter:
+//
+//	fileSelectCriteria FileSelectionCriteria
 //			This input parameter should be configured with the desired file
 //      selection criteria. Files matching this criteria will be returned as
 // 			'Found Files'.
@@ -2265,8 +2290,10 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
 // 																			and 'FilesNewerThan', then a file will be selected if it satisfies any
 // 																			one of the three criterion in this example.
 //
+// ------------------------------------------------------------------------
+//
 // IMPORTANT
-// *********
+//
 // If all of the file selection criterion in the FileSelectionCriteria object are
 // 'Inactive' or 'Not Set' (set to their zero or default values), then all of
 // the files processed in the directory tree will be selected and returned as
@@ -2384,10 +2411,11 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 // zero values or 'Inactive', then ALL FILES in the directory are selected and returned in the field,
 // 'DirectoryTreeInfo.FoundFiles'.
 //
-// Input Parameters:
-// ================
+// ------------------------------------------------------------------------
 //
-// fileSelectCriteria FileSelectionCriteria
+// Input Parameters:
+//
+//	fileSelectCriteria FileSelectionCriteria
 //			This input parameter should be configured with the desired file
 //      selection criteria. Files matching this criteria will be returned as
 // 			'Found Files'.
@@ -2482,8 +2510,10 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 // 																			and 'FilesNewerThan', then a file will be selected if it satisfies any
 // 																			one of the three criterion in this example.
 //
+// ------------------------------------------------------------------------
+//
 // IMPORTANT
-// *********
+//
 // If all of the file selection criterion in the FileSelectionCriteria object are
 // 'Inactive' or 'Not Set' (set to their zero or default values), then all of
 // the files processed in the directory tree will be selected and returned as
@@ -2501,8 +2531,9 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 //					as 'Found Files'.
 //
 //
-// Return Value:
-// =============
+// ------------------------------------------------------------------------
+//
+// Return Values:
 //
 //	DirectoryTreeInfo structure	-
 //					type DirectoryTreeInfo struct {
@@ -3085,15 +3116,17 @@ func (dMgr *DirMgr) MakeDir() error {
 // NewFromPathFileNameExtStr - Returns a new DirMgr object and populates the
 // the data fields.
 //
+// ------------------------------------------------------------------------
+//
 // Input Parameters:
-// =================
 //
-// pathStr string 	- A path string designating a path or directory.
-// 										To reduce errors, the 'pathStr' should be terminated
-//										with an appropriate path separator ('/' or '\')
-//										Example 'pathStr': "C:\dirA\dirB\dirC\"
 //
-// Example Output After DirMgr Configuration:
+//	pathStr string - A path string designating a path or directory.
+//	                 To reduce errors, the 'pathStr' should be terminated
+//	                 with an appropriate path separator ('/' or '\')
+//	                 Example 'pathStr': "C:\dirA\dirB\dirC\"
+//
+//	Example Output After DirMgr Configuration:
 //
 //     ----------------------------
 //     DirMgr Fields
@@ -3173,13 +3206,15 @@ func (dMgr DirMgr) NewFromFileInfo(pathStr string, info os.FileInfo) (DirMgr, er
 
 // SetDirMgr - Sets the DirMgr fields and path strings for the current DirMgr object.
 //
-// Input Parameters:
-// =================
+// ------------------------------------------------------------------------
 //
-// pathStr string 	- A path string designating a path or directory.
-// 										To reduce errors, the 'pathStr' should be terminated
-//										with an appropriate path separator ('/' or '\')
-//										Example 'pathStr': "C:\dirA\dirB\dirC\"
+// Input Parameters:
+//
+//
+//	pathStr string - A path string designating a path or directory.
+//	                 To reduce errors, the 'pathStr' should be terminated
+//	                 with an appropriate path separator ('/' or '\')
+//	                 Example 'pathStr': "C:\dirA\dirB\dirC\"
 //
 // Example Output After DirMgr Configuration:
 //

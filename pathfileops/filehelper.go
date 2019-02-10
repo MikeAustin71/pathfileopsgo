@@ -17,16 +17,17 @@ import (
 		The Source Repository for this source code file is :
 			https://github.com/MikeAustin71/pathfilego.git
 
-		'FileHelper' is dependent of 'DirMgr' and 'FileMgr'.  'DirMgr' and 'FileMgr'
+		'FileHelper' is a dependency of 'DirMgr' and 'FileMgr'.  'DirMgr' and 'FileMgr'
 		are located in source file 'filemanagers.go' found in this same
 	 	directory: '003_filehelper/common/filemanagers.go'
 
 
 */
 
-// FileHelper - structure used
-// to encapsulate FileHelper utility
-// methods.
+// FileHelper - The methods associated with this type provide
+// generalized file creation, management and maintenance utilities.
+//
+// 'FileHelper' is a dependency for types 'DirMgr' and 'FileMgr'.
 type FileHelper struct {
 	Input  string
 	Output string
@@ -741,14 +742,11 @@ func (fh FileHelper) CreateFile(pathFileName string) (*os.File, error) {
 	return os.Create(pathFileName)
 }
 
-// DeleteFilesWalkDir - !!! BE CAREFUL !!! This method deletes files in
-// a specified directory tree.
-//
-// This method searches for files residing in the directory tree
-// identified by the input parameter 'startPath'. The method 'walks the
-// directory tree' locating all files in the directory tree which
-// match the file selection criteria submitted as method input parameter,
-// 'deleteFileSelectionCriteria'.
+// DeleteFilesWalkDir - This method searches for files residing in the
+// directory tree identified by the input parameter 'startPath'. The
+// method 'walks the directory tree' locating all files in the directory
+// tree which match the file selection criteria submitted as method input
+// parameter, 'deleteFileSelectionCriteria'.
 //
 // If a file matches the File Selection Criteria, it is DELETED. By the way,
 // if ALL the file selection criterion are set to zero values or 'Inactive',
@@ -757,110 +755,134 @@ func (fh FileHelper) CreateFile(pathFileName string) (*os.File, error) {
 // A record of file deletions is included in the returned DirectoryDeleteFileInfo
 // structure (DirectoryDeleteFileInfo.DeletedFiles).
 //
+//
+// ------------------------------------------------------------------------
+//
+// Important:
+//
+// !!! BE CAREFUL !!! This method deletes files in a specified directory tree.
+//
+// ------------------------------------------------------------------------
+//
 // Input Parameters:
-// =================
-//
-// startPath string					- This directory path string specifies the
-//														directory containing files which will be matched
-//														for deletion according to the file selection criteria.
-//
-// deleteFileSelectionCriteria FileSelectionCriteria
-//			This input parameter should be configured with the desired file
-//      selection criteria. Files matching this criteria will be deleted.
-//
-//			type FileSelectionCriteria struct {
-//					FileNamePatterns						[]string
-//					FilesOlderThan							time.Time
-//					FilesNewerThan							time.Time
-//					SelectByFileMode						os.FileMode
-//					SelectCriterionMode					FileSelectCriterionMode
-//				}
-//
-//			The FileSelectionCriteria type allows for configuration of single or multiple
-// 			file selection criterion. The 'SelectCriterionMode' can be used to specify
-// 			whether the file must match all or any one of the active file selection criterion.
-//
-//			Elements of the FileSelectionCriteria are described below:
-//
-// 			FileNamePatterns []string		- An array of strings which may define
-//																		one or more search patterns. If a file
-//																		name matches any one of the search pattern
-//																		strings, it is deemed to be a 'match'
-//																		for this search pattern criterion.
-//																		Example Patterns:
-//																				"*.log"
-//																				"current*.txt"
-//
-//														  			If this string array has zero length or if
-//																		all the strings are empty strings, then this
-//																		file search criterion is considered 'Inactive'
-//																		or 'Not Set'.
 //
 //
-//        FilesOlderThan	time.Time	- This date time type is compared to file
-//																		modification date times in order to determine
-//																		whether the file is older than the 'FilesOlderThan'
-//																		file selection criterion. If the file modification
-// 																		date time is older than the 'FilesOlderThan' date time,
-// 																		that file is considered a 'match'	for this file selection criterion.
+//	startPath string        - This directory path string specifies the
+//	                          directory containing files which will be matched
+//	                          for deletion according to the file selection criteria.
 //
-//																	  If the value of 'FilesOlderThan' is set to time zero,
-//																		the default value for type time.Time{}, then this
-//																		file selection criterion is considered to be 'Inactive'
-//																		or 'Not Set'.
+//	deleteFileSelectionCriteria FileSelectionCriteria
+//	                          This input parameter should be configured with the desired file
+//	                          selection criteria. Files matching this criteria will be deleted.
 //
-//        FilesNewerThan	time.Time	- This date time type is compared to the file
-//																		modification date time in order to determine
-//																		whether the file is newer than the 'FilesNewerThan'
-//																		file selection criterion. If the file modification
-// 																		date time is newer than the 'FilesNewerThan' date time,
-// 																		that file is considered a 'match' for this file selection
-// 																		criterion.
+//	                          _________________________________________________________________
 //
-//																	  If the value of 'FilesNewerThan' is set to time zero,
-//																		the default value for type time.Time{}, then this file
-//																		selection criterion is considered to be 'Inactive' or
-//																		'Not Set'.
+//	                          type FileSelectionCriteria struct {
+//	                            FileNamePatterns        []string
+//	                            FilesOlderThan          time.Time
+//	                            FilesNewerThan          time.Time
+//	                            SelectByFileMode        os.FileMode
+//	                            SelectCriterionMode     FileSelectCriterionMode
+//	                           }
 //
-// 		 SelectByFileMode os.FileMode - os.FileMode is an uint32 value. This file selection criterion
-// 																		allows for the selection of files by File Mode. File Modes
-// 																		are compared to the value	of 'SelectByFileMode'. If the File
-// 																		Mode for a given file is equal to the value of 'SelectByFileMode',
-//																		that file is considered to be a 'match' for this file selection
-// 																		criterion.
+//	                           The FileSelectionCriteria type allows for configuration of single or multiple
+//	                           file selection criterion. The 'SelectCriterionMode' can be used to specify
+//	                           whether the file must match all or any one of the active file selection criterion.
 //
-//																		If the value of 'SelectByFileMode' is set equal to zero, then
-//																		this file selection criterion is considered 'Inactive' or
-//																		'Not Set'.
+//	                           Elements of the FileSelectionCriteria are described below:
+//
+//	                           FileNamePatterns []string - An array of strings which may define
+//	                                                       one or more search patterns. If a file
+//	                                                       name matches any one of the search pattern
+//	                                                       strings, it is deemed to be a 'match'
+//	                                                       for this search pattern criterion.
+//	                                                       Example Patterns:
+//	                                                       "*.log"
+//	                                                       "current*.txt"
+//
+//	                                                       If this string array has zero length or if
+//	                                                       all the strings are empty strings, then this
+//	                                                       file search criterion is considered 'Inactive'
+//	                                                       or 'Not Set'.
+//
+//
+//	                           FilesOlderThan time.Time  - This date time type is compared to file
+//	                                                       modification date times in order to determine
+//	                                                       whether the file is older than the 'FilesOlderThan'
+//	                                                       file selection criterion. If the file modification
+//	                                                       date time is older than the 'FilesOlderThan' date time,
+//	                                                       that file is considered a 'match'	for this file selection
+//	                                                       criterion.
+//
+//	                                                       If the value of 'FilesOlderThan' is set to time zero,
+//	                                                       the default value for type time.Time{}, then this
+//	                                                       file selection criterion is considered to be 'Inactive'
+//	                                                       or 'Not Set'.
+//
+//	                           FilesNewerThan time.Time  - This date time type is compared to the file
+//	                                                       modification date time in order to determine
+//	                                                       whether the file is newer than the 'FilesNewerThan'
+//	                                                       file selection criterion. If the file modification
+//	                                                       date time is newer than the 'FilesNewerThan' date time,
+//	                                                       that file is considered a 'match' for this file selection
+//	                                                       criterion.
+//
+//	                                                       If the value of 'FilesNewerThan' is set to time zero,
+//	                                                       the default value for type time.Time{}, then this file
+//	                                                       selection criterion is considered to be 'Inactive' or
+//	                                                       'Not Set'.
+//
+//	                           SelectByFileMode os.FileMode - os.FileMode is an uint32 value. This file selection
+//	                                                          criterion allows for the selection of files by File
+//	                                                          Mode. File Modes are compared to the value of
+//	                                                          'SelectByFileMode'. If the File Mode for a given file
+//	                                                          is equal to the value of 'SelectByFileMode', that file
+//	                                                          is considered to be a 'match' for this file selection
+//	                                                          criterion.
+//
+//	                                                          If the value of 'SelectByFileMode' is set equal to zero,
+//	                                                          then this file selection criterion is considered
+//	                                                          'Inactive' or 'Not Set'.
+//
+//	                          _________________________________________________________________
 //
 //	SelectCriterionMode	FileSelectCriterionMode -
-//																		This parameter selects the manner in which the file selection
-//																		criteria above are applied in determining a 'match' for file
-// 																		selection purposes. 'SelectCriterionMode' may be set to one of
-//																		two constant values:
+//	                          This parameter selects the manner in which the file selection
+//	                          criteria above are applied in determining a 'match' for file
+//	                          selection purposes. 'SelectCriterionMode' may be set to one of
+//	                          two constant values:
 //
-//																		ANDFILESELECTCRITERION	- File selected if all active selection criteria
-//																			are satisfied.
+//	                          _________________________________________________________________
 //
-// 																			If this constant value is specified for the file selection mode,
-// 																			then a given file will not be judged as 'selected' unless all of
-// 																			the active selection criterion are satisfied. In other words, if
-// 																			three active search criterion are provided for 'FileNamePatterns',
-//																			'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
-//																			selected unless it has satisfied all three criterion in this example.
+//	                          ANDFILESELECTCRITERION - File selected if all active selection criteria
+//	                                                   are satisfied.
 //
-//																		ORFILESELECTCRITERION 	- File selected if any active selection criterion
-//																			is satisfied.
+//	                                    If this constant value is specified for the file selection mode,
+//	                                    then a given file will not be judged as 'selected' unless all of
+//	                                    the active selection criterion are satisfied. In other words, if
+//	                                    three active search criterion are provided for 'FileNamePatterns',
+//	                                    'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//	                                    selected unless it has satisfied all three criterion in this example.
 //
-// 																			If this constant value is specified for the file selection mode,
-// 																			then a given file will be selected if any one of the active file
-// 																			selection criterion is satisfied. In other words, if three active
-// 																			search criterion are provided for 'FileNamePatterns', 'FilesOlderThan'
-// 																			and 'FilesNewerThan', then a file will be selected if it satisfies any
-// 																			one of the three criterion in this example.
+//	                          ORFILESELECTCRITERION  - File selected if any active selection criterion
+//	                                                   is satisfied.
 //
-// IMPORTANT
-// *********
+//	                                    If this constant value is specified for the file selection mode,
+//	                                    then a given file will be selected if any one of the active file
+//	                                    selection criterion is satisfied. In other words, if three active
+//	                                    search criterion are provided for 'FileNamePatterns', 'FilesOlderThan'
+//	                                    and 'FilesNewerThan', then a file will be selected if it satisfies any
+//	                                    one of the three criterion in this example.
+//
+//	                          _________________________________________________________________
+//
+//
+// ------------------------------------------------------------------------
+//
+// IMPORTANT:
+//
+//
+//
 // If all of the file selection criterion in the FileSelectionCriteria object are
 // 'Inactive' or 'Not Set' (set to their zero or default values), then all of
 // the files processed will be selected and DELETED.
@@ -875,30 +897,37 @@ func (fh FileHelper) CreateFile(pathFileName string) (*os.File, error) {
 //					'Inactive' and therefore all of the files encountered
 //					in the target directory tree will be SELECTED FOR DELETION!
 //
+// ------------------------------------------------------------------------
 //
-// Return Value:
-// =============
+// Return Values:
 //
-// 				type DirectoryDeleteFileInfo struct {
-//							StartPath            	string			// Starting directory path submitted as an input parameter
-// 																								//     to this method
-//							dirMgrs          	[]DirMgr		// Returned information on directories found in directory tree
-//							ErrReturns           	[]string		// Internal System Errors encountered
-//							DeleteFileSelectCriteria FileSelectionCriteria // File Selection Criteria submitted as an
-//																														 //   input parameter to this method.
-//							DeletedFiles         	[]FileWalkInfo // Infomation on the files deleted by this method.
-//					}
+//	DirectoryDeleteFileInfo - If successful, files matching the file selection criteria
+//	                          specified in input parameter 'deleteFileSelectionCriteria'
+//	                          will be DELETED and returned in a 'DirectoryDeleteFileInfo'
+//	                          structure field, DirectoryDeleteFileInfo.DeletedFiles.
 //
-//					If successful, files matching the file selection criteria specified in input
-// 					parameter 'deleteFileSelectionCriteria' will be DELETED and returned in a
-// 					'DirectoryDeleteFileInfo' structure field, DirectoryDeleteFileInfo.DeletedFiles.
+//	                          Note: It is a good idea to check the returned field
+//	                                    DirectoryDeleteFileInfo.ErrReturns
+//	                          to determine if any internal system errors were encountered during file processing.
 //
-//					Note: It is a good idea to check the returned field DirectoryDeleteFileInfo.ErrReturns
-// 								to determine if any internal system errors were encountered during file processing.
+//	  _____________________________________________________
 //
-//	error	- If a program execution error is encountered during processing, it will
-//					returned as an 'error' type. Also, see the comment on DirectoryDeleteFileInfo.ErrReturns,
-// 					above.
+//	  type DirectoryDeleteFileInfo struct {
+//	    StartPath            string   // Starting directory path submitted as an input parameter
+//	                                  //     to this method
+//	    dirMgrs            []DirMgr   // Returned information on directories found in directory tree
+//	    ErrReturns         []string   // Internal System Errors encountered
+//
+//	    DeleteFileSelectCriteria FileSelectionCriteria // File Selection Criteria submitted as an
+//	                                                   //   input parameter to this method.
+//	    DeletedFiles []FileWalkInfo   // Information on the files deleted by this method.
+//	  }
+//
+//	  _____________________________________________________
+//
+//	error - If a program execution error is encountered during processing, it will
+//	        returned as an 'error' type. Also, see the comment on DirectoryDeleteFileInfo.ErrReturns,
+//	        above.
 //
 func (fh FileHelper) DeleteFilesWalkDir(startPath string, deleteFileSelectionCriteria FileSelectionCriteria) (DirectoryDeleteFileInfo, error) {
 	ePrefix := "FileHelper.DeleteFilesWalkDir() "
@@ -1222,148 +1251,165 @@ func (fh *FileHelper) FilterFileName(info os.FileInfo, fileSelectionCriteria Fil
 // or 'Inactive', then ALL FILES in the directory are selected and returned in the field,
 // 'DirectoryTreeInfo.FoundFiles'.
 //
+// ------------------------------------------------------------------------
+//
 // Input Parameter:
-// ================
-//
-// fileSelectCriteria FileSelectionCriteria
-//			This input parameter should be configured with the desired file
-//      selection criteria. Files matching this criteria will be returned as
-// 			'Found Files'.
-//
-//			type FileSelectionCriteria struct {
-//					FileNamePatterns						[]string		// An array of strings containing File Name Patterns
-//					FilesOlderThan							time.Time		// Match files with older modification date times
-//					FilesNewerThan							time.Time		// Match files with newer modification date times
-//					SelectByFileMode						os.FileMode	// Match file mode. Zero if inactive
-//					SelectCriterionMode					FileSelectCriterionMode // Specifies 'AND' or 'OR' selection mode
-//				}
-//
-//			The FileSelectionCriteria type allows for configuration of single or multiple file
-// 			selection criterion. The 'SelectCriterionMode' can be used to specify whether the
-// 			file must match all, or any one, of the active file selection criterion.
-//
-//			Elements of the FileSelectionCriteria are described below:
-//
-// 			FileNamePatterns []string		- An array of strings which may define one or more
-//																		search patterns. If a file name matches any one of the
-// 																		search pattern strings, it is deemed to be a 'match'
-//																		for the search pattern criterion.
-//																		Example Patterns:
-//																				"*.log"
-//																				"current*.txt"
-//
-//														  			If this string array has zero length or if
-//																		all the strings are empty strings, then this
-//																		file search criterion is considered 'Inactive'
-//																		or 'Not Set'.
 //
 //
-//        FilesOlderThan	time.Time	- This date time type is compared to file
-//																		modification date times in order to determine
-//																		whether the file is older than the 'FilesOlderThan'
-//																		file selection criterion. If the file is older than
-//																		the 'FilesOlderThan' date time, that file is considered
-// 																		a 'match'	for this file selection criterion.
-//
-//																	  If the value of 'FilesOlderThan' is set to time zero,
-//																		the default value for type time.Time{}, then this
-//																		file selection criterion is considered to be 'Inactive'
-//																		or 'Not Set'.
-//
-//        FilesNewerThan	time.Time	- This date time type is compared to the file
-//																		modification date time in order to determine
-//																		whether the file is newer than the 'FilesNewerThan'
-//																		file selection criterion. If the file modification date time
-// 																		is newer than the 'FilesNewerThan' date time, that file is
-// 																		considered a 'match' for this file selection criterion.
-//
-//																	  If the value of 'FilesNewerThan' is set to time zero,
-//																		the default value for type time.Time{}, then this
-//																		file selection criterion is considered to be 'Inactive'
-//																		or 'Not Set'.
-//
-// 		 SelectByFileMode os.FileMode - os.FileMode is an uint32 value. This file selection criterion
-// 																		allows for the selection of files by File Mode. File Modes
-// 																		are compared to the value	of 'SelectByFileMode'. If the File
-// 																		Mode for a given file is equal to the value of 'SelectByFileMode',
-//																		that file is considered to be a 'match' for this file selection
-// 																		criterion.
-//
-//																		If the value of 'SelectByFileMode' is set equal to zero, then
-//																		this file selection criterion is considered 'Inactive' or
-//																		'Not Set'.
-//
-//	SelectCriterionMode	FileSelectCriterionMode -
-//																		This parameter selects the manner in which the file selection
-//																		criteria above are applied in determining a 'match' for file
-// 																		selection purposes. 'SelectCriterionMode' may be set to one of
-//																		two constant values:
-//
-//																		ANDFILESELECTCRITERION	- File selected if all active selection criteria
-//																			are satisfied.
-//
-// 																			If this constant value is specified for the file selection mode,
-// 																			then	a given file will not be judged as 'selected' unless all of
-// 																			the active selection criterion are satisfied. In other words, if
-// 																			three active search criterion are provided for 'FileNamePatterns',
-//																			'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
-//																			selected unless it has satisfied all three criterion in this example.
-//
-//																		ORFILESELECTCRITERION 	- File selected if any active selection criterion
-//																			is satisfied.
-//
-// 																			If this constant value is specified for the file selection mode,
-// 																			then a given file will be selected if any one of the active file
-// 																			selection criterion is satisfied. In other words, if three active
-// 																			search criterion are provided for 'FileNamePatterns', 'FilesOlderThan'
-// 																			and 'FilesNewerThan', then a file will be selected if it satisfies any
-// 																			one of the three criterion in this example.
-//
-// IMPORTANT
-// *********
-// If all of the file selection criterion in the FileSelectionCriteria object are
-// 'Inactive' or 'Not Set' (set to their zero or default values), then all of
-// the files processed in the directory tree will be selected and returned as
-// 'Found Files'.
-//
-// 			Example:
-//					FileNamePatterns 	= ZERO Length Array
-//          filesOlderThan 		= time.Time{}
-//					filesNewerThan 		= time.Time{}
-//					SelectByFileMode 	= uint32(0)
-//
-//					In this example, all of the selection criterion are
-//					'Inactive' and therefore all of the files encountered
-//					in the target directory will be selected and returned
-//					as 'Found Files'.
+//  fileSelectCriteria FileSelectionCriteria -
+//	    This input parameter should be configured with the desired file
+//	    selection criteria. Files matching this criteria will be returned as
+//	    'Found Files'.
 //
 //
-// Return Value:
-// =============
+//       _______________________________________________________________________________________________
+//       type FileSelectionCriteria struct {
+//         FileNamePatterns     []string    // An array of strings containing File Name Patterns
+//         FilesOlderThan       time.Time   // Match files with older modification date times
+//         FilesNewerThan       time.Time   // Match files with newer modification date times
+//         SelectByFileMode     os.FileMode // Match file mode. Zero if inactive
+//         SelectCriterionMode  FileSelectCriterionMode // Specifies 'AND' or 'OR' selection mode
+//       }
 //
-//	DirectoryTreeInfo structure	-
-//					type DirectoryTreeInfo struct {
-//						StartPath            	string								// The starting path or directory for the file search
-//						dirMgrs          	[]DirMgr							// dirMgrs found during directory tree search
-//						FoundFiles           	[]FileWalkInfo				// Found Files matching file selection criteria
-//						ErrReturns           	[]string							// Internal System errors encountered
-//						FileSelectCriteria    FileSelectionCriteria // The File Selection Criteria submitted as an
-// 																												// input parameter to this method.
-//					}
+//       The FileSelectionCriteria type allows for configuration of single or multiple file
+//       selection criterion. The 'SelectCriterionMode' can be used to specify whether the
+//       file must match all, or any one, of the active file selection criterion.
 //
-//					If successful, files matching the file selection criteria input
-//  				parameter shown above will be returned in a 'DirectoryTreeInfo'
-//  				object. The field 'DirectoryTreeInfo.FoundFiles' contains information
-// 					on all the files in the specified directory tree which match the file selection
-// 					criteria.
+//       Elements of the FileSelectionCriteria Type are described below:
 //
-//					Note: It is a good idea to check the returned field 'DirectoryTreeInfo.ErrReturns'
-// 								to determine if any internal system errors were encountered while processing
-// 								the directory tree.
+//       FileNamePatterns []string  - An array of strings which may define one or more
+//                                    search patterns. If a file name matches any one of the
+//                                    search pattern strings, it is deemed to be a 'match'
+//                                    for the search pattern criterion.
+//                                    Example Patterns:
+//                                        "*.log"
+//                                        "current*.txt"
 //
-//	error	- If a program execution error is encountered during processing, it will
-//					be returned as an 'error' type. Also, see the comment on 'DirectoryTreeInfo.ErrReturns',
-// 					above.
+//                                    If this string array has zero length or if
+//                                    all the strings are empty strings, then this
+//                                    file search criterion is considered 'Inactive'
+//                                    or 'Not Set'.
+//
+//
+//       FilesOlderThan  time.Time - This date time type is compared to file
+//                                   modification date times in order to determine
+//                                   whether the file is older than the 'FilesOlderThan'
+//                                   file selection criterion. If the file is older than
+//                                   the 'FilesOlderThan' date time, that file is considered
+//                                   a 'match'	for this file selection criterion.
+//
+//                                   If the value of 'FilesOlderThan' is set to time zero,
+//                                   the default value for type time.Time{}, then this
+//                                   file selection criterion is considered to be 'Inactive'
+//                                   or 'Not Set'.
+//
+//      FilesNewerThan   time.Time - This date time type is compared to the file
+//                                   modification date time in order to determine
+//                                   whether the file is newer than the 'FilesNewerThan'
+//                                   file selection criterion. If the file modification date time
+//                                   is newer than the 'FilesNewerThan' date time, that file is
+//                                   considered a 'match' for this file selection criterion.
+//
+//                                   If the value of 'FilesNewerThan' is set to time zero,
+//                                   the default value for type time.Time{}, then this
+//                                   file selection criterion is considered to be 'Inactive'
+//                                   or 'Not Set'.
+//
+//      SelectByFileMode os.FileMode -
+//                                   'os.FileMode' is an uint32 value. This file selection criterion
+//                                   allows for the selection of files by File Mode. File Modes
+//                                   are compared to the value	of 'SelectByFileMode'. If the File
+//                                   Mode for a given file is equal to the value of 'SelectByFileMode',
+//                                   that file is considered to be a 'match' for this file selection
+//                                   criterion.
+//
+//                                   If the value of 'SelectByFileMode' is set equal to zero, then
+//                                   this file selection criterion is considered 'Inactive' or
+//                                   'Not Set'.
+//
+//      SelectCriterionMode FileSelectCriterionMode -
+//                                   This parameter selects the manner in which the file selection
+//                                   criteria above are applied in determining a 'match' for file
+//                                   selection purposes. 'SelectCriterionMode' may be set to one of
+//                                   two constant values:
+//
+//                                   _____________________________________________________________________
+//
+//                                   ANDFILESELECTCRITERION -
+//                                      File selected if all active selection criteria
+//                                      are satisfied.
+//
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will not be judged as 'selected' unless all of
+//                                      the active selection criterion are satisfied. In other words, if
+//                                      three active search criterion are provided for 'FileNamePatterns',
+//                                      'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                      selected unless it has satisfied all three criterion in this example.
+//
+//                                   ORFILESELECTCRITERION -
+//                                      File selected if any active selection criterion is satisfied.
+//
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will be selected if any one of the active file
+//                                      selection criterion is satisfied. In other words, if three active
+//                                      search criterion are provided for 'FileNamePatterns', 'FilesOlderThan'
+//                                      and 'FilesNewerThan', then a file will be selected if it satisfies any
+//                                      one of the three criterion in this example.
+//
+//                                   _____________________________________________________________________
+//
+//
+// ------------------------------------------------------------------------
+//
+// IMPORTANT:
+//
+//   If all of the file selection criterion in the FileSelectionCriteria object are
+//   'Inactive' or 'Not Set' (set to their zero or default values), then all of
+//   the files processed in the directory tree will be selected and returned as
+//   'Found Files'.
+//
+//     Example:
+//        FileNamePatterns  = ZERO Length Array
+//        filesOlderThan    = time.Time{}
+//        filesNewerThan    = time.Time{}
+//        SelectByFileMode  = uint32(0)
+//
+//     In this example, all of the selection criterion are
+//     'Inactive' and therefore all of the files encountered
+//     in the target directory will be selected and returned
+//     as 'Found Files'.
+//
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+//  DirectoryTreeInfo - If successful, files matching the file selection criteria input
+//                      parameter shown above will be returned in a 'DirectoryTreeInfo'
+//                      object. The field 'DirectoryTreeInfo.FoundFiles' contains information
+//                      on all the files in the specified directory tree which match the file selection
+//                      criteria.
+//
+//                Note: It is a good idea to check the returned field 'DirectoryTreeInfo.ErrReturns'
+//                      to determine if any internal system errors were encountered while processing
+//                      the directory tree.
+//
+//          __________________________________________________________________________________________________
+//
+//          type DirectoryTreeInfo struct {
+//            StartPath             string                // The starting path or directory for the file search
+//            dirMgrs               []DirMgr              // dirMgrs found during directory tree search
+//            FoundFiles            []FileWalkInfo        // Found Files matching file selection criteria
+//            ErrReturns            []string              // Internal System errors encountered
+//            FileSelectCriteria    FileSelectionCriteria // The File Selection Criteria submitted as an
+//                                                        // input parameter to this method.
+//          }
+//
+//          __________________________________________________________________________________________________
+//
+//  error - If a program execution error is encountered during processing, it will
+//          be returned as an 'error' type. Also, see the comment on 'DirectoryTreeInfo.ErrReturns',
+//          above.
 //
 func (fh FileHelper) FindFilesWalkDirectory(startPath string, fileSelectCriteria FileSelectionCriteria) (DirectoryTreeInfo, error) {
 
@@ -1480,262 +1526,6 @@ func (fh FileHelper) GetExecutablePathFileName() (string, error) {
 
 }
 
-// GetFileNameWithExt - This method expects to receive a valid directory path and file name or file name plus
-// extension. It then extracts the File Name and Extension from the file path and returns it as a string.
-//
-// Input Parameter:
-// ================
-//
-// pathFileNameExt string		- This input parameter is expected to contain a properly formatted directory
-//														path and File Name.  The File Name may or may not include a File Extension.
-//														The directory path must include the correct delimiters such as path Separators
-//														('/' or'\'), dots ('.') and in the case of Windows, a volume designation
-// 														(Example: 'F:').
-//
-// Return Values:
-// ==============
-//
-// fNameExt	string					- If successful, this method will the return value 'fNameExt' equal to the
-//													  File Name and File Extension extracted from the input file path, 'pathFileNameExt'.
-//														Example 'fNameExt' return value: 'somefilename.txt'
-//
-//														If the File Extension is not present, only the File Name will be returned.
-//														Example return value with no file extension: 'somefilename'.
-//
-// isEmpty bool							- If this method CAN NOT parse out a valid File Name and Extension from
-//														input parameter string 'pathFileNameExt', return value 'fNameExt' will
-//														be set to an empty string and return value 'isEmpty' will be set to 'true'.
-//
-// err error								- If an error is encountered during processing, 'err' will return a properly
-//														formatted 'error' type.
-//
-// 														Note that if this method cannot parse out a valid	File Name and Extension
-// 														due to an improperly formatted directory path and	file name string
-// 														(Input Parameter: 'pathFileNameExt'), 'fNameExt' will be set to an empty string,
-// 														'isEmpty' will be set to 'true' and 'err' return 'nil'. In this situation, no
-//														error will be returned.
-//
-func (fh FileHelper) GetFileNameWithExt(pathFileNameExt string) (fNameExt string, isEmpty bool, err error) {
-
-	ePrefix := "FileHelper.GetFileNameWithExt"
-	fNameExt = ""
-	isEmpty = true
-	err = nil
-
-	if len(pathFileNameExt) == 0 {
-		err = errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' is a ZERO Length string!")
-		return
-	}
-
-	pathFileNameExt = strings.TrimLeft(strings.TrimRight(pathFileNameExt, " "), " ")
-
-	if pathFileNameExt == "" {
-		err = errors.New(ePrefix + "Error: After trimming 'pathFileNameExt', input parameter 'pathFileNameExt' is a ZERO Length string!")
-		return
-	}
-
-	testPathFileNameExt := fh.AdjustPathSlash(pathFileNameExt)
-
-	volName := fh.GetVolumeName(testPathFileNameExt)
-
-	if volName != "" {
-		testPathFileNameExt = strings.TrimPrefix(testPathFileNameExt, volName)
-	}
-
-	lTestPathFileNameExt := len(testPathFileNameExt)
-
-	if lTestPathFileNameExt == 0 {
-		err = errors.New(ePrefix + "Error: Cleaned version of 'pathFileNameExt', 'testPathFileNameExt' is a ZERO Length string!")
-		return
-	}
-
-	firstCharIdx, lastCharIdx, err2 := fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileNameExt)
-
-	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileNameExt). testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2.Error())
-		return
-	}
-
-	// There are no alpha numeric characters present.
-	// Therefore, there is no file name and extension
-	if firstCharIdx == -1 || lastCharIdx == -1 {
-		isEmpty = true
-		err = nil
-		return
-	}
-
-	slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(testPathFileNameExt)
-
-	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error returned by fh.GetPathSeparatorIndexesInPathStr(testPathFileNameExt). testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2.Error())
-		return
-	}
-
-	dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(testPathFileNameExt)
-
-	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error returned by fh.GetDotSeparatorIndexesInPathStr(testPathFileNameExt). testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2.Error())
-		return
-
-	}
-
-	lSlashIdxs := len(slashIdxs)
-	lDotIdxs := len(dotIdxs)
-
-	if lSlashIdxs > 0 {
-		// This string has path separators
-
-		// Last char is a path separator. Therefore,
-		// there is no file name and extension.
-		if slashIdxs[lSlashIdxs-1] == lTestPathFileNameExt-1 {
-			fNameExt = ""
-		} else if lastCharIdx > slashIdxs[lSlashIdxs-1] {
-
-			fNameExt = testPathFileNameExt[slashIdxs[lSlashIdxs-1]+1:]
-
-		} else {
-			fNameExt = ""
-		}
-
-		if len(fNameExt) == 0 {
-			isEmpty = true
-		} else {
-			isEmpty = false
-		}
-
-		err = nil
-		return
-	}
-
-	// There are no path separators lSlashIdxs == 0
-
-	if lDotIdxs > 0 {
-		// This string has one or more dot separators ('.')
-
-		fNameExt = ""
-
-		if firstCharIdx > dotIdxs[lDotIdxs-1] {
-			// Example '.txt' - Invalid File name and extension
-			isEmpty = true
-			err = fmt.Errorf(ePrefix+"Error: File extension exists but no file name. result='%v'", testPathFileNameExt)
-			return
-
-		} else if firstCharIdx < dotIdxs[lDotIdxs-1] {
-			fNameExt = testPathFileNameExt[firstCharIdx:]
-		}
-
-		if len(fNameExt) == 0 {
-			isEmpty = true
-		} else {
-			isEmpty = false
-		}
-
-		err = nil
-		return
-	}
-
-	// Must be lSlashIdxs == 0 && lDotIdxs ==  0
-	// There are no path Separators and there are
-	// no dot separators ('.').
-
-	fNameExt = testPathFileNameExt[firstCharIdx:]
-
-	if len(fNameExt) == 0 {
-		isEmpty = true
-	} else {
-		isEmpty = false
-	}
-
-	err = nil
-
-	return
-}
-
-// GetFileNameWithoutExt - returns the file name
-// without the path or extension. If the returned
-// File Name is an empty string, isEmpty is set to true.
-//
-// Example
-// pathFileNameExt = ./pathfilego/003_filehelper/common/xt_dirmgr_01_test.go
-// Returned 'fName' = dirmgr_01_test
-//
-func (fh FileHelper) GetFileNameWithoutExt(
-	pathFileNameExt string) (fName string, isEmpty bool, err error) {
-
-	ePrefix := "FileHelper.GetFileNameWithoutExt()"
-
-	isEmpty = true
-	fName = ""
-	err = nil
-
-	if len(pathFileNameExt) == 0 {
-		err = errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' is a ZERO Length string!")
-		return
-	}
-
-	pathFileNameExt = strings.TrimLeft(strings.TrimRight(pathFileNameExt, " "), " ")
-
-	if pathFileNameExt == "" {
-		err = errors.New(ePrefix + "Error: After trimming 'pathFileNameExt', input parameter 'pathFileNameExt' is a ZERO Length string!")
-		return
-	}
-
-	testPathFileNameExt := fh.AdjustPathSlash(pathFileNameExt)
-
-	if len(testPathFileNameExt) == 0 {
-		err = errors.New(ePrefix + "Error: Adjusted path version of 'pathFileNameExt', 'testPathFileNameExt' is a ZERO Length string!")
-		return
-	}
-
-	fileNameExt, isFileNameExtEmpty, err2 := fh.GetFileNameWithExt(testPathFileNameExt)
-
-	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error returned from fh.GetFileNameWithExt(testPathFileNameExt) testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2.Error())
-		return
-	}
-
-	if isFileNameExtEmpty {
-		isEmpty = true
-		fName = ""
-		err = nil
-		return
-	}
-
-	dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(fileNameExt)
-
-	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"Error returned from fh.GetDotSeparatorIndexesInPathStr(fileNameExt). fileNameExt='%v'  Error='%v'", fileNameExt, err2.Error())
-		return
-	}
-
-	lDotIdxs := len(dotIdxs)
-
-	// Primary Case: filename.ext
-	if lDotIdxs > 0 {
-		fName = fileNameExt[0:dotIdxs[lDotIdxs-1]]
-
-		if fName == "" {
-			isEmpty = true
-		} else {
-			isEmpty = false
-		}
-		err = nil
-		return
-	}
-
-	// Secondary Case: filename
-	fName = fileNameExt
-
-	if fName == "" {
-		isEmpty = true
-	} else {
-		isEmpty = false
-	}
-
-	err = nil
-	return
-}
-
 // GetFileExt - Returns the File Extension with
 // the dot. If there is no File Extension an empty
 // string is returned (NO dot included). If the returned
@@ -1846,14 +1636,15 @@ func (fh FileHelper) GetFileExtension(pathFileNameExt string) (ext string, isEmp
 // does NOT exist, an error will be triggered. This method is similar to
 // FileHelpter.DoesFileInfoExist().
 //
-// type FileInfo interface {
-// 	Name() string       // base name of the file
-// 	Size() int64        // length in bytes for regular files; system-dependent for others
-// 	Mode() FileMode     // file mode bits
-// 	ModTime() time.Time // modification time
-// 	IsDir() bool        // abbreviation for Mode().IsDir()
-// 	Sys() interface{}   // underlying data source (can return nil)
-// }
+//  type FileInfo interface {
+//    Name()    string       // base name of the file
+//    Size()    int64        // length in bytes for regular files; system-dependent for others
+//    Mode()    FileMode     // file mode bits
+//    ModTime() time.Time    // modification time
+//    IsDir()   bool         // abbreviation for Mode().IsDir()
+//    Sys()     interface{}  // underlying data source (can return nil)
+//  }
+//
 func (fh FileHelper) GetFileInfoFromPath(pathFileName string) (os.FileInfo, error) {
 
 	return os.Stat(pathFileName)
@@ -1864,13 +1655,18 @@ func (fh FileHelper) GetFileInfoFromPath(pathFileName string) (os.FileInfo, erro
 // date/time on a specific file. If input parameter 'customTimeFmt'
 // string is empty, default time format will be used to format the
 // returned time string.
-func (fh FileHelper) GetFileLastModificationDate(pathFileName string, customTimeFmt string) (time.Time, string, error) {
+//
+func (fh FileHelper) GetFileLastModificationDate(
+	pathFileName string,
+	customTimeFmt string) (time.Time, string, error) {
 
+	ePrefix := "FileHelper.GetFileLastModificationDate() "
 	const fmtDateTimeNanoSecondStr = "2006-01-02 15:04:05.000000000"
 	var zeroTime time.Time
 
 	if pathFileName == "" {
-		return zeroTime, "", errors.New("FileHelper:GetFileLastModificationDate() Error: Input parameter 'pathFileName' is empty string!")
+		return zeroTime, "",
+			errors.New(ePrefix + "Error: Input parameter 'pathFileName' is empty string!")
 	}
 
 	fmtStr := customTimeFmt
@@ -1882,10 +1678,287 @@ func (fh FileHelper) GetFileLastModificationDate(pathFileName string, customTime
 	fInfo, err := fh.GetFileInfoFromPath(pathFileName)
 
 	if err != nil {
-		return zeroTime, "", errors.New(fmt.Sprintf("FileHelper:GetFileLastModificationDate() Error Getting FileInfo on %v Error on GetFileInfoFromPath(): %v", pathFileName, err.Error()))
+		return zeroTime, "",
+			errors.New(fmt.Sprintf(ePrefix+
+				"Error Getting FileInfo on %v Error on GetFileInfoFromPath(): %v",
+				pathFileName, err.Error()))
 	}
 
 	return fInfo.ModTime(), fInfo.ModTime().Format(fmtStr), nil
+}
+
+// GetFileNameWithExt - This method expects to receive a valid directory path and file
+// name or file name plus extension. It then extracts the File Name and Extension from
+// the file path and returns it as a string.
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameters:
+//
+//  pathFileNameExt string - This input parameter is expected to contain a properly formatted directory
+//                           path and File Name.  The File Name may or may not include a File Extension.
+//                           The directory path must include the correct delimiters such as path Separators
+//                           ('/' or'\'), dots ('.') and in the case of Windows, a volume designation
+//                           (Example: 'F:').
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+//  fNameExt  string       - If successful, this method will the return value 'fNameExt' equal to the
+//                           File Name and File Extension extracted from the input file path, 'pathFileNameExt'.
+//                           Example 'fNameExt' return value: 'someFilename.txt'
+//
+//                           If the File Extension is not present, only the File Name will be returned.
+//                           Example return value with no file extension: 'someFilename'.
+//
+//  isEmpty   bool         - If this method CAN NOT parse out a valid File Name and Extension from
+//                           input parameter string 'pathFileNameExt', return value 'fNameExt' will
+//                           be set to an empty string and return value 'isEmpty' will be set to 'true'.
+//
+//  err       error        - If an error is encountered during processing, 'err' will return a properly
+//                           formatted 'error' type.
+//
+//                           Note that if this method cannot parse out a valid	File Name and Extension
+//                           due to an improperly formatted directory path and	file name string
+//                           (Input Parameter: 'pathFileNameExt'), 'fNameExt' will be set to an empty string,
+//                           'isEmpty' will be set to 'true' and 'err' return 'nil'. In this situation, no
+//                           error will be returned.
+//
+func (fh FileHelper) GetFileNameWithExt(pathFileNameExt string) (fNameExt string, isEmpty bool, err error) {
+
+	ePrefix := "FileHelper.GetFileNameWithExt"
+	fNameExt = ""
+	isEmpty = true
+	err = nil
+
+	if len(pathFileNameExt) == 0 {
+		err = errors.New(ePrefix +
+			"Error: Input parameter 'pathFileNameExt' is a ZERO Length string!")
+		return
+	}
+
+	pathFileNameExt = strings.TrimLeft(strings.TrimRight(pathFileNameExt, " "), " ")
+
+	if pathFileNameExt == "" {
+		err = errors.New(ePrefix +
+			"Error: After trimming 'pathFileNameExt', input parameter 'pathFileNameExt' is a ZERO Length string!")
+		return
+	}
+
+	testPathFileNameExt := fh.AdjustPathSlash(pathFileNameExt)
+
+	volName := fh.GetVolumeName(testPathFileNameExt)
+
+	if volName != "" {
+		testPathFileNameExt = strings.TrimPrefix(testPathFileNameExt, volName)
+	}
+
+	lTestPathFileNameExt := len(testPathFileNameExt)
+
+	if lTestPathFileNameExt == 0 {
+		err = errors.New(ePrefix +
+			"Error: Cleaned version of 'pathFileNameExt', 'testPathFileNameExt' is a ZERO Length string!")
+		return
+	}
+
+	firstCharIdx, lastCharIdx, err2 := fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileNameExt)
+
+	if err2 != nil {
+		err = fmt.Errorf(ePrefix+
+			"Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileNameExt). "+
+			"testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2.Error())
+		return
+	}
+
+	// There are no alpha numeric characters present.
+	// Therefore, there is no file name and extension
+	if firstCharIdx == -1 || lastCharIdx == -1 {
+		isEmpty = true
+		err = nil
+		return
+	}
+
+	slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(testPathFileNameExt)
+
+	if err2 != nil {
+		err = fmt.Errorf(ePrefix+
+			"Error returned by fh.GetPathSeparatorIndexesInPathStr(testPathFileNameExt). "+
+			"testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2.Error())
+		return
+	}
+
+	dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(testPathFileNameExt)
+
+	if err2 != nil {
+		err = fmt.Errorf(ePrefix+
+			"Error returned by fh.GetDotSeparatorIndexesInPathStr(testPathFileNameExt). "+
+			"testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2.Error())
+		return
+
+	}
+
+	lSlashIdxs := len(slashIdxs)
+	lDotIdxs := len(dotIdxs)
+
+	if lSlashIdxs > 0 {
+		// This string has path separators
+
+		// Last char is a path separator. Therefore,
+		// there is no file name and extension.
+		if slashIdxs[lSlashIdxs-1] == lTestPathFileNameExt-1 {
+			fNameExt = ""
+		} else if lastCharIdx > slashIdxs[lSlashIdxs-1] {
+
+			fNameExt = testPathFileNameExt[slashIdxs[lSlashIdxs-1]+1:]
+
+		} else {
+			fNameExt = ""
+		}
+
+		if len(fNameExt) == 0 {
+			isEmpty = true
+		} else {
+			isEmpty = false
+		}
+
+		err = nil
+		return
+	}
+
+	// There are no path separators lSlashIdxs == 0
+
+	if lDotIdxs > 0 {
+		// This string has one or more dot separators ('.')
+
+		fNameExt = ""
+
+		if firstCharIdx > dotIdxs[lDotIdxs-1] {
+			// Example '.txt' - Invalid File name and extension
+			isEmpty = true
+			err = fmt.Errorf(ePrefix+"Error: File extension exists but no file name. result='%v'", testPathFileNameExt)
+			return
+
+		} else if firstCharIdx < dotIdxs[lDotIdxs-1] {
+			fNameExt = testPathFileNameExt[firstCharIdx:]
+		}
+
+		if len(fNameExt) == 0 {
+			isEmpty = true
+		} else {
+			isEmpty = false
+		}
+
+		err = nil
+		return
+	}
+
+	// Must be lSlashIdxs == 0 && lDotIdxs ==  0
+	// There are no path Separators and there are
+	// no dot separators ('.').
+
+	fNameExt = testPathFileNameExt[firstCharIdx:]
+
+	if len(fNameExt) == 0 {
+		isEmpty = true
+	} else {
+		isEmpty = false
+	}
+
+	err = nil
+
+	return
+}
+
+// GetFileNameWithoutExt - returns the file name
+// without the path or extension. If the returned
+// File Name is an empty string, isEmpty is set to true.
+//
+//  Example:
+//    pathFileNameExt = ./pathfilego/003_filehelper/common/xt_dirmgr_01_test.go
+//    Returned 'fName' = dirmgr_01_test
+//
+func (fh FileHelper) GetFileNameWithoutExt(
+	pathFileNameExt string) (fName string, isEmpty bool, err error) {
+
+	ePrefix := "FileHelper.GetFileNameWithoutExt() "
+
+	isEmpty = true
+	fName = ""
+	err = nil
+
+	if len(pathFileNameExt) == 0 {
+		err = errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' is a ZERO Length string!")
+		return
+	}
+
+	pathFileNameExt = strings.TrimLeft(strings.TrimRight(pathFileNameExt, " "), " ")
+
+	if pathFileNameExt == "" {
+		err = errors.New(ePrefix +
+			"Error: After trimming 'pathFileNameExt', input parameter 'pathFileNameExt' is a ZERO Length string!")
+		return
+	}
+
+	testPathFileNameExt := fh.AdjustPathSlash(pathFileNameExt)
+
+	if len(testPathFileNameExt) == 0 {
+		err = errors.New(ePrefix +
+			"Error: Adjusted path version of 'pathFileNameExt', 'testPathFileNameExt' is a ZERO Length string!")
+		return
+	}
+
+	fileNameExt, isFileNameExtEmpty, err2 := fh.GetFileNameWithExt(testPathFileNameExt)
+
+	if err2 != nil {
+		err = fmt.Errorf(ePrefix+
+			"Error returned from fh.GetFileNameWithExt(testPathFileNameExt) testPathFileNameExt='%v'  Error='%v'",
+			testPathFileNameExt, err2.Error())
+		return
+	}
+
+	if isFileNameExtEmpty {
+		isEmpty = true
+		fName = ""
+		err = nil
+		return
+	}
+
+	dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(fileNameExt)
+
+	if err2 != nil {
+		err = fmt.Errorf(ePrefix+
+			"Error returned from fh.GetDotSeparatorIndexesInPathStr(fileNameExt). fileNameExt='%v'  Error='%v'",
+			fileNameExt, err2.Error())
+		return
+	}
+
+	lDotIdxs := len(dotIdxs)
+
+	// Primary Case: filename.ext
+	if lDotIdxs > 0 {
+		fName = fileNameExt[0:dotIdxs[lDotIdxs-1]]
+
+		if fName == "" {
+			isEmpty = true
+		} else {
+			isEmpty = false
+		}
+		err = nil
+		return
+	}
+
+	// Secondary Case: filename
+	fName = fileNameExt
+
+	if fName == "" {
+		isEmpty = true
+	} else {
+		isEmpty = false
+	}
+
+	err = nil
+	return
 }
 
 // GetFirstLastNonSeparatorCharIndexInPathStr - Basically this method returns
@@ -2113,44 +2186,48 @@ func (fh FileHelper) GetPathAndFileNameExt(pathFileNameExt string) (pathDir, fil
 // If the returned path is an empty string, return parameter 'isEmpty' is set to
 // 'true'.
 //
+// ------------------------------------------------------------------------
+//
 // Input Parameter:
-// ================
 //
-// pathFileNameExt string		- This is an input parameter. The method expects to
-// 														receive a single, properly formatted path and file
-//														name string delimited by dots ('.') and path Separators
-//														('/' or '\'). On Windows the 'pathFileNameExt' string
-//														valid volume designations (Example: "D:")
+//  pathFileNameExt  string - This is an input parameter. The method expects to
+//                            receive a single, properly formatted path and file
+//                            name string delimited by dots ('.') and path Separators
+//                            ('/' or '\'). On Windows the 'pathFileNameExt' string
+//                            valid volume designations (Example: "D:")
+//
+// ------------------------------------------------------------------------
+//
 // Return Values:
-// ==============
 //
-// path string							- This is the directory path extracted from the input parameter
-//														'pathFileNameExt'. If successful, the 'path' string that is returned
-// 														by this method WILL NOT include a trailing path separator ('/' or '\'
-// 														depending on the os). Example 'path': "./pathfile/003_filehelper"
+//  path             string - This is the directory path extracted from the input parameter
+//                            'pathFileNameExt'. If successful, the 'path' string that is returned
+//                            by this method WILL NOT include a trailing path separator ('/' or '\'
+//                            depending on the os). Example 'path': "./pathfile/003_filehelper"
 //
-// isEmpty bool							- If the method determines that it cannot extract a valid directory
-//														path from input parameter 'pathFileNameExt', this boolean value
-//														will be set to 'true'. Failure to extract a valid directory path
-//														will occur if the input parameter 'pathFileNameExt' is not properly
-//														formatted as a valid path and file name.
+//  isEmpty            bool - If the method determines that it cannot extract a valid directory
+//                            path from input parameter 'pathFileNameExt', this boolean value
+//                            will be set to 'true'. Failure to extract a valid directory path
+//                            will occur if the input parameter 'pathFileNameExt' is not properly
+//                            formatted as a valid path and file name.
 //
-// err error								- If a processing error is detected, an error will be returned. Note that
-//														in the event that this method fails to extract a valid directory path
-//														'pathFileNameExt' due to the fact that 'pathFileNameExt' was improperly
-//														formatted, 'isEmpty' will be set to 'true', but no error will be returned.
+//  err               error - If a processing error is detected, an error will be returned. Note that
+//                            in the event that this method fails to extract a valid directory path
+//                            'pathFileNameExt' due to the fact that 'pathFileNameExt' was improperly
+//                            formatted, 'isEmpty' will be set to 'true', but no error will be returned.
 //
-//														If no error is returned, 'err' is set to 'nil'.
+//														If no error occurs, 'err' is set to 'nil'.
+//
+// ------------------------------------------------------------------------
 //
 // Examples:
-// =========
 //
-// pathFileNameExt = ""					returns isEmpty==true  err==nil
-// pathFileNameExt = "D:\"  		returns "D:\"
-// pathFileNameExt = "."				returns "."
-// pathFileNameExt = "..\"			returns "..\"
-// pathFileNameExt = "...\"			returns ERROR
-// pathFileNameExt = ".\pathfile\003_filehelper\wt_HowToRunTests.md"		returns ".\pathfile\003_filehelper"
+//  pathFileNameExt = ""        returns isEmpty==true  err==nil
+//  pathFileNameExt = "D:\"     returns "D:\"
+//  pathFileNameExt = "."       returns "."
+//  pathFileNameExt = "..\"     returns "..\"
+//  pathFileNameExt = "...\"    returns ERROR
+//  pathFileNameExt = ".\pathfile\003_filehelper\wt_HowToRunTests.md"  returns ".\pathfile\003_filehelper"
 //
 func (fh FileHelper) GetPathFromPathFileName(pathFileNameExt string) (dirPath string, isEmpty bool, err error) {
 	ePrefix := "FileHelper.GetPathFromPathFileName() "
@@ -2364,50 +2441,254 @@ func (fh FileHelper) IsAbsolutePath(pathStr string) bool {
 	return path.IsAbs(pathStr)
 }
 
+// IsPathFileString - Returns 'true' if the it is determined that
+// input parameter, 'pathFileStr', represents a directory path,
+// file name and optionally, a file extension.
+//
+// If 'pathFileStr' is judged to be a directory path and file name,
+// by definition it cannot be solely a directory path.
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameter:
+//
+//  pathFileStr   string    - The string to be analyzed.
+//
+// Return Values:
+//
+//  isPathFileStr   bool    - A boolean indicating whether the input parameter
+//                            'pathFileStr' is in fact both a directory path and file name.
+//
+//  cannotDetermine bool    - A boolean value indicating whether the method could or
+//                            could NOT determine whether input parameter 'pathFileStr'
+//                            is a valid directory path and file name.
+//
+//                            'cannotDetermine' will be set to 'true' if 'pathFileStr'
+//                            does not currently exist on disk and 'pathFileStr' is formatted
+//                            like the following example:
+//                                   "D:\\dirA\\common"
+//                            In this example, the method cannot determine if 'common'
+//                            is a file name or a directory name.
+//
+//  testPathFileStr string  - Input parameter 'pathFileStr' is subjected to cleaning routines
+//                            designed to exclude extraneous characters from the analysis.
+//                            'testPathFileStr' is the actual string on which the analysis was
+//                            performed.
+//
+//
+//  err             error   - If an error is encountered during processing, it is returned here.
+//                            If no error occurs, 'err' is set to 'nil'.
+//
+func (fh FileHelper) IsPathFileString(pathFileStr string) (isPathFileStr bool, cannotDetermine bool, testPathFileStr string, err error) {
+
+	ePrefix := "FileHelper.IsPathFileString() "
+
+	if len(pathFileStr) == 0 {
+		isPathFileStr = false
+		cannotDetermine = false // High confidence in result
+		testPathFileStr = ""
+		err = errors.New(ePrefix + "Error - Zero Length input parameter 'pathFileStr'.")
+		return
+	}
+
+	testPathFileStr = fp.FromSlash(pathFileStr)
+	lTestPathStr := len(testPathFileStr)
+
+	if lTestPathStr == 0 {
+		isPathFileStr = false
+		cannotDetermine = false // High confidence in result
+		testPathFileStr = ""
+		err = fmt.Errorf(ePrefix+"Error - fp.Clean(fp.FromSlash(pathFileStr)) yielded a Zero Length String. pathFileStr='%v'", pathFileStr)
+		return
+	}
+
+	// See if path actually exists on disk and
+	// then examine the File Info object returned.
+	fInfo, err2 := os.Stat(testPathFileStr)
+
+	if err2 == nil {
+
+		if !fInfo.IsDir() {
+			isPathFileStr = true
+			cannotDetermine = false // High confidence in result
+			err = nil
+			return
+
+		} else {
+			isPathFileStr = false
+			cannotDetermine = false // High confidence in result
+			err = nil
+			return
+		}
+
+	}
+
+	// Ok - We know the testPathFileStr does NOT exist on disk
+
+	if strings.Contains(testPathFileStr, "...") {
+		isPathFileStr = false
+		cannotDetermine = false // High confidence in result
+		err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING! testPathFileStr='%v'", testPathFileStr)
+		return
+
+	}
+
+	firstCharIdx, lastCharIdx, err2 := fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileStr)
+
+	if err2 != nil {
+		isPathFileStr = false
+		cannotDetermine = false // High confidence in result
+		err = fmt.Errorf(ePrefix+"Error returned from fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileStr) testPathFileStr='%v'  Error='%v'", testPathFileStr, err2.Error())
+		return
+	}
+
+	if firstCharIdx == -1 || lastCharIdx == -1 {
+		// The pathfilestring contains no alpha numeric characters.
+		// Therefore, it does NOT contain a file name!
+		isPathFileStr = false
+		cannotDetermine = false // High confidence in result
+		err = nil
+		return
+	}
+
+	volName := fp.VolumeName(testPathFileStr)
+
+	if volName == testPathFileStr {
+		// This is a volume name not a file Name!
+		isPathFileStr = false
+		cannotDetermine = false // High confidence in result
+		err = nil
+		return
+	}
+
+	slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(testPathFileStr)
+
+	if err2 != nil {
+		isPathFileStr = false
+		cannotDetermine = true
+		err = fmt.Errorf(ePrefix+"fh.GetPathSeparatorIndexesInPathStr(testPathFileStr) returned error. testPathFileStr='%v' Error='%v'", testPathFileStr, err2.Error())
+		return
+	}
+
+	dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(testPathFileStr)
+
+	if err2 != nil {
+		isPathFileStr = false
+		cannotDetermine = true // Uncertain outcome. Cannot determine if this is a path string
+		err = fmt.Errorf(ePrefix+"fh.GetDotSeparatorIndexesInPathStr(testPathFileStr) retured error. testPathFileStr='%v' Error='%v'", testPathFileStr, err2.Error())
+		return
+	}
+
+	lenDotIdx := len(dotIdxs)
+
+	lenSlashIdx := len(slashIdxs)
+
+	if lenSlashIdx == 0 {
+
+		isPathFileStr = false
+		cannotDetermine = false // high degree of certainty
+		err = nil
+		return
+
+	}
+
+	// We know the string contains one or more path separators
+
+	if lenDotIdx == 0 {
+
+		if lastCharIdx > slashIdxs[lenSlashIdx-1] {
+			// Example D:\dir1\dir2\xray
+
+			isPathFileStr = true
+			cannotDetermine = true // Maybe, really can't tell if xray is a directory or a file!
+			err = nil
+			return
+
+		}
+
+		isPathFileStr = false
+		cannotDetermine = false // high degree of certainty
+		err = nil
+		return
+
+	}
+
+	// We know that the test string contains both path separators and
+	// dot separators ('.')
+
+	if dotIdxs[lenDotIdx-1] > slashIdxs[lenSlashIdx-1] &&
+		lastCharIdx > slashIdxs[lenSlashIdx-1] {
+		isPathFileStr = true
+		cannotDetermine = false // high degree of certainty
+		err = nil
+		return
+	}
+
+	// Check to determine if last character in testPathFileStr is a PathSeparator
+	if slashIdxs[lenSlashIdx-1] == lTestPathStr-1 {
+		// Yes, last char in testPathFileStr is a PathSeparator. This must be a directory.
+		isPathFileStr = false
+		cannotDetermine = false // high degree of certainty
+		err = nil
+		return
+	}
+
+	// Cannot be certain of the result.
+	// Don't know for sure what this string is
+	isPathFileStr = false
+	cannotDetermine = true
+	err = nil
+	return
+}
+
 // IsPathString - Attempts to determine whether a string is a
 // path string designating a directory (and not a path file name
 // file extension string).
-//
-// Input Parameter
-// ===============
-// pathStr string 	- The path string to be analyzed.
-//
-// Return Values
-// =============
-//
-// isPathStr bool				- If the input parameter, 'pathStr'
-//												is determined to be a directory
-//												path, this return value is set to
-//												true. Here, a 'directory path' is defined
-//												as a true directory and the path does NOT
-//												contain a file name.
-//
-// cannotDetermine bool	- If the method cannot determine whether
-//												the input parameter 'pathStr' is or
-// 												is NOT a valid directory path, this
-//												this return value will be set to 'true'.
-//												The 'cannotDetermine=true' condition occurs
-//												with path names like 'D:\DirA\common'. The
-//												cannot determine whether 'common' is a file
-//												name or a directory name.
-//
-//
-// testPathStr string		- Input parameter 'pathStr' is subjected to cleaning routines
-//												designed to exclude extraneous characters from the analysis.
-//												'testPathFileStr' is the actual string on which the analysis was
-//												performed.
-//
-// err error						- If an error occurs this return value will
-//												be populated. If no errors occur, this return
-//												value is set to nil.
-//
 //
 // If the path exists on disk, this method will examine the
 // associated file information and render a definitive and
 // accurate determination as to whether the path string represents
 // a directory.
 //
-func (fh FileHelper) IsPathString(pathStr string) (isPathStr bool, cannotDetermine bool, testPathStr string, err error) {
+// ------------------------------------------------------------------------
+//
+// Input Parameter:
+//
+//  pathStr string       - The path string to be analyzed.
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+//  isPathStr       bool - If the input parameter, 'pathStr'
+//                         is determined to be a directory
+//                         path, this return value is set to
+//                         true. Here, a 'directory path' is defined
+//                         as a true directory and the path does NOT
+//                         contain a file name.
+//
+//  cannotDetermine bool - If the method cannot determine whether
+//                         the input parameter 'pathStr' is or
+//                         is NOT a valid directory path, this
+//                         this return value will be set to 'true'.
+//                         The 'cannotDetermine=true' condition occurs
+//                         with path names like 'D:\DirA\common'. The
+//                         cannot determine whether 'common' is a file
+//                         name or a directory name.
+//
+//
+//  testPathStr   string - Input parameter 'pathStr' is subjected to cleaning routines
+//                         designed to exclude extraneous characters from the analysis.
+//                         'testPathFileStr' is the actual string on which the analysis was
+//                         performed.
+//
+//  err            error - If an error occurs this return value will
+//                         be populated. If no errors occur, this return
+//                         value is set to nil.
+//
+//
+func (fh FileHelper) IsPathString(
+	pathStr string) (isPathStr bool, cannotDetermine bool, testPathStr string, err error) {
 
 	ePrefix := "FileHelper.IsPathString() "
 
@@ -2670,205 +2951,6 @@ func (fh FileHelper) IsPathString(pathStr string) (isPathStr bool, cannotDetermi
 	// Example D:\\DirA\\common
 	// Is common a file name or a directory name.
 	isPathStr = false
-	cannotDetermine = true
-	err = nil
-	return
-}
-
-// IsPathFileString - Returns 'true' if the it is determined that
-// input parameter, 'pathFileStr', represents a directory path,
-// file name and optionally, a file extension.
-//
-// If 'pathFileStr' is judged to be a directory path and file name,
-// by definition it cannot be solely a directory path.
-//
-// Input Parameter:
-// ================
-//
-// pathFileStr string		- The string to be analyzed.
-//
-// Return Values:
-// ==============
-//
-// isPathFileStr bool		- A boolean indicating whether the input parameter
-//												'pathFileStr' is in fact both a directory path and file name.
-//
-// cannotDetermine bool	- A boolean value indicating whether the method could or
-//												could NOT determine whether input parameter 'pathFileStr'
-//												is a valid directory path and file name.
-//
-//												'cannotDetermine' will be set to 'true' if 'pathFileStr'
-// 												does not currently exist on disk and 'pathFileStr' is formatted
-//												like the following example:
-//														"D:\\dirA\\common"
-//												In this example, the method cannot determine if 'common'
-//												is a file name or a directory name.
-//
-// testPathFileStr string	- Input parameter 'pathFileStr' is subjected to cleaning routines
-//												designed to exclude extraneous characters from the analysis.
-//												'testPathFileStr' is the actual string on which the analysis was
-//												performed.
-//
-//
-// err error						- If an error is encountered during processing, it is returned here.
-//
-func (fh FileHelper) IsPathFileString(pathFileStr string) (isPathFileStr bool, cannotDetermine bool, testPathFileStr string, err error) {
-
-	ePrefix := "FileHelper.IsPathFileString() "
-
-	if len(pathFileStr) == 0 {
-		isPathFileStr = false
-		cannotDetermine = false // High confidence in result
-		testPathFileStr = ""
-		err = errors.New(ePrefix + "Error - Zero Length input parameter 'pathFileStr'.")
-		return
-	}
-
-	testPathFileStr = fp.FromSlash(pathFileStr)
-	lTestPathStr := len(testPathFileStr)
-
-	if lTestPathStr == 0 {
-		isPathFileStr = false
-		cannotDetermine = false // High confidence in result
-		testPathFileStr = ""
-		err = fmt.Errorf(ePrefix+"Error - fp.Clean(fp.FromSlash(pathFileStr)) yielded a Zero Length String. pathFileStr='%v'", pathFileStr)
-		return
-	}
-
-	// See if path actually exists on disk and
-	// then examine the File Info object returned.
-	fInfo, err2 := os.Stat(testPathFileStr)
-
-	if err2 == nil {
-
-		if !fInfo.IsDir() {
-			isPathFileStr = true
-			cannotDetermine = false // High confidence in result
-			err = nil
-			return
-
-		} else {
-			isPathFileStr = false
-			cannotDetermine = false // High confidence in result
-			err = nil
-			return
-		}
-
-	}
-
-	// Ok - We know the testPathFileStr does NOT exist on disk
-
-	if strings.Contains(testPathFileStr, "...") {
-		isPathFileStr = false
-		cannotDetermine = false // High confidence in result
-		err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING! testPathFileStr='%v'", testPathFileStr)
-		return
-
-	}
-
-	firstCharIdx, lastCharIdx, err2 := fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileStr)
-
-	if err2 != nil {
-		isPathFileStr = false
-		cannotDetermine = false // High confidence in result
-		err = fmt.Errorf(ePrefix+"Error returned from fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileStr) testPathFileStr='%v'  Error='%v'", testPathFileStr, err2.Error())
-		return
-	}
-
-	if firstCharIdx == -1 || lastCharIdx == -1 {
-		// The pathfilestring contains no alpha numeric characters.
-		// Therefore, it does NOT contain a file name!
-		isPathFileStr = false
-		cannotDetermine = false // High confidence in result
-		err = nil
-		return
-	}
-
-	volName := fp.VolumeName(testPathFileStr)
-
-	if volName == testPathFileStr {
-		// This is a volume name not a file Name!
-		isPathFileStr = false
-		cannotDetermine = false // High confidence in result
-		err = nil
-		return
-	}
-
-	slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(testPathFileStr)
-
-	if err2 != nil {
-		isPathFileStr = false
-		cannotDetermine = true
-		err = fmt.Errorf(ePrefix+"fh.GetPathSeparatorIndexesInPathStr(testPathFileStr) returned error. testPathFileStr='%v' Error='%v'", testPathFileStr, err2.Error())
-		return
-	}
-
-	dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(testPathFileStr)
-
-	if err2 != nil {
-		isPathFileStr = false
-		cannotDetermine = true // Uncertain outcome. Cannot determine if this is a path string
-		err = fmt.Errorf(ePrefix+"fh.GetDotSeparatorIndexesInPathStr(testPathFileStr) retured error. testPathFileStr='%v' Error='%v'", testPathFileStr, err2.Error())
-		return
-	}
-
-	lenDotIdx := len(dotIdxs)
-
-	lenSlashIdx := len(slashIdxs)
-
-	if lenSlashIdx == 0 {
-
-		isPathFileStr = false
-		cannotDetermine = false // high degree of certainty
-		err = nil
-		return
-
-	}
-
-	// We know the string contains one or more path separators
-
-	if lenDotIdx == 0 {
-
-		if lastCharIdx > slashIdxs[lenSlashIdx-1] {
-			// Example D:\dir1\dir2\xray
-
-			isPathFileStr = true
-			cannotDetermine = true // Maybe, really can't tell if xray is a directory or a file!
-			err = nil
-			return
-
-		}
-
-		isPathFileStr = false
-		cannotDetermine = false // high degree of certainty
-		err = nil
-		return
-
-	}
-
-	// We know that the test string contains both path separators and
-	// dot separators ('.')
-
-	if dotIdxs[lenDotIdx-1] > slashIdxs[lenSlashIdx-1] &&
-		lastCharIdx > slashIdxs[lenSlashIdx-1] {
-		isPathFileStr = true
-		cannotDetermine = false // high degree of certainty
-		err = nil
-		return
-	}
-
-	// Check to determine if last character in testPathFileStr is a PathSeparator
-	if slashIdxs[lenSlashIdx-1] == lTestPathStr-1 {
-		// Yes, last char in testPathFileStr is a PathSeparator. This must be a directory.
-		isPathFileStr = false
-		cannotDetermine = false // high degree of certainty
-		err = nil
-		return
-	}
-
-	// Cannot be certain of the result.
-	// Don't know for sure what this string is
-	isPathFileStr = false
 	cannotDetermine = true
 	err = nil
 	return
@@ -3505,8 +3587,8 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
 			fMgr, err2 := FileMgr{}.NewFromPathFileNameExtStr(pathFile)
 
 			if err2 != nil {
-				err = fmt.Errorf(ePrefix +
-					"Error returned by FileMgr{}.NewFromPathFileNameExtStr(pathFile) " +
+				err = fmt.Errorf(ePrefix+
+					"Error returned by FileMgr{}.NewFromPathFileNameExtStr(pathFile) "+
 					"pathFile='%v' Error='%v' ", pathFile, err2.Error())
 
 				dInfo.ErrReturns = append(dInfo.ErrReturns, err.Error())
