@@ -3,6 +3,7 @@ package main
 import (
 	pf "../pathfileops"
 	"fmt"
+	"os"
 )
 
 /*
@@ -34,7 +35,23 @@ func main() {
 
 func main() {
 
-	mainTest20()
+	mainTest21()
+
+}
+
+func mainTest21() {
+
+	fmt.Println("--------- Primary Codes ---------")
+	fmt.Println("os.O_RDONLY: ", os.O_RDONLY)
+	fmt.Println("os.O_WRONLY: ", os.O_WRONLY)
+	fmt.Println("os.O_RDWR: ", os.O_RDWR)
+	fmt.Println()
+	fmt.Println("--------- Control Codes ----------")
+	fmt.Println("os.O_APPEND: ", os.O_APPEND)
+	fmt.Println("os.O_CREATE: ", os.O_CREATE)
+	fmt.Println("os.O_EXCL: ", os.O_EXCL)
+	fmt.Println("os.O_SYNC: ", os.O_SYNC)
+	fmt.Println("os.O_TRUNC: ", os.O_TRUNC)
 
 }
 
