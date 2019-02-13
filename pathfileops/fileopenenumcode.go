@@ -779,7 +779,13 @@ func (fOpenMode FileOpenMode) String() string {
 
 	fOpenMode.checkInitializeMaps(false)
 
-	return mFileOpenModeIntToString[int(fOpenMode)]
+	str, ok := mFileOpenModeIntToString[int(fOpenMode)]
+
+	if !ok {
+		return "Invalid File Open Mode!"
+	}
+
+	return str
 }
 
 // Value - This is a utility method which is not part of the

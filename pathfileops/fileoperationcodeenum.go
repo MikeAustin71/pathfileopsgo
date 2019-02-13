@@ -211,29 +211,64 @@ func (fop FileOperationCode) CreateDestinationDirAndFile() FileOperationCode {
 //	FileOperationCode(0).CreateDestinationFile()
 func (fop FileOperationCode) CreateDestinationFile() FileOperationCode { return FileOperationCode(14) }
 
-// String - Returns a string with the name of the enumeration associated
-// with this instance of 'FileOperationCode'. This is a standard utility method
-// and is not part of the valid enumerations for this type.
+// IsValid - If the value of the current FileOperationCode is 'invalid',
+// this method will return an error. If the FileOperationCode is 'valid',
+// this method will return a value of 'nil'.
 //
-// ------------------------------------------------------------------------
+// This is a standard utility method and is not part of the valid enumerations
+// for this type.
 //
-// Usage
-//
-//	t:= FileOperationCode(0).MoveSourceFileToDestination()
-//	str := t.String()
-//	    str is now equal to 'MoveSourceFileToDestination'
-//
-func (fop FileOperationCode) String() string {
+func (fop FileOperationCode) IsValid() error {
 
-	fop.checkInitializeMaps(false)
+	var err error
 
-	return mFileOperationCodeIntToString[int(fop)]
+	switch fop {
+
+	case FileOpCode.None():
+		err = nil
+	case FileOpCode.MoveSourceFileToDestination():
+		err = nil
+	case FileOpCode.DeleteDestinationFile():
+		err = nil
+	case FileOpCode.DeleteSourceFile():
+		err = nil
+	case FileOpCode.DeleteSourceAndDestinationFiles():
+		err = nil
+	case FileOpCode.CopySourceToDestinationByHardLinkByIo():
+		err = nil
+	case FileOpCode.CopySourceToDestinationByIoByHardLink():
+		err = nil
+	case FileOpCode.CopySourceToDestinationByHardLink():
+		err = nil
+	case FileOpCode.CopySourceToDestinationByIo():
+		err = nil
+	case FileOpCode.CreateSourceDir():
+		err = nil
+	case FileOpCode.CreateSourceDirAndFile():
+		err = nil
+	case FileOpCode.CreateSourceFile():
+		err = nil
+	case FileOpCode.CreateDestinationDir():
+		err = nil
+	case FileOpCode.CreateDestinationDirAndFile():
+		err = nil
+	case FileOpCode.CreateDestinationFile():
+		err = nil
+	default:
+		ePrefix := "FileOperationCode.IsValid() "
+		err = fmt.Errorf(ePrefix+"Error: File Operation Code INVALID!. Unknown Value='%v' ", fop.Value())
+	}
+
+	return err
 }
 
 // ParseString - Receives a string and attempts to match it with
 // the string value of a supported enumeration. If successful, a
 // new instance of FileOperationCode is returned set to the value of the
 // associated enumeration.
+//
+// This is a standard utility method and is not part of the valid enumerations
+// for this type.
 //
 // ------------------------------------------------------------------------
 //
@@ -322,10 +357,40 @@ func (fop FileOperationCode) ParseString(
 	return result, nil
 }
 
+// String - Returns a string with the name of the enumeration associated
+// with this instance of 'FileOperationCode'.
+//
+// This is a standard utility method and is not part of the valid enumerations
+// for this type.
+//
+// ------------------------------------------------------------------------
+//
+// Usage
+//
+//	t:= FileOperationCode(0).MoveSourceFileToDestination()
+//	str := t.String()
+//	    str is now equal to 'MoveSourceFileToDestination'
+//
+func (fop FileOperationCode) String() string {
+
+	fop.checkInitializeMaps(false)
+
+	str, ok := mFileOperationCodeIntToString[int(fop)]
+
+	if !ok {
+		return "Invalid FileOperationCode!"
+	}
+
+	return str
+}
+
 // Value - This is a utility method which is not part of the
 // enumerations supported by this type. It returns the numeric
 // value of the enumeration associated with the current FileOperationCode
 // instance.
+//
+// This is a standard utility method and is not part of the valid enumerations
+// for this type.
 //
 func (fop FileOperationCode) Value() int {
 	return int(fop)
@@ -380,6 +445,7 @@ func (fop FileOperationCode) checkInitializeMaps(reInitialize bool) {
 		if f == "String" ||
 			f == "ParseString" ||
 			f == "Value" ||
+			f == "IsValid" ||
 			f == "checkInitializeMaps" {
 			continue
 		}

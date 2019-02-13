@@ -246,3 +246,29 @@ func TestFileOperationCode_06(t *testing.T) {
 
 	}
 }
+
+func TestFileOperationCode_IsValid_01(t *testing.T) {
+
+	c := FileOpCode.CreateDestinationFile()
+
+	err := c.IsValid()
+
+	if err != nil {
+		t.Errorf("Error: Expected FileOpCode.CreateDestinationFile() to be Valid. "+
+			"It was INVALID!. Error='%v' ", err.Error())
+	}
+
+}
+
+func TestFileOperationCode_IsValid_02(t *testing.T) {
+
+	c := FileOperationCode(-99)
+
+	err := c.IsValid()
+
+	if err == nil {
+		t.Error("Error: Expected FileOperationCode(-99) to be INVALID. " +
+			"Instead, it registered as VALID!.")
+	}
+
+}
