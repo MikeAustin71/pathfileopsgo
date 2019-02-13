@@ -6,18 +6,18 @@ import (
 	"strings"
 )
 
-// mFileOperationTypeIntToString - This map is used to map enumeration values
+// mFileOperationCodeIntToString - This map is used to map enumeration values
 // to enumeration names stored as strings for Type FileOperationCode.
-var mFileOperationTypeIntToString = map[int]string{}
+var mFileOperationCodeIntToString = map[int]string{}
 
-// mFileOperationTypeStringToInt - This map is used to map enumeration names
+// mFileOperationCodeStringToInt - This map is used to map enumeration names
 // stored as strings to enumeration values for Type FileOperationCode.
-var mFileOperationTypeStringToInt = map[string]int{}
+var mFileOperationCodeStringToInt = map[string]int{}
 
-// mFileOperationTypeLwrCaseStringToInt - This map is used to map enumeration names
+// mFileOperationCodeLwrCaseStringToInt - This map is used to map enumeration names
 // stored as lower case strings to enumeration values for Type FileOperationCode.
 // This map is used for case insensitive look ups.
-var mFileOperationTypeLwrCaseStringToInt = map[string]int{}
+var mFileOperationCodeLwrCaseStringToInt = map[string]int{}
 
 // FileOperationCode - Integer enumeration. Signals
 // the type of operation to be performed on a file.
@@ -227,7 +227,7 @@ func (fop FileOperationCode) String() string {
 
 	fop.checkInitializeMaps(false)
 
-	return mFileOperationTypeIntToString[int(fop)]
+	return mFileOperationCodeIntToString[int(fop)]
 }
 
 // ParseString - Receives a string and attempts to match it with
@@ -295,7 +295,7 @@ func (fop FileOperationCode) ParseString(
 
 	if caseSensitive {
 
-		idx, ok = mFileOperationTypeStringToInt[valueString]
+		idx, ok = mFileOperationCodeStringToInt[valueString]
 
 		if !ok {
 			return FileOperationCode(0),
@@ -307,7 +307,7 @@ func (fop FileOperationCode) ParseString(
 
 	} else {
 
-		idx, ok = mFileOperationTypeLwrCaseStringToInt[strings.ToLower(valueString)]
+		idx, ok = mFileOperationCodeLwrCaseStringToInt[strings.ToLower(valueString)]
 
 		if !ok {
 			return FileOperationCode(0),
@@ -353,20 +353,20 @@ func (fop FileOperationCode) Value() int {
 func (fop FileOperationCode) checkInitializeMaps(reInitialize bool) {
 
 	if !reInitialize &&
-		mFileOperationTypeIntToString != nil &&
-		len(mFileOperationTypeIntToString) > 12 &&
-		mFileOperationTypeStringToInt != nil &&
-		len(mFileOperationTypeStringToInt) > 12 &&
-		mFileOperationTypeLwrCaseStringToInt != nil &&
-		len(mFileOperationTypeLwrCaseStringToInt) > 12 {
+		mFileOperationCodeIntToString != nil &&
+		len(mFileOperationCodeIntToString) > 12 &&
+		mFileOperationCodeStringToInt != nil &&
+		len(mFileOperationCodeStringToInt) > 12 &&
+		mFileOperationCodeLwrCaseStringToInt != nil &&
+		len(mFileOperationCodeLwrCaseStringToInt) > 12 {
 		return
 	}
 
 	var t = FileOperationCode(0).MoveSourceFileToDestination()
 
-	mFileOperationTypeIntToString = make(map[int]string, 0)
-	mFileOperationTypeStringToInt = make(map[string]int, 0)
-	mFileOperationTypeLwrCaseStringToInt = make(map[string]int, 0)
+	mFileOperationCodeIntToString = make(map[int]string, 0)
+	mFileOperationCodeStringToInt = make(map[string]int, 0)
+	mFileOperationCodeLwrCaseStringToInt = make(map[string]int, 0)
 
 	s := reflect.TypeOf(t)
 
@@ -386,9 +386,9 @@ func (fop FileOperationCode) checkInitializeMaps(reInitialize bool) {
 
 		value := s.Method(i).Func.Call(args[:])[0].Convert(r).Int()
 		x := int(value)
-		mFileOperationTypeIntToString[x] = f
-		mFileOperationTypeStringToInt[f] = x
-		mFileOperationTypeLwrCaseStringToInt[strings.ToLower(f)] = x
+		mFileOperationCodeIntToString[x] = f
+		mFileOperationCodeStringToInt[f] = x
+		mFileOperationCodeLwrCaseStringToInt[strings.ToLower(f)] = x
 	}
 
 }

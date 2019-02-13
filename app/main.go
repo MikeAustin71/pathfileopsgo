@@ -3,6 +3,7 @@ package main
 import (
 	pf "../pathfileops"
 	"fmt"
+	"os"
 )
 
 /*
@@ -34,7 +35,52 @@ func main() {
 
 func main() {
 
-	mainTest20()
+	mainTest22()
+
+}
+
+func mainTest22() {
+
+	expectedFOpenCode := os.O_WRONLY | os.O_APPEND | os.O_TRUNC
+
+	fOpStatus, err := pf.FileOpenStatus{}.New(pf.FOpenType.WriteOnly(),
+		pf.FOpenMode.Append(), pf.FOpenMode.Truncate())
+
+	if err != nil {
+		fmt.Printf("Error returned by FileOpenStatus{}.New(). Error='%v' \n", err.Error())
+		return
+	}
+
+	actualFileOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
+
+	if err != nil {
+		fmt.Printf("Error returned by FileOpenStatus{}.GetCompositeFileOpenCode(). Error='%v' \n", err.Error())
+		return
+	}
+
+	if expectedFOpenCode != actualFileOpenCode {
+		fmt.Printf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+			expectedFOpenCode, actualFileOpenCode)
+		return
+	}
+
+	fmt.Printf("Success - File Open Codes Match!")
+	return
+}
+
+func mainTest21() {
+
+	fmt.Println("--------- Primary Codes ---------")
+	fmt.Println("os.O_RDONLY: ", os.O_RDONLY)
+	fmt.Println("os.O_WRONLY: ", os.O_WRONLY)
+	fmt.Println("os.O_RDWR: ", os.O_RDWR)
+	fmt.Println()
+	fmt.Println("--------- Control Codes ----------")
+	fmt.Println("os.O_APPEND: ", os.O_APPEND)
+	fmt.Println("os.O_CREATE: ", os.O_CREATE)
+	fmt.Println("os.O_EXCL: ", os.O_EXCL)
+	fmt.Println("os.O_SYNC: ", os.O_SYNC)
+	fmt.Println("os.O_TRUNC: ", os.O_TRUNC)
 
 }
 
