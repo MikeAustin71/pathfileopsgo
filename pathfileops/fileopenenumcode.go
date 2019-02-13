@@ -170,6 +170,73 @@ func (fOpenStat *FileOpenStatus) GetFileOpenType() FileOpenType {
 	return fOpenStat.fileOpenType
 }
 
+// IsValid - If the current FileOpenStatus is valid and properly
+// initialized, this method returns nil. If the current FileOpenStatus
+// instance is invalid, this method returns an error.
+func (fOpenStat *FileOpenStatus) IsValid() error {
+
+	ePrefix := "FileOpenStatus.IsValid() "
+
+	if fOpenStat.fileOpenModes == nil {
+		fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+	}
+
+	if !fOpenStat.isInitialized {
+		return errors.New(ePrefix +
+			"Error: The current FileOpenStatus instance has NOT been " +
+			"properly initialized.")
+	}
+
+	err := fOpenStat.fileOpenType.IsValid()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error: The File Open Type is INVALID!. %v", err.Error())
+	}
+
+	lenFileOpenModes := len(fOpenStat.fileOpenModes)
+
+	if fOpenStat.fileOpenType == FOpenType.None() &&
+		lenFileOpenModes > 1 {
+		return errors.New(ePrefix +
+			"Error: Current FileOpenStatus has Type='None' and " +
+			"multiple File Open Modes!")
+	}
+
+	if fOpenStat.fileOpenType == FOpenType.None() &&
+		lenFileOpenModes == 1 &&
+		fOpenStat.fileOpenModes[0] != FileOpenMode(0).None() {
+		return errors.New(ePrefix +
+			"Error: Current FileOpenStatus has Type='None' and " +
+			"a valid File Open Mode")
+	}
+
+	if fOpenStat.fileOpenType != FOpenType.None() {
+
+		for i := 0; i < lenFileOpenModes; i++ {
+			if fOpenStat.fileOpenModes[i] == FileOpenMode(0).None() {
+				return errors.New(ePrefix + "Error: The File Open Status has multiple File Open Modes " +
+					"one of which is 'None'. Resolve this conflict.")
+			}
+		}
+
+	}
+
+	for i := 0; i < lenFileOpenModes; i++ {
+
+		err := fOpenStat.fileOpenModes[i].IsValid()
+
+		if err != nil {
+			return fmt.Errorf(ePrefix+
+				"Error: A File Open Mode is INVALID! Index='%v' "+
+				"Invalid Error='%v' ", i, err.Error())
+		}
+
+	}
+
+	return nil
+}
+
 // SetFileOpenType - Receives an input parameter 'fOpenType' which is
 // used to set the internal stored FileOpenType for the current FileOpenStatus
 // instance.
@@ -194,6 +261,8 @@ func (fOpenStat *FileOpenStatus) SetFileOpenType(fOpenType FileOpenType) error {
 
 	fOpenStat.fileOpenType = fOpenType
 
+	fOpenStat.isInitialized = true
+
 	return nil
 }
 
@@ -217,6 +286,8 @@ func (fOpenStat *FileOpenStatus) SetFileOpenModes(fOpenModes ...FileOpenMode) {
 	fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
 
 	fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, fOpenModes...)
+
+	fOpenStat.isInitialized = true
 
 	return
 }
@@ -406,15 +477,21 @@ func (fOpenType FileOpenType) ParseString(
 //
 // Usage
 //
-//	t:= FileOpenType(0).Append()
+//	t:= FileOpenType(0).ReadWrite()
 //	str := t.String()
-//	    str is now equal to 'Append'
+//	    str is now equal to "ReadWrite"
 //
 func (fOpenType FileOpenType) String() string {
 
 	fOpenType.checkInitializeMaps(false)
 
-	return mFileOpenTypeIntToString[int(fOpenType)]
+	str, ok := mFileOpenTypeIntToString[int(fOpenType)]
+
+	if !ok {
+		return "Invalid Type!"
+	}
+
+	return str
 }
 
 // Value - This is a utility method which is not part of the
