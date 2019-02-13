@@ -16,6 +16,125 @@ type FileOpenStatus struct {
 	fileOpenModes []FileOpenMode
 }
 
+// CopyIn - Receives a FileOpenStatus instance and copies all the data
+// fields to the current FileOpenStatus instance. When complete, both
+// the incoming and current FileOpenStatus instances will be identical.
+//
+func (fOpenStat *FileOpenStatus) CopyIn(fOpStat2 FileOpenStatus) {
+
+	if fOpenStat.fileOpenModes == nil {
+		fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+	}
+
+	if fOpStat2.fileOpenModes == nil {
+		fOpStat2.fileOpenModes = make([]FileOpenMode, 0)
+	}
+
+	fOpenStat.isInitialized = fOpStat2.isInitialized
+	fOpenStat.fileOpenType = fOpStat2.fileOpenType
+
+	lenFOpStat2FOpenModes := len(fOpStat2.fileOpenModes)
+
+	if lenFOpStat2FOpenModes == 0 {
+		fOpStat2.fileOpenModes = make([]FileOpenMode, 1)
+		fOpStat2.fileOpenModes[0] = FOpenMode.None()
+		lenFOpStat2FOpenModes = 1
+	}
+
+	fOpenStat.fileOpenModes = make([]FileOpenMode, lenFOpStat2FOpenModes)
+
+	for i := 0; i < lenFOpStat2FOpenModes; i++ {
+		fOpenStat.fileOpenModes[i] = fOpStat2.fileOpenModes[i]
+	}
+
+}
+
+// CopyOut - Creates and returns a deep copy of the current
+// FileOpenStatus instance.
+func (fOpenStat *FileOpenStatus) CopyOut() FileOpenStatus {
+
+	if fOpenStat.fileOpenModes == nil {
+		fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+	}
+
+	fOpStat2 := FileOpenStatus{}
+	fOpStat2.isInitialized = fOpenStat.isInitialized
+	fOpStat2.fileOpenType = fOpenStat.fileOpenType
+	lenFOpenModes := len(fOpenStat.fileOpenModes)
+
+	if lenFOpenModes == 0 {
+		fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, FOpenMode.None())
+		lenFOpenModes = 1
+	}
+
+	fOpStat2.fileOpenModes = make([]FileOpenMode, lenFOpenModes)
+
+	for i := 0; i < lenFOpenModes; i++ {
+		fOpStat2.fileOpenModes[i] = fOpenStat.fileOpenModes[i]
+	}
+
+	return fOpStat2
+}
+
+// Empty - ReInitializes the current FileOpenStatus instance to
+// empty or zero values.
+//
+func (fOpenStat *FileOpenStatus) Empty() {
+
+	fOpenStat.isInitialized = false
+
+	fOpenStat.fileOpenType = FOpenType.None()
+
+	fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+
+	fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, FOpenMode.None())
+
+}
+
+// Equal - Returns 'true' if the incoming FileOpenStatus Type is equal in
+// all respects to the current FileOpenStatus instance.
+//
+func (fOpenStat *FileOpenStatus) Equal(fOpStat2 FileOpenStatus) bool {
+
+	if fOpenStat.fileOpenModes == nil {
+		fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+	}
+
+	if fOpStat2.fileOpenModes == nil {
+		fOpStat2.fileOpenModes = make([]FileOpenMode, 0)
+	}
+
+	if fOpenStat.isInitialized != fOpStat2.isInitialized {
+		return false
+	}
+
+	lenFileOpenModes := len(fOpenStat.fileOpenModes)
+
+	if lenFileOpenModes != len(fOpStat2.fileOpenModes) {
+		return false
+	}
+
+	if fOpenStat.fileOpenType != fOpStat2.fileOpenType {
+		return false
+	}
+
+	for i := 0; i < lenFileOpenModes; i++ {
+		isFound := false
+
+		for j := 0; j < lenFileOpenModes; j++ {
+			if fOpStat2.fileOpenModes[j] == fOpenStat.fileOpenModes[i] {
+				isFound = true
+			}
+		}
+
+		if !isFound {
+			return false
+		}
+	}
+
+	return true
+}
+
 // New - Creates and returns a fully initialized FileOpenStatus instance.
 //
 //

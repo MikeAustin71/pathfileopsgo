@@ -723,6 +723,7 @@ type FileMgr struct {
 	isFileNameExtPopulated          bool
 	filePtr                         *os.File
 	isFilePtrOpen                   bool
+	fileOpenStatus                  FileOpenStatus
 	actualFileInfo                  FileInfoPlus
 }
 
@@ -1608,12 +1609,17 @@ func (fMgr *FileMgr) CloseFile() error {
 		return nil
 	}
 
-	err = fMgr.FlushBytesToDisk()
+	if fMgr.fileOpenStatus.fileOpenType == FOpenType.WriteOnly() ||
+		fMgr.fileOpenStatus.fileOpenType == FOpenType.ReadWrite() {
 
-	if err != nil {
-		return fmt.Errorf(ePrefix+
-			"Error returned from fMgr.FlushBytesToDisk().  "+
-			"Error='%v'", err.Error())
+		err = fMgr.FlushBytesToDisk()
+
+		if err != nil {
+			return fmt.Errorf(ePrefix+
+				"Error returned from fMgr.FlushBytesToDisk().  "+
+				"Error='%v'", err.Error())
+
+		}
 
 	}
 
@@ -1653,6 +1659,7 @@ func (fMgr *FileMgr) CopyIn(fmgr2 *FileMgr) {
 	fMgr.isFileNameExtPopulated = fmgr2.isFileNameExtPopulated
 	fMgr.filePtr = fmgr2.filePtr
 	fMgr.isFilePtrOpen = fmgr2.isFilePtrOpen
+	fMgr.fileOpenStatus = fmgr2.fileOpenStatus.CopyOut()
 	fMgr.actualFileInfo = fmgr2.actualFileInfo.CopyOut()
 
 	return
@@ -1678,6 +1685,7 @@ func (fMgr *FileMgr) CopyOut() FileMgr {
 	fmgr2.isFileNameExtPopulated = fMgr.isFileNameExtPopulated
 	fmgr2.filePtr = fMgr.filePtr
 	fmgr2.isFilePtrOpen = fMgr.isFilePtrOpen
+	fmgr2.fileOpenStatus = fMgr.fileOpenStatus.CopyOut()
 	fmgr2.actualFileInfo = fMgr.actualFileInfo.CopyOut()
 
 	return fmgr2
@@ -1968,6 +1976,10 @@ func (fMgr *FileMgr) Equal(fmgr2 *FileMgr) bool {
 		return false
 	}
 
+	if !fMgr.fileOpenStatus.Equal(fmgr2.fileOpenStatus) {
+		return false
+	}
+
 	if !fMgr.dMgr.Equal(&fmgr2.dMgr) {
 		return false
 	}
@@ -2083,6 +2095,7 @@ func (fMgr *FileMgr) Empty() {
 	fMgr.isFileNameExtPopulated = false
 	fMgr.filePtr = nil
 	fMgr.isFilePtrOpen = false
+	fMgr.fileOpenStatus.Empty()
 	fMgr.actualFileInfo = FileInfoPlus{}
 
 }
@@ -2911,7 +2924,21 @@ func (fMgr *FileMgr) OpenThisFileReadOnly() error {
 			"fMgr.absolutePathFileName='%v' Error='%v' ", fMgr.absolutePathFileName, err.Error())
 	}
 
-	fMgr.filePtr, err = os.OpenFile(fMgr.absolutePathFileName, os.O_RDONLY, 0666)
+	fMgr.fileOpenStatus, err = FileOpenStatus{}.New(FOpenType.ReadOnly(), FOpenMode.None())
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"Error initializing fMgr.fileOpenStatus. Error='%v' ", err.Error())
+	}
+
+	openConfig, err := fMgr.fileOpenStatus.GetCompositeFileOpenCode()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"Error retrieving Composite File Open Code. Error='%v' ", err.Error())
+	}
+
+	// fMgr.filePtr, err = os.OpenFile(fMgr.absolutePathFileName, os.O_RDONLY, 0666)
+
+	fMgr.filePtr, err = os.OpenFile(fMgr.absolutePathFileName, openConfig, 0666)
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+
@@ -2988,7 +3015,21 @@ func (fMgr *FileMgr) OpenThisFileReadWrite() error {
 		return nil
 	}
 
-	fMgr.filePtr, err = os.OpenFile(fMgr.absolutePathFileName, os.O_RDWR, 0666)
+	fMgr.fileOpenStatus, err = FileOpenStatus{}.New(FOpenType.ReadWrite(), FOpenMode.None())
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"Error initializing fMgr.fileOpenStatus. Error='%v' ", err.Error())
+	}
+
+	openConfig, err := fMgr.fileOpenStatus.GetCompositeFileOpenCode()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"Error retrieving Composite File Open Code. Error='%v' ", err.Error())
+	}
+
+	//fMgr.filePtr, err = os.OpenFile(fMgr.absolutePathFileName, os.O_RDWR, 0666)
+
+	fMgr.filePtr, err = os.OpenFile(fMgr.absolutePathFileName, openConfig, 0666)
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+
