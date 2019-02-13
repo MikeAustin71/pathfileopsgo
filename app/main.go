@@ -35,8 +35,37 @@ func main() {
 
 func main() {
 
-	mainTest21()
+	mainTest22()
 
+}
+
+func mainTest22() {
+
+	expectedFOpenCode := os.O_WRONLY | os.O_APPEND | os.O_TRUNC
+
+	fOpStatus, err := pf.FileOpenStatus{}.New(pf.FOpenType.WriteOnly(),
+		pf.FOpenMode.Append(), pf.FOpenMode.Truncate())
+
+	if err != nil {
+		fmt.Printf("Error returned by FileOpenStatus{}.New(). Error='%v' \n", err.Error())
+		return
+	}
+
+	actualFileOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
+
+	if err != nil {
+		fmt.Printf("Error returned by FileOpenStatus{}.GetCompositeFileOpenCode(). Error='%v' \n", err.Error())
+		return
+	}
+
+	if expectedFOpenCode != actualFileOpenCode {
+		fmt.Printf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+			expectedFOpenCode, actualFileOpenCode)
+		return
+	}
+
+	fmt.Printf("Success - File Open Codes Match!")
+	return
 }
 
 func mainTest21() {
