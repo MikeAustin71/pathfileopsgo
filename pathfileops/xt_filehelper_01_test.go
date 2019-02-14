@@ -247,6 +247,72 @@ func TestFileHelper_CleanFileNameExtStr_03(t *testing.T) {
 
 }
 
+func TestFileHelper_ConvertOctalToDecimal_01(t *testing.T) {
+
+	fh := FileHelper{}
+	expectedValue := 511
+
+	octalValue := 777
+
+	mode := fh.ConvertOctalToDecimal(octalValue)
+
+	if expectedValue != mode {
+		t.Errorf("Error: Expected Value='%v'. Instead, value='%v' ",
+			expectedValue, mode)
+	}
+
+}
+
+func TestFileHelper_ConvertOctalToDecimal_02(t *testing.T) {
+
+	fh := FileHelper{}
+	expectedValue := 438
+
+	octalValue := 666
+
+	mode := fh.ConvertOctalToDecimal(octalValue)
+
+	if expectedValue != mode {
+		t.Errorf("Error: Expected Value='%v'. Instead, value='%v' ",
+			expectedValue, mode)
+	}
+
+}
+
+func TestFileHelper_ConvertDecimalToOctal_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	expectedOctalValue := 777
+
+	initialDecimalValue := 511
+
+	actualOctalValue := fh.ConvertDecimalToOctal(initialDecimalValue)
+
+	if expectedOctalValue != actualOctalValue {
+		t.Errorf("Error: Expected ocatal value='%v'. Instead, actual ocatal value='%v' ",
+			expectedOctalValue, actualOctalValue)
+	}
+
+}
+
+func TestFileHelper_ConvertDecimalToOctal_02(t *testing.T) {
+
+	fh := FileHelper{}
+
+	expectedOctalValue := 666
+
+	initialDecimalValue := 438
+
+	actualOctalValue := fh.ConvertDecimalToOctal(initialDecimalValue)
+
+	if expectedOctalValue != actualOctalValue {
+		t.Errorf("Error: Expected ocatal value='%v'. Instead, actual ocatal value='%v' ",
+			expectedOctalValue, actualOctalValue)
+	}
+
+}
+
 func TestFileHelper_CopyFile_01(t *testing.T) {
 
 	fh := FileHelper{}

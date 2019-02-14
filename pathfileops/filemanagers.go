@@ -3,6 +3,7 @@ package pathfileops
 import (
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -3119,6 +3120,10 @@ func (fMgr *FileMgr) ReadAllFile() ([]byte, error) {
 //
 // If successful, the returned error value is 'nil'. The returned value 'int'
 // contains the number of bytes read from the current file.
+//
+// If End Of File (EOF) is reached, this method will return an EOF error (err == io.EOF)
+// and the number of bytes read.
+//
 func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (int, error) {
 
 	ePrefix := "FileMgr.ReadFileBytes() "
@@ -3176,6 +3181,11 @@ func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (int, error) {
 	}
 
 	bytesRead, err := fMgr.filePtr.Read(byteBuff)
+
+	if err != nil &&
+		err == io.EOF {
+		return bytesRead, err
+	}
 
 	if err != nil {
 		return bytesRead, fmt.Errorf(ePrefix+
