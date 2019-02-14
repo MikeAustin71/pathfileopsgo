@@ -83,7 +83,10 @@ As a result, specific bits add to the sum as it is represented by a numeral:
     The write bit adds 2 to its total (in binary 010), and
     The execute bit adds 1 to its total (in binary 001).
 
-These values never produce ambiguous combinations; each sum represents a specific set of permissions. More technically, this is an octal representation of a bit field – each bit references a separate permission, and grouping 3 bits at a time in octal corresponds to grouping these permissions by user, group, and others.
+These values never produce ambiguous combinations; each sum represents a specific set of
+permissions. More technically, this is an octal representation of a bit field – each bit
+references a separate permission, and grouping 3 bits at a time in octal corresponds to
+grouping these permissions by user, group, and others.
 
 These are the examples from the symbolic notation section given in octal notation:
 
@@ -169,7 +172,9 @@ func (fPerm FilePermissionMode) ModeDir() os.FileMode { return os.ModeDir }
 //
 // The first character of the 'modeStr' designates the 'Entry Type'.
 //
-// See https://www.cyberciti.biz/faq/explain-the-nine-permissions-bits-on-files/.
+//  Reference:
+//  https://www.cyberciti.biz/faq/explain-the-nine-permissions-bits-on-files/.
+//  https://en.wikipedia.org/wiki/File_system_permissions
 //
 // The supported 'Entry Type' for the first character in 'modeStr' is either a "-",
 // specifying a file, or "d" specifying a directory.
@@ -301,7 +306,9 @@ func (fPerm *FilePermissionMode) SetFileModeByOctalDigits(octalFileModeCode int)
 //
 // The first character of the 'modeStr' designates the 'Entry Type'.
 //
-// See https://www.cyberciti.biz/faq/explain-the-nine-permissions-bits-on-files/.
+//   Reference:
+//   https://www.cyberciti.biz/faq/explain-the-nine-permissions-bits-on-files/.
+//   https://en.wikipedia.org/wiki/File_system_permissions
 //
 // The supported 'Entry Type' for the first character in 'modeStr' is either a "-",
 // specifying a file, or "d" specifying a directory.
