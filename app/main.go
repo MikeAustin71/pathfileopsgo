@@ -4,6 +4,7 @@ import (
 	pf "../pathfileops"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 /*
@@ -35,13 +36,57 @@ func main() {
 
 func main() {
 
-	mainTest24()
+	mainTest25()
+
+}
+
+func mainTest25() {
+
+	fmt.Printf("ModeDir Decimal: %v  Octal: %s Binary: %s \n",
+		os.ModeDir, strconv.FormatInt(int64(os.ModeDir), 8),
+		strconv.FormatInt(int64(os.ModeDir), 2))
+
+	fmt.Printf("ModeAppend Decimal: %d  Octal: %o Binary: %b \n",
+		os.ModeAppend, os.ModeAppend, os.ModeAppend)
+
+	fmt.Printf("ModeExclusive Decimal: %d  Octal: %o Binary: %b \n",
+		os.ModeExclusive, os.ModeExclusive, os.ModeExclusive)
+
+	fmt.Printf("ModeTemporary Decimal: %d  Octal: %o Binary: %b \n",
+		os.ModeTemporary, os.ModeTemporary, os.ModeTemporary)
+
+	fmt.Printf("ModeSymlink Decimal: %d  Octal: %o Binary: %b \n",
+		os.ModeSymlink, os.ModeSymlink, os.ModeSymlink)
+
+	fmt.Printf("ModeDevice Decimal: %d  Octal: %o Binary: %b \n",
+		os.ModeDevice, os.ModeDevice, os.ModeDevice)
+
+	fmt.Printf("ModeNamedPipe Decimal: %d  Octal: %o Binary: %b \n",
+		os.ModeNamedPipe, os.ModeNamedPipe, os.ModeNamedPipe)
+
+	fmt.Printf("ModeSocket Decimal: %d  Octal: %o Binary: %b \n",
+		os.ModeSocket, os.ModeSocket, os.ModeSocket)
+
+	fmt.Printf("ModeSetuid Decimal: %d  Octal: %o Binary: %b \n",
+		os.ModeSetuid, os.ModeSetuid, os.ModeSetuid)
+
+	fmt.Printf("ModeSetgid Decimal: %d  Octal: %o Binary: %b \n",
+		os.ModeSetgid, os.ModeSetgid, os.ModeSetgid)
+
+	fmt.Printf("ModeCharDevice Decimal: %d  Octal: %o Binary: %b \n",
+		os.ModeCharDevice, os.ModeCharDevice, os.ModeCharDevice)
+
+	fmt.Printf("ModeSticky Decimal: %d  Octal: %o Binary: %b \n",
+		os.ModeSticky, os.ModeSticky, os.ModeSticky)
+
+	fmt.Printf("ModeIrregular Decimal: %d  Octal: %o Binary: %b \n",
+		os.ModeIrregular, os.ModeIrregular, os.ModeIrregular)
 
 }
 
 func mainTest24() {
 
-	fPerm := pf.FilePermissionMode(0)
+	fPerm := pf.FilePermissionMode{}
 
 	expectedDecimalModeValue := 511
 	expectedOctalModeValue :=
@@ -49,10 +94,18 @@ func mainTest24() {
 
 	modeStr := "-rwxrwxrwx"
 
-	fMode, err := fPerm.StringToMode(modeStr)
+	err := fPerm.SetFileModeByTextCode(modeStr)
 
 	if err != nil {
 		fmt.Printf("Error returned by fPerm.StringToMode(modeStr). "+
+			"modeStr='%v' Error='%v' \n", modeStr, err.Error())
+		return
+	}
+
+	fMode, err := fPerm.GetFileMode()
+
+	if err != nil {
+		fmt.Printf("Error returned by fPerm.GetFileMode(). "+
 			"modeStr='%v' Error='%v' \n", modeStr, err.Error())
 		return
 	}
@@ -72,49 +125,6 @@ func mainTest24() {
 }
 
 func mainTest23() {
-
-	/*
-		fmt.Printf("ModeDir Decimal: %v  Octal: %s Binary: %s \n",
-			os.ModeDir, strconv.FormatInt(int64(os.ModeDir), 8),
-			strconv.FormatInt(int64(os.ModeDir), 2))
-
-		fmt.Printf("ModeAppend Decimal: %d  Octal: %o Binary: %b \n",
-			os.ModeAppend, os.ModeAppend,os.ModeAppend )
-
-		fmt.Printf("ModeExclusive Decimal: %d  Octal: %o Binary: %b \n",
-			os.ModeExclusive, os.ModeExclusive, os.ModeExclusive)
-
-		fmt.Printf("ModeTemporary Decimal: %d  Octal: %o Binary: %b \n",
-			os.ModeTemporary, os.ModeTemporary, os.ModeTemporary)
-
-		fmt.Printf("ModeSymlink Decimal: %d  Octal: %o Binary: %b \n",
-			os.ModeSymlink, os.ModeSymlink, os.ModeSymlink)
-
-		fmt.Printf("ModeDevice Decimal: %d  Octal: %o Binary: %b \n",
-			os.ModeDevice, os.ModeDevice, os.ModeDevice )
-
-		fmt.Printf("ModeNamedPipe Decimal: %d  Octal: %o Binary: %b \n",
-			os.ModeNamedPipe, os.ModeNamedPipe, os.ModeNamedPipe)
-
-		fmt.Printf("ModeSocket Decimal: %d  Octal: %o Binary: %b \n",
-			os.ModeSocket, os.ModeSocket, os.ModeSocket)
-
-		fmt.Printf("ModeSetuid Decimal: %d  Octal: %o Binary: %b \n",
-			os.ModeSetuid, os.ModeSetuid, os.ModeSetuid)
-
-		fmt.Printf("ModeSetgid Decimal: %d  Octal: %o Binary: %b \n",
-			os.ModeSetgid, os.ModeSetgid, os.ModeSetgid)
-
-		fmt.Printf("ModeCharDevice Decimal: %d  Octal: %o Binary: %b \n",
-			os.ModeCharDevice, os.ModeCharDevice, os.ModeCharDevice)
-
-		fmt.Printf("ModeSticky Decimal: %d  Octal: %o Binary: %b \n",
-			os.ModeSticky, os.ModeSticky, os.ModeSticky)
-
-		fmt.Printf("ModeIrregular Decimal: %d  Octal: %o Binary: %b \n",
-			os.ModeIrregular, os.ModeIrregular, os.ModeIrregular)
-
-	*/
 
 	dfm := os.FileMode(os.ModeDir)
 

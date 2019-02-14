@@ -151,30 +151,55 @@ http://www.zzee.com/solutions/unix-permissions.shtml#numeric
 
 */
 
-type FilePermissionMode uint32
+type FilePermissionMode struct {
+	isInitialized bool
+	fileMode      os.FileMode
+}
 
 // ModeDir        FileMode = 1 << (32 - 1 - iota) // d: is a directory
-func (fPerm FilePermissionMode) ModeDir() FilePermissionMode { return FilePermissionMode(os.ModeDir) }
+func (fPerm FilePermissionMode) ModeDir() os.FileMode { return os.ModeDir }
 
-// modeStr 10-Character String
-// Groups: - Owner, Group, Other
-// From left to right
-// First Characters is Entry Type index 0
+// New - Creates and returns a new FilePermissionMode instance initialized with a
+// an os.FileMode value generated from the input parameter 'modeStr'.
 //
-// Char indexes 1-3 = Owner
-//    Char indexes 4-6 = Groups
-//        Char indexes 7-9 = Other
+// 'modeStr' is a 10-character string containing the read, write and execute permissions
+// for the the three groups, 'Owner', 'Group' and 'Other'.
 //
+// The text codes used in the 'modeStr' mimic the Unix permission codes.
+//
+// The first character of the 'modeStr' designates the 'Entry Type'.
+//
+// See https://www.cyberciti.biz/faq/explain-the-nine-permissions-bits-on-files/.
+//
+// The supported 'Entry Type' for the first character in 'modeStr' is either a "-",
+// specifying a file, or "d" specifying a directory.
+//
+// The remaining nine characters in the 'modeStr' are three group fields each
+// containing 3-characters. Each field may be populated with 'r' (Read-Permission),
+// 'w' (Write-Permission), 'x' (Execute-Permission) or '-' signaling no permission
+// or no access allowed. A typical 'modeStr' authorizing permission for full access
+// to a file would be styled as:
+//
+//  "-rwxrwxrwx"
+//
+//  Groups: - Owner, Group, Other
+//  From left to right
+//  First Characters is Entry Type index 0 ("-")
+//
+//  Char indexes 1-3 = Owner  "rwx"  Authorizing 'Read', 'Write' & Execute Permissions for 'Owner'
+//  Char indexes 4-6 = Group  "rwx"  Authorizing 'Read', 'Write' & Execute Permissions for 'Group'
+//  Char indexes 7-9 = Other  "rwx"  Authorizing 'Read', 'Write' & Execute Permissions for 'Other'
 //
 // The Symbolic notation provided by input parameter 'modeStr' MUST conform to
-// options presented below. The first character or 'Entry Type' is listed as
+// the options presented below. The first character or 'Entry Type' is listed as
 // "-". However, in practice, the caller may set the first character as either a
-// "-" specifying a file or a "d", specifying a directory. No other first character
+// "-", specifying a file, or a "d", specifying a directory. No other first character
 // types are currently supported.
 //
 // Three SymbolicGroups:
 // The three group types are: Owners, Groups & Others
 //
+// 'modeStr'
 // Symbolic     Octal     File Access
 // Notation    Notation 	Permission Descriptions
 // ---------- 	0000 	    no permissions
@@ -205,26 +230,158 @@ func (fPerm FilePermissionMode) ModeDir() FilePermissionMode { return FilePermis
 //   How to use special permissions: the setuid, setgid and sticky bits
 //   https://linuxconfig.org/how-to-use-special-permissions-the-setuid-setgid-and-sticky-bits
 //
-func (fPerm FilePermissionMode) StringToMode(modeStr string) (os.FileMode, error) {
+func (fPerm FilePermissionMode) New(modeStr string) (FilePermissionMode, error) {
+
+	ePrefix := "FilePermissionMode.New()"
+
+	fPerm2 := FilePermissionMode{}
+
+	err := fPerm2.SetFileModeByTextCode(modeStr)
+
+	if err != nil {
+		return FilePermissionMode{},
+			fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	return fPerm2, nil
+}
+
+// GetFileMode - Returns the os.FileMode from the internal data field,
+// 'FilePermissionMode.fileMode'.
+//
+func (fPerm *FilePermissionMode) GetFileMode() (os.FileMode, error) {
+
+	ePrefix := "FilePermissionMode.GetFileMode() "
+
+	if !fPerm.isInitialized {
+		return os.FileMode(0),
+			fmt.Errorf(ePrefix +
+				"Error: This FilePermissionMode instance has NOT bee initialized. The FileMode is INVALID!")
+	}
+
+	return fPerm.fileMode, nil
+}
+
+// SetFileModeByOctalDigits
+// Three SymbolicGroups:
+// The three group types are: Owners, Groups & Others
+//
+// 'modeStr'
+// Symbolic     Octal     File Access
+// Notation    Notation 	Permission Descriptions
+// ---------- 	0000 	    no permissions
+// -rwx------ 	0700 	    read, write, & execute only for owner
+// -rwxrwx--- 	0770 	    read, write, & execute for owner and group
+// -rwxrwxrwx 	0777 	    read, write, & execute for owner, group and others
+// ---x--x--x 	0111 	    execute
+// --w--w--w- 	0222 	    write
+// --wx-wx-wx 	0333 	    write & execute
+// -r--r--r-- 	0444 	    read
+// -r-xr-xr-x 	0555 	    read & execute
+// -rw-rw-rw- 	0666 	    read & write
+// -rwxr----- 	0740 	    Owner can read, write, & execute. Group can only read;
+//                          others have no permissions
+//
+func (fPerm *FilePermissionMode) SetFileModeByOctalDigits(octalFileModeCode int) error {
+
+	decimalVal := FileHelper{}.ConvertOctalToDecimal(octalFileModeCode)
+
+	fPerm.fileMode = os.FileMode(decimalVal)
+	fPerm.isInitialized = true
+
+	return nil
+}
+
+// SetFileModeByTextCode - Sets the internal FileMode data field using input
+// parameter 'modeStr'. 'modeStr' is a 10-character string containing the read,
+// write and execute permissions for the the three groups, 'Owner', 'Group' and
+// 'Other'.
+//
+// The text codes used in the 'modeStr' mimic the Unix permission codes.
+//
+// The first character of the 'modeStr' designates the 'Entry Type'.
+//
+// See https://www.cyberciti.biz/faq/explain-the-nine-permissions-bits-on-files/.
+//
+// The supported 'Entry Type' for the first character in 'modeStr' is either a "-",
+// specifying a file, or "d" specifying a directory.
+//
+// The remaining nine characters in the 'modeStr' are three group fields each
+// containing 3-characters. Each field may be populated with 'r' (Read-Permission),
+// 'w' (Write-Permission), 'x' (Execute-Permission) or '-' signaling no permission
+// or no access allowed. A typical 'modeStr' authorizing permission for full access
+// to a file would be styled as:
+//
+//  "-rwxrwxrwx"
+//
+//  Groups: - Owner, Group, Other
+//  From left to right
+//  First Characters is Entry Type index 0 ("-")
+//
+//  Char indexes 1-3 = Owner  "rwx"  Authorizing 'Read', 'Write' & Execute Permissions for 'Owner'
+//  Char indexes 4-6 = Group  "rwx"  Authorizing 'Read', 'Write' & Execute Permissions for 'Group'
+//  Char indexes 7-9 = Other  "rwx"  Authorizing 'Read', 'Write' & Execute Permissions for 'Other'
+//
+// The Symbolic notation provided by input parameter 'modeStr' MUST conform to
+// the options presented below. The first character or 'Entry Type' is listed as
+// "-". However, in practice, the caller may set the first character as either a
+// "-", specifying a file, or a "d", specifying a directory. No other first character
+// types are currently supported.
+//
+// Three SymbolicGroups:
+// The three group types are: Owners, Groups & Others
+//
+// 'modeStr'
+// Symbolic     Octal     File Access
+// Notation    Notation 	Permission Descriptions
+// ---------- 	0000 	    no permissions
+// -rwx------ 	0700 	    read, write, & execute only for owner
+// -rwxrwx--- 	0770 	    read, write, & execute for owner and group
+// -rwxrwxrwx 	0777 	    read, write, & execute for owner, group and others
+// ---x--x--x 	0111 	    execute
+// --w--w--w- 	0222 	    write
+// --wx-wx-wx 	0333 	    write & execute
+// -r--r--r-- 	0444 	    read
+// -r-xr-xr-x 	0555 	    read & execute
+// -rw-rw-rw- 	0666 	    read & write
+// -rwxr----- 	0740 	    Owner can read, write, & execute. Group can only read;
+//                          others have no permissions
+//
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameter:
+//
+//   modeStr  string - 'modeStr' must conform to the symbolic notation options shown
+//                     above. Failure to comply with this requirement will generate an
+//                     error. As indicated, 'modeStr' must consist of 10-characters.
+//                     The first character in 'modeStr' may be '-' specifying a fle or
+//                     'd' specifying a directory.
+//
+//   Reference:
+//   How to use special permissions: the setuid, setgid and sticky bits
+//   https://linuxconfig.org/how-to-use-special-permissions-the-setuid-setgid-and-sticky-bits
+//
+func (fPerm *FilePermissionMode) SetFileModeByTextCode(modeStr string) error {
 
 	ePrefix := "FilePermissionMode.StringToMode() "
 
 	ownerInt, err := fPerm.convertGroupToDecimal(modeStr[1:4], "owner")
 
 	if err != nil {
-		return os.FileMode(0), fmt.Errorf(ePrefix+"'ownerInt' Error: %v", err.Error())
+		return fmt.Errorf(ePrefix+"'ownerInt' Error: %v", err.Error())
 	}
 
 	groupInt, err := fPerm.convertGroupToDecimal(modeStr[4:7], "group")
 
 	if err != nil {
-		return os.FileMode(0), fmt.Errorf(ePrefix+"groupInt Error: %v", err.Error())
+		return fmt.Errorf(ePrefix+"groupInt Error: %v", err.Error())
 	}
 
 	otherInt, err := fPerm.convertGroupToDecimal(modeStr[7:], "other")
 
 	if err != nil {
-		return os.FileMode(0), fmt.Errorf(ePrefix+"otherInt Error: %v", err.Error())
+		return fmt.Errorf(ePrefix+"otherInt Error: %v", err.Error())
 	}
 
 	ownerInt *= 100
@@ -242,13 +399,14 @@ func (fPerm FilePermissionMode) StringToMode(modeStr string) (os.FileMode, error
 		fMode = entryType | permission
 	}
 
-	fModeDec := FileHelper{}.ConvertOctalToDecimal(fMode)
+	fPerm.fileMode = os.FileMode(FileHelper{}.ConvertOctalToDecimal(fMode))
+	fPerm.isInitialized = true
 
-	return os.FileMode(fModeDec), nil
+	return nil
 }
 
-// Expecting to a receive a 3-character permission string for an 'owner', 'group' or 'other'
-// 'groupType'.
+// convertGroupToDecimal - Expecting to a receive a 3-character permission string
+// for an 'owner', 'group' or 'other' 'groupType'.
 //
 // 3-character permission letter group must be formatted as one of the following:
 //             "rwx"
@@ -263,8 +421,11 @@ func (fPerm FilePermissionMode) StringToMode(modeStr string) (os.FileMode, error
 // If input parameter 'groupStr' does not match one of the letter groups shown above, an
 // error will be returned.
 //
+// If successful, this method will return an integer representing the octal digits comprising
+// this group code. For example, groupStr="rwx" will return an integer value of '7' which can
+// be treated as octal digit '7' for purposes of creating an os.FileMode.
 //
-func (fPerm FilePermissionMode) convertGroupToDecimal(groupStr, groupType string) (int, error) {
+func (fPerm *FilePermissionMode) convertGroupToDecimal(groupStr, groupType string) (int, error) {
 
 	ePrefix := "FilePermissionMode.convertGroupToDecimal() "
 	var err error
@@ -296,20 +457,3 @@ func (fPerm FilePermissionMode) convertGroupToDecimal(groupStr, groupType string
 
 	return intVal, err
 }
-
-/*
-// https://www.cloudhadoop.com/2018/12/golang-example-convertcast-octal-to.html
-func (fPerm FilePermissionMode) convertOctalToDecimal(number int) int {
-  decimal := 0
-  counter := 0.0
-  remainder := 0
-
-  for number != 0 {
-    remainder = number % 10
-    decimal += remainder * int(math.Pow(8.0, counter))
-    number = number / 10
-    counter++
-  }
-  return decimal
-}
-*/
