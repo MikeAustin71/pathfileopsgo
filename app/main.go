@@ -36,7 +36,31 @@ func main() {
 
 func main() {
 
-	mainTest25()
+	mainTest26()
+
+}
+
+func mainTest26() {
+
+	unixPermissions := os.FileMode(0777)
+
+	fmt.Printf("unixPermissions Decimal: %d  Octal: %s Binary: %s String Value:%x \n",
+		unixPermissions, strconv.FormatInt(int64(unixPermissions), 8),
+		strconv.FormatInt(int64(unixPermissions), 2), unixPermissions.String())
+
+	fmt.Printf("ModeDir Decimal: %d  Octal: %s Binary: %s String Value: %s \n",
+		os.ModeDir, strconv.FormatInt(int64(os.ModeDir), 8),
+		strconv.FormatInt(int64(os.ModeDir), 2), os.ModeDir.String())
+
+	directoryPermission := os.ModeDir | unixPermissions
+
+	fmt.Printf("directoryPermission Decimal: %d  Octal: %s Binary: %s \n",
+		directoryPermission, strconv.FormatInt(int64(directoryPermission), 8),
+		strconv.FormatInt(int64(directoryPermission), 2))
+	fmt.Println("-----------------------------------------------------------------------")
+	fmt.Printf("   dirctoryPermission string value: %s\n", directoryPermission.String())
+	fmt.Printf("    dirctoryPermission IsDir value: %v\n", directoryPermission.IsDir())
+	fmt.Printf("dirctoryPermission IsRegular value: %v\n", directoryPermission.IsRegular())
 
 }
 
@@ -86,7 +110,7 @@ func mainTest25() {
 
 func mainTest24() {
 
-	fPerm := pf.FilePermissionMode{}
+	fPerm := pf.FilePermissionConfig{}
 
 	expectedDecimalModeValue := 511
 	expectedOctalModeValue :=
@@ -151,18 +175,18 @@ func mainTest22() {
 
 	expectedFOpenCode := os.O_WRONLY | os.O_APPEND | os.O_TRUNC
 
-	fOpStatus, err := pf.FileOpenStatus{}.New(pf.FOpenType.WriteOnly(),
+	fOpStatus, err := pf.FileOpenConfig{}.New(pf.FOpenType.WriteOnly(),
 		pf.FOpenMode.Append(), pf.FOpenMode.Truncate())
 
 	if err != nil {
-		fmt.Printf("Error returned by FileOpenStatus{}.New(). Error='%v' \n", err.Error())
+		fmt.Printf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
 		return
 	}
 
 	actualFileOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
 	if err != nil {
-		fmt.Printf("Error returned by FileOpenStatus{}.GetCompositeFileOpenCode(). Error='%v' \n", err.Error())
+		fmt.Printf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). Error='%v' \n", err.Error())
 		return
 	}
 

@@ -724,7 +724,7 @@ type FileMgr struct {
 	isFileNameExtPopulated          bool
 	filePtr                         *os.File
 	isFilePtrOpen                   bool
-	fileOpenStatus                  FileOpenStatus
+	fileOpenStatus                  FileOpenConfig
 	actualFileInfo                  FileInfoPlus
 }
 
@@ -2925,7 +2925,7 @@ func (fMgr *FileMgr) OpenThisFileReadOnly() error {
 			"fMgr.absolutePathFileName='%v' Error='%v' ", fMgr.absolutePathFileName, err.Error())
 	}
 
-	fMgr.fileOpenStatus, err = FileOpenStatus{}.New(FOpenType.ReadOnly(), FOpenMode.None())
+	fMgr.fileOpenStatus, err = FileOpenConfig{}.New(FOpenType.ReadOnly(), FOpenMode.None())
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+"Error initializing fMgr.fileOpenStatus. Error='%v' ", err.Error())
@@ -3016,7 +3016,7 @@ func (fMgr *FileMgr) OpenThisFileReadWrite() error {
 		return nil
 	}
 
-	fMgr.fileOpenStatus, err = FileOpenStatus{}.New(FOpenType.ReadWrite(), FOpenMode.None())
+	fMgr.fileOpenStatus, err = FileOpenConfig{}.New(FOpenType.ReadWrite(), FOpenMode.None())
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+"Error initializing fMgr.fileOpenStatus. Error='%v' ", err.Error())

@@ -5,21 +5,21 @@ import (
 	"testing"
 )
 
-func TestFileOpenStatus_New_01(t *testing.T) {
+func TestFileOpenConfig_New_01(t *testing.T) {
 
 	expectedFOpenCode := os.O_WRONLY | os.O_APPEND | os.O_TRUNC
 
-	fOpStatus, err := FileOpenStatus{}.New(FOpenType.WriteOnly(),
+	fOpStatus, err := FileOpenConfig{}.New(FOpenType.WriteOnly(),
 		FOpenMode.Append(), FOpenMode.Truncate())
 
 	if err != nil {
-		t.Errorf("Error returned by FileOpenStatus{}.New(). Error='%v' \n", err.Error())
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
 	}
 
 	actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
 	if err != nil {
-		t.Errorf("Error returned by FileOpenStatus{}.GetCompositeFileOpenCode(). "+
+		t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). "+
 			"Error='%v' \n", err.Error())
 	}
 
@@ -30,15 +30,15 @@ func TestFileOpenStatus_New_01(t *testing.T) {
 
 }
 
-func TestFileOpenStatus_SetFileOpenType_01(t *testing.T) {
+func TestFileOpenConfig_SetFileOpenType_01(t *testing.T) {
 
 	expectedFOpenCode := os.O_RDWR
 
-	fOpStatus, err := FileOpenStatus{}.New(FOpenType.None(),
+	fOpStatus, err := FileOpenConfig{}.New(FOpenType.None(),
 		FOpenMode.None())
 
 	if err != nil {
-		t.Errorf("Error returned by FileOpenStatus{}.New(). Error='%v' \n", err.Error())
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
 	}
 
 	err = fOpStatus.SetFileOpenType(FOpenType.ReadWrite())
@@ -50,7 +50,7 @@ func TestFileOpenStatus_SetFileOpenType_01(t *testing.T) {
 	actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
 	if err != nil {
-		t.Errorf("Error returned by FileOpenStatus{}.GetCompositeFileOpenCode(). "+
+		t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). "+
 			"Error='%v' \n", err.Error())
 	}
 
@@ -61,15 +61,15 @@ func TestFileOpenStatus_SetFileOpenType_01(t *testing.T) {
 
 }
 
-func TestFileOpenStatus_SetFileOpenModes_01(t *testing.T) {
+func TestFileOpenConfig_SetFileOpenModes_01(t *testing.T) {
 
 	expectedFOpenCode := os.O_WRONLY | os.O_APPEND | os.O_CREATE
 
-	fOpStatus, err := FileOpenStatus{}.New(FOpenType.None(),
+	fOpStatus, err := FileOpenConfig{}.New(FOpenType.None(),
 		FOpenMode.None())
 
 	if err != nil {
-		t.Errorf("Error returned by FileOpenStatus{}.New(). Error='%v' \n", err.Error())
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
 	}
 
 	err = fOpStatus.SetFileOpenType(FOpenType.WriteOnly())
@@ -83,7 +83,7 @@ func TestFileOpenStatus_SetFileOpenModes_01(t *testing.T) {
 	actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
 	if err != nil {
-		t.Errorf("Error returned by FileOpenStatus{}.GetCompositeFileOpenCode(). "+
+		t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). "+
 			"Error='%v' \n", err.Error())
 	}
 

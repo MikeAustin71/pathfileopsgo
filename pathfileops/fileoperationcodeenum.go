@@ -369,7 +369,7 @@ func (fop FileOperationCode) ParseString(
 //
 //	t:= FileOperationCode(0).MoveSourceFileToDestination()
 //	str := t.String()
-//	    str is now equal to 'MoveSourceFileToDestination'
+//	    str is now equal to "MoveSourceFileToDestination"
 //
 func (fop FileOperationCode) String() string {
 
@@ -378,7 +378,7 @@ func (fop FileOperationCode) String() string {
 	str, ok := mFileOperationCodeIntToString[int(fop)]
 
 	if !ok {
-		return "Invalid FileOperationCode!"
+		return ""
 	}
 
 	return str
