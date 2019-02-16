@@ -20,6 +20,8 @@ type FileOpenConfig struct {
 // fields to the current FileOpenConfig instance. When complete, both
 // the incoming and current FileOpenConfig instances will be identical.
 //
+// The type of copy operation performed is a 'deep copy'.
+//
 func (fOpenStat *FileOpenConfig) CopyIn(fOpStat2 FileOpenConfig) {
 
 	if fOpenStat.fileOpenModes == nil {
@@ -91,8 +93,8 @@ func (fOpenStat *FileOpenConfig) Empty() {
 
 }
 
-// Equal - Returns 'true' if the incoming FileOpenConfig Type is equal in
-// all respects to the current FileOpenConfig instance.
+// Equal - Returns 'true' if the incoming FileOpenConfig instance
+// is equal in all respects to the current FileOpenConfig instance.
 //
 func (fOpenStat *FileOpenConfig) Equal(fOpStat2 FileOpenConfig) bool {
 

@@ -176,6 +176,19 @@ func (osPerm OsFilePermissionCode) ModeSticky() os.FileMode { return os.ModeStic
 // ModeIrregular    ?: non-regular file; nothing else is known about this file
 func (osPerm OsFilePermissionCode) ModeIrregular() os.FileMode { return os.ModeIrregular }
 
+// Equal - Compares the current OsFilePermissionCode instance to another
+// OsFilePermission instance passed as an input parameter. If the two are
+// equal in all respects, this method returns 'true'.
+//
+func (osPerm OsFilePermissionCode) Equal(osPerm2 OsFilePermissionCode) bool {
+
+	if osPerm == osPerm2 {
+		return true
+	}
+
+	return false
+}
+
 // GetFileModeLetterCode - Returns the single alphabetic character associated with
 // this os.FileMode. All os.FileMode's are associated with a single letter used
 // in unix permission strings.
@@ -340,7 +353,7 @@ func (osPerm OsFilePermissionCode) ParseString(
 		return OsFilePermissionCode(permCode), nil
 	}
 
-	permCode, ok = mOsPermissionStringToCode[strings.ToLower(valueString)]
+	permCode, ok = mOsPermissionStringToCode[valueString]
 
 	if !ok {
 		return OsFilePermissionCode(0), errors.New(ePrefix + "Invalid Permission Code!")
@@ -562,6 +575,57 @@ type FilePermissionConfig struct {
 	fileMode      os.FileMode
 }
 
+// CopyIn - Receives a FilePermissionConfig instance and copies all
+// data fields to the current FilePermissionConfig instance. When
+// complete, both the incoming and current FilePermissionConfig
+// instances will be identical. The type of copy operation performed
+// is a 'deep copy'.
+//
+func (fPerm *FilePermissionConfig) CopyIn(fPerm2 FilePermissionConfig) {
+
+	fPerm.isInitialized = fPerm2.isInitialized
+	fPerm.fileMode = fPerm2.fileMode
+
+}
+
+// CopyOut - Returns a new instance of FilePermissionConfig which is
+// in all respects an exact duplicate of the current FilePermissionConfig
+// instance. The type of copy operation performed  is a 'deep copy'.
+//
+func (fPerm *FilePermissionConfig) CopyOut() FilePermissionConfig {
+
+	fPerm2 := FilePermissionConfig{}
+
+	fPerm2.isInitialized = fPerm.isInitialized
+	fPerm2.fileMode = fPerm.fileMode
+
+	return fPerm2
+}
+
+// Empty - ReInitializes the current FilePermissionConfig instance to
+// empty or zero values.
+//
+func (fPerm *FilePermissionConfig) Empty() {
+	fPerm.isInitialized = false
+	fPerm.fileMode = os.FileMode(0)
+}
+
+// Equal - Returns 'true' if the incoming FilePermissionConfig instance
+// is equal in all respects to the current FilePermissionConfig instance.
+//
+func (fPerm *FilePermissionConfig) Equal(fPerm2 FilePermissionConfig) bool {
+
+	if fPerm.isInitialized != fPerm2.isInitialized {
+		return false
+	}
+
+	if fPerm.fileMode != fPerm2.fileMode {
+		return false
+	}
+
+	return true
+}
+
 // New - Creates and returns a new FilePermissionConfig instance initialized with a
 // an os.FileMode value generated from the input parameter 'modeStr'.
 //
@@ -715,6 +779,23 @@ func (fPerm *FilePermissionConfig) GetPermissionBits() (os.FileMode, error) {
 	}
 
 	return fPerm.fileMode.Perm(), nil
+}
+
+// IsValid - If the current FilePermissionConfig instance is judged to be
+// 'Invalid', this method will return an error.
+//
+// Otherwise, if the current instance of FilePermissionConfig evaluates as
+// 'Valid', the method will return 'nil'.
+//
+func (fPerm *FilePermissionConfig) IsValid() error {
+
+	if !fPerm.isInitialized {
+		ePrefix := "FilePermissionConfig.IsValid() "
+		return errors.New(ePrefix + "Error: This FilePermissionConfig instance has NOT been " +
+			"initialized and is INVALID!")
+	}
+
+	return nil
 }
 
 // SetFileModeByComponents - Sets the value of the current FilePermissionConfig

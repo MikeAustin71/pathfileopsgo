@@ -25,7 +25,6 @@ In addition, the following are used to manage collections of
 
 The source code repository for this package is located at:
   https://github.com/MikeAustin71/pathfileopsgo.git
-
 */
 package pathfileops
 
