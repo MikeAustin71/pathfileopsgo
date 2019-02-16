@@ -36,7 +36,7 @@ func main() {
 
 func main() {
 
-	mainTest26()
+	mainTest25()
 
 }
 

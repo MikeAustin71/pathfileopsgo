@@ -727,7 +727,7 @@ func (fPerm *FilePermissionConfig) GetFileMode() (os.FileMode, error) {
 	if !fPerm.isInitialized {
 		return os.FileMode(0),
 			fmt.Errorf(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT bee initialized. The FileMode is INVALID!")
+				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
 	}
 
 	return fPerm.fileMode, nil
@@ -745,10 +745,45 @@ func (fPerm *FilePermissionConfig) GetIsDir() (bool, error) {
 	if !fPerm.isInitialized {
 		return false,
 			fmt.Errorf(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT bee initialized. The FileMode is INVALID!")
+				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
 	}
 
 	return fPerm.fileMode.IsDir(), nil
+}
+
+// GetEntryTypeComponent - Returns the 'Entry Type' component of the current os.FileMode
+// permissions value. The 'Entry Type' is the first character in a 10-character permissions
+// text string. For the majority of applications, the leading character in a 10-character
+// permissions text string is either a hyphen ('-') indicating the subject is a file - or -
+// a 'd' indicating the subject is a directory. For a file, the File Mode Entry Type value is
+// zero ('0').  For a directory, the File Mode Entry Type value is equal to os.ModDir
+// (decimal value=
+func (fPerm *FilePermissionConfig) GetEntryTypeComponent() (os.FileMode, error) {
+
+	ePrefix := "FilePermissionConfig.GetEntryTypeComponent() "
+
+	if !fPerm.isInitialized {
+		return FilePermCode.None(),
+			fmt.Errorf(ePrefix +
+				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
+	}
+
+	fMode := fPerm.fileMode
+
+	for idx := range mOsPermissionCodeToString {
+
+		result := fMode & idx
+
+		if result == idx {
+
+			return idx, nil
+
+		}
+
+	}
+
+	return os.FileMode(0),
+		fmt.Errorf(ePrefix + "The Entry Type for this FilePermissionConfig instance is INVALID!")
 }
 
 // GetIsRegular - Return a bool indicating whether the encapsulated FileMode is a file
@@ -762,7 +797,7 @@ func (fPerm *FilePermissionConfig) GetIsRegular() (bool, error) {
 	if !fPerm.isInitialized {
 		return false,
 			fmt.Errorf(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT bee initialized. The FileMode is INVALID!")
+				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
 	}
 
 	return fPerm.fileMode.IsRegular(), nil
@@ -798,7 +833,7 @@ func (fPerm *FilePermissionConfig) GetPermissionTextCode() (string, error) {
 				"The FileMode is INVALID!")
 	}
 
-	return fPerm.fileMode.String(), nil
+	return fPerm.fileMode.Perm().String(), nil
 }
 
 // IsValid - If the current FilePermissionConfig instance is judged to be
