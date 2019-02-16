@@ -40,6 +40,27 @@ func (fSel FileSelectCriterionMode) ORSelect() FileSelectCriterionMode {
 	return FileSelectCriterionMode(2)
 }
 
+// IsValid - If the value of the current FileSelectCriterionMode is 'invalid',
+// this method will return an error. If the FileSelectCriterionMode is 'valid',
+// this method will return a value of 'nil'.
+//
+// This is a standard utility method and is not part of the valid enumerations
+// for this type.
+//
+func (fSel FileSelectCriterionMode) IsValid() error {
+
+	fSel.checkInitializeMaps(false)
+
+	_, ok := mFileSelectCriterionTypeIntToString[int(fSel)]
+
+	if !ok {
+		ePrefix := "FileSelectCriterionMode.IsValid() "
+		return fmt.Errorf(ePrefix+"Error: This FileSelectCriterionMode is INVALID! Unknown Code='%v' ", int(fSel))
+	}
+
+	return nil
+}
+
 // String - Returns a string with the name of the enumeration associated
 // with this instance of 'FileSelectCriterionMode'. This is a standard utility method
 // and is not part of the valid enumerations for this type.
@@ -56,7 +77,13 @@ func (fSel FileSelectCriterionMode) String() string {
 
 	fSel.checkInitializeMaps(false)
 
-	return mFileSelectCriterionTypeIntToString[int(fSel)]
+	str, ok := mFileSelectCriterionTypeIntToString[int(fSel)]
+
+	if !ok {
+		return ""
+	}
+
+	return str
 }
 
 // ParseString - Receives a string and attempts to match it with
@@ -209,7 +236,8 @@ func (fSel FileSelectCriterionMode) checkInitializeMaps(reInitialize bool) {
 		if f == "String" ||
 			f == "ParseString" ||
 			f == "Value" ||
-			f == "checkInitializeMaps" {
+			f == "checkInitializeMaps" ||
+			f == "IsValid" {
 			continue
 		}
 

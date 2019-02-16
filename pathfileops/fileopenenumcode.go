@@ -470,26 +470,18 @@ func (fOpenType FileOpenType) ReadWrite() FileOpenType { return FileOpenType(os.
 //
 func (fOpenType FileOpenType) IsValid() error {
 
-	var err error
+	fOpenType.checkInitializeMaps(false)
 
-	switch fOpenType {
+	_, ok := mFileOpenTypeIntToString[int(fOpenType)]
 
-	case FileOpenType(0).None():
-		err = nil
-	case FileOpenType(0).ReadOnly():
-		err = nil
-	case FileOpenType(0).WriteOnly():
-		err = nil
-	case FileOpenType(0).ReadWrite():
-		err = nil
-	default:
+	if !ok {
 		ePrefix := "FileOpenType.IsValid() "
-		err = fmt.Errorf(ePrefix+
-			"Error: Ivalid FileOpenType! Current FileOpenType='%v'",
+		return fmt.Errorf(ePrefix+
+			"Error: Invalid FileOpenType! Current FileOpenType='%v'",
 			fOpenType)
 	}
 
-	return err
+	return nil
 }
 
 // ParseString - Receives a string and attempts to match it with
@@ -761,30 +753,18 @@ func (fOpenMode FileOpenMode) Truncate() FileOpenMode { return FileOpenMode(os.O
 //
 func (fOpenMode FileOpenMode) IsValid() error {
 
-	var err error
+	fOpenMode.checkInitializeMaps(false)
 
-	switch fOpenMode {
+	_, ok := mFileOpenModeIntToString[int(fOpenMode)]
 
-	case FileOpenMode(0).None():
-		err = nil
-	case FileOpenMode(0).Append():
-		err = nil
-	case FileOpenMode(0).Create():
-		err = nil
-	case FileOpenMode(0).Exclusive():
-		err = nil
-	case FileOpenMode(0).Sync():
-		err = nil
-	case FileOpenMode(0).Truncate():
-		err = nil
-	default:
+	if !ok {
 		ePrefix := "FileOpenMode.IsValid() "
-		err = fmt.Errorf(ePrefix+
+		return fmt.Errorf(ePrefix+
 			"Error: Ivalid FileOpenMode! Current FileOpenMode='%v'",
 			fOpenMode)
 	}
 
-	return err
+	return nil
 }
 
 // ParseString - Receives a string and attempts to match it with

@@ -220,46 +220,16 @@ func (fop FileOperationCode) CreateDestinationFile() FileOperationCode { return 
 //
 func (fop FileOperationCode) IsValid() error {
 
-	var err error
+	fop.checkInitializeMaps(false)
 
-	switch fop {
+	_, ok := mFileOperationCodeIntToString[int(fop)]
 
-	case FileOpCode.None():
-		err = nil
-	case FileOpCode.MoveSourceFileToDestination():
-		err = nil
-	case FileOpCode.DeleteDestinationFile():
-		err = nil
-	case FileOpCode.DeleteSourceFile():
-		err = nil
-	case FileOpCode.DeleteSourceAndDestinationFiles():
-		err = nil
-	case FileOpCode.CopySourceToDestinationByHardLinkByIo():
-		err = nil
-	case FileOpCode.CopySourceToDestinationByIoByHardLink():
-		err = nil
-	case FileOpCode.CopySourceToDestinationByHardLink():
-		err = nil
-	case FileOpCode.CopySourceToDestinationByIo():
-		err = nil
-	case FileOpCode.CreateSourceDir():
-		err = nil
-	case FileOpCode.CreateSourceDirAndFile():
-		err = nil
-	case FileOpCode.CreateSourceFile():
-		err = nil
-	case FileOpCode.CreateDestinationDir():
-		err = nil
-	case FileOpCode.CreateDestinationDirAndFile():
-		err = nil
-	case FileOpCode.CreateDestinationFile():
-		err = nil
-	default:
+	if !ok {
 		ePrefix := "FileOperationCode.IsValid() "
-		err = fmt.Errorf(ePrefix+"Error: File Operation Code INVALID!. Unknown Value='%v' ", fop.Value())
+		return fmt.Errorf(ePrefix+"Error: File Operation Code INVALID!. Unknown Value='%v' ", fop.Value())
 	}
 
-	return err
+	return nil
 }
 
 // ParseString - Receives a string and attempts to match it with
