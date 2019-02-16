@@ -736,6 +736,8 @@ func (fPerm *FilePermissionConfig) GetFileMode() (os.FileMode, error) {
 // GetIsDir - Return a bool indicating whether the encapsulated FileMode is a directory
 // or not. A returned value of 'true' signals that the FileMode represents a directory.
 //
+// This method serves as a wrapper for os.FileMode.IsDir()
+//
 func (fPerm *FilePermissionConfig) GetIsDir() (bool, error) {
 
 	ePrefix := "FilePermissionConfig.GetIsDir() "
@@ -752,6 +754,7 @@ func (fPerm *FilePermissionConfig) GetIsDir() (bool, error) {
 // GetIsRegular - Return a bool indicating whether the encapsulated FileMode is a file
 // or not. A returned value of 'true' signals that the FileMode represents a file.
 //
+// This method serves as a wrapper for os.FileMode.IsRegular()
 func (fPerm *FilePermissionConfig) GetIsRegular() (bool, error) {
 
 	ePrefix := "FilePermissionConfig.GetIsRegular() "
@@ -775,10 +778,27 @@ func (fPerm *FilePermissionConfig) GetPermissionBits() (os.FileMode, error) {
 	if !fPerm.isInitialized {
 		return os.FileMode(0),
 			fmt.Errorf(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT bee initialized. The FileMode is INVALID!")
+				"Error: This FilePermissionConfig instance has NOT been initialized. " +
+				"The FileMode is INVALID!")
 	}
 
 	return fPerm.fileMode.Perm(), nil
+}
+
+// GetPermissionTextCode - Returns the file mode permissions expressed as
+// a text string.
+//
+func (fPerm *FilePermissionConfig) GetPermissionTextCode() (string, error) {
+	ePrefix := "FilePermissionConfig.GetPermissionBits() "
+
+	if !fPerm.isInitialized {
+		return "",
+			fmt.Errorf(ePrefix +
+				"Error: This FilePermissionConfig instance has NOT been initialized. " +
+				"The FileMode is INVALID!")
+	}
+
+	return fPerm.fileMode.String(), nil
 }
 
 // IsValid - If the current FilePermissionConfig instance is judged to be
@@ -1085,12 +1105,14 @@ func (fPerm *FilePermissionConfig) SetFileModeByTextCode(modeStr string) error {
 
 	fMode := permission
 
+	fh := FileHelper{}
+
 	if firstChar == "d" {
-		entryType = int(os.ModeDir)
+		entryType = fh.ConvertDecimalToOctal(int(os.ModeDir))
 		fMode = entryType | permission
 	}
 
-	fPerm.fileMode = os.FileMode(FileHelper{}.ConvertOctalToDecimal(fMode))
+	fPerm.fileMode = os.FileMode(fh.ConvertOctalToDecimal(fMode))
 	fPerm.isInitialized = true
 
 	return nil
