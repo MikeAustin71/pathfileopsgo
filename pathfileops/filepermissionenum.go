@@ -176,26 +176,6 @@ func (osPerm OsFilePermissionCode) ModeSticky() os.FileMode { return os.ModeStic
 // ModeIrregular    ?: non-regular file; nothing else is known about this file
 func (osPerm OsFilePermissionCode) ModeIrregular() os.FileMode { return os.ModeIrregular }
 
-// IsValid - If the value of the current OsFilePermissionCode is 'invalid',
-// this method will return an error. If the OsFilePermissionCode is 'valid',
-// this method will return a value of 'nil'.
-//
-// This is a standard utility method and is not part of the valid enumerations
-// for this type.
-//
-func (osPerm OsFilePermissionCode) IsValid() error {
-
-	_, ok := mOsPermissionCodeToString[os.FileMode(osPerm)]
-
-	if !ok {
-		ePrefix := "OsFilePermissionCode.IsValid() "
-		return fmt.Errorf(ePrefix+"The current OsFilePermissionCode is INVALID! "+
-			"OsFilePermissionCode Octal Value='%s'", strconv.FormatInt(int64(osPerm), 8))
-	}
-
-	return nil
-}
-
 // GetFileModeLetterCode - Returns the single alphabetic character associated with
 // this os.FileMode. All os.FileMode's are associated with a single letter used
 // in unix permission strings.
@@ -234,6 +214,25 @@ func (osPerm OsFilePermissionCode) GetFileModeLetterCode() (string, error) {
 	return letter, nil
 }
 
+// GetNewFromFileMode - Creates and returns a new OsFilePermissionCode instance
+// generated from the os.FileMode type input parameter ('fMode'). If the input
+// os.FileMode value is invalid, an error is returned.
+func (osPerm OsFilePermissionCode) GetNewFromFileMode(
+	fMode os.FileMode) (OsFilePermissionCode, error) {
+
+	newFilePerm := OsFilePermissionCode(fMode)
+
+	err := newFilePerm.IsValid()
+
+	if err != nil {
+		ePrefix := "OsFilePermissionCode.GetNewFromFileMode() "
+		return OsFilePermissionCode(0),
+			fmt.Errorf(ePrefix + "Error: Input parameter 'fMode' is an INVALID File Mode!")
+	}
+
+	return newFilePerm, nil
+}
+
 // GetNewFromLetterCode - Creates a new OsFilePermissionCode instance based on an
 // associated 'letter code'. The letter code consists of a single character
 // representing an os.FileMode. This single character is useful in configuring
@@ -252,6 +251,26 @@ func (osPerm OsFilePermissionCode) GetNewFromLetterCode(
 	}
 
 	return OsFilePermissionCode(fModeValue), nil
+}
+
+// IsValid - If the value of the current OsFilePermissionCode is 'invalid',
+// this method will return an error. If the OsFilePermissionCode is 'valid',
+// this method will return a value of 'nil'.
+//
+// This is a standard utility method and is not part of the valid enumerations
+// for this type.
+//
+func (osPerm OsFilePermissionCode) IsValid() error {
+
+	_, ok := mOsPermissionCodeToString[os.FileMode(osPerm)]
+
+	if !ok {
+		ePrefix := "OsFilePermissionCode.IsValid() "
+		return fmt.Errorf(ePrefix+"The current OsFilePermissionCode is INVALID! "+
+			"OsFilePermissionCode Octal Value='%s'", strconv.FormatInt(int64(osPerm), 8))
+	}
+
+	return nil
 }
 
 // ParseString - Receives a string and attempts to match it with
@@ -331,6 +350,17 @@ func (osPerm OsFilePermissionCode) ParseString(
 
 }
 
+// FilePermCode - public global variable of type OsFilePermissionCode.
+// Provides alternative, easier access to OsFilePermissionCode enumeration
+// values.
+//
+// Usage:
+//
+//	FilePermCode.None()
+//	FilePermCode.ModeDir()
+//
+var FilePermCode = OsFilePermissionCode(0)
+
 // String - Returns a string with the name of the enumeration associated
 // with this instance of 'OsFilePermissionCode'.
 //
@@ -354,6 +384,14 @@ func (osPerm OsFilePermissionCode) String() string {
 	}
 
 	return label
+}
+
+// Value - Returns the value of the OsFilePermissionCode instance
+// as type os.FileMode.
+//
+func (osPerm OsFilePermissionCode) Value() os.FileMode {
+
+	return os.FileMode(osPerm)
 }
 
 // Background Information:
