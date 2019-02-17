@@ -9,7 +9,7 @@ import (
 )
 
 var mOsPermissionCodeToString = map[os.FileMode]string{
-	os.FileMode(0):    "None",
+	os.FileMode(0):    "ModeNone",
 	os.ModeDir:        "ModeDir",
 	os.ModeAppend:     "ModeAppend",
 	os.ModeExclusive:  "ModeExclusive",
@@ -43,7 +43,7 @@ var mOsPermissionCodeToLetter = map[os.FileMode]string{
 }
 
 var mOsPermissionStringToCode = map[string]os.FileMode{
-	"None":           os.FileMode(0),
+	"ModeNone":       os.FileMode(0),
 	"ModeDir":        os.ModeDir,
 	"ModeAppend":     os.ModeAppend,
 	"ModeExclusive":  os.ModeExclusive,
@@ -95,50 +95,57 @@ var mOsPermissionLetterToCode = map[string]os.FileMode{
 
 // An enumeration of the os File Mode constant values:
 //
-// None                  -: is a file
-// ModeDir               d: is a directory
-// ModeAppend            a: append-only
-// ModeExclusive         l: exclusive use
-// ModeTemporary         T: temporary file; Plan 9 only
-// ModeSymlink           L: symbolic link
-// ModeDevice            D: device file
-// ModeNamedPipe         p: named pipe (FIFO)
-// ModeSocket            S: Unix domain socket
-// ModeSetuid            u: setuid
-// ModeSetgid            g: setgid
-// ModeCharDevice        c: Unix character device, when ModeDevice is set
-// ModeSticky            t: sticky
-// ModeIrregular         ?: non-regular file; nothing else is known about this file
+//   Method           os.FileMode           Associated
+//    Name             Constant             Letter Code
+//  ______________________________________________________________________
+//  ModeNone()        os.ModeNone           -: is a file
+//  ModeDir()         os.ModeDir            d: is a directory
+//  ModeAppend()      os.ModeAppend         a: append-only
+//  ModeExclusive()   os.ModeExclusive      l: exclusive use
+//  ModeTemporary()   os.ModeTemporary      T: temporary file; Plan 9 only
+//  ModeSymlink()     os.ModeSymlink        L: symbolic link
+//  ModeDevice()      os.ModeDevice         D: device file
+//  ModeNamedPipe()   os.ModeNamedPipe      p: named pipe (FIFO)
+//  ModeSocket()      os.ModeSocket         S: Unix domain socket
+//  ModeSetuid()      os.ModeSetuid         u: setuid
+//  ModeSetgid()      os.ModeSetgid         g: setgid
+//  ModeCharDevice()  os.ModeCharDevice     c: Unix character device, when ModeDevice is set
+//  ModeSticky()      os.ModeSticky         t: sticky
+//  ModeIrregular()   os.ModeIrregular      ?: non-regular file; nothing else is known about this file
+//
+// For more information on os Mode Constants Reference:
+// https://golang.org/pkg/os/#pkg-constants
+//
 type OsFilePermissionCode os.FileMode
 
-// None            "-" No Permission Set
-func (osPerm OsFilePermissionCode) None() os.FileMode { return os.FileMode(0) }
+// ModeNone            "-" No Permission Set
+func (osPerm OsFilePermissionCode) ModeNone() os.FileMode { return os.FileMode(0) }
 
-// ModeDir          FileMode = 1 << (32 - 1 - iota) // d: is a directory
+// ModeDir         Letter Code= "d" is a directory   - alias for os.ModeDir
 func (osPerm OsFilePermissionCode) ModeDir() os.FileMode { return os.ModeDir }
 
-// ModeAppend       a: append-only
+// ModeAppend       Letter Code= "a" append-only     - alias for os.ModeAppend
 func (osPerm OsFilePermissionCode) ModeAppend() os.FileMode { return os.ModeAppend }
 
-// ModeExclusive    l: exclusive use
+// ModeExclusive    Letter Code= "l" exclusive use   - alias for os.ModeExclusive
 func (osPerm OsFilePermissionCode) ModeExclusive() os.FileMode { return os.ModeExclusive }
 
-// ModeTemporary    T: temporary file; Plan 9 only
+// ModeTemporary    Letter Code= "T" temporary file; Plan 9 only  - alias for os.ModeTemporary
 func (osPerm OsFilePermissionCode) ModeTemporary() os.FileMode { return os.ModeTemporary }
 
-// ModeSymlink      L: symbolic link
+// ModeSymlink      Letter Code= "L" symbolic link   - alias for os.ModeSymlink
 func (osPerm OsFilePermissionCode) ModeSymlink() os.FileMode { return os.ModeSymlink }
 
-// ModeDevice       D: device file
+// ModeDevice       Letter Code= "D" device file     - alias for os.ModeDevice
 func (osPerm OsFilePermissionCode) ModeDevice() os.FileMode { return os.ModeDevice }
 
-// ModeNamedPipe    p: named pipe (FIFO)
+// ModeNamedPipe    Letter Code= "p" named pipe (FIFO) - alias for os.ModeNamedPipe
 func (osPerm OsFilePermissionCode) ModeNamedPipe() os.FileMode { return os.ModeNamedPipe }
 
-// ModeSocket       S: Unix domain socket
+// ModeSocket       Letter Code= "S" Unix domain socket - alias for os.ModeSocket
 func (osPerm OsFilePermissionCode) ModeSocket() os.FileMode { return os.ModeSocket }
 
-// ModeSetuid       u: setuid
+// ModeSetuid       Letter Code= "u" setuid            - alias for os.ModeSetuid
 // When the setuid bit is used, the behavior described above it's modified so that
 // when an executable is launched, it does not run with the privileges of the user
 // who launched it, but with that of the file owner instead. So, for example, if an
@@ -148,7 +155,7 @@ func (osPerm OsFilePermissionCode) ModeSocket() os.FileMode { return os.ModeSock
 //
 func (osPerm OsFilePermissionCode) ModeSetuid() os.FileMode { return os.ModeSetuid }
 
-// ModeSetgid       g: setgid
+// ModeSetgid       Letter Code= "g" setgid            - alias for os.ModeSetgid
 // Unlike the setuid bit, the setgid bit has effect on both files and directories.
 // In the first case, the file which has the setgid bit set, when executed, instead
 // of running with the privileges of the group of the user who started it, runs with
@@ -162,10 +169,12 @@ func (osPerm OsFilePermissionCode) ModeSetuid() os.FileMode { return os.ModeSetu
 //
 func (osPerm OsFilePermissionCode) ModeSetgid() os.FileMode { return os.ModeSetgid }
 
-// ModeCharDevice   c: Unix character device, when ModeDevice is set
+// ModeCharDevice   Letter Code= "c" Unix character device, when ModeDevice is set
+// alias for os.ModeCharDevice
+//
 func (osPerm OsFilePermissionCode) ModeCharDevice() os.FileMode { return os.ModeCharDevice }
 
-// ModeSticky       t: sticky
+// ModeSticky       Letter Code= "t" sticky            - alias for os.ModeSticky
 // The sticky bit works in a different way: while it has no effect on files, when used on a directory,
 // all the files in said directory will be modifiable only by their owners. A typical case in which
 // it is used, involves the /tmp directory. Typically this directory is writable by all users on the
@@ -173,7 +182,8 @@ func (osPerm OsFilePermissionCode) ModeCharDevice() os.FileMode { return os.Mode
 //
 func (osPerm OsFilePermissionCode) ModeSticky() os.FileMode { return os.ModeSticky }
 
-// ModeIrregular    ?: non-regular file; nothing else is known about this file
+// ModeIrregular    Letter Code= "?" non-regular file; nothing else is known about this file
+// alias for os.ModeIrregular
 func (osPerm OsFilePermissionCode) ModeIrregular() os.FileMode { return os.ModeIrregular }
 
 // Equal - Compares the current OsFilePermissionCode instance to another
@@ -195,20 +205,20 @@ func (osPerm OsFilePermissionCode) Equal(osPerm2 OsFilePermissionCode) bool {
 //                         Letter
 //    File Mode             Code     Description
 //    __________________________________________
-//     None                  -:      is a file
-//     ModeDir               d:      is a directory
-//     ModeAppend            a:      append-only
-//     ModeExclusive         l:      exclusive use
-//     ModeTemporary         T:      temporary file; Plan 9 only
-//     ModeSymlink           L:      symbolic link
-//     ModeDevice            D:      device file
-//     ModeNamedPipe         p:      named pipe (FIFO)
-//     ModeSocket            S:      Unix domain socket
-//     ModeSetuid            u:      setuid
-//     ModeSetgid            g:      setgid
-//     ModeCharDevice        c:      Unix character device, when ModeDevice is set
-//     ModeSticky            t:      sticky
-//     ModeIrregular         ?:      non-regular file; nothing else is known about this file
+//    os.ModeNone           "-"      is a file
+//    os.ModeDir            "d"      is a directory
+//    os.ModeAppend         "a"      append-only
+//    os.ModeExclusive      "l"      exclusive use
+//    os.ModeTemporary      "T"      temporary file; Plan 9 only
+//    os.ModeSymlink        "L"      symbolic link
+//    os.ModeDevice         "D"      device file
+//    os.ModeNamedPipe      "p"      named pipe (FIFO)
+//    os.ModeSocket         "S"      Unix domain socket
+//    os.ModeSetuid         "u"      setuid
+//    os.ModeSetgid         "g"      setgid
+//    os.ModeCharDevice     "c"      Unix character device, when ModeDevice is set
+//    os.ModeSticky         "t"      sticky
+//    os.ModeIrregular      "?"      non-regular file; nothing else is known about this file
 //
 func (osPerm OsFilePermissionCode) GetFileModeLetterCode() (string, error) {
 
@@ -369,7 +379,7 @@ func (osPerm OsFilePermissionCode) ParseString(
 //
 // Usage:
 //
-//	FilePermCode.None()
+//	FilePermCode.ModeNone()
 //	FilePermCode.ModeDir()
 //
 var FilePermCode = OsFilePermissionCode(0)
@@ -406,157 +416,6 @@ func (osPerm OsFilePermissionCode) Value() os.FileMode {
 
 	return os.FileMode(osPerm)
 }
-
-// Background Information:
-//
-// ---------------------------------------------------------------------------
-// information about files can be moved from one system
-// to another portably. Not all bits apply to all systems.
-// The only required bit is ModeDir for directories.
-//
-//type FileMode uint32
-
-// The defined file mode bits are the most significant bits of the FileMode.
-// The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
-// The values of these bits should be considered part of the public API and
-// may be used in wire protocols or disk representations: they must not be
-// changed, although new bits might be added.
-/*
-const (
-  // The single letters are the abbreviations
-  // used by the String method's formatting.
-  ModeDir        FileMode = 1 << (32 - 1 - iota) // d: is a directory
-  ModeAppend                                     // a: append-only
-  ModeExclusive                                  // l: exclusive use
-  ModeTemporary                                  // T: temporary file; Plan 9 only
-  ModeSymlink                                    // L: symbolic link
-  ModeDevice                                     // D: device file
-  ModeNamedPipe                                  // p: named pipe (FIFO)
-  ModeSocket                                     // S: Unix domain socket
-  ModeSetuid                                     // u: setuid
-        When the setuid bit is used, the behavior described above it's modified so that
-        when an executable is launched, it does not run with the privileges of the user
-        who launched it, but with that of the file owner instead. So, for example, if an
-        executable has the setuid bit set on it, and it's owned by root, when launched by
-        a normal user, it will run with root privileges. It should be clear why this represents
-        a potential security risk, if not used correctly.
-
-  ModeSetgid                                     // g: setgid
-        Unlike the setuid bit, the setgid bit has effect on both files and directories.
-        In the first case, the file which has the setgid bit set, when executed, instead
-        of running with the privileges of the group of the user who started it, runs with
-        those of the group which owns the file: in other words, the group ID of the process
-        will be the same of that of the file.
-
-        When used on a directory, instead, the setgid bit alters the standard behavior so that the
-        group of the files created inside said directory, will not be that of the user who created
-        them, but that of the parent directory itself. This is often used to ease the sharing of
-        files (files will be modifiable by all the users that are part of said group).
-
-  ModeCharDevice                                 // c: Unix character device, when ModeDevice is set
-
-  ModeSticky                                     // t: sticky
-        The sticky bit works in a different way: while it has no effect on files, when used on a directory,
-        all the files in said directory will be modifiable only by their owners. A typical case in which
-        it is used, involves the /tmp directory. Typically this directory is writable by all users on the
-        system, so to make impossible for one user to delete the files of another one.
-
-  ModeIrregular                                  // ?: non-regular file; nothing else is known about this file
-
-  // Mask for the type bits. For regular files, none will be set.
-  ModeType = ModeDir | ModeSymlink | ModeNamedPipe | ModeSocket | ModeDevice | ModeIrregular
-
-  ModePerm FileMode = 0777 // Unix permission bits
-)
-
-Reference:
-  https://en.wikipedia.org/wiki/File_system_permissions
-
-Numeric notation
-
-Another method for representing Unix permissions is an octal (base-8) notation as shown by
-stat -c %a. This notation consists of at least three digits. Each of the three rightmost
-digits represents a different component of the permissions: owner, group, and others.
-(If a fourth digit is present, the leftmost (high-order) digit addresses three additional
-attributes, the setuid bit, the setgid bit and the sticky bit.)
-
-Each of these digits is the sum of its component bits in the binary numeral system.
-As a result, specific bits add to the sum as it is represented by a numeral:
-
-    The read bit adds 4 to its total (in binary 100),
-    The write bit adds 2 to its total (in binary 010), and
-    The execute bit adds 1 to its total (in binary 001).
-
-These values never produce ambiguous combinations; each sum represents a specific set of
-permissions. More technically, this is an octal representation of a bit field – each bit
-references a separate permission, and grouping 3 bits at a time in octal corresponds to
-grouping these permissions by user, group, and others.
-
-These are the examples from the symbolic notation section given in octal notation:
-
-Three SymbolicGroups
-The three groups: Owners, Groups & Others
-
-
-Symbolic    Notation 	Numeric Notation 	English
----------- 	0000 	    no permissions
--rwx------ 	0700 	    read, write, & execute only for owner
--rwxrwx--- 	0770 	    read, write, & execute for owner and group
--rwxrwxrwx 	0777 	    read, write, & execute for owner, group and others
----x--x--x 	0111 	    execute
---w--w--w- 	0222 	    write
---wx-wx-wx 	0333 	    write & execute
--r--r--r-- 	0444 	    read
--r-xr-xr-x 	0555 	    read & execute
--rw-rw-rw- 	0666 	    read & write
--rwxr----- 	0740 	    owner can read, write, & execute; group can only read; others have no permissions
-
-Reference:
-How to use special permissions: the setuid, setgid and sticky bits
-https://linuxconfig.org/how-to-use-special-permissions-the-setuid-setgid-and-sticky-bits
-
-
-https://stackoverflow.com/questions/28969455/golang-properly-instantiate-os-filemode
- const (
-        OS_READ = 04
-        OS_WRITE = 02
-        OS_EX = 01
-        OS_USER_SHIFT = 6
-        OS_GROUP_SHIFT = 3
-        OS_OTH_SHIFT = 0
-
-        OS_USER_R = OS_READ<<OS_USER_SHIFT
-        OS_USER_W = OS_WRITE<<OS_USER_SHIFT
-        OS_USER_X = OS_EX<<OS_USER_SHIFT
-        OS_USER_RW = OS_USER_R | OS_USER_W
-        OS_USER_RWX = OS_USER_RW | OS_USER_X
-
-        OS_GROUP_R = OS_READ<<OS_GROUP_SHIFT
-        OS_GROUP_W = OS_WRITE<<OS_GROUP_SHIFT
-        OS_GROUP_X = OS_EX<<OS_GROUP_SHIFT
-        OS_GROUP_RW = OS_GROUP_R | OS_GROUP_W
-        OS_GROUP_RWX = OS_GROUP_RW | OS_GROUP_X
-
-        OS_OTH_R = OS_READ<<OS_OTH_SHIFT
-        OS_OTH_W = OS_WRITE<<OS_OTH_SHIFT
-        OS_OTH_X = OS_EX<<OS_OTH_SHIFT
-        OS_OTH_RW = OS_OTH_R | OS_OTH_W
-        OS_OTH_RWX = OS_OTH_RW | OS_OTH_X
-
-        OS_ALL_R = OS_USER_R | OS_GROUP_R | OS_OTH_R
-        OS_ALL_W = OS_USER_W | OS_GROUP_W | OS_OTH_W
-        OS_ALL_X = OS_USER_X | OS_GROUP_X | OS_OTH_X
-        OS_ALL_RW = OS_ALL_R | OS_ALL_W
-        OS_ALL_RWX = OS_ALL_RW | OS_GROUP_X
-)
-
-Convert octal to decimal
-https://www.cloudhadoop.com/2018/12/golang-example-convertcast-octal-to.html
-
-Unix Permissions
-http://www.zzee.com/solutions/unix-permissions.shtml#numeric
-
-*/
 
 // FilePermissionConfig - Provides methods to support the creation and management of
 // of File Permissions for using in controlling file operations. The Go Programming
@@ -717,6 +576,165 @@ func (fPerm FilePermissionConfig) New(modeStr string) (FilePermissionConfig, err
 	return fPerm2, nil
 }
 
+// NewByComponents - Creates and returns a new instance of FilePermissionConfig using
+// two input parameters, 'entryType' and 'unixPermissionTextStr'.
+//
+// For additional documentation see method FilePermissionConfig.SetFileModeByComponents()
+// which is called by this method.
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameters:
+//
+//  entryType OsFilePermissionCode - The code which makes up the first character in
+//                                   a 10-digit unix permission character string.
+//                                   This a wrapper for os.FileMode constants.
+//                                     Reference:
+//                                        https://golang.org/pkg/os/#FileMode
+//
+//                                   Select this value with caution. See the warning below.
+//
+//  unixPermissionTextStr string - A 9-character string containing the unix permission
+//                            bits expressed as three groups of 3-characters each.
+//
+//                             The 9-characters are constituents of the the three Symbolic
+//                             Groups: Owners/Users, Groups & Others. Each group has three
+//                             characters which may be 'r', 'w', 'x'. If a permission is not
+//                             set, that character position contains a '-'.
+//
+//   'unixPermissionTextStr'
+//        9-Character          File Access
+//        Notation             Permission Descriptions
+//        ---------            File - no permissions
+//        rwx------            File - read, write, & execute only for owner
+//        rwxrwx---            File - read, write, & execute for owner and group
+//        rwxrwxrwx            File - read, write, & execute for owner, group and others
+//        --x--x--x            File - execute
+//        -w--w--w-            File - write
+//        -wx-wx-wx            File - write & execute
+//        r--r--r--            File - read
+//        r-xr-xr-x            File - read & execute
+//        rw-rw-rw-            File - read & write
+//        rwxr-----            File - Owner can read, write, & execute. Group can only read;
+//
+// ------------------------------------------------------------------------
+//
+// Warning:
+//
+// Incorrect or invalid File Permissions can cause extensive damage. If you
+// don't know what you are doing, you would be well advised to use one of
+// the other methods in this type which provide additional safeguards.
+//
+// If you decide to proceed, be guided by the wisdom of Davy Crockett:
+//
+//        "Be always sure you are right - then go ahead."
+//
+func (fPerm FilePermissionConfig) NewByComponents(
+	entryType OsFilePermissionCode,
+	unixPermissionTextStr string) (FilePermissionConfig, error) {
+
+	fPerm2 := FilePermissionConfig{}
+
+	err := fPerm2.SetFileModeByComponents(entryType, unixPermissionTextStr)
+
+	if err != nil {
+		ePrefix := "FilePermissionConfig.NewByComponents() "
+		return FilePermissionConfig{},
+			fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	return fPerm2, nil
+}
+
+// NewByFileMode - Creates and returns a new instance of FilePermissionConfig. The instance
+// is initialized using the input parameter 'fMode' of type 'os.FileMode'.  'fMode' is assumed
+// to contain all of the codes necessary for the configuration of unix file permission bits.
+//
+func (fPerm FilePermissionConfig) NewByFileMode(fMode os.FileMode) (FilePermissionConfig, error) {
+
+	fPerm2 := FilePermissionConfig{}
+
+	err := fPerm2.SetFileModeByFileMode(fMode)
+
+	if err != nil {
+
+		ePrefix := "FilePermissionConfig.NewByFileMode() "
+
+		return FilePermissionConfig{},
+			fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	return fPerm2, nil
+}
+
+// NewByOctalDigits - Creates and returns a new FilePermissionConfig instance by
+// initializing the internal FileMode data field (FilePermissionConfig.fileMode)
+// to the value represented by input parameter, 'octalFileModeCode'.
+//
+// Note: This method calls FilePermissionConfig.SetFileModeByOctalDigits().
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameter:
+//
+//  octalFileModeCode int - This parameter contains the integer value of the
+//                          of the permission code which will be used to
+//                          initialize the current FilePermissionConfig instance
+//                          (FilePermissionConfig.fileMode). The integer digits
+//                          in 'octalFileModeCode' represent the octal value
+//                          for the file permission as indicated by the following
+//                          examples.
+//   ____________________________________________________________________________
+//
+//            Input Parameter
+//                integer            Equivalent
+//   Octal    'octalFileModeCode'    Symbolic      File Access
+//   Digits        value             Notation      Permission Descriptions
+//   0000 	         0               ----------    File - no permissions
+//   0700 	       700               -rwx------    File - read, write, & execute only for owner
+//   0770 	       770               -rwxrwx---    File - read, write, & execute for owner and group
+//   0777 	       777               -rwxrwxrwx    File - read, write, & execute for owner, group and others
+//   0111 	       111               ---x--x--x    File - execute
+//   0222 	       222               --w--w--w-    File - write
+//   0333 	       333               --wx-wx-wx    File - write & execute
+//   0444 	       444               -r--r--r--    File - read
+//   0555 	       555               -r-xr-xr-x    File - read & execute
+//   0666 	       666               -rw-rw-rw-    File - read & write
+//   0740 	       740               -rwxr-----    File - Owner can read, write, & execute. Group can only read;
+//                                                        others have no permissions
+//
+//   20000000777   20000000777       drwxrwxrwx    Directory - read, write, & execute for owner, group and others
+//
+//   See method FilePermissionConfig.SetFileModeByTextCode() for more documentation
+//
+// ------------------------------------------------------------------------
+//
+// Warning:
+//
+// In the Go Programming Language, if you initialize an integer with a leading
+// zero (e.g. x:= int(0777)), than number ('0777') is treated as an octal value
+// and converted to a decimal value. Therefore, x:= int(0777) will mean that 'x'
+// is set equal to 511. If you set x:= int(777), x will be set equal to '777'.
+// For purposes of this method enter the octal code as x:= int(777).
+//
+func (fPerm FilePermissionConfig) NewByOctalDigits(
+	octalFileModeCode int) (FilePermissionConfig, error) {
+
+	fPerm2 := FilePermissionConfig{}
+
+	err := fPerm2.SetFileModeByOctalDigits(octalFileModeCode)
+
+	if err != nil {
+
+		ePrefix := "FilePermissionConfig.NewByFileMode() "
+
+		return FilePermissionConfig{},
+			fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	return fPerm2, nil
+}
+
 // GetFileMode - Returns the os.FileMode from the internal data field,
 // 'FilePermissionConfig.fileMode'.
 //
@@ -756,33 +774,43 @@ func (fPerm *FilePermissionConfig) GetIsDir() (bool, error) {
 // text string. For the majority of applications, the leading character in a 10-character
 // permissions text string is either a hyphen ('-') indicating the subject is a file - or -
 // a 'd' indicating the subject is a directory. For a file, the File Mode Entry Type value is
-// zero ('0').  For a directory, the File Mode Entry Type value is equal to os.ModDir
-// (decimal value=
-func (fPerm *FilePermissionConfig) GetEntryTypeComponent() (os.FileMode, error) {
+// zero ('0').  For a directory, the File Mode Entry Type value is equal to 'os.ModDir'.
+//
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+// OsFilePermissionCode - The OsFilePermissionCode type is set to the value of
+//                        the os.FileMode constant representing the Entry Type
+//                        associated with the permission value encapsulated by
+//                        this FilePermissionConfig instance.
+//
+func (fPerm *FilePermissionConfig) GetEntryTypeComponent() (OsFilePermissionCode, error) {
 
 	ePrefix := "FilePermissionConfig.GetEntryTypeComponent() "
 
 	if !fPerm.isInitialized {
-		return FilePermCode.None(),
+		return OsFilePermissionCode(0),
 			fmt.Errorf(ePrefix +
 				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
 	}
 
-	fMode := fPerm.fileMode
+	mask := os.FileMode(0777)
 
 	for idx := range mOsPermissionCodeToString {
 
-		result := fMode & idx
+		fMode := fPerm.fileMode &^ mask
 
-		if result == idx {
+		if fMode == idx {
 
-			return idx, nil
+			return OsFilePermissionCode(idx), nil
 
 		}
 
 	}
 
-	return os.FileMode(0),
+	return OsFilePermissionCode(0),
 		fmt.Errorf(ePrefix + "The Entry Type for this FilePermissionConfig instance is INVALID!")
 }
 
@@ -806,6 +834,16 @@ func (fPerm *FilePermissionConfig) GetIsRegular() (bool, error) {
 // GetPermissionBits - Return a FileMode containing only the least significant 9-bits of
 // the encapsulated FileMode representing the unix permission bits.
 //
+// The actual string returned will contains 10-characters, have the first character
+// (index=0) will always be a hyphen ("-"). The hyphen ("-") generally indicates a
+// file, however it should be ignored in this case. The only valid a reliable unix
+// permission bits are in the last 9-characters (indexes 1-8). When evaluating permission
+// bits returned by this method always ignore the first character which will always
+// be a hyphen ("-").
+//
+// To acquire the full and valid 10-digit permission string use method
+// FilePermissionConfig.GetPermissionTextCode() documented below.
+//
 func (fPerm *FilePermissionConfig) GetPermissionBits() (os.FileMode, error) {
 
 	ePrefix := "FilePermissionConfig.GetPermissionBits() "
@@ -821,7 +859,8 @@ func (fPerm *FilePermissionConfig) GetPermissionBits() (os.FileMode, error) {
 }
 
 // GetPermissionTextCode - Returns the file mode permissions expressed as
-// a text string.
+// a text string. The returned string includes the full and complete
+// 10-character permission code.
 //
 func (fPerm *FilePermissionConfig) GetPermissionTextCode() (string, error) {
 	ePrefix := "FilePermissionConfig.GetPermissionBits() "
@@ -833,7 +872,7 @@ func (fPerm *FilePermissionConfig) GetPermissionTextCode() (string, error) {
 				"The FileMode is INVALID!")
 	}
 
-	return fPerm.fileMode.Perm().String(), nil
+	return fPerm.fileMode.String(), nil
 }
 
 // IsValid - If the current FilePermissionConfig instance is judged to be
@@ -880,7 +919,7 @@ func (fPerm *FilePermissionConfig) IsValid() error {
 //                             characters which may be 'r', 'w', 'x'. If a permission is not
 //                             set, that character position contains a '-'.
 //
-//     'unixPermissionStr'
+//   'unixPermissionTextStr'
 //        9-Character          File Access
 //        Notation             Permission Descriptions
 //        ---------            File - no permissions
@@ -908,15 +947,15 @@ func (fPerm *FilePermissionConfig) IsValid() error {
 //        "Be always sure you are right - then go ahead."
 //
 func (fPerm *FilePermissionConfig) SetFileModeByComponents(
-	entryType OsFilePermissionCode, unixPermissionStr string) error {
+	entryType OsFilePermissionCode, unixPermissionTextStr string) error {
 
 	ePrefix := "FilePermissionConfig.SetFileModeByComponents() "
 
-	if len(unixPermissionStr) != 9 {
+	if len(unixPermissionTextStr) != 9 {
 		return fmt.Errorf(ePrefix+
-			"Error: Input parameter 'unixPermissionStr' must contain 9-Characters. "+
-			"This unixPermissionStr contains %v-characters. unixPermissionStr='%v'. ",
-			len(unixPermissionStr), unixPermissionStr)
+			"Error: Input parameter 'unixPermissionTextStr' must contain 9-Characters. "+
+			"This unixPermissionTextStr contains %v-characters. unixPermissionTextStr='%v'. ",
+			len(unixPermissionTextStr), unixPermissionTextStr)
 	}
 
 	fModeEntryType := os.FileMode(entryType)
@@ -930,19 +969,19 @@ func (fPerm *FilePermissionConfig) SetFileModeByComponents(
 			strconv.FormatInt(int64(entryType), 8))
 	}
 
-	ownerInt, err := fPerm.convertGroupToDecimal(unixPermissionStr[0:3], "owner")
+	ownerInt, err := fPerm.convertGroupToDecimal(unixPermissionTextStr[0:3], "owner")
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+"'ownerInt' Error: %v", err.Error())
 	}
 
-	groupInt, err := fPerm.convertGroupToDecimal(unixPermissionStr[3:6], "group")
+	groupInt, err := fPerm.convertGroupToDecimal(unixPermissionTextStr[3:6], "group")
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+"groupInt Error: %v", err.Error())
 	}
 
-	otherInt, err := fPerm.convertGroupToDecimal(unixPermissionStr[6:], "other")
+	otherInt, err := fPerm.convertGroupToDecimal(unixPermissionTextStr[6:], "other")
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+"otherInt Error: %v", err.Error())
@@ -955,6 +994,35 @@ func (fPerm *FilePermissionConfig) SetFileModeByComponents(
 	fMode := os.FileMode(FileHelper{}.ConvertOctalToDecimal(permission))
 
 	fPerm.fileMode = fModeEntryType | fMode
+	fPerm.isInitialized = true
+
+	return nil
+}
+
+// SetFileModeByFileMode - Sets the permission codes for this FilePermissionConfig
+// instance using an input parameter of type 'os.FileMode'. If the value does not
+// include a valid os mode constant, and error will be returned.
+//
+// If successful, this method will assign the os.FileMode input value to the internal
+// data field, 'FilePermissionConfig.fileMode'.
+//
+func (fPerm *FilePermissionConfig) SetFileModeByFileMode(fMode os.FileMode) error {
+
+	tFMode := fMode
+
+	mask := os.FileMode(0777)
+
+	entryType := tFMode &^ mask
+
+	_, ok := mOsPermissionCodeToString[entryType]
+
+	if !ok {
+		ePrefix := "FilePermissionConfig.SetFileModeByFileMode() "
+		return fmt.Errorf(ePrefix + "Error: Input parameter 'fMode' contains an invalid " +
+			"'EntryType' otherwise known as an os mode constant.")
+	}
+
+	fPerm.fileMode = fMode
 	fPerm.isInitialized = true
 
 	return nil
@@ -983,7 +1051,7 @@ func (fPerm *FilePermissionConfig) SetFileModeByComponents(
 //                integer            Equivalent
 //   Octal    'octalFileModeCode'    Symbolic      File Access
 //   Digits        value             Notation      Permission Descriptions
-//   0000 	       0                 ----------    File - no permissions
+//   0000 	         0               ----------    File - no permissions
 //   0700 	       700               -rwx------    File - read, write, & execute only for owner
 //   0770 	       770               -rwxrwx---    File - read, write, & execute for owner and group
 //   0777 	       777               -rwxrwxrwx    File - read, write, & execute for owner, group and others

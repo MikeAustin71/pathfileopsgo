@@ -1914,7 +1914,7 @@ func (fMgr *FileMgr) DeleteThisFile() error {
 }
 
 // DoesThisFileExist - Returns a boolean value
-// designated whether the file specified by the
+// designating whether the file specified by the
 // current FileMgr.absolutePathFileName field
 // exists.
 func (fMgr *FileMgr) DoesThisFileExist() (bool, error) {
@@ -2271,6 +2271,50 @@ func (fMgr *FileMgr) GetOriginalPathFileName() string {
 
 	return fMgr.originalPathFileName
 
+}
+
+// GetFilePermissionTextCodes - If the current file exists on disk,
+// this method will return the File Permission Codes, otherwise known
+// as the unix permission bits, in the form of a 10-character string.
+//
+// If the file does NOT exist, this method will return an error.
+//
+func (fMgr *FileMgr) GetFilePermissionTextCodes() (string, error) {
+
+	ePrefix := "FileMgrGetFilePermissionTextCodes() "
+
+	if !fMgr.doesAbsolutePathFileNameExist {
+		return "",
+			errors.New(ePrefix +
+				"The current file does NOT exist. Therefore, permission codes " +
+				"do NOT exist.")
+	}
+
+	if !fMgr.actualFileInfo.IsFInfoInitialized {
+		return "",
+			errors.New(ePrefix +
+				"The FileInfo data for this file has NOT been initialized.")
+	}
+
+	fPerm, err := FilePermissionConfig{}.NewByFileMode(fMgr.actualFileInfo.Mode())
+
+	if err != nil {
+		return "",
+			fmt.Errorf(ePrefix+
+				"%v", err.Error())
+
+	}
+
+	permissionText, err := fPerm.GetPermissionTextCode()
+
+	if err != nil {
+		return "",
+			fmt.Errorf(ePrefix+
+				"%v", err.Error())
+
+	}
+
+	return permissionText, nil
 }
 
 // GetFilePtr - will return the internal *os.File pointer

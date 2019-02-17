@@ -2706,6 +2706,48 @@ func (dMgr *DirMgr) GetFileInfoPlus() (FileInfoPlus, error) {
 	return dMgr.actualDirFileInfo.CopyOut(), nil
 }
 
+// GetDirPermissionTextCodes -  - If the current directory exists on disk,
+// this method will return the Directory Permission Codes, otherwise known
+// as the unix permission bits, in the form of a 10-character string.
+//
+// If the current Directory does NOT exist, this method will return an error.
+//
+func (dMgr *DirMgr) GetDirPermissionTextCodes() (string, error) {
+
+	ePrefix := "GetDirPermissionTextCodes() "
+
+	if !dMgr.doesAbsolutePathExist {
+		return "",
+			errors.New(ePrefix +
+				"The current directory does NOT exist. Therefore, permission codes " +
+				"do NOT exist.")
+	}
+
+	if !dMgr.actualDirFileInfo.IsFInfoInitialized {
+		return "",
+			errors.New(ePrefix +
+				"The FileInfo data for this Directory has NOT been initialized.")
+	}
+
+	fPerm, err := FilePermissionConfig{}.NewByFileMode(dMgr.actualDirFileInfo.Mode())
+
+	if err != nil {
+		return "",
+			fmt.Errorf(ePrefix+
+				"%v", err.Error())
+	}
+
+	permissionText, err := fPerm.GetPermissionTextCode()
+
+	if err != nil {
+		return "",
+			fmt.Errorf(ePrefix+
+				"%v", err.Error())
+	}
+
+	return permissionText, nil
+}
+
 // GetNumberOfAbsPathElements - Returns the number of elements
 // or path components in the absolute path of the current
 // Directory Manager instance.

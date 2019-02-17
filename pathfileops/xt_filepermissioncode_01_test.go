@@ -29,12 +29,12 @@ func TestOsFilePermissionCode_IsValid_01(t *testing.T) {
 
 func TestOsFilePermissionCode_IsValid_02(t *testing.T) {
 
-	fpc := FilePermCode.None()
+	fpc := FilePermCode.ModeNone()
 
 	fmBase := os.FileMode(0)
 
 	if fmBase != fpc {
-		t.Errorf("Error: Expected fpc to be equal to os.None. It WAS NOT EQUAL!"+
+		t.Errorf("Error: Expected fpc to be equal to os.ModeNone. It WAS NOT EQUAL!"+
 			"fpc decimal value = %s octal value = %s",
 			strconv.FormatInt(int64(fpc), 10), strconv.FormatInt(int64(fpc), 8))
 	}
@@ -368,7 +368,7 @@ func TestOsFilePermissionCode_String_02(t *testing.T) {
 
 func TestOsFilePermissionCode_String_03(t *testing.T) {
 
-	expectedStr := "None"
+	expectedStr := "ModeNone"
 
 	osPerm := OsFilePermissionCode(0)
 
@@ -828,9 +828,9 @@ func TestOsFilePermissionCode_ParseString_13(t *testing.T) {
 
 func TestOsFilePermissionCode_ParseString_14(t *testing.T) {
 
-	expectedFileMode := FilePermCode.None()
+	expectedFileMode := FilePermCode.ModeNone()
 
-	actualFileMode, err := FilePermCode.ParseString("None", true)
+	actualFileMode, err := FilePermCode.ParseString("ModeNone", true)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -851,7 +851,7 @@ func TestOsFilePermissionCode_ParseString_14(t *testing.T) {
 func TestOsFilePermissionCode_GetFileModeLetterCode_01(t *testing.T) {
 	expectedLetter := "-"
 
-	fPerm := OsFilePermissionCode(FilePermCode.None())
+	fPerm := OsFilePermissionCode(FilePermCode.ModeNone())
 
 	actualLetter, err := fPerm.GetFileModeLetterCode()
 
@@ -1134,11 +1134,11 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_14(t *testing.T) {
 }
 
 func TestOsFilePermissionCode_GetNewFromLetterCode_01(t *testing.T) {
-	//     None                  -:      is a file
+	//     ModeNone                  -:      is a file
 
 	letterCode := "-"
 
-	expected := OsFilePermissionCode(FilePermCode.None())
+	expected := OsFilePermissionCode(FilePermCode.ModeNone())
 
 	fPerm, err := FilePermCode.GetNewFromLetterCode(letterCode)
 
@@ -1525,9 +1525,9 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_14(t *testing.T) {
 
 func TestOsFilePermissionCode_Value_01(t *testing.T) {
 
-	expected := OsFilePermissionCode(FilePermCode.None())
+	expected := OsFilePermissionCode(FilePermCode.ModeNone())
 
-	fPerm := FilePermCode.None()
+	fPerm := FilePermCode.ModeNone()
 
 	if expected.Value() != fPerm {
 		t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",

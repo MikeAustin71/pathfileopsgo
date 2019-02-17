@@ -36,7 +36,130 @@ func main() {
 
 func main() {
 
-	mainTest25()
+	mainTest30()
+
+}
+
+func mainTest30() {
+
+	rawPath := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest"
+
+	dMgr, err := pf.DirMgr{}.New(rawPath)
+
+	if err != nil {
+		fmt.Printf("Error returned by DirMgr{}.New(rawPath). "+
+			"rawPath='%v' Error='%v' \n\n", rawPath, err.Error())
+		return
+	}
+
+	permissionText, err := dMgr.GetDirPermissionTextCodes()
+
+	if err != nil {
+		fmt.Printf("Error returned by dMgr.GetDirPermissionTextCodes(). "+
+			"Error='%v' \n", err.Error())
+		return
+	}
+
+	fmt.Println("  Directory: ", dMgr.GetAbsolutePath())
+	fmt.Println("Permissions: ", permissionText)
+
+	fInfoPlus, err := dMgr.GetFileInfoPlus()
+
+	if err != nil {
+		fmt.Printf("Error returned by dMgr.GetFileInfoPlus(). "+
+			"Error='%v' \n", err.Error())
+		return
+	}
+
+	fmt.Println("    FInfo Mode Str: ", fInfoPlus.Mode().String())
+	fmt.Println("Finfo Mode IsDir():", fInfoPlus.Mode().IsDir())
+}
+
+func mainTest29() {
+
+	rawPath := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest\\levelfilesfortest\\level_0_3_test.txt"
+
+	fileMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(rawPath)
+
+	if err != nil {
+		fmt.Printf("Error returned by FileMgr{}.NewFromPathFileNameExtStr(rawPath). "+
+			"rawPath='%v' Error='%v' \n\n", rawPath, err.Error())
+		return
+	}
+
+	permissionText, err := fileMgr.GetFilePermissionTextCodes()
+
+	if err != nil {
+		fmt.Printf("Error returned by fileMgr.GetFilePermissionTextCodes(). "+
+			"Error='%v' \n", err.Error())
+		return
+	}
+
+	fmt.Println("File: ", fileMgr.GetAbsolutePathFileName())
+	fmt.Println("Permissions: ", permissionText)
+}
+
+func mainTest28() {
+
+	unixPermissions := os.FileMode(0777)
+
+	fmt.Printf("Unix Permissions Decimal Value: %s\n",
+		strconv.FormatInt(int64(unixPermissions), 10))
+
+	fmt.Printf("Unix Permissions Octal Value: %s\n",
+		strconv.FormatInt(int64(unixPermissions), 8))
+
+	intUnixPermissions := int(unixPermissions)
+
+	fmt.Printf("intUnixPermissions Decimal Value: %s\n",
+		strconv.FormatInt(int64(intUnixPermissions), 10))
+
+	fmt.Printf("intUnixPermissions Octal Value: %s\n",
+		strconv.FormatInt(int64(intUnixPermissions), 8))
+
+	dir := os.ModeDir | os.FileMode(0333)
+
+	fmt.Println()
+	fmt.Println("------------------------------------")
+	fmt.Printf("dir Decimal Value: %s\n",
+		strconv.FormatInt(int64(dir), 10))
+
+	fmt.Printf("dir Octal Value: %s\n",
+		strconv.FormatInt(int64(dir), 8))
+
+	baseDir := dir &^ os.FileMode(0777)
+
+	fmt.Println()
+	fmt.Println("------------------------------------")
+	fmt.Printf("baseDir Decimal Value: %s\n",
+		strconv.FormatInt(int64(baseDir), 10))
+
+	fmt.Printf("baseDir Octal Value: %s\n",
+		strconv.FormatInt(int64(baseDir), 8))
+
+}
+
+func mainTest27() {
+
+	unixPermissions := os.FileMode(0777)
+
+	shift := uint(9)
+
+	xPermissions := unixPermissions >> shift
+
+	fmt.Printf("Unix Permissions Decimal Value: %s\n",
+		strconv.FormatInt(int64(unixPermissions), 10))
+
+	fmt.Printf("Unix Permissions Octal Value: %s\n",
+		strconv.FormatInt(int64(unixPermissions), 8))
+
+	fmt.Printf("shift= %d \n", shift)
+
+	fmt.Printf("xPermissions Decimal Value: %s\n",
+		strconv.FormatInt(int64(xPermissions), 10))
+
+	fmt.Printf("xPermissions Octal Value: %s\n",
+		strconv.FormatInt(int64(xPermissions), 8))
 
 }
 
@@ -66,45 +189,98 @@ func mainTest26() {
 
 func mainTest25() {
 
-	fmt.Printf("ModeDir Decimal: %v  Octal: %s Binary: %s \n",
-		os.ModeDir, strconv.FormatInt(int64(os.ModeDir), 8),
+	fmt.Printf("                        OS MODE CONSTANTS \n")
+
+	fmt.Printf("-----------------------------------------------------------------------------------\n\n")
+
+	fmt.Printf("ModeDir Decimal Value: %s  \n  Octal Value : %s  \n  Binary Value: %s \n\n",
+		strconv.FormatInt(int64(os.ModeDir), 10),
+		strconv.FormatInt(int64(os.ModeDir), 8),
 		strconv.FormatInt(int64(os.ModeDir), 2))
 
-	fmt.Printf("ModeAppend Decimal: %d  Octal: %o Binary: %b \n",
-		os.ModeAppend, os.ModeAppend, os.ModeAppend)
+	fmt.Printf("-----------------------------------------------------------------------------------\n\n")
 
-	fmt.Printf("ModeExclusive Decimal: %d  Octal: %o Binary: %b \n",
-		os.ModeExclusive, os.ModeExclusive, os.ModeExclusive)
+	fmt.Printf("ModeAppend Decimal Value: %s  \n  Octal Value: %s  \n  Binary Value: %s \n\n",
+		strconv.FormatInt(int64(os.ModeAppend), 10),
+		strconv.FormatInt(int64(os.ModeAppend), 8),
+		strconv.FormatInt(int64(os.ModeAppend), 2))
 
-	fmt.Printf("ModeTemporary Decimal: %d  Octal: %o Binary: %b \n",
-		os.ModeTemporary, os.ModeTemporary, os.ModeTemporary)
+	fmt.Printf("-----------------------------------------------------------------------------------\n\n")
 
-	fmt.Printf("ModeSymlink Decimal: %d  Octal: %o Binary: %b \n",
-		os.ModeSymlink, os.ModeSymlink, os.ModeSymlink)
+	fmt.Printf("ModeExclusive Decimal Value: %s   \n  Octal Value: %s \n  Binary Value: %s \n\n",
+		strconv.FormatInt(int64(os.ModeExclusive), 10),
+		strconv.FormatInt(int64(os.ModeExclusive), 8),
+		strconv.FormatInt(int64(os.ModeExclusive), 2))
 
-	fmt.Printf("ModeDevice Decimal: %d  Octal: %o Binary: %b \n",
-		os.ModeDevice, os.ModeDevice, os.ModeDevice)
+	fmt.Printf("-----------------------------------------------------------------------------------\n\n")
 
-	fmt.Printf("ModeNamedPipe Decimal: %d  Octal: %o Binary: %b \n",
-		os.ModeNamedPipe, os.ModeNamedPipe, os.ModeNamedPipe)
+	fmt.Printf("ModeTemporary Decimal Value: %s   \n  Octal Value: %s \n  Binary Value: %s \n\n",
+		strconv.FormatInt(int64(os.ModeTemporary), 10),
+		strconv.FormatInt(int64(os.ModeTemporary), 8),
+		strconv.FormatInt(int64(os.ModeTemporary), 2))
 
-	fmt.Printf("ModeSocket Decimal: %d  Octal: %o Binary: %b \n",
-		os.ModeSocket, os.ModeSocket, os.ModeSocket)
+	fmt.Printf("-----------------------------------------------------------------------------------\n\n")
 
-	fmt.Printf("ModeSetuid Decimal: %d  Octal: %o Binary: %b \n",
-		os.ModeSetuid, os.ModeSetuid, os.ModeSetuid)
+	fmt.Printf("ModeSymlink Decimal Value: %s   \n  Octal Value: %s \n  Binary Value: %s \n\n",
+		strconv.FormatInt(int64(os.ModeSymlink), 10),
+		strconv.FormatInt(int64(os.ModeSymlink), 8),
+		strconv.FormatInt(int64(os.ModeSymlink), 2))
 
-	fmt.Printf("ModeSetgid Decimal: %d  Octal: %o Binary: %b \n",
-		os.ModeSetgid, os.ModeSetgid, os.ModeSetgid)
+	fmt.Printf("-----------------------------------------------------------------------------------\n\n")
 
-	fmt.Printf("ModeCharDevice Decimal: %d  Octal: %o Binary: %b \n",
-		os.ModeCharDevice, os.ModeCharDevice, os.ModeCharDevice)
+	fmt.Printf("ModeDevice Decimal Value: %s   \n  Octal Value: %s \n  Binary Value: %s \n\n",
+		strconv.FormatInt(int64(os.ModeDevice), 10),
+		strconv.FormatInt(int64(os.ModeDevice), 8),
+		strconv.FormatInt(int64(os.ModeDevice), 2))
 
-	fmt.Printf("ModeSticky Decimal: %d  Octal: %o Binary: %b \n",
-		os.ModeSticky, os.ModeSticky, os.ModeSticky)
+	fmt.Printf("-----------------------------------------------------------------------------------\n\n")
 
-	fmt.Printf("ModeIrregular Decimal: %d  Octal: %o Binary: %b \n",
-		os.ModeIrregular, os.ModeIrregular, os.ModeIrregular)
+	fmt.Printf("ModeNamedPipe Decimal Value: %s   \n  Octal Value: %s \n  Binary Value: %s \n\n",
+		strconv.FormatInt(int64(os.ModeNamedPipe), 10),
+		strconv.FormatInt(int64(os.ModeNamedPipe), 8),
+		strconv.FormatInt(int64(os.ModeNamedPipe), 2))
+
+	fmt.Printf("-----------------------------------------------------------------------------------\n\n")
+
+	fmt.Printf("ModeSocket Decimal Value: %s   \n  Octal Value: %s \n  Binary Value: %s \n\n",
+		strconv.FormatInt(int64(os.ModeSocket), 10),
+		strconv.FormatInt(int64(os.ModeSocket), 8),
+		strconv.FormatInt(int64(os.ModeSocket), 2))
+
+	fmt.Printf("-----------------------------------------------------------------------------------\n\n")
+
+	fmt.Printf("ModeSetuid Decimal Value: %s   \n  Octal Value: %s \n  Binary Value: %s \n\n",
+		strconv.FormatInt(int64(os.ModeSetuid), 10),
+		strconv.FormatInt(int64(os.ModeSetuid), 8),
+		strconv.FormatInt(int64(os.ModeSetuid), 2))
+
+	fmt.Printf("-----------------------------------------------------------------------------------\n\n")
+
+	fmt.Printf("ModeSetgid Decimal Value: %s   \n  Octal Value: %s \n  Binary Value: %s \n\n",
+		strconv.FormatInt(int64(os.ModeSetgid), 10),
+		strconv.FormatInt(int64(os.ModeSetgid), 8),
+		strconv.FormatInt(int64(os.ModeSetgid), 2))
+
+	fmt.Printf("-----------------------------------------------------------------------------------\n\n")
+
+	fmt.Printf("ModeCharDevice Decimal Value: %s   \n  Octal Value: %s \n  Binary Value: %s \n\n",
+		strconv.FormatInt(int64(os.ModeCharDevice), 10),
+		strconv.FormatInt(int64(os.ModeCharDevice), 8),
+		strconv.FormatInt(int64(os.ModeCharDevice), 2))
+
+	fmt.Printf("ModeSticky Decimal Value: %s   \n  Octal Value: %s \n  Binary Value: %s \n\n",
+		strconv.FormatInt(int64(os.ModeSticky), 10),
+		strconv.FormatInt(int64(os.ModeSticky), 8),
+		strconv.FormatInt(int64(os.ModeSticky), 2))
+
+	fmt.Printf("-----------------------------------------------------------------------------------\n\n")
+
+	fmt.Printf("ModeIrregular Decimal Value: %s   \n  Octal Value: %s \n  Binary Value: %s \n\n",
+		strconv.FormatInt(int64(os.ModeIrregular), 10),
+		strconv.FormatInt(int64(os.ModeIrregular), 8),
+		strconv.FormatInt(int64(os.ModeIrregular), 2))
+
+	fmt.Printf("-----------------------------------------------------------------------------------\n\n")
 
 }
 
