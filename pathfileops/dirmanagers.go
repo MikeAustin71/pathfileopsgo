@@ -658,7 +658,7 @@ func (dMgrs *DirMgrCollection) PeekLastDirMgr() (DirMgr, error) {
 }
 
 // DirMgr - This type and its associated methods are used to
-// manage directories and directory trees.
+// manage directories, directory trees and directory permissions.
 //
 // Dependencies:
 //

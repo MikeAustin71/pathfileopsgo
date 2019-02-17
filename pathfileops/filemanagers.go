@@ -707,7 +707,7 @@ func (fMgrs *FileMgrCollection) PeekLastFileMgr() (FileMgr, error) {
 }
 
 // FileMgr - This type and its associated methods are used to manage
-// organize and control disk files.
+// organize and control disk files and file permissions.
 //
 type FileMgr struct {
 	isInitialized                   bool
