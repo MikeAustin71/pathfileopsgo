@@ -373,16 +373,16 @@ func (osPerm OsFilePermissionCode) ParseString(
 
 }
 
-// FilePermCode - public global variable of type OsFilePermissionCode.
+// OsFilePermCode - public global variable of type OsFilePermissionCode.
 // Provides alternative, easier access to OsFilePermissionCode enumeration
 // values.
 //
 // Usage:
 //
-//	FilePermCode.ModeNone()
-//	FilePermCode.ModeDir()
+//	OsFilePermCode.ModeNone()
+//	OsFilePermCode.ModeDir()
 //
-var FilePermCode = OsFilePermissionCode(0)
+var OsFilePermCode = OsFilePermissionCode(0)
 
 // String - Returns a string with the name of the enumeration associated
 // with this instance of 'OsFilePermissionCode'.
@@ -595,12 +595,14 @@ func (fPerm FilePermissionConfig) New(modeStr string) (FilePermissionConfig, err
 //                                   Select this value with caution. See the warning below.
 //
 //  unixPermissionTextStr string - A 9-character string containing the unix permission
-//                            bits expressed as three groups of 3-characters each.
+//                            bits expressed as three groups of 3-characters each. Note:
+//                            if the string is the standard 10-character string, only the
+//                            last 9-characters will be used.
 //
-//                             The 9-characters are constituents of the the three Symbolic
-//                             Groups: Owners/Users, Groups & Others. Each group has three
-//                             characters which may be 'r', 'w', 'x'. If a permission is not
-//                             set, that character position contains a '-'.
+//                            The 9-characters are constituents of the the three Symbolic
+//                            Groups: Owners/Users, Groups & Others. Each group has three
+//                            characters which may be 'r', 'w', 'x'. If a permission is not
+//                            set, that character position contains a '-'.
 //
 //   'unixPermissionTextStr'
 //        9-Character          File Access
@@ -904,7 +906,7 @@ func (fPerm *FilePermissionConfig) GetPermissionTextCode() (string, error) {
 func (fPerm *FilePermissionConfig) GetPermissionComponents() (
 	osMode OsFilePermissionCode, permissionBits os.FileMode, err error) {
 
-	osMode = OsFilePermissionCode(FilePermCode.ModeNone())
+	osMode = OsFilePermissionCode(OsFilePermCode.ModeNone())
 
 	permissionBits = os.FileMode(0)
 
@@ -1017,6 +1019,10 @@ func (fPerm *FilePermissionConfig) SetFileModeByComponents(
 	entryType OsFilePermissionCode, unixPermissionTextStr string) error {
 
 	ePrefix := "FilePermissionConfig.SetFileModeByComponents() "
+
+	if len(unixPermissionTextStr) == 10 {
+		unixPermissionTextStr = unixPermissionTextStr[1:]
+	}
 
 	if len(unixPermissionTextStr) != 9 {
 		return fmt.Errorf(ePrefix+

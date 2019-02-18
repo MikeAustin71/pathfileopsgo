@@ -8,7 +8,7 @@ import (
 
 func TestOsFilePermissionCode_IsValid_01(t *testing.T) {
 
-	fpc := FilePermCode.ModeDir()
+	fpc := OsFilePermCode.ModeDir()
 
 	if os.ModeDir != fpc {
 		t.Errorf("Error: Expected fpc to be equal to os.ModeDir. It WAS NOT EQUAL!"+
@@ -29,7 +29,7 @@ func TestOsFilePermissionCode_IsValid_01(t *testing.T) {
 
 func TestOsFilePermissionCode_IsValid_02(t *testing.T) {
 
-	fpc := FilePermCode.ModeNone()
+	fpc := OsFilePermCode.ModeNone()
 
 	fmBase := os.FileMode(0)
 
@@ -52,7 +52,7 @@ func TestOsFilePermissionCode_IsValid_02(t *testing.T) {
 
 func TestOsFilePermissionCode_IsValid_03(t *testing.T) {
 
-	fpc := FilePermCode.ModeAppend()
+	fpc := OsFilePermCode.ModeAppend()
 
 	fmBase := os.ModeAppend
 
@@ -75,7 +75,7 @@ func TestOsFilePermissionCode_IsValid_03(t *testing.T) {
 
 func TestOsFilePermissionCode_IsValid_04(t *testing.T) {
 
-	fpc := FilePermCode.ModeExclusive()
+	fpc := OsFilePermCode.ModeExclusive()
 
 	fmBase := os.ModeExclusive
 
@@ -98,7 +98,7 @@ func TestOsFilePermissionCode_IsValid_04(t *testing.T) {
 
 func TestOsFilePermissionCode_IsValid_05(t *testing.T) {
 
-	fpc := FilePermCode.ModeTemporary()
+	fpc := OsFilePermCode.ModeTemporary()
 
 	fmBase := os.ModeTemporary
 
@@ -121,7 +121,7 @@ func TestOsFilePermissionCode_IsValid_05(t *testing.T) {
 
 func TestOsFilePermissionCode_IsValid_06(t *testing.T) {
 
-	fpc := FilePermCode.ModeSymlink()
+	fpc := OsFilePermCode.ModeSymlink()
 
 	fmBase := os.ModeSymlink
 
@@ -144,7 +144,7 @@ func TestOsFilePermissionCode_IsValid_06(t *testing.T) {
 
 func TestOsFilePermissionCode_IsValid_07(t *testing.T) {
 
-	fpc := FilePermCode.ModeDevice()
+	fpc := OsFilePermCode.ModeDevice()
 
 	fmBase := os.ModeDevice
 
@@ -167,7 +167,7 @@ func TestOsFilePermissionCode_IsValid_07(t *testing.T) {
 
 func TestOsFilePermissionCode_IsValid_08(t *testing.T) {
 
-	fpc := FilePermCode.ModeNamedPipe()
+	fpc := OsFilePermCode.ModeNamedPipe()
 
 	fmBase := os.ModeNamedPipe
 
@@ -190,7 +190,7 @@ func TestOsFilePermissionCode_IsValid_08(t *testing.T) {
 
 func TestOsFilePermissionCode_IsValid_09(t *testing.T) {
 
-	fpc := FilePermCode.ModeSocket()
+	fpc := OsFilePermCode.ModeSocket()
 
 	fmBase := os.ModeSocket
 
@@ -213,7 +213,7 @@ func TestOsFilePermissionCode_IsValid_09(t *testing.T) {
 
 func TestOsFilePermissionCode_IsValid_10(t *testing.T) {
 
-	fpc := FilePermCode.ModeSetuid()
+	fpc := OsFilePermCode.ModeSetuid()
 
 	fmBase := os.ModeSetuid
 
@@ -236,7 +236,7 @@ func TestOsFilePermissionCode_IsValid_10(t *testing.T) {
 
 func TestOsFilePermissionCode_IsValid_11(t *testing.T) {
 
-	fpc := FilePermCode.ModeSetgid()
+	fpc := OsFilePermCode.ModeSetgid()
 
 	fmBase := os.ModeSetgid
 
@@ -259,7 +259,7 @@ func TestOsFilePermissionCode_IsValid_11(t *testing.T) {
 
 func TestOsFilePermissionCode_IsValid_12(t *testing.T) {
 
-	fpc := FilePermCode.ModeCharDevice()
+	fpc := OsFilePermCode.ModeCharDevice()
 
 	fmBase := os.ModeCharDevice
 
@@ -282,7 +282,7 @@ func TestOsFilePermissionCode_IsValid_12(t *testing.T) {
 
 func TestOsFilePermissionCode_IsValid_13(t *testing.T) {
 
-	fpc := FilePermCode.ModeSticky()
+	fpc := OsFilePermCode.ModeSticky()
 
 	fmBase := os.ModeSticky
 
@@ -305,7 +305,7 @@ func TestOsFilePermissionCode_IsValid_13(t *testing.T) {
 
 func TestOsFilePermissionCode_IsValid_14(t *testing.T) {
 
-	fpc := FilePermCode.ModeIrregular()
+	fpc := OsFilePermCode.ModeIrregular()
 
 	fmBase := os.ModeIrregular
 
@@ -345,7 +345,7 @@ func TestOsFilePermissionCode_String_01(t *testing.T) {
 
 	expectedStr := "ModeDir"
 
-	osPerm := OsFilePermissionCode(FilePermCode.ModeDir())
+	osPerm := OsFilePermissionCode(OsFilePermCode.ModeDir())
 
 	if expectedStr != osPerm.String() {
 		t.Errorf("Error: Expected osPerm = '%v'. Instead, osPerm='%v' ",
@@ -357,7 +357,7 @@ func TestOsFilePermissionCode_String_02(t *testing.T) {
 
 	expectedStr := "ModeNamedPipe"
 
-	osPerm := OsFilePermissionCode(FilePermCode.ModeNamedPipe())
+	osPerm := OsFilePermissionCode(OsFilePermCode.ModeNamedPipe())
 
 	if expectedStr != osPerm.String() {
 		t.Errorf("Error: Expected osPerm = '%v'. Instead, osPerm='%v' ",
@@ -396,7 +396,7 @@ func TestOsFilePermissionCode_String_05(t *testing.T) {
 
 	expectedStr := "ModeAppend"
 
-	osPerm := OsFilePermissionCode(FilePermCode.ModeAppend())
+	osPerm := OsFilePermissionCode(OsFilePermCode.ModeAppend())
 
 	if expectedStr != osPerm.String() {
 		t.Errorf("Error: Expected osPerm = '%v' . Instead, osPerm='%v' ",
@@ -409,7 +409,7 @@ func TestOsFilePermissionCode_String_06(t *testing.T) {
 
 	expectedStr := "ModeExclusive"
 
-	osPerm := OsFilePermissionCode(FilePermCode.ModeExclusive())
+	osPerm := OsFilePermissionCode(OsFilePermCode.ModeExclusive())
 
 	if expectedStr != osPerm.String() {
 		t.Errorf("Error: Expected osPerm = '%v' . Instead, osPerm='%v' ",
@@ -422,7 +422,7 @@ func TestOsFilePermissionCode_String_07(t *testing.T) {
 
 	expectedStr := "ModeTemporary"
 
-	osPerm := OsFilePermissionCode(FilePermCode.ModeTemporary())
+	osPerm := OsFilePermissionCode(OsFilePermCode.ModeTemporary())
 
 	if expectedStr != osPerm.String() {
 		t.Errorf("Error: Expected osPerm = '%v' . Instead, osPerm='%v' ",
@@ -435,7 +435,7 @@ func TestOsFilePermissionCode_String_08(t *testing.T) {
 
 	expectedStr := "ModeSymlink"
 
-	osPerm := OsFilePermissionCode(FilePermCode.ModeSymlink())
+	osPerm := OsFilePermissionCode(OsFilePermCode.ModeSymlink())
 
 	if expectedStr != osPerm.String() {
 		t.Errorf("Error: Expected osPerm = '%v' . Instead, osPerm='%v' ",
@@ -448,7 +448,7 @@ func TestOsFilePermissionCode_String_09(t *testing.T) {
 
 	expectedStr := "ModeDevice"
 
-	osPerm := OsFilePermissionCode(FilePermCode.ModeDevice())
+	osPerm := OsFilePermissionCode(OsFilePermCode.ModeDevice())
 
 	if expectedStr != osPerm.String() {
 		t.Errorf("Error: Expected osPerm = '%v' . Instead, osPerm='%v' ",
@@ -461,7 +461,7 @@ func TestOsFilePermissionCode_String_10(t *testing.T) {
 
 	expectedStr := "ModeNamedPipe"
 
-	osPerm := OsFilePermissionCode(FilePermCode.ModeNamedPipe())
+	osPerm := OsFilePermissionCode(OsFilePermCode.ModeNamedPipe())
 
 	if expectedStr != osPerm.String() {
 		t.Errorf("Error: Expected osPerm = '%v' . Instead, osPerm='%v' ",
@@ -474,7 +474,7 @@ func TestOsFilePermissionCode_String_11(t *testing.T) {
 
 	expectedStr := "ModeSocket"
 
-	osPerm := OsFilePermissionCode(FilePermCode.ModeSocket())
+	osPerm := OsFilePermissionCode(OsFilePermCode.ModeSocket())
 
 	if expectedStr != osPerm.String() {
 		t.Errorf("Error: Expected osPerm = '%v' . Instead, osPerm='%v' ",
@@ -487,7 +487,7 @@ func TestOsFilePermissionCode_String_12(t *testing.T) {
 
 	expectedStr := "ModeSetuid"
 
-	osPerm := OsFilePermissionCode(FilePermCode.ModeSetuid())
+	osPerm := OsFilePermissionCode(OsFilePermCode.ModeSetuid())
 
 	if expectedStr != osPerm.String() {
 		t.Errorf("Error: Expected osPerm = '%v' . Instead, osPerm='%v' ",
@@ -500,7 +500,7 @@ func TestOsFilePermissionCode_String_13(t *testing.T) {
 
 	expectedStr := "ModeSetgid"
 
-	osPerm := OsFilePermissionCode(FilePermCode.ModeSetgid())
+	osPerm := OsFilePermissionCode(OsFilePermCode.ModeSetgid())
 
 	if expectedStr != osPerm.String() {
 		t.Errorf("Error: Expected osPerm = '%v' . Instead, osPerm='%v' ",
@@ -513,7 +513,7 @@ func TestOsFilePermissionCode_String_14(t *testing.T) {
 
 	expectedStr := "ModeCharDevice"
 
-	osPerm := OsFilePermissionCode(FilePermCode.ModeCharDevice())
+	osPerm := OsFilePermissionCode(OsFilePermCode.ModeCharDevice())
 
 	if expectedStr != osPerm.String() {
 		t.Errorf("Error: Expected osPerm = '%v' . Instead, osPerm='%v' ",
@@ -526,7 +526,7 @@ func TestOsFilePermissionCode_String_15(t *testing.T) {
 
 	expectedStr := "ModeSticky"
 
-	osPerm := OsFilePermissionCode(FilePermCode.ModeSticky())
+	osPerm := OsFilePermissionCode(OsFilePermCode.ModeSticky())
 
 	if expectedStr != osPerm.String() {
 		t.Errorf("Error: Expected osPerm = '%v' . Instead, osPerm='%v' ",
@@ -539,7 +539,7 @@ func TestOsFilePermissionCode_String_16(t *testing.T) {
 
 	expectedStr := "ModeIrregular"
 
-	osPerm := OsFilePermissionCode(FilePermCode.ModeIrregular())
+	osPerm := OsFilePermissionCode(OsFilePermCode.ModeIrregular())
 
 	if expectedStr != osPerm.String() {
 		t.Errorf("Error: Expected osPerm = '%v' . Instead, osPerm='%v' ",
@@ -550,9 +550,9 @@ func TestOsFilePermissionCode_String_16(t *testing.T) {
 
 func TestOsFilePermissionCode_ParseString_01(t *testing.T) {
 
-	expectedFileMode := FilePermCode.ModeDir()
+	expectedFileMode := OsFilePermCode.ModeDir()
 
-	actualFileMode, err := FilePermCode.ParseString("ModeDir", true)
+	actualFileMode, err := OsFilePermCode.ParseString("ModeDir", true)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -560,7 +560,7 @@ func TestOsFilePermissionCode_ParseString_01(t *testing.T) {
 			strconv.FormatInt(int64(actualFileMode), 10))
 	}
 
-	actualFileMode, err = FilePermCode.ParseString("modedir", false)
+	actualFileMode, err = OsFilePermCode.ParseString("modedir", false)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -572,9 +572,9 @@ func TestOsFilePermissionCode_ParseString_01(t *testing.T) {
 
 func TestOsFilePermissionCode_ParseString_02(t *testing.T) {
 
-	expectedFileMode := FilePermCode.ModeAppend()
+	expectedFileMode := OsFilePermCode.ModeAppend()
 
-	actualFileMode, err := FilePermCode.ParseString("ModeAppend", true)
+	actualFileMode, err := OsFilePermCode.ParseString("ModeAppend", true)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -582,7 +582,7 @@ func TestOsFilePermissionCode_ParseString_02(t *testing.T) {
 			strconv.FormatInt(int64(actualFileMode), 10))
 	}
 
-	actualFileMode, err = FilePermCode.ParseString("modeappend", false)
+	actualFileMode, err = OsFilePermCode.ParseString("modeappend", false)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -594,9 +594,9 @@ func TestOsFilePermissionCode_ParseString_02(t *testing.T) {
 
 func TestOsFilePermissionCode_ParseString_03(t *testing.T) {
 
-	expectedFileMode := FilePermCode.ModeExclusive()
+	expectedFileMode := OsFilePermCode.ModeExclusive()
 
-	actualFileMode, err := FilePermCode.ParseString("ModeExclusive", true)
+	actualFileMode, err := OsFilePermCode.ParseString("ModeExclusive", true)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -604,7 +604,7 @@ func TestOsFilePermissionCode_ParseString_03(t *testing.T) {
 			strconv.FormatInt(int64(actualFileMode), 10))
 	}
 
-	actualFileMode, err = FilePermCode.ParseString("modeexclusive", false)
+	actualFileMode, err = OsFilePermCode.ParseString("modeexclusive", false)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -616,9 +616,9 @@ func TestOsFilePermissionCode_ParseString_03(t *testing.T) {
 
 func TestOsFilePermissionCode_ParseString_04(t *testing.T) {
 
-	expectedFileMode := FilePermCode.ModeTemporary()
+	expectedFileMode := OsFilePermCode.ModeTemporary()
 
-	actualFileMode, err := FilePermCode.ParseString("modetemporary", false)
+	actualFileMode, err := OsFilePermCode.ParseString("modetemporary", false)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -626,7 +626,7 @@ func TestOsFilePermissionCode_ParseString_04(t *testing.T) {
 			strconv.FormatInt(int64(actualFileMode), 10))
 	}
 
-	actualFileMode, err = FilePermCode.ParseString("ModeTemporary", true)
+	actualFileMode, err = OsFilePermCode.ParseString("ModeTemporary", true)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -638,9 +638,9 @@ func TestOsFilePermissionCode_ParseString_04(t *testing.T) {
 
 func TestOsFilePermissionCode_ParseString_05(t *testing.T) {
 
-	expectedFileMode := FilePermCode.ModeSymlink()
+	expectedFileMode := OsFilePermCode.ModeSymlink()
 
-	actualFileMode, err := FilePermCode.ParseString("modesymlink", false)
+	actualFileMode, err := OsFilePermCode.ParseString("modesymlink", false)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -652,9 +652,9 @@ func TestOsFilePermissionCode_ParseString_05(t *testing.T) {
 
 func TestOsFilePermissionCode_ParseString_06(t *testing.T) {
 
-	expectedFileMode := FilePermCode.ModeDevice()
+	expectedFileMode := OsFilePermCode.ModeDevice()
 
-	actualFileMode, err := FilePermCode.ParseString("modedevice", false)
+	actualFileMode, err := OsFilePermCode.ParseString("modedevice", false)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -662,7 +662,7 @@ func TestOsFilePermissionCode_ParseString_06(t *testing.T) {
 			strconv.FormatInt(int64(actualFileMode), 10))
 	}
 
-	actualFileMode, err = FilePermCode.ParseString("ModeDevice", true)
+	actualFileMode, err = OsFilePermCode.ParseString("ModeDevice", true)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -674,9 +674,9 @@ func TestOsFilePermissionCode_ParseString_06(t *testing.T) {
 
 func TestOsFilePermissionCode_ParseString_07(t *testing.T) {
 
-	expectedFileMode := FilePermCode.ModeNamedPipe()
+	expectedFileMode := OsFilePermCode.ModeNamedPipe()
 
-	actualFileMode, err := FilePermCode.ParseString("ModeNamedPipe", true)
+	actualFileMode, err := OsFilePermCode.ParseString("ModeNamedPipe", true)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -684,7 +684,7 @@ func TestOsFilePermissionCode_ParseString_07(t *testing.T) {
 			strconv.FormatInt(int64(actualFileMode), 10))
 	}
 
-	actualFileMode, err = FilePermCode.ParseString("modenamedpipe", false)
+	actualFileMode, err = OsFilePermCode.ParseString("modenamedpipe", false)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -696,9 +696,9 @@ func TestOsFilePermissionCode_ParseString_07(t *testing.T) {
 
 func TestOsFilePermissionCode_ParseString_08(t *testing.T) {
 
-	expectedFileMode := FilePermCode.ModeSocket()
+	expectedFileMode := OsFilePermCode.ModeSocket()
 
-	actualFileMode, err := FilePermCode.ParseString("ModeSocket", true)
+	actualFileMode, err := OsFilePermCode.ParseString("ModeSocket", true)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -706,7 +706,7 @@ func TestOsFilePermissionCode_ParseString_08(t *testing.T) {
 			strconv.FormatInt(int64(actualFileMode), 10))
 	}
 
-	actualFileMode, err = FilePermCode.ParseString("modesocket", false)
+	actualFileMode, err = OsFilePermCode.ParseString("modesocket", false)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -718,9 +718,9 @@ func TestOsFilePermissionCode_ParseString_08(t *testing.T) {
 
 func TestOsFilePermissionCode_ParseString_09(t *testing.T) {
 
-	expectedFileMode := FilePermCode.ModeSetuid()
+	expectedFileMode := OsFilePermCode.ModeSetuid()
 
-	actualFileMode, err := FilePermCode.ParseString("ModeSetuid", true)
+	actualFileMode, err := OsFilePermCode.ParseString("ModeSetuid", true)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -728,7 +728,7 @@ func TestOsFilePermissionCode_ParseString_09(t *testing.T) {
 			strconv.FormatInt(int64(actualFileMode), 10))
 	}
 
-	actualFileMode, err = FilePermCode.ParseString("modesetuid", false)
+	actualFileMode, err = OsFilePermCode.ParseString("modesetuid", false)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -740,9 +740,9 @@ func TestOsFilePermissionCode_ParseString_09(t *testing.T) {
 
 func TestOsFilePermissionCode_ParseString_10(t *testing.T) {
 
-	expectedFileMode := FilePermCode.ModeSetgid()
+	expectedFileMode := OsFilePermCode.ModeSetgid()
 
-	actualFileMode, err := FilePermCode.ParseString("ModeSetgid", true)
+	actualFileMode, err := OsFilePermCode.ParseString("ModeSetgid", true)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -750,7 +750,7 @@ func TestOsFilePermissionCode_ParseString_10(t *testing.T) {
 			strconv.FormatInt(int64(actualFileMode), 10))
 	}
 
-	actualFileMode, err = FilePermCode.ParseString("modesetgid", false)
+	actualFileMode, err = OsFilePermCode.ParseString("modesetgid", false)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -762,9 +762,9 @@ func TestOsFilePermissionCode_ParseString_10(t *testing.T) {
 
 func TestOsFilePermissionCode_ParseString_11(t *testing.T) {
 
-	expectedFileMode := FilePermCode.ModeCharDevice()
+	expectedFileMode := OsFilePermCode.ModeCharDevice()
 
-	actualFileMode, err := FilePermCode.ParseString("ModeCharDevice", true)
+	actualFileMode, err := OsFilePermCode.ParseString("ModeCharDevice", true)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -772,7 +772,7 @@ func TestOsFilePermissionCode_ParseString_11(t *testing.T) {
 			strconv.FormatInt(int64(actualFileMode), 10))
 	}
 
-	actualFileMode, err = FilePermCode.ParseString("modechardevice", false)
+	actualFileMode, err = OsFilePermCode.ParseString("modechardevice", false)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -784,9 +784,9 @@ func TestOsFilePermissionCode_ParseString_11(t *testing.T) {
 
 func TestOsFilePermissionCode_ParseString_12(t *testing.T) {
 
-	expectedFileMode := FilePermCode.ModeSticky()
+	expectedFileMode := OsFilePermCode.ModeSticky()
 
-	actualFileMode, err := FilePermCode.ParseString("ModeSticky", true)
+	actualFileMode, err := OsFilePermCode.ParseString("ModeSticky", true)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -794,7 +794,7 @@ func TestOsFilePermissionCode_ParseString_12(t *testing.T) {
 			strconv.FormatInt(int64(actualFileMode), 10))
 	}
 
-	actualFileMode, err = FilePermCode.ParseString("modesticky", false)
+	actualFileMode, err = OsFilePermCode.ParseString("modesticky", false)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -806,9 +806,9 @@ func TestOsFilePermissionCode_ParseString_12(t *testing.T) {
 
 func TestOsFilePermissionCode_ParseString_13(t *testing.T) {
 
-	expectedFileMode := FilePermCode.ModeIrregular()
+	expectedFileMode := OsFilePermCode.ModeIrregular()
 
-	actualFileMode, err := FilePermCode.ParseString("ModeIrregular", true)
+	actualFileMode, err := OsFilePermCode.ParseString("ModeIrregular", true)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -816,7 +816,7 @@ func TestOsFilePermissionCode_ParseString_13(t *testing.T) {
 			strconv.FormatInt(int64(actualFileMode), 10))
 	}
 
-	actualFileMode, err = FilePermCode.ParseString("modeirregular", false)
+	actualFileMode, err = OsFilePermCode.ParseString("modeirregular", false)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -828,9 +828,9 @@ func TestOsFilePermissionCode_ParseString_13(t *testing.T) {
 
 func TestOsFilePermissionCode_ParseString_14(t *testing.T) {
 
-	expectedFileMode := FilePermCode.ModeNone()
+	expectedFileMode := OsFilePermCode.ModeNone()
 
-	actualFileMode, err := FilePermCode.ParseString("ModeNone", true)
+	actualFileMode, err := OsFilePermCode.ParseString("ModeNone", true)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -838,7 +838,7 @@ func TestOsFilePermissionCode_ParseString_14(t *testing.T) {
 			strconv.FormatInt(int64(actualFileMode), 10))
 	}
 
-	actualFileMode, err = FilePermCode.ParseString("none", false)
+	actualFileMode, err = OsFilePermCode.ParseString("none", false)
 
 	if err != nil {
 		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
@@ -851,7 +851,7 @@ func TestOsFilePermissionCode_ParseString_14(t *testing.T) {
 func TestOsFilePermissionCode_GetFileModeLetterCode_01(t *testing.T) {
 	expectedLetter := "-"
 
-	fPerm := OsFilePermissionCode(FilePermCode.ModeNone())
+	fPerm := OsFilePermissionCode(OsFilePermCode.ModeNone())
 
 	actualLetter, err := fPerm.GetFileModeLetterCode()
 
@@ -869,7 +869,7 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_01(t *testing.T) {
 func TestOsFilePermissionCode_GetFileModeLetterCode_02(t *testing.T) {
 	expectedLetter := "d"
 
-	fPerm := OsFilePermissionCode(FilePermCode.ModeDir())
+	fPerm := OsFilePermissionCode(OsFilePermCode.ModeDir())
 
 	actualLetter, err := fPerm.GetFileModeLetterCode()
 
@@ -888,7 +888,7 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_03(t *testing.T) {
 	//     ModeAppend            a:      append-only
 	expectedLetter := "a"
 
-	fPerm := OsFilePermissionCode(FilePermCode.ModeAppend())
+	fPerm := OsFilePermissionCode(OsFilePermCode.ModeAppend())
 
 	actualLetter, err := fPerm.GetFileModeLetterCode()
 
@@ -908,7 +908,7 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_04(t *testing.T) {
 
 	expectedLetter := "l"
 
-	fPerm := OsFilePermissionCode(FilePermCode.ModeExclusive())
+	fPerm := OsFilePermissionCode(OsFilePermCode.ModeExclusive())
 
 	actualLetter, err := fPerm.GetFileModeLetterCode()
 
@@ -929,7 +929,7 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_05(t *testing.T) {
 
 	expectedLetter := "T"
 
-	fPerm := OsFilePermissionCode(FilePermCode.ModeTemporary())
+	fPerm := OsFilePermissionCode(OsFilePermCode.ModeTemporary())
 
 	actualLetter, err := fPerm.GetFileModeLetterCode()
 
@@ -950,7 +950,7 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_06(t *testing.T) {
 
 	expectedLetter := "L"
 
-	fPerm := OsFilePermissionCode(FilePermCode.ModeSymlink())
+	fPerm := OsFilePermissionCode(OsFilePermCode.ModeSymlink())
 
 	actualLetter, err := fPerm.GetFileModeLetterCode()
 
@@ -971,7 +971,7 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_07(t *testing.T) {
 
 	expectedLetter := "D"
 
-	fPerm := OsFilePermissionCode(FilePermCode.ModeDevice())
+	fPerm := OsFilePermissionCode(OsFilePermCode.ModeDevice())
 
 	actualLetter, err := fPerm.GetFileModeLetterCode()
 
@@ -992,7 +992,7 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_08(t *testing.T) {
 
 	expectedLetter := "p"
 
-	fPerm := OsFilePermissionCode(FilePermCode.ModeNamedPipe())
+	fPerm := OsFilePermissionCode(OsFilePermCode.ModeNamedPipe())
 
 	actualLetter, err := fPerm.GetFileModeLetterCode()
 
@@ -1013,7 +1013,7 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_09(t *testing.T) {
 
 	expectedLetter := "S"
 
-	fPerm := OsFilePermissionCode(FilePermCode.ModeSocket())
+	fPerm := OsFilePermissionCode(OsFilePermCode.ModeSocket())
 
 	actualLetter, err := fPerm.GetFileModeLetterCode()
 
@@ -1034,7 +1034,7 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_10(t *testing.T) {
 
 	expectedLetter := "u"
 
-	fPerm := OsFilePermissionCode(FilePermCode.ModeSetuid())
+	fPerm := OsFilePermissionCode(OsFilePermCode.ModeSetuid())
 
 	actualLetter, err := fPerm.GetFileModeLetterCode()
 
@@ -1055,7 +1055,7 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_11(t *testing.T) {
 
 	expectedLetter := "g"
 
-	fPerm := OsFilePermissionCode(FilePermCode.ModeSetgid())
+	fPerm := OsFilePermissionCode(OsFilePermCode.ModeSetgid())
 
 	actualLetter, err := fPerm.GetFileModeLetterCode()
 
@@ -1076,7 +1076,7 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_12(t *testing.T) {
 
 	expectedLetter := "c"
 
-	fPerm := OsFilePermissionCode(FilePermCode.ModeCharDevice())
+	fPerm := OsFilePermissionCode(OsFilePermCode.ModeCharDevice())
 
 	actualLetter, err := fPerm.GetFileModeLetterCode()
 
@@ -1097,7 +1097,7 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_13(t *testing.T) {
 
 	expectedLetter := "t"
 
-	fPerm := OsFilePermissionCode(FilePermCode.ModeSticky())
+	fPerm := OsFilePermissionCode(OsFilePermCode.ModeSticky())
 
 	actualLetter, err := fPerm.GetFileModeLetterCode()
 
@@ -1118,7 +1118,7 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_14(t *testing.T) {
 
 	expectedLetter := "?"
 
-	fPerm := OsFilePermissionCode(FilePermCode.ModeIrregular())
+	fPerm := OsFilePermissionCode(OsFilePermCode.ModeIrregular())
 
 	actualLetter, err := fPerm.GetFileModeLetterCode()
 
@@ -1138,9 +1138,9 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_01(t *testing.T) {
 
 	letterCode := "-"
 
-	expected := OsFilePermissionCode(FilePermCode.ModeNone())
+	expected := OsFilePermissionCode(OsFilePermCode.ModeNone())
 
-	fPerm, err := FilePermCode.GetNewFromLetterCode(letterCode)
+	fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
 	if err != nil {
 		t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
@@ -1165,9 +1165,9 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_02(t *testing.T) {
 
 	letterCode := "d"
 
-	expected := OsFilePermissionCode(FilePermCode.ModeDir())
+	expected := OsFilePermissionCode(OsFilePermCode.ModeDir())
 
-	fPerm, err := FilePermCode.GetNewFromLetterCode(letterCode)
+	fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
 	if err != nil {
 		t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
@@ -1193,9 +1193,9 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_03(t *testing.T) {
 
 	letterCode := "a"
 
-	expected := OsFilePermissionCode(FilePermCode.ModeAppend())
+	expected := OsFilePermissionCode(OsFilePermCode.ModeAppend())
 
-	fPerm, err := FilePermCode.GetNewFromLetterCode(letterCode)
+	fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
 	if err != nil {
 		t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
@@ -1221,9 +1221,9 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_04(t *testing.T) {
 
 	letterCode := "l"
 
-	expected := OsFilePermissionCode(FilePermCode.ModeExclusive())
+	expected := OsFilePermissionCode(OsFilePermCode.ModeExclusive())
 
-	fPerm, err := FilePermCode.GetNewFromLetterCode(letterCode)
+	fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
 	if err != nil {
 		t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
@@ -1249,9 +1249,9 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_05(t *testing.T) {
 
 	letterCode := "T"
 
-	expected := OsFilePermissionCode(FilePermCode.ModeTemporary())
+	expected := OsFilePermissionCode(OsFilePermCode.ModeTemporary())
 
-	fPerm, err := FilePermCode.GetNewFromLetterCode(letterCode)
+	fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
 	if err != nil {
 		t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
@@ -1277,9 +1277,9 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_06(t *testing.T) {
 
 	letterCode := "L"
 
-	expected := OsFilePermissionCode(FilePermCode.ModeSymlink())
+	expected := OsFilePermissionCode(OsFilePermCode.ModeSymlink())
 
-	fPerm, err := FilePermCode.GetNewFromLetterCode(letterCode)
+	fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
 	if err != nil {
 		t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
@@ -1305,9 +1305,9 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_07(t *testing.T) {
 
 	letterCode := "D"
 
-	expected := OsFilePermissionCode(FilePermCode.ModeDevice())
+	expected := OsFilePermissionCode(OsFilePermCode.ModeDevice())
 
-	fPerm, err := FilePermCode.GetNewFromLetterCode(letterCode)
+	fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
 	if err != nil {
 		t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
@@ -1333,9 +1333,9 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_08(t *testing.T) {
 
 	letterCode := "p"
 
-	expected := OsFilePermissionCode(FilePermCode.ModeNamedPipe())
+	expected := OsFilePermissionCode(OsFilePermCode.ModeNamedPipe())
 
-	fPerm, err := FilePermCode.GetNewFromLetterCode(letterCode)
+	fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
 	if err != nil {
 		t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
@@ -1361,9 +1361,9 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_09(t *testing.T) {
 
 	letterCode := "S"
 
-	expected := OsFilePermissionCode(FilePermCode.ModeSocket())
+	expected := OsFilePermissionCode(OsFilePermCode.ModeSocket())
 
-	fPerm, err := FilePermCode.GetNewFromLetterCode(letterCode)
+	fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
 	if err != nil {
 		t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
@@ -1389,9 +1389,9 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_10(t *testing.T) {
 
 	letterCode := "u"
 
-	expected := OsFilePermissionCode(FilePermCode.ModeSetuid())
+	expected := OsFilePermissionCode(OsFilePermCode.ModeSetuid())
 
-	fPerm, err := FilePermCode.GetNewFromLetterCode(letterCode)
+	fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
 	if err != nil {
 		t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
@@ -1417,9 +1417,9 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_11(t *testing.T) {
 
 	letterCode := "g"
 
-	expected := OsFilePermissionCode(FilePermCode.ModeSetgid())
+	expected := OsFilePermissionCode(OsFilePermCode.ModeSetgid())
 
-	fPerm, err := FilePermCode.GetNewFromLetterCode(letterCode)
+	fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
 	if err != nil {
 		t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
@@ -1445,9 +1445,9 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_12(t *testing.T) {
 
 	letterCode := "c"
 
-	expected := OsFilePermissionCode(FilePermCode.ModeCharDevice())
+	expected := OsFilePermissionCode(OsFilePermCode.ModeCharDevice())
 
-	fPerm, err := FilePermCode.GetNewFromLetterCode(letterCode)
+	fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
 	if err != nil {
 		t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
@@ -1473,9 +1473,9 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_13(t *testing.T) {
 
 	letterCode := "t"
 
-	expected := OsFilePermissionCode(FilePermCode.ModeSticky())
+	expected := OsFilePermissionCode(OsFilePermCode.ModeSticky())
 
-	fPerm, err := FilePermCode.GetNewFromLetterCode(letterCode)
+	fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
 	if err != nil {
 		t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
@@ -1501,9 +1501,9 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_14(t *testing.T) {
 
 	letterCode := "?"
 
-	expected := OsFilePermissionCode(FilePermCode.ModeIrregular())
+	expected := OsFilePermissionCode(OsFilePermCode.ModeIrregular())
 
-	fPerm, err := FilePermCode.GetNewFromLetterCode(letterCode)
+	fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
 	if err != nil {
 		t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
@@ -1525,9 +1525,9 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_14(t *testing.T) {
 
 func TestOsFilePermissionCode_Value_01(t *testing.T) {
 
-	expected := OsFilePermissionCode(FilePermCode.ModeNone())
+	expected := OsFilePermissionCode(OsFilePermCode.ModeNone())
 
-	fPerm := FilePermCode.ModeNone()
+	fPerm := OsFilePermCode.ModeNone()
 
 	if expected.Value() != fPerm {
 		t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
@@ -1541,9 +1541,9 @@ func TestOsFilePermissionCode_Value_02(t *testing.T) {
 
 	x := OsFilePermissionCode(99)
 
-	x = OsFilePermissionCode(FilePermCode.ModeDir())
+	x = OsFilePermissionCode(OsFilePermCode.ModeDir())
 
-	fPerm := FilePermCode.ModeDir()
+	fPerm := OsFilePermCode.ModeDir()
 
 	if x.Value() != fPerm {
 		t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
@@ -1556,9 +1556,9 @@ func TestOsFilePermissionCode_Value_03(t *testing.T) {
 
 	x := OsFilePermissionCode(99)
 
-	x = OsFilePermissionCode(FilePermCode.ModeAppend())
+	x = OsFilePermissionCode(OsFilePermCode.ModeAppend())
 
-	fPerm := OsFilePermissionCode(FilePermCode.ModeAppend())
+	fPerm := OsFilePermissionCode(OsFilePermCode.ModeAppend())
 
 	if x != fPerm {
 		t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
