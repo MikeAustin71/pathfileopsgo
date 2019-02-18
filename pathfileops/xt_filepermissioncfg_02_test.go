@@ -1,12 +1,10 @@
 package pathfileops
 
-import (
-	"testing"
-)
+import "testing"
 
-func TestFilePermissionConfig_SetFileModeByComponents_01(t *testing.T) {
+func TestFilePermissionConfig_NewByComponents_01(t *testing.T) {
 
-	entryType, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeNone())
+	entryType, err := OsFilePermissionCode(0).GetNewFromFileMode(OsFilePermCode.ModeNone())
 
 	if err != nil {
 		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode("+
@@ -17,13 +15,11 @@ func TestFilePermissionConfig_SetFileModeByComponents_01(t *testing.T) {
 	expectedPermissionTxt := "-rwxrwxrwx"
 	permissionStr := "-rwxrwxrwx"
 
-	fPermCfg := FilePermissionConfig{}
-
-	err = fPermCfg.SetFileModeByComponents(entryType, permissionStr)
+	fPermCfg, err := FilePermissionConfig{}.NewByComponents(entryType, permissionStr)
 
 	if err != nil {
-		t.Errorf("Error returned by fPermCfg.SetFileModeByComponents(entryType, permissionStr). "+
-			"entrType='%s' permissionStr='%s' Error='%v' ",
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByComponents(entryType, "+
+			"permissionStr). entrType='%s' permissionStr='%s' Error='%v' ",
 			entryType.String(), permissionStr, err.Error())
 	}
 
@@ -42,9 +38,9 @@ func TestFilePermissionConfig_SetFileModeByComponents_01(t *testing.T) {
 
 }
 
-func TestFilePermissionConfig_SetFileModeByComponents_02(t *testing.T) {
+func TestFilePermissionConfig_NewByComponents_02(t *testing.T) {
 
-	entryType, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeDir())
+	entryType, err := OsFilePermissionCode(0).GetNewFromFileMode(OsFilePermCode.ModeDir())
 
 	if err != nil {
 		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode("+
@@ -55,13 +51,11 @@ func TestFilePermissionConfig_SetFileModeByComponents_02(t *testing.T) {
 	expectedPermissionTxt := "drwxrwxrwx"
 	permissionStr := "rwxrwxrwx"
 
-	fPermCfg := FilePermissionConfig{}
-
-	err = fPermCfg.SetFileModeByComponents(entryType, permissionStr)
+	fPermCfg, err := FilePermissionConfig{}.NewByComponents(entryType, permissionStr)
 
 	if err != nil {
-		t.Errorf("Error returned by fPermCfg.SetFileModeByComponents(entryType, permissionStr). "+
-			"entrType='%s' permissionStr='%s' Error='%v' ",
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByComponents(entryType, "+
+			"permissionStr). entrType='%s' permissionStr='%s' Error='%v' ",
 			entryType.String(), permissionStr, err.Error())
 	}
 
@@ -80,10 +74,10 @@ func TestFilePermissionConfig_SetFileModeByComponents_02(t *testing.T) {
 
 }
 
-func TestFilePermissionConfig_SetFileModeByComponents_03(t *testing.T) {
+func TestFilePermissionConfig_NewByComponents_03(t *testing.T) {
 
 	//  ModeSetuid()      os.ModeSetuid         "u" setuid
-	entryType, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeSetuid())
+	entryType, err := OsFilePermissionCode(0).GetNewFromFileMode(OsFilePermCode.ModeSetuid())
 
 	if err != nil {
 		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode("+
@@ -94,13 +88,11 @@ func TestFilePermissionConfig_SetFileModeByComponents_03(t *testing.T) {
 	expectedPermissionTxt := "urw-rw-rw-"
 	permissionStr := "rw-rw-rw-"
 
-	fPermCfg := FilePermissionConfig{}
-
-	err = fPermCfg.SetFileModeByComponents(entryType, permissionStr)
+	fPermCfg, err := FilePermissionConfig{}.NewByComponents(entryType, permissionStr)
 
 	if err != nil {
-		t.Errorf("Error returned by fPermCfg.SetFileModeByComponents(entryType, permissionStr). "+
-			"entrType='%s' permissionStr='%s' Error='%v' ",
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByComponents(entryType, "+
+			"permissionStr). entrType='%s' permissionStr='%s' Error='%v' ",
 			entryType.String(), permissionStr, err.Error())
 	}
 
@@ -119,614 +111,18 @@ func TestFilePermissionConfig_SetFileModeByComponents_03(t *testing.T) {
 
 }
 
-func TestFilePermissionConfig_SetFileModeByComponents_04(t *testing.T) {
-
-	entryType, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeNone())
-
-	if err != nil {
-		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode("+
-			"OsFilePermCode.ModeNone()). "+
-			"Error='%v' ", err.Error())
-	}
-
-	expectedPermissionTxt := "-rw-rw-rw-"
-	permissionStr := "rw-rw-rw-"
-
-	fPermCfg := FilePermissionConfig{}
-
-	err = fPermCfg.SetFileModeByComponents(entryType, permissionStr)
-
-	if err != nil {
-		t.Errorf("Error returned by fPermCfg.SetFileModeByComponents(entryType, permissionStr). "+
-			"entrType='%s' permissionStr='%s' Error='%v' ",
-			entryType.String(), permissionStr, err.Error())
-	}
-
-	actualPermissionTxt, err := fPermCfg.GetPermissionTextCode()
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if expectedPermissionTxt != actualPermissionTxt {
-		t.Errorf("Error: Expected Permission Text Code='%v'. Instead, "+
-			"Actual Permission Text Code='%v' ",
-			expectedPermissionTxt, actualPermissionTxt)
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByComponents_05(t *testing.T) {
-
-	entryType, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeNone())
-
-	if err != nil {
-		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode("+
-			"OsFilePermCode.ModeNone()). "+
-			"Error='%v' ", err.Error())
-	}
-
-	expectedPermissionTxt := "-r--r--r--"
-	permissionStr := "r--r--r--"
-
-	fPermCfg := FilePermissionConfig{}
-
-	err = fPermCfg.SetFileModeByComponents(entryType, permissionStr)
-
-	if err != nil {
-		t.Errorf("Error returned by fPermCfg.SetFileModeByComponents(entryType, permissionStr). "+
-			"entrType='%s' permissionStr='%s' Error='%v' ",
-			entryType.String(), permissionStr, err.Error())
-	}
-
-	actualPermissionTxt, err := fPermCfg.GetPermissionTextCode()
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if expectedPermissionTxt != actualPermissionTxt {
-		t.Errorf("Error: Expected Permission Text Code='%v'. Instead, "+
-			"Actual Permission Text Code='%v' ",
-			expectedPermissionTxt, actualPermissionTxt)
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByComponents_06(t *testing.T) {
-
-	entryType, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeNone())
-
-	if err != nil {
-		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode("+
-			"OsFilePermCode.ModeNone()). "+
-			"Error='%v' ", err.Error())
-	}
-
-	expectedPermissionTxt := "--w--w--w-"
-	permissionStr := "-w--w--w-"
-
-	fPermCfg := FilePermissionConfig{}
-
-	err = fPermCfg.SetFileModeByComponents(entryType, permissionStr)
-
-	if err != nil {
-		t.Errorf("Error returned by fPermCfg.SetFileModeByComponents(entryType, permissionStr). "+
-			"entrType='%s' permissionStr='%s' Error='%v' ",
-			entryType.String(), permissionStr, err.Error())
-	}
-
-	actualPermissionTxt, err := fPermCfg.GetPermissionTextCode()
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if expectedPermissionTxt != actualPermissionTxt {
-		t.Errorf("Error: Expected Permission Text Code='%v'. Instead, "+
-			"Actual Permission Text Code='%v' ",
-			expectedPermissionTxt, actualPermissionTxt)
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByComponents_07(t *testing.T) {
-
-	entryType, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeDir())
-
-	if err != nil {
-		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode("+
-			"OsFilePermCode.ModeDir()). "+
-			"Error='%v' ", err.Error())
-	}
-
-	expectedPermissionTxt := "drw-rw-rw-"
-	permissionStr := "rw-rw-rw-"
-
-	fPermCfg := FilePermissionConfig{}
-
-	err = fPermCfg.SetFileModeByComponents(entryType, permissionStr)
-
-	if err != nil {
-		t.Errorf("Error returned by fPermCfg.SetFileModeByComponents(entryType, permissionStr). "+
-			"entrType='%s' permissionStr='%s' Error='%v' ",
-			entryType.String(), permissionStr, err.Error())
-	}
-
-	actualPermissionTxt, err := fPermCfg.GetPermissionTextCode()
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if expectedPermissionTxt != actualPermissionTxt {
-		t.Errorf("Error: Expected Permission Text Code='%v'. Instead, "+
-			"Actual Permission Text Code='%v' ",
-			expectedPermissionTxt, actualPermissionTxt)
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByComponents_08(t *testing.T) {
-
-	entryType, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeDir())
-
-	if err != nil {
-		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode("+
-			"OsFilePermCode.ModeDir()). "+
-			"Error='%v' ", err.Error())
-	}
-
-	expectedPermissionTxt := "dr--r--r--"
-	permissionStr := "r--r--r--"
-
-	fPermCfg := FilePermissionConfig{}
-
-	err = fPermCfg.SetFileModeByComponents(entryType, permissionStr)
-
-	if err != nil {
-		t.Errorf("Error returned by fPermCfg.SetFileModeByComponents(entryType, permissionStr). "+
-			"entrType='%s' permissionStr='%s' Error='%v' ",
-			entryType.String(), permissionStr, err.Error())
-	}
-
-	actualPermissionTxt, err := fPermCfg.GetPermissionTextCode()
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if expectedPermissionTxt != actualPermissionTxt {
-		t.Errorf("Error: Expected Permission Text Code='%v'. Instead, "+
-			"Actual Permission Text Code='%v' ",
-			expectedPermissionTxt, actualPermissionTxt)
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByComponents_09(t *testing.T) {
-
-	entryType, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeDir())
-
-	if err != nil {
-		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode("+
-			"OsFilePermCode.ModeDir()). "+
-			"Error='%v' ", err.Error())
-	}
-
-	expectedPermissionTxt := "d-w--w--w-"
-	permissionStr := "-w--w--w-"
-
-	fPermCfg := FilePermissionConfig{}
-
-	err = fPermCfg.SetFileModeByComponents(entryType, permissionStr)
-
-	if err != nil {
-		t.Errorf("Error returned by fPermCfg.SetFileModeByComponents(entryType, permissionStr). "+
-			"entrType='%s' permissionStr='%s' Error='%v' ",
-			entryType.String(), permissionStr, err.Error())
-	}
-
-	actualPermissionTxt, err := fPermCfg.GetPermissionTextCode()
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if expectedPermissionTxt != actualPermissionTxt {
-		t.Errorf("Error: Expected Permission Text Code='%v'. Instead, "+
-			"Actual Permission Text Code='%v' ",
-			expectedPermissionTxt, actualPermissionTxt)
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByComponents_10(t *testing.T) {
+func TestFilePermissionConfig_NewByComponents_04(t *testing.T) {
 
 	// Bad Entry Type Code
 	entryType := OsFilePermissionCode(999)
+
 	permissionStr := "rw-rw-rw-"
 
-	fPermCfg := FilePermissionConfig{}
-
-	err := fPermCfg.SetFileModeByComponents(entryType, permissionStr)
+	_, err := FilePermissionConfig{}.NewByComponents(entryType, permissionStr)
 
 	if err == nil {
 		t.Error("Expected error return from bad entry type code 999. " +
 			"However, NO ERROR WAS RETURNED! ")
-	}
-}
-
-func TestFilePermissionConfig_SetFileModeByComponents_11(t *testing.T) {
-
-	entryType := OsFilePermissionCode(OsFilePermCode.ModeNone())
-	// Bad Permission String
-	permissionStr := "rZ-rz-rz-"
-
-	fPermCfg := FilePermissionConfig{}
-
-	err := fPermCfg.SetFileModeByComponents(entryType, permissionStr)
-
-	if err == nil {
-		t.Error("Expected error return from bad permission string. " +
-			"However, NO ERROR WAS RETURNED! ")
-	}
-}
-
-func TestFilePermissionConfig_SetFileModeByTextCode_01(t *testing.T) {
-
-	textCode := "-rwxrwxrwx"
-
-	fpCfg := FilePermissionConfig{}
-
-	err := fpCfg.SetFileModeByTextCode(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
-			"Error='%v' ", err.Error())
-	}
-
-	fileMode, err := fpCfg.GetFileMode()
-
-	if textCode != fileMode.String() {
-		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
-			textCode, fileMode.String())
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByTextCode_02(t *testing.T) {
-
-	textCode := "drwxrwxrwx"
-
-	fpCfg := FilePermissionConfig{}
-
-	err := fpCfg.SetFileModeByTextCode(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
-			"Error='%v' ", err.Error())
-	}
-
-	fileMode, err := fpCfg.GetFileMode()
-
-	if textCode != fileMode.String() {
-		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
-			textCode, fileMode.String())
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByTextCode_03(t *testing.T) {
-
-	textCode := "-rw-rw-rw-"
-
-	fpCfg := FilePermissionConfig{}
-
-	err := fpCfg.SetFileModeByTextCode(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
-			"Error='%v' ", err.Error())
-	}
-
-	fileMode, err := fpCfg.GetFileMode()
-
-	if textCode != fileMode.String() {
-		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
-			textCode, fileMode.String())
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByTextCode_04(t *testing.T) {
-
-	textCode := "drw-rw-rw-"
-
-	fpCfg := FilePermissionConfig{}
-
-	err := fpCfg.SetFileModeByTextCode(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
-			"Error='%v' ", err.Error())
-	}
-
-	fileMode, err := fpCfg.GetFileMode()
-
-	if textCode != fileMode.String() {
-		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
-			textCode, fileMode.String())
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByTextCode_05(t *testing.T) {
-
-	textCode := "-rwx------"
-
-	fpCfg := FilePermissionConfig{}
-
-	err := fpCfg.SetFileModeByTextCode(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
-			"Error='%v' ", err.Error())
-	}
-
-	fileMode, err := fpCfg.GetFileMode()
-
-	if textCode != fileMode.String() {
-		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
-			textCode, fileMode.String())
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByTextCode_06(t *testing.T) {
-
-	textCode := "-rwxrwx---"
-
-	fpCfg := FilePermissionConfig{}
-
-	err := fpCfg.SetFileModeByTextCode(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
-			"Error='%v' ", err.Error())
-	}
-
-	fileMode, err := fpCfg.GetFileMode()
-
-	if textCode != fileMode.String() {
-		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
-			textCode, fileMode.String())
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByTextCode_07(t *testing.T) {
-
-	textCode := "---x--x--x"
-
-	fpCfg := FilePermissionConfig{}
-
-	err := fpCfg.SetFileModeByTextCode(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
-			"Error='%v' ", err.Error())
-	}
-
-	fileMode, err := fpCfg.GetFileMode()
-
-	if textCode != fileMode.String() {
-		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
-			textCode, fileMode.String())
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByTextCode_08(t *testing.T) {
-
-	textCode := "--w--w--w-"
-
-	fpCfg := FilePermissionConfig{}
-
-	err := fpCfg.SetFileModeByTextCode(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
-			"Error='%v' ", err.Error())
-	}
-
-	fileMode, err := fpCfg.GetFileMode()
-
-	if textCode != fileMode.String() {
-		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
-			textCode, fileMode.String())
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByTextCode_09(t *testing.T) {
-
-	textCode := "--wx-wx-wx"
-
-	fpCfg := FilePermissionConfig{}
-
-	err := fpCfg.SetFileModeByTextCode(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
-			"Error='%v' ", err.Error())
-	}
-
-	fileMode, err := fpCfg.GetFileMode()
-
-	if textCode != fileMode.String() {
-		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
-			textCode, fileMode.String())
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByTextCode_10(t *testing.T) {
-
-	textCode := "-r--r--r--"
-
-	fpCfg := FilePermissionConfig{}
-
-	err := fpCfg.SetFileModeByTextCode(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
-			"Error='%v' ", err.Error())
-	}
-
-	fileMode, err := fpCfg.GetFileMode()
-
-	if textCode != fileMode.String() {
-		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
-			textCode, fileMode.String())
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByTextCode_11(t *testing.T) {
-
-	textCode := "-r-xr-xr-x"
-
-	fpCfg := FilePermissionConfig{}
-
-	err := fpCfg.SetFileModeByTextCode(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
-			"Error='%v' ", err.Error())
-	}
-
-	fileMode, err := fpCfg.GetFileMode()
-
-	if textCode != fileMode.String() {
-		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
-			textCode, fileMode.String())
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByTextCode_12(t *testing.T) {
-
-	textCode := "-rw-rw-rw-"
-
-	fpCfg := FilePermissionConfig{}
-
-	err := fpCfg.SetFileModeByTextCode(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
-			"Error='%v' ", err.Error())
-	}
-
-	fileMode, err := fpCfg.GetFileMode()
-
-	if textCode != fileMode.String() {
-		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
-			textCode, fileMode.String())
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByTextCode_13(t *testing.T) {
-
-	textCode := "-rwxr-----"
-
-	fpCfg := FilePermissionConfig{}
-
-	err := fpCfg.SetFileModeByTextCode(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
-			"Error='%v' ", err.Error())
-	}
-
-	fileMode, err := fpCfg.GetFileMode()
-
-	if textCode != fileMode.String() {
-		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
-			textCode, fileMode.String())
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByTextCode_14(t *testing.T) {
-
-	textCode := "drw-rw-rw-"
-
-	fpCfg := FilePermissionConfig{}
-
-	err := fpCfg.SetFileModeByTextCode(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
-			"Error='%v' ", err.Error())
-	}
-
-	fileMode, err := fpCfg.GetFileMode()
-
-	if textCode != fileMode.String() {
-		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
-			textCode, fileMode.String())
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByTextCode_15(t *testing.T) {
-
-	textCode := "----------"
-
-	fpCfg := FilePermissionConfig{}
-
-	err := fpCfg.SetFileModeByTextCode(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
-			"Error='%v' ", err.Error())
-	}
-
-	fileMode, err := fpCfg.GetFileMode()
-
-	if textCode != fileMode.String() {
-		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
-			textCode, fileMode.String())
-	}
-
-}
-
-func TestFilePermissionConfig_SetFileModeByTextCode_16(t *testing.T) {
-
-	textCode := "d---------"
-
-	fpCfg := FilePermissionConfig{}
-
-	err := fpCfg.SetFileModeByTextCode(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
-			"Error='%v' ", err.Error())
-	}
-
-	fileMode, err := fpCfg.GetFileMode()
-
-	if textCode != fileMode.String() {
-		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
-			textCode, fileMode.String())
 	}
 
 }

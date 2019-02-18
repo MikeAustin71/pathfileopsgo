@@ -485,6 +485,214 @@ func (fPerm *FilePermissionConfig) Equal(fPerm2 FilePermissionConfig) bool {
 	return true
 }
 
+// GetIsDir - Return a bool indicating whether the encapsulated FileMode is a directory
+// or not. A returned value of 'true' signals that the FileMode represents a directory.
+//
+// This method serves as a wrapper for os.FileMode.IsDir()
+//
+func (fPerm *FilePermissionConfig) GetIsDir() (bool, error) {
+
+	ePrefix := "FilePermissionConfig.GetIsDir() "
+
+	if !fPerm.isInitialized {
+		return false,
+			errors.New(ePrefix +
+				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
+	}
+
+	return fPerm.fileMode.IsDir(), nil
+}
+
+// GetEntryTypeComponent - Returns the 'Entry Type' component of the current os.FileMode
+// permissions value. The 'Entry Type' is the first character in a 10-character permissions
+// text string. For the majority of applications, the leading character in a 10-character
+// permissions text string is either a hyphen ('-') indicating the subject is a file - or -
+// a 'd' indicating the subject is a directory. For a file, the File Mode Entry Type value is
+// zero ('0').  For a directory, the File Mode Entry Type value is equal to 'os.ModDir'.
+//
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+// OsFilePermissionCode - The OsFilePermissionCode type is set to the value of
+//                        the os.FileMode constant representing the Entry Type
+//                        associated with the permission value encapsulated by
+//                        this FilePermissionConfig instance.
+//
+func (fPerm *FilePermissionConfig) GetEntryTypeComponent() (OsFilePermissionCode, error) {
+
+	ePrefix := "FilePermissionConfig.GetEntryTypeComponent() "
+
+	if !fPerm.isInitialized {
+		return OsFilePermissionCode(0),
+			errors.New(ePrefix +
+				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
+	}
+
+	mask := os.FileMode(0777)
+
+	for idx := range mOsPermissionCodeToString {
+
+		fMode := fPerm.fileMode &^ mask
+
+		if fMode == idx {
+
+			return OsFilePermissionCode(idx), nil
+
+		}
+
+	}
+
+	return OsFilePermissionCode(0),
+		fmt.Errorf(ePrefix + "The Entry Type for this FilePermissionConfig instance is INVALID!")
+}
+
+// GetIsRegular - Return a bool indicating whether the encapsulated FileMode is a file
+// or not. A returned value of 'true' signals that the FileMode represents a file.
+//
+// This method serves as a wrapper for os.FileMode.IsRegular()
+func (fPerm *FilePermissionConfig) GetIsRegular() (bool, error) {
+
+	ePrefix := "FilePermissionConfig.GetIsRegular() "
+
+	if !fPerm.isInitialized {
+		return false,
+			errors.New(ePrefix +
+				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
+	}
+
+	return fPerm.fileMode.IsRegular(), nil
+}
+
+// GetPermissionBits - Return a FileMode containing only the least significant 9-bits of
+// the encapsulated FileMode representing the unix permission bits.
+//
+// The actual string returned will contains 10-characters, have the first character
+// (index=0) will always be a hyphen ("-"). The hyphen ("-") generally indicates a
+// file, however it should be ignored in this case. The only valid a reliable unix
+// permission bits are in the last 9-characters (indexes 1-8). When evaluating permission
+// bits returned by this method always ignore the first character which will always
+// be a hyphen ("-").
+//
+// To acquire the full and valid 10-digit permission string use method
+// FilePermissionConfig.GetPermissionTextCode() documented below.
+//
+func (fPerm *FilePermissionConfig) GetPermissionBits() (os.FileMode, error) {
+
+	ePrefix := "FilePermissionConfig.GetPermissionBits() "
+
+	if !fPerm.isInitialized {
+		return os.FileMode(0),
+			errors.New(ePrefix +
+				"Error: This FilePermissionConfig instance has NOT been initialized. " +
+				"The FileMode is INVALID!")
+	}
+
+	return fPerm.fileMode.Perm(), nil
+}
+
+// GetPermissionTextCode - Returns the file mode permissions expressed as
+// a text string. The returned string includes the full and complete
+// 10-character permission code.
+//
+func (fPerm *FilePermissionConfig) GetPermissionTextCode() (string, error) {
+	ePrefix := "FilePermissionConfig.GetPermissionBits() "
+
+	if !fPerm.isInitialized {
+		return "",
+			errors.New(ePrefix +
+				"Error: This FilePermissionConfig instance has NOT been initialized. " +
+				"The FileMode is INVALID!")
+	}
+
+	return fPerm.fileMode.String(), nil
+}
+
+// GetPermissionComponents - Returns the two components of a permission configuration.
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+//  entryType OsFilePermissionCode - The Entry Type or os mode value. Generally this will either be
+//                                   OsFilePermissionCode(0).ModeNone() for files
+//                                                   or
+//                                   OsFilePermissionCode(0).ModeDir() for directories.
+//
+//                                   For more information see method FilePermissionConfig.GetEntryTypeComponent()
+//
+//  permissionBits  os.FileMode - The 9-least significant bits designate the unix
+//                                permission bits.
+//
+//                                Be advised that if you call string on this result
+//                                (permissionBits.String()) you will receive a 10-character
+//                                string the first character of which is always a hyphen ("-").
+//                                Disregard this first character, only the last 9-characters of
+//                                the string are valid permission descriptors. For more information
+//                                see method FilePermissionConfig.GetPermissionBits()
+//
+//                                To create a full and complete permission code, permissionBits must
+//                                be or'd with a valid Entry Type, os mode value.
+//
+func (fPerm *FilePermissionConfig) GetPermissionComponents() (
+	osMode OsFilePermissionCode, permissionBits os.FileMode, err error) {
+
+	osMode = OsFilePermissionCode(OsFilePermCode.ModeNone())
+
+	permissionBits = os.FileMode(0)
+
+	err = nil
+
+	ePrefix := "FilePermissionConfig.GetPermissionComponents() "
+
+	if !fPerm.isInitialized {
+		err =
+			errors.New(ePrefix +
+				"Error: This FilePermissionConfig instance has NOT been initialized. " +
+				"The FileMode is INVALID!")
+
+		return osMode, permissionBits, err
+	}
+
+	var err2 error
+
+	osMode, err2 = fPerm.GetEntryTypeComponent()
+
+	if err2 != nil {
+		err = fmt.Errorf(ePrefix+"%v", err2.Error())
+		return osMode, permissionBits, err
+	}
+
+	permissionBits, err2 = fPerm.GetPermissionBits()
+
+	if err2 != nil {
+		err = fmt.Errorf(ePrefix+"%v", err2.Error())
+		return osMode, permissionBits, err
+	}
+
+	err = nil
+
+	return osMode, permissionBits, err
+}
+
+// IsValid - If the current FilePermissionConfig instance is judged to be
+// 'Invalid', this method will return an error.
+//
+// Otherwise, if the current instance of FilePermissionConfig evaluates as
+// 'Valid', the method will return 'nil'.
+//
+func (fPerm *FilePermissionConfig) IsValid() error {
+
+	if !fPerm.isInitialized {
+		ePrefix := "FilePermissionConfig.IsValid() "
+		return errors.New(ePrefix + "Error: This FilePermissionConfig instance has NOT been " +
+			"initialized and is INVALID!")
+	}
+
+	return nil
+}
+
 // New - Creates and returns a new FilePermissionConfig instance initialized with a
 // an os.FileMode value generated from the input parameter 'modeStr'.
 //
@@ -752,214 +960,6 @@ func (fPerm *FilePermissionConfig) GetFileMode() (os.FileMode, error) {
 	}
 
 	return fPerm.fileMode, nil
-}
-
-// GetIsDir - Return a bool indicating whether the encapsulated FileMode is a directory
-// or not. A returned value of 'true' signals that the FileMode represents a directory.
-//
-// This method serves as a wrapper for os.FileMode.IsDir()
-//
-func (fPerm *FilePermissionConfig) GetIsDir() (bool, error) {
-
-	ePrefix := "FilePermissionConfig.GetIsDir() "
-
-	if !fPerm.isInitialized {
-		return false,
-			errors.New(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
-	}
-
-	return fPerm.fileMode.IsDir(), nil
-}
-
-// GetEntryTypeComponent - Returns the 'Entry Type' component of the current os.FileMode
-// permissions value. The 'Entry Type' is the first character in a 10-character permissions
-// text string. For the majority of applications, the leading character in a 10-character
-// permissions text string is either a hyphen ('-') indicating the subject is a file - or -
-// a 'd' indicating the subject is a directory. For a file, the File Mode Entry Type value is
-// zero ('0').  For a directory, the File Mode Entry Type value is equal to 'os.ModDir'.
-//
-//
-// ------------------------------------------------------------------------
-//
-// Return Values:
-//
-// OsFilePermissionCode - The OsFilePermissionCode type is set to the value of
-//                        the os.FileMode constant representing the Entry Type
-//                        associated with the permission value encapsulated by
-//                        this FilePermissionConfig instance.
-//
-func (fPerm *FilePermissionConfig) GetEntryTypeComponent() (OsFilePermissionCode, error) {
-
-	ePrefix := "FilePermissionConfig.GetEntryTypeComponent() "
-
-	if !fPerm.isInitialized {
-		return OsFilePermissionCode(0),
-			errors.New(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
-	}
-
-	mask := os.FileMode(0777)
-
-	for idx := range mOsPermissionCodeToString {
-
-		fMode := fPerm.fileMode &^ mask
-
-		if fMode == idx {
-
-			return OsFilePermissionCode(idx), nil
-
-		}
-
-	}
-
-	return OsFilePermissionCode(0),
-		fmt.Errorf(ePrefix + "The Entry Type for this FilePermissionConfig instance is INVALID!")
-}
-
-// GetIsRegular - Return a bool indicating whether the encapsulated FileMode is a file
-// or not. A returned value of 'true' signals that the FileMode represents a file.
-//
-// This method serves as a wrapper for os.FileMode.IsRegular()
-func (fPerm *FilePermissionConfig) GetIsRegular() (bool, error) {
-
-	ePrefix := "FilePermissionConfig.GetIsRegular() "
-
-	if !fPerm.isInitialized {
-		return false,
-			errors.New(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
-	}
-
-	return fPerm.fileMode.IsRegular(), nil
-}
-
-// GetPermissionBits - Return a FileMode containing only the least significant 9-bits of
-// the encapsulated FileMode representing the unix permission bits.
-//
-// The actual string returned will contains 10-characters, have the first character
-// (index=0) will always be a hyphen ("-"). The hyphen ("-") generally indicates a
-// file, however it should be ignored in this case. The only valid a reliable unix
-// permission bits are in the last 9-characters (indexes 1-8). When evaluating permission
-// bits returned by this method always ignore the first character which will always
-// be a hyphen ("-").
-//
-// To acquire the full and valid 10-digit permission string use method
-// FilePermissionConfig.GetPermissionTextCode() documented below.
-//
-func (fPerm *FilePermissionConfig) GetPermissionBits() (os.FileMode, error) {
-
-	ePrefix := "FilePermissionConfig.GetPermissionBits() "
-
-	if !fPerm.isInitialized {
-		return os.FileMode(0),
-			errors.New(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT been initialized. " +
-				"The FileMode is INVALID!")
-	}
-
-	return fPerm.fileMode.Perm(), nil
-}
-
-// GetPermissionTextCode - Returns the file mode permissions expressed as
-// a text string. The returned string includes the full and complete
-// 10-character permission code.
-//
-func (fPerm *FilePermissionConfig) GetPermissionTextCode() (string, error) {
-	ePrefix := "FilePermissionConfig.GetPermissionBits() "
-
-	if !fPerm.isInitialized {
-		return "",
-			errors.New(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT been initialized. " +
-				"The FileMode is INVALID!")
-	}
-
-	return fPerm.fileMode.String(), nil
-}
-
-// GetPermissionComponents - Returns the two components of a permission configuration.
-//
-// ------------------------------------------------------------------------
-//
-// Return Values:
-//
-//  entryType OsFilePermissionCode - The Entry Type or os mode value. Generally this will either be
-//                                   OsFilePermissionCode(0).ModeNone() for files
-//                                                   or
-//                                   OsFilePermissionCode(0).ModeDir() for directories.
-//
-//                                   For more information see method FilePermissionConfig.GetEntryTypeComponent()
-//
-//  permissionBits  os.FileMode - The 9-least significant bits designate the unix
-//                                permission bits.
-//
-//                                Be advised that if you call string on this result
-//                                (permissionBits.String()) you will receive a 10-character
-//                                string the first character of which is always a hyphen ("-").
-//                                Disregard this first character, only the last 9-characters of
-//                                the string are valid permission descriptors. For more information
-//                                see method FilePermissionConfig.GetPermissionBits()
-//
-//                                To create a full and complete permission code, permissionBits must
-//                                be or'd with a valid Entry Type, os mode value.
-//
-func (fPerm *FilePermissionConfig) GetPermissionComponents() (
-	osMode OsFilePermissionCode, permissionBits os.FileMode, err error) {
-
-	osMode = OsFilePermissionCode(OsFilePermCode.ModeNone())
-
-	permissionBits = os.FileMode(0)
-
-	err = nil
-
-	ePrefix := "FilePermissionConfig.GetPermissionComponents() "
-
-	if !fPerm.isInitialized {
-		err =
-			errors.New(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT been initialized. " +
-				"The FileMode is INVALID!")
-
-		return osMode, permissionBits, err
-	}
-
-	var err2 error
-
-	osMode, err2 = fPerm.GetEntryTypeComponent()
-
-	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"%v", err2.Error())
-		return osMode, permissionBits, err
-	}
-
-	permissionBits, err2 = fPerm.GetPermissionBits()
-
-	if err2 != nil {
-		err = fmt.Errorf(ePrefix+"%v", err2.Error())
-		return osMode, permissionBits, err
-	}
-
-	err = nil
-
-	return osMode, permissionBits, err
-}
-
-// IsValid - If the current FilePermissionConfig instance is judged to be
-// 'Invalid', this method will return an error.
-//
-// Otherwise, if the current instance of FilePermissionConfig evaluates as
-// 'Valid', the method will return 'nil'.
-//
-func (fPerm *FilePermissionConfig) IsValid() error {
-
-	if !fPerm.isInitialized {
-		ePrefix := "FilePermissionConfig.IsValid() "
-		return errors.New(ePrefix + "Error: This FilePermissionConfig instance has NOT been " +
-			"initialized and is INVALID!")
-	}
-
-	return nil
 }
 
 // SetFileModeByComponents - Sets the value of the current FilePermissionConfig

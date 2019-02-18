@@ -2,6 +2,7 @@ package pathfileops
 
 import (
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -370,6 +371,251 @@ func TestFilePermissionConfig_CopyOut_10(t *testing.T) {
 	if !fpCfg.Equal(fpCfg2) {
 		t.Error("Error: Expected fpCfg to EQUAL fpCfg2. THEY ARE NOT EQUAL!")
 	}
+}
+
+func TestFilePermissionConfig_Empty_01(t *testing.T) {
+
+	testEmpty := FilePermissionConfig{}
+
+	textCode := "drwxrwxrwx"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	actualTextCode, err := fpCfg.GetPermissionTextCode()
+
+	if err != nil {
+		t.Errorf("Error returned by #1 fpCfg.GetPermissionTextCode(). "+
+			"Error='%v'", err.Error())
+	}
+
+	if textCode != actualTextCode {
+		t.Errorf("Error: Expected text code ='%v'. Instead, text code='%v'. ",
+			textCode, actualTextCode)
+	}
+
+	fpCfg.Empty()
+
+	_, err = fpCfg.GetPermissionTextCode()
+
+	if err == nil {
+		t.Error("Expected an Uninitialized Error to be returned by #2 " +
+			"fpCfg.GetPermissionTextCode(). NO ERROR WAS RETURNED!!!")
+	}
+
+	if !testEmpty.Equal(fpCfg) {
+		t.Error("Error: Expected testEmpty to EQUAL fpCfg. THEY ARE NOT EQUAL!")
+	}
+
+	if fpCfg.isInitialized == true {
+		t.Error("Expected fpCfg.isInitialized==false. Instead, fpCfg.isInitialized==true")
+	}
+
+	if fpCfg.fileMode != 0 {
+		t.Errorf("Expected fpCfg.fileMode=='0'. Instead, fpCfg.fileMode octal value =='%v' ",
+			strconv.FormatInt(int64(fpCfg.fileMode), 8))
+	}
+
+}
+
+func TestFilePermissionConfig_Empty_02(t *testing.T) {
+
+	testEmpty := FilePermissionConfig{}
+
+	textCode := "-rwxrwxrwx"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	actualTextCode, err := fpCfg.GetPermissionTextCode()
+
+	if err != nil {
+		t.Errorf("Error returned by #1 fpCfg.GetPermissionTextCode(). "+
+			"Error='%v'", err.Error())
+	}
+
+	if textCode != actualTextCode {
+		t.Errorf("Error: Expected text code ='%v'. Instead, text code='%v'. ",
+			textCode, actualTextCode)
+	}
+
+	fpCfg.Empty()
+
+	_, err = fpCfg.GetPermissionTextCode()
+
+	if err == nil {
+		t.Error("Expected an Uninitialized Error to be returned by #2 " +
+			"fpCfg.GetPermissionTextCode(). NO ERROR WAS RETURNED!!!")
+	}
+
+	if !testEmpty.Equal(fpCfg) {
+		t.Error("Error: Expected testEmpty to EQUAL fpCfg. THEY ARE NOT EQUAL!")
+	}
+
+	if fpCfg.isInitialized == true {
+		t.Error("Expected fpCfg.isInitialized==false. Instead, fpCfg.isInitialized==true")
+	}
+
+	if fpCfg.fileMode != 0 {
+		t.Errorf("Expected fpCfg.fileMode=='0'. Instead, fpCfg.fileMode octal value =='%v' ",
+			strconv.FormatInt(int64(fpCfg.fileMode), 8))
+	}
+
+}
+
+func TestFilePermissionConfig_Empty_03(t *testing.T) {
+
+	testEmpty := FilePermissionConfig{}
+
+	textCode := "-rw-rw-rw-"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	actualTextCode, err := fpCfg.GetPermissionTextCode()
+
+	if err != nil {
+		t.Errorf("Error returned by #1 fpCfg.GetPermissionTextCode(). "+
+			"Error='%v'", err.Error())
+	}
+
+	if textCode != actualTextCode {
+		t.Errorf("Error: Expected text code ='%v'. Instead, text code='%v'. ",
+			textCode, actualTextCode)
+	}
+
+	fpCfg.Empty()
+
+	_, err = fpCfg.GetPermissionTextCode()
+
+	if err == nil {
+		t.Error("Expected an Uninitialized Error to be returned by #2 " +
+			"fpCfg.GetPermissionTextCode(). NO ERROR WAS RETURNED!!!")
+	}
+
+	if !testEmpty.Equal(fpCfg) {
+		t.Error("Error: Expected testEmpty to EQUAL fpCfg. THEY ARE NOT EQUAL!")
+	}
+
+	if fpCfg.isInitialized == true {
+		t.Error("Expected fpCfg.isInitialized==false. Instead, fpCfg.isInitialized==true")
+	}
+
+	if fpCfg.fileMode != 0 {
+		t.Errorf("Expected fpCfg.fileMode=='0'. Instead, fpCfg.fileMode octal value =='%v' ",
+			strconv.FormatInt(int64(fpCfg.fileMode), 8))
+	}
+
+}
+
+func TestFilePermissionConfig_Empty_04(t *testing.T) {
+
+	testEmpty := FilePermissionConfig{}
+
+	textCode := "d-w--w--w-"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	actualTextCode, err := fpCfg.GetPermissionTextCode()
+
+	if err != nil {
+		t.Errorf("Error returned by #1 fpCfg.GetPermissionTextCode(). "+
+			"Error='%v'", err.Error())
+	}
+
+	if textCode != actualTextCode {
+		t.Errorf("Error: Expected text code ='%v'. Instead, text code='%v'. ",
+			textCode, actualTextCode)
+	}
+
+	fpCfg.Empty()
+
+	_, err = fpCfg.GetPermissionTextCode()
+
+	if err == nil {
+		t.Error("Expected an Uninitialized Error to be returned by #2 " +
+			"fpCfg.GetPermissionTextCode(). NO ERROR WAS RETURNED!!!")
+	}
+
+	if !testEmpty.Equal(fpCfg) {
+		t.Error("Error: Expected testEmpty to EQUAL fpCfg. THEY ARE NOT EQUAL!")
+	}
+
+	if fpCfg.isInitialized == true {
+		t.Error("Expected fpCfg.isInitialized==false. Instead, fpCfg.isInitialized==true")
+	}
+
+	if fpCfg.fileMode != 0 {
+		t.Errorf("Expected fpCfg.fileMode=='0'. Instead, fpCfg.fileMode octal value =='%v' ",
+			strconv.FormatInt(int64(fpCfg.fileMode), 8))
+	}
+
+}
+
+func TestFilePermissionConfig_Empty_05(t *testing.T) {
+
+	testEmpty := FilePermissionConfig{}
+
+	textCode := "--w--w--w-"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	actualTextCode, err := fpCfg.GetPermissionTextCode()
+
+	if err != nil {
+		t.Errorf("Error returned by #1 fpCfg.GetPermissionTextCode(). "+
+			"Error='%v'", err.Error())
+	}
+
+	if textCode != actualTextCode {
+		t.Errorf("Error: Expected text code ='%v'. Instead, text code='%v'. ",
+			textCode, actualTextCode)
+	}
+
+	fpCfg.Empty()
+
+	_, err = fpCfg.GetPermissionTextCode()
+
+	if err == nil {
+		t.Error("Expected an Uninitialized Error to be returned by #2 " +
+			"fpCfg.GetPermissionTextCode(). NO ERROR WAS RETURNED!!!")
+	}
+
+	if !testEmpty.Equal(fpCfg) {
+		t.Error("Error: Expected testEmpty to EQUAL fpCfg. THEY ARE NOT EQUAL!")
+	}
+
+	if fpCfg.isInitialized == true {
+		t.Error("Expected fpCfg.isInitialized==false. Instead, fpCfg.isInitialized==true")
+	}
+
+	if fpCfg.fileMode != 0 {
+		t.Errorf("Expected fpCfg.fileMode=='0'. Instead, fpCfg.fileMode octal value =='%v' ",
+			strconv.FormatInt(int64(fpCfg.fileMode), 8))
+	}
+
 }
 
 func TestFilePermissionConfig_GetEntryTypeComponent_01(t *testing.T) {
@@ -1252,129 +1498,4 @@ func TestFilePermissionConfig_GetPermissionTextCode_04(t *testing.T) {
 			"permission text code='%v'",
 			expectedTextCode, textCode)
 	}
-}
-
-func TestFilePermissionConfig_NewByComponents_01(t *testing.T) {
-
-	entryType, err := OsFilePermissionCode(0).GetNewFromFileMode(OsFilePermCode.ModeNone())
-
-	if err != nil {
-		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode("+
-			"OsFilePermCode.ModeNone()). "+
-			"Error='%v' ", err.Error())
-	}
-
-	expectedPermissionTxt := "-rwxrwxrwx"
-	permissionStr := "-rwxrwxrwx"
-
-	fPermCfg, err := FilePermissionConfig{}.NewByComponents(entryType, permissionStr)
-
-	if err != nil {
-		t.Errorf("Error returned by FilePermissionConfig{}.NewByComponents(entryType, "+
-			"permissionStr). entrType='%s' permissionStr='%s' Error='%v' ",
-			entryType.String(), permissionStr, err.Error())
-	}
-
-	actualPermissionTxt, err := fPermCfg.GetPermissionTextCode()
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if expectedPermissionTxt != actualPermissionTxt {
-		t.Errorf("Error: Expected Permission Text Code='%v'. Instead, "+
-			"Actual Permission Text Code='%v' ",
-			expectedPermissionTxt, actualPermissionTxt)
-	}
-
-}
-
-func TestFilePermissionConfig_NewByComponents_02(t *testing.T) {
-
-	entryType, err := OsFilePermissionCode(0).GetNewFromFileMode(OsFilePermCode.ModeDir())
-
-	if err != nil {
-		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode("+
-			"OsFilePermCode.ModeDir()). "+
-			"Error='%v' ", err.Error())
-	}
-
-	expectedPermissionTxt := "drwxrwxrwx"
-	permissionStr := "rwxrwxrwx"
-
-	fPermCfg, err := FilePermissionConfig{}.NewByComponents(entryType, permissionStr)
-
-	if err != nil {
-		t.Errorf("Error returned by FilePermissionConfig{}.NewByComponents(entryType, "+
-			"permissionStr). entrType='%s' permissionStr='%s' Error='%v' ",
-			entryType.String(), permissionStr, err.Error())
-	}
-
-	actualPermissionTxt, err := fPermCfg.GetPermissionTextCode()
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if expectedPermissionTxt != actualPermissionTxt {
-		t.Errorf("Error: Expected Permission Text Code='%v'. Instead, "+
-			"Actual Permission Text Code='%v' ",
-			expectedPermissionTxt, actualPermissionTxt)
-	}
-
-}
-
-func TestFilePermissionConfig_NewByComponents_03(t *testing.T) {
-
-	//  ModeSetuid()      os.ModeSetuid         "u" setuid
-	entryType, err := OsFilePermissionCode(0).GetNewFromFileMode(OsFilePermCode.ModeSetuid())
-
-	if err != nil {
-		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode("+
-			"OsFilePermCode.ModeSetuid()). "+
-			"Error='%v' ", err.Error())
-	}
-
-	expectedPermissionTxt := "urw-rw-rw-"
-	permissionStr := "rw-rw-rw-"
-
-	fPermCfg, err := FilePermissionConfig{}.NewByComponents(entryType, permissionStr)
-
-	if err != nil {
-		t.Errorf("Error returned by FilePermissionConfig{}.NewByComponents(entryType, "+
-			"permissionStr). entrType='%s' permissionStr='%s' Error='%v' ",
-			entryType.String(), permissionStr, err.Error())
-	}
-
-	actualPermissionTxt, err := fPermCfg.GetPermissionTextCode()
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
-			"Error='%v' ", err.Error())
-	}
-
-	if expectedPermissionTxt != actualPermissionTxt {
-		t.Errorf("Error: Expected Permission Text Code='%v'. Instead, "+
-			"Actual Permission Text Code='%v' ",
-			expectedPermissionTxt, actualPermissionTxt)
-	}
-
-}
-
-func TestFilePermissionConfig_NewByComponents_04(t *testing.T) {
-
-	// Bad Entry Type Code
-	entryType := OsFilePermissionCode(999)
-
-	permissionStr := "rw-rw-rw-"
-
-	_, err := FilePermissionConfig{}.NewByComponents(entryType, permissionStr)
-
-	if err == nil {
-		t.Error("Expected error return from bad entry type code 999. " +
-			"However, NO ERROR WAS RETURNED! ")
-	}
-
 }
