@@ -850,6 +850,254 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_14(t *testing.T) {
 	}
 }
 
+func TestOsFilePermissionCode_GetNewFromFileMode_01(t *testing.T) {
+
+	expectedFileMode := os.FileMode(0)
+
+	fileMode := OsFilePermCode.ModeNone()
+
+	expectedOsPermCode := OsFilePermissionCode(OsFilePermCode.ModeNone())
+
+	osPermCode, err := OsFilePermCode.GetNewFromFileMode(fileMode)
+
+	if err != nil {
+		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedFileMode != osPermCode.Value() {
+		t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode. "+
+			"expected File Mode Octal Value='%s' . Actual File Mode Octal Value= '%s'",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+	if !expectedOsPermCode.Equal(osPermCode) {
+		t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL"+
+			"expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+}
+
+func TestOsFilePermissionCode_GetNewFromFileMode_02(t *testing.T) {
+
+	expectedFileMode := OsFilePermCode.ModeDir()
+
+	fileMode := OsFilePermCode.ModeDir()
+
+	expectedOsPermCode := OsFilePermissionCode(OsFilePermCode.ModeDir())
+
+	osPermCode, err := OsFilePermCode.GetNewFromFileMode(fileMode)
+
+	if err != nil {
+		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedFileMode != osPermCode.Value() {
+		t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode. "+
+			"expected File Mode Octal Value='%s' . Actual File Mode Octal Value= '%s'",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+	if !expectedOsPermCode.Equal(osPermCode) {
+		t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL"+
+			"expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+}
+
+func TestOsFilePermissionCode_GetNewFromFileMode_03(t *testing.T) {
+
+	expectedFileMode := OsFilePermCode.ModeAppend()
+
+	fileMode := OsFilePermCode.ModeAppend()
+
+	expectedOsPermCode := OsFilePermissionCode(OsFilePermCode.ModeAppend())
+
+	osPermCode, err := OsFilePermCode.GetNewFromFileMode(fileMode)
+
+	if err != nil {
+		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedFileMode != osPermCode.Value() {
+		t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode. "+
+			"expected File Mode Octal Value='%s' . Actual File Mode Octal Value= '%s'",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+	if !expectedOsPermCode.Equal(osPermCode) {
+		t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL"+
+			"expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+}
+
+func TestOsFilePermissionCode_GetNewFromFileMode_04(t *testing.T) {
+
+	expectedFileMode := OsFilePermCode.ModeExclusive()
+
+	fileMode := OsFilePermCode.ModeExclusive()
+
+	expectedOsPermCode := OsFilePermissionCode(OsFilePermCode.ModeExclusive())
+
+	osPermCode, err := OsFilePermCode.GetNewFromFileMode(fileMode)
+
+	if err != nil {
+		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedFileMode != osPermCode.Value() {
+		t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode. "+
+			"expected File Mode Octal Value='%s' . Actual File Mode Octal Value= '%s'",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+	if !expectedOsPermCode.Equal(osPermCode) {
+		t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL"+
+			"expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+}
+
+func TestOsFilePermissionCode_GetNewFromFileMode_05(t *testing.T) {
+
+	expectedFileMode := OsFilePermCode.ModeSetuid()
+
+	fileMode := OsFilePermCode.ModeSetuid()
+
+	expectedOsPermCode := OsFilePermissionCode(OsFilePermCode.ModeSetuid())
+
+	osPermCode, err := OsFilePermCode.GetNewFromFileMode(fileMode)
+
+	if err != nil {
+		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedFileMode != osPermCode.Value() {
+		t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode. "+
+			"expected File Mode Octal Value='%s' . Actual File Mode Octal Value= '%s'",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+	if !expectedOsPermCode.Equal(osPermCode) {
+		t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL"+
+			"expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+}
+
+func TestOsFilePermissionCode_GetNewFromFileMode_06(t *testing.T) {
+
+	expectedFileMode := OsFilePermCode.ModeSetgid()
+
+	fileMode := OsFilePermCode.ModeSetgid()
+
+	expectedOsPermCode := OsFilePermissionCode(OsFilePermCode.ModeSetgid())
+
+	osPermCode, err := OsFilePermCode.GetNewFromFileMode(fileMode)
+
+	if err != nil {
+		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedFileMode != osPermCode.Value() {
+		t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode. "+
+			"expected File Mode Octal Value='%s' . Actual File Mode Octal Value= '%s'",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+	if !expectedOsPermCode.Equal(osPermCode) {
+		t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL"+
+			"expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+}
+
+func TestOsFilePermissionCode_GetNewFromFileMode_07(t *testing.T) {
+
+	expectedFileMode := OsFilePermCode.ModeSticky()
+
+	fileMode := OsFilePermCode.ModeSticky()
+
+	expectedOsPermCode := OsFilePermissionCode(OsFilePermCode.ModeSticky())
+
+	osPermCode, err := OsFilePermCode.GetNewFromFileMode(fileMode)
+
+	if err != nil {
+		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedFileMode != osPermCode.Value() {
+		t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode. "+
+			"expected File Mode Octal Value='%s' . Actual File Mode Octal Value= '%s'",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+	if !expectedOsPermCode.Equal(osPermCode) {
+		t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL"+
+			"expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+}
+
+func TestOsFilePermissionCode_GetNewFromFileMode_08(t *testing.T) {
+
+	expectedFileMode := OsFilePermCode.ModeIrregular()
+
+	fileMode := OsFilePermCode.ModeIrregular()
+
+	expectedOsPermCode := OsFilePermissionCode(OsFilePermCode.ModeIrregular())
+
+	osPermCode, err := OsFilePermCode.GetNewFromFileMode(fileMode)
+
+	if err != nil {
+		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedFileMode != osPermCode.Value() {
+		t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode. "+
+			"expected File Mode Octal Value='%s' . Actual File Mode Octal Value= '%s'",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+	if !expectedOsPermCode.Equal(osPermCode) {
+		t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL"+
+			"expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+}
+
 func TestOsFilePermissionCode_GetNewFromLetterCode_01(t *testing.T) {
 	//     ModeNone                  -:      is a file
 
