@@ -6,6 +6,72 @@ import (
 	"testing"
 )
 
+func TestFilePermissionConfig_CopyIn_01(t *testing.T) {
+
+	textCode := "drwxrwxrwx"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fpCfg2 := FilePermissionConfig{}
+
+	fpCfg2.CopyIn(fpCfg)
+
+	actualTextCode, err := fpCfg2.GetPermissionTextCode()
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg2.GetPermissionTextCode(). "+
+			"Error='%v'", err.Error())
+	}
+
+	if textCode != actualTextCode {
+		t.Errorf("Error: Expected text code ='%v'. Instead, text code='%v'. ",
+			textCode, actualTextCode)
+	}
+
+	if !fpCfg.Equal(fpCfg2) {
+		t.Error("Error: Expected fpCfg to EQUAL fpCfg2. THEY ARE NOT EQUAL!")
+	}
+
+}
+
+func TestFilePermissionConfig_CopyIn_02(t *testing.T) {
+
+	textCode := "-rwxrwxrwx"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fpCfg2 := FilePermissionConfig{}
+
+	fpCfg2.CopyIn(fpCfg)
+
+	actualTextCode, err := fpCfg2.GetPermissionTextCode()
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg2.GetPermissionTextCode(). "+
+			"Error='%v'", err.Error())
+	}
+
+	if textCode != actualTextCode {
+		t.Errorf("Error: Expected text code ='%v'. Instead, text code='%v'. ",
+			textCode, actualTextCode)
+	}
+
+	if !fpCfg.Equal(fpCfg2) {
+		t.Error("Error: Expected fpCfg to EQUAL fpCfg2. THEY ARE NOT EQUAL!")
+	}
+
+}
+
 func TestFilePermissionConfig_GetEntryTypeComponent_01(t *testing.T) {
 
 	textCode := "drwxrwxrwx"

@@ -118,74 +118,6 @@ var mOsPermissionLetterToCode = map[string]os.FileMode{
 //
 type OsFilePermissionCode os.FileMode
 
-// ModeNone            "-" No Permission Set
-func (osPerm OsFilePermissionCode) ModeNone() os.FileMode { return os.FileMode(0) }
-
-// ModeDir         Letter Code= "d" is a directory   - alias for os.ModeDir
-func (osPerm OsFilePermissionCode) ModeDir() os.FileMode { return os.ModeDir }
-
-// ModeAppend       Letter Code= "a" append-only     - alias for os.ModeAppend
-func (osPerm OsFilePermissionCode) ModeAppend() os.FileMode { return os.ModeAppend }
-
-// ModeExclusive    Letter Code= "l" exclusive use   - alias for os.ModeExclusive
-func (osPerm OsFilePermissionCode) ModeExclusive() os.FileMode { return os.ModeExclusive }
-
-// ModeTemporary    Letter Code= "T" temporary file; Plan 9 only  - alias for os.ModeTemporary
-func (osPerm OsFilePermissionCode) ModeTemporary() os.FileMode { return os.ModeTemporary }
-
-// ModeSymlink      Letter Code= "L" symbolic link   - alias for os.ModeSymlink
-func (osPerm OsFilePermissionCode) ModeSymlink() os.FileMode { return os.ModeSymlink }
-
-// ModeDevice       Letter Code= "D" device file     - alias for os.ModeDevice
-func (osPerm OsFilePermissionCode) ModeDevice() os.FileMode { return os.ModeDevice }
-
-// ModeNamedPipe    Letter Code= "p" named pipe (FIFO) - alias for os.ModeNamedPipe
-func (osPerm OsFilePermissionCode) ModeNamedPipe() os.FileMode { return os.ModeNamedPipe }
-
-// ModeSocket       Letter Code= "S" Unix domain socket - alias for os.ModeSocket
-func (osPerm OsFilePermissionCode) ModeSocket() os.FileMode { return os.ModeSocket }
-
-// ModeSetuid       Letter Code= "u" setuid            - alias for os.ModeSetuid
-// When the setuid bit is used, the behavior described above it's modified so that
-// when an executable is launched, it does not run with the privileges of the user
-// who launched it, but with that of the file owner instead. So, for example, if an
-// executable has the setuid bit set on it, and it's owned by root, when launched by
-// a normal user, it will run with root privileges. It should be clear why this represents
-// a potential security risk, if not used correctly.
-//
-func (osPerm OsFilePermissionCode) ModeSetuid() os.FileMode { return os.ModeSetuid }
-
-// ModeSetgid       Letter Code= "g" setgid            - alias for os.ModeSetgid
-// Unlike the setuid bit, the setgid bit has effect on both files and directories.
-// In the first case, the file which has the setgid bit set, when executed, instead
-// of running with the privileges of the group of the user who started it, runs with
-// those of the group which owns the file: in other words, the group ID of the process
-// will be the same of that of the file.
-//
-// When used on a directory, instead, the setgid bit alters the standard behavior so that the
-// group of the files created inside said directory, will not be that of the user who created
-// them, but that of the parent directory itself. This is often used to ease the sharing of
-// files (files will be modifiable by all the users that are part of said group).
-//
-func (osPerm OsFilePermissionCode) ModeSetgid() os.FileMode { return os.ModeSetgid }
-
-// ModeCharDevice   Letter Code= "c" Unix character device, when ModeDevice is set
-// alias for os.ModeCharDevice
-//
-func (osPerm OsFilePermissionCode) ModeCharDevice() os.FileMode { return os.ModeCharDevice }
-
-// ModeSticky       Letter Code= "t" sticky            - alias for os.ModeSticky
-// The sticky bit works in a different way: while it has no effect on files, when used on a directory,
-// all the files in said directory will be modifiable only by their owners. A typical case in which
-// it is used, involves the /tmp directory. Typically this directory is writable by all users on the
-// system, so to make impossible for one user to delete the files of another one.
-//
-func (osPerm OsFilePermissionCode) ModeSticky() os.FileMode { return os.ModeSticky }
-
-// ModeIrregular    Letter Code= "?" non-regular file; nothing else is known about this file
-// alias for os.ModeIrregular
-func (osPerm OsFilePermissionCode) ModeIrregular() os.FileMode { return os.ModeIrregular }
-
 // Equal - Compares the current OsFilePermissionCode instance to another
 // OsFilePermission instance passed as an input parameter. If the two are
 // equal in all respects, this method returns 'true'.
@@ -295,6 +227,74 @@ func (osPerm OsFilePermissionCode) IsValid() error {
 
 	return nil
 }
+
+// ModeNone            "-" No Permission Set
+func (osPerm OsFilePermissionCode) ModeNone() os.FileMode { return os.FileMode(0) }
+
+// ModeDir         Letter Code= "d" is a directory   - alias for os.ModeDir
+func (osPerm OsFilePermissionCode) ModeDir() os.FileMode { return os.ModeDir }
+
+// ModeAppend       Letter Code= "a" append-only     - alias for os.ModeAppend
+func (osPerm OsFilePermissionCode) ModeAppend() os.FileMode { return os.ModeAppend }
+
+// ModeExclusive    Letter Code= "l" exclusive use   - alias for os.ModeExclusive
+func (osPerm OsFilePermissionCode) ModeExclusive() os.FileMode { return os.ModeExclusive }
+
+// ModeTemporary    Letter Code= "T" temporary file; Plan 9 only  - alias for os.ModeTemporary
+func (osPerm OsFilePermissionCode) ModeTemporary() os.FileMode { return os.ModeTemporary }
+
+// ModeSymlink      Letter Code= "L" symbolic link   - alias for os.ModeSymlink
+func (osPerm OsFilePermissionCode) ModeSymlink() os.FileMode { return os.ModeSymlink }
+
+// ModeDevice       Letter Code= "D" device file     - alias for os.ModeDevice
+func (osPerm OsFilePermissionCode) ModeDevice() os.FileMode { return os.ModeDevice }
+
+// ModeNamedPipe    Letter Code= "p" named pipe (FIFO) - alias for os.ModeNamedPipe
+func (osPerm OsFilePermissionCode) ModeNamedPipe() os.FileMode { return os.ModeNamedPipe }
+
+// ModeSocket       Letter Code= "S" Unix domain socket - alias for os.ModeSocket
+func (osPerm OsFilePermissionCode) ModeSocket() os.FileMode { return os.ModeSocket }
+
+// ModeSetuid       Letter Code= "u" setuid            - alias for os.ModeSetuid
+// When the setuid bit is used, the behavior described above it's modified so that
+// when an executable is launched, it does not run with the privileges of the user
+// who launched it, but with that of the file owner instead. So, for example, if an
+// executable has the setuid bit set on it, and it's owned by root, when launched by
+// a normal user, it will run with root privileges. It should be clear why this represents
+// a potential security risk, if not used correctly.
+//
+func (osPerm OsFilePermissionCode) ModeSetuid() os.FileMode { return os.ModeSetuid }
+
+// ModeSetgid       Letter Code= "g" setgid            - alias for os.ModeSetgid
+// Unlike the setuid bit, the setgid bit has effect on both files and directories.
+// In the first case, the file which has the setgid bit set, when executed, instead
+// of running with the privileges of the group of the user who started it, runs with
+// those of the group which owns the file: in other words, the group ID of the process
+// will be the same of that of the file.
+//
+// When used on a directory, instead, the setgid bit alters the standard behavior so that the
+// group of the files created inside said directory, will not be that of the user who created
+// them, but that of the parent directory itself. This is often used to ease the sharing of
+// files (files will be modifiable by all the users that are part of said group).
+//
+func (osPerm OsFilePermissionCode) ModeSetgid() os.FileMode { return os.ModeSetgid }
+
+// ModeCharDevice   Letter Code= "c" Unix character device, when ModeDevice is set
+// alias for os.ModeCharDevice
+//
+func (osPerm OsFilePermissionCode) ModeCharDevice() os.FileMode { return os.ModeCharDevice }
+
+// ModeSticky       Letter Code= "t" sticky            - alias for os.ModeSticky
+// The sticky bit works in a different way: while it has no effect on files, when used on a directory,
+// all the files in said directory will be modifiable only by their owners. A typical case in which
+// it is used, involves the /tmp directory. Typically this directory is writable by all users on the
+// system, so to make impossible for one user to delete the files of another one.
+//
+func (osPerm OsFilePermissionCode) ModeSticky() os.FileMode { return os.ModeSticky }
+
+// ModeIrregular    Letter Code= "?" non-regular file; nothing else is known about this file
+// alias for os.ModeIrregular
+func (osPerm OsFilePermissionCode) ModeIrregular() os.FileMode { return os.ModeIrregular }
 
 // ParseString - Receives a string and attempts to match it with
 // the string value of a supported enumeration. If successful, a
@@ -529,6 +529,7 @@ func (fPerm *FilePermissionConfig) Equal(fPerm2 FilePermissionConfig) bool {
 // Three SymbolicGroups:
 // The three group types are: Owners, Groups & Others.
 //
+//  10-Character
 //   'modeStr'
 //   Symbolic      Octal      File Access
 //   Notation      Notation   Permission Descriptions
