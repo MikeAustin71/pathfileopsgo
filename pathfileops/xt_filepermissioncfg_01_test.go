@@ -1114,3 +1114,128 @@ func TestFilePermissionConfig_SetFileModeByTextCode_16(t *testing.T) {
 	}
 
 }
+
+func TestFilePermissionConfig_GetPermissionTextCode_01(t *testing.T) {
+
+	expectedTextCode := "drwxrwxrwx"
+	fh := FileHelper{}
+
+	// drwxrwxrwx   20000000777
+
+	intFMode := fh.ConvertOctalToDecimal(20000000777)
+
+	osFMode := os.FileMode(intFMode)
+
+	fPerm, err := FilePermissionConfig{}.NewByFileMode(osFMode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode(osFMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	textCode, err := fPerm.GetPermissionTextCode()
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode(osFMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedTextCode != textCode {
+		t.Errorf("Error: Expected permission text code='%v'. Instead, "+
+			"permission text code='%v'",
+			expectedTextCode, textCode)
+	}
+}
+
+func TestFilePermissionConfig_GetPermissionTextCode_02(t *testing.T) {
+
+	// -r--r--r--   0444
+	expectedTextCode := "-r--r--r--"
+	fh := FileHelper{}
+
+	intFMode := fh.ConvertOctalToDecimal(444)
+
+	osFMode := os.FileMode(intFMode)
+
+	fPerm, err := FilePermissionConfig{}.NewByFileMode(osFMode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode(osFMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	textCode, err := fPerm.GetPermissionTextCode()
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode(osFMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedTextCode != textCode {
+		t.Errorf("Error: Expected permission text code='%v'. Instead, "+
+			"permission text code='%v'",
+			expectedTextCode, textCode)
+	}
+}
+
+func TestFilePermissionConfig_GetPermissionTextCode_03(t *testing.T) {
+
+	// --w--w--w-   0222
+	expectedTextCode := "--w--w--w-"
+	fh := FileHelper{}
+
+	intFMode := fh.ConvertOctalToDecimal(222)
+
+	osFMode := os.FileMode(intFMode)
+
+	fPerm, err := FilePermissionConfig{}.NewByFileMode(osFMode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode(osFMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	textCode, err := fPerm.GetPermissionTextCode()
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode(osFMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedTextCode != textCode {
+		t.Errorf("Error: Expected permission text code='%v'. Instead, "+
+			"permission text code='%v'",
+			expectedTextCode, textCode)
+	}
+}
+
+func TestFilePermissionConfig_GetPermissionTextCode_04(t *testing.T) {
+
+	// -rw-rw-rw-   0666
+	expectedTextCode := "-rw-rw-rw-"
+	fh := FileHelper{}
+
+	intFMode := fh.ConvertOctalToDecimal(666)
+
+	osFMode := os.FileMode(intFMode)
+
+	fPerm, err := FilePermissionConfig{}.NewByFileMode(osFMode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode(osFMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	textCode, err := fPerm.GetPermissionTextCode()
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode(osFMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedTextCode != textCode {
+		t.Errorf("Error: Expected permission text code='%v'. Instead, "+
+			"permission text code='%v'",
+			expectedTextCode, textCode)
+	}
+}

@@ -98,20 +98,20 @@ var mOsPermissionLetterToCode = map[string]os.FileMode{
 //   Method           os.FileMode           Associated
 //    Name             Constant             Letter Code
 //  ______________________________________________________________________
-//  ModeNone()        os.ModeNone           -: is a file
-//  ModeDir()         os.ModeDir            d: is a directory
-//  ModeAppend()      os.ModeAppend         a: append-only
-//  ModeExclusive()   os.ModeExclusive      l: exclusive use
-//  ModeTemporary()   os.ModeTemporary      T: temporary file; Plan 9 only
-//  ModeSymlink()     os.ModeSymlink        L: symbolic link
-//  ModeDevice()      os.ModeDevice         D: device file
-//  ModeNamedPipe()   os.ModeNamedPipe      p: named pipe (FIFO)
-//  ModeSocket()      os.ModeSocket         S: Unix domain socket
-//  ModeSetuid()      os.ModeSetuid         u: setuid
-//  ModeSetgid()      os.ModeSetgid         g: setgid
-//  ModeCharDevice()  os.ModeCharDevice     c: Unix character device, when ModeDevice is set
-//  ModeSticky()      os.ModeSticky         t: sticky
-//  ModeIrregular()   os.ModeIrregular      ?: non-regular file; nothing else is known about this file
+//  ModeNone()        os.ModeNone           "-" is a file
+//  ModeDir()         os.ModeDir            "d" is a directory
+//  ModeAppend()      os.ModeAppend         "a" append-only
+//  ModeExclusive()   os.ModeExclusive      "l" exclusive use
+//  ModeTemporary()   os.ModeTemporary      "T" temporary file; Plan 9 only
+//  ModeSymlink()     os.ModeSymlink        "L" symbolic link
+//  ModeDevice()      os.ModeDevice         "D" device file
+//  ModeNamedPipe()   os.ModeNamedPipe      "p" named pipe (FIFO)
+//  ModeSocket()      os.ModeSocket         "S" Unix domain socket
+//  ModeSetuid()      os.ModeSetuid         "u" setuid
+//  ModeSetgid()      os.ModeSetgid         "g" setgid
+//  ModeCharDevice()  os.ModeCharDevice     "c" Unix character device, when ModeDevice is set
+//  ModeSticky()      os.ModeSticky         "t" sticky
+//  ModeIrregular()   os.ModeIrregular      "?" non-regular file; nothing else is known about this file
 //
 // For more information on os Mode Constants Reference:
 // https://golang.org/pkg/os/#pkg-constants
