@@ -552,6 +552,7 @@ func (fPerm *FilePermissionConfig) GetEntryTypeComponent() (OsFilePermissionCode
 // or not. A returned value of 'true' signals that the FileMode represents a file.
 //
 // This method serves as a wrapper for os.FileMode.IsRegular()
+//
 func (fPerm *FilePermissionConfig) GetIsRegular() (bool, error) {
 
 	ePrefix := "FilePermissionConfig.GetIsRegular() "

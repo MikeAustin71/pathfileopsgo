@@ -618,6 +618,192 @@ func TestFilePermissionConfig_Empty_05(t *testing.T) {
 
 }
 
+func TestFilePermissionConfig_Equal_01(t *testing.T) {
+
+	textCode := "-rwxrwxrwx"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fpCfg2, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg2 = FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	if !fpCfg.Equal(fpCfg2) {
+		t.Error("Error: Expected fpCfg == fpCfg2. Wrong, THEY ARE NOT EQUAL")
+	}
+
+	if !fpCfg2.Equal(fpCfg) {
+		t.Error("Error: Expected fpCfg2 == fpCfg. Wrong, THEY ARE NOT EQUAL")
+	}
+
+	textCode2 := "-rwxrwxrw-"
+
+	fpCfg2, err = FilePermissionConfig{}.New(textCode2)
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg2 = FilePermissionConfig{}.New(textCode2). "+
+			"textCode2='%v' Error='%v'", textCode2, err.Error())
+	}
+
+	if fpCfg.Equal(fpCfg2) {
+		t.Error("Error: Expected fpCfg != fpCfg2. Wrong, THEY ARE EQUAL!")
+	}
+
+	if fpCfg2.Equal(fpCfg) {
+		t.Error("Error: Expected fpCfg2 != fpCfg. Wrong, THEY ARE EQUAL!")
+	}
+
+}
+
+func TestFilePermissionConfig_Equal_02(t *testing.T) {
+
+	textCode := "-rwxrwxrwx"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fpCfg2 := FilePermissionConfig{}
+
+	if fpCfg.Equal(fpCfg2) {
+		t.Error("Error: Expected fpCfg != fpCfg2. Wrong, THEY ARE EQUAL!")
+	}
+
+	if fpCfg2.Equal(fpCfg) {
+		t.Error("Error: Expected fpCfg2 != fpCfg. Wrong, THEY ARE EQUAL!")
+	}
+
+}
+
+func TestFilePermissionConfig_GetIsDir_01(t *testing.T) {
+
+	textCode := "-rwxrwxrwx"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	isDir, err := fpCfg.GetIsDir()
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetIsDir(). Error='%v' ", err.Error())
+	}
+
+	if isDir {
+		t.Error("Error: Expected fpCfg.GetIsDir()=='false'. Instead, it returned 'true'.")
+	}
+
+}
+
+func TestFilePermissionConfig_GetIsDir_02(t *testing.T) {
+
+	textCode := "drwxrwxrwx"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	isDir, err := fpCfg.GetIsDir()
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetIsDir(). Error='%v' ", err.Error())
+	}
+
+	if !isDir {
+		t.Error("Error: Expected fpCfg.GetIsDir()=='false'. Instead, it returned 'true'.")
+	}
+
+}
+
+func TestFilePermissionConfig_GetIsDir_03(t *testing.T) {
+
+	fpCfg := FilePermissionConfig{}
+
+	_, err := fpCfg.GetIsDir()
+
+	if err == nil {
+		t.Error("Expected fpCfg.GetIsDir() to return an error because " +
+			"fpCfg was not initialized. NO ERROR WAS RETURNED!")
+	}
+
+}
+
+func TestFilePermissionConfig_GetIsRegular_01(t *testing.T) {
+
+	textCode := "-rwxrwxrwx"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	isRegular, err := fpCfg.GetIsRegular()
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetIsRegular(). Error='%v' ", err.Error())
+	}
+
+	if !isRegular {
+		t.Error("Error: Expected fpCfg.GetIsRegular()=='true'. Instead, it returned 'false'.")
+	}
+
+}
+
+func TestFilePermissionConfig_GetIsRegular_02(t *testing.T) {
+
+	textCode := "drwxrwxrwx"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	isRegular, err := fpCfg.GetIsRegular()
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetIsRegular(). Error='%v' ", err.Error())
+	}
+
+	if isRegular {
+		t.Error("Error: Expected fpCfg.GetIsRegular()=='false'. Instead, it returned 'true'.")
+	}
+
+}
+
+func TestFilePermissionConfig_GetIsRegular_03(t *testing.T) {
+
+	fpCfg := FilePermissionConfig{}
+
+	_, err := fpCfg.GetIsRegular()
+
+	if err == nil {
+		t.Error("Expected an error to be returned by fpCfg.GetIsRegular() because " +
+			"fpCfg was NOT initialized. NO ERROR WAS RETURNED.")
+	}
+
+}
+
 func TestFilePermissionConfig_GetEntryTypeComponent_01(t *testing.T) {
 
 	textCode := "drwxrwxrwx"
@@ -797,6 +983,19 @@ func TestFilePermissionConfig_GetEntryTypeComponent_05(t *testing.T) {
 			"Entry Type Component= %s",
 			expectedEntryType.String(),
 			actualEntryType.String())
+	}
+
+}
+
+func TestFilePermissionConfig_GetEntryTypeComponent_06(t *testing.T) {
+
+	fpCfg := FilePermissionConfig{}
+
+	_, err := fpCfg.GetEntryTypeComponent()
+
+	if err == nil {
+		t.Error("Expected an error from fpCfg.GetEntryTypeComponent() because " +
+			"fpCfg was not initialized. NO ERROR WAS RETURNED!")
 	}
 
 }

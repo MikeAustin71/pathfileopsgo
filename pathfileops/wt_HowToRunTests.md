@@ -1,7 +1,28 @@
 # Running Tests
-## Open a command prompt in this directory (pathfileops) and run the following command:
+##### Open a command prompt in this directory (pathfileops) and run the following command:
 
-## `go test -v > ../app/tests.txt`
+### `go test -v > xx_tests.txt`
 
-This will generate test results in the "../app" directory.  The tests utilize
-some library routines stored in the "../appLibs" directory.
+This will generate test results in the "pathfileops" directory.  The tests utilize
+some library routines stored in the "appLibs" directory.
+
+## Running Tests with code coverage
+
+First pull down and install the `cover` package.
+ 
+  `go get golang.org/x/tools/cmd/cover`
+  
+Next, run tests with the `cover` flag.
+
+  `go test -coverprofile`
+  
+  
+## Test Execution with Code Coverage
+
+ `go test -cover -v > xx_tests.txt`  
+     
+
+## Cover Profile
+`go test -coverprofile=xx_coverage.out`
+
+`go tool cover -html=xx_coverage.out`
