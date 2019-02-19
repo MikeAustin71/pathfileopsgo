@@ -3,7 +3,6 @@ package pathfileops
 import (
 	"os"
 	"strconv"
-	"strings"
 	"testing"
 )
 
@@ -686,124 +685,6 @@ func TestFilePermissionConfig_Equal_02(t *testing.T) {
 
 }
 
-func TestFilePermissionConfig_GetIsDir_01(t *testing.T) {
-
-	textCode := "-rwxrwxrwx"
-
-	fpCfg, err := FilePermissionConfig{}.New(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
-			"textCode='%v' Error='%v'", textCode, err.Error())
-	}
-
-	isDir, err := fpCfg.GetIsDir()
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.GetIsDir(). Error='%v' ", err.Error())
-	}
-
-	if isDir {
-		t.Error("Error: Expected fpCfg.GetIsDir()=='false'. Instead, it returned 'true'.")
-	}
-
-}
-
-func TestFilePermissionConfig_GetIsDir_02(t *testing.T) {
-
-	textCode := "drwxrwxrwx"
-
-	fpCfg, err := FilePermissionConfig{}.New(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
-			"textCode='%v' Error='%v'", textCode, err.Error())
-	}
-
-	isDir, err := fpCfg.GetIsDir()
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.GetIsDir(). Error='%v' ", err.Error())
-	}
-
-	if !isDir {
-		t.Error("Error: Expected fpCfg.GetIsDir()=='false'. Instead, it returned 'true'.")
-	}
-
-}
-
-func TestFilePermissionConfig_GetIsDir_03(t *testing.T) {
-
-	fpCfg := FilePermissionConfig{}
-
-	_, err := fpCfg.GetIsDir()
-
-	if err == nil {
-		t.Error("Expected fpCfg.GetIsDir() to return an error because " +
-			"fpCfg was not initialized. NO ERROR WAS RETURNED!")
-	}
-
-}
-
-func TestFilePermissionConfig_GetIsRegular_01(t *testing.T) {
-
-	textCode := "-rwxrwxrwx"
-
-	fpCfg, err := FilePermissionConfig{}.New(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
-			"textCode='%v' Error='%v'", textCode, err.Error())
-	}
-
-	isRegular, err := fpCfg.GetIsRegular()
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.GetIsRegular(). Error='%v' ", err.Error())
-	}
-
-	if !isRegular {
-		t.Error("Error: Expected fpCfg.GetIsRegular()=='true'. Instead, it returned 'false'.")
-	}
-
-}
-
-func TestFilePermissionConfig_GetIsRegular_02(t *testing.T) {
-
-	textCode := "drwxrwxrwx"
-
-	fpCfg, err := FilePermissionConfig{}.New(textCode)
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
-			"textCode='%v' Error='%v'", textCode, err.Error())
-	}
-
-	isRegular, err := fpCfg.GetIsRegular()
-
-	if err != nil {
-		t.Errorf("Error returned by fpCfg.GetIsRegular(). Error='%v' ", err.Error())
-	}
-
-	if isRegular {
-		t.Error("Error: Expected fpCfg.GetIsRegular()=='false'. Instead, it returned 'true'.")
-	}
-
-}
-
-func TestFilePermissionConfig_GetIsRegular_03(t *testing.T) {
-
-	fpCfg := FilePermissionConfig{}
-
-	_, err := fpCfg.GetIsRegular()
-
-	if err == nil {
-		t.Error("Expected an error to be returned by fpCfg.GetIsRegular() because " +
-			"fpCfg was NOT initialized. NO ERROR WAS RETURNED.")
-	}
-
-}
-
 func TestFilePermissionConfig_GetEntryTypeComponent_01(t *testing.T) {
 
 	textCode := "drwxrwxrwx"
@@ -1000,6 +881,124 @@ func TestFilePermissionConfig_GetEntryTypeComponent_06(t *testing.T) {
 
 }
 
+func TestFilePermissionConfig_GetIsDir_01(t *testing.T) {
+
+	textCode := "-rwxrwxrwx"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	isDir, err := fpCfg.GetIsDir()
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetIsDir(). Error='%v' ", err.Error())
+	}
+
+	if isDir {
+		t.Error("Error: Expected fpCfg.GetIsDir()=='false'. Instead, it returned 'true'.")
+	}
+
+}
+
+func TestFilePermissionConfig_GetIsDir_02(t *testing.T) {
+
+	textCode := "drwxrwxrwx"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	isDir, err := fpCfg.GetIsDir()
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetIsDir(). Error='%v' ", err.Error())
+	}
+
+	if !isDir {
+		t.Error("Error: Expected fpCfg.GetIsDir()=='false'. Instead, it returned 'true'.")
+	}
+
+}
+
+func TestFilePermissionConfig_GetIsDir_03(t *testing.T) {
+
+	fpCfg := FilePermissionConfig{}
+
+	_, err := fpCfg.GetIsDir()
+
+	if err == nil {
+		t.Error("Expected fpCfg.GetIsDir() to return an error because " +
+			"fpCfg was not initialized. NO ERROR WAS RETURNED!")
+	}
+
+}
+
+func TestFilePermissionConfig_GetIsRegular_01(t *testing.T) {
+
+	textCode := "-rwxrwxrwx"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	isRegular, err := fpCfg.GetIsRegular()
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetIsRegular(). Error='%v' ", err.Error())
+	}
+
+	if !isRegular {
+		t.Error("Error: Expected fpCfg.GetIsRegular()=='true'. Instead, it returned 'false'.")
+	}
+
+}
+
+func TestFilePermissionConfig_GetIsRegular_02(t *testing.T) {
+
+	textCode := "drwxrwxrwx"
+
+	fpCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	isRegular, err := fpCfg.GetIsRegular()
+
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetIsRegular(). Error='%v' ", err.Error())
+	}
+
+	if isRegular {
+		t.Error("Error: Expected fpCfg.GetIsRegular()=='false'. Instead, it returned 'true'.")
+	}
+
+}
+
+func TestFilePermissionConfig_GetIsRegular_03(t *testing.T) {
+
+	fpCfg := FilePermissionConfig{}
+
+	_, err := fpCfg.GetIsRegular()
+
+	if err == nil {
+		t.Error("Expected an error to be returned by fpCfg.GetIsRegular() because " +
+			"fpCfg was NOT initialized. NO ERROR WAS RETURNED.")
+	}
+
+}
+
 func TestFilePermissionConfig_GetPermissionBits_01(t *testing.T) {
 
 	textCode := "----------"
@@ -1016,10 +1015,15 @@ func TestFilePermissionConfig_GetPermissionBits_01(t *testing.T) {
 
 	fMode, err := fpCfg.GetPermissionBits()
 
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+			"Error='%v' ", err.Error())
+	}
+
 	fh := FileHelper{}
 	intFMode := fh.ConvertDecimalToOctal(int(fMode))
 
-	nineDigitText, err := fpCfg.GetPermissionBits()
+	tenDigitText, err := fpCfg.GetPermissionTextCode()
 
 	if err != nil {
 		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
@@ -1029,14 +1033,12 @@ func TestFilePermissionConfig_GetPermissionBits_01(t *testing.T) {
 	if expectedIntPermissionBits != intFMode {
 		t.Errorf("Error: Expected permission bits octal value = '%v' Instead, "+
 			"permission bits octal value = '%v' \n"+
-			"permission text bits = %v", expectedIntPermissionBits, intFMode, nineDigitText)
+			"permission text bits = %v", expectedIntPermissionBits, intFMode, tenDigitText)
 	}
 
-	expectedPermissionTxt := strings.Replace(textCode, "d", "-", 1)
-
-	if expectedPermissionTxt != nineDigitText.String() {
+	if textCode != tenDigitText {
 		t.Errorf("Error: Expected permission text string='%v'. Instead, "+
-			"nine digit permission text string='%v' ", expectedPermissionTxt, nineDigitText.String())
+			"nine digit permission text string='%v' ", textCode, tenDigitText)
 	}
 
 }
@@ -1057,10 +1059,15 @@ func TestFilePermissionConfig_GetPermissionBits_02(t *testing.T) {
 
 	fMode, err := fpCfg.GetPermissionBits()
 
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+			"Error='%v' ", err.Error())
+	}
+
 	fh := FileHelper{}
 	intFMode := fh.ConvertDecimalToOctal(int(fMode))
 
-	nineDigitText, err := fpCfg.GetPermissionBits()
+	tenDigitText, err := fpCfg.GetPermissionTextCode()
 
 	if err != nil {
 		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
@@ -1070,14 +1077,12 @@ func TestFilePermissionConfig_GetPermissionBits_02(t *testing.T) {
 	if expectedIntPermissionBits != intFMode {
 		t.Errorf("Error: Expected permission bits octal value = '%v' Instead, "+
 			"permission bits octal value = '%v' \n"+
-			"permission text bits = %v", expectedIntPermissionBits, intFMode, nineDigitText)
+			"permission text bits = %v", expectedIntPermissionBits, intFMode, tenDigitText)
 	}
 
-	expectedPermissionTxt := strings.Replace(textCode, "d", "-", 1)
-
-	if expectedPermissionTxt != nineDigitText.String() {
+	if textCode != tenDigitText {
 		t.Errorf("Error: Expected permission text string='%v'. Instead, "+
-			"nine digit permission text string='%v' ", expectedPermissionTxt, nineDigitText.String())
+			"nine digit permission text string='%v' ", textCode, tenDigitText)
 	}
 
 }
@@ -1098,10 +1103,15 @@ func TestFilePermissionConfig_GetPermissionBits_03(t *testing.T) {
 
 	fMode, err := fpCfg.GetPermissionBits()
 
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+			"Error='%v' ", err.Error())
+	}
+
 	fh := FileHelper{}
 	intFMode := fh.ConvertDecimalToOctal(int(fMode))
 
-	nineDigitText, err := fpCfg.GetPermissionBits()
+	tenDigitText, err := fpCfg.GetPermissionTextCode()
 
 	if err != nil {
 		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
@@ -1111,14 +1121,12 @@ func TestFilePermissionConfig_GetPermissionBits_03(t *testing.T) {
 	if expectedIntPermissionBits != intFMode {
 		t.Errorf("Error: Expected permission bits octal value = '%v' Instead, "+
 			"permission bits octal value = '%v' \n"+
-			"permission text bits = %v", expectedIntPermissionBits, intFMode, nineDigitText)
+			"permission text bits = %v", expectedIntPermissionBits, intFMode, tenDigitText)
 	}
 
-	expectedPermissionTxt := strings.Replace(textCode, "d", "-", 1)
-
-	if expectedPermissionTxt != nineDigitText.String() {
+	if textCode != tenDigitText {
 		t.Errorf("Error: Expected permission text string='%v'. Instead, "+
-			"nine digit permission text string='%v' ", expectedPermissionTxt, nineDigitText.String())
+			"nine digit permission text string='%v' ", textCode, tenDigitText)
 	}
 
 }
@@ -1139,10 +1147,15 @@ func TestFilePermissionConfig_GetPermissionBits_04(t *testing.T) {
 
 	fMode, err := fpCfg.GetPermissionBits()
 
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+			"Error='%v' ", err.Error())
+	}
+
 	fh := FileHelper{}
 	intFMode := fh.ConvertDecimalToOctal(int(fMode))
 
-	nineDigitText, err := fpCfg.GetPermissionBits()
+	tenDigitText, err := fpCfg.GetPermissionTextCode()
 
 	if err != nil {
 		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
@@ -1152,14 +1165,12 @@ func TestFilePermissionConfig_GetPermissionBits_04(t *testing.T) {
 	if expectedIntPermissionBits != intFMode {
 		t.Errorf("Error: Expected permission bits octal value = '%v' Instead, "+
 			"permission bits octal value = '%v' \n"+
-			"permission text bits = %v", expectedIntPermissionBits, intFMode, nineDigitText)
+			"permission text bits = %v", expectedIntPermissionBits, intFMode, tenDigitText)
 	}
 
-	expectedPermissionTxt := strings.Replace(textCode, "d", "-", 1)
-
-	if expectedPermissionTxt != nineDigitText.String() {
+	if textCode != tenDigitText {
 		t.Errorf("Error: Expected permission text string='%v'. Instead, "+
-			"nine digit permission text string='%v' ", expectedPermissionTxt, nineDigitText.String())
+			"nine digit permission text string='%v' ", textCode, tenDigitText)
 	}
 
 }
@@ -1183,7 +1194,7 @@ func TestFilePermissionConfig_GetPermissionBits_05(t *testing.T) {
 	fh := FileHelper{}
 	intFMode := fh.ConvertDecimalToOctal(int(fMode))
 
-	nineDigitText, err := fpCfg.GetPermissionBits()
+	tenDigitText, err := fpCfg.GetPermissionTextCode()
 
 	if err != nil {
 		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
@@ -1193,14 +1204,12 @@ func TestFilePermissionConfig_GetPermissionBits_05(t *testing.T) {
 	if expectedIntPermissionBits != intFMode {
 		t.Errorf("Error: Expected permission bits octal value = '%v' Instead, "+
 			"permission bits octal value = '%v' \n"+
-			"permission text bits = %v", expectedIntPermissionBits, intFMode, nineDigitText)
+			"permission text bits = %v", expectedIntPermissionBits, intFMode, tenDigitText)
 	}
 
-	expectedPermissionTxt := strings.Replace(textCode, "d", "-", 1)
-
-	if expectedPermissionTxt != nineDigitText.String() {
+	if textCode != tenDigitText {
 		t.Errorf("Error: Expected permission text string='%v'. Instead, "+
-			"nine digit permission text string='%v' ", expectedPermissionTxt, nineDigitText.String())
+			"nine digit permission text string='%v' ", textCode, tenDigitText)
 	}
 
 }
@@ -1221,10 +1230,15 @@ func TestFilePermissionConfig_GetPermissionBits_06(t *testing.T) {
 
 	fMode, err := fpCfg.GetPermissionBits()
 
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+			"Error='%v' ", err.Error())
+	}
+
 	fh := FileHelper{}
 	intFMode := fh.ConvertDecimalToOctal(int(fMode))
 
-	nineDigitText, err := fpCfg.GetPermissionBits()
+	tenDigitText, err := fpCfg.GetPermissionTextCode()
 
 	if err != nil {
 		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
@@ -1234,14 +1248,12 @@ func TestFilePermissionConfig_GetPermissionBits_06(t *testing.T) {
 	if expectedIntPermissionBits != intFMode {
 		t.Errorf("Error: Expected permission bits octal value = '%v' Instead, "+
 			"permission bits octal value = '%v' \n"+
-			"permission text bits = %v", expectedIntPermissionBits, intFMode, nineDigitText)
+			"permission text bits = %v", expectedIntPermissionBits, intFMode, tenDigitText)
 	}
 
-	expectedPermissionTxt := strings.Replace(textCode, "d", "-", 1)
-
-	if expectedPermissionTxt != nineDigitText.String() {
+	if textCode != tenDigitText {
 		t.Errorf("Error: Expected permission text string='%v'. Instead, "+
-			"nine digit permission text string='%v' ", expectedPermissionTxt, nineDigitText.String())
+			"nine digit permission text string='%v' ", textCode, tenDigitText)
 	}
 
 }
@@ -1262,10 +1274,15 @@ func TestFilePermissionConfig_GetPermissionBits_07(t *testing.T) {
 
 	fMode, err := fpCfg.GetPermissionBits()
 
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+			"Error='%v' ", err.Error())
+	}
+
 	fh := FileHelper{}
 	intFMode := fh.ConvertDecimalToOctal(int(fMode))
 
-	nineDigitText, err := fpCfg.GetPermissionBits()
+	tenDigitText, err := fpCfg.GetPermissionTextCode()
 
 	if err != nil {
 		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
@@ -1275,14 +1292,12 @@ func TestFilePermissionConfig_GetPermissionBits_07(t *testing.T) {
 	if expectedIntPermissionBits != intFMode {
 		t.Errorf("Error: Expected permission bits octal value = '%v' Instead, "+
 			"permission bits octal value = '%v' \n"+
-			"permission text bits = %v", expectedIntPermissionBits, intFMode, nineDigitText)
+			"permission text bits = %v", expectedIntPermissionBits, intFMode, tenDigitText)
 	}
 
-	expectedPermissionTxt := strings.Replace(textCode, "d", "-", 1)
-
-	if expectedPermissionTxt != nineDigitText.String() {
+	if textCode != tenDigitText {
 		t.Errorf("Error: Expected permission text string='%v'. Instead, "+
-			"nine digit permission text string='%v' ", expectedPermissionTxt, nineDigitText.String())
+			"nine digit permission text string='%v' ", textCode, tenDigitText)
 	}
 
 }
@@ -1303,10 +1318,15 @@ func TestFilePermissionConfig_GetPermissionBits_08(t *testing.T) {
 
 	fMode, err := fpCfg.GetPermissionBits()
 
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+			"Error='%v' ", err.Error())
+	}
+
 	fh := FileHelper{}
 	intFMode := fh.ConvertDecimalToOctal(int(fMode))
 
-	nineDigitText, err := fpCfg.GetPermissionBits()
+	tenDigitText, err := fpCfg.GetPermissionTextCode()
 
 	if err != nil {
 		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
@@ -1316,14 +1336,12 @@ func TestFilePermissionConfig_GetPermissionBits_08(t *testing.T) {
 	if expectedIntPermissionBits != intFMode {
 		t.Errorf("Error: Expected permission bits octal value = '%v' Instead, "+
 			"permission bits octal value = '%v' \n"+
-			"permission text bits = %v", expectedIntPermissionBits, intFMode, nineDigitText)
+			"permission text bits = %v", expectedIntPermissionBits, intFMode, tenDigitText)
 	}
 
-	expectedPermissionTxt := strings.Replace(textCode, "d", "-", 1)
-
-	if expectedPermissionTxt != nineDigitText.String() {
+	if textCode != tenDigitText {
 		t.Errorf("Error: Expected permission text string='%v'. Instead, "+
-			"nine digit permission text string='%v' ", expectedPermissionTxt, nineDigitText.String())
+			"nine digit permission text string='%v' ", textCode, tenDigitText)
 	}
 
 }
@@ -1344,10 +1362,15 @@ func TestFilePermissionConfig_GetPermissionBits_09(t *testing.T) {
 
 	fMode, err := fpCfg.GetPermissionBits()
 
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+			"Error='%v' ", err.Error())
+	}
+
 	fh := FileHelper{}
 	intFMode := fh.ConvertDecimalToOctal(int(fMode))
 
-	nineDigitText, err := fpCfg.GetPermissionBits()
+	tenDigitText, err := fpCfg.GetPermissionTextCode()
 
 	if err != nil {
 		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
@@ -1357,14 +1380,12 @@ func TestFilePermissionConfig_GetPermissionBits_09(t *testing.T) {
 	if expectedIntPermissionBits != intFMode {
 		t.Errorf("Error: Expected permission bits octal value = '%v' Instead, "+
 			"permission bits octal value = '%v' \n"+
-			"permission text bits = %v", expectedIntPermissionBits, intFMode, nineDigitText)
+			"permission text bits = %v", expectedIntPermissionBits, intFMode, tenDigitText)
 	}
 
-	expectedPermissionTxt := strings.Replace(textCode, "d", "-", 1)
-
-	if expectedPermissionTxt != nineDigitText.String() {
+	if textCode != tenDigitText {
 		t.Errorf("Error: Expected permission text string='%v'. Instead, "+
-			"nine digit permission text string='%v' ", expectedPermissionTxt, nineDigitText.String())
+			"nine digit permission text string='%v' ", textCode, tenDigitText)
 	}
 
 }
@@ -1385,10 +1406,15 @@ func TestFilePermissionConfig_GetPermissionBits_10(t *testing.T) {
 
 	fMode, err := fpCfg.GetPermissionBits()
 
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+			"Error='%v' ", err.Error())
+	}
+
 	fh := FileHelper{}
 	intFMode := fh.ConvertDecimalToOctal(int(fMode))
 
-	nineDigitText, err := fpCfg.GetPermissionBits()
+	tenDigitText, err := fpCfg.GetPermissionTextCode()
 
 	if err != nil {
 		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
@@ -1398,14 +1424,12 @@ func TestFilePermissionConfig_GetPermissionBits_10(t *testing.T) {
 	if expectedIntPermissionBits != intFMode {
 		t.Errorf("Error: Expected permission bits octal value = '%v' Instead, "+
 			"permission bits octal value = '%v' \n"+
-			"permission text bits = %v", expectedIntPermissionBits, intFMode, nineDigitText)
+			"permission text bits = %v", expectedIntPermissionBits, intFMode, tenDigitText)
 	}
 
-	expectedPermissionTxt := strings.Replace(textCode, "d", "-", 1)
-
-	if expectedPermissionTxt != nineDigitText.String() {
+	if textCode != tenDigitText {
 		t.Errorf("Error: Expected permission text string='%v'. Instead, "+
-			"nine digit permission text string='%v' ", expectedPermissionTxt, nineDigitText.String())
+			"nine digit permission text string='%v' ", textCode, tenDigitText)
 	}
 
 }
@@ -1426,10 +1450,15 @@ func TestFilePermissionConfig_GetPermissionBits_11(t *testing.T) {
 
 	fMode, err := fpCfg.GetPermissionBits()
 
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+			"Error='%v' ", err.Error())
+	}
+
 	fh := FileHelper{}
 	intFMode := fh.ConvertDecimalToOctal(int(fMode))
 
-	nineDigitText, err := fpCfg.GetPermissionBits()
+	tenDigitText, err := fpCfg.GetPermissionTextCode()
 
 	if err != nil {
 		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
@@ -1439,14 +1468,12 @@ func TestFilePermissionConfig_GetPermissionBits_11(t *testing.T) {
 	if expectedIntPermissionBits != intFMode {
 		t.Errorf("Error: Expected permission bits octal value = '%v' Instead, "+
 			"permission bits octal value = '%v' \n"+
-			"permission text bits = %v", expectedIntPermissionBits, intFMode, nineDigitText)
+			"permission text bits = %v", expectedIntPermissionBits, intFMode, tenDigitText)
 	}
 
-	expectedPermissionTxt := strings.Replace(textCode, "d", "-", 1)
-
-	if expectedPermissionTxt != nineDigitText.String() {
+	if textCode != tenDigitText {
 		t.Errorf("Error: Expected permission text string='%v'. Instead, "+
-			"nine digit permission text string='%v' ", expectedPermissionTxt, nineDigitText.String())
+			"nine digit permission text string='%v' ", textCode, tenDigitText)
 	}
 
 }
@@ -1467,10 +1494,15 @@ func TestFilePermissionConfig_GetPermissionBits_12(t *testing.T) {
 
 	fMode, err := fpCfg.GetPermissionBits()
 
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+			"Error='%v' ", err.Error())
+	}
+
 	fh := FileHelper{}
 	intFMode := fh.ConvertDecimalToOctal(int(fMode))
 
-	nineDigitText, err := fpCfg.GetPermissionBits()
+	tenDigitText, err := fpCfg.GetPermissionTextCode()
 
 	if err != nil {
 		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
@@ -1480,14 +1512,12 @@ func TestFilePermissionConfig_GetPermissionBits_12(t *testing.T) {
 	if expectedIntPermissionBits != intFMode {
 		t.Errorf("Error: Expected permission bits octal value = '%v' Instead, "+
 			"permission bits octal value = '%v' \n"+
-			"permission text bits = %v", expectedIntPermissionBits, intFMode, nineDigitText)
+			"permission text bits = %v", expectedIntPermissionBits, intFMode, tenDigitText)
 	}
 
-	expectedPermissionTxt := strings.Replace(textCode, "d", "-", 1)
-
-	if expectedPermissionTxt != nineDigitText.String() {
+	if textCode != tenDigitText {
 		t.Errorf("Error: Expected permission text string='%v'. Instead, "+
-			"nine digit permission text string='%v' ", expectedPermissionTxt, nineDigitText.String())
+			"nine digit permission text string='%v' ", textCode, tenDigitText)
 	}
 
 }
@@ -1508,10 +1538,15 @@ func TestFilePermissionConfig_GetPermissionBits_13(t *testing.T) {
 
 	fMode, err := fpCfg.GetPermissionBits()
 
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+			"Error='%v' ", err.Error())
+	}
+
 	fh := FileHelper{}
 	intFMode := fh.ConvertDecimalToOctal(int(fMode))
 
-	nineDigitText, err := fpCfg.GetPermissionBits()
+	tenDigitText, err := fpCfg.GetPermissionTextCode()
 
 	if err != nil {
 		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
@@ -1521,14 +1556,12 @@ func TestFilePermissionConfig_GetPermissionBits_13(t *testing.T) {
 	if expectedIntPermissionBits != intFMode {
 		t.Errorf("Error: Expected permission bits octal value = '%v' Instead, "+
 			"permission bits octal value = '%v' \n"+
-			"permission text bits = %v", expectedIntPermissionBits, intFMode, nineDigitText)
+			"permission text bits = %v", expectedIntPermissionBits, intFMode, tenDigitText)
 	}
 
-	expectedPermissionTxt := strings.Replace(textCode, "d", "-", 1)
-
-	if expectedPermissionTxt != nineDigitText.String() {
+	if textCode != tenDigitText {
 		t.Errorf("Error: Expected permission text string='%v'. Instead, "+
-			"nine digit permission text string='%v' ", expectedPermissionTxt, nineDigitText.String())
+			"nine digit permission text string='%v' ", textCode, tenDigitText)
 	}
 
 }
@@ -1550,10 +1583,15 @@ func TestFilePermissionConfig_GetPermissionBits_14(t *testing.T) {
 
 	fMode, err := fpCfg.GetPermissionBits()
 
+	if err != nil {
+		t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+			"Error='%v' ", err.Error())
+	}
+
 	fh := FileHelper{}
 	intFMode := fh.ConvertDecimalToOctal(int(fMode))
 
-	nineDigitText, err := fpCfg.GetPermissionBits()
+	tenDigitText, err := fpCfg.GetPermissionTextCode()
 
 	if err != nil {
 		t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
@@ -1563,15 +1601,26 @@ func TestFilePermissionConfig_GetPermissionBits_14(t *testing.T) {
 	if expectedIntPermissionBits != intFMode {
 		t.Errorf("Error: Expected permission bits octal value = '%v' Instead, "+
 			"permission bits octal value = '%v' \n"+
-			"permission text bits = %v", expectedIntPermissionBits, intFMode, nineDigitText)
+			"permission text bits = %v", expectedIntPermissionBits, intFMode, tenDigitText)
 	}
 
-	expectedPermissionTxt := strings.Replace(textCode, "d", "-", 1)
-
-	if expectedPermissionTxt != nineDigitText.String() {
+	if textCode != tenDigitText {
 		t.Errorf("Error: Expected permission text string='%v'. Instead, "+
-			"nine digit permission text string='%v' ", expectedPermissionTxt, nineDigitText.String())
+			"nine digit permission text string='%v' ", textCode, tenDigitText)
 	}
+}
+
+func TestFilePermissionConfig_GetPermissionBits_15(t *testing.T) {
+
+	fpCfg := FilePermissionConfig{}
+
+	_, err := fpCfg.GetPermissionBits()
+
+	if err == nil {
+		t.Error("Expected an error return from fpCfg.GetPermissionBits() " +
+			"because fpCfg was not initialized. NO ERROR WAS RETURNED!")
+	}
+
 }
 
 func TestFilePermissionConfig_GetPermissionTextCode_01(t *testing.T) {

@@ -598,7 +598,7 @@ func (fPerm *FilePermissionConfig) GetPermissionBits() (os.FileMode, error) {
 // 10-character permission code.
 //
 func (fPerm *FilePermissionConfig) GetPermissionTextCode() (string, error) {
-	ePrefix := "FilePermissionConfig.GetPermissionBits() "
+	ePrefix := "FilePermissionConfig.GetPermissionTextCode() "
 
 	if !fPerm.isInitialized {
 		return "",
