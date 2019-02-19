@@ -4840,6 +4840,9 @@ func (fops *FileOps) copySrcToDestByHardLinkByIo() error {
 	return nil
 }
 
+// copySrcToDestByIo - Copies source file to destination
+// using IO.
+//
 func (fops *FileOps) copySrcToDestByIo() error {
 
 	ePrefix := "FileOps.copySrcToDestByIo() "
