@@ -229,6 +229,11 @@ func (osPerm OsFilePermissionCode) IsValid() error {
 }
 
 // ModeNone            "-" No Permission Set
+// The is no os constant for 'None'. However since the zero value is used
+// extensively to identity a 'file' within the context of permission
+// descriptions, it is added here. 'ModeNone' therefore represents both a
+// zero value and the 'file' designation.
+//
 func (osPerm OsFilePermissionCode) ModeNone() os.FileMode { return os.FileMode(0) }
 
 // ModeDir         Letter Code= "d" is a directory   - alias for os.ModeDir
@@ -515,10 +520,10 @@ func (fPerm *FilePermissionConfig) GetIsDir() (bool, error) {
 //
 // Return Values:
 //
-// OsFilePermissionCode - The OsFilePermissionCode type is set to the value of
-//                        the os.FileMode constant representing the Entry Type
-//                        associated with the permission value encapsulated by
-//                        this FilePermissionConfig instance.
+//  OsFilePermissionCode - The OsFilePermissionCode type is set to the value of
+//                         the os.FileMode constant representing the Entry Type
+//                         associated with the permission value encapsulated by
+//                         this FilePermissionConfig instance.
 //
 func (fPerm *FilePermissionConfig) GetEntryTypeComponent() (OsFilePermissionCode, error) {
 

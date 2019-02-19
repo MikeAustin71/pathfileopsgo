@@ -2,6 +2,7 @@ package pathfileops
 
 import (
 	"os"
+	"strconv"
 	"testing"
 )
 
@@ -85,6 +86,45 @@ func TestFilePermissionConfig_IsValid_03(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected no error to be returned by fPerm.IsValid(). "+
 			"However, an error was returned. Error='%v' ", err.Error())
+	}
+
+}
+
+func TestFilePermissionConfig_New_01(t *testing.T) {
+
+	permissionStr := "-rwxrwxrwx"
+
+	fPermCfg, err := FilePermissionConfig{}.New(permissionStr)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(permissionStr) "+
+			"Error='%v' ", err.Error())
+	}
+
+	actualTextCode, err := fPermCfg.GetPermissionTextCode()
+
+	if err != nil {
+		t.Errorf("Error returned by fPermCfg.GetPermissionTextCode() "+
+			"Error='%v' ", err.Error())
+	}
+
+	if permissionStr != actualTextCode {
+		t.Errorf("Error: Expected actual text code='%v' .Instead, "+
+			"actual text code='%v'",
+			permissionStr, actualTextCode)
+	}
+
+}
+
+func TestFilePermissionConfig_New_02(t *testing.T) {
+
+	permissionStr := "xvumnoqade"
+
+	_, err := FilePermissionConfig{}.New(permissionStr)
+
+	if err == nil {
+		t.Error("Expected error return from FilePermissionConfig{}.New(permissionStr) " +
+			"because of invalid permissionStr. NO ERROR WAS RETURNED!")
 	}
 
 }
@@ -210,6 +250,46 @@ func TestFilePermissionConfig_NewByComponents_04(t *testing.T) {
 	if err == nil {
 		t.Error("Expected error return from bad entry type code 999. " +
 			"However, NO ERROR WAS RETURNED! ")
+	}
+
+}
+
+func TestFilePermissionConfig_NewByFileMode_01(t *testing.T) {
+
+	expectedFileMode := os.FileMode(0666)
+
+	fPerm, err := FilePermissionConfig{}.NewByFileMode(expectedFileMode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode"+
+			"(os.FileMode(0666)). Error='%v' ", err.Error())
+	}
+
+	actualFileMode, err := fPerm.GetFileMode()
+
+	if err != nil {
+		t.Errorf("Error returned by fPerm.GetFileMode()"+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedFileMode != actualFileMode {
+		t.Errorf("Error: Expected actual file mode octal value = '%s' Instead, "+
+			"actual file mode octal value= '%s' ",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(actualFileMode), 8))
+	}
+
+}
+
+func TestFilePermissionConfig_NewByFileMode_02(t *testing.T) {
+
+	expectedFileMode := os.FileMode(9236)
+
+	_, err := FilePermissionConfig{}.NewByFileMode(expectedFileMode)
+
+	if err == nil {
+		t.Error("Expected error return from FilePermissionConfig{}.NewByFileMode" +
+			"(expectedFileMode) because of invalid FileMode. NO ERROR WAS RETURNED!!! ")
 	}
 
 }
