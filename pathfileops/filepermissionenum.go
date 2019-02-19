@@ -530,11 +530,9 @@ func (fPerm *FilePermissionConfig) GetEntryTypeComponent() (OsFilePermissionCode
 				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
 	}
 
-	mask := os.FileMode(0777)
+	fMode := fPerm.fileMode &^ os.FileMode(0777)
 
 	for idx := range mOsPermissionCodeToString {
-
-		fMode := fPerm.fileMode &^ mask
 
 		if fMode == idx {
 
@@ -685,10 +683,30 @@ func (fPerm *FilePermissionConfig) GetPermissionComponents() (
 //
 func (fPerm *FilePermissionConfig) IsValid() error {
 
+	ePrefix := "FilePermissionConfig.IsValid() "
+
 	if !fPerm.isInitialized {
-		ePrefix := "FilePermissionConfig.IsValid() "
 		return errors.New(ePrefix + "Error: This FilePermissionConfig instance has NOT been " +
 			"initialized and is INVALID!")
+	}
+
+	fMode := fPerm.fileMode &^ os.FileMode(0777)
+
+	isEntryTypeValid := false
+
+	for idx := range mOsPermissionCodeToString {
+
+		if fMode == idx {
+
+			isEntryTypeValid = true
+
+			break
+		}
+
+	}
+
+	if !isEntryTypeValid {
+		return errors.New(ePrefix + "Error: Entry Type File Mode value is INVALID!")
 	}
 
 	return nil

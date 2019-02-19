@@ -202,6 +202,23 @@ func TestFilePermissionConfig_GetEntryTypeComponent_06(t *testing.T) {
 
 }
 
+func TestFilePermissionConfig_GetEntryTypeComponent_07(t *testing.T) {
+
+	fpCfg := FilePermissionConfig{}
+
+	fpCfg.isInitialized = true
+
+	fpCfg.fileMode = os.FileMode(01000)
+
+	_, err := fpCfg.GetEntryTypeComponent()
+
+	if err == nil {
+		t.Error("Expected an error from fpCfg.GetEntryTypeComponent() because " +
+			"fpCfg.fileMode has an invalid code. NO ERROR WAS RETURNED!")
+	}
+
+}
+
 func TestFilePermissionConfig_GetIsDir_01(t *testing.T) {
 
 	textCode := "-rwxrwxrwx"
@@ -944,6 +961,315 @@ func TestFilePermissionConfig_GetPermissionBits_15(t *testing.T) {
 
 }
 
+func TestFilePermissionConfig_GetPermissionComponents_01(t *testing.T) {
+	expectedTextCode := "-rw-rw-rw-"
+
+	expectedPermissionFileMode := os.FileMode(0666)
+
+	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
+			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
+	}
+
+	expectedOsFilePerm, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode"+
+			"(OsFilePermCode.ModeNone()).  Error='%v' ", err.Error())
+	}
+
+	actualOsFilePerm, actualPermFMode, err := fPerm.GetPermissionComponents()
+
+	if err != nil {
+		t.Errorf("Error returned by fPerm.GetPermissionComponents(). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedOsFilePerm != actualOsFilePerm {
+		t.Errorf("Error: Expected OsFilePerm='%v'. Instead, OsFilePerm='%v' ",
+			expectedOsFilePerm.String(), actualOsFilePerm.String())
+	}
+
+	if expectedPermissionFileMode != actualPermFMode {
+		t.Errorf("Error: Expected Permission File Mode Octal Value='%s'. Instead, "+
+			"Permission File Mode Octal Value='%s'",
+			strconv.FormatInt(int64(expectedPermissionFileMode), 8),
+			strconv.FormatInt(int64(actualPermFMode), 8))
+	}
+
+}
+
+func TestFilePermissionConfig_GetPermissionComponents_02(t *testing.T) {
+	expectedTextCode := "drw-rw-rw-"
+
+	expectedPermissionFileMode := os.FileMode(0666)
+
+	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
+			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
+	}
+
+	expectedOsFilePerm, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeDir())
+
+	if err != nil {
+		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode"+
+			"(OsFilePermCode.ModeNone()).  Error='%v' ", err.Error())
+	}
+
+	actualOsFilePerm, actualPermFMode, err := fPerm.GetPermissionComponents()
+
+	if err != nil {
+		t.Errorf("Error returned by fPerm.GetPermissionComponents(). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if err != nil {
+		t.Errorf("Error returned by fPerm.GetPermissionComponents() "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedOsFilePerm != actualOsFilePerm {
+		t.Errorf("Error: Expected OsFilePerm='%v'. Instead, OsFilePerm='%v' ",
+			expectedOsFilePerm.String(), actualOsFilePerm.String())
+	}
+
+	if expectedPermissionFileMode != actualPermFMode {
+		t.Errorf("Error: Expected Permission File Mode Octal Value='%s'. Instead, "+
+			"Permission File Mode Octal Value='%s'",
+			strconv.FormatInt(int64(expectedPermissionFileMode), 8),
+			strconv.FormatInt(int64(actualPermFMode), 8))
+	}
+
+}
+
+func TestFilePermissionConfig_GetPermissionComponents_03(t *testing.T) {
+	expectedTextCode := "-r--r--r--"
+
+	expectedPermissionFileMode := os.FileMode(0444)
+
+	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
+			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
+	}
+
+	expectedOsFilePerm, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode"+
+			"(OsFilePermCode.ModeNone()).  Error='%v' ", err.Error())
+	}
+
+	actualOsFilePerm, actualPermFMode, err := fPerm.GetPermissionComponents()
+
+	if err != nil {
+		t.Errorf("Error returned by fPerm.GetPermissionComponents(). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedOsFilePerm != actualOsFilePerm {
+		t.Errorf("Error: Expected OsFilePerm='%v'. Instead, OsFilePerm='%v' ",
+			expectedOsFilePerm.String(), actualOsFilePerm.String())
+	}
+
+	if expectedPermissionFileMode != actualPermFMode {
+		t.Errorf("Error: Expected Permission File Mode Octal Value='%s'. Instead, "+
+			"Permission File Mode Octal Value='%s'",
+			strconv.FormatInt(int64(expectedPermissionFileMode), 8),
+			strconv.FormatInt(int64(actualPermFMode), 8))
+	}
+
+}
+
+func TestFilePermissionConfig_GetPermissionComponents_04(t *testing.T) {
+	expectedTextCode := "dr--r--r--"
+
+	expectedPermissionFileMode := os.FileMode(0444)
+
+	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
+			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
+	}
+
+	expectedOsFilePerm, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeDir())
+
+	if err != nil {
+		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode"+
+			"(OsFilePermCode.ModeNone()).  Error='%v' ", err.Error())
+	}
+
+	actualOsFilePerm, actualPermFMode, err := fPerm.GetPermissionComponents()
+
+	if err != nil {
+		t.Errorf("Error returned by fPerm.GetPermissionComponents(). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedOsFilePerm != actualOsFilePerm {
+		t.Errorf("Error: Expected OsFilePerm='%v'. Instead, OsFilePerm='%v' ",
+			expectedOsFilePerm.String(), actualOsFilePerm.String())
+	}
+
+	if expectedPermissionFileMode != actualPermFMode {
+		t.Errorf("Error: Expected Permission File Mode Octal Value='%s'. Instead, "+
+			"Permission File Mode Octal Value='%s'",
+			strconv.FormatInt(int64(expectedPermissionFileMode), 8),
+			strconv.FormatInt(int64(actualPermFMode), 8))
+	}
+
+}
+
+func TestFilePermissionConfig_GetPermissionComponents_05(t *testing.T) {
+	expectedTextCode := "--w--w--w-"
+
+	expectedPermissionFileMode := os.FileMode(0222)
+
+	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
+			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
+	}
+
+	expectedOsFilePerm, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode"+
+			"(OsFilePermCode.ModeNone()).  Error='%v' ", err.Error())
+	}
+
+	actualOsFilePerm, actualPermFMode, err := fPerm.GetPermissionComponents()
+
+	if err != nil {
+		t.Errorf("Error returned by fPerm.GetPermissionComponents(). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedOsFilePerm != actualOsFilePerm {
+		t.Errorf("Error: Expected OsFilePerm='%v'. Instead, OsFilePerm='%v' ",
+			expectedOsFilePerm.String(), actualOsFilePerm.String())
+	}
+
+	if expectedPermissionFileMode != actualPermFMode {
+		t.Errorf("Error: Expected Permission File Mode Octal Value='%s'. Instead, "+
+			"Permission File Mode Octal Value='%s'",
+			strconv.FormatInt(int64(expectedPermissionFileMode), 8),
+			strconv.FormatInt(int64(actualPermFMode), 8))
+	}
+
+}
+
+func TestFilePermissionConfig_GetPermissionComponents_06(t *testing.T) {
+	expectedTextCode := "d-w--w--w-"
+
+	expectedPermissionFileMode := os.FileMode(0222)
+
+	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
+			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
+	}
+
+	expectedOsFilePerm, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeDir())
+
+	if err != nil {
+		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode"+
+			"(OsFilePermCode.ModeNone()).  Error='%v' ", err.Error())
+	}
+
+	actualOsFilePerm, actualPermFMode, err := fPerm.GetPermissionComponents()
+
+	if err != nil {
+		t.Errorf("Error returned by fPerm.GetPermissionComponents(). "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedOsFilePerm != actualOsFilePerm {
+		t.Errorf("Error: Expected OsFilePerm='%v'. Instead, OsFilePerm='%v' ",
+			expectedOsFilePerm.String(), actualOsFilePerm.String())
+	}
+
+	if expectedPermissionFileMode != actualPermFMode {
+		t.Errorf("Error: Expected Permission File Mode Octal Value='%s'. Instead, "+
+			"Permission File Mode Octal Value='%s'",
+			strconv.FormatInt(int64(expectedPermissionFileMode), 8),
+			strconv.FormatInt(int64(actualPermFMode), 8))
+	}
+
+}
+
+func TestFilePermissionConfig_GetPermissionComponents_07(t *testing.T) {
+
+	expectedTextCode := "--w--w--w-"
+
+	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
+			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
+	}
+
+	_, err = OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeDir())
+
+	if err != nil {
+		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode"+
+			"(OsFilePermCode.ModeNone()).  Error='%v' ", err.Error())
+	}
+
+	fPerm.fileMode = os.FileMode(01000)
+
+	_, _, err = fPerm.GetPermissionComponents()
+
+	if err == nil {
+		t.Error("Expected an error return by fPerm.GetPermissionComponents() " +
+			"because fPerm.fileMode has an invalid EntryType")
+	}
+
+}
+
+func TestFilePermissionConfig_GetPermissionComponents_08(t *testing.T) {
+
+	expectedTextCode := "--w--w--w-"
+
+	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
+			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
+	}
+
+	fPerm.isInitialized = false
+
+	_, _, err = fPerm.GetPermissionComponents()
+
+	if err == nil {
+		t.Error("Expected an error return from fPerm.GetPermissionComponents() " +
+			"because fPerm was not initialized. NO ERROR WAS RETURNED!!")
+	}
+
+}
+
+func TestFilePermissionConfig_GetPermissionComponents_09(t *testing.T) {
+
+	fPerm := FilePermissionConfig{}
+
+	_, _, err := fPerm.GetPermissionComponents()
+
+	if err == nil {
+		t.Error("Expected an error return from fPerm.GetPermissionComponents() " +
+			"because fPerm was not initialized. NO ERROR WAS RETURNED!!")
+	}
+
+}
+
 func TestFilePermissionConfig_GetPermissionTextCode_01(t *testing.T) {
 
 	expectedTextCode := "drwxrwxrwx"
@@ -1067,232 +1393,4 @@ func TestFilePermissionConfig_GetPermissionTextCode_04(t *testing.T) {
 			"permission text code='%v'",
 			expectedTextCode, textCode)
 	}
-}
-
-func TestFilePermissionConfig_GetPermissionComponents_01(t *testing.T) {
-	expectedTextCode := "-rw-rw-rw-"
-
-	expectedPermissionFileMode := os.FileMode(0666)
-
-	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
-
-	if err != nil {
-		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
-			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
-	}
-
-	expectedOsFilePerm, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeNone())
-
-	if err != nil {
-		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode"+
-			"(OsFilePermCode.ModeNone()).  Error='%v' ", err.Error())
-	}
-
-	actualOsFilePerm, actualPermFMode, err := fPerm.GetPermissionComponents()
-
-	if expectedOsFilePerm != actualOsFilePerm {
-		t.Errorf("Error: Expected OsFilePerm='%v'. Instead, OsFilePerm='%v' ",
-			expectedOsFilePerm.String(), actualOsFilePerm.String())
-	}
-
-	if expectedPermissionFileMode != actualPermFMode {
-		t.Errorf("Error: Expected Permission File Mode Octal Value='%s'. Instead, "+
-			"Permission File Mode Octal Value='%s'",
-			strconv.FormatInt(int64(expectedPermissionFileMode), 8),
-			strconv.FormatInt(int64(actualPermFMode), 8))
-	}
-
-}
-
-func TestFilePermissionConfig_GetPermissionComponents_02(t *testing.T) {
-	expectedTextCode := "drw-rw-rw-"
-
-	expectedPermissionFileMode := os.FileMode(0666)
-
-	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
-
-	if err != nil {
-		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
-			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
-	}
-
-	expectedOsFilePerm, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeDir())
-
-	if err != nil {
-		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode"+
-			"(OsFilePermCode.ModeNone()).  Error='%v' ", err.Error())
-	}
-
-	actualOsFilePerm, actualPermFMode, err := fPerm.GetPermissionComponents()
-
-	if err != nil {
-		t.Errorf("Error returned by fPerm.GetPermissionComponents() "+
-			"Error='%v' ", err.Error())
-	}
-
-	if expectedOsFilePerm != actualOsFilePerm {
-		t.Errorf("Error: Expected OsFilePerm='%v'. Instead, OsFilePerm='%v' ",
-			expectedOsFilePerm.String(), actualOsFilePerm.String())
-	}
-
-	if expectedPermissionFileMode != actualPermFMode {
-		t.Errorf("Error: Expected Permission File Mode Octal Value='%s'. Instead, "+
-			"Permission File Mode Octal Value='%s'",
-			strconv.FormatInt(int64(expectedPermissionFileMode), 8),
-			strconv.FormatInt(int64(actualPermFMode), 8))
-	}
-
-}
-
-func TestFilePermissionConfig_GetPermissionComponents_03(t *testing.T) {
-	expectedTextCode := "-r--r--r--"
-
-	expectedPermissionFileMode := os.FileMode(0444)
-
-	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
-
-	if err != nil {
-		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
-			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
-	}
-
-	expectedOsFilePerm, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeNone())
-
-	if err != nil {
-		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode"+
-			"(OsFilePermCode.ModeNone()).  Error='%v' ", err.Error())
-	}
-
-	actualOsFilePerm, actualPermFMode, err := fPerm.GetPermissionComponents()
-
-	if expectedOsFilePerm != actualOsFilePerm {
-		t.Errorf("Error: Expected OsFilePerm='%v'. Instead, OsFilePerm='%v' ",
-			expectedOsFilePerm.String(), actualOsFilePerm.String())
-	}
-
-	if expectedPermissionFileMode != actualPermFMode {
-		t.Errorf("Error: Expected Permission File Mode Octal Value='%s'. Instead, "+
-			"Permission File Mode Octal Value='%s'",
-			strconv.FormatInt(int64(expectedPermissionFileMode), 8),
-			strconv.FormatInt(int64(actualPermFMode), 8))
-	}
-
-}
-
-func TestFilePermissionConfig_GetPermissionComponents_04(t *testing.T) {
-	expectedTextCode := "dr--r--r--"
-
-	expectedPermissionFileMode := os.FileMode(0444)
-
-	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
-
-	if err != nil {
-		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
-			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
-	}
-
-	expectedOsFilePerm, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeDir())
-
-	if err != nil {
-		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode"+
-			"(OsFilePermCode.ModeNone()).  Error='%v' ", err.Error())
-	}
-
-	actualOsFilePerm, actualPermFMode, err := fPerm.GetPermissionComponents()
-
-	if expectedOsFilePerm != actualOsFilePerm {
-		t.Errorf("Error: Expected OsFilePerm='%v'. Instead, OsFilePerm='%v' ",
-			expectedOsFilePerm.String(), actualOsFilePerm.String())
-	}
-
-	if expectedPermissionFileMode != actualPermFMode {
-		t.Errorf("Error: Expected Permission File Mode Octal Value='%s'. Instead, "+
-			"Permission File Mode Octal Value='%s'",
-			strconv.FormatInt(int64(expectedPermissionFileMode), 8),
-			strconv.FormatInt(int64(actualPermFMode), 8))
-	}
-
-}
-
-func TestFilePermissionConfig_GetPermissionComponents_05(t *testing.T) {
-	expectedTextCode := "--w--w--w-"
-
-	expectedPermissionFileMode := os.FileMode(0222)
-
-	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
-
-	if err != nil {
-		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
-			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
-	}
-
-	expectedOsFilePerm, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeNone())
-
-	if err != nil {
-		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode"+
-			"(OsFilePermCode.ModeNone()).  Error='%v' ", err.Error())
-	}
-
-	actualOsFilePerm, actualPermFMode, err := fPerm.GetPermissionComponents()
-
-	if expectedOsFilePerm != actualOsFilePerm {
-		t.Errorf("Error: Expected OsFilePerm='%v'. Instead, OsFilePerm='%v' ",
-			expectedOsFilePerm.String(), actualOsFilePerm.String())
-	}
-
-	if expectedPermissionFileMode != actualPermFMode {
-		t.Errorf("Error: Expected Permission File Mode Octal Value='%s'. Instead, "+
-			"Permission File Mode Octal Value='%s'",
-			strconv.FormatInt(int64(expectedPermissionFileMode), 8),
-			strconv.FormatInt(int64(actualPermFMode), 8))
-	}
-
-}
-
-func TestFilePermissionConfig_GetPermissionComponents_06(t *testing.T) {
-	expectedTextCode := "d-w--w--w-"
-
-	expectedPermissionFileMode := os.FileMode(0222)
-
-	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
-
-	if err != nil {
-		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
-			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
-	}
-
-	expectedOsFilePerm, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeDir())
-
-	if err != nil {
-		t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode"+
-			"(OsFilePermCode.ModeNone()).  Error='%v' ", err.Error())
-	}
-
-	actualOsFilePerm, actualPermFMode, err := fPerm.GetPermissionComponents()
-
-	if expectedOsFilePerm != actualOsFilePerm {
-		t.Errorf("Error: Expected OsFilePerm='%v'. Instead, OsFilePerm='%v' ",
-			expectedOsFilePerm.String(), actualOsFilePerm.String())
-	}
-
-	if expectedPermissionFileMode != actualPermFMode {
-		t.Errorf("Error: Expected Permission File Mode Octal Value='%s'. Instead, "+
-			"Permission File Mode Octal Value='%s'",
-			strconv.FormatInt(int64(expectedPermissionFileMode), 8),
-			strconv.FormatInt(int64(actualPermFMode), 8))
-	}
-
-}
-
-func TestFilePermissionConfig_GetPermissionComponents_07(t *testing.T) {
-
-	fPerm := FilePermissionConfig{}
-
-	_, _, err := fPerm.GetPermissionComponents()
-
-	if err == nil {
-		t.Error("Expected an error return from fPerm.GetPermissionComponents() " +
-			"because fPerm was not initialized. NO ERROR WAS RETURNED!!")
-	}
-
 }

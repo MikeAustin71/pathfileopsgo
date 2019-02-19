@@ -1,8 +1,93 @@
 package pathfileops
 
 import (
+	"os"
 	"testing"
 )
+
+func TestFilePermissionConfig_IsValid_01(t *testing.T) {
+	// expectedTextCode := "drwxrwxrwx"
+	fh := FileHelper{}
+
+	// drwxrwxrwx   20000000777
+
+	intFMode := fh.ConvertOctalToDecimal(20000000777)
+
+	osFMode := os.FileMode(intFMode)
+
+	fPerm, err := FilePermissionConfig{}.NewByFileMode(osFMode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode(osFMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	fPerm.isInitialized = false
+
+	err = fPerm.IsValid()
+
+	if err == nil {
+		t.Error("Expected an error to be returned by fPerm.IsValid() because " +
+			"fPerm has not been initialized. NO ERROR RETURNED!")
+	}
+
+}
+
+func TestFilePermissionConfig_IsValid_02(t *testing.T) {
+
+	// expectedTextCode := "drwxrwxrwx"
+	fh := FileHelper{}
+
+	// drwxrwxrwx   20000000777
+
+	intFMode := fh.ConvertOctalToDecimal(20000000777)
+
+	osFMode := os.FileMode(intFMode)
+
+	fPerm, err := FilePermissionConfig{}.NewByFileMode(osFMode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode(osFMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	fPerm.fileMode = os.FileMode(01000)
+
+	err = fPerm.IsValid()
+
+	if err == nil {
+		t.Error("Expected an error to be returned by fPerm.IsValid() because " +
+			"fPerm has an INVALID Entry Type. NO ERROR RETURNED!")
+	}
+
+}
+
+func TestFilePermissionConfig_IsValid_03(t *testing.T) {
+
+	// expectedTextCode := "drwxrwxrwx"
+	fh := FileHelper{}
+
+	// drwxrwxrwx   20000000777
+
+	intFMode := fh.ConvertOctalToDecimal(20000000777)
+
+	osFMode := os.FileMode(intFMode)
+
+	fPerm, err := FilePermissionConfig{}.NewByFileMode(osFMode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode(osFMode). "+
+			"Error='%v' ", err.Error())
+	}
+
+	err = fPerm.IsValid()
+
+	if err != nil {
+		t.Errorf("Expected no error to be returned by fPerm.IsValid(). "+
+			"However, an error was returned. Error='%v' ", err.Error())
+	}
+
+}
 
 func TestFilePermissionConfig_NewByComponents_01(t *testing.T) {
 
