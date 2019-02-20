@@ -305,6 +305,30 @@ func TestOsFilePermissionCode_ParseString_14(t *testing.T) {
 
 }
 
+func TestOsFilePermissionCode_ParseString_15(t *testing.T) {
+
+	_, err := OsFilePermCode.ParseString("jUNO924", false)
+
+	if err == nil {
+		t.Error("Expected an error to be returned from  OsFilePermCode." +
+			"ParseString(\"jUNO924\", false) because 'jUNO924' is an invalid text code. " +
+			"However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
+func TestOsFilePermissionCode_ParseString_16(t *testing.T) {
+
+	_, err := OsFilePermCode.ParseString("jUNO924", true)
+
+	if err == nil {
+		t.Error("Expected an error to be returned from  OsFilePermCode." +
+			"ParseString(\"jUNO924\", true) because 'jUNO924' is an invalid text code. " +
+			"However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
 func TestOsFilePermissionCode_String_01(t *testing.T) {
 
 	expectedStr := "ModeDir"

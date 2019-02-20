@@ -850,6 +850,18 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_14(t *testing.T) {
 	}
 }
 
+func TestOsFilePermissionCode_GetFileModeLetterCode_15(t *testing.T) {
+
+	fPerm := OsFilePermissionCode(12577)
+
+	_, err := fPerm.GetFileModeLetterCode()
+
+	if err == nil {
+		t.Errorf("Expected an error return from fPerm.GetFileModeLetterCode() " +
+			"because of an invalid OsFilePermissionCode. However, NO ERROR WAS RETURNED!")
+	}
+}
+
 func TestOsFilePermissionCode_GetNewFromFileMode_01(t *testing.T) {
 
 	expectedFileMode := os.FileMode(0)
@@ -1094,6 +1106,20 @@ func TestOsFilePermissionCode_GetNewFromFileMode_08(t *testing.T) {
 			"expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
 			strconv.FormatInt(int64(expectedFileMode), 8),
 			strconv.FormatInt(int64(osPermCode.Value()), 8))
+	}
+
+}
+
+func TestOsFilePermissionCode_GetNewFromFileMode_09(t *testing.T) {
+
+	fileMode := os.FileMode(12577)
+
+	_, err := OsFilePermCode.GetNewFromFileMode(fileMode)
+
+	if err == nil {
+		t.Error("Expected an error to be returned by OsFilePermCode." +
+			"GetNewFromFileMode(fileMode) because fileMode is invalid. " +
+			"However, NO ERROR WAS RETURNED!")
 	}
 
 }
@@ -1484,6 +1510,20 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_14(t *testing.T) {
 		t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
 			strconv.FormatInt(int64(expected.Value()), 10),
 			strconv.FormatInt(int64(fPerm.Value()), 10))
+	}
+
+}
+
+func TestOsFilePermissionCode_GetNewFromLetterCode_15(t *testing.T) {
+
+	letterCode := "Q"
+
+	_, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
+
+	if err == nil {
+		t.Errorf("Expected an error to be returned by fPerm.GetNewFrom" +
+			"LetterCode(letterCode) because the letter 'Q' is invalid. " +
+			"However, NO ERROR WAS RETURNED!")
 	}
 
 }
