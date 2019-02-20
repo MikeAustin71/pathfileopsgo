@@ -29,11 +29,11 @@ The source code repository for this package is located at:
 package pathfileops
 
 import (
-	"errors"
-	"fmt"
-	"os"
-	"strings"
-	"time"
+  "errors"
+  "fmt"
+  "os"
+  "strings"
+  "time"
 )
 
 // FileSelectionCriteria - Used is selecting file names. These
@@ -41,33 +41,33 @@ import (
 // file should be selected for some type of operation.
 // Example: find files or delete files operations
 type FileSelectionCriteria struct {
-	// FileNamePatterns - a string array containing one or more file matching
-	// patterns. Example '*.txt' '*.log' 'common*.*'
-	FileNamePatterns []string
+  // FileNamePatterns - a string array containing one or more file matching
+  // patterns. Example '*.txt' '*.log' 'common*.*'
+  FileNamePatterns []string
 
-	// FilesOlderThan - Used to select files with a modification less than this date time
-	FilesOlderThan time.Time
+  // FilesOlderThan - Used to select files with a modification less than this date time
+  FilesOlderThan time.Time
 
-	// FilesNewerThan - // Used to select files with a modification greater than this date time
-	FilesNewerThan time.Time
+  // FilesNewerThan - // Used to select files with a modification greater than this date time
+  FilesNewerThan time.Time
 
-	// SelectByFileMode - Used to select files with equivalent os.FileMode values
-	// Note: os.FileMode is an uint32 type.
-	SelectByFileMode os.FileMode
+  // SelectByFileMode - Used to select files with equivalent os.FileMode values
+  // Note: os.FileMode is an uint32 type.
+  SelectByFileMode os.FileMode
 
-	// SelectCriterionMode - Can be one of three values:
-	//
-	// FileSelectMode.None()      = No Operation - No File Select Criterion
-	//                                   mode selected
-	//
-	// FileSelectMode.ANDSelect() = select a file only if ALL
-	//                                   the selection criterion are satisfied.
-	//
-	// FileSelectMode.ORSelect()  = select a file if only ONE
-	//                                   of the selection criterion are satisfied.
-	//
-	// SEE TYPE 'FileSelectCriterionMode'
-	SelectCriterionMode FileSelectCriterionMode
+  // SelectCriterionMode - Can be one of three values:
+  //
+  // FileSelectMode.None()      = No Operation - No File Select Criterion
+  //                                   mode selected
+  //
+  // FileSelectMode.ANDSelect() = select a file only if ALL
+  //                                   the selection criterion are satisfied.
+  //
+  // FileSelectMode.ORSelect()  = select a file if only ONE
+  //                                   of the selection criterion are satisfied.
+  //
+  // SEE TYPE 'FileSelectCriterionMode'
+  SelectCriterionMode FileSelectCriterionMode
 }
 
 // ArePatternsActive - surveys the FileNamePatterns string
@@ -78,24 +78,24 @@ type FileSelectionCriteria struct {
 // length of the pattern string is greater than zero.
 func (fsc *FileSelectionCriteria) ArePatternsActive() bool {
 
-	lPats := len(fsc.FileNamePatterns)
+  lPats := len(fsc.FileNamePatterns)
 
-	if lPats == 0 {
-		return false
-	}
+  if lPats == 0 {
+    return false
+  }
 
-	isActive := false
+  isActive := false
 
-	for i := 0; i < lPats; i++ {
-		fsc.FileNamePatterns[i] =
-			strings.TrimRight(strings.TrimLeft(fsc.FileNamePatterns[i], " "), " ")
-		if fsc.FileNamePatterns[i] != "" {
-			isActive = true
-		}
+  for i := 0; i < lPats; i++ {
+    fsc.FileNamePatterns[i] =
+      strings.TrimRight(strings.TrimLeft(fsc.FileNamePatterns[i], " "), " ")
+    if fsc.FileNamePatterns[i] != "" {
+      isActive = true
+    }
 
-	}
+  }
 
-	return isActive
+  return isActive
 }
 
 // FileInfoPlus - Conforms to the os.FileInfo interface. This structure will store
@@ -103,36 +103,36 @@ func (fsc *FileSelectionCriteria) ArePatternsActive() bool {
 //
 type FileInfoPlus struct {
 
-	// IsFInfoInitialized - Not part of FileInfo interface.
-	// 'true' = structure fields have been properly initialized
-	IsFInfoInitialized bool
+  // IsFInfoInitialized - Not part of FileInfo interface.
+  // 'true' = structure fields have been properly initialized
+  IsFInfoInitialized bool
 
-	// IsDirPathInitialized - Not part of FileInfo interface.
-	//   'true' = structure field 'dirPath' has been successfully initialized
-	IsDirPathInitialized bool
+  // IsDirPathInitialized - Not part of FileInfo interface.
+  //   'true' = structure field 'dirPath' has been successfully initialized
+  IsDirPathInitialized bool
 
-	// CreateTimeStamp - Not part of FileInfo interface.
-	// Date time at which this instance of Type 'FileInfoPlus' was initialized
-	CreateTimeStamp time.Time
+  // CreateTimeStamp - Not part of FileInfo interface.
+  // Date time at which this instance of Type 'FileInfoPlus' was initialized
+  CreateTimeStamp time.Time
 
-	dirPath  string      // Not part of FileInfo interface. Directory path associated with file name
-	fName    string      // FileInfo.Name() base name of the file
-	fSize    int64       // FileInfo.Size() length in bytes for regular files; system-dependent for others
-	fMode    os.FileMode // FileInfo.Mode() file mode bits
-	fModTime time.Time   // FileInfo.ModTime() file modification time
-	isDir    bool        // FileInfo.IsDir() 'true'= this is a directory not a file
-	dataSrc  interface{} // FileInfo.Sys() underlying data source (can return nil)
+  dirPath  string      // Not part of FileInfo interface. Directory path associated with file name
+  fName    string      // FileInfo.Name() base name of the file
+  fSize    int64       // FileInfo.Size() length in bytes for regular files; system-dependent for others
+  fMode    os.FileMode // FileInfo.Mode() file mode bits
+  fModTime time.Time   // FileInfo.ModTime() file modification time
+  isDir    bool        // FileInfo.IsDir() 'true'= this is a directory not a file
+  dataSrc  interface{} // FileInfo.Sys() underlying data source (can return nil)
 }
 
 // Name - base name of the file
 func (fip FileInfoPlus) Name() string {
 
-	return fip.fName
+  return fip.fName
 }
 
 //Size - file length in bytes for regular files; system-dependent for others
 func (fip FileInfoPlus) Size() int64 {
-	return fip.fSize
+  return fip.fSize
 }
 
 // Mode - file mode bits. See os.FileMode
@@ -172,12 +172,12 @@ func (fip FileInfoPlus) Size() int64 {
 // )
 //
 func (fip FileInfoPlus) Mode() os.FileMode {
-	return fip.fMode
+  return fip.fMode
 }
 
 // ModTime - file modification time
 func (fip FileInfoPlus) ModTime() time.Time {
-	return fip.fModTime
+  return fip.fModTime
 }
 
 // IsDir - 'true' = this is a directory,
@@ -186,87 +186,87 @@ func (fip FileInfoPlus) ModTime() time.Time {
 // abbreviation for Mode().IsDir()
 //
 func (fip FileInfoPlus) IsDir() bool {
-	return fip.isDir
+  return fip.isDir
 }
 
 // Sys - underlying data source (can return nil)
 func (fip FileInfoPlus) Sys() interface{} {
-	return fip.dataSrc
+  return fip.dataSrc
 }
 
 // Sys - underlying data source (can return nil)
 func (fip FileInfoPlus) SysAsString() string {
-	if fip.dataSrc == nil {
-		return ""
-	}
+  if fip.dataSrc == nil {
+    return ""
+  }
 
-	str := fmt.Sprintf("%v", fip.dataSrc)
+  str := fmt.Sprintf("%v", fip.dataSrc)
 
-	return str
+  return str
 }
 
 // CopyOut - Creates a copy of the current FileInfoPlus
 // instance and returns it.
 func (fip *FileInfoPlus) CopyOut() FileInfoPlus {
-	newInfo := FileInfoPlus{}
+  newInfo := FileInfoPlus{}
 
-	newInfo.SetName(fip.Name())
-	newInfo.SetSize(fip.Size())
-	newInfo.SetMode(fip.Mode())
-	newInfo.SetModTime(fip.ModTime())
-	newInfo.SetIsDir(fip.IsDir())
-	newInfo.SetSysDataSrc(fip.Sys())
-	_ = newInfo.SetDirectoryPath(fip.DirPath())
-	newInfo.IsFInfoInitialized = fip.IsFInfoInitialized
-	newInfo.IsDirPathInitialized = fip.IsDirPathInitialized
-	newInfo.CreateTimeStamp = fip.CreateTimeStamp
-	return newInfo
+  newInfo.SetName(fip.Name())
+  newInfo.SetSize(fip.Size())
+  newInfo.SetMode(fip.Mode())
+  newInfo.SetModTime(fip.ModTime())
+  newInfo.SetIsDir(fip.IsDir())
+  newInfo.SetSysDataSrc(fip.Sys())
+  _ = newInfo.SetDirectoryPath(fip.DirPath())
+  newInfo.IsFInfoInitialized = fip.IsFInfoInitialized
+  newInfo.IsDirPathInitialized = fip.IsDirPathInitialized
+  newInfo.CreateTimeStamp = fip.CreateTimeStamp
+  return newInfo
 }
 
 // DirPath - Returns the directory path. This field, FileInfoPlus.dirPath,
 // is not part of the standard FileInfo interface.
 func (fip *FileInfoPlus) DirPath() string {
-	return fip.dirPath
+  return fip.dirPath
 }
 
 // Equal - Compares two FileInfoPlus objects to determine
 // if they are equal.
 func (fip *FileInfoPlus) Equal(fip2 *FileInfoPlus) bool {
 
-	if fip.Name() != fip2.Name() ||
-		fip.Size() != fip2.Size() ||
-		fip.Mode() != fip2.Mode() ||
-		fip.ModTime() != fip2.ModTime() ||
-		fip.IsDir() != fip2.IsDir() {
+  if fip.Name() != fip2.Name() ||
+    fip.Size() != fip2.Size() ||
+    fip.Mode() != fip2.Mode() ||
+    fip.ModTime() != fip2.ModTime() ||
+    fip.IsDir() != fip2.IsDir() {
 
-		return false
-	}
+    return false
+  }
 
-	if fip.DirPath() != fip2.DirPath() {
-		return false
-	}
+  if fip.DirPath() != fip2.DirPath() {
+    return false
+  }
 
-	if fip.Sys() == nil && fip2.Sys() == nil {
-		return true
-	}
+  if fip.Sys() == nil && fip2.Sys() == nil {
+    return true
+  }
 
-	if fip.Sys() == nil && fip2.Sys() != nil {
-		return false
-	}
+  if fip.Sys() == nil && fip2.Sys() != nil {
+    return false
+  }
 
-	if fip.Sys() != nil && fip2.Sys() == nil {
-		return false
-	}
+  if fip.Sys() != nil && fip2.Sys() == nil {
+    return false
+  }
 
-	strFipSys := fmt.Sprintf("%v", fip.Sys())
-	strFip2Sys := fmt.Sprintf("%v", fip2.Sys())
+  strFipSys := fmt.Sprintf("%v", fip.Sys())
+  strFip2Sys := fmt.Sprintf("%v", fip2.Sys())
 
-	if strFipSys != strFip2Sys {
+  if strFipSys != strFip2Sys {
 
-		return false
-	}
+    return false
+  }
 
-	return true
+  return true
 
 }
 
@@ -283,16 +283,16 @@ func (fip *FileInfoPlus) Equal(fip2 *FileInfoPlus) bool {
 //  fip is now a newly populated FileInfoPlus instance.
 //
 func (fip FileInfoPlus) NewFromFileInfo(info os.FileInfo) FileInfoPlus {
-	newInfo := FileInfoPlus{}
+  newInfo := FileInfoPlus{}
 
-	newInfo.SetName(info.Name())
-	newInfo.SetSize(info.Size())
-	newInfo.SetMode(info.Mode())
-	newInfo.SetModTime(info.ModTime())
-	newInfo.SetIsDir(info.IsDir())
-	newInfo.SetSysDataSrc(info.Sys())
-	newInfo.SetIsFInfoInitialized(true)
-	return newInfo
+  newInfo.SetName(info.Name())
+  newInfo.SetSize(info.Size())
+  newInfo.SetMode(info.Mode())
+  newInfo.SetModTime(info.ModTime())
+  newInfo.SetIsDir(info.IsDir())
+  newInfo.SetSysDataSrc(info.Sys())
+  newInfo.SetIsFInfoInitialized(true)
+  return newInfo
 }
 
 // NewFromPathFileInfo - Creates and returns a new FileInfoPlus object
@@ -307,73 +307,73 @@ func (fip FileInfoPlus) NewFromFileInfo(info os.FileInfo) FileInfoPlus {
 //  fip is now a newly populated FileInfoPlus instance.
 //
 func (fip FileInfoPlus) NewFromPathFileInfo(
-	dirPath string,
-	info os.FileInfo) FileInfoPlus {
+  dirPath string,
+  info os.FileInfo) FileInfoPlus {
 
-	newInfo := FileInfoPlus{}.NewFromFileInfo(info)
-	_ = newInfo.SetDirectoryPath(dirPath)
-	return newInfo
+  newInfo := FileInfoPlus{}.NewFromFileInfo(info)
+  _ = newInfo.SetDirectoryPath(dirPath)
+  return newInfo
 }
 
 // SetDirectoryPath - Sets the dirPath field. This
 // field is not part of the standard FileInfo data structure.
 func (fip *FileInfoPlus) SetDirectoryPath(dirPath string) error {
-	fh := FileHelper{}
-	dirPath = strings.TrimLeft(strings.TrimRight(dirPath, " "), " ")
+  fh := FileHelper{}
+  dirPath = strings.TrimLeft(strings.TrimRight(dirPath, " "), " ")
 
-	if len(dirPath) == 0 {
-		return fmt.Errorf("FileInfoPlus.SetDirectoryPath() Error: 'dirPath' is a Zero Length String!")
-	}
+  if len(dirPath) == 0 {
+    return fmt.Errorf("FileInfoPlus.SetDirectoryPath() Error: 'dirPath' is a Zero Length String!")
+  }
 
-	dirPath = fh.RemovePathSeparatorFromEndOfPathString(dirPath)
-	fip.dirPath = dirPath
-	fip.IsDirPathInitialized = true
-	return nil
+  dirPath = fh.RemovePathSeparatorFromEndOfPathString(dirPath)
+  fip.dirPath = dirPath
+  fip.IsDirPathInitialized = true
+  return nil
 }
 
 // SetName - Sets the file name field.
 func (fip *FileInfoPlus) SetName(name string) {
-	fip.fName = name
+  fip.fName = name
 }
 
 // SetSize - Sets the file size field
 func (fip *FileInfoPlus) SetSize(fileSize int64) {
-	fip.fSize = fileSize
+  fip.fSize = fileSize
 }
 
 // SetMode - Sets the file Mode
 func (fip *FileInfoPlus) SetMode(fileMode os.FileMode) {
-	fip.fMode = fileMode
+  fip.fMode = fileMode
 }
 
 // SetModTime - Sets the file modification time
 func (fip *FileInfoPlus) SetModTime(fileModTime time.Time) {
-	fip.fModTime = fileModTime
+  fip.fModTime = fileModTime
 }
 
 // SetIsDir - Sets is directory field.
 func (fip *FileInfoPlus) SetIsDir(isDir bool) {
-	fip.isDir = isDir
+  fip.isDir = isDir
 }
 
 // SetSysDataSrc - Sets the dataSrc field
 func (fip *FileInfoPlus) SetSysDataSrc(sysDataSrc interface{}) {
-	fip.dataSrc = sysDataSrc
+  fip.dataSrc = sysDataSrc
 }
 
 // SetIsFInfoInitialized - Sets the flag for 'Is File Info Initialized'
 // If set to 'true' it means that all of the File Info fields have
 // been initialized.
 func (fip *FileInfoPlus) SetIsFInfoInitialized(isInitialized bool) {
-	if !isInitialized {
-		fip.IsFInfoInitialized = false
-		fip.CreateTimeStamp = time.Time{}
-		return
-	}
+  if !isInitialized {
+    fip.IsFInfoInitialized = false
+    fip.CreateTimeStamp = time.Time{}
+    return
+  }
 
-	fip.IsFInfoInitialized = true
-	fip.CreateTimeStamp = time.Now().Local()
-	return
+  fip.IsFInfoInitialized = true
+  fip.CreateTimeStamp = time.Now().Local()
+  return
 }
 
 // DirectoryTreeInfo - structure used
@@ -388,11 +388,11 @@ func (fip *FileInfoPlus) SetIsFInfoInitialized(isInitialized bool) {
 // criteria.
 //
 type DirectoryTreeInfo struct {
-	StartPath          string
-	Directories        DirMgrCollection
-	FoundFiles         FileMgrCollection
-	ErrReturns         []string
-	FileSelectCriteria FileSelectionCriteria
+  StartPath          string
+  Directories        DirMgrCollection
+  FoundFiles         FileMgrCollection
+  ErrReturns         []string
+  FileSelectCriteria FileSelectionCriteria
 }
 
 // CopyToDirectoryTree - Copies an entire directory tree to an alternate location.
@@ -400,86 +400,86 @@ type DirectoryTreeInfo struct {
 // tree.
 func (dirTree *DirectoryTreeInfo) CopyToDirectoryTree(baseDir, newBaseDir DirMgr) (DirectoryTreeInfo, error) {
 
-	ePrefix := "DirectoryTreeInfo.CopyToDirectoryTree() "
+  ePrefix := "DirectoryTreeInfo.CopyToDirectoryTree() "
 
-	newDirTree := DirectoryTreeInfo{}
+  newDirTree := DirectoryTreeInfo{}
 
-	if !baseDir.isInitialized {
-		return newDirTree, errors.New(ePrefix + "Error: Input parameter 'baseDir' is NOT initialized. It is EMPTY!")
-	}
+  if !baseDir.isInitialized {
+    return newDirTree, errors.New(ePrefix + "Error: Input parameter 'baseDir' is NOT initialized. It is EMPTY!")
+  }
 
-	err2 := baseDir.IsDirMgrValid("")
+  err2 := baseDir.IsDirMgrValid("")
 
-	if err2 != nil {
-		return newDirTree, fmt.Errorf(ePrefix+"Error: Input Parameter 'baseDir' is INVALID! Error='%v'", err2.Error())
-	}
+  if err2 != nil {
+    return newDirTree, fmt.Errorf(ePrefix+"Error: Input Parameter 'baseDir' is INVALID! Error='%v'", err2.Error())
+  }
 
-	if !newBaseDir.isInitialized {
-		return newDirTree, errors.New(ePrefix + "Error: Input parameter 'newBaseDir' is NOT initialized. It is EMPTY!")
+  if !newBaseDir.isInitialized {
+    return newDirTree, errors.New(ePrefix + "Error: Input parameter 'newBaseDir' is NOT initialized. It is EMPTY!")
 
-	}
+  }
 
-	err2 = newBaseDir.IsDirMgrValid("")
+  err2 = newBaseDir.IsDirMgrValid("")
 
-	if err2 != nil {
-		return newDirTree, fmt.Errorf(ePrefix+"Error: Input Parameter 'newBaseDir' is INVALID! Error='%v'", err2.Error())
-	}
+  if err2 != nil {
+    return newDirTree, fmt.Errorf(ePrefix+"Error: Input Parameter 'newBaseDir' is INVALID! Error='%v'", err2.Error())
+  }
 
-	err2 = newBaseDir.MakeDir()
+  err2 = newBaseDir.MakeDir()
 
-	if err2 != nil {
-		return newDirTree, fmt.Errorf(ePrefix+"Error returned from  newBaseDir.MakeDir(). newBaseDir.absolutePath='%v'  Error='%v'", newBaseDir.absolutePath, err2.Error())
-	}
+  if err2 != nil {
+    return newDirTree, fmt.Errorf(ePrefix+"Error returned from  newBaseDir.MakeDir(). newBaseDir.absolutePath='%v'  Error='%v'", newBaseDir.absolutePath, err2.Error())
+  }
 
-	lAry := len(dirTree.Directories.dirMgrs)
+  lAry := len(dirTree.Directories.dirMgrs)
 
-	// Make the new Directory Tree
-	for i := 0; i < lAry; i++ {
+  // Make the new Directory Tree
+  for i := 0; i < lAry; i++ {
 
-		newDMgr, err2 := dirTree.Directories.dirMgrs[i].SubstituteBaseDir(baseDir, newBaseDir)
+    newDMgr, err2 := dirTree.Directories.dirMgrs[i].SubstituteBaseDir(baseDir, newBaseDir)
 
-		if err2 != nil {
-			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned from SubstituteBaseDir(baseDir, newBaseDir). i='%v' Error='%v'", i, err2.Error())
-		}
+    if err2 != nil {
+      return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned from SubstituteBaseDir(baseDir, newBaseDir). i='%v' Error='%v'", i, err2.Error())
+    }
 
-		err2 = newDMgr.MakeDir()
+    err2 = newDMgr.MakeDir()
 
-		if err2 != nil {
-			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned fromnewDMgr.MakeDir()  Error='%v'", err2.Error())
+    if err2 != nil {
+      return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned fromnewDMgr.MakeDir()  Error='%v'", err2.Error())
 
-		}
+    }
 
-		newDirTree.Directories.AddDirMgr(newDMgr)
+    newDirTree.Directories.AddDirMgr(newDMgr)
 
-	}
+  }
 
-	lAry = len(dirTree.FoundFiles.fileMgrs)
+  lAry = len(dirTree.FoundFiles.fileMgrs)
 
-	for j := 0; j < lAry; j++ {
+  for j := 0; j < lAry; j++ {
 
-		fileDMgr, err2 := dirTree.FoundFiles.fileMgrs[j].dMgr.SubstituteBaseDir(baseDir, newBaseDir)
+    fileDMgr, err2 := dirTree.FoundFiles.fileMgrs[j].dMgr.SubstituteBaseDir(baseDir, newBaseDir)
 
-		if err2 != nil {
-			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by dirTree.FoundFiles.fileMgrs[j].dMgr.SubstituteBaseDir(baseDir, newBaseDir). Error='%v'", err2.Error())
-		}
+    if err2 != nil {
+      return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by dirTree.FoundFiles.fileMgrs[j].dMgr.SubstituteBaseDir(baseDir, newBaseDir). Error='%v'", err2.Error())
+    }
 
-		newFileMgr, err2 := FileMgr{}.NewFromDirMgrFileNameExt(fileDMgr, dirTree.FoundFiles.fileMgrs[j].fileNameExt)
+    newFileMgr, err2 := FileMgr{}.NewFromDirMgrFileNameExt(fileDMgr, dirTree.FoundFiles.fileMgrs[j].fileNameExt)
 
-		if err2 != nil {
-			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by FileMgr{}.NewFromDirMgrFileNameExt(dMgr, dirTree.FoundFiles.fileMgrs[j].fileNameExt) dirTree.FoundFiles.fileMgrs[j].fileNameExt='%v' j='%v' Error='%v'", dirTree.FoundFiles.fileMgrs[j].fileNameExt, j, err2.Error())
-		}
+    if err2 != nil {
+      return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by FileMgr{}.NewFromDirMgrFileNameExt(dMgr, dirTree.FoundFiles.fileMgrs[j].fileNameExt) dirTree.FoundFiles.fileMgrs[j].fileNameExt='%v' j='%v' Error='%v'", dirTree.FoundFiles.fileMgrs[j].fileNameExt, j, err2.Error())
+    }
 
-		err2 = dirTree.FoundFiles.fileMgrs[j].CopyFileMgrByIoByLink(&newFileMgr)
+    err2 = dirTree.FoundFiles.fileMgrs[j].CopyFileMgrByIoByLink(&newFileMgr)
 
-		if err2 != nil {
-			return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by fileMgrs[j].CopyFileMgrByIoByLink(&newFileMgr) SrcFileName:'%v'  DestFileName:'%v' Error='%v'", dirTree.FoundFiles.fileMgrs[j].fileNameExt, newFileMgr.fileNameExt, err2.Error())
+    if err2 != nil {
+      return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by fileMgrs[j].CopyFileMgrByIoByLink(&newFileMgr) SrcFileName:'%v'  DestFileName:'%v' Error='%v'", dirTree.FoundFiles.fileMgrs[j].fileNameExt, newFileMgr.fileNameExt, err2.Error())
 
-		}
+    }
 
-		newDirTree.FoundFiles.AddFileMgr(newFileMgr)
-	}
+    newDirTree.FoundFiles.AddFileMgr(newFileMgr)
+  }
 
-	return newDirTree, nil
+  return newDirTree, nil
 }
 
 // DirectoryDeleteFileInfo - structure used
@@ -492,9 +492,9 @@ func (dirTree *DirectoryTreeInfo) CopyToDirectoryTree(baseDir, newBaseDir DirMgr
 // FilesOlderThan or FilesNewerThan date time parameters
 // which can be used as file selection criteria.
 type DirectoryDeleteFileInfo struct {
-	StartPath                string
-	Directories              DirMgrCollection
-	ErrReturns               []string
-	DeleteFileSelectCriteria FileSelectionCriteria
-	DeletedFiles             FileMgrCollection
+  StartPath                string
+  Directories              DirMgrCollection
+  ErrReturns               []string
+  DeleteFileSelectCriteria FileSelectionCriteria
+  DeletedFiles             FileMgrCollection
 }

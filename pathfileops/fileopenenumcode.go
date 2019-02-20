@@ -1,19 +1,19 @@
 package pathfileops
 
 import (
-	"errors"
-	"fmt"
-	"os"
-	"reflect"
-	"strings"
+  "errors"
+  "fmt"
+  "os"
+  "reflect"
+  "strings"
 )
 
 type FileOpenConfig struct {
-	isInitialized bool
+  isInitialized bool
 
-	fileOpenType FileOpenType
+  fileOpenType FileOpenType
 
-	fileOpenModes []FileOpenMode
+  fileOpenModes []FileOpenMode
 }
 
 // CopyIn - Receives a FileOpenConfig instance and copies all the data
@@ -24,30 +24,30 @@ type FileOpenConfig struct {
 //
 func (fOpenStat *FileOpenConfig) CopyIn(fOpStat2 FileOpenConfig) {
 
-	if fOpenStat.fileOpenModes == nil {
-		fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
-	}
+  if fOpenStat.fileOpenModes == nil {
+    fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+  }
 
-	if fOpStat2.fileOpenModes == nil {
-		fOpStat2.fileOpenModes = make([]FileOpenMode, 0)
-	}
+  if fOpStat2.fileOpenModes == nil {
+    fOpStat2.fileOpenModes = make([]FileOpenMode, 0)
+  }
 
-	fOpenStat.isInitialized = fOpStat2.isInitialized
-	fOpenStat.fileOpenType = fOpStat2.fileOpenType
+  fOpenStat.isInitialized = fOpStat2.isInitialized
+  fOpenStat.fileOpenType = fOpStat2.fileOpenType
 
-	lenFOpStat2FOpenModes := len(fOpStat2.fileOpenModes)
+  lenFOpStat2FOpenModes := len(fOpStat2.fileOpenModes)
 
-	if lenFOpStat2FOpenModes == 0 {
-		fOpStat2.fileOpenModes = make([]FileOpenMode, 1)
-		fOpStat2.fileOpenModes[0] = FOpenMode.None()
-		lenFOpStat2FOpenModes = 1
-	}
+  if lenFOpStat2FOpenModes == 0 {
+    fOpStat2.fileOpenModes = make([]FileOpenMode, 1)
+    fOpStat2.fileOpenModes[0] = FOpenMode.None()
+    lenFOpStat2FOpenModes = 1
+  }
 
-	fOpenStat.fileOpenModes = make([]FileOpenMode, lenFOpStat2FOpenModes)
+  fOpenStat.fileOpenModes = make([]FileOpenMode, lenFOpStat2FOpenModes)
 
-	for i := 0; i < lenFOpStat2FOpenModes; i++ {
-		fOpenStat.fileOpenModes[i] = fOpStat2.fileOpenModes[i]
-	}
+  for i := 0; i < lenFOpStat2FOpenModes; i++ {
+    fOpenStat.fileOpenModes[i] = fOpStat2.fileOpenModes[i]
+  }
 
 }
 
@@ -55,27 +55,27 @@ func (fOpenStat *FileOpenConfig) CopyIn(fOpStat2 FileOpenConfig) {
 // FileOpenConfig instance.
 func (fOpenStat *FileOpenConfig) CopyOut() FileOpenConfig {
 
-	if fOpenStat.fileOpenModes == nil {
-		fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
-	}
+  if fOpenStat.fileOpenModes == nil {
+    fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+  }
 
-	fOpStat2 := FileOpenConfig{}
-	fOpStat2.isInitialized = fOpenStat.isInitialized
-	fOpStat2.fileOpenType = fOpenStat.fileOpenType
-	lenFOpenModes := len(fOpenStat.fileOpenModes)
+  fOpStat2 := FileOpenConfig{}
+  fOpStat2.isInitialized = fOpenStat.isInitialized
+  fOpStat2.fileOpenType = fOpenStat.fileOpenType
+  lenFOpenModes := len(fOpenStat.fileOpenModes)
 
-	if lenFOpenModes == 0 {
-		fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, FOpenMode.None())
-		lenFOpenModes = 1
-	}
+  if lenFOpenModes == 0 {
+    fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, FOpenMode.None())
+    lenFOpenModes = 1
+  }
 
-	fOpStat2.fileOpenModes = make([]FileOpenMode, lenFOpenModes)
+  fOpStat2.fileOpenModes = make([]FileOpenMode, lenFOpenModes)
 
-	for i := 0; i < lenFOpenModes; i++ {
-		fOpStat2.fileOpenModes[i] = fOpenStat.fileOpenModes[i]
-	}
+  for i := 0; i < lenFOpenModes; i++ {
+    fOpStat2.fileOpenModes[i] = fOpenStat.fileOpenModes[i]
+  }
 
-	return fOpStat2
+  return fOpStat2
 }
 
 // Empty - ReInitializes the current FileOpenConfig instance to
@@ -83,13 +83,13 @@ func (fOpenStat *FileOpenConfig) CopyOut() FileOpenConfig {
 //
 func (fOpenStat *FileOpenConfig) Empty() {
 
-	fOpenStat.isInitialized = false
+  fOpenStat.isInitialized = false
 
-	fOpenStat.fileOpenType = FOpenType.None()
+  fOpenStat.fileOpenType = FOpenType.None()
 
-	fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+  fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
 
-	fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, FOpenMode.None())
+  fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, FOpenMode.None())
 
 }
 
@@ -98,43 +98,43 @@ func (fOpenStat *FileOpenConfig) Empty() {
 //
 func (fOpenStat *FileOpenConfig) Equal(fOpStat2 FileOpenConfig) bool {
 
-	if fOpenStat.fileOpenModes == nil {
-		fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
-	}
+  if fOpenStat.fileOpenModes == nil {
+    fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+  }
 
-	if fOpStat2.fileOpenModes == nil {
-		fOpStat2.fileOpenModes = make([]FileOpenMode, 0)
-	}
+  if fOpStat2.fileOpenModes == nil {
+    fOpStat2.fileOpenModes = make([]FileOpenMode, 0)
+  }
 
-	if fOpenStat.isInitialized != fOpStat2.isInitialized {
-		return false
-	}
+  if fOpenStat.isInitialized != fOpStat2.isInitialized {
+    return false
+  }
 
-	lenFileOpenModes := len(fOpenStat.fileOpenModes)
+  lenFileOpenModes := len(fOpenStat.fileOpenModes)
 
-	if lenFileOpenModes != len(fOpStat2.fileOpenModes) {
-		return false
-	}
+  if lenFileOpenModes != len(fOpStat2.fileOpenModes) {
+    return false
+  }
 
-	if fOpenStat.fileOpenType != fOpStat2.fileOpenType {
-		return false
-	}
+  if fOpenStat.fileOpenType != fOpStat2.fileOpenType {
+    return false
+  }
 
-	for i := 0; i < lenFileOpenModes; i++ {
-		isFound := false
+  for i := 0; i < lenFileOpenModes; i++ {
+    isFound := false
 
-		for j := 0; j < lenFileOpenModes; j++ {
-			if fOpStat2.fileOpenModes[j] == fOpenStat.fileOpenModes[i] {
-				isFound = true
-			}
-		}
+    for j := 0; j < lenFileOpenModes; j++ {
+      if fOpStat2.fileOpenModes[j] == fOpenStat.fileOpenModes[i] {
+        isFound = true
+      }
+    }
 
-		if !isFound {
-			return false
-		}
-	}
+    if !isFound {
+      return false
+    }
+  }
 
-	return true
+  return true
 }
 
 // New - Creates and returns a fully initialized FileOpenConfig instance.
@@ -168,46 +168,46 @@ func (fOpenStat *FileOpenConfig) Equal(fOpStat2 FileOpenConfig) bool {
 //
 func (fOpenStat FileOpenConfig) New(fOpenType FileOpenType, fOpenModes ...FileOpenMode) (FileOpenConfig, error) {
 
-	ePrefix := "FileOpenConfig.New() "
+  ePrefix := "FileOpenConfig.New() "
 
-	err := fOpenType.IsValid()
+  err := fOpenType.IsValid()
 
-	if err != nil {
-		return FileOpenConfig{},
-			fmt.Errorf(ePrefix+"Error: Input parameter 'fOpenType' is INVALID! fOpenType='%v' ", err.Error())
-	}
-	resultFOpenStatus := FileOpenConfig{}
+  if err != nil {
+    return FileOpenConfig{},
+      fmt.Errorf(ePrefix+"Error: Input parameter 'fOpenType' is INVALID! fOpenType='%v' ", err.Error())
+  }
+  resultFOpenStatus := FileOpenConfig{}
 
-	resultFOpenStatus.fileOpenType = fOpenType
+  resultFOpenStatus.fileOpenType = fOpenType
 
-	resultFOpenStatus.fileOpenModes = make([]FileOpenMode, 0)
+  resultFOpenStatus.fileOpenModes = make([]FileOpenMode, 0)
 
-	if len(fOpenModes) == 0 {
+  if len(fOpenModes) == 0 {
 
-		resultFOpenStatus.fileOpenModes = append(resultFOpenStatus.fileOpenModes, FOpenMode.None())
+    resultFOpenStatus.fileOpenModes = append(resultFOpenStatus.fileOpenModes, FOpenMode.None())
 
-		resultFOpenStatus.isInitialized = true
+    resultFOpenStatus.isInitialized = true
 
-		return resultFOpenStatus, nil
-	}
+    return resultFOpenStatus, nil
+  }
 
-	for idx, mode := range fOpenModes {
+  for idx, mode := range fOpenModes {
 
-		err = mode.IsValid()
+    err = mode.IsValid()
 
-		if err != nil {
-			return FileOpenConfig{},
-				fmt.Errorf(ePrefix+
-					"Error: Input parameter 'fOpenModes' contains an invalid FileOpenMode. Index='%v' ", idx)
-		}
+    if err != nil {
+      return FileOpenConfig{},
+        fmt.Errorf(ePrefix+
+          "Error: Input parameter 'fOpenModes' contains an invalid FileOpenMode. Index='%v' ", idx)
+    }
 
-		resultFOpenStatus.fileOpenModes = append(resultFOpenStatus.fileOpenModes, mode)
+    resultFOpenStatus.fileOpenModes = append(resultFOpenStatus.fileOpenModes, mode)
 
-	}
+  }
 
-	resultFOpenStatus.isInitialized = true
+  resultFOpenStatus.isInitialized = true
 
-	return resultFOpenStatus, nil
+  return resultFOpenStatus, nil
 }
 
 // GetCompositeFileOpenCode - Returns the composite 'file open' code. This code
@@ -216,79 +216,79 @@ func (fOpenStat FileOpenConfig) New(fOpenType FileOpenType, fOpenModes ...FileOp
 //
 func (fOpenStat *FileOpenConfig) GetCompositeFileOpenCode() (int, error) {
 
-	ePrefix := "FileOpenConfig.GetCompositeFileOpenCode() "
+  ePrefix := "FileOpenConfig.GetCompositeFileOpenCode() "
 
-	if !fOpenStat.isInitialized {
-		return -1,
-			errors.New(ePrefix + "Error: The current FileOpenConfig instance is INVALID!")
-	}
+  if !fOpenStat.isInitialized {
+    return -1,
+      errors.New(ePrefix + "Error: The current FileOpenConfig instance is INVALID!")
+  }
 
-	if fOpenStat.fileOpenType == FileOpenType(0).None() {
-		return -1,
-			errors.New(ePrefix + "Error: The stored FileOpenType == 'None'. A valid FileOpenType is required!")
-	}
+  if fOpenStat.fileOpenType == FileOpenType(0).None() {
+    return -1,
+      errors.New(ePrefix + "Error: The stored FileOpenType == 'None'. A valid FileOpenType is required!")
+  }
 
-	err := fOpenStat.fileOpenType.IsValid()
+  err := fOpenStat.fileOpenType.IsValid()
 
-	if err != nil {
-		return -1,
-			fmt.Errorf(ePrefix+
-				"Error: The stored FileOpenType is INVALID! FileOpenType='%v' ",
-				fOpenStat.fileOpenType.Value())
-	}
+  if err != nil {
+    return -1,
+      fmt.Errorf(ePrefix+
+        "Error: The stored FileOpenType is INVALID! FileOpenType='%v' ",
+        fOpenStat.fileOpenType.Value())
+  }
 
-	if fOpenStat.fileOpenModes == nil {
-		fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
-	}
+  if fOpenStat.fileOpenModes == nil {
+    fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+  }
 
-	lenFileOpenModes := len(fOpenStat.fileOpenModes)
+  lenFileOpenModes := len(fOpenStat.fileOpenModes)
 
-	if lenFileOpenModes == 0 {
-		return fOpenStat.fileOpenType.Value(), nil
-	}
+  if lenFileOpenModes == 0 {
+    return fOpenStat.fileOpenType.Value(), nil
+  }
 
-	if lenFileOpenModes == 1 &&
-		fOpenStat.fileOpenModes[0] == FileOpenMode(0).None() {
+  if lenFileOpenModes == 1 &&
+    fOpenStat.fileOpenModes[0] == FileOpenMode(0).None() {
 
-		return fOpenStat.fileOpenType.Value(), nil
+    return fOpenStat.fileOpenType.Value(), nil
 
-	}
+  }
 
-	fileOpenVal := fOpenStat.fileOpenType.Value()
+  fileOpenVal := fOpenStat.fileOpenType.Value()
 
-	for i := 0; i < lenFileOpenModes; i++ {
-		fileOpenVal = fileOpenVal | fOpenStat.fileOpenModes[i].Value()
-	}
+  for i := 0; i < lenFileOpenModes; i++ {
+    fileOpenVal = fileOpenVal | fOpenStat.fileOpenModes[i].Value()
+  }
 
-	return fileOpenVal, nil
+  return fileOpenVal, nil
 }
 
 // GetFileOpenModes - Returns a array of stored FileOpenMode values
 func (fOpenStat *FileOpenConfig) GetFileOpenModes() []FileOpenMode {
 
-	if fOpenStat.fileOpenModes == nil {
-		fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
-	}
+  if fOpenStat.fileOpenModes == nil {
+    fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+  }
 
-	if len(fOpenStat.fileOpenModes) == 0 {
-		fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, FileOpenMode(0).None())
-	}
+  if len(fOpenStat.fileOpenModes) == 0 {
+    fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, FileOpenMode(0).None())
+  }
 
-	resultAry := make([]FileOpenMode, 0)
+  resultAry := make([]FileOpenMode, 0)
 
-	resultAry = append(resultAry, fOpenStat.fileOpenModes...)
+  resultAry = append(resultAry, fOpenStat.fileOpenModes...)
 
-	return resultAry
+  return resultAry
 }
 
 // GetFileOpenType - Returns the stored FileOpenType value.
 func (fOpenStat *FileOpenConfig) GetFileOpenType() FileOpenType {
 
-	if fOpenStat.fileOpenModes == nil {
-		fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
-	}
+  if fOpenStat.fileOpenModes == nil {
+    fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+  }
 
-	return fOpenStat.fileOpenType
+  return fOpenStat.fileOpenType
 }
 
 // IsValid - If the current FileOpenConfig is valid and properly
@@ -296,66 +296,66 @@ func (fOpenStat *FileOpenConfig) GetFileOpenType() FileOpenType {
 // instance is invalid, this method returns an error.
 func (fOpenStat *FileOpenConfig) IsValid() error {
 
-	ePrefix := "FileOpenConfig.IsValid() "
+  ePrefix := "FileOpenConfig.IsValid() "
 
-	if fOpenStat.fileOpenModes == nil {
-		fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
-	}
+  if fOpenStat.fileOpenModes == nil {
+    fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+  }
 
-	if !fOpenStat.isInitialized {
-		return errors.New(ePrefix +
-			"Error: The current FileOpenConfig instance has NOT been " +
-			"properly initialized.")
-	}
+  if !fOpenStat.isInitialized {
+    return errors.New(ePrefix +
+      "Error: The current FileOpenConfig instance has NOT been " +
+      "properly initialized.")
+  }
 
-	err := fOpenStat.fileOpenType.IsValid()
+  err := fOpenStat.fileOpenType.IsValid()
 
-	if err != nil {
-		return fmt.Errorf(ePrefix+
-			"Error: The File Open Type is INVALID!. %v", err.Error())
-	}
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Error: The File Open Type is INVALID!. %v", err.Error())
+  }
 
-	lenFileOpenModes := len(fOpenStat.fileOpenModes)
+  lenFileOpenModes := len(fOpenStat.fileOpenModes)
 
-	if fOpenStat.fileOpenType == FOpenType.None() &&
-		lenFileOpenModes > 1 {
-		return errors.New(ePrefix +
-			"Error: Current FileOpenConfig has Type='None' and " +
-			"multiple File Open Modes!")
-	}
+  if fOpenStat.fileOpenType == FOpenType.None() &&
+    lenFileOpenModes > 1 {
+    return errors.New(ePrefix +
+      "Error: Current FileOpenConfig has Type='None' and " +
+      "multiple File Open Modes!")
+  }
 
-	if fOpenStat.fileOpenType == FOpenType.None() &&
-		lenFileOpenModes == 1 &&
-		fOpenStat.fileOpenModes[0] != FileOpenMode(0).None() {
-		return errors.New(ePrefix +
-			"Error: Current FileOpenConfig has Type='None' and " +
-			"a valid File Open Mode")
-	}
+  if fOpenStat.fileOpenType == FOpenType.None() &&
+    lenFileOpenModes == 1 &&
+    fOpenStat.fileOpenModes[0] != FileOpenMode(0).None() {
+    return errors.New(ePrefix +
+      "Error: Current FileOpenConfig has Type='None' and " +
+      "a valid File Open Mode")
+  }
 
-	if fOpenStat.fileOpenType != FOpenType.None() {
+  if fOpenStat.fileOpenType != FOpenType.None() {
 
-		for i := 0; i < lenFileOpenModes; i++ {
-			if fOpenStat.fileOpenModes[i] == FileOpenMode(0).None() {
-				return errors.New(ePrefix + "Error: The File Open Status has multiple File Open Modes " +
-					"one of which is 'None'. Resolve this conflict.")
-			}
-		}
+    for i := 0; i < lenFileOpenModes; i++ {
+      if fOpenStat.fileOpenModes[i] == FileOpenMode(0).None() {
+        return errors.New(ePrefix + "Error: The File Open Status has multiple File Open Modes " +
+          "one of which is 'None'. Resolve this conflict.")
+      }
+    }
 
-	}
+  }
 
-	for i := 0; i < lenFileOpenModes; i++ {
+  for i := 0; i < lenFileOpenModes; i++ {
 
-		err := fOpenStat.fileOpenModes[i].IsValid()
+    err := fOpenStat.fileOpenModes[i].IsValid()
 
-		if err != nil {
-			return fmt.Errorf(ePrefix+
-				"Error: A File Open Mode is INVALID! Index='%v' "+
-				"Invalid Error='%v' ", i, err.Error())
-		}
+    if err != nil {
+      return fmt.Errorf(ePrefix+
+        "Error: A File Open Mode is INVALID! Index='%v' "+
+        "Invalid Error='%v' ", i, err.Error())
+    }
 
-	}
+  }
 
-	return nil
+  return nil
 }
 
 // SetFileOpenType - Receives an input parameter 'fOpenType' which is
@@ -363,28 +363,28 @@ func (fOpenStat *FileOpenConfig) IsValid() error {
 // instance.
 func (fOpenStat *FileOpenConfig) SetFileOpenType(fOpenType FileOpenType) error {
 
-	ePrefix := "FileOpenConfig.SetFileOpenType() "
+  ePrefix := "FileOpenConfig.SetFileOpenType() "
 
-	err := fOpenType.IsValid()
+  err := fOpenType.IsValid()
 
-	if fOpenStat.fileOpenModes == nil {
-		fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
-	}
+  if fOpenStat.fileOpenModes == nil {
+    fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+  }
 
-	if err != nil {
-		return fmt.Errorf(ePrefix+"Input parameter 'fOpenType' is INVALID! fOpenType='%v' ",
-			fOpenType.Value())
-	}
+  if err != nil {
+    return fmt.Errorf(ePrefix+"Input parameter 'fOpenType' is INVALID! fOpenType='%v' ",
+      fOpenType.Value())
+  }
 
-	if fOpenType == FileOpenType(0).None() {
-		fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
-	}
+  if fOpenType == FileOpenType(0).None() {
+    fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+  }
 
-	fOpenStat.fileOpenType = fOpenType
+  fOpenStat.fileOpenType = fOpenType
 
-	fOpenStat.isInitialized = true
+  fOpenStat.isInitialized = true
 
-	return nil
+  return nil
 }
 
 // SetFileOpenModes - Receives a series of FileOpenMode instances and
@@ -395,22 +395,22 @@ func (fOpenStat *FileOpenConfig) SetFileOpenType(fOpenType FileOpenType) error {
 //
 func (fOpenStat *FileOpenConfig) SetFileOpenModes(fOpenModes ...FileOpenMode) {
 
-	if fOpenStat.fileOpenModes == nil {
-		fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
-	}
+  if fOpenStat.fileOpenModes == nil {
+    fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+  }
 
-	if len(fOpenModes) == 0 {
-		fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
-		return
-	}
+  if len(fOpenModes) == 0 {
+    fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+    return
+  }
 
-	fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
+  fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
 
-	fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, fOpenModes...)
+  fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, fOpenModes...)
 
-	fOpenStat.isInitialized = true
+  fOpenStat.isInitialized = true
 
-	return
+  return
 }
 
 // mFileOpenTypeIntToString - This map is used to map enumeration values
@@ -470,18 +470,18 @@ func (fOpenType FileOpenType) ReadWrite() FileOpenType { return FileOpenType(os.
 //
 func (fOpenType FileOpenType) IsValid() error {
 
-	fOpenType.checkInitializeMaps(false)
+  fOpenType.checkInitializeMaps(false)
 
-	_, ok := mFileOpenTypeIntToString[int(fOpenType)]
+  _, ok := mFileOpenTypeIntToString[int(fOpenType)]
 
-	if !ok {
-		ePrefix := "FileOpenType.IsValid() "
-		return fmt.Errorf(ePrefix+
-			"Error: Invalid FileOpenType! Current FileOpenType='%v'",
-			fOpenType)
-	}
+  if !ok {
+    ePrefix := "FileOpenType.IsValid() "
+    return fmt.Errorf(ePrefix+
+      "Error: Invalid FileOpenType! Current FileOpenType='%v'",
+      fOpenType)
+  }
 
-	return nil
+  return nil
 }
 
 // ParseString - Receives a string and attempts to match it with
@@ -533,50 +533,50 @@ func (fOpenType FileOpenType) IsValid() error {
 //	    t is now equal to FileOpenType(0).ReadOnly()
 //
 func (fOpenType FileOpenType) ParseString(
-	valueString string,
-	caseSensitive bool) (FileOpenType, error) {
+  valueString string,
+  caseSensitive bool) (FileOpenType, error) {
 
-	ePrefix := "FileOpenType.ParseString() "
+  ePrefix := "FileOpenType.ParseString() "
 
-	fOpenType.checkInitializeMaps(false)
+  fOpenType.checkInitializeMaps(false)
 
-	result := FileOpenType(0)
-	if len(valueString) < 3 {
-		return result,
-			fmt.Errorf(ePrefix+
-				"Input parameter 'valueString' is INVALID! valueString='%v' ", valueString)
-	}
+  result := FileOpenType(0)
+  if len(valueString) < 3 {
+    return result,
+      fmt.Errorf(ePrefix+
+        "Input parameter 'valueString' is INVALID! valueString='%v' ", valueString)
+  }
 
-	var ok bool
-	var idx int
+  var ok bool
+  var idx int
 
-	if caseSensitive {
+  if caseSensitive {
 
-		idx, ok = mFileOpenTypeStringToInt[valueString]
+    idx, ok = mFileOpenTypeStringToInt[valueString]
 
-		if !ok {
-			return FileOpenType(0),
-				fmt.Errorf(ePrefix+
-					"'valueString' did NOT MATCH a FileOpenType. valueString='%v' ", valueString)
-		}
+    if !ok {
+      return FileOpenType(0),
+        fmt.Errorf(ePrefix+
+          "'valueString' did NOT MATCH a FileOpenType. valueString='%v' ", valueString)
+    }
 
-		result = FileOpenType(idx)
+    result = FileOpenType(idx)
 
-	} else {
+  } else {
 
-		idx, ok = mFileOpenTypeLwrCaseStringToInt[strings.ToLower(valueString)]
+    idx, ok = mFileOpenTypeLwrCaseStringToInt[strings.ToLower(valueString)]
 
-		if !ok {
-			return FileOpenType(0),
-				fmt.Errorf(ePrefix+
-					"'valueString' did NOT MATCH a FileOpenType. valueString='%v' ", valueString)
-		}
+    if !ok {
+      return FileOpenType(0),
+        fmt.Errorf(ePrefix+
+          "'valueString' did NOT MATCH a FileOpenType. valueString='%v' ", valueString)
+    }
 
-		result =
-			FileOpenType(idx)
-	}
+    result =
+      FileOpenType(idx)
+  }
 
-	return result, nil
+  return result, nil
 }
 
 // String - Returns a string with the name of the enumeration associated
@@ -596,15 +596,15 @@ func (fOpenType FileOpenType) ParseString(
 //
 func (fOpenType FileOpenType) String() string {
 
-	fOpenType.checkInitializeMaps(false)
+  fOpenType.checkInitializeMaps(false)
 
-	str, ok := mFileOpenTypeIntToString[int(fOpenType)]
+  str, ok := mFileOpenTypeIntToString[int(fOpenType)]
 
-	if !ok {
-		return ""
-	}
+  if !ok {
+    return ""
+  }
 
-	return str
+  return str
 }
 
 // Value - This is a utility method which is not part of the
@@ -616,7 +616,7 @@ func (fOpenType FileOpenType) String() string {
 // enumerations for this type.
 //
 func (fOpenType FileOpenType) Value() int {
-	return int(fOpenType)
+  return int(fOpenType)
 }
 
 // checkInitializeMaps - String and value comparisons performed on enumerations
@@ -642,45 +642,45 @@ func (fOpenType FileOpenType) Value() int {
 //
 func (fOpenType FileOpenType) checkInitializeMaps(reInitialize bool) {
 
-	if !reInitialize &&
-		mFileOpenTypeIntToString != nil &&
-		len(mFileOpenTypeIntToString) > 3 &&
-		mFileOpenTypeStringToInt != nil &&
-		len(mFileOpenTypeStringToInt) > 3 &&
-		mFileOpenTypeLwrCaseStringToInt != nil &&
-		len(mFileOpenTypeLwrCaseStringToInt) > 3 {
-		return
-	}
+  if !reInitialize &&
+    mFileOpenTypeIntToString != nil &&
+    len(mFileOpenTypeIntToString) > 3 &&
+    mFileOpenTypeStringToInt != nil &&
+    len(mFileOpenTypeStringToInt) > 3 &&
+    mFileOpenTypeLwrCaseStringToInt != nil &&
+    len(mFileOpenTypeLwrCaseStringToInt) > 3 {
+    return
+  }
 
-	var t = FileOpenType(0).ReadOnly()
+  var t = FileOpenType(0).ReadOnly()
 
-	mFileOpenTypeIntToString = make(map[int]string, 0)
-	mFileOpenTypeStringToInt = make(map[string]int, 0)
-	mFileOpenTypeLwrCaseStringToInt = make(map[string]int, 0)
+  mFileOpenTypeIntToString = make(map[int]string, 0)
+  mFileOpenTypeStringToInt = make(map[string]int, 0)
+  mFileOpenTypeLwrCaseStringToInt = make(map[string]int, 0)
 
-	s := reflect.TypeOf(t)
+  s := reflect.TypeOf(t)
 
-	r := reflect.TypeOf(int(0))
-	args := [1]reflect.Value{reflect.Zero(s)}
+  r := reflect.TypeOf(int(0))
+  args := [1]reflect.Value{reflect.Zero(s)}
 
-	for i := 0; i < s.NumMethod(); i++ {
+  for i := 0; i < s.NumMethod(); i++ {
 
-		f := s.Method(i).Name
+    f := s.Method(i).Name
 
-		if f == "String" ||
-			f == "ParseString" ||
-			f == "Value" ||
-			f == "IsValid" ||
-			f == "checkInitializeMaps" {
-			continue
-		}
+    if f == "String" ||
+      f == "ParseString" ||
+      f == "Value" ||
+      f == "IsValid" ||
+      f == "checkInitializeMaps" {
+      continue
+    }
 
-		value := s.Method(i).Func.Call(args[:])[0].Convert(r).Int()
-		x := int(value)
-		mFileOpenTypeIntToString[x] = f
-		mFileOpenTypeStringToInt[f] = x
-		mFileOpenTypeLwrCaseStringToInt[strings.ToLower(f)] = x
-	}
+    value := s.Method(i).Func.Call(args[:])[0].Convert(r).Int()
+    x := int(value)
+    mFileOpenTypeIntToString[x] = f
+    mFileOpenTypeStringToInt[f] = x
+    mFileOpenTypeLwrCaseStringToInt[strings.ToLower(f)] = x
+  }
 
 }
 
@@ -753,18 +753,18 @@ func (fOpenMode FileOpenMode) Truncate() FileOpenMode { return FileOpenMode(os.O
 //
 func (fOpenMode FileOpenMode) IsValid() error {
 
-	fOpenMode.checkInitializeMaps(false)
+  fOpenMode.checkInitializeMaps(false)
 
-	_, ok := mFileOpenModeIntToString[int(fOpenMode)]
+  _, ok := mFileOpenModeIntToString[int(fOpenMode)]
 
-	if !ok {
-		ePrefix := "FileOpenMode.IsValid() "
-		return fmt.Errorf(ePrefix+
-			"Error: Ivalid FileOpenMode! Current FileOpenMode='%v'",
-			fOpenMode)
-	}
+  if !ok {
+    ePrefix := "FileOpenMode.IsValid() "
+    return fmt.Errorf(ePrefix+
+      "Error: Ivalid FileOpenMode! Current FileOpenMode='%v'",
+      fOpenMode)
+  }
 
-	return nil
+  return nil
 }
 
 // ParseString - Receives a string and attempts to match it with
@@ -816,50 +816,50 @@ func (fOpenMode FileOpenMode) IsValid() error {
 //	    t is now equal to FileOpenMode(0).Append()
 //
 func (fOpenMode FileOpenMode) ParseString(
-	valueString string,
-	caseSensitive bool) (FileOpenMode, error) {
+  valueString string,
+  caseSensitive bool) (FileOpenMode, error) {
 
-	ePrefix := "FileOpenMode.ParseString() "
+  ePrefix := "FileOpenMode.ParseString() "
 
-	fOpenMode.checkInitializeMaps(false)
+  fOpenMode.checkInitializeMaps(false)
 
-	result := FileOpenMode(0)
-	if len(valueString) < 3 {
-		return result,
-			fmt.Errorf(ePrefix+
-				"Input parameter 'valueString' is INVALID! valueString='%v' ", valueString)
-	}
+  result := FileOpenMode(0)
+  if len(valueString) < 3 {
+    return result,
+      fmt.Errorf(ePrefix+
+        "Input parameter 'valueString' is INVALID! valueString='%v' ", valueString)
+  }
 
-	var ok bool
-	var idx int
+  var ok bool
+  var idx int
 
-	if caseSensitive {
+  if caseSensitive {
 
-		idx, ok = mFileOpenModeStringToInt[valueString]
+    idx, ok = mFileOpenModeStringToInt[valueString]
 
-		if !ok {
-			return FileOpenMode(0),
-				fmt.Errorf(ePrefix+
-					"'valueString' did NOT MATCH a FileOpenMode. valueString='%v' ", valueString)
-		}
+    if !ok {
+      return FileOpenMode(0),
+        fmt.Errorf(ePrefix+
+          "'valueString' did NOT MATCH a FileOpenMode. valueString='%v' ", valueString)
+    }
 
-		result = FileOpenMode(idx)
+    result = FileOpenMode(idx)
 
-	} else {
+  } else {
 
-		idx, ok = mFileOpenModeLwrCaseStringToInt[strings.ToLower(valueString)]
+    idx, ok = mFileOpenModeLwrCaseStringToInt[strings.ToLower(valueString)]
 
-		if !ok {
-			return FileOpenMode(0),
-				fmt.Errorf(ePrefix+
-					"'valueString' did NOT MATCH a FileOpenMode. valueString='%v' ", valueString)
-		}
+    if !ok {
+      return FileOpenMode(0),
+        fmt.Errorf(ePrefix+
+          "'valueString' did NOT MATCH a FileOpenMode. valueString='%v' ", valueString)
+    }
 
-		result =
-			FileOpenMode(idx)
-	}
+    result =
+      FileOpenMode(idx)
+  }
 
-	return result, nil
+  return result, nil
 }
 
 // String - Returns a string with the name of the enumeration associated
@@ -878,15 +878,15 @@ func (fOpenMode FileOpenMode) ParseString(
 //
 func (fOpenMode FileOpenMode) String() string {
 
-	fOpenMode.checkInitializeMaps(false)
+  fOpenMode.checkInitializeMaps(false)
 
-	str, ok := mFileOpenModeIntToString[int(fOpenMode)]
+  str, ok := mFileOpenModeIntToString[int(fOpenMode)]
 
-	if !ok {
-		return "Invalid File Open Mode!"
-	}
+  if !ok {
+    return "Invalid File Open Mode!"
+  }
 
-	return str
+  return str
 }
 
 // Value - This is a utility method which is not part of the
@@ -898,7 +898,7 @@ func (fOpenMode FileOpenMode) String() string {
 // enumerations for this type.
 //
 func (fOpenMode FileOpenMode) Value() int {
-	return int(fOpenMode)
+  return int(fOpenMode)
 }
 
 // checkInitializeMaps - String and value comparisons performed on enumerations
@@ -924,45 +924,45 @@ func (fOpenMode FileOpenMode) Value() int {
 //
 func (fOpenMode FileOpenMode) checkInitializeMaps(reInitialize bool) {
 
-	if !reInitialize &&
-		mFileOpenModeIntToString != nil &&
-		len(mFileOpenModeIntToString) > 5 &&
-		mFileOpenModeStringToInt != nil &&
-		len(mFileOpenModeStringToInt) > 5 &&
-		mFileOpenModeLwrCaseStringToInt != nil &&
-		len(mFileOpenModeLwrCaseStringToInt) > 5 {
-		return
-	}
+  if !reInitialize &&
+    mFileOpenModeIntToString != nil &&
+    len(mFileOpenModeIntToString) > 5 &&
+    mFileOpenModeStringToInt != nil &&
+    len(mFileOpenModeStringToInt) > 5 &&
+    mFileOpenModeLwrCaseStringToInt != nil &&
+    len(mFileOpenModeLwrCaseStringToInt) > 5 {
+    return
+  }
 
-	var t = FileOpenMode(0).Append()
+  var t = FileOpenMode(0).Append()
 
-	mFileOpenModeIntToString = make(map[int]string, 0)
-	mFileOpenModeStringToInt = make(map[string]int, 0)
-	mFileOpenModeLwrCaseStringToInt = make(map[string]int, 0)
+  mFileOpenModeIntToString = make(map[int]string, 0)
+  mFileOpenModeStringToInt = make(map[string]int, 0)
+  mFileOpenModeLwrCaseStringToInt = make(map[string]int, 0)
 
-	s := reflect.TypeOf(t)
+  s := reflect.TypeOf(t)
 
-	r := reflect.TypeOf(int(0))
-	args := [1]reflect.Value{reflect.Zero(s)}
+  r := reflect.TypeOf(int(0))
+  args := [1]reflect.Value{reflect.Zero(s)}
 
-	for i := 0; i < s.NumMethod(); i++ {
+  for i := 0; i < s.NumMethod(); i++ {
 
-		f := s.Method(i).Name
+    f := s.Method(i).Name
 
-		if f == "String" ||
-			f == "ParseString" ||
-			f == "Value" ||
-			f == "IsValid" ||
-			f == "checkInitializeMaps" {
-			continue
-		}
+    if f == "String" ||
+      f == "ParseString" ||
+      f == "Value" ||
+      f == "IsValid" ||
+      f == "checkInitializeMaps" {
+      continue
+    }
 
-		value := s.Method(i).Func.Call(args[:])[0].Convert(r).Int()
-		x := int(value)
-		mFileOpenModeIntToString[x] = f
-		mFileOpenModeStringToInt[f] = x
-		mFileOpenModeLwrCaseStringToInt[strings.ToLower(f)] = x
-	}
+    value := s.Method(i).Func.Call(args[:])[0].Convert(r).Int()
+    x := int(value)
+    mFileOpenModeIntToString[x] = f
+    mFileOpenModeStringToInt[f] = x
+    mFileOpenModeLwrCaseStringToInt[strings.ToLower(f)] = x
+  }
 
 }
 
