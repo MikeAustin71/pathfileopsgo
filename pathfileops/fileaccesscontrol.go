@@ -53,9 +53,9 @@ func (fAccess *FileAccessControl) CopyIn(fA2 FileAccessControl) {
 
 	fAccess.isInitialized = fA2.isInitialized
 
-	fAccess.fileOpenCodes.CopyIn(fA2.fileOpenCodes)
+	fAccess.fileOpenCodes.CopyIn(&fA2.fileOpenCodes)
 
-	fAccess.permissions.CopyIn(fA2.permissions)
+	fAccess.permissions.CopyIn(&fA2.permissions)
 
 }
 
@@ -90,7 +90,7 @@ func (fAccess *FileAccessControl) Equal(fA2 FileAccessControl) bool {
 		return false
 	}
 
-	if !fAccess.fileOpenCodes.Equal(fA2.fileOpenCodes) {
+	if !fAccess.fileOpenCodes.Equal(&fA2.fileOpenCodes) {
 		return false
 	}
 

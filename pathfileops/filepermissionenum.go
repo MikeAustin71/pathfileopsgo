@@ -445,7 +445,7 @@ type FilePermissionConfig struct {
 // instances will be identical. The type of copy operation performed
 // is a 'deep copy'.
 //
-func (fPerm *FilePermissionConfig) CopyIn(fPerm2 FilePermissionConfig) {
+func (fPerm *FilePermissionConfig) CopyIn(fPerm2 *FilePermissionConfig) {
 
 	fPerm.isInitialized = fPerm2.isInitialized
 	fPerm.fileMode = fPerm2.fileMode

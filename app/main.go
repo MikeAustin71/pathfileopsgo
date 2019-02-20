@@ -36,8 +36,23 @@ func main() {
 
 func main() {
 
-	mainTest30()
+	mainTest31()
 
+}
+
+func mainTest31() {
+
+	fOpStatus1 := pf.FileOpenConfig{}
+
+	fOpStatus2 := pf.FileOpenConfig{}
+
+	fOpStatus2.CopyIn(&fOpStatus1)
+
+	if !fOpStatus1.Equal(&fOpStatus2) {
+		fmt.Println("Error: Expected fOpStatus1==fOpStatus2. THEY ARE NOT EQUAL!")
+	} else {
+		fmt.Println("Successful Completion!")
+	}
 }
 
 func mainTest30() {

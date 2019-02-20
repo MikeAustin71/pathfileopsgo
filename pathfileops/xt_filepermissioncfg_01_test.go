@@ -18,7 +18,7 @@ func TestFilePermissionConfig_CopyIn_01(t *testing.T) {
 
 	fpCfg2 := FilePermissionConfig{}
 
-	fpCfg2.CopyIn(fpCfg)
+	fpCfg2.CopyIn(&fpCfg)
 
 	actualTextCode, err := fpCfg2.GetPermissionTextCode()
 
@@ -51,7 +51,7 @@ func TestFilePermissionConfig_CopyIn_02(t *testing.T) {
 
 	fpCfg2 := FilePermissionConfig{}
 
-	fpCfg2.CopyIn(fpCfg)
+	fpCfg2.CopyIn(&fpCfg)
 
 	actualTextCode, err := fpCfg2.GetPermissionTextCode()
 
