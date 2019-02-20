@@ -1,96 +1,96 @@
 package pathfileops
 
 import (
-  "errors"
-  "fmt"
-  "os"
-  "strconv"
-  "strings"
+	"errors"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
 )
 
 var mOsPermissionCodeToString = map[os.FileMode]string{
-  os.FileMode(0):    "ModeNone",
-  os.ModeDir:        "ModeDir",
-  os.ModeAppend:     "ModeAppend",
-  os.ModeExclusive:  "ModeExclusive",
-  os.ModeTemporary:  "ModeTemporary",
-  os.ModeSymlink:    "ModeSymlink",
-  os.ModeDevice:     "ModeDevice",
-  os.ModeNamedPipe:  "ModeNamedPipe",
-  os.ModeSocket:     "ModeSocket",
-  os.ModeSetuid:     "ModeSetuid",
-  os.ModeSetgid:     "ModeSetgid",
-  os.ModeCharDevice: "ModeCharDevice",
-  os.ModeSticky:     "ModeSticky",
-  os.ModeIrregular:  "ModeIrregular",
+	os.FileMode(0):    "ModeNone",
+	os.ModeDir:        "ModeDir",
+	os.ModeAppend:     "ModeAppend",
+	os.ModeExclusive:  "ModeExclusive",
+	os.ModeTemporary:  "ModeTemporary",
+	os.ModeSymlink:    "ModeSymlink",
+	os.ModeDevice:     "ModeDevice",
+	os.ModeNamedPipe:  "ModeNamedPipe",
+	os.ModeSocket:     "ModeSocket",
+	os.ModeSetuid:     "ModeSetuid",
+	os.ModeSetgid:     "ModeSetgid",
+	os.ModeCharDevice: "ModeCharDevice",
+	os.ModeSticky:     "ModeSticky",
+	os.ModeIrregular:  "ModeIrregular",
 }
 
 var mOsPermissionCodeToLetter = map[os.FileMode]string{
-  os.FileMode(0):    "-",
-  os.ModeDir:        "d",
-  os.ModeAppend:     "a",
-  os.ModeExclusive:  "l",
-  os.ModeTemporary:  "T",
-  os.ModeSymlink:    "L",
-  os.ModeDevice:     "D",
-  os.ModeNamedPipe:  "p",
-  os.ModeSocket:     "S",
-  os.ModeSetuid:     "u",
-  os.ModeSetgid:     "g",
-  os.ModeCharDevice: "c",
-  os.ModeSticky:     "t",
-  os.ModeIrregular:  "?",
+	os.FileMode(0):    "-",
+	os.ModeDir:        "d",
+	os.ModeAppend:     "a",
+	os.ModeExclusive:  "l",
+	os.ModeTemporary:  "T",
+	os.ModeSymlink:    "L",
+	os.ModeDevice:     "D",
+	os.ModeNamedPipe:  "p",
+	os.ModeSocket:     "S",
+	os.ModeSetuid:     "u",
+	os.ModeSetgid:     "g",
+	os.ModeCharDevice: "c",
+	os.ModeSticky:     "t",
+	os.ModeIrregular:  "?",
 }
 
 var mOsPermissionStringToCode = map[string]os.FileMode{
-  "ModeNone":       os.FileMode(0),
-  "ModeDir":        os.ModeDir,
-  "ModeAppend":     os.ModeAppend,
-  "ModeExclusive":  os.ModeExclusive,
-  "ModeTemporary":  os.ModeTemporary,
-  "ModeSymlink":    os.ModeSymlink,
-  "ModeDevice":     os.ModeDevice,
-  "ModeNamedPipe":  os.ModeNamedPipe,
-  "ModeSocket":     os.ModeSocket,
-  "ModeSetuid":     os.ModeSetuid,
-  "ModeSetgid":     os.ModeSetgid,
-  "ModeCharDevice": os.ModeCharDevice,
-  "ModeSticky":     os.ModeSticky,
-  "ModeIrregular":  os.ModeIrregular,
+	"ModeNone":       os.FileMode(0),
+	"ModeDir":        os.ModeDir,
+	"ModeAppend":     os.ModeAppend,
+	"ModeExclusive":  os.ModeExclusive,
+	"ModeTemporary":  os.ModeTemporary,
+	"ModeSymlink":    os.ModeSymlink,
+	"ModeDevice":     os.ModeDevice,
+	"ModeNamedPipe":  os.ModeNamedPipe,
+	"ModeSocket":     os.ModeSocket,
+	"ModeSetuid":     os.ModeSetuid,
+	"ModeSetgid":     os.ModeSetgid,
+	"ModeCharDevice": os.ModeCharDevice,
+	"ModeSticky":     os.ModeSticky,
+	"ModeIrregular":  os.ModeIrregular,
 }
 
 var mOsPermissionLwrCaseStringToCode = map[string]os.FileMode{
-  "none":           os.FileMode(0),
-  "modedir":        os.ModeDir,
-  "modeappend":     os.ModeAppend,
-  "modeexclusive":  os.ModeExclusive,
-  "modetemporary":  os.ModeTemporary,
-  "modesymlink":    os.ModeSymlink,
-  "modedevice":     os.ModeDevice,
-  "modenamedpipe":  os.ModeNamedPipe,
-  "modesocket":     os.ModeSocket,
-  "modesetuid":     os.ModeSetuid,
-  "modesetgid":     os.ModeSetgid,
-  "modechardevice": os.ModeCharDevice,
-  "modesticky":     os.ModeSticky,
-  "modeirregular":  os.ModeIrregular,
+	"none":           os.FileMode(0),
+	"modedir":        os.ModeDir,
+	"modeappend":     os.ModeAppend,
+	"modeexclusive":  os.ModeExclusive,
+	"modetemporary":  os.ModeTemporary,
+	"modesymlink":    os.ModeSymlink,
+	"modedevice":     os.ModeDevice,
+	"modenamedpipe":  os.ModeNamedPipe,
+	"modesocket":     os.ModeSocket,
+	"modesetuid":     os.ModeSetuid,
+	"modesetgid":     os.ModeSetgid,
+	"modechardevice": os.ModeCharDevice,
+	"modesticky":     os.ModeSticky,
+	"modeirregular":  os.ModeIrregular,
 }
 
 var mOsPermissionLetterToCode = map[string]os.FileMode{
-  "-": os.FileMode(0),
-  "d": os.ModeDir,
-  "a": os.ModeAppend,
-  "l": os.ModeExclusive,
-  "T": os.ModeTemporary,
-  "L": os.ModeSymlink,
-  "D": os.ModeDevice,
-  "p": os.ModeNamedPipe,
-  "S": os.ModeSocket,
-  "u": os.ModeSetuid,
-  "g": os.ModeSetgid,
-  "c": os.ModeCharDevice,
-  "t": os.ModeSticky,
-  "?": os.ModeIrregular,
+	"-": os.FileMode(0),
+	"d": os.ModeDir,
+	"a": os.ModeAppend,
+	"l": os.ModeExclusive,
+	"T": os.ModeTemporary,
+	"L": os.ModeSymlink,
+	"D": os.ModeDevice,
+	"p": os.ModeNamedPipe,
+	"S": os.ModeSocket,
+	"u": os.ModeSetuid,
+	"g": os.ModeSetgid,
+	"c": os.ModeCharDevice,
+	"t": os.ModeSticky,
+	"?": os.ModeIrregular,
 }
 
 // An enumeration of the os File Mode constant values:
@@ -124,11 +124,11 @@ type OsFilePermissionCode os.FileMode
 //
 func (osPerm OsFilePermissionCode) Equal(osPerm2 OsFilePermissionCode) bool {
 
-  if osPerm == osPerm2 {
-    return true
-  }
+	if osPerm == osPerm2 {
+		return true
+	}
 
-  return false
+	return false
 }
 
 // GetFileModeLetterCode - Returns the single alphabetic character associated with
@@ -154,38 +154,38 @@ func (osPerm OsFilePermissionCode) Equal(osPerm2 OsFilePermissionCode) bool {
 //
 func (osPerm OsFilePermissionCode) GetFileModeLetterCode() (string, error) {
 
-  ePrefix := "OsFilePermissionCode.FileModeLetterCode() "
+	ePrefix := "OsFilePermissionCode.FileModeLetterCode() "
 
-  letter, ok := mOsPermissionCodeToLetter[os.FileMode(osPerm)]
+	letter, ok := mOsPermissionCodeToLetter[os.FileMode(osPerm)]
 
-  if !ok {
-    return "", fmt.Errorf(ePrefix+
-      "The current OsFilePermissionCode FileMode value is INVALID! "+
-      "OsFilePermissionCode decimal value=%s  octal value=%s",
-      strconv.FormatInt(int64(osPerm), 10),
-      strconv.FormatInt(int64(osPerm), 8))
-  }
+	if !ok {
+		return "", fmt.Errorf(ePrefix+
+			"The current OsFilePermissionCode FileMode value is INVALID! "+
+			"OsFilePermissionCode decimal value=%s  octal value=%s",
+			strconv.FormatInt(int64(osPerm), 10),
+			strconv.FormatInt(int64(osPerm), 8))
+	}
 
-  return letter, nil
+	return letter, nil
 }
 
 // GetNewFromFileMode - Creates and returns a new OsFilePermissionCode instance
 // generated from the os.FileMode type input parameter ('fMode'). If the input
 // os.FileMode value is invalid, an error is returned.
 func (osPerm OsFilePermissionCode) GetNewFromFileMode(
-  fMode os.FileMode) (OsFilePermissionCode, error) {
+	fMode os.FileMode) (OsFilePermissionCode, error) {
 
-  newFilePerm := OsFilePermissionCode(fMode)
+	newFilePerm := OsFilePermissionCode(fMode)
 
-  err := newFilePerm.IsValid()
+	err := newFilePerm.IsValid()
 
-  if err != nil {
-    ePrefix := "OsFilePermissionCode.GetNewFromFileMode() "
-    return OsFilePermissionCode(0),
-      fmt.Errorf(ePrefix + "Error: Input parameter 'fMode' is an INVALID File Mode!")
-  }
+	if err != nil {
+		ePrefix := "OsFilePermissionCode.GetNewFromFileMode() "
+		return OsFilePermissionCode(0),
+			fmt.Errorf(ePrefix + "Error: Input parameter 'fMode' is an INVALID File Mode!")
+	}
 
-  return newFilePerm, nil
+	return newFilePerm, nil
 }
 
 // GetNewFromLetterCode - Creates a new OsFilePermissionCode instance based on an
@@ -194,18 +194,18 @@ func (osPerm OsFilePermissionCode) GetNewFromFileMode(
 // unix permission strings.
 //
 func (osPerm OsFilePermissionCode) GetNewFromLetterCode(
-  letterCode string) (OsFilePermissionCode, error) {
+	letterCode string) (OsFilePermissionCode, error) {
 
-  fModeValue, ok := mOsPermissionLetterToCode[letterCode]
+	fModeValue, ok := mOsPermissionLetterToCode[letterCode]
 
-  if !ok {
-    ePrefix := "OsFilePermissionCode.GetNewFromLetterCode() "
-    return OsFilePermissionCode(0), fmt.
-      Errorf(ePrefix+"Error: 'letterCode' is INVALID! "+
-        "letterCode='%v'", letterCode)
-  }
+	if !ok {
+		ePrefix := "OsFilePermissionCode.GetNewFromLetterCode() "
+		return OsFilePermissionCode(0), fmt.
+			Errorf(ePrefix+"Error: 'letterCode' is INVALID! "+
+				"letterCode='%v'", letterCode)
+	}
 
-  return OsFilePermissionCode(fModeValue), nil
+	return OsFilePermissionCode(fModeValue), nil
 }
 
 // IsValid - If the value of the current OsFilePermissionCode is 'invalid',
@@ -217,15 +217,15 @@ func (osPerm OsFilePermissionCode) GetNewFromLetterCode(
 //
 func (osPerm OsFilePermissionCode) IsValid() error {
 
-  _, ok := mOsPermissionCodeToString[os.FileMode(osPerm)]
+	_, ok := mOsPermissionCodeToString[os.FileMode(osPerm)]
 
-  if !ok {
-    ePrefix := "OsFilePermissionCode.IsValid() "
-    return fmt.Errorf(ePrefix+"The current OsFilePermissionCode is INVALID! "+
-      "OsFilePermissionCode Octal Value='%s'", strconv.FormatInt(int64(osPerm), 8))
-  }
+	if !ok {
+		ePrefix := "OsFilePermissionCode.IsValid() "
+		return fmt.Errorf(ePrefix+"The current OsFilePermissionCode is INVALID! "+
+			"OsFilePermissionCode Octal Value='%s'", strconv.FormatInt(int64(osPerm), 8))
+	}
 
-  return nil
+	return nil
 }
 
 // ModeNone            "-" No Permission Set
@@ -350,31 +350,31 @@ func (osPerm OsFilePermissionCode) ModeIrregular() os.FileMode { return os.ModeI
 //	    t is now equal to OsFilePermissionCode(0).ModeDir()
 //
 func (osPerm OsFilePermissionCode) ParseString(
-  valueString string,
-  caseSensitive bool) (OsFilePermissionCode, error) {
+	valueString string,
+	caseSensitive bool) (OsFilePermissionCode, error) {
 
-  ePrefix := "OsFilePermissionCode.ParseString() "
+	ePrefix := "OsFilePermissionCode.ParseString() "
 
-  var permCode os.FileMode
-  var ok bool
+	var permCode os.FileMode
+	var ok bool
 
-  if !caseSensitive {
-    permCode, ok = mOsPermissionLwrCaseStringToCode[strings.ToLower(valueString)]
+	if !caseSensitive {
+		permCode, ok = mOsPermissionLwrCaseStringToCode[strings.ToLower(valueString)]
 
-    if !ok {
-      return OsFilePermissionCode(0), errors.New(ePrefix + "Invalid Permission Code!")
-    }
+		if !ok {
+			return OsFilePermissionCode(0), errors.New(ePrefix + "Invalid Permission Code!")
+		}
 
-    return OsFilePermissionCode(permCode), nil
-  }
+		return OsFilePermissionCode(permCode), nil
+	}
 
-  permCode, ok = mOsPermissionStringToCode[valueString]
+	permCode, ok = mOsPermissionStringToCode[valueString]
 
-  if !ok {
-    return OsFilePermissionCode(0), errors.New(ePrefix + "Invalid Permission Code!")
-  }
+	if !ok {
+		return OsFilePermissionCode(0), errors.New(ePrefix + "Invalid Permission Code!")
+	}
 
-  return OsFilePermissionCode(permCode), nil
+	return OsFilePermissionCode(permCode), nil
 
 }
 
@@ -405,13 +405,13 @@ var OsFilePermCode = OsFilePermissionCode(0)
 //
 func (osPerm OsFilePermissionCode) String() string {
 
-  label, ok := mOsPermissionCodeToString[os.FileMode(osPerm)]
+	label, ok := mOsPermissionCodeToString[os.FileMode(osPerm)]
 
-  if !ok {
-    return ""
-  }
+	if !ok {
+		return ""
+	}
 
-  return label
+	return label
 }
 
 // Value - Returns the value of the OsFilePermissionCode instance
@@ -419,7 +419,7 @@ func (osPerm OsFilePermissionCode) String() string {
 //
 func (osPerm OsFilePermissionCode) Value() os.FileMode {
 
-  return os.FileMode(osPerm)
+	return os.FileMode(osPerm)
 }
 
 // FilePermissionConfig - Provides methods to support the creation and management of
@@ -435,8 +435,8 @@ func (osPerm OsFilePermissionCode) Value() os.FileMode {
 // 'FilePermissionConfig.fileMode'.
 //
 type FilePermissionConfig struct {
-  isInitialized bool
-  fileMode      os.FileMode
+	isInitialized bool
+	fileMode      os.FileMode
 }
 
 // CopyIn - Receives a FilePermissionConfig instance and copies all
@@ -447,8 +447,8 @@ type FilePermissionConfig struct {
 //
 func (fPerm *FilePermissionConfig) CopyIn(fPerm2 FilePermissionConfig) {
 
-  fPerm.isInitialized = fPerm2.isInitialized
-  fPerm.fileMode = fPerm2.fileMode
+	fPerm.isInitialized = fPerm2.isInitialized
+	fPerm.fileMode = fPerm2.fileMode
 
 }
 
@@ -458,20 +458,20 @@ func (fPerm *FilePermissionConfig) CopyIn(fPerm2 FilePermissionConfig) {
 //
 func (fPerm *FilePermissionConfig) CopyOut() FilePermissionConfig {
 
-  fPerm2 := FilePermissionConfig{}
+	fPerm2 := FilePermissionConfig{}
 
-  fPerm2.isInitialized = fPerm.isInitialized
-  fPerm2.fileMode = fPerm.fileMode
+	fPerm2.isInitialized = fPerm.isInitialized
+	fPerm2.fileMode = fPerm.fileMode
 
-  return fPerm2
+	return fPerm2
 }
 
 // Empty - ReInitializes the current FilePermissionConfig instance to
 // empty or zero values.
 //
 func (fPerm *FilePermissionConfig) Empty() {
-  fPerm.isInitialized = false
-  fPerm.fileMode = os.FileMode(0)
+	fPerm.isInitialized = false
+	fPerm.fileMode = os.FileMode(0)
 }
 
 // Equal - Returns 'true' if the incoming FilePermissionConfig instance
@@ -479,15 +479,15 @@ func (fPerm *FilePermissionConfig) Empty() {
 //
 func (fPerm *FilePermissionConfig) Equal(fPerm2 FilePermissionConfig) bool {
 
-  if fPerm.isInitialized != fPerm2.isInitialized {
-    return false
-  }
+	if fPerm.isInitialized != fPerm2.isInitialized {
+		return false
+	}
 
-  if fPerm.fileMode != fPerm2.fileMode {
-    return false
-  }
+	if fPerm.fileMode != fPerm2.fileMode {
+		return false
+	}
 
-  return true
+	return true
 }
 
 // GetIsDir - Return a bool indicating whether the encapsulated FileMode is a directory
@@ -497,15 +497,15 @@ func (fPerm *FilePermissionConfig) Equal(fPerm2 FilePermissionConfig) bool {
 //
 func (fPerm *FilePermissionConfig) GetIsDir() (bool, error) {
 
-  ePrefix := "FilePermissionConfig.GetIsDir() "
+	ePrefix := "FilePermissionConfig.GetIsDir() "
 
-  if !fPerm.isInitialized {
-    return false,
-      errors.New(ePrefix +
-        "Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
-  }
+	if !fPerm.isInitialized {
+		return false,
+			errors.New(ePrefix +
+				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
+	}
 
-  return fPerm.fileMode.IsDir(), nil
+	return fPerm.fileMode.IsDir(), nil
 }
 
 // GetEntryTypeComponent - Returns the 'Entry Type' component of the current os.FileMode
@@ -527,28 +527,44 @@ func (fPerm *FilePermissionConfig) GetIsDir() (bool, error) {
 //
 func (fPerm *FilePermissionConfig) GetEntryTypeComponent() (OsFilePermissionCode, error) {
 
-  ePrefix := "FilePermissionConfig.GetEntryTypeComponent() "
+	ePrefix := "FilePermissionConfig.GetEntryTypeComponent() "
 
-  if !fPerm.isInitialized {
-    return OsFilePermissionCode(0),
-      errors.New(ePrefix +
-        "Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
-  }
+	if !fPerm.isInitialized {
+		return OsFilePermissionCode(0),
+			errors.New(ePrefix +
+				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
+	}
 
-  fMode := fPerm.fileMode &^ os.FileMode(0777)
+	fMode := fPerm.fileMode &^ os.FileMode(0777)
 
-  for idx := range mOsPermissionCodeToString {
+	for idx := range mOsPermissionCodeToString {
 
-    if fMode == idx {
+		if fMode == idx {
 
-      return OsFilePermissionCode(idx), nil
+			return OsFilePermissionCode(idx), nil
 
-    }
+		}
 
-  }
+	}
 
-  return OsFilePermissionCode(0),
-    fmt.Errorf(ePrefix + "The Entry Type for this FilePermissionConfig instance is INVALID!")
+	return OsFilePermissionCode(0),
+		fmt.Errorf(ePrefix + "The Entry Type for this FilePermissionConfig instance is INVALID!")
+}
+
+// GetFileMode - Returns the os.FileMode from the internal data field,
+// 'FilePermissionConfig.fileMode'.
+//
+func (fPerm *FilePermissionConfig) GetFileMode() (os.FileMode, error) {
+
+	ePrefix := "FilePermissionConfig.GetFileMode() "
+
+	if !fPerm.isInitialized {
+		return os.FileMode(0),
+			errors.New(ePrefix +
+				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
+	}
+
+	return fPerm.fileMode, nil
 }
 
 // GetIsRegular - Return a bool indicating whether the encapsulated FileMode is a file
@@ -558,15 +574,15 @@ func (fPerm *FilePermissionConfig) GetEntryTypeComponent() (OsFilePermissionCode
 //
 func (fPerm *FilePermissionConfig) GetIsRegular() (bool, error) {
 
-  ePrefix := "FilePermissionConfig.GetIsRegular() "
+	ePrefix := "FilePermissionConfig.GetIsRegular() "
 
-  if !fPerm.isInitialized {
-    return false,
-      errors.New(ePrefix +
-        "Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
-  }
+	if !fPerm.isInitialized {
+		return false,
+			errors.New(ePrefix +
+				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
+	}
 
-  return fPerm.fileMode.IsRegular(), nil
+	return fPerm.fileMode.IsRegular(), nil
 }
 
 // GetPermissionBits - Return a FileMode containing only the least significant 9-bits of
@@ -584,16 +600,16 @@ func (fPerm *FilePermissionConfig) GetIsRegular() (bool, error) {
 //
 func (fPerm *FilePermissionConfig) GetPermissionBits() (os.FileMode, error) {
 
-  ePrefix := "FilePermissionConfig.GetPermissionBits() "
+	ePrefix := "FilePermissionConfig.GetPermissionBits() "
 
-  if !fPerm.isInitialized {
-    return os.FileMode(0),
-      errors.New(ePrefix +
-        "Error: This FilePermissionConfig instance has NOT been initialized. " +
-        "The FileMode is INVALID!")
-  }
+	if !fPerm.isInitialized {
+		return os.FileMode(0),
+			errors.New(ePrefix +
+				"Error: This FilePermissionConfig instance has NOT been initialized. " +
+				"The FileMode is INVALID!")
+	}
 
-  return fPerm.fileMode.Perm(), nil
+	return fPerm.fileMode.Perm(), nil
 }
 
 // GetPermissionTextCode - Returns the file mode permissions expressed as
@@ -601,16 +617,16 @@ func (fPerm *FilePermissionConfig) GetPermissionBits() (os.FileMode, error) {
 // 10-character permission code.
 //
 func (fPerm *FilePermissionConfig) GetPermissionTextCode() (string, error) {
-  ePrefix := "FilePermissionConfig.GetPermissionTextCode() "
+	ePrefix := "FilePermissionConfig.GetPermissionTextCode() "
 
-  if !fPerm.isInitialized {
-    return "",
-      errors.New(ePrefix +
-        "Error: This FilePermissionConfig instance has NOT been initialized. " +
-        "The FileMode is INVALID!")
-  }
+	if !fPerm.isInitialized {
+		return "",
+			errors.New(ePrefix +
+				"Error: This FilePermissionConfig instance has NOT been initialized. " +
+				"The FileMode is INVALID!")
+	}
 
-  return fPerm.fileMode.String(), nil
+	return fPerm.fileMode.String(), nil
 }
 
 // GetPermissionComponents - Returns the two components of a permission configuration.
@@ -640,44 +656,44 @@ func (fPerm *FilePermissionConfig) GetPermissionTextCode() (string, error) {
 //                                be or'd with a valid Entry Type, os mode value.
 //
 func (fPerm *FilePermissionConfig) GetPermissionComponents() (
-  osMode OsFilePermissionCode, permissionBits os.FileMode, err error) {
+	osMode OsFilePermissionCode, permissionBits os.FileMode, err error) {
 
-  osMode = OsFilePermissionCode(OsFilePermCode.ModeNone())
+	osMode = OsFilePermissionCode(OsFilePermCode.ModeNone())
 
-  permissionBits = os.FileMode(0)
+	permissionBits = os.FileMode(0)
 
-  err = nil
+	err = nil
 
-  ePrefix := "FilePermissionConfig.GetPermissionComponents() "
+	ePrefix := "FilePermissionConfig.GetPermissionComponents() "
 
-  if !fPerm.isInitialized {
-    err =
-      errors.New(ePrefix +
-        "Error: This FilePermissionConfig instance has NOT been initialized. " +
-        "The FileMode is INVALID!")
+	if !fPerm.isInitialized {
+		err =
+			errors.New(ePrefix +
+				"Error: This FilePermissionConfig instance has NOT been initialized. " +
+				"The FileMode is INVALID!")
 
-    return osMode, permissionBits, err
-  }
+		return osMode, permissionBits, err
+	}
 
-  var err2 error
+	var err2 error
 
-  osMode, err2 = fPerm.GetEntryTypeComponent()
+	osMode, err2 = fPerm.GetEntryTypeComponent()
 
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+"%v", err2.Error())
-    return osMode, permissionBits, err
-  }
+	if err2 != nil {
+		err = fmt.Errorf(ePrefix+"%v", err2.Error())
+		return osMode, permissionBits, err
+	}
 
-  permissionBits, err2 = fPerm.GetPermissionBits()
+	permissionBits, err2 = fPerm.GetPermissionBits()
 
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+"%v", err2.Error())
-    return osMode, permissionBits, err
-  }
+	if err2 != nil {
+		err = fmt.Errorf(ePrefix+"%v", err2.Error())
+		return osMode, permissionBits, err
+	}
 
-  err = nil
+	err = nil
 
-  return osMode, permissionBits, err
+	return osMode, permissionBits, err
 }
 
 // IsValid - If the current FilePermissionConfig instance is judged to be
@@ -688,33 +704,33 @@ func (fPerm *FilePermissionConfig) GetPermissionComponents() (
 //
 func (fPerm *FilePermissionConfig) IsValid() error {
 
-  ePrefix := "FilePermissionConfig.IsValid() "
+	ePrefix := "FilePermissionConfig.IsValid() "
 
-  if !fPerm.isInitialized {
-    return errors.New(ePrefix + "Error: This FilePermissionConfig instance has NOT been " +
-      "initialized and is INVALID!")
-  }
+	if !fPerm.isInitialized {
+		return errors.New(ePrefix + "Error: This FilePermissionConfig instance has NOT been " +
+			"initialized and is INVALID!")
+	}
 
-  fMode := fPerm.fileMode &^ os.FileMode(0777)
+	fMode := fPerm.fileMode &^ os.FileMode(0777)
 
-  isEntryTypeValid := false
+	isEntryTypeValid := false
 
-  for idx := range mOsPermissionCodeToString {
+	for idx := range mOsPermissionCodeToString {
 
-    if fMode == idx {
+		if fMode == idx {
 
-      isEntryTypeValid = true
+			isEntryTypeValid = true
 
-      break
-    }
+			break
+		}
 
-  }
+	}
 
-  if !isEntryTypeValid {
-    return errors.New(ePrefix + "Error: Entry Type File Mode value is INVALID!")
-  }
+	if !isEntryTypeValid {
+		return errors.New(ePrefix + "Error: Entry Type File Mode value is INVALID!")
+	}
 
-  return nil
+	return nil
 }
 
 // New - Creates and returns a new FilePermissionConfig instance initialized with a
@@ -795,18 +811,18 @@ func (fPerm *FilePermissionConfig) IsValid() error {
 //
 func (fPerm FilePermissionConfig) New(modeStr string) (FilePermissionConfig, error) {
 
-  ePrefix := "FilePermissionConfig.New()"
+	ePrefix := "FilePermissionConfig.New()"
 
-  fPerm2 := FilePermissionConfig{}
+	fPerm2 := FilePermissionConfig{}
 
-  err := fPerm2.SetFileModeByTextCode(modeStr)
+	err := fPerm2.SetFileModeByTextCode(modeStr)
 
-  if err != nil {
-    return FilePermissionConfig{},
-      fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+	if err != nil {
+		return FilePermissionConfig{},
+			fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return fPerm2, nil
+	return fPerm2, nil
 }
 
 // NewByComponents - Creates and returns a new instance of FilePermissionConfig using
@@ -865,20 +881,20 @@ func (fPerm FilePermissionConfig) New(modeStr string) (FilePermissionConfig, err
 //        "Be always sure you are right - then go ahead."
 //
 func (fPerm FilePermissionConfig) NewByComponents(
-  entryType OsFilePermissionCode,
-  unixPermissionTextStr string) (FilePermissionConfig, error) {
+	entryType OsFilePermissionCode,
+	unixPermissionTextStr string) (FilePermissionConfig, error) {
 
-  fPerm2 := FilePermissionConfig{}
+	fPerm2 := FilePermissionConfig{}
 
-  err := fPerm2.SetFileModeByComponents(entryType, unixPermissionTextStr)
+	err := fPerm2.SetFileModeByComponents(entryType, unixPermissionTextStr)
 
-  if err != nil {
-    ePrefix := "FilePermissionConfig.NewByComponents() "
-    return FilePermissionConfig{},
-      fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+	if err != nil {
+		ePrefix := "FilePermissionConfig.NewByComponents() "
+		return FilePermissionConfig{},
+			fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return fPerm2, nil
+	return fPerm2, nil
 }
 
 // NewByFileMode - Creates and returns a new instance of FilePermissionConfig. The instance
@@ -887,19 +903,19 @@ func (fPerm FilePermissionConfig) NewByComponents(
 //
 func (fPerm FilePermissionConfig) NewByFileMode(fMode os.FileMode) (FilePermissionConfig, error) {
 
-  fPerm2 := FilePermissionConfig{}
+	fPerm2 := FilePermissionConfig{}
 
-  err := fPerm2.SetFileModeByFileMode(fMode)
+	err := fPerm2.SetFileModeByFileMode(fMode)
 
-  if err != nil {
+	if err != nil {
 
-    ePrefix := "FilePermissionConfig.NewByFileMode() "
+		ePrefix := "FilePermissionConfig.NewByFileMode() "
 
-    return FilePermissionConfig{},
-      fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+		return FilePermissionConfig{},
+			fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return fPerm2, nil
+	return fPerm2, nil
 }
 
 // NewByOctalDigits - Creates and returns a new FilePermissionConfig instance by
@@ -953,37 +969,21 @@ func (fPerm FilePermissionConfig) NewByFileMode(fMode os.FileMode) (FilePermissi
 // For purposes of this method enter the octal code as x:= int(777).
 //
 func (fPerm FilePermissionConfig) NewByOctalDigits(
-  octalFileModeCode int) (FilePermissionConfig, error) {
+	octalFileModeCode int) (FilePermissionConfig, error) {
 
-  fPerm2 := FilePermissionConfig{}
+	fPerm2 := FilePermissionConfig{}
 
-  err := fPerm2.SetFileModeByOctalDigits(octalFileModeCode)
+	err := fPerm2.SetFileModeByOctalDigits(octalFileModeCode)
 
-  if err != nil {
+	if err != nil {
 
-    ePrefix := "FilePermissionConfig.NewByFileMode() "
+		ePrefix := "FilePermissionConfig.NewByFileMode() "
 
-    return FilePermissionConfig{},
-      fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+		return FilePermissionConfig{},
+			fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return fPerm2, nil
-}
-
-// GetFileMode - Returns the os.FileMode from the internal data field,
-// 'FilePermissionConfig.fileMode'.
-//
-func (fPerm *FilePermissionConfig) GetFileMode() (os.FileMode, error) {
-
-  ePrefix := "FilePermissionConfig.GetFileMode() "
-
-  if !fPerm.isInitialized {
-    return os.FileMode(0),
-      errors.New(ePrefix +
-        "Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
-  }
-
-  return fPerm.fileMode, nil
+	return fPerm2, nil
 }
 
 // SetFileModeByComponents - Sets the value of the current FilePermissionConfig
@@ -1041,60 +1041,60 @@ func (fPerm *FilePermissionConfig) GetFileMode() (os.FileMode, error) {
 //        "Be always sure you are right - then go ahead."
 //
 func (fPerm *FilePermissionConfig) SetFileModeByComponents(
-  entryType OsFilePermissionCode, unixPermissionTextStr string) error {
+	entryType OsFilePermissionCode, unixPermissionTextStr string) error {
 
-  ePrefix := "FilePermissionConfig.SetFileModeByComponents() "
+	ePrefix := "FilePermissionConfig.SetFileModeByComponents() "
 
-  if len(unixPermissionTextStr) == 10 {
-    unixPermissionTextStr = unixPermissionTextStr[1:]
-  }
+	if len(unixPermissionTextStr) == 10 {
+		unixPermissionTextStr = unixPermissionTextStr[1:]
+	}
 
-  if len(unixPermissionTextStr) != 9 {
-    return fmt.Errorf(ePrefix+
-      "Error: Input parameter 'unixPermissionTextStr' must contain 9-Characters. "+
-      "This unixPermissionTextStr contains %v-characters. unixPermissionTextStr='%v'. ",
-      len(unixPermissionTextStr), unixPermissionTextStr)
-  }
+	if len(unixPermissionTextStr) != 9 {
+		return fmt.Errorf(ePrefix+
+			"Error: Input parameter 'unixPermissionTextStr' must contain 9-Characters. "+
+			"This unixPermissionTextStr contains %v-characters. unixPermissionTextStr='%v'. ",
+			len(unixPermissionTextStr), unixPermissionTextStr)
+	}
 
-  fModeEntryType := os.FileMode(entryType)
+	fModeEntryType := os.FileMode(entryType)
 
-  _, ok := mOsPermissionCodeToString[fModeEntryType]
+	_, ok := mOsPermissionCodeToString[fModeEntryType]
 
-  if !ok {
-    return fmt.Errorf(ePrefix+
-      "Input parameter 'entryType' is an INVALID os.FileMode! entryType decimal value='%s' "+
-      "octal value='%s' ", strconv.FormatInt(int64(entryType), 10),
-      strconv.FormatInt(int64(entryType), 8))
-  }
+	if !ok {
+		return fmt.Errorf(ePrefix+
+			"Input parameter 'entryType' is an INVALID os.FileMode! entryType decimal value='%s' "+
+			"octal value='%s' ", strconv.FormatInt(int64(entryType), 10),
+			strconv.FormatInt(int64(entryType), 8))
+	}
 
-  ownerInt, err := fPerm.convertGroupToDecimal(unixPermissionTextStr[0:3], "owner")
+	ownerInt, err := fPerm.convertGroupToDecimal(unixPermissionTextStr[0:3], "owner")
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"'ownerInt' Error: %v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"'ownerInt' Error: %v", err.Error())
+	}
 
-  groupInt, err := fPerm.convertGroupToDecimal(unixPermissionTextStr[3:6], "group")
+	groupInt, err := fPerm.convertGroupToDecimal(unixPermissionTextStr[3:6], "group")
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"groupInt Error: %v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"groupInt Error: %v", err.Error())
+	}
 
-  otherInt, err := fPerm.convertGroupToDecimal(unixPermissionTextStr[6:], "other")
+	otherInt, err := fPerm.convertGroupToDecimal(unixPermissionTextStr[6:], "other")
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"otherInt Error: %v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"otherInt Error: %v", err.Error())
+	}
 
-  ownerInt *= 100
-  groupInt *= 10
-  permission := ownerInt + groupInt + otherInt
+	ownerInt *= 100
+	groupInt *= 10
+	permission := ownerInt + groupInt + otherInt
 
-  fMode := os.FileMode(FileHelper{}.ConvertOctalToDecimal(permission))
+	fMode := os.FileMode(FileHelper{}.ConvertOctalToDecimal(permission))
 
-  fPerm.fileMode = fModeEntryType | fMode
-  fPerm.isInitialized = true
+	fPerm.fileMode = fModeEntryType | fMode
+	fPerm.isInitialized = true
 
-  return nil
+	return nil
 }
 
 // SetFileModeByFileMode - Sets the permission codes for this FilePermissionConfig
@@ -1106,24 +1106,24 @@ func (fPerm *FilePermissionConfig) SetFileModeByComponents(
 //
 func (fPerm *FilePermissionConfig) SetFileModeByFileMode(fMode os.FileMode) error {
 
-  tFMode := fMode
+	tFMode := fMode
 
-  mask := os.FileMode(0777)
+	mask := os.FileMode(0777)
 
-  entryType := tFMode &^ mask
+	entryType := tFMode &^ mask
 
-  _, ok := mOsPermissionCodeToString[entryType]
+	_, ok := mOsPermissionCodeToString[entryType]
 
-  if !ok {
-    ePrefix := "FilePermissionConfig.SetFileModeByFileMode() "
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'fMode' contains an invalid " +
-      "'EntryType' otherwise known as an os mode constant.")
-  }
+	if !ok {
+		ePrefix := "FilePermissionConfig.SetFileModeByFileMode() "
+		return fmt.Errorf(ePrefix + "Error: Input parameter 'fMode' contains an invalid " +
+			"'EntryType' otherwise known as an os mode constant.")
+	}
 
-  fPerm.fileMode = fMode
-  fPerm.isInitialized = true
+	fPerm.fileMode = fMode
+	fPerm.isInitialized = true
 
-  return nil
+	return nil
 }
 
 // SetFileModeByOctalDigits - Sets the value of the current FilePermissionConfig
@@ -1176,14 +1176,41 @@ func (fPerm *FilePermissionConfig) SetFileModeByFileMode(fMode os.FileMode) erro
 // is set equal to 511. If you set x:= int(777), x will be set equal to '777'.
 // For purposes of this method enter the octal code as x:= int(777).
 //
+// ------------------------------------------------------------------------
+//
+// Return Value:
+//
+//  error - If the input parameter 'octalFileModeCode' contains an invalid Entry Type,
+//          an error will be returned.
+//
+//          Entry Types prefixes all os File Mode Codes used for permissions. Valid
+//          Entry Types must include a valid os 'Mode Constant' as a code prefix.
+//          Valid os mode constants are provided by the the OsFilePermissionCode
+//          Type which is an enumeration of valid os mode constants.
+//
 func (fPerm *FilePermissionConfig) SetFileModeByOctalDigits(octalFileModeCode int) error {
 
-  decimalVal := FileHelper{}.ConvertOctalToDecimal(octalFileModeCode)
+	decimalVal := FileHelper{}.ConvertOctalToDecimal(octalFileModeCode)
 
-  fPerm.fileMode = os.FileMode(decimalVal)
-  fPerm.isInitialized = true
+	tFMode := os.FileMode(decimalVal)
 
-  return nil
+	mask := os.FileMode(0777)
+
+	entryType := tFMode &^ mask
+
+	_, ok := mOsPermissionCodeToString[entryType]
+
+	if !ok {
+		ePrefix := "FilePermissionConfig.ConvertOctalToDecimal() "
+		return fmt.Errorf(ePrefix +
+			"Error: Input parameter 'octalFileModeCode' contains an invalid " +
+			"'EntryType' otherwise known as an os mode constant.")
+	}
+
+	fPerm.fileMode = tFMode
+	fPerm.isInitialized = true
+
+	return nil
 }
 
 // SetFileModeByTextCode - Sets the internal FileMode data field using input
@@ -1263,60 +1290,60 @@ func (fPerm *FilePermissionConfig) SetFileModeByOctalDigits(octalFileModeCode in
 //
 func (fPerm *FilePermissionConfig) SetFileModeByTextCode(modeStr string) error {
 
-  ePrefix := "FilePermissionConfig.StringToMode() "
+	ePrefix := "FilePermissionConfig.StringToMode() "
 
-  if len(modeStr) != 10 {
-    return fmt.Errorf(ePrefix+
-      "Error: Input parameter 'modeStr' MUST contain 10-characters. This 'modeStr' "+
-      "contains %v-characters. modeStr='%v' ", len(modeStr), modeStr)
-  }
+	if len(modeStr) != 10 {
+		return fmt.Errorf(ePrefix+
+			"Error: Input parameter 'modeStr' MUST contain 10-characters. This 'modeStr' "+
+			"contains %v-characters. modeStr='%v' ", len(modeStr), modeStr)
+	}
 
-  firstChar := string(modeStr[0])
+	firstChar := string(modeStr[0])
 
-  if firstChar != "-" &&
-    firstChar != "d" {
-    return fmt.Errorf(ePrefix+
-      "Error: First character of input parameter, 'modeStr' MUST BE 'd' or '-'. "+
-      "This first character = '%v'", firstChar)
-  }
+	if firstChar != "-" &&
+		firstChar != "d" {
+		return fmt.Errorf(ePrefix+
+			"Error: First character of input parameter, 'modeStr' MUST BE 'd' or '-'. "+
+			"This first character = '%v'", firstChar)
+	}
 
-  ownerInt, err := fPerm.convertGroupToDecimal(modeStr[1:4], "owner")
+	ownerInt, err := fPerm.convertGroupToDecimal(modeStr[1:4], "owner")
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"'ownerInt' Error: %v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"'ownerInt' Error: %v", err.Error())
+	}
 
-  groupInt, err := fPerm.convertGroupToDecimal(modeStr[4:7], "group")
+	groupInt, err := fPerm.convertGroupToDecimal(modeStr[4:7], "group")
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"groupInt Error: %v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"groupInt Error: %v", err.Error())
+	}
 
-  otherInt, err := fPerm.convertGroupToDecimal(modeStr[7:], "other")
+	otherInt, err := fPerm.convertGroupToDecimal(modeStr[7:], "other")
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"otherInt Error: %v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"otherInt Error: %v", err.Error())
+	}
 
-  ownerInt *= 100
-  groupInt *= 10
-  permission := ownerInt + groupInt + otherInt
+	ownerInt *= 100
+	groupInt *= 10
+	permission := ownerInt + groupInt + otherInt
 
-  entryType := 0
+	entryType := 0
 
-  fMode := permission
+	fMode := permission
 
-  fh := FileHelper{}
+	fh := FileHelper{}
 
-  if firstChar == "d" {
-    entryType = fh.ConvertDecimalToOctal(int(os.ModeDir))
-    fMode = entryType | permission
-  }
+	if firstChar == "d" {
+		entryType = fh.ConvertDecimalToOctal(int(os.ModeDir))
+		fMode = entryType | permission
+	}
 
-  fPerm.fileMode = os.FileMode(fh.ConvertOctalToDecimal(fMode))
-  fPerm.isInitialized = true
+	fPerm.fileMode = os.FileMode(fh.ConvertOctalToDecimal(fMode))
+	fPerm.isInitialized = true
 
-  return nil
+	return nil
 }
 
 // convertGroupToDecimal - Expecting to a receive a 3-character permission string
@@ -1341,40 +1368,40 @@ func (fPerm *FilePermissionConfig) SetFileModeByTextCode(modeStr string) error {
 //
 func (fPerm *FilePermissionConfig) convertGroupToDecimal(groupStr, groupType string) (int, error) {
 
-  ePrefix := "FilePermissionConfig.convertGroupToDecimal() "
-  var err error
-  intVal := 0
+	ePrefix := "FilePermissionConfig.convertGroupToDecimal() "
+	var err error
+	intVal := 0
 
-  if len(groupStr) != 3 {
-    return -1, fmt.Errorf(ePrefix+
-      "Error: input parameter groupStr must be exactly 3-characters in length. "+
-      "This groupStr is %v-characters in length. groupStr='%v' groupType='%v' ",
-      len(groupStr), groupStr, groupType)
-  }
+	if len(groupStr) != 3 {
+		return -1, fmt.Errorf(ePrefix+
+			"Error: input parameter groupStr must be exactly 3-characters in length. "+
+			"This groupStr is %v-characters in length. groupStr='%v' groupType='%v' ",
+			len(groupStr), groupStr, groupType)
+	}
 
-  tstLtrs := strings.ToLower(string(groupStr))
+	tstLtrs := strings.ToLower(string(groupStr))
 
-  switch tstLtrs {
-  case "rwx":
-    intVal = 7
-  case "rw-":
-    intVal = 6
-  case "r--":
-    intVal = 4
-  case "---":
-    intVal = 0
-  case "--x":
-    intVal = 1
-  case "-wx":
-    intVal = 3
-  case "-w-":
-    intVal = 2
-  case "r-x":
-    intVal = 5
-  default:
-    err = fmt.Errorf(ePrefix+"Error: Invalid 3-Letter "+groupType+
-      " String. 3-Letter Block='%v'", tstLtrs)
-  }
+	switch tstLtrs {
+	case "rwx":
+		intVal = 7
+	case "rw-":
+		intVal = 6
+	case "r--":
+		intVal = 4
+	case "---":
+		intVal = 0
+	case "--x":
+		intVal = 1
+	case "-wx":
+		intVal = 3
+	case "-w-":
+		intVal = 2
+	case "r-x":
+		intVal = 5
+	default:
+		err = fmt.Errorf(ePrefix+"Error: Invalid 3-Letter "+groupType+
+			" String. 3-Letter Block='%v'", tstLtrs)
+	}
 
-  return intVal, err
+	return intVal, err
 }

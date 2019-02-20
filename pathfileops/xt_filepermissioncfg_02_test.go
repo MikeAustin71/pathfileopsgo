@@ -219,6 +219,54 @@ func TestFilePermissionConfig_GetEntryTypeComponent_07(t *testing.T) {
 
 }
 
+func TestFilePermissionConfig_GetFileMode_01(t *testing.T) {
+
+	expectedFileMode := os.FileMode(0666)
+
+	fPerm, err := FilePermissionConfig{}.NewByFileMode(expectedFileMode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode"+
+			"(os.FileMode(0666)). Error='%v' ", err.Error())
+	}
+
+	fMode, err := fPerm.GetFileMode()
+
+	if err != nil {
+		t.Errorf("Error returned by fPerm.GetFileMode() "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedFileMode != fMode {
+		t.Errorf("Error: Expected File Mode octal value='%v'. Instead, "+
+			"File Mode octal value ='%v' ",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(fMode), 8))
+	}
+}
+
+func TestFilePermissionConfig_GetFileMode_02(t *testing.T) {
+
+	expectedFileMode := os.FileMode(0666)
+
+	fPerm, err := FilePermissionConfig{}.NewByFileMode(expectedFileMode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode"+
+			"(os.FileMode(0666)). Error='%v' ", err.Error())
+	}
+
+	fPerm.isInitialized = false
+
+	_, err = fPerm.GetFileMode()
+
+	if err == nil {
+		t.Errorf("Expected error to be returned by fPerm.GetFileMode() " +
+			"because isInitialized flag is 'false'. However, NO ERROR WAS RETURNED!!")
+	}
+
+}
+
 func TestFilePermissionConfig_GetIsDir_01(t *testing.T) {
 
 	textCode := "-rwxrwxrwx"
