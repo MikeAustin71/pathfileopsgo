@@ -1610,8 +1610,8 @@ func (fMgr *FileMgr) CloseFile() error {
 		return nil
 	}
 
-	if fMgr.fileOpenStatus.fileOpenType == FOpenType.WriteOnly() ||
-		fMgr.fileOpenStatus.fileOpenType == FOpenType.ReadWrite() {
+	if fMgr.fileOpenStatus.fileOpenType == FOpenType.TypeWriteOnly() ||
+		fMgr.fileOpenStatus.fileOpenType == FOpenType.TypeReadWrite() {
 
 		err = fMgr.FlushBytesToDisk()
 
@@ -2969,7 +2969,7 @@ func (fMgr *FileMgr) OpenThisFileReadOnly() error {
 			"fMgr.absolutePathFileName='%v' Error='%v' ", fMgr.absolutePathFileName, err.Error())
 	}
 
-	fMgr.fileOpenStatus, err = FileOpenConfig{}.New(FOpenType.ReadOnly(), FOpenMode.None())
+	fMgr.fileOpenStatus, err = FileOpenConfig{}.New(FOpenType.TypeReadOnly(), FOpenMode.ModeNone())
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+"Error initializing fMgr.fileOpenStatus. Error='%v' ", err.Error())
@@ -3060,7 +3060,7 @@ func (fMgr *FileMgr) OpenThisFileReadWrite() error {
 		return nil
 	}
 
-	fMgr.fileOpenStatus, err = FileOpenConfig{}.New(FOpenType.ReadWrite(), FOpenMode.None())
+	fMgr.fileOpenStatus, err = FileOpenConfig{}.New(FOpenType.TypeReadWrite(), FOpenMode.ModeNone())
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+"Error initializing fMgr.fileOpenStatus. Error='%v' ", err.Error())

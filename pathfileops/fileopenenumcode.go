@@ -39,7 +39,7 @@ func (fOpenStat *FileOpenConfig) CopyIn(fOpStat2 *FileOpenConfig) {
 
 	if lenFOpStat2FOpenModes == 0 {
 		fOpStat2.fileOpenModes = make([]FileOpenMode, 1)
-		fOpStat2.fileOpenModes[0] = FOpenMode.None()
+		fOpStat2.fileOpenModes[0] = FOpenMode.ModeNone()
 		lenFOpStat2FOpenModes = 1
 	}
 
@@ -65,7 +65,7 @@ func (fOpenStat *FileOpenConfig) CopyOut() FileOpenConfig {
 	lenFOpenModes := len(fOpenStat.fileOpenModes)
 
 	if lenFOpenModes == 0 {
-		fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, FOpenMode.None())
+		fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, FOpenMode.ModeNone())
 		lenFOpenModes = 1
 	}
 
@@ -85,11 +85,11 @@ func (fOpenStat *FileOpenConfig) Empty() {
 
 	fOpenStat.isInitialized = false
 
-	fOpenStat.fileOpenType = FOpenType.None()
+	fOpenStat.fileOpenType = FOpenType.TypeNone()
 
 	fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
 
-	fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, FOpenMode.None())
+	fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, FOpenMode.ModeNone())
 
 }
 
@@ -186,7 +186,7 @@ func (fOpenStat FileOpenConfig) New(fOpenType FileOpenType, fOpenModes ...FileOp
 
 	if len(fOpenModes) == 0 {
 
-		resultFOpenStatus.fileOpenModes = append(resultFOpenStatus.fileOpenModes, FOpenMode.None())
+		resultFOpenStatus.fileOpenModes = append(resultFOpenStatus.fileOpenModes, FOpenMode.ModeNone())
 
 		resultFOpenStatus.isInitialized = true
 
@@ -225,7 +225,7 @@ func (fOpenStat *FileOpenConfig) GetCompositeFileOpenCode() (int, error) {
 			errors.New(ePrefix + "Error: The current FileOpenConfig instance is INVALID!")
 	}
 
-	if fOpenStat.fileOpenType == FileOpenType(0).None() {
+	if fOpenStat.fileOpenType == FileOpenType(0).TypeNone() {
 		return -1,
 			errors.New(ePrefix + "Error: The stored FileOpenType == 'None'. A valid FileOpenType is required!")
 	}
@@ -250,7 +250,7 @@ func (fOpenStat *FileOpenConfig) GetCompositeFileOpenCode() (int, error) {
 	}
 
 	if lenFileOpenModes == 1 &&
-		fOpenStat.fileOpenModes[0] == FileOpenMode(0).None() {
+		fOpenStat.fileOpenModes[0] == FOpenMode.ModeNone() {
 
 		return fOpenStat.fileOpenType.Value(), nil
 
@@ -273,7 +273,7 @@ func (fOpenStat *FileOpenConfig) GetFileOpenModes() []FileOpenMode {
 	}
 
 	if len(fOpenStat.fileOpenModes) == 0 {
-		fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, FileOpenMode(0).None())
+		fOpenStat.fileOpenModes = append(fOpenStat.fileOpenModes, FOpenMode.ModeNone())
 	}
 
 	resultAry := make([]FileOpenMode, 0)
@@ -319,25 +319,25 @@ func (fOpenStat *FileOpenConfig) IsValid() error {
 
 	lenFileOpenModes := len(fOpenStat.fileOpenModes)
 
-	if fOpenStat.fileOpenType == FOpenType.None() &&
+	if fOpenStat.fileOpenType == FOpenType.TypeNone() &&
 		lenFileOpenModes > 1 {
 		return errors.New(ePrefix +
 			"Error: Current FileOpenConfig has Type='None' and " +
 			"multiple File Open Modes!")
 	}
 
-	if fOpenStat.fileOpenType == FOpenType.None() &&
+	if fOpenStat.fileOpenType == FOpenType.TypeNone() &&
 		lenFileOpenModes == 1 &&
-		fOpenStat.fileOpenModes[0] != FileOpenMode(0).None() {
+		fOpenStat.fileOpenModes[0] != FileOpenMode(0).ModeNone() {
 		return errors.New(ePrefix +
 			"Error: Current FileOpenConfig has Type='None' and " +
 			"a valid File Open Mode")
 	}
 
-	if fOpenStat.fileOpenType != FOpenType.None() {
+	if fOpenStat.fileOpenType != FOpenType.TypeNone() {
 
 		for i := 0; i < lenFileOpenModes; i++ {
-			if fOpenStat.fileOpenModes[i] == FileOpenMode(0).None() {
+			if fOpenStat.fileOpenModes[i] == FileOpenMode(0).ModeNone() {
 				return errors.New(ePrefix + "Error: The File Open Status has multiple File Open Modes " +
 					"one of which is 'None'. Resolve this conflict.")
 			}
@@ -378,7 +378,7 @@ func (fOpenStat *FileOpenConfig) SetFileOpenType(fOpenType FileOpenType) error {
 			fOpenType.Value())
 	}
 
-	if fOpenType == FileOpenType(0).None() {
+	if fOpenType == FileOpenType(0).TypeNone() {
 		fOpenStat.fileOpenModes = make([]FileOpenMode, 0)
 	}
 
@@ -431,19 +431,19 @@ var mFileOpenTypeLwrCaseStringToInt = map[string]int{}
 // FileOpenType - In order to open a file, exactly one of the
 // following File Open Codes MUST be specified:
 //
-//  FileOpenType(0).ReadOnly()
-//  FileOpenType(0).WriteOnly()
-//  FileOpenType(0).ReadWrite()
+//  FileOpenType(0).TypeReadOnly()
+//  FileOpenType(0).TypeWriteOnly()
+//  FileOpenType(0).TypeReadWrite()
 //
 // In addition, one of the three previous codes may be or'd with
 // zero or more of the following File Open Modes (Type: 'FileOpenMode')
 // to better control file open behavior.
 //
-//  FileOpenMode(0).Append()
-//  FileOpenMode(0).Create()
-//  FileOpenMode(0).Exclusive()
-//  FileOpenMode(0).Sync()
-//  FileOpenMode(0).Truncate()
+//  FileOpenMode(0).ModeAppend()
+//  FileOpenMode(0).ModeCreate()
+//  FileOpenMode(0).ModeExclusive()
+//  FileOpenMode(0).ModeSync()
+//  FileOpenMode(0).ModeTruncate()
 //
 //  Reference CONSTANTS: https://golang.org/pkg/os/
 //
@@ -452,16 +452,16 @@ var mFileOpenTypeLwrCaseStringToInt = map[string]int{}
 type FileOpenType int
 
 // None - No File Open Type specified
-func (fOpenType FileOpenType) None() FileOpenType { return -1 }
+func (fOpenType FileOpenType) TypeNone() FileOpenType { return -1 }
 
 // ReadOnly - File opened for 'Read Only' access
-func (fOpenType FileOpenType) ReadOnly() FileOpenType { return FileOpenType(os.O_RDONLY) }
+func (fOpenType FileOpenType) TypeReadOnly() FileOpenType { return FileOpenType(os.O_RDONLY) }
 
 // WriteOnly - File opened for 'Write Only' access
-func (fOpenType FileOpenType) WriteOnly() FileOpenType { return FileOpenType(os.O_WRONLY) }
+func (fOpenType FileOpenType) TypeWriteOnly() FileOpenType { return FileOpenType(os.O_WRONLY) }
 
 // ReadWrite - File opened for 'Read and Write' access
-func (fOpenType FileOpenType) ReadWrite() FileOpenType { return FileOpenType(os.O_RDWR) }
+func (fOpenType FileOpenType) TypeReadWrite() FileOpenType { return FileOpenType(os.O_RDWR) }
 
 // IsValid - If the value of the current FileOpenType is 'invalid',
 // this method will return an error. If the FileOpenType is 'valid',
@@ -498,19 +498,23 @@ func (fOpenType FileOpenType) IsValid() error {
 //
 // Input Parameters:
 //
-//	valueString   string - A string which will be matched against the
-//	                       enumeration string values. If 'valueString'
-//	                       is equal to one of the enumeration names, this
-//	                       method will proceed to successful completion
+//  valueString   string - A string which will be matched against the
+//                         enumeration string values. If 'valueString'
+//                         is equal to one of the enumeration names, this
+//                         method will proceed to successful completion.
 //
-//	caseSensitive   bool - If 'true' the search for enumeration names
-//	                       will be case sensitive and will require an
-//	                       exact match. Therefore, 'readonly' will NOT
-//	                       match the enumeration name, 'ReadOnly'.
+//                         You can prefix the string with "Type" or not.
+//                         Examples: "ReadOnly" or "TypeReadOnly"
+//                         Either string will produce the correct result.
 //
-//	                       If 'false' a case insensitive search is conducted
-//	                       for the enumeration name. In this case, 'readonly'
-//	                       will match match enumeration name 'ReadOnly'.
+//  caseSensitive   bool - If 'true' the search for enumeration names
+//                         will be case sensitive and will require an
+//                         exact match. Therefore, 'readonly' will NOT
+//                         match the enumeration name, 'ReadOnly'.
+//
+//                         If 'false' a case insensitive search is conducted
+//                         for the enumeration name. In this case, 'readonly'
+//                         will match match enumeration name 'ReadOnly'.
 //
 // ------------------------------------------------------------------------
 //
@@ -530,9 +534,11 @@ func (fOpenType FileOpenType) IsValid() error {
 //
 // Usage:
 //
-//	t, err := FileOpenType(0).ParseString("ReadOnly")
+//   t, err := FileOpenType(0).ParseString("ReadOnly")
+//                          Or
+//   t, err := FileOpenType(0).ParseString("TypeReadOnly")
 //
-//	    t is now equal to FileOpenType(0).ReadOnly()
+//   In either case, t is now equal to FileOpenType(0).ReadOnly()
 //
 func (fOpenType FileOpenType) ParseString(
 	valueString string,
@@ -547,6 +553,16 @@ func (fOpenType FileOpenType) ParseString(
 		return result,
 			fmt.Errorf(ePrefix+
 				"Input parameter 'valueString' is INVALID! valueString='%v' ", valueString)
+	}
+
+	isPrefixedWithType := strings.HasPrefix(valueString, "Type")
+
+	if !isPrefixedWithType {
+		isPrefixedWithType = strings.HasPrefix(valueString, "type")
+	}
+
+	if !isPrefixedWithType {
+		valueString = "Type" + valueString
 	}
 
 	var ok bool
@@ -592,9 +608,9 @@ func (fOpenType FileOpenType) ParseString(
 //
 // Usage
 //
-//	t:= FileOpenType(0).ReadWrite()
-//	str := t.String()
-//	    str is now equal to "ReadWrite"
+//   t   := FileOpenType(0).TypeReadWrite()
+//   str := t.String()
+//     str is now equal to "TypeReadWrite"
 //
 func (fOpenType FileOpenType) String() string {
 
@@ -654,7 +670,7 @@ func (fOpenType FileOpenType) checkInitializeMaps(reInitialize bool) {
 		return
 	}
 
-	var t = FileOpenType(0).ReadOnly()
+	var t = FileOpenType(0).TypeReadOnly()
 
 	mFileOpenTypeIntToString = make(map[int]string, 0)
 	mFileOpenTypeStringToInt = make(map[string]int, 0)
@@ -707,19 +723,20 @@ var mFileOpenModeLwrCaseStringToInt = map[string]int{}
 // zero or more of the following File Open Modes (Type: 'FileOpenMode')
 // to better control file open behavior.
 //
-//  FileOpenMode(0).Append()
-//  FileOpenMode(0).Create()
-//  FileOpenMode(0).Exclusive()
-//  FileOpenMode(0).Sync()
-//  FileOpenMode(0).Truncate()
+//  FileOpenMode(0).ModeNone()
+//  FileOpenMode(0).ModeAppend()
+//  FileOpenMode(0).ModeTypeCreate()
+//  FileOpenMode(0).ModeExclusive()
+//  FileOpenMode(0).ModeSync()
+//  FileOpenMode(0).ModeTruncate()
 //
 //  Reference CONSTANTS: https://golang.org/pkg/os/
 //
 // This type serves a wrapper for os package constants.
 //
-//  FileOpenType(0).ReadOnly()
-//  FileOpenType(0).WriteOnly()
-//  FileOpenType(0).ReadWrite()
+//  FileOpenType(0).TypeReadOnly()
+//  FileOpenType(0).TypeWriteOnly()
+//  FileOpenType(0).TypeReadWrite()
 //
 //
 //  Reference CONSTANTS: https://golang.org/pkg/os/
@@ -729,22 +746,22 @@ var mFileOpenModeLwrCaseStringToInt = map[string]int{}
 type FileOpenMode int
 
 // None - No File Open Mode is active
-func (fOpenMode FileOpenMode) None() FileOpenMode { return FileOpenMode(-1) }
+func (fOpenMode FileOpenMode) ModeNone() FileOpenMode { return FileOpenMode(-1) }
 
 // Append - append data to the file when writing.
-func (fOpenMode FileOpenMode) Append() FileOpenMode { return FileOpenMode(os.O_APPEND) }
+func (fOpenMode FileOpenMode) ModeAppend() FileOpenMode { return FileOpenMode(os.O_APPEND) }
 
 // Create - create a new file if none exists.
-func (fOpenMode FileOpenMode) Create() FileOpenMode { return FileOpenMode(os.O_CREATE) }
+func (fOpenMode FileOpenMode) ModeCreate() FileOpenMode { return FileOpenMode(os.O_CREATE) }
 
 // Exclusive - used with FileOpenControlMode(0).Create(), file must not exist.
-func (fOpenMode FileOpenMode) Exclusive() FileOpenMode { return FileOpenMode(os.O_EXCL) }
+func (fOpenMode FileOpenMode) ModeExclusive() FileOpenMode { return FileOpenMode(os.O_EXCL) }
 
 // Sync - open for synchronous I/O.
-func (fOpenMode FileOpenMode) Sync() FileOpenMode { return FileOpenMode(os.O_SYNC) }
+func (fOpenMode FileOpenMode) ModeSync() FileOpenMode { return FileOpenMode(os.O_SYNC) }
 
 // Truncate - if possible, truncate file when opened.
-func (fOpenMode FileOpenMode) Truncate() FileOpenMode { return FileOpenMode(os.O_TRUNC) }
+func (fOpenMode FileOpenMode) ModeTruncate() FileOpenMode { return FileOpenMode(os.O_TRUNC) }
 
 // IsValid - If the value of the current FileOpenMode is 'invalid',
 // this method will return an error. If the FileOpenMode is 'valid',
@@ -813,9 +830,14 @@ func (fOpenMode FileOpenMode) IsValid() error {
 //
 // Usage
 //
-//	t, err := FileOpenMode(0).ParseString("Append")
+//   t, err := FileOpenMode(0).ParseString("Append")
 //
-//	    t is now equal to FileOpenMode(0).Append()
+//                        OR
+//
+//   t, err := FileOpenMode(0).ParseString("ModeAppend")
+//
+//
+//   In either case t is now equal to FileOpenMode(0).Append()
 //
 func (fOpenMode FileOpenMode) ParseString(
 	valueString string,
@@ -834,6 +856,16 @@ func (fOpenMode FileOpenMode) ParseString(
 
 	var ok bool
 	var idx int
+
+	isPrefixedWithMode := strings.HasPrefix(valueString, "Mode")
+
+	if !isPrefixedWithMode {
+		isPrefixedWithMode = strings.HasPrefix(valueString, "mode")
+	}
+
+	if !isPrefixedWithMode {
+		valueString = "Mode" + valueString
+	}
 
 	if caseSensitive {
 
@@ -874,9 +906,9 @@ func (fOpenMode FileOpenMode) ParseString(
 //
 // Usage
 //
-//	t:= FileOpenMode(0).Append()
+//	t:= FileOpenMode(0).ModeAppend()
 //	str := t.String()
-//	    str is now equal to 'Append'
+//	    str is now equal to 'ModeAppend'
 //
 func (fOpenMode FileOpenMode) String() string {
 
@@ -936,7 +968,7 @@ func (fOpenMode FileOpenMode) checkInitializeMaps(reInitialize bool) {
 		return
 	}
 
-	var t = FileOpenMode(0).Append()
+	var t = FOpenMode.ModeAppend()
 
 	mFileOpenModeIntToString = make(map[int]string, 0)
 	mFileOpenModeStringToInt = make(map[string]int, 0)
@@ -974,9 +1006,9 @@ func (fOpenMode FileOpenMode) checkInitializeMaps(reInitialize bool) {
 //
 //  Example:
 //
-//     FOpenType.ReadOnly()
-//     FOpenType.WriteOnly()
-//     FOpenType.ReadWrite()
+//     FOpenType.TypeReadOnly()
+//     FOpenType.TypeWriteOnly()
+//     FOpenType.TypeReadWrite()
 //
 var FOpenType = FileOpenType(0)
 
@@ -986,8 +1018,8 @@ var FOpenType = FileOpenType(0)
 //
 //  Example:
 //
-//    FileOpenMode(0).Append()
-//    FileOpenMode(0).Create()
-//    FileOpenMode(0).Exclusive()
+//    FileOpenMode(0).ModeAppend()
+//    FileOpenMode(0).ModeCreate()
+//    FileOpenMode(0).ModeExclusive()
 //
 var FOpenMode = FileOpenMode(0)

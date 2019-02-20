@@ -366,8 +366,8 @@ func mainTest22() {
 
 	expectedFOpenCode := os.O_WRONLY | os.O_APPEND | os.O_TRUNC
 
-	fOpStatus, err := pf.FileOpenConfig{}.New(pf.FOpenType.WriteOnly(),
-		pf.FOpenMode.Append(), pf.FOpenMode.Truncate())
+	fOpStatus, err := pf.FileOpenConfig{}.New(pf.FOpenType.TypeWriteOnly(),
+		pf.FOpenMode.ModeAppend(), pf.FOpenMode.ModeTruncate())
 
 	if err != nil {
 		fmt.Printf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
