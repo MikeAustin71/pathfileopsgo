@@ -530,6 +530,32 @@ func TestFileOpenConfig_New_05(t *testing.T) {
 
 }
 
+func TestFileOpenConfig_New_06(t *testing.T) {
+
+	expectedFOpenCode := os.O_RDWR
+
+	fOpStatus, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(), FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+	}
+
+	fOpStatus.fileOpenModes = nil
+
+	actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). "+
+			"Error='%v' \n", err.Error())
+	}
+
+	if expectedFOpenCode != actualFOpenCode {
+		t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+			expectedFOpenCode, actualFOpenCode)
+	}
+
+}
+
 func TestFileOpenConfig_GetCompositeFileOpenCode_01(t *testing.T) {
 
 	fOpCfg := FileOpenConfig{}
@@ -604,20 +630,26 @@ func TestFileOpenConfig_GetCompositeFileOpenCode_04(t *testing.T) {
 
 func TestFileOpenConfig_GetCompositeFileOpenCode_05(t *testing.T) {
 
-	fOpCfg, err := FileOpenConfig{}.New(FOpenType.TypeNone(), FOpenMode.ModeAppend())
+	expectedFOpenCode := os.O_RDWR
+
+	fOpStatus, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(), FOpenMode.ModeNone())
 
 	if err != nil {
 		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
 	}
 
-	fOpCfg.fileOpenModes = make([]FileOpenMode, 0)
+	fOpStatus.fileOpenModes = nil
 
-	_, err = fOpCfg.GetCompositeFileOpenCode()
+	actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
-	if err == nil {
-		t.Error("Expected error return from fOpCfg.GetCompositeFileOpenCode() " +
-			"because fOpCfg.fileOpenModes has Zero Length. However, NO ERROR WAS RETURNED!")
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). "+
+			"Error='%v' \n", err.Error())
+	}
 
+	if expectedFOpenCode != actualFOpenCode {
+		t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+			expectedFOpenCode, actualFOpenCode)
 	}
 
 }
@@ -709,6 +741,301 @@ func TestFileOpenConfig_GetFileOpenModes_02(t *testing.T) {
 
 }
 
+func TestFileOpenConfig_GetFileOpenModes_03(t *testing.T) {
+
+	fOpCfg, err := FileOpenConfig{}.New(
+		FOpenType.TypeReadWrite())
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+	}
+
+	fileOpenModes := fOpCfg.GetFileOpenModes()
+
+	if fileOpenModes == nil {
+		t.Error("Error: Returned fileOpenModes is nil!")
+	}
+
+	if len(fileOpenModes) == 0 {
+		t.Error("Error: Returned fileOpenModes has Zero Length!")
+	}
+
+	if len(fileOpenModes) != 1 {
+		t.Errorf("Error: Returned fileOpenModes Length is NOT '1' ! "+
+			"Length='%v' ", len(fileOpenModes))
+	}
+
+	if fileOpenModes[0] != FOpenMode.ModeNone() {
+		t.Error("Error: Expected fileOpenModes[0] == FOpenMode.ModeNone(). " +
+			"It is NOT!")
+	}
+
+}
+
+func TestFileOpenConfig_GetFileOpenModes_04(t *testing.T) {
+
+	fOpCfg, err := FileOpenConfig{}.New(
+		FOpenType.TypeReadWrite())
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+	}
+
+	fOpCfg.fileOpenModes = nil
+
+	fileOpenModes := fOpCfg.GetFileOpenModes()
+
+	if fileOpenModes == nil {
+		t.Error("Error: Returned fileOpenModes is nil!")
+	}
+
+	if len(fileOpenModes) == 0 {
+		t.Error("Error: Returned fileOpenModes has Zero Length!")
+	}
+
+	if len(fileOpenModes) != 1 {
+		t.Errorf("Error: Returned fileOpenModes Length is NOT '1' ! "+
+			"Length='%v' ", len(fileOpenModes))
+	}
+
+	if fileOpenModes[0] != FOpenMode.ModeNone() {
+		t.Error("Error: Expected fileOpenModes[0] == FOpenMode.ModeNone(). " +
+			"It is NOT!")
+	}
+
+}
+
+func TestFileOpenConfig_GetFileOpenType_01(t *testing.T) {
+
+	fOpCfg, err := FileOpenConfig{}.New(
+		FOpenType.TypeReadWrite(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+	}
+
+	fOpenType := fOpCfg.GetFileOpenType()
+
+	if fOpenType != FOpenType.TypeReadWrite() {
+		t.Errorf("Error: Expected fOpenType='ReadWrite'.  Instead, "+
+			"fOpenType='%v' string='%s' ", fOpenType, fOpenType.String())
+	}
+
+}
+
+func TestFileOpenConfig_GetFileOpenType_02(t *testing.T) {
+
+	fOpCfg, err := FileOpenConfig{}.New(
+		FOpenType.TypeReadOnly(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+	}
+
+	fOpCfg.fileOpenModes = nil
+
+	fOpenType := fOpCfg.GetFileOpenType()
+
+	if fOpenType != FOpenType.TypeReadOnly() {
+		t.Errorf("Error: Expected fOpenType='ReadOnly'.  Instead, "+
+			"fOpenType='%v' string='%s' ", fOpenType, fOpenType.String())
+	}
+
+}
+
+func TestFileOpenConfig_IsValid_01(t *testing.T) {
+
+	fOpCfg := FileOpenConfig{}
+
+	err := fOpCfg.IsValid()
+
+	if err == nil {
+		t.Error("Expected an error return from fOpCfg.IsValid() " +
+			"because fOpCfg is uninitialized. However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
+func TestFileOpenConfig_IsValid_02(t *testing.T) {
+
+	fOpCfg, err := FileOpenConfig{}.New(
+		FOpenType.TypeReadOnly(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+	}
+
+	err = fOpCfg.IsValid()
+
+	if err != nil {
+		t.Errorf("Error: Expected no error returned from IsValid(). However, "+
+			"an error was returned! Error='%v' ", err.Error())
+	}
+
+}
+
+func TestFileOpenConfig_IsValid_03(t *testing.T) {
+
+	fOpCfg, err := FileOpenConfig{}.New(
+		FOpenType.TypeNone(),
+		FOpenMode.ModeAppend(),
+		FOpenMode.ModeCreate(),
+		FOpenMode.ModeExclusive())
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+	}
+
+	err = fOpCfg.IsValid()
+
+	if err == nil {
+		t.Error("Expected an error return from fOpCfg.IsValid() " +
+			"because fOpCfg File Type=None and multiple Modes. " +
+			"However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
+func TestFileOpenConfig_IsValid_04(t *testing.T) {
+
+	fOpCfg, err := FileOpenConfig{}.New(
+		FOpenType.TypeReadOnly(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+	}
+
+	fOpCfg.fileOpenType = FileOpenType(-99)
+
+	err = fOpCfg.IsValid()
+
+	if err == nil {
+		t.Error("Expected an error return from fOpCfg.IsValid() " +
+			"because fOpCfg File Type=-99. " +
+			"However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
+func TestFileOpenConfig_IsValid_05(t *testing.T) {
+
+	fOpCfg, err := FileOpenConfig{}.New(
+		FOpenType.TypeReadOnly(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+	}
+
+	fOpCfg.fileOpenModes[0] = FileOpenMode(9999999)
+
+	err = fOpCfg.IsValid()
+
+	if err == nil {
+		t.Error("Expected an error return from fOpCfg.IsValid() " +
+			"because fOpCfg File Type=-99. " +
+			"However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
+func TestFileOpenConfig_IsValid_06(t *testing.T) {
+
+	fOpCfg, err := FileOpenConfig{}.New(
+		FOpenType.TypeReadOnly(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+	}
+
+	fOpCfg.fileOpenModes = nil
+
+	err = fOpCfg.IsValid()
+
+	if err != nil {
+		t.Errorf("Expected NO ERROR RETURN from IsValid(). "+
+			"However, AN ERROR WAS RETURNED! Error='%v' ", err.Error())
+	}
+
+}
+
+func TestFileOpenConfig_IsValid_07(t *testing.T) {
+
+	fOpCfg, err := FileOpenConfig{}.New(
+		FOpenType.TypeReadOnly(),
+		FOpenMode.ModeAppend(),
+		FOpenMode.ModeCreate(),
+		FOpenMode.ModeTruncate())
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+	}
+
+	fOpCfg.fileOpenModes[0] = FileOpenMode(9999)
+
+	err = fOpCfg.IsValid()
+
+	if err == nil {
+		t.Error("Expected an error return from fOpCfg.IsValid() " +
+			"because fOpCfg contained an invalid File Mode. " +
+			"However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
+func TestFileOpenConfig_IsValid_08(t *testing.T) {
+
+	fOpCfg, err := FileOpenConfig{}.New(
+		FOpenType.TypeReadOnly(),
+		FOpenMode.ModeAppend(),
+		FOpenMode.ModeCreate(),
+		FOpenMode.ModeTruncate())
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+	}
+
+	fOpCfg.fileOpenModes[1] = FOpenMode.ModeNone()
+
+	err = fOpCfg.IsValid()
+
+	if err == nil {
+		t.Error("Expected an error return from fOpCfg.IsValid() " +
+			"because fOpCfg has multiple File Modes one of which is 'None'. " +
+			"However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
+func TestFileOpenConfig_IsValid_09(t *testing.T) {
+
+	fOpCfg, err := FileOpenConfig{}.New(
+		FOpenType.TypeReadOnly(),
+		FOpenMode.ModeAppend(),
+		FOpenMode.ModeCreate(),
+		FOpenMode.ModeTruncate())
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+	}
+
+	fOpCfg.fileOpenModes[1] = FOpenMode.ModeNone()
+
+	err = fOpCfg.IsValid()
+
+	if err == nil {
+		t.Error("Expected an error return from fOpCfg.IsValid() " +
+			"because fOpCfg has multiple File Modes one of which is 'None'. " +
+			"However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
 func TestFileOpenConfig_SetFileOpenType_01(t *testing.T) {
 
 	expectedFOpenCode := os.O_RDWR
@@ -736,6 +1063,70 @@ func TestFileOpenConfig_SetFileOpenType_01(t *testing.T) {
 	if expectedFOpenCode != actualFOpenCode {
 		t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
 			expectedFOpenCode, actualFOpenCode)
+	}
+
+}
+
+func TestFileOpenConfig_SetFileOpenType_02(t *testing.T) {
+
+	expectedFOpenCode := os.O_RDWR
+
+	fOpStatus := FileOpenConfig{}
+
+	err := fOpStatus.SetFileOpenType(FOpenType.TypeReadWrite())
+
+	if err != nil {
+		t.Errorf("Error returned by SetFileOpenType{}.New(). Error='%v' \n", err.Error())
+	}
+
+	fOpStatus.SetFileOpenModes(FOpenMode.ModeNone())
+
+	actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). "+
+			"Error='%v' \n", err.Error())
+	}
+
+	if expectedFOpenCode != actualFOpenCode {
+		t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+			expectedFOpenCode, actualFOpenCode)
+	}
+
+}
+
+func TestFileOpenConfig_SetFileOpenType_03(t *testing.T) {
+
+	fOpStatus := FileOpenConfig{}
+
+	err := fOpStatus.SetFileOpenType(FileOpenType(-99))
+
+	if err == nil {
+		t.Error("Expected an error return from fOpStatus." +
+			"SetFileOpenType(FileOpenType(-99)) because FileType== -99. " +
+			"However, NO ERROR WAS RETURNED! \n")
+	}
+
+}
+
+func TestFileOpenConfig_SetFileOpenType_04(t *testing.T) {
+
+	expectedFOpenType := FOpenType.TypeNone()
+
+	fOpCfg := FileOpenConfig{}
+
+	err := fOpCfg.SetFileOpenType(expectedFOpenType)
+
+	if err != nil {
+		t.Errorf("Error returned by SetFileOpenType{}.New(). Error='%v' \n", err.Error())
+	}
+
+	actualFileOpenType := fOpCfg.GetFileOpenType()
+
+	if expectedFOpenType != actualFileOpenType {
+		t.Errorf("Error: Expected File Open Type='%v'. "+
+			"Instead, actual File Open Type='%v' \n",
+			expectedFOpenType.String(), actualFileOpenType.String())
 	}
 
 }
@@ -773,146 +1164,46 @@ func TestFileOpenConfig_SetFileOpenModes_01(t *testing.T) {
 
 }
 
-func TestFileOpenType_Value_01(t *testing.T) {
+func TestFileOpenConfig_SetFileOpenModes_02(t *testing.T) {
 
-	fot := FOpenType.TypeNone()
+	expectedFOpenCode := os.O_WRONLY | os.O_APPEND | os.O_CREATE
 
-	expected := -1
+	fOpStatus := FileOpenConfig{}
 
-	if expected != fot.Value() {
-		t.Errorf("Error: Expected File Open Type None=%v. Instead, "+
-			"actual None Value ='%v'  ", expected, fot.Value())
+	fOpStatus.fileOpenType = FOpenType.TypeWriteOnly()
+
+	fOpStatus.fileOpenModes = nil
+
+	fOpStatus.SetFileOpenModes(FOpenMode.ModeAppend(), FOpenMode.ModeCreate())
+
+	actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). "+
+			"Error='%v' \n", err.Error())
+	}
+
+	if expectedFOpenCode != actualFOpenCode {
+		t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+			expectedFOpenCode, actualFOpenCode)
 	}
 
 }
 
-func TestFileOpenType_Value_02(t *testing.T) {
+func TestFileOpenConfig_SetFileOpenModes_03(t *testing.T) {
 
-	fot := FOpenType.TypeReadOnly()
+	fOpnCfg := FileOpenConfig{}
 
-	expected := os.O_RDONLY
+	fOpnCfg.fileOpenType = FOpenType.TypeWriteOnly()
 
-	if expected != fot.Value() {
-		t.Errorf("Error: Expected File Open Type Read Only=%v. Instead, "+
-			"actual Read Only Value ='%v'  ", expected, fot.Value())
-	}
+	fOpnCfg.SetFileOpenModes()
 
-}
-
-func TestFileOpenType_Value_03(t *testing.T) {
-
-	fot := FOpenType.TypeWriteOnly()
-
-	expected := os.O_WRONLY
-
-	if expected != fot.Value() {
-		t.Errorf("Error: Expected File Open Type WriteOnly=%v. Instead, "+
-			"actual Write Only Value ='%v'  ", expected, fot.Value())
-	}
-
-}
-
-func TestFileOpenType_Value_04(t *testing.T) {
-
-	fot := FOpenType.TypeReadWrite()
-
-	expected := os.O_RDWR
-
-	if expected != fot.Value() {
-		t.Errorf("Error: Expected File Open Type Read/Write=%v. Instead, "+
-			"actual Read/Write Value ='%v'  ", expected, fot.Value())
-	}
-
-}
-
-func TestFileOpenType_String_01(t *testing.T) {
-
-	expected := "TypeNone"
-
-	fot := FOpenType.TypeNone()
-
-	if expected != fot.String() {
-		t.Errorf("Error: Expected File Open Type None String=%v. Instead, "+
-			"actual File Open Type None String ='%v'  ", expected, fot.String())
-	}
-
-}
-
-func TestFileOpenType_String_02(t *testing.T) {
-
-	expected := "TypeReadOnly"
-
-	fot := FOpenType.TypeReadOnly()
-
-	if expected != fot.String() {
-		t.Errorf("Error: Expected File Open Type ReadOnly String=%v. Instead, "+
-			"actual File Open Type ReadOnly String ='%v'  ", expected, fot.String())
-	}
-
-}
-
-func TestFileOpenType_String_03(t *testing.T) {
-
-	expected := "TypeWriteOnly"
-
-	fot := FOpenType.TypeWriteOnly()
-
-	if expected != fot.String() {
-		t.Errorf("Error: Expected File Open Type WriteOnly String=%v. Instead, "+
-			"actual File Open Type WriteOnly String ='%v'  ", expected, fot.String())
-	}
-
-}
-
-func TestFileOpenType_String_04(t *testing.T) {
-
-	expected := "TypeReadWrite"
-
-	fot := FOpenType.TypeReadWrite()
-
-	if expected != fot.String() {
-		t.Errorf("Error: Expected File Open Type ReadWrite String=%v. Instead, "+
-			"actual File Open Type ReadWrite String ='%v'  ", expected, fot.String())
-	}
-
-}
-
-func TestFileOpenType_IsValid_01(t *testing.T) {
-
-	fot := FileOpenType(-99)
-
-	err := fot.IsValid()
+	err := fOpnCfg.IsValid()
 
 	if err == nil {
-		t.Error("Expected Error from IsValid on FileOpenType(-99). NO ERROR WAS RECEIVED!")
-	}
-
-}
-
-func TestFileOpenType_IsValid_02(t *testing.T) {
-
-	fot := FOpenType.TypeReadWrite()
-
-	err := fot.IsValid()
-
-	if err != nil {
-		t.Error("Expected: IsValid Error returned on VALID FileOpenType 'ReadWrite'")
-	}
-
-}
-
-func TestFileOpenType_ParseString_01(t *testing.T) {
-
-	fot, err := FileOpenType(0).ParseString("ReadWrite", true)
-
-	if err != nil {
-		t.Errorf("Error returned from FileOpenType(0).ParseString"+
-			"(\"ReadWrite\", true). Error='%v' ", err.Error())
-	}
-
-	if FOpenType.TypeReadWrite() != fot {
-		t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-			"'ReadWrite'. Instead, it generated type='%v' ", fot.String())
+		t.Error("Expected an error return from fOpnCfg.IsValid() with " +
+			"Nil file modes config shows as uninitialized. " +
+			"However, NO ERROR WAS RETURNED!")
 	}
 
 }

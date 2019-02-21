@@ -12,10 +12,7 @@ First pull down and install the `cover` package.
  
   `go get golang.org/x/tools/cmd/cover`
   
-Next, run tests with the `cover` flag.
-
-  `go test -coverprofile`
-  
+Next, follow the test execution protocol.  
   
 ## Test Execution with Code Coverage
 
@@ -23,6 +20,13 @@ Next, run tests with the `cover` flag.
      
 
 ## Cover Profile
+
+Generate the code coverage detail:
+
 `go test -coverprofile=xx_coverage.out`
+
+
+The following provides for code coverage display in your
+browser:
 
 `go tool cover -html=xx_coverage.out`
