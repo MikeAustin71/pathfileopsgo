@@ -41,6 +41,15 @@ var mFileOpenTypeLwrCaseStringToInt = map[string]int{}
 //
 // This type serves a wrapper for os package constants.
 //
+// FileOpenType has been adapted to function as an enumeration of valid
+// File Open Type values. Since Go does not directly support enumerations,
+// the 'FileOpenType' has been configured to function in a manner similar
+// to classic enumerations found in other languages like C#. For additional
+// information, reference:
+//
+//      Jeffrey Richter Using Reflection to implement enumerated types
+//             https://www.youtube.com/watch?v=DyXJy_0v0_U
+//
 type FileOpenType int
 
 // None - No File Open Type specified

@@ -28,6 +28,16 @@ var mFileOpenModeLwrCaseStringToInt = map[string]int{}
 // zero or more of the following File Open Modes (Type: 'FileOpenMode')
 // to better control file open behavior.
 //
+// FileOpenMode has been adapted to function as an enumeration of valid
+// File Open Mode values. Since Go does not directly support enumerations,
+// the 'FileOpenMode' has been configured to function in a manner similar
+// to classic enumerations found in other languages like C#. For additional
+// information, reference:
+//
+//      Jeffrey Richter Using Reflection to implement enumerated types
+//             https://www.youtube.com/watch?v=DyXJy_0v0_U
+//
+//
 //  FileOpenMode(0).ModeNone()
 //  FileOpenMode(0).ModeAppend()
 //  FileOpenMode(0).ModeTypeCreate()

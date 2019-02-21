@@ -1,9 +1,9 @@
 package pathfileops
 
 import (
-  "fmt"
-  "reflect"
-  "strings"
+	"fmt"
+	"reflect"
+	"strings"
 )
 
 // mFileOperationCodeIntToString - This map is used to map enumeration values
@@ -61,6 +61,15 @@ var mFileOperationCodeLwrCaseStringToInt = map[string]int{}
 // FileOperationCode(0).CreateDestinationDirAndFile()
 // FileOperationCode(0).CreateDestinationFile()
 //
+// FileOperationCode has been adapted to function as an enumeration of valid
+// File Operation Code values. Since Go does not directly support enumerations,
+// the 'FileOperationCode' has been configured to function in a manner similar
+// to classic enumerations found in other languages like C#. For additional
+// information, reference:
+//
+//      Jeffrey Richter Using Reflection to implement enumerated types
+//             https://www.youtube.com/watch?v=DyXJy_0v0_U
+//
 type FileOperationCode int
 
 // None - No operation (NOOP) No File Operation is performed.
@@ -78,7 +87,7 @@ func (fop FileOperationCode) None() FileOperationCode { return FileOperationCode
 //
 //	FileOperationCode(0).MoveSourceFileToDestination()
 func (fop FileOperationCode) MoveSourceFileToDestination() FileOperationCode {
-  return FileOperationCode(1)
+	return FileOperationCode(1)
 }
 
 // DeleteDestinationFile() - Deletes the Destination file if it exists
@@ -102,7 +111,7 @@ func (fop FileOperationCode) DeleteSourceFile() FileOperationCode { return FileO
 //
 //	FileOperationCode(0).DeleteSourceAndDestinationFiles()
 func (fop FileOperationCode) DeleteSourceAndDestinationFiles() FileOperationCode {
-  return FileOperationCode(4)
+	return FileOperationCode(4)
 }
 
 // FileOperationCode(0).CopySourceToDestinationByHardLinkByIo() - Copies the Source File to the
@@ -119,7 +128,7 @@ func (fop FileOperationCode) DeleteSourceAndDestinationFiles() FileOperationCode
 //	FileOperationCode(0).FileOperationCode(0).CopySourceToDestinationByHardLinkByIo()()
 //
 func (fop FileOperationCode) CopySourceToDestinationByHardLinkByIo() FileOperationCode {
-  return FileOperationCode(5)
+	return FileOperationCode(5)
 }
 
 // FileOperationCode(0).CopySourceToDestinationByIoByHardLink() - Copies the Source File to the Destination
@@ -137,7 +146,7 @@ func (fop FileOperationCode) CopySourceToDestinationByHardLinkByIo() FileOperati
 //	FileOperationCode(0).CopySourceToDestinationByIoByHardLink()
 //
 func (fop FileOperationCode) CopySourceToDestinationByIoByHardLink() FileOperationCode {
-  return FileOperationCode(6)
+	return FileOperationCode(6)
 }
 
 // CopySourceToDestinationByHardLink - Copies the Source File to the Destination
@@ -150,7 +159,7 @@ func (fop FileOperationCode) CopySourceToDestinationByIoByHardLink() FileOperati
 //
 //	FileOperationCode(0).CopySourceToDestinationByHardLink()
 func (fop FileOperationCode) CopySourceToDestinationByHardLink() FileOperationCode {
-  return FileOperationCode(7)
+	return FileOperationCode(7)
 }
 
 // CopySourceToDestinationByIo - Copies the Source File to the Destination
@@ -163,7 +172,7 @@ func (fop FileOperationCode) CopySourceToDestinationByHardLink() FileOperationCo
 //
 //	FileOperationCode(0).CopySourceToDestinationByIo()
 func (fop FileOperationCode) CopySourceToDestinationByIo() FileOperationCode {
-  return FileOperationCode(8)
+	return FileOperationCode(8)
 }
 
 // CreateSourceDir - Creates the Source Directory
@@ -201,7 +210,7 @@ func (fop FileOperationCode) CreateDestinationDir() FileOperationCode { return F
 //
 //	FileOperationCode(0).CreateDestinationDirAndFile()
 func (fop FileOperationCode) CreateDestinationDirAndFile() FileOperationCode {
-  return FileOperationCode(13)
+	return FileOperationCode(13)
 }
 
 // CreateDestinationFile - Creates the Destination File
@@ -220,16 +229,16 @@ func (fop FileOperationCode) CreateDestinationFile() FileOperationCode { return 
 //
 func (fop FileOperationCode) IsValid() error {
 
-  fop.checkInitializeMaps(false)
+	fop.checkInitializeMaps(false)
 
-  _, ok := mFileOperationCodeIntToString[int(fop)]
+	_, ok := mFileOperationCodeIntToString[int(fop)]
 
-  if !ok {
-    ePrefix := "FileOperationCode.IsValid() "
-    return fmt.Errorf(ePrefix+"Error: File Operation Code INVALID!. Unknown Value='%v' ", fop.Value())
-  }
+	if !ok {
+		ePrefix := "FileOperationCode.IsValid() "
+		return fmt.Errorf(ePrefix+"Error: File Operation Code INVALID!. Unknown Value='%v' ", fop.Value())
+	}
 
-  return nil
+	return nil
 }
 
 // ParseString - Receives a string and attempts to match it with
@@ -281,50 +290,50 @@ func (fop FileOperationCode) IsValid() error {
 //	    t is now equal to FileOperationCode(0).MoveSourceFileToDestination()
 //
 func (fop FileOperationCode) ParseString(
-  valueString string,
-  caseSensitive bool) (FileOperationCode, error) {
+	valueString string,
+	caseSensitive bool) (FileOperationCode, error) {
 
-  ePrefix := "FileOperationCode.ParseString() "
+	ePrefix := "FileOperationCode.ParseString() "
 
-  fop.checkInitializeMaps(false)
+	fop.checkInitializeMaps(false)
 
-  result := FileOperationCode(0)
-  if len(valueString) < 3 {
-    return result,
-      fmt.Errorf(ePrefix+
-        "Input parameter 'valueString' is INVALID! valueString='%v' ", valueString)
-  }
+	result := FileOperationCode(0)
+	if len(valueString) < 3 {
+		return result,
+			fmt.Errorf(ePrefix+
+				"Input parameter 'valueString' is INVALID! valueString='%v' ", valueString)
+	}
 
-  var ok bool
-  var idx int
+	var ok bool
+	var idx int
 
-  if caseSensitive {
+	if caseSensitive {
 
-    idx, ok = mFileOperationCodeStringToInt[valueString]
+		idx, ok = mFileOperationCodeStringToInt[valueString]
 
-    if !ok {
-      return FileOperationCode(0),
-        fmt.Errorf(ePrefix+
-          "'valueString' did NOT MATCH a FileOperationCode. valueString='%v' ", valueString)
-    }
+		if !ok {
+			return FileOperationCode(0),
+				fmt.Errorf(ePrefix+
+					"'valueString' did NOT MATCH a FileOperationCode. valueString='%v' ", valueString)
+		}
 
-    result = FileOperationCode(idx)
+		result = FileOperationCode(idx)
 
-  } else {
+	} else {
 
-    idx, ok = mFileOperationCodeLwrCaseStringToInt[strings.ToLower(valueString)]
+		idx, ok = mFileOperationCodeLwrCaseStringToInt[strings.ToLower(valueString)]
 
-    if !ok {
-      return FileOperationCode(0),
-        fmt.Errorf(ePrefix+
-          "'valueString' did NOT MATCH a FileOperationCode. valueString='%v' ", valueString)
-    }
+		if !ok {
+			return FileOperationCode(0),
+				fmt.Errorf(ePrefix+
+					"'valueString' did NOT MATCH a FileOperationCode. valueString='%v' ", valueString)
+		}
 
-    result =
-      FileOperationCode(idx)
-  }
+		result =
+			FileOperationCode(idx)
+	}
 
-  return result, nil
+	return result, nil
 }
 
 // String - Returns a string with the name of the enumeration associated
@@ -343,15 +352,15 @@ func (fop FileOperationCode) ParseString(
 //
 func (fop FileOperationCode) String() string {
 
-  fop.checkInitializeMaps(false)
+	fop.checkInitializeMaps(false)
 
-  str, ok := mFileOperationCodeIntToString[int(fop)]
+	str, ok := mFileOperationCodeIntToString[int(fop)]
 
-  if !ok {
-    return ""
-  }
+	if !ok {
+		return ""
+	}
 
-  return str
+	return str
 }
 
 // Value - This is a utility method which is not part of the
@@ -363,7 +372,7 @@ func (fop FileOperationCode) String() string {
 // for this type.
 //
 func (fop FileOperationCode) Value() int {
-  return int(fop)
+	return int(fop)
 }
 
 // checkInitializeMaps - String and value comparisons performed on enumerations
@@ -387,45 +396,45 @@ func (fop FileOperationCode) Value() int {
 //
 func (fop FileOperationCode) checkInitializeMaps(reInitialize bool) {
 
-  if !reInitialize &&
-    mFileOperationCodeIntToString != nil &&
-    len(mFileOperationCodeIntToString) > 12 &&
-    mFileOperationCodeStringToInt != nil &&
-    len(mFileOperationCodeStringToInt) > 12 &&
-    mFileOperationCodeLwrCaseStringToInt != nil &&
-    len(mFileOperationCodeLwrCaseStringToInt) > 12 {
-    return
-  }
+	if !reInitialize &&
+		mFileOperationCodeIntToString != nil &&
+		len(mFileOperationCodeIntToString) > 12 &&
+		mFileOperationCodeStringToInt != nil &&
+		len(mFileOperationCodeStringToInt) > 12 &&
+		mFileOperationCodeLwrCaseStringToInt != nil &&
+		len(mFileOperationCodeLwrCaseStringToInt) > 12 {
+		return
+	}
 
-  var t = FileOperationCode(0).MoveSourceFileToDestination()
+	var t = FileOperationCode(0).MoveSourceFileToDestination()
 
-  mFileOperationCodeIntToString = make(map[int]string, 0)
-  mFileOperationCodeStringToInt = make(map[string]int, 0)
-  mFileOperationCodeLwrCaseStringToInt = make(map[string]int, 0)
+	mFileOperationCodeIntToString = make(map[int]string, 0)
+	mFileOperationCodeStringToInt = make(map[string]int, 0)
+	mFileOperationCodeLwrCaseStringToInt = make(map[string]int, 0)
 
-  s := reflect.TypeOf(t)
+	s := reflect.TypeOf(t)
 
-  r := reflect.TypeOf(int(0))
-  args := [1]reflect.Value{reflect.Zero(s)}
+	r := reflect.TypeOf(int(0))
+	args := [1]reflect.Value{reflect.Zero(s)}
 
-  for i := 0; i < s.NumMethod(); i++ {
+	for i := 0; i < s.NumMethod(); i++ {
 
-    f := s.Method(i).Name
+		f := s.Method(i).Name
 
-    if f == "String" ||
-      f == "ParseString" ||
-      f == "Value" ||
-      f == "IsValid" ||
-      f == "checkInitializeMaps" {
-      continue
-    }
+		if f == "String" ||
+			f == "ParseString" ||
+			f == "Value" ||
+			f == "IsValid" ||
+			f == "checkInitializeMaps" {
+			continue
+		}
 
-    value := s.Method(i).Func.Call(args[:])[0].Convert(r).Int()
-    x := int(value)
-    mFileOperationCodeIntToString[x] = f
-    mFileOperationCodeStringToInt[f] = x
-    mFileOperationCodeLwrCaseStringToInt[strings.ToLower(f)] = x
-  }
+		value := s.Method(i).Func.Call(args[:])[0].Convert(r).Int()
+		x := int(value)
+		mFileOperationCodeIntToString[x] = f
+		mFileOperationCodeStringToInt[f] = x
+		mFileOperationCodeLwrCaseStringToInt[strings.ToLower(f)] = x
+	}
 
 }
 
