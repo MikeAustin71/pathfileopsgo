@@ -129,8 +129,12 @@ func (fOpenType FileOpenType) IsValid() error {
 //   t, err := FileOpenType(0).ParseString("ReadOnly")
 //                          Or
 //   t, err := FileOpenType(0).ParseString("TypeReadOnly")
+//                          Or
+//   t, err := FileOpenType(0).ParseString("TypeReadOnly()")
+//                          Or
+//   t, err := FileOpenType(0).ParseString("ReadOnly()")
 //
-//   In either case, t is now equal to FileOpenType(0).ReadOnly()
+//   In of the cases shown above, t is now equal to FileOpenType(0).ReadOnly()
 //
 func (fOpenType FileOpenType) ParseString(
 	valueString string,
@@ -160,9 +164,7 @@ func (fOpenType FileOpenType) ParseString(
 
 	if caseSensitive {
 
-		isPrefixedWithType := strings.HasPrefix(valueString, "Type")
-
-		if !isPrefixedWithType {
+		if !strings.HasPrefix(valueString, "Type") {
 			valueString = "Type" + valueString
 		}
 
@@ -180,9 +182,7 @@ func (fOpenType FileOpenType) ParseString(
 
 		valueString = strings.ToLower(valueString)
 
-		isPrefixedWithType := strings.HasPrefix(valueString, "type")
-
-		if !isPrefixedWithType {
+		if !strings.HasPrefix(valueString, "type") {
 			valueString = "type" + valueString
 		}
 

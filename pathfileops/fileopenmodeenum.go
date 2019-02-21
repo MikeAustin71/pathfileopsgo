@@ -170,17 +170,11 @@ func (fOpenMode FileOpenMode) ParseString(
 	var ok bool
 	var idx int
 
-	isPrefixedWithMode := strings.HasPrefix(valueString, "Mode")
-
-	if !isPrefixedWithMode {
-		isPrefixedWithMode = strings.HasPrefix(valueString, "mode")
-	}
-
-	if !isPrefixedWithMode {
-		valueString = "Mode" + valueString
-	}
-
 	if caseSensitive {
+
+		if !strings.HasPrefix(valueString, "Mode") {
+			valueString = "Mode" + valueString
+		}
 
 		idx, ok = mFileOpenModeStringToInt[valueString]
 
@@ -194,7 +188,13 @@ func (fOpenMode FileOpenMode) ParseString(
 
 	} else {
 
-		idx, ok = mFileOpenModeLwrCaseStringToInt[strings.ToLower(valueString)]
+		valueString = strings.ToLower(valueString)
+
+		if !strings.HasPrefix(valueString, "mode") {
+			valueString = "mode" + valueString
+		}
+
+		idx, ok = mFileOpenModeLwrCaseStringToInt[valueString]
 
 		if !ok {
 			return FileOpenMode(0),
