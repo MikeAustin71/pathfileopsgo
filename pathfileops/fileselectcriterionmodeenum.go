@@ -1,9 +1,9 @@
 package pathfileops
 
 import (
-  "fmt"
-  "reflect"
-  "strings"
+	"fmt"
+	"reflect"
+	"strings"
 )
 
 // mFileSelectCriterionTypeIntToString - This map is used to map enumeration values
@@ -19,6 +19,10 @@ var mFileSelectCriterionTypeStringToInt = map[string]int{}
 // This map is used for case insensitive look ups.
 var mFileSelectCriterionTypeLwrCaseStringToInt = map[string]int{}
 
+// FileSelectCriterionMode - An enumeration which serve as parameters for file selections.
+// File Selection criteria can either be And'ed or Or'ed together. The FileSelectionCriteriaMode
+// determines which operation will be applied to file selection criteria.
+//
 type FileSelectCriterionMode int
 
 // None - Signals that no selection is present. Same as NOOP or No Selection Criterion
@@ -29,7 +33,7 @@ func (fSel FileSelectCriterionMode) None() FileSelectCriterionMode { return File
 // all three must be satisfied before a file is selected.
 //
 func (fSel FileSelectCriterionMode) ANDSelect() FileSelectCriterionMode {
-  return FileSelectCriterionMode(1)
+	return FileSelectCriterionMode(1)
 }
 
 // ORSelect() - File Selection Criterion are Or'd together.
@@ -37,7 +41,7 @@ func (fSel FileSelectCriterionMode) ANDSelect() FileSelectCriterionMode {
 // one of the three criterion will cause the file to be selected.
 // FileSelectMode.ORSelect()
 func (fSel FileSelectCriterionMode) ORSelect() FileSelectCriterionMode {
-  return FileSelectCriterionMode(2)
+	return FileSelectCriterionMode(2)
 }
 
 // IsValid - If the value of the current FileSelectCriterionMode is 'invalid',
@@ -49,16 +53,16 @@ func (fSel FileSelectCriterionMode) ORSelect() FileSelectCriterionMode {
 //
 func (fSel FileSelectCriterionMode) IsValid() error {
 
-  fSel.checkInitializeMaps(false)
+	fSel.checkInitializeMaps(false)
 
-  _, ok := mFileSelectCriterionTypeIntToString[int(fSel)]
+	_, ok := mFileSelectCriterionTypeIntToString[int(fSel)]
 
-  if !ok {
-    ePrefix := "FileSelectCriterionMode.IsValid() "
-    return fmt.Errorf(ePrefix+"Error: This FileSelectCriterionMode is INVALID! Unknown Code='%v' ", int(fSel))
-  }
+	if !ok {
+		ePrefix := "FileSelectCriterionMode.IsValid() "
+		return fmt.Errorf(ePrefix+"Error: This FileSelectCriterionMode is INVALID! Unknown Code='%v' ", int(fSel))
+	}
 
-  return nil
+	return nil
 }
 
 // String - Returns a string with the name of the enumeration associated
@@ -75,15 +79,15 @@ func (fSel FileSelectCriterionMode) IsValid() error {
 //
 func (fSel FileSelectCriterionMode) String() string {
 
-  fSel.checkInitializeMaps(false)
+	fSel.checkInitializeMaps(false)
 
-  str, ok := mFileSelectCriterionTypeIntToString[int(fSel)]
+	str, ok := mFileSelectCriterionTypeIntToString[int(fSel)]
 
-  if !ok {
-    return ""
-  }
+	if !ok {
+		return ""
+	}
 
-  return str
+	return str
 }
 
 // ParseString - Receives a string and attempts to match it with
@@ -132,50 +136,50 @@ func (fSel FileSelectCriterionMode) String() string {
 //	    t is now equal to FileSelectCriterionMode(0).MoveSourceFileToDestination()
 //
 func (fSel FileSelectCriterionMode) ParseString(
-  valueString string,
-  caseSensitive bool) (FileSelectCriterionMode, error) {
+	valueString string,
+	caseSensitive bool) (FileSelectCriterionMode, error) {
 
-  ePrefix := "FileSelectCriterionMode.ParseString() "
+	ePrefix := "FileSelectCriterionMode.ParseString() "
 
-  fSel.checkInitializeMaps(false)
+	fSel.checkInitializeMaps(false)
 
-  result := FileSelectCriterionMode(0)
-  if len(valueString) < 3 {
-    return result,
-      fmt.Errorf(ePrefix+
-        "Input parameter 'valueString' is INVALID! valueString='%v' ", valueString)
-  }
+	result := FileSelectCriterionMode(0)
+	if len(valueString) < 3 {
+		return result,
+			fmt.Errorf(ePrefix+
+				"Input parameter 'valueString' is INVALID! valueString='%v' ", valueString)
+	}
 
-  var ok bool
-  var idx int
+	var ok bool
+	var idx int
 
-  if caseSensitive {
+	if caseSensitive {
 
-    idx, ok = mFileSelectCriterionTypeStringToInt[valueString]
+		idx, ok = mFileSelectCriterionTypeStringToInt[valueString]
 
-    if !ok {
-      return FileSelectCriterionMode(0),
-        fmt.Errorf(ePrefix+
-          "'valueString' did NOT MATCH a FileSelectCriterionMode. valueString='%v' ", valueString)
-    }
+		if !ok {
+			return FileSelectCriterionMode(0),
+				fmt.Errorf(ePrefix+
+					"'valueString' did NOT MATCH a FileSelectCriterionMode. valueString='%v' ", valueString)
+		}
 
-    result = FileSelectCriterionMode(idx)
+		result = FileSelectCriterionMode(idx)
 
-  } else {
+	} else {
 
-    idx, ok = mFileSelectCriterionTypeLwrCaseStringToInt[strings.ToLower(valueString)]
+		idx, ok = mFileSelectCriterionTypeLwrCaseStringToInt[strings.ToLower(valueString)]
 
-    if !ok {
-      return FileSelectCriterionMode(0),
-        fmt.Errorf(ePrefix+
-          "'valueString' did NOT MATCH a FileSelectCriterionMode. valueString='%v' ", valueString)
-    }
+		if !ok {
+			return FileSelectCriterionMode(0),
+				fmt.Errorf(ePrefix+
+					"'valueString' did NOT MATCH a FileSelectCriterionMode. valueString='%v' ", valueString)
+		}
 
-    result =
-      FileSelectCriterionMode(idx)
-  }
+		result =
+			FileSelectCriterionMode(idx)
+	}
 
-  return result, nil
+	return result, nil
 }
 
 // Value - This is a utility method which is not part of the
@@ -184,7 +188,7 @@ func (fSel FileSelectCriterionMode) ParseString(
 // instance.
 //
 func (fSel FileSelectCriterionMode) Value() int {
-  return int(fSel)
+	return int(fSel)
 }
 
 // checkInitializeMaps - String and value comparisons performed on enumerations
@@ -208,45 +212,45 @@ func (fSel FileSelectCriterionMode) Value() int {
 //
 func (fSel FileSelectCriterionMode) checkInitializeMaps(reInitialize bool) {
 
-  if !reInitialize &&
-    mFileSelectCriterionTypeIntToString != nil &&
-    len(mFileSelectCriterionTypeIntToString) > 2 &&
-    mFileSelectCriterionTypeStringToInt != nil &&
-    len(mFileSelectCriterionTypeStringToInt) > 2 &&
-    mFileSelectCriterionTypeLwrCaseStringToInt != nil &&
-    len(mFileSelectCriterionTypeLwrCaseStringToInt) > 2 {
-    return
-  }
+	if !reInitialize &&
+		mFileSelectCriterionTypeIntToString != nil &&
+		len(mFileSelectCriterionTypeIntToString) > 2 &&
+		mFileSelectCriterionTypeStringToInt != nil &&
+		len(mFileSelectCriterionTypeStringToInt) > 2 &&
+		mFileSelectCriterionTypeLwrCaseStringToInt != nil &&
+		len(mFileSelectCriterionTypeLwrCaseStringToInt) > 2 {
+		return
+	}
 
-  var t = FileSelectCriterionMode(0).None()
+	var t = FileSelectCriterionMode(0).None()
 
-  mFileSelectCriterionTypeIntToString = make(map[int]string, 0)
-  mFileSelectCriterionTypeStringToInt = make(map[string]int, 0)
-  mFileSelectCriterionTypeLwrCaseStringToInt = make(map[string]int, 0)
+	mFileSelectCriterionTypeIntToString = make(map[int]string, 0)
+	mFileSelectCriterionTypeStringToInt = make(map[string]int, 0)
+	mFileSelectCriterionTypeLwrCaseStringToInt = make(map[string]int, 0)
 
-  s := reflect.TypeOf(t)
+	s := reflect.TypeOf(t)
 
-  r := reflect.TypeOf(int(0))
-  args := [1]reflect.Value{reflect.Zero(s)}
+	r := reflect.TypeOf(int(0))
+	args := [1]reflect.Value{reflect.Zero(s)}
 
-  for i := 0; i < s.NumMethod(); i++ {
+	for i := 0; i < s.NumMethod(); i++ {
 
-    f := s.Method(i).Name
+		f := s.Method(i).Name
 
-    if f == "String" ||
-      f == "ParseString" ||
-      f == "Value" ||
-      f == "checkInitializeMaps" ||
-      f == "IsValid" {
-      continue
-    }
+		if f == "String" ||
+			f == "ParseString" ||
+			f == "Value" ||
+			f == "checkInitializeMaps" ||
+			f == "IsValid" {
+			continue
+		}
 
-    value := s.Method(i).Func.Call(args[:])[0].Convert(r).Int()
-    x := int(value)
-    mFileSelectCriterionTypeIntToString[x] = f
-    mFileSelectCriterionTypeStringToInt[f] = x
-    mFileSelectCriterionTypeLwrCaseStringToInt[strings.ToLower(f)] = x
-  }
+		value := s.Method(i).Func.Call(args[:])[0].Convert(r).Int()
+		x := int(value)
+		mFileSelectCriterionTypeIntToString[x] = f
+		mFileSelectCriterionTypeStringToInt[f] = x
+		mFileSelectCriterionTypeLwrCaseStringToInt[strings.ToLower(f)] = x
+	}
 
 }
 

@@ -38,6 +38,8 @@ var mFileOpenModeLwrCaseStringToInt = map[string]int{}
 //             https://www.youtube.com/watch?v=DyXJy_0v0_U
 //
 //
+// These FileOpenMode methods used as enumerators for os mode constants:
+//
 //  FileOpenMode(0).ModeNone()
 //  FileOpenMode(0).ModeAppend()
 //  FileOpenMode(0).ModeTypeCreate()
@@ -47,17 +49,16 @@ var mFileOpenModeLwrCaseStringToInt = map[string]int{}
 //
 //  Reference CONSTANTS: https://golang.org/pkg/os/
 //
-// This type serves a wrapper for os package constants.
+// The FileOpenType type is used in conjunction with FileOpenMode to specify
+// file permissions. Reference the 'FileOpenType' in this 'pathfileops' package.
+// The methods used to specify File Open Types are listed as follows:
 //
 //  FileOpenType(0).TypeReadOnly()
 //  FileOpenType(0).TypeWriteOnly()
 //  FileOpenType(0).TypeReadWrite()
 //
-//
 //  Reference CONSTANTS: https://golang.org/pkg/os/
 //
-// This type serves a wrapper for os package constants.
-
 type FileOpenMode int
 
 // None - No File Open Mode is active
