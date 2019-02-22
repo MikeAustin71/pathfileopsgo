@@ -71,11 +71,19 @@ func (fSel FileSelectCriterionMode) IsValid() error {
 //
 // ------------------------------------------------------------------------
 //
+// Return Value:
+//
+//  string - The string label or description for the current enumeration
+//           value. If, the FileSelectCriterionMode value is invalid,
+//           this method will return an empty string.
+//
+// ------------------------------------------------------------------------
+//
 // Usage
 //
-//	t:= FileSelectCriterionMode(0).MoveSourceFileToDestination()
+//	t:= FileSelectCriterionMode(0).ORSelect()
 //	str := t.String()
-//	    str is now equal to 'MoveSourceFileToDestination'
+//	    str is now equal to 'ORSelect'
 //
 func (fSel FileSelectCriterionMode) String() string {
 

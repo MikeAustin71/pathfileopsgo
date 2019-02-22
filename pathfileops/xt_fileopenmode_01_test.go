@@ -1,6 +1,7 @@
 package pathfileops
 
 import (
+	"os"
 	"strconv"
 	"testing"
 )
@@ -1234,6 +1235,195 @@ func TestFileOpenMode_ParseString_62(t *testing.T) {
 	if err == nil {
 		t.Error("Expected an error return from FOpenMode.ParseString(inputStr, false) " +
 			"because 'inputStr' is invalid. However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
+func TestFileOpenMode_String_01(t *testing.T) {
+
+	fileOpenMode := FOpenMode.ModeTruncate()
+	expectedStr := "ModeTruncate"
+
+	actualStr := fileOpenMode.String()
+
+	if expectedStr != actualStr {
+		t.Errorf("Error: Expected String()='%v'. Instead, String()='%v'",
+			expectedStr, actualStr)
+	}
+
+}
+
+func TestFileOpenMode_String_02(t *testing.T) {
+
+	fileOpenMode := FOpenMode.ModeCreate()
+	expectedStr := "ModeCreate"
+
+	actualStr := fileOpenMode.String()
+
+	if expectedStr != actualStr {
+		t.Errorf("Error: Expected String()='%v'. Instead, String()='%v'",
+			expectedStr, actualStr)
+	}
+
+}
+
+func TestFileOpenMode_String_03(t *testing.T) {
+
+	fileOpenMode := FOpenMode.ModeExclusive()
+	expectedStr := "ModeExclusive"
+
+	actualStr := fileOpenMode.String()
+
+	if expectedStr != actualStr {
+		t.Errorf("Error: Expected String()='%v'. Instead, String()='%v'",
+			expectedStr, actualStr)
+	}
+
+}
+
+func TestFileOpenMode_String_04(t *testing.T) {
+
+	fileOpenMode := FOpenMode.ModeSync()
+	expectedStr := "ModeSync"
+
+	actualStr := fileOpenMode.String()
+
+	if expectedStr != actualStr {
+		t.Errorf("Error: Expected String()='%v'. Instead, String()='%v'",
+			expectedStr, actualStr)
+	}
+
+}
+
+func TestFileOpenMode_String_05(t *testing.T) {
+
+	fileOpenMode := FOpenMode.ModeAppend()
+	expectedStr := "ModeAppend"
+
+	actualStr := fileOpenMode.String()
+
+	if expectedStr != actualStr {
+		t.Errorf("Error: Expected String()='%v'. Instead, String()='%v'",
+			expectedStr, actualStr)
+	}
+
+}
+
+func TestFileOpenMode_String_06(t *testing.T) {
+
+	fileOpenMode := FOpenMode.ModeNone()
+	expectedStr := "ModeNone"
+
+	actualStr := fileOpenMode.String()
+
+	if expectedStr != actualStr {
+		t.Errorf("Error: Expected String()='%v'. Instead, String()='%v'",
+			expectedStr, actualStr)
+	}
+
+}
+
+func TestFileOpenMode_String_07(t *testing.T) {
+
+	fileOpenMode := FileOpenMode(999)
+	expectedStr := ""
+
+	actualStr := fileOpenMode.String()
+
+	if expectedStr != actualStr {
+		t.Errorf("Error: Expected String()='%v'. Instead, String()='%v'",
+			expectedStr, actualStr)
+	}
+
+}
+
+func TestFileOpenMode_Value_01(t *testing.T) {
+
+	fileOpenMode := FOpenMode.ModeNone()
+
+	expectedValue := -1
+
+	if expectedValue != fileOpenMode.Value() {
+		t.Errorf("Expected ModeNone value='%v'. Instead, value='%v'",
+			expectedValue, fileOpenMode.Value())
+	}
+
+}
+
+func TestFileOpenMode_Value_02(t *testing.T) {
+
+	fileOpenMode := FOpenMode.ModeAppend()
+
+	expectedValue := os.O_APPEND
+
+	if expectedValue != fileOpenMode.Value() {
+		t.Errorf("Expected ModeNone value='%v'. Instead, value='%v'",
+			expectedValue, fileOpenMode.Value())
+	}
+
+}
+
+func TestFileOpenMode_Value_03(t *testing.T) {
+
+	fileOpenMode := FOpenMode.ModeSync()
+
+	expectedValue := os.O_SYNC
+
+	if expectedValue != fileOpenMode.Value() {
+		t.Errorf("Expected ModeNone value='%v'. Instead, value='%v'",
+			expectedValue, fileOpenMode.Value())
+	}
+
+}
+
+func TestFileOpenMode_Value_04(t *testing.T) {
+
+	fileOpenMode := FOpenMode.ModeExclusive()
+
+	expectedValue := os.O_EXCL
+
+	if expectedValue != fileOpenMode.Value() {
+		t.Errorf("Expected ModeNone value='%v'. Instead, value='%v'",
+			expectedValue, fileOpenMode.Value())
+	}
+
+}
+
+func TestFileOpenMode_Value_05(t *testing.T) {
+
+	fileOpenMode := FOpenMode.ModeCreate()
+
+	expectedValue := os.O_CREATE
+
+	if expectedValue != fileOpenMode.Value() {
+		t.Errorf("Expected ModeNone value='%v'. Instead, value='%v'",
+			expectedValue, fileOpenMode.Value())
+	}
+
+}
+
+func TestFileOpenMode_Value_06(t *testing.T) {
+
+	fileOpenMode := FOpenMode.ModeTruncate()
+
+	expectedValue := os.O_TRUNC
+
+	if expectedValue != fileOpenMode.Value() {
+		t.Errorf("Expected ModeNone value='%v'. Instead, value='%v'",
+			expectedValue, fileOpenMode.Value())
+	}
+
+}
+
+func TestFileOpenMode_Value_07(t *testing.T) {
+
+	expectedValue := 9999
+
+	fileOpenMode := FileOpenMode(expectedValue)
+
+	if expectedValue != fileOpenMode.Value() {
+		t.Errorf("Expected ModeNone value='%v'. Instead, value='%v'",
+			expectedValue, fileOpenMode.Value())
 	}
 
 }

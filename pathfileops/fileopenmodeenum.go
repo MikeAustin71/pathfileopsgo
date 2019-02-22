@@ -147,13 +147,14 @@ func (fOpenMode FileOpenMode) IsValid() error {
 // Usage
 //
 //   t, err := FileOpenMode(0).ParseString("Append")
-//
 //                        OR
-//
 //   t, err := FileOpenMode(0).ParseString("ModeAppend")
+//                        OR
+//   t, err := FileOpenMode(0).ParseString("ModeAppend()")
+//                        OR
+//   t, err := FileOpenMode(0).ParseString("Append()")
 //
-//
-//   In either case t is now equal to FileOpenMode(0).Append()
+//   In any cases shown above, t is now equal to FileOpenMode(0).Append()
 //
 func (fOpenMode FileOpenMode) ParseString(
 	valueString string,
@@ -228,6 +229,14 @@ func (fOpenMode FileOpenMode) ParseString(
 //
 // ------------------------------------------------------------------------
 //
+// Return Value:
+//
+//  string - The string label or description for the current enumeration
+//           value. If, the FileOpenMode value is invalid, this method will
+//           return an empty string.
+//
+// ------------------------------------------------------------------------
+//
 // Usage
 //
 //	t:= FileOpenMode(0).ModeAppend()
@@ -241,7 +250,7 @@ func (fOpenMode FileOpenMode) String() string {
 	str, ok := mFileOpenModeIntToString[int(fOpenMode)]
 
 	if !ok {
-		return "Invalid File Open Mode!"
+		return ""
 	}
 
 	return str

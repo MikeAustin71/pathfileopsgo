@@ -344,6 +344,14 @@ func (fop FileOperationCode) ParseString(
 //
 // ------------------------------------------------------------------------
 //
+// Return Value:
+//
+//  string - The string label or description for the current enumeration
+//           value. If, the FileOperationCode value is invalid, this method
+//           will return an empty string.
+//
+// ------------------------------------------------------------------------
+//
 // Usage
 //
 //	t:= FileOperationCode(0).MoveSourceFileToDestination()
