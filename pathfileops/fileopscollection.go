@@ -8,6 +8,7 @@ import (
 
 // FileOpsCollection - A collection of files and file operations which are designed
 // to perform specific actions on disk files.
+//
 type FileOpsCollection struct {
   fileOps []FileOps
 }

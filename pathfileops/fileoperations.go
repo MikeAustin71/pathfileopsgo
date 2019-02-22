@@ -5,6 +5,9 @@ import (
   "fmt"
 )
 
+// FileOps - This type is used to manage and coordinate various
+// operations performed on files. Hence the name, File Operations.
+//
 type FileOps struct {
   isInitialized bool
   source        FileMgr
