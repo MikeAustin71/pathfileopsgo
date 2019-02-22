@@ -395,22 +395,44 @@ func (fOpenCfg *FileOpenConfig) SetFileOpenType(fOpenType FileOpenType) error {
 // To clear the current internal FileOpenMode values, pass nothing as an input parameter
 // or pass the value FileOpenMode(0).None().
 //
-func (fOpenCfg *FileOpenConfig) SetFileOpenModes(fOpenModes ...FileOpenMode) {
+func (fOpenCfg *FileOpenConfig) SetFileOpenModes(fOpenModes ...FileOpenMode) error {
+
+	ePrefix := "FileOpenConfig.SetFileOpenModes() "
 
 	if fOpenCfg.fileOpenModes == nil {
 		fOpenCfg.fileOpenModes = make([]FileOpenMode, 0)
 	}
 
-	if len(fOpenModes) == 0 {
-		fOpenCfg.fileOpenModes = make([]FileOpenMode, 0)
-		return
+	lenFOpenModes := len(fOpenModes)
+
+	if lenFOpenModes == 0 {
+		fOpenCfg.fileOpenModes = make([]FileOpenMode, 1)
+		fOpenCfg.fileOpenModes[0] = FOpenMode.ModeNone()
+		return nil
 	}
 
 	fOpenCfg.fileOpenModes = make([]FileOpenMode, 0)
+	var err error
 
-	fOpenCfg.fileOpenModes = append(fOpenCfg.fileOpenModes, fOpenModes...)
+	for idx, fOpenMode := range fOpenModes {
 
-	fOpenCfg.isInitialized = true
+		err = fOpenMode.IsValid()
 
-	return
+		if err != nil {
+			fOpenCfg.fileOpenModes = make([]FileOpenMode, 1)
+			fOpenCfg.fileOpenModes[0] = FOpenMode.ModeNone()
+			return fmt.Errorf(ePrefix+"Error: File Open Mode INVALID! "+
+				"index='%v' Error='%v' ", idx, err.Error())
+		}
+
+		fOpenCfg.fileOpenModes = append(fOpenCfg.fileOpenModes, fOpenMode)
+	}
+
+	err = fOpenCfg.fileOpenType.IsValid()
+
+	if err == nil {
+		fOpenCfg.isInitialized = true
+	}
+
+	return nil
 }

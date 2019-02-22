@@ -1099,7 +1099,12 @@ func TestFileOpenConfig_SetFileOpenType_02(t *testing.T) {
 		t.Errorf("Error returned by SetFileOpenType{}.New(). Error='%v' \n", err.Error())
 	}
 
-	fOpStatus.SetFileOpenModes(FOpenMode.ModeNone())
+	err = fOpStatus.SetFileOpenModes(FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by fOpStatus.SetFileOpenModes(FOpenMode.ModeNone()). "+
+			"Error='%v' \n", err.Error())
+	}
 
 	actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
@@ -1168,7 +1173,13 @@ func TestFileOpenConfig_SetFileOpenModes_01(t *testing.T) {
 		t.Errorf("Error returned by SetFileOpenType{}.New(). Error='%v' \n", err.Error())
 	}
 
-	fOpStatus.SetFileOpenModes(FOpenMode.ModeAppend(), FOpenMode.ModeCreate())
+	err = fOpStatus.SetFileOpenModes(FOpenMode.ModeAppend(), FOpenMode.ModeCreate())
+
+	if err != nil {
+		t.Errorf("Error returned by fOpStatus.SetFileOpenModes(FOpenMode.ModeAppend(), "+
+			"FOpenMode.ModeCreate()). Error='%v' \n",
+			err.Error())
+	}
 
 	actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
@@ -1194,7 +1205,13 @@ func TestFileOpenConfig_SetFileOpenModes_02(t *testing.T) {
 
 	fOpStatus.fileOpenModes = nil
 
-	fOpStatus.SetFileOpenModes(FOpenMode.ModeAppend(), FOpenMode.ModeCreate())
+	err := fOpStatus.SetFileOpenModes(FOpenMode.ModeAppend(), FOpenMode.ModeCreate())
+
+	if err != nil {
+		t.Errorf("Error returned by fOpStatus.SetFileOpenModes(FOpenMode.ModeAppend(), "+
+			"FOpenMode.ModeCreate()). Error='%v' \n",
+			err.Error())
+	}
 
 	actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
@@ -1216,9 +1233,15 @@ func TestFileOpenConfig_SetFileOpenModes_03(t *testing.T) {
 
 	fOpnCfg.fileOpenType = FOpenType.TypeWriteOnly()
 
-	fOpnCfg.SetFileOpenModes()
+	err := fOpnCfg.SetFileOpenModes()
 
-	err := fOpnCfg.IsValid()
+	if err != nil {
+		t.Errorf("Error returned by fOpnCfg.SetFileOpenModes() "+
+			"Error='%v' \n",
+			err.Error())
+	}
+
+	err = fOpnCfg.IsValid()
 
 	if err == nil {
 		t.Error("Expected an error return from fOpnCfg.IsValid() with " +
