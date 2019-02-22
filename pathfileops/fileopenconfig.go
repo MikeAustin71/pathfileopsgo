@@ -290,7 +290,7 @@ func (fOpenCfg *FileOpenConfig) GetFileOpenType() FileOpenType {
 	return fOpenCfg.fileOpenType
 }
 
-// IsValid - If the current FileOpenConfig is valid and properly
+// IsValid - If the current FileOpenConfig instance is valid and properly
 // initialized, this method returns nil. If the current FileOpenConfig
 // instance is invalid, this method returns an error.
 func (fOpenCfg *FileOpenConfig) IsValid() error {
