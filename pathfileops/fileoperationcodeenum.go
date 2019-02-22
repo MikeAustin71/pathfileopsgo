@@ -202,7 +202,9 @@ func (fop FileOperationCode) CreateSourceFile() FileOperationCode { return FileO
 // Usage:
 //
 //	FileOperationCode(0).CreateDestinationDir()
-func (fop FileOperationCode) CreateDestinationDir() FileOperationCode { return FileOperationCode(12) }
+func (fop FileOperationCode) CreateDestinationDir() FileOperationCode {
+	return FileOperationCode(12)
+}
 
 // CreateDestinationDirAndFile - Creates the Destination Directory and File
 //
@@ -218,7 +220,9 @@ func (fop FileOperationCode) CreateDestinationDirAndFile() FileOperationCode {
 // Usage:
 //
 //	FileOperationCode(0).CreateDestinationFile()
-func (fop FileOperationCode) CreateDestinationFile() FileOperationCode { return FileOperationCode(14) }
+func (fop FileOperationCode) CreateDestinationFile() FileOperationCode {
+	return FileOperationCode(14)
+}
 
 // IsValid - If the value of the current FileOperationCode is 'invalid',
 // this method will return an error. If the FileOperationCode is 'valid',
@@ -285,9 +289,12 @@ func (fop FileOperationCode) IsValid() error {
 //
 // Usage
 //
-//	t, err := FileOperationCode(0).ParseString("MoveSourceFileToDestination")
+//	t, err := FileOperationCode(0).ParseString("MoveSourceFileToDestination", true)
+//                                  OR
+//	t, err := FileOperationCode(0).ParseString("movesourcefiletodestination", false)
 //
-//	    t is now equal to FileOperationCode(0).MoveSourceFileToDestination()
+//	For all of the cases shown above,
+//	t is now equal to FileOperationCode(0).MoveSourceFileToDestination()
 //
 func (fop FileOperationCode) ParseString(
 	valueString string,

@@ -135,13 +135,15 @@ func (fOpenType FileOpenType) IsValid() error {
 //
 // Usage:
 //
-//   t, err := FileOpenType(0).ParseString("ReadOnly")
+//   t, err := FileOpenType(0).ParseString("ReadOnly", true)
 //                          Or
-//   t, err := FileOpenType(0).ParseString("TypeReadOnly")
+//   t, err := FileOpenType(0).ParseString("TypeReadOnly", true)
 //                          Or
-//   t, err := FileOpenType(0).ParseString("TypeReadOnly()")
+//   t, err := FileOpenType(0).ParseString("TypeReadOnly()", true)
 //                          Or
-//   t, err := FileOpenType(0).ParseString("ReadOnly()")
+//   t, err := FileOpenType(0).ParseString("ReadOnly()", true)
+//                          Or
+//   t, err := FileOpenType(0).ParseString("readonly", false)
 //
 //   In of the cases shown above, t is now equal to FileOpenType(0).ReadOnly()
 //

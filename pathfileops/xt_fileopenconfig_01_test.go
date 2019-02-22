@@ -1036,6 +1036,26 @@ func TestFileOpenConfig_IsValid_09(t *testing.T) {
 
 }
 
+func TestFileOpenConfig_IsValid_10(t *testing.T) {
+
+	fOpCfg := FileOpenConfig{}
+
+	fOpCfg.fileOpenType = FOpenType.TypeNone()
+
+	fOpCfg.fileOpenModes = make([]FileOpenMode, 1)
+
+	fOpCfg.fileOpenModes[0] = FOpenMode.ModeCreate()
+
+	err := fOpCfg.IsValid()
+
+	if err == nil {
+		t.Error("Expected an error return from fOpCfg.IsValid() " +
+			"because fOpCfg has File Type='None' and fileOpenModes = ModeCreate. " +
+			"However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
 func TestFileOpenConfig_SetFileOpenType_01(t *testing.T) {
 
 	expectedFOpenCode := os.O_RDWR

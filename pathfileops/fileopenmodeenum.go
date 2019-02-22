@@ -146,13 +146,15 @@ func (fOpenMode FileOpenMode) IsValid() error {
 //
 // Usage
 //
-//   t, err := FileOpenMode(0).ParseString("Append")
+//   t, err := FileOpenMode(0).ParseString("Append", true)
 //                        OR
-//   t, err := FileOpenMode(0).ParseString("ModeAppend")
+//   t, err := FileOpenMode(0).ParseString("ModeAppend", true)
 //                        OR
-//   t, err := FileOpenMode(0).ParseString("ModeAppend()")
+//   t, err := FileOpenMode(0).ParseString("ModeAppend()", true)
 //                        OR
-//   t, err := FileOpenMode(0).ParseString("Append()")
+//   t, err := FileOpenMode(0).ParseString("Append()", true)
+//                        OR
+//   t, err := FileOpenMode(0).ParseString("append", false)
 //
 //   In any cases shown above, t is now equal to FileOpenMode(0).Append()
 //

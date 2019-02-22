@@ -1,96 +1,96 @@
 package pathfileops
 
 import (
-	"errors"
-	"fmt"
-	"os"
-	"strconv"
-	"strings"
+  "errors"
+  "fmt"
+  "os"
+  "strconv"
+  "strings"
 )
 
 var mOsPermissionCodeToString = map[os.FileMode]string{
-	os.FileMode(0):    "ModeNone",
-	os.ModeDir:        "ModeDir",
-	os.ModeAppend:     "ModeAppend",
-	os.ModeExclusive:  "ModeExclusive",
-	os.ModeTemporary:  "ModeTemporary",
-	os.ModeSymlink:    "ModeSymlink",
-	os.ModeDevice:     "ModeDevice",
-	os.ModeNamedPipe:  "ModeNamedPipe",
-	os.ModeSocket:     "ModeSocket",
-	os.ModeSetuid:     "ModeSetuid",
-	os.ModeSetgid:     "ModeSetgid",
-	os.ModeCharDevice: "ModeCharDevice",
-	os.ModeSticky:     "ModeSticky",
-	os.ModeIrregular:  "ModeIrregular",
+  os.FileMode(0):    "ModeNone",
+  os.ModeDir:        "ModeDir",
+  os.ModeAppend:     "ModeAppend",
+  os.ModeExclusive:  "ModeExclusive",
+  os.ModeTemporary:  "ModeTemporary",
+  os.ModeSymlink:    "ModeSymlink",
+  os.ModeDevice:     "ModeDevice",
+  os.ModeNamedPipe:  "ModeNamedPipe",
+  os.ModeSocket:     "ModeSocket",
+  os.ModeSetuid:     "ModeSetuid",
+  os.ModeSetgid:     "ModeSetgid",
+  os.ModeCharDevice: "ModeCharDevice",
+  os.ModeSticky:     "ModeSticky",
+  os.ModeIrregular:  "ModeIrregular",
 }
 
 var mOsPermissionCodeToLetter = map[os.FileMode]string{
-	os.FileMode(0):    "-",
-	os.ModeDir:        "d",
-	os.ModeAppend:     "a",
-	os.ModeExclusive:  "l",
-	os.ModeTemporary:  "T",
-	os.ModeSymlink:    "L",
-	os.ModeDevice:     "D",
-	os.ModeNamedPipe:  "p",
-	os.ModeSocket:     "S",
-	os.ModeSetuid:     "u",
-	os.ModeSetgid:     "g",
-	os.ModeCharDevice: "c",
-	os.ModeSticky:     "t",
-	os.ModeIrregular:  "?",
+  os.FileMode(0):    "-",
+  os.ModeDir:        "d",
+  os.ModeAppend:     "a",
+  os.ModeExclusive:  "l",
+  os.ModeTemporary:  "T",
+  os.ModeSymlink:    "L",
+  os.ModeDevice:     "D",
+  os.ModeNamedPipe:  "p",
+  os.ModeSocket:     "S",
+  os.ModeSetuid:     "u",
+  os.ModeSetgid:     "g",
+  os.ModeCharDevice: "c",
+  os.ModeSticky:     "t",
+  os.ModeIrregular:  "?",
 }
 
 var mOsPermissionStringToCode = map[string]os.FileMode{
-	"ModeNone":       os.FileMode(0),
-	"ModeDir":        os.ModeDir,
-	"ModeAppend":     os.ModeAppend,
-	"ModeExclusive":  os.ModeExclusive,
-	"ModeTemporary":  os.ModeTemporary,
-	"ModeSymlink":    os.ModeSymlink,
-	"ModeDevice":     os.ModeDevice,
-	"ModeNamedPipe":  os.ModeNamedPipe,
-	"ModeSocket":     os.ModeSocket,
-	"ModeSetuid":     os.ModeSetuid,
-	"ModeSetgid":     os.ModeSetgid,
-	"ModeCharDevice": os.ModeCharDevice,
-	"ModeSticky":     os.ModeSticky,
-	"ModeIrregular":  os.ModeIrregular,
+  "ModeNone":       os.FileMode(0),
+  "ModeDir":        os.ModeDir,
+  "ModeAppend":     os.ModeAppend,
+  "ModeExclusive":  os.ModeExclusive,
+  "ModeTemporary":  os.ModeTemporary,
+  "ModeSymlink":    os.ModeSymlink,
+  "ModeDevice":     os.ModeDevice,
+  "ModeNamedPipe":  os.ModeNamedPipe,
+  "ModeSocket":     os.ModeSocket,
+  "ModeSetuid":     os.ModeSetuid,
+  "ModeSetgid":     os.ModeSetgid,
+  "ModeCharDevice": os.ModeCharDevice,
+  "ModeSticky":     os.ModeSticky,
+  "ModeIrregular":  os.ModeIrregular,
 }
 
 var mOsPermissionLwrCaseStringToCode = map[string]os.FileMode{
-	"none":           os.FileMode(0),
-	"modedir":        os.ModeDir,
-	"modeappend":     os.ModeAppend,
-	"modeexclusive":  os.ModeExclusive,
-	"modetemporary":  os.ModeTemporary,
-	"modesymlink":    os.ModeSymlink,
-	"modedevice":     os.ModeDevice,
-	"modenamedpipe":  os.ModeNamedPipe,
-	"modesocket":     os.ModeSocket,
-	"modesetuid":     os.ModeSetuid,
-	"modesetgid":     os.ModeSetgid,
-	"modechardevice": os.ModeCharDevice,
-	"modesticky":     os.ModeSticky,
-	"modeirregular":  os.ModeIrregular,
+  "modenone":       os.FileMode(0),
+  "modedir":        os.ModeDir,
+  "modeappend":     os.ModeAppend,
+  "modeexclusive":  os.ModeExclusive,
+  "modetemporary":  os.ModeTemporary,
+  "modesymlink":    os.ModeSymlink,
+  "modedevice":     os.ModeDevice,
+  "modenamedpipe":  os.ModeNamedPipe,
+  "modesocket":     os.ModeSocket,
+  "modesetuid":     os.ModeSetuid,
+  "modesetgid":     os.ModeSetgid,
+  "modechardevice": os.ModeCharDevice,
+  "modesticky":     os.ModeSticky,
+  "modeirregular":  os.ModeIrregular,
 }
 
 var mOsPermissionLetterToCode = map[string]os.FileMode{
-	"-": os.FileMode(0),
-	"d": os.ModeDir,
-	"a": os.ModeAppend,
-	"l": os.ModeExclusive,
-	"T": os.ModeTemporary,
-	"L": os.ModeSymlink,
-	"D": os.ModeDevice,
-	"p": os.ModeNamedPipe,
-	"S": os.ModeSocket,
-	"u": os.ModeSetuid,
-	"g": os.ModeSetgid,
-	"c": os.ModeCharDevice,
-	"t": os.ModeSticky,
-	"?": os.ModeIrregular,
+  "-": os.FileMode(0),
+  "d": os.ModeDir,
+  "a": os.ModeAppend,
+  "l": os.ModeExclusive,
+  "T": os.ModeTemporary,
+  "L": os.ModeSymlink,
+  "D": os.ModeDevice,
+  "p": os.ModeNamedPipe,
+  "S": os.ModeSocket,
+  "u": os.ModeSetuid,
+  "g": os.ModeSetgid,
+  "c": os.ModeCharDevice,
+  "t": os.ModeSticky,
+  "?": os.ModeIrregular,
 }
 
 // OsFilePermissionCode - An enumeration of the os File Mode constant values:
@@ -133,11 +133,11 @@ type OsFilePermissionCode os.FileMode
 //
 func (osPerm OsFilePermissionCode) Equal(osPerm2 OsFilePermissionCode) bool {
 
-	if osPerm == osPerm2 {
-		return true
-	}
+  if osPerm == osPerm2 {
+    return true
+  }
 
-	return false
+  return false
 }
 
 // GetFileModeLetterCode - Returns the single alphabetic character associated with
@@ -163,38 +163,38 @@ func (osPerm OsFilePermissionCode) Equal(osPerm2 OsFilePermissionCode) bool {
 //
 func (osPerm OsFilePermissionCode) GetFileModeLetterCode() (string, error) {
 
-	ePrefix := "OsFilePermissionCode.FileModeLetterCode() "
+  ePrefix := "OsFilePermissionCode.FileModeLetterCode() "
 
-	letter, ok := mOsPermissionCodeToLetter[os.FileMode(osPerm)]
+  letter, ok := mOsPermissionCodeToLetter[os.FileMode(osPerm)]
 
-	if !ok {
-		return "", fmt.Errorf(ePrefix+
-			"The current OsFilePermissionCode FileMode value is INVALID! "+
-			"OsFilePermissionCode decimal value=%s  octal value=%s",
-			strconv.FormatInt(int64(osPerm), 10),
-			strconv.FormatInt(int64(osPerm), 8))
-	}
+  if !ok {
+    return "", fmt.Errorf(ePrefix+
+      "The current OsFilePermissionCode FileMode value is INVALID! "+
+      "OsFilePermissionCode decimal value=%s  octal value=%s",
+      strconv.FormatInt(int64(osPerm), 10),
+      strconv.FormatInt(int64(osPerm), 8))
+  }
 
-	return letter, nil
+  return letter, nil
 }
 
 // GetNewFromFileMode - Creates and returns a new OsFilePermissionCode instance
 // generated from the os.FileMode type input parameter ('fMode'). If the input
 // os.FileMode value is invalid, an error is returned.
 func (osPerm OsFilePermissionCode) GetNewFromFileMode(
-	fMode os.FileMode) (OsFilePermissionCode, error) {
+  fMode os.FileMode) (OsFilePermissionCode, error) {
 
-	newFilePerm := OsFilePermissionCode(fMode)
+  newFilePerm := OsFilePermissionCode(fMode)
 
-	err := newFilePerm.IsValid()
+  err := newFilePerm.IsValid()
 
-	if err != nil {
-		ePrefix := "OsFilePermissionCode.GetNewFromFileMode() "
-		return OsFilePermissionCode(0),
-			fmt.Errorf(ePrefix + "Error: Input parameter 'fMode' is an INVALID File Mode!")
-	}
+  if err != nil {
+    ePrefix := "OsFilePermissionCode.GetNewFromFileMode() "
+    return OsFilePermissionCode(0),
+      fmt.Errorf(ePrefix + "Error: Input parameter 'fMode' is an INVALID File Mode!")
+  }
 
-	return newFilePerm, nil
+  return newFilePerm, nil
 }
 
 // GetNewFromLetterCode - Creates a new OsFilePermissionCode instance based on an
@@ -203,18 +203,18 @@ func (osPerm OsFilePermissionCode) GetNewFromFileMode(
 // unix permission strings.
 //
 func (osPerm OsFilePermissionCode) GetNewFromLetterCode(
-	letterCode string) (OsFilePermissionCode, error) {
+  letterCode string) (OsFilePermissionCode, error) {
 
-	fModeValue, ok := mOsPermissionLetterToCode[letterCode]
+  fModeValue, ok := mOsPermissionLetterToCode[letterCode]
 
-	if !ok {
-		ePrefix := "OsFilePermissionCode.GetNewFromLetterCode() "
-		return OsFilePermissionCode(0), fmt.
-			Errorf(ePrefix+"Error: 'letterCode' is INVALID! "+
-				"letterCode='%v'", letterCode)
-	}
+  if !ok {
+    ePrefix := "OsFilePermissionCode.GetNewFromLetterCode() "
+    return OsFilePermissionCode(0), fmt.
+      Errorf(ePrefix+"Error: 'letterCode' is INVALID! "+
+        "letterCode='%v'", letterCode)
+  }
 
-	return OsFilePermissionCode(fModeValue), nil
+  return OsFilePermissionCode(fModeValue), nil
 }
 
 // IsValid - If the value of the current OsFilePermissionCode is 'invalid',
@@ -226,15 +226,15 @@ func (osPerm OsFilePermissionCode) GetNewFromLetterCode(
 //
 func (osPerm OsFilePermissionCode) IsValid() error {
 
-	_, ok := mOsPermissionCodeToString[os.FileMode(osPerm)]
+  _, ok := mOsPermissionCodeToString[os.FileMode(osPerm)]
 
-	if !ok {
-		ePrefix := "OsFilePermissionCode.IsValid() "
-		return fmt.Errorf(ePrefix+"The current OsFilePermissionCode is INVALID! "+
-			"OsFilePermissionCode Octal Value='%s'", strconv.FormatInt(int64(osPerm), 8))
-	}
+  if !ok {
+    ePrefix := "OsFilePermissionCode.IsValid() "
+    return fmt.Errorf(ePrefix+"The current OsFilePermissionCode is INVALID! "+
+      "OsFilePermissionCode Octal Value='%s'", strconv.FormatInt(int64(osPerm), 8))
+  }
 
-	return nil
+  return nil
 }
 
 // ModeNone            "-" No Permission Set
@@ -354,36 +354,76 @@ func (osPerm OsFilePermissionCode) ModeIrregular() os.FileMode { return os.ModeI
 //
 // Usage:
 //
-//	t, err := OsFilePermissionCode(0).ParseString("ModeDir")
+//	t, err := OsFilePermissionCode(0).ParseString("ModeDir", true)
+//                            OR
+//	t, err := OsFilePermissionCode(0).ParseString("ModeDir()", true)
+//                            OR
+//	t, err := OsFilePermissionCode(0).ParseString("Dir()", true)
+//                            OR
+//	t, err := OsFilePermissionCode(0).ParseString("Dir", true)
+//                            OR
+//	t, err := OsFilePermissionCode(0).ParseString("modedir", false)
 //
-//	    t is now equal to OsFilePermissionCode(0).ModeDir()
+//	For all of the cases shown above,
+//  t is now equal to OsFilePermissionCode(0).ModeDir()
 //
 func (osPerm OsFilePermissionCode) ParseString(
-	valueString string,
-	caseSensitive bool) (OsFilePermissionCode, error) {
+  valueString string,
+  caseSensitive bool) (OsFilePermissionCode, error) {
 
-	ePrefix := "OsFilePermissionCode.ParseString() "
+  ePrefix := "OsFilePermissionCode.ParseString() "
 
-	var permCode os.FileMode
-	var ok bool
+  lenValueStr := len(valueString)
 
-	if !caseSensitive {
-		permCode, ok = mOsPermissionLwrCaseStringToCode[strings.ToLower(valueString)]
+  if strings.HasSuffix(valueString, "()") {
+    valueString = valueString[0 : lenValueStr-2]
+    lenValueStr -= 2
+  }
 
-		if !ok {
-			return OsFilePermissionCode(0), errors.New(ePrefix + "Invalid Permission Code!")
-		}
+  result := OsFilePermissionCode(0)
 
-		return OsFilePermissionCode(permCode), nil
-	}
+  if lenValueStr < 3 {
+    return result,
+      fmt.Errorf(ePrefix+
+        "Input parameter 'valueString' is INVALID! Length Less than 3-characters valueString='%v' ", valueString)
+  }
 
-	permCode, ok = mOsPermissionStringToCode[valueString]
+  var permCode os.FileMode
+  var ok bool
 
-	if !ok {
-		return OsFilePermissionCode(0), errors.New(ePrefix + "Invalid Permission Code!")
-	}
+  if caseSensitive {
 
-	return OsFilePermissionCode(permCode), nil
+    if !strings.HasPrefix(valueString, "Mode") {
+      valueString = "Mode" + valueString
+    }
+
+    permCode, ok = mOsPermissionStringToCode[valueString]
+
+    if !ok {
+      return result, errors.New(ePrefix + "Invalid Permission Code!")
+    }
+
+    result = OsFilePermissionCode(permCode)
+
+  } else {
+
+    valueString = strings.ToLower(valueString)
+
+    if !strings.HasPrefix(valueString, "mode") {
+      valueString = "mode" + valueString
+    }
+
+    permCode, ok = mOsPermissionLwrCaseStringToCode[valueString]
+
+    if !ok {
+      return result, errors.New(ePrefix + "Invalid Permission Code!")
+    }
+
+    result = OsFilePermissionCode(permCode)
+
+  }
+
+  return result, nil
 
 }
 
@@ -411,13 +451,13 @@ func (osPerm OsFilePermissionCode) ParseString(
 //
 func (osPerm OsFilePermissionCode) String() string {
 
-	label, ok := mOsPermissionCodeToString[os.FileMode(osPerm)]
+  label, ok := mOsPermissionCodeToString[os.FileMode(osPerm)]
 
-	if !ok {
-		return ""
-	}
+  if !ok {
+    return ""
+  }
 
-	return label
+  return label
 }
 
 // Value - Returns the value of the OsFilePermissionCode instance
@@ -425,7 +465,7 @@ func (osPerm OsFilePermissionCode) String() string {
 //
 func (osPerm OsFilePermissionCode) Value() os.FileMode {
 
-	return os.FileMode(osPerm)
+  return os.FileMode(osPerm)
 }
 
 // OsFilePermCode - public global variable of type OsFilePermissionCode.

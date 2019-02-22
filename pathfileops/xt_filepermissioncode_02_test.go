@@ -2,27 +2,49 @@ package pathfileops
 
 import (
 	"strconv"
+	"strings"
 	"testing"
 )
 
 func TestOsFilePermissionCode_ParseString_01(t *testing.T) {
 
+	inputStrs := []string {"ModeDir", "ModeDir()", "Dir", "Dir()" }
+
 	expectedFileMode := OsFilePermCode.ModeDir()
+	actualFileMode:= OsFilePermissionCode(0)
+	var err error
 
-	actualFileMode, err := OsFilePermCode.ParseString("ModeDir", true)
+	for i:=0; i<len(inputStrs); i++ {
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
-	}
+		actualFileMode, err = OsFilePermCode.ParseString(inputStrs[i], true)
 
-	actualFileMode, err = OsFilePermCode.ParseString("modedir", false)
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(inputStrs[i], true). " +
+				"index='%v' inputStr='%v' Error='%v' ", i, inputStrs[i], err.Error())
+		}
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' inputStrs[%v]='%v' ", strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, inputStrs[i])
+		}
+
+		lwrCase := strings.ToLower(inputStrs[i])
+
+		actualFileMode, err = OsFilePermCode.ParseString(lwrCase, false)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(lwrCase, false). " +
+				"index='%v' lwrCase='%v' Error='%v' ", i, lwrCase, err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' index='%v' lwrCase='%v' ",
+				strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, lwrCase)
+		}
+
 	}
 
 }
@@ -30,21 +52,42 @@ func TestOsFilePermissionCode_ParseString_01(t *testing.T) {
 func TestOsFilePermissionCode_ParseString_02(t *testing.T) {
 
 	expectedFileMode := OsFilePermCode.ModeAppend()
+	inputStrs := []string {"ModeAppend", "ModeAppend()", "Append", "Append()" }
 
-	actualFileMode, err := OsFilePermCode.ParseString("ModeAppend", true)
+	actualFileMode:= OsFilePermissionCode(0)
+	var err error
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
-	}
+	for i:=0; i<len(inputStrs); i++ {
 
-	actualFileMode, err = OsFilePermCode.ParseString("modeappend", false)
+		actualFileMode, err = OsFilePermCode.ParseString(inputStrs[i], true)
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(inputStrs[i], true). " +
+				"index='%v' inputStr='%v' Error='%v' ", i, inputStrs[i], err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' inputStrs[%v]='%v' ", strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, inputStrs[i])
+		}
+
+		lwrCase := strings.ToLower(inputStrs[i])
+
+		actualFileMode, err = OsFilePermCode.ParseString(lwrCase, false)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(lwrCase, false). " +
+				"index='%v' lwrCase='%v' Error='%v' ", i, lwrCase, err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' index='%v' lwrCase='%v' ",
+				strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, lwrCase)
+		}
+
 	}
 
 }
@@ -52,21 +95,42 @@ func TestOsFilePermissionCode_ParseString_02(t *testing.T) {
 func TestOsFilePermissionCode_ParseString_03(t *testing.T) {
 
 	expectedFileMode := OsFilePermCode.ModeExclusive()
+	inputStrs := []string {"ModeExclusive", "ModeExclusive()", "Exclusive", "Exclusive()" }
 
-	actualFileMode, err := OsFilePermCode.ParseString("ModeExclusive", true)
+	actualFileMode:= OsFilePermissionCode(0)
+	var err error
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
-	}
+	for i:=0; i<len(inputStrs); i++ {
 
-	actualFileMode, err = OsFilePermCode.ParseString("modeexclusive", false)
+		actualFileMode, err = OsFilePermCode.ParseString(inputStrs[i], true)
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(inputStrs[i], true). " +
+				"index='%v' inputStr='%v' Error='%v' ", i, inputStrs[i], err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' inputStrs[%v]='%v' ", strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, inputStrs[i])
+		}
+
+		lwrCase := strings.ToLower(inputStrs[i])
+
+		actualFileMode, err = OsFilePermCode.ParseString(lwrCase, false)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(lwrCase, false). " +
+				"index='%v' lwrCase='%v' Error='%v' ", i, lwrCase, err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' index='%v' lwrCase='%v' ",
+				strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, lwrCase)
+		}
+
 	}
 
 }
@@ -74,21 +138,42 @@ func TestOsFilePermissionCode_ParseString_03(t *testing.T) {
 func TestOsFilePermissionCode_ParseString_04(t *testing.T) {
 
 	expectedFileMode := OsFilePermCode.ModeTemporary()
+	inputStrs := []string {"ModeTemporary", "ModeTemporary()", "Temporary", "Temporary()" }
 
-	actualFileMode, err := OsFilePermCode.ParseString("modetemporary", false)
+	actualFileMode:= OsFilePermissionCode(0)
+	var err error
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
-	}
+	for i:=0; i<len(inputStrs); i++ {
 
-	actualFileMode, err = OsFilePermCode.ParseString("ModeTemporary", true)
+		actualFileMode, err = OsFilePermCode.ParseString(inputStrs[i], true)
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(inputStrs[i], true). " +
+				"index='%v' inputStr='%v' Error='%v' ", i, inputStrs[i], err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' inputStrs[%v]='%v' ", strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, inputStrs[i])
+		}
+
+		lwrCase := strings.ToLower(inputStrs[i])
+
+		actualFileMode, err = OsFilePermCode.ParseString(lwrCase, false)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(lwrCase, false). " +
+				"index='%v' lwrCase='%v' Error='%v' ", i, lwrCase, err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' index='%v' lwrCase='%v' ",
+				strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, lwrCase)
+		}
+
 	}
 
 }
@@ -96,13 +181,42 @@ func TestOsFilePermissionCode_ParseString_04(t *testing.T) {
 func TestOsFilePermissionCode_ParseString_05(t *testing.T) {
 
 	expectedFileMode := OsFilePermCode.ModeSymlink()
+	inputStrs := []string {"ModeSymlink", "ModeSymlink()", "Symlink", "Symlink()" }
 
-	actualFileMode, err := OsFilePermCode.ParseString("modesymlink", false)
+	actualFileMode:= OsFilePermissionCode(0)
+	var err error
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
+	for i:=0; i<len(inputStrs); i++ {
+
+		actualFileMode, err = OsFilePermCode.ParseString(inputStrs[i], true)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(inputStrs[i], true). " +
+				"index='%v' inputStr='%v' Error='%v' ", i, inputStrs[i], err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' inputStrs[%v]='%v' ", strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, inputStrs[i])
+		}
+
+		lwrCase := strings.ToLower(inputStrs[i])
+
+		actualFileMode, err = OsFilePermCode.ParseString(lwrCase, false)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(lwrCase, false). " +
+				"index='%v' lwrCase='%v' Error='%v' ", i, lwrCase, err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' index='%v' lwrCase='%v' ",
+				strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, lwrCase)
+		}
+
 	}
 
 }
@@ -110,21 +224,42 @@ func TestOsFilePermissionCode_ParseString_05(t *testing.T) {
 func TestOsFilePermissionCode_ParseString_06(t *testing.T) {
 
 	expectedFileMode := OsFilePermCode.ModeDevice()
+	inputStrs := []string {"ModeDevice", "ModeDevice()", "Device", "Device()" }
 
-	actualFileMode, err := OsFilePermCode.ParseString("modedevice", false)
+	actualFileMode:= OsFilePermissionCode(0)
+	var err error
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
-	}
+	for i:=0; i<len(inputStrs); i++ {
 
-	actualFileMode, err = OsFilePermCode.ParseString("ModeDevice", true)
+		actualFileMode, err = OsFilePermCode.ParseString(inputStrs[i], true)
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(inputStrs[i], true). " +
+				"index='%v' inputStr='%v' Error='%v' ", i, inputStrs[i], err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' inputStrs[%v]='%v' ", strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, inputStrs[i])
+		}
+
+		lwrCase := strings.ToLower(inputStrs[i])
+
+		actualFileMode, err = OsFilePermCode.ParseString(lwrCase, false)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(lwrCase, false). " +
+				"index='%v' lwrCase='%v' Error='%v' ", i, lwrCase, err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' index='%v' lwrCase='%v' ",
+				strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, lwrCase)
+		}
+
 	}
 
 }
@@ -132,21 +267,42 @@ func TestOsFilePermissionCode_ParseString_06(t *testing.T) {
 func TestOsFilePermissionCode_ParseString_07(t *testing.T) {
 
 	expectedFileMode := OsFilePermCode.ModeNamedPipe()
+	inputStrs := []string {"ModeNamedPipe", "ModeNamedPipe()", "NamedPipe", "NamedPipe()" }
 
-	actualFileMode, err := OsFilePermCode.ParseString("ModeNamedPipe", true)
+	actualFileMode:= OsFilePermissionCode(0)
+	var err error
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
-	}
+	for i:=0; i<len(inputStrs); i++ {
 
-	actualFileMode, err = OsFilePermCode.ParseString("modenamedpipe", false)
+		actualFileMode, err = OsFilePermCode.ParseString(inputStrs[i], true)
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(inputStrs[i], true). " +
+				"index='%v' inputStr='%v' Error='%v' ", i, inputStrs[i], err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' inputStrs[%v]='%v' ", strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, inputStrs[i])
+		}
+
+		lwrCase := strings.ToLower(inputStrs[i])
+
+		actualFileMode, err = OsFilePermCode.ParseString(lwrCase, false)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(lwrCase, false). " +
+				"index='%v' lwrCase='%v' Error='%v' ", i, lwrCase, err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' index='%v' lwrCase='%v' ",
+				strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, lwrCase)
+		}
+
 	}
 
 }
@@ -154,65 +310,126 @@ func TestOsFilePermissionCode_ParseString_07(t *testing.T) {
 func TestOsFilePermissionCode_ParseString_08(t *testing.T) {
 
 	expectedFileMode := OsFilePermCode.ModeSocket()
+	inputStrs := []string {"ModeSocket", "ModeSocket()", "Socket", "Socket()" }
 
-	actualFileMode, err := OsFilePermCode.ParseString("ModeSocket", true)
+	actualFileMode:= OsFilePermissionCode(0)
+	var err error
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
+	for i:=0; i<len(inputStrs); i++ {
+
+		actualFileMode, err = OsFilePermCode.ParseString(inputStrs[i], true)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(inputStrs[i], true). " +
+				"index='%v' inputStr='%v' Error='%v' ", i, inputStrs[i], err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' inputStrs[%v]='%v' ", strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, inputStrs[i])
+		}
+
+		lwrCase := strings.ToLower(inputStrs[i])
+
+		actualFileMode, err = OsFilePermCode.ParseString(lwrCase, false)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(lwrCase, false). " +
+				"index='%v' lwrCase='%v' Error='%v' ", i, lwrCase, err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' index='%v' lwrCase='%v' ",
+				strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, lwrCase)
+		}
+
 	}
-
-	actualFileMode, err = OsFilePermCode.ParseString("modesocket", false)
-
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
-	}
-
 }
 
 func TestOsFilePermissionCode_ParseString_09(t *testing.T) {
 
 	expectedFileMode := OsFilePermCode.ModeSetuid()
+	inputStrs := []string {"ModeSetuid", "ModeSetuid()", "Setuid", "Setuid()" }
 
-	actualFileMode, err := OsFilePermCode.ParseString("ModeSetuid", true)
+	actualFileMode:= OsFilePermissionCode(0)
+	var err error
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
+	for i:=0; i<len(inputStrs); i++ {
+
+		actualFileMode, err = OsFilePermCode.ParseString(inputStrs[i], true)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(inputStrs[i], true). " +
+				"index='%v' inputStr='%v' Error='%v' ", i, inputStrs[i], err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' inputStrs[%v]='%v' ", strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, inputStrs[i])
+		}
+
+		lwrCase := strings.ToLower(inputStrs[i])
+
+		actualFileMode, err = OsFilePermCode.ParseString(lwrCase, false)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(lwrCase, false). " +
+				"index='%v' lwrCase='%v' Error='%v' ", i, lwrCase, err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' index='%v' lwrCase='%v' ",
+				strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, lwrCase)
+		}
+
 	}
-
-	actualFileMode, err = OsFilePermCode.ParseString("modesetuid", false)
-
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
-	}
-
 }
 
 func TestOsFilePermissionCode_ParseString_10(t *testing.T) {
 
 	expectedFileMode := OsFilePermCode.ModeSetgid()
+	inputStrs := []string {"ModeSetgid", "ModeSetgid()", "Setgid", "Setgid()" }
 
-	actualFileMode, err := OsFilePermCode.ParseString("ModeSetgid", true)
+	actualFileMode:= OsFilePermissionCode(0)
+	var err error
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
-	}
+	for i:=0; i<len(inputStrs); i++ {
 
-	actualFileMode, err = OsFilePermCode.ParseString("modesetgid", false)
+		actualFileMode, err = OsFilePermCode.ParseString(inputStrs[i], true)
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(inputStrs[i], true). " +
+				"index='%v' inputStr='%v' Error='%v' ", i, inputStrs[i], err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' inputStrs[%v]='%v' ", strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, inputStrs[i])
+		}
+
+		lwrCase := strings.ToLower(inputStrs[i])
+
+		actualFileMode, err = OsFilePermCode.ParseString(lwrCase, false)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(lwrCase, false). " +
+				"index='%v' lwrCase='%v' Error='%v' ", i, lwrCase, err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' index='%v' lwrCase='%v' ",
+				strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, lwrCase)
+		}
+
 	}
 
 }
@@ -220,21 +437,42 @@ func TestOsFilePermissionCode_ParseString_10(t *testing.T) {
 func TestOsFilePermissionCode_ParseString_11(t *testing.T) {
 
 	expectedFileMode := OsFilePermCode.ModeCharDevice()
+	inputStrs := []string {"ModeCharDevice", "ModeCharDevice()", "CharDevice", "CharDevice()" }
 
-	actualFileMode, err := OsFilePermCode.ParseString("ModeCharDevice", true)
+	actualFileMode:= OsFilePermissionCode(0)
+	var err error
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
-	}
+	for i:=0; i<len(inputStrs); i++ {
 
-	actualFileMode, err = OsFilePermCode.ParseString("modechardevice", false)
+		actualFileMode, err = OsFilePermCode.ParseString(inputStrs[i], true)
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(inputStrs[i], true). " +
+				"index='%v' inputStr='%v' Error='%v' ", i, inputStrs[i], err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' inputStrs[%v]='%v' ", strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, inputStrs[i])
+		}
+
+		lwrCase := strings.ToLower(inputStrs[i])
+
+		actualFileMode, err = OsFilePermCode.ParseString(lwrCase, false)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(lwrCase, false). " +
+				"index='%v' lwrCase='%v' Error='%v' ", i, lwrCase, err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' index='%v' lwrCase='%v' ",
+				strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, lwrCase)
+		}
+
 	}
 
 }
@@ -242,21 +480,42 @@ func TestOsFilePermissionCode_ParseString_11(t *testing.T) {
 func TestOsFilePermissionCode_ParseString_12(t *testing.T) {
 
 	expectedFileMode := OsFilePermCode.ModeSticky()
+	inputStrs := []string {"ModeSticky", "ModeSticky()", "Sticky", "Sticky()" }
 
-	actualFileMode, err := OsFilePermCode.ParseString("ModeSticky", true)
+	actualFileMode:= OsFilePermissionCode(0)
+	var err error
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
-	}
+	for i:=0; i<len(inputStrs); i++ {
 
-	actualFileMode, err = OsFilePermCode.ParseString("modesticky", false)
+		actualFileMode, err = OsFilePermCode.ParseString(inputStrs[i], true)
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(inputStrs[i], true). " +
+				"index='%v' inputStr='%v' Error='%v' ", i, inputStrs[i], err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' inputStrs[%v]='%v' ", strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, inputStrs[i])
+		}
+
+		lwrCase := strings.ToLower(inputStrs[i])
+
+		actualFileMode, err = OsFilePermCode.ParseString(lwrCase, false)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(lwrCase, false). " +
+				"index='%v' lwrCase='%v' Error='%v' ", i, lwrCase, err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' index='%v' lwrCase='%v' ",
+				strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, lwrCase)
+		}
+
 	}
 
 }
@@ -264,54 +523,94 @@ func TestOsFilePermissionCode_ParseString_12(t *testing.T) {
 func TestOsFilePermissionCode_ParseString_13(t *testing.T) {
 
 	expectedFileMode := OsFilePermCode.ModeIrregular()
+	inputStrs := []string {"ModeIrregular", "ModeIrregular()", "Irregular", "Irregular()" }
 
-	actualFileMode, err := OsFilePermCode.ParseString("ModeIrregular", true)
+	actualFileMode:= OsFilePermissionCode(0)
+	var err error
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
+	for i:=0; i<len(inputStrs); i++ {
+
+		actualFileMode, err = OsFilePermCode.ParseString(inputStrs[i], true)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(inputStrs[i], true). " +
+				"index='%v' inputStr='%v' Error='%v' ", i, inputStrs[i], err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' inputStrs[%v]='%v' ", strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, inputStrs[i])
+		}
+
+		lwrCase := strings.ToLower(inputStrs[i])
+
+		actualFileMode, err = OsFilePermCode.ParseString(lwrCase, false)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(lwrCase, false). " +
+				"index='%v' lwrCase='%v' Error='%v' ", i, lwrCase, err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' index='%v' lwrCase='%v' ",
+				strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, lwrCase)
+		}
+
 	}
-
-	actualFileMode, err = OsFilePermCode.ParseString("modeirregular", false)
-
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
-	}
-
 }
 
 func TestOsFilePermissionCode_ParseString_14(t *testing.T) {
 
 	expectedFileMode := OsFilePermCode.ModeNone()
+	inputStrs := []string {"ModeNone", "ModeNone()", "None", "None()" }
 
-	actualFileMode, err := OsFilePermCode.ParseString("ModeNone", true)
+	actualFileMode:= OsFilePermissionCode(0)
+	var err error
 
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
+	for i:=0; i<len(inputStrs); i++ {
+
+		actualFileMode, err = OsFilePermCode.ParseString(inputStrs[i], true)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(inputStrs[i], true). " +
+				"index='%v' inputStr='%v' Error='%v' ", i, inputStrs[i], err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' inputStrs[%v]='%v' ", strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, inputStrs[i])
+		}
+
+		lwrCase := strings.ToLower(inputStrs[i])
+
+		actualFileMode, err = OsFilePermCode.ParseString(lwrCase, false)
+
+		if err != nil {
+			t.Errorf("Error returned by OsFilePermCode.ParseString(lwrCase, false). " +
+				"index='%v' lwrCase='%v' Error='%v' ", i, lwrCase, err.Error())
+		}
+
+		if expectedFileMode != actualFileMode.Value() {
+			t.Errorf("Error: Expected File Mode ocatal value='%s'. Instead, Actual File Mode "+
+				"ocatal value='%s' index='%v' lwrCase='%v' ",
+				strconv.FormatInt(int64(expectedFileMode), 8),
+				strconv.FormatInt(int64(actualFileMode), 8), i, lwrCase)
+		}
+
 	}
-
-	actualFileMode, err = OsFilePermCode.ParseString("none", false)
-
-	if err != nil {
-		t.Errorf("Error: Expected File Mode decimal value='%s'. Instead, Actual File Mode "+
-			"decimal value='%s'", strconv.FormatInt(int64(expectedFileMode), 10),
-			strconv.FormatInt(int64(actualFileMode), 10))
-	}
-
 }
 
 func TestOsFilePermissionCode_ParseString_15(t *testing.T) {
 
-	_, err := OsFilePermCode.ParseString("jUNO924", false)
+	_, err := OsFilePermCode.ParseString("Jun924", true)
 
 	if err == nil {
 		t.Error("Expected an error to be returned from  OsFilePermCode." +
-			"ParseString(\"jUNO924\", false) because 'jUNO924' is an invalid text code. " +
+			"ParseString(\"Jun924\", true) because 'Jun924' is an invalid text code. " +
 			"However, NO ERROR WAS RETURNED!")
 	}
 
@@ -319,15 +618,41 @@ func TestOsFilePermissionCode_ParseString_15(t *testing.T) {
 
 func TestOsFilePermissionCode_ParseString_16(t *testing.T) {
 
-	_, err := OsFilePermCode.ParseString("jUNO924", true)
+	_, err := OsFilePermCode.ParseString("Ju", true)
 
 	if err == nil {
 		t.Error("Expected an error to be returned from  OsFilePermCode." +
-			"ParseString(\"jUNO924\", true) because 'jUNO924' is an invalid text code. " +
+			"ParseString(\"Ju\", true) because 'Ju' is less than 3-characters and is " +
+			"therefore invalid. However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
+func TestOsFilePermissionCode_ParseString_17(t *testing.T) {
+
+	_, err := OsFilePermCode.ParseString("jun924", false)
+
+	if err == nil {
+		t.Error("Expected an error to be returned from  OsFilePermCode." +
+			"ParseString(\"jun924\", false) because 'jun924' is an invalid text code. " +
 			"However, NO ERROR WAS RETURNED!")
 	}
 
 }
+
+func TestOsFilePermissionCode_ParseString_18(t *testing.T) {
+
+	_, err := OsFilePermCode.ParseString("ju", false)
+
+	if err == nil {
+		t.Error("Expected an error to be returned from  OsFilePermCode." +
+			"ParseString(\"ju\", false) because 'ju' is less than 3-characters and is " +
+			"therefore invalid. However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
+
 
 func TestOsFilePermissionCode_String_01(t *testing.T) {
 
