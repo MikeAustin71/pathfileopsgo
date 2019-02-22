@@ -19,8 +19,8 @@ import (
 			https://github.com/MikeAustin71/pathfilego.git
 
 		'FileHelper' is a dependency of 'DirMgr' and 'FileMgr'.  'DirMgr' and 'FileMgr'
-		are located in source file 'filemanagers.go' found in this same
-	 	directory: '003_filehelper/common/filemanagers.go'
+		are located in source file 'filemanager.go' found in this same
+	 	directory: '003_filehelper/common/filemanager.go'
 
 
 */

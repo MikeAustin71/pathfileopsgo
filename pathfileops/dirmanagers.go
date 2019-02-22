@@ -21,7 +21,7 @@ import (
 
 	Types 'DirMgr' and 'DirMgrCollection' depend on types,
 	'FileHelper' and 'FileMgr' which are contained in source
-	code files, 'filehelper.go' and 'filemanagers.go' located
+	code files, 'filehelper.go' and 'filemanager.go' located
 	in this directory.
 
 */
@@ -52,7 +52,7 @@ func (dTreeOp DirTreeOp) New() DirTreeOp {
 //
 // Type 'DirMgrCollection' depend on types, 'FileHelper' and
 // 'FileMgr' which are contained in source code files: 'filehelper.go'
-// and 'filemanagers.go' located in this directory.
+// and 'filemanager.go' located in this directory.
 //
 type DirMgrCollection struct {
   dirMgrs []DirMgr
@@ -664,7 +664,7 @@ func (dMgrs *DirMgrCollection) PeekLastDirMgr() (DirMgr, error) {
 //
 // Type 'DirMgr' depend on types, 'FileHelper' and 'FileMgr'
 // which are contained in source code files, 'filehelper.go'
-// and 'filemanagers.go' located in this directory.
+// and 'filemanager.go' located in this directory.
 //
 type DirMgr struct {
   isInitialized                   bool
