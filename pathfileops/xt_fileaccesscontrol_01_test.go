@@ -323,9 +323,58 @@ func TestFileAccessControl_GetCompositeFileOpenCode_01(t *testing.T) {
 	}
 
 	if originalFileOpenCode != accessFileOpenCode {
+
 		t.Errorf("Error: Expected originalFileOpenCode to Equal accessFileOpenCode. "+
-			"THEY ARE NOT EQUAL! originalFileOpenCode='%d' accessFileOpenCode='%d' ",
-			originalFileOpenCode, accessFileOpenCode)
+			"THEY ARE NOT EQUAL! originalFileOpenCode='%s' accessFileOpenCode='%s' ",
+			fOpenCfg.GetFileOpenNarrativeText(), fAccess1.fileOpenCodes.GetFileOpenNarrativeText())
+	}
+
+}
+
+func TestFileAccessControl_GetCompositeFileOpenCode_02(t *testing.T) {
+
+	textCode := "dr--r--r--"
+
+	fPermCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+	}
+
+	fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
+
+	if err != nil {
+		t.Errorf("Error returned by FileAccessControl{}.New("+
+			"fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+	}
+
+	accessFileOpenCode, err := fAccess1.GetCompositeFileOpenCode()
+
+	if err != nil {
+		t.Errorf("Error returned by fAccess1.GetCompositeFileOpenCode() "+
+			"Error='%v' \n", err.Error())
+	}
+
+	originalFileOpenCode, err := fOpenCfg.GetCompositeFileOpenCode()
+
+	if err != nil {
+		t.Errorf("Error returned by fOpenCfg.GetCompositeFileOpenCode() "+
+			"Error='%v' \n", err.Error())
+	}
+
+	if originalFileOpenCode != accessFileOpenCode {
+
+		t.Errorf("Error: Expected originalFileOpenCode to Equal accessFileOpenCode. "+
+			"THEY ARE NOT EQUAL! originalFileOpenCode='%s' accessFileOpenCode='%s' ",
+			fOpenCfg.GetFileOpenNarrativeText(), fAccess1.fileOpenCodes.GetFileOpenNarrativeText())
 	}
 
 }
