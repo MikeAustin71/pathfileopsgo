@@ -819,16 +819,16 @@ func TestFileOpenConfig_GetFileOpenTextString_01(t *testing.T) {
 
 	txt := fOpenCfg.GetFileOpenNarrativeText()
 
-	if strings.Index(txt, "TypeReadWrite") == -1 {
-		t.Error("Error: Could not locate 'TypeReadWrite' in FileOpen Text!")
+	if strings.Index(txt, "ReadWrite") == -1 {
+		t.Error("Error: Could not locate 'ReadWrite' in FileOpen Text!")
 	}
 
-	if strings.Index(txt, "ModeCreate") == -1 {
-		t.Error("Error: Could not locate 'ModeCreate' in FileOpen Text!")
+	if strings.Index(txt, "Create") == -1 {
+		t.Error("Error: Could not locate 'Create' in FileOpen Text!")
 	}
 
-	if strings.Index(txt, "ModeExclusive") == -1 {
-		t.Error("Error: Could not locate 'ModeExclusive' in FileOpen Text!")
+	if strings.Index(txt, "Exclusive") == -1 {
+		t.Error("Error: Could not locate 'Exclusive' in FileOpen Text!")
 	}
 
 }
@@ -847,12 +847,12 @@ func TestFileOpenConfig_GetFileOpenTextString_02(t *testing.T) {
 
 	txt := fOpenCfg.GetFileOpenNarrativeText()
 
-	if strings.Index(txt, "TypeReadWrite") == -1 {
-		t.Error("Error: Could not locate 'TypeReadWrite' in FileOpen Text!")
+	if strings.Index(txt, "ReadWrite") == -1 {
+		t.Error("Error: Could not locate 'ReadWrite' in FileOpen Text!")
 	}
 
-	if strings.Index(txt, "ModeNone") == -1 {
-		t.Error("Error: Could not locate 'ModeNone' in FileOpen Text!")
+	if strings.Index(txt, "None") == -1 {
+		t.Error("Error: Could not locate 'None' in FileOpen Text!")
 	}
 
 }

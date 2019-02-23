@@ -1319,7 +1319,51 @@ func TestFilePermissionConfig_GetPermissionComponents_09(t *testing.T) {
 
 }
 
-func TestFilePermissionConfig_GetPermissionNarrativeText(t *testing.T) {
+func TestFilePermissionConfig_GetPermissionFileModeValueText_01(t *testing.T) {
+
+	expectedTextCode := "-rwxrwxrwx"
+
+	expectedValueCodeText := "777"
+
+	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
+			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
+	}
+
+	actualFileModeValueText := fPerm.GetPermissionFileModeValueText()
+
+	if strings.Index(actualFileModeValueText, expectedValueCodeText) == -1 {
+		t.Errorf("Expected File Mode Value Text='%v'. Instead, File Mode Value Text='%v' ",
+			expectedValueCodeText, actualFileModeValueText)
+	}
+
+}
+
+func TestFilePermissionConfig_GetPermissionFileModeValueText_02(t *testing.T) {
+
+	expectedTextCode := "-rw-rw-rw-"
+
+	expectedValueCodeText := "666"
+
+	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
+			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
+	}
+
+	actualFileModeValueText := fPerm.GetPermissionFileModeValueText()
+
+	if strings.Index(actualFileModeValueText, expectedValueCodeText) == -1 {
+		t.Errorf("Expected File Mode Value Text='%v'. Instead, File Mode Value Text='%v' ",
+			expectedValueCodeText, actualFileModeValueText)
+	}
+
+}
+
+func TestFilePermissionConfig_GetPermissionNarrativeText_01(t *testing.T) {
 
 	expectedTextCode := "-rwxrwxrwx"
 

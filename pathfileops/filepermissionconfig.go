@@ -283,6 +283,27 @@ func (fPerm *FilePermissionConfig) GetPermissionComponents() (
 	return osMode, permissionBits, err
 }
 
+// GetPermissionFileModeValueText - Returns the Permission File Mode value
+// as text.
+func (fPerm *FilePermissionConfig) GetPermissionFileModeValueText() string {
+
+	sb := strings.Builder{}
+	sb.Grow(300)
+
+	fileMode, err := fPerm.GetCompositePermissionMode()
+
+	if err != nil {
+		sb.WriteString("Permission File Mode Value: INVALID!")
+	} else {
+		sb.WriteString(fmt.Sprintf("Permission File Mode Value: %s",
+			strconv.FormatInt(int64(fileMode), 8)))
+	}
+
+	sb.WriteString("\n")
+
+	return sb.String()
+}
+
 // GetPermissionNarrativeText - Returns a string containing a narrative
 // text description of the current permission codes.
 //
