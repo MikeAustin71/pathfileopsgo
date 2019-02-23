@@ -9,17 +9,17 @@ func TestFileOpenConfig_CopyIn_01(t *testing.T) {
 
 	expectedFOpenCode := os.O_WRONLY | os.O_APPEND | os.O_TRUNC
 
-	fOpStatus1, err := FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
+	fOpCfg1, err := FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
 		FOpenMode.ModeAppend(), FOpenMode.ModeTruncate())
 
 	if err != nil {
-		t.Errorf("Error returned by fOpStatus1.New(). Error='%v' \n", err.Error())
+		t.Errorf("Error returned by fOpCfg1.New(). Error='%v' \n", err.Error())
 	}
 
-	actualFOpenCode, err := fOpStatus1.GetCompositeFileOpenCode()
+	actualFOpenCode, err := fOpCfg1.GetCompositeFileOpenCode()
 
 	if err != nil {
-		t.Errorf("Error returned by fOpStatus1.GetCompositeFileOpenCode(). "+
+		t.Errorf("Error returned by fOpCfg1.GetCompositeFileOpenCode(). "+
 			"Error='%v' \n", err.Error())
 	}
 
@@ -28,14 +28,14 @@ func TestFileOpenConfig_CopyIn_01(t *testing.T) {
 			expectedFOpenCode, actualFOpenCode)
 	}
 
-	fOpStatus2 := FileOpenConfig{}
+	fOpCfg2 := FileOpenConfig{}
 
-	fOpStatus2.CopyIn(&fOpStatus1)
+	fOpCfg2.CopyIn(&fOpCfg1)
 
-	actualFOpenCode2, err := fOpStatus2.GetCompositeFileOpenCode()
+	actualFOpenCode2, err := fOpCfg2.GetCompositeFileOpenCode()
 
 	if err != nil {
-		t.Errorf("Error returned by fOpStatus2.GetCompositeFileOpenCode(). "+
+		t.Errorf("Error returned by fOpCfg2.GetCompositeFileOpenCode(). "+
 			"Error='%v' \n", err.Error())
 	}
 

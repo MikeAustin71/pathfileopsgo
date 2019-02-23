@@ -3,6 +3,7 @@ package pathfileops
 import (
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -101,7 +102,7 @@ func (fAccess *FileAccessControl) Equal(fA2 *FileAccessControl) bool {
 		return false
 	}
 
-	if !fAccess.permissions.Equal(fA2.permissions) {
+	if !fAccess.permissions.Equal(&fA2.permissions) {
 		return false
 	}
 
@@ -129,6 +130,55 @@ func (fAccess *FileAccessControl) GetCompositeFileOpenCode() (int, error) {
 	}
 
 	return fileOpenCodes, nil
+}
+
+// GetCompositePermissionCode - Returns the complete permission code as a type
+// os.FileMode.
+func (fAccess *FileAccessControl) GetCompositePermissionCode() (os.FileMode, error) {
+
+	ePrefix := "FileAccessControl.GetCompositePermissionCode() "
+
+	err := fAccess.IsValid()
+
+	if err != nil {
+		return os.FileMode(9999), fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	permissionCode, err := fAccess.permissions.GetCompositePermissionMode()
+
+	if err != nil {
+		return os.FileMode(9999), fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	return permissionCode, nil
+}
+
+// GetFileOpenAndPermissionCodes - Returns both the complete File Open Code
+// and complete Permission code.
+//
+func (fAccess *FileAccessControl) GetFileOpenAndPermissionCodes() (int, os.FileMode, error) {
+
+	ePrefix := "FileAccessControl.GetFileOpenAndPermissionCodes() "
+
+	err := fAccess.IsValid()
+
+	if err != nil {
+		return -1, os.FileMode(9999), fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	fileOpenCode, err := fAccess.fileOpenCodes.GetCompositeFileOpenCode()
+
+	if err != nil {
+		return -1, os.FileMode(9999), fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	permissionCode, err := fAccess.permissions.GetCompositePermissionMode()
+
+	if err != nil {
+		return -1, os.FileMode(9999), fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	return fileOpenCode, permissionCode, nil
 }
 
 // GetFileOpenConfig - Returns a deep copy of the FileOpenConfig type

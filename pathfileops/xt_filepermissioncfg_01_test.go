@@ -32,7 +32,7 @@ func TestFilePermissionConfig_CopyIn_01(t *testing.T) {
 			textCode, actualTextCode)
 	}
 
-	if !fpCfg.Equal(fpCfg2) {
+	if !fpCfg.Equal(&fpCfg2) {
 		t.Error("Error: Expected fpCfg to EQUAL fpCfg2. THEY ARE NOT EQUAL!")
 	}
 
@@ -65,7 +65,7 @@ func TestFilePermissionConfig_CopyIn_02(t *testing.T) {
 			textCode, actualTextCode)
 	}
 
-	if !fpCfg.Equal(fpCfg2) {
+	if !fpCfg.Equal(&fpCfg2) {
 		t.Error("Error: Expected fpCfg to EQUAL fpCfg2. THEY ARE NOT EQUAL!")
 	}
 
@@ -96,7 +96,7 @@ func TestFilePermissionConfig_CopyOut_01(t *testing.T) {
 			textCode, actualTextCode)
 	}
 
-	if !fpCfg.Equal(fpCfg2) {
+	if !fpCfg.Equal(&fpCfg2) {
 		t.Error("Error: Expected fpCfg to EQUAL fpCfg2. THEY ARE NOT EQUAL!")
 	}
 }
@@ -126,7 +126,7 @@ func TestFilePermissionConfig_CopyOut_02(t *testing.T) {
 			textCode, actualTextCode)
 	}
 
-	if !fpCfg.Equal(fpCfg2) {
+	if !fpCfg.Equal(&fpCfg2) {
 		t.Error("Error: Expected fpCfg to EQUAL fpCfg2. THEY ARE NOT EQUAL!")
 	}
 }
@@ -156,7 +156,7 @@ func TestFilePermissionConfig_CopyOut_03(t *testing.T) {
 			textCode, actualTextCode)
 	}
 
-	if !fpCfg.Equal(fpCfg2) {
+	if !fpCfg.Equal(&fpCfg2) {
 		t.Error("Error: Expected fpCfg to EQUAL fpCfg2. THEY ARE NOT EQUAL!")
 	}
 }
@@ -186,7 +186,7 @@ func TestFilePermissionConfig_CopyOut_04(t *testing.T) {
 			textCode, actualTextCode)
 	}
 
-	if !fpCfg.Equal(fpCfg2) {
+	if !fpCfg.Equal(&fpCfg2) {
 		t.Error("Error: Expected fpCfg to EQUAL fpCfg2. THEY ARE NOT EQUAL!")
 	}
 }
@@ -216,7 +216,7 @@ func TestFilePermissionConfig_CopyOut_05(t *testing.T) {
 			textCode, actualTextCode)
 	}
 
-	if !fpCfg.Equal(fpCfg2) {
+	if !fpCfg.Equal(&fpCfg2) {
 		t.Error("Error: Expected fpCfg to EQUAL fpCfg2. THEY ARE NOT EQUAL!")
 	}
 }
@@ -246,7 +246,7 @@ func TestFilePermissionConfig_CopyOut_06(t *testing.T) {
 			textCode, actualTextCode)
 	}
 
-	if !fpCfg.Equal(fpCfg2) {
+	if !fpCfg.Equal(&fpCfg2) {
 		t.Error("Error: Expected fpCfg to EQUAL fpCfg2. THEY ARE NOT EQUAL!")
 	}
 }
@@ -276,7 +276,7 @@ func TestFilePermissionConfig_CopyOut_07(t *testing.T) {
 			textCode, actualTextCode)
 	}
 
-	if !fpCfg.Equal(fpCfg2) {
+	if !fpCfg.Equal(&fpCfg2) {
 		t.Error("Error: Expected fpCfg to EQUAL fpCfg2. THEY ARE NOT EQUAL!")
 	}
 }
@@ -306,7 +306,7 @@ func TestFilePermissionConfig_CopyOut_08(t *testing.T) {
 			textCode, actualTextCode)
 	}
 
-	if !fpCfg.Equal(fpCfg2) {
+	if !fpCfg.Equal(&fpCfg2) {
 		t.Error("Error: Expected fpCfg to EQUAL fpCfg2. THEY ARE NOT EQUAL!")
 	}
 }
@@ -336,7 +336,7 @@ func TestFilePermissionConfig_CopyOut_09(t *testing.T) {
 			textCode, actualTextCode)
 	}
 
-	if !fpCfg.Equal(fpCfg2) {
+	if !fpCfg.Equal(&fpCfg2) {
 		t.Error("Error: Expected fpCfg to EQUAL fpCfg2. THEY ARE NOT EQUAL!")
 	}
 }
@@ -366,7 +366,7 @@ func TestFilePermissionConfig_CopyOut_10(t *testing.T) {
 			textCode, actualTextCode)
 	}
 
-	if !fpCfg.Equal(fpCfg2) {
+	if !fpCfg.Equal(&fpCfg2) {
 		t.Error("Error: Expected fpCfg to EQUAL fpCfg2. THEY ARE NOT EQUAL!")
 	}
 }
@@ -405,7 +405,7 @@ func TestFilePermissionConfig_Empty_01(t *testing.T) {
 			"fpCfg.GetPermissionTextCode(). NO ERROR WAS RETURNED!!!")
 	}
 
-	if !testEmpty.Equal(fpCfg) {
+	if !testEmpty.Equal(&fpCfg) {
 		t.Error("Error: Expected testEmpty to EQUAL fpCfg. THEY ARE NOT EQUAL!")
 	}
 
@@ -454,7 +454,7 @@ func TestFilePermissionConfig_Empty_02(t *testing.T) {
 			"fpCfg.GetPermissionTextCode(). NO ERROR WAS RETURNED!!!")
 	}
 
-	if !testEmpty.Equal(fpCfg) {
+	if !testEmpty.Equal(&fpCfg) {
 		t.Error("Error: Expected testEmpty to EQUAL fpCfg. THEY ARE NOT EQUAL!")
 	}
 
@@ -503,7 +503,7 @@ func TestFilePermissionConfig_Empty_03(t *testing.T) {
 			"fpCfg.GetPermissionTextCode(). NO ERROR WAS RETURNED!!!")
 	}
 
-	if !testEmpty.Equal(fpCfg) {
+	if !testEmpty.Equal(&fpCfg) {
 		t.Error("Error: Expected testEmpty to EQUAL fpCfg. THEY ARE NOT EQUAL!")
 	}
 
@@ -552,7 +552,7 @@ func TestFilePermissionConfig_Empty_04(t *testing.T) {
 			"fpCfg.GetPermissionTextCode(). NO ERROR WAS RETURNED!!!")
 	}
 
-	if !testEmpty.Equal(fpCfg) {
+	if !testEmpty.Equal(&fpCfg) {
 		t.Error("Error: Expected testEmpty to EQUAL fpCfg. THEY ARE NOT EQUAL!")
 	}
 
@@ -601,7 +601,7 @@ func TestFilePermissionConfig_Empty_05(t *testing.T) {
 			"fpCfg.GetPermissionTextCode(). NO ERROR WAS RETURNED!!!")
 	}
 
-	if !testEmpty.Equal(fpCfg) {
+	if !testEmpty.Equal(&fpCfg) {
 		t.Error("Error: Expected testEmpty to EQUAL fpCfg. THEY ARE NOT EQUAL!")
 	}
 
@@ -634,11 +634,11 @@ func TestFilePermissionConfig_Equal_01(t *testing.T) {
 			"textCode='%v' Error='%v'", textCode, err.Error())
 	}
 
-	if !fpCfg.Equal(fpCfg2) {
+	if !fpCfg.Equal(&fpCfg2) {
 		t.Error("Error: Expected fpCfg == fpCfg2. Wrong, THEY ARE NOT EQUAL")
 	}
 
-	if !fpCfg2.Equal(fpCfg) {
+	if !fpCfg2.Equal(&fpCfg) {
 		t.Error("Error: Expected fpCfg2 == fpCfg. Wrong, THEY ARE NOT EQUAL")
 	}
 
@@ -651,11 +651,11 @@ func TestFilePermissionConfig_Equal_01(t *testing.T) {
 			"textCode2='%v' Error='%v'", textCode2, err.Error())
 	}
 
-	if fpCfg.Equal(fpCfg2) {
+	if fpCfg.Equal(&fpCfg2) {
 		t.Error("Error: Expected fpCfg != fpCfg2. Wrong, THEY ARE EQUAL!")
 	}
 
-	if fpCfg2.Equal(fpCfg) {
+	if fpCfg2.Equal(&fpCfg) {
 		t.Error("Error: Expected fpCfg2 != fpCfg. Wrong, THEY ARE EQUAL!")
 	}
 
@@ -674,11 +674,11 @@ func TestFilePermissionConfig_Equal_02(t *testing.T) {
 
 	fpCfg2 := FilePermissionConfig{}
 
-	if fpCfg.Equal(fpCfg2) {
+	if fpCfg.Equal(&fpCfg2) {
 		t.Error("Error: Expected fpCfg != fpCfg2. Wrong, THEY ARE EQUAL!")
 	}
 
-	if fpCfg2.Equal(fpCfg) {
+	if fpCfg2.Equal(&fpCfg) {
 		t.Error("Error: Expected fpCfg2 != fpCfg. Wrong, THEY ARE EQUAL!")
 	}
 

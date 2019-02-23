@@ -74,7 +74,7 @@ func (fPerm *FilePermissionConfig) Empty() {
 // Equal - Returns 'true' if the incoming FilePermissionConfig instance
 // is equal in all respects to the current FilePermissionConfig instance.
 //
-func (fPerm *FilePermissionConfig) Equal(fPerm2 FilePermissionConfig) bool {
+func (fPerm *FilePermissionConfig) Equal(fPerm2 *FilePermissionConfig) bool {
 
 	if fPerm.isInitialized != fPerm2.isInitialized {
 		return false
@@ -148,19 +148,22 @@ func (fPerm *FilePermissionConfig) GetEntryTypeComponent() (OsFilePermissionCode
 		fmt.Errorf(ePrefix + "The Entry Type for this FilePermissionConfig instance is INVALID!")
 }
 
-// GetPermissionsFileMode - Returns the os.FileMode from the internal data field,
-// 'FilePermissionConfig.fileMode'. 'fileMode' represents the consolidated
+// GetCompositePermissionMode - Returns the os.FileMode from the internal data field,
+// 'FilePermissionConfig.fileMode'. 'fileMode' represents the complete, consolidated
 // permission code. It therefore contains the two elements which make up a
 // consolidated permission code: Entry Type and Permission Bits.
 //
-func (fPerm *FilePermissionConfig) GetPermissionsFileMode() (os.FileMode, error) {
+// This method returns the complete permission code as a type 'os.FileMode'.
+//
+func (fPerm *FilePermissionConfig) GetCompositePermissionMode() (os.FileMode, error) {
 
-	ePrefix := "FilePermissionConfig.GetPermissionsFileMode() "
+	ePrefix := "FilePermissionConfig.GetCompositePermissionMode() "
 
 	if !fPerm.isInitialized {
 		return os.FileMode(0),
 			errors.New(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
+				"Error: This FilePermissionConfig instance has NOT been initialized. " +
+				"The FileMode is INVALID!")
 	}
 
 	return fPerm.fileMode, nil

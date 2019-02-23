@@ -265,10 +265,10 @@ func TestFilePermissionConfig_NewByFileMode_01(t *testing.T) {
 			"(os.FileMode(0666)). Error='%v' ", err.Error())
 	}
 
-	actualFileMode, err := fPerm.GetPermissionsFileMode()
+	actualFileMode, err := fPerm.GetCompositePermissionMode()
 
 	if err != nil {
-		t.Errorf("Error returned by fPerm.GetPermissionsFileMode()"+
+		t.Errorf("Error returned by fPerm.GetCompositePermissionMode()"+
 			"Error='%v' ", err.Error())
 	}
 
@@ -978,7 +978,7 @@ func TestFilePermissionConfig_SetFileModeByTextCode_01(t *testing.T) {
 			"Error='%v' ", err.Error())
 	}
 
-	fileMode, err := fpCfg.GetPermissionsFileMode()
+	fileMode, err := fpCfg.GetCompositePermissionMode()
 
 	if textCode != fileMode.String() {
 		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1000,7 +1000,7 @@ func TestFilePermissionConfig_SetFileModeByTextCode_02(t *testing.T) {
 			"Error='%v' ", err.Error())
 	}
 
-	fileMode, err := fpCfg.GetPermissionsFileMode()
+	fileMode, err := fpCfg.GetCompositePermissionMode()
 
 	if textCode != fileMode.String() {
 		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1022,7 +1022,7 @@ func TestFilePermissionConfig_SetFileModeByTextCode_03(t *testing.T) {
 			"Error='%v' ", err.Error())
 	}
 
-	fileMode, err := fpCfg.GetPermissionsFileMode()
+	fileMode, err := fpCfg.GetCompositePermissionMode()
 
 	if textCode != fileMode.String() {
 		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1044,7 +1044,7 @@ func TestFilePermissionConfig_SetFileModeByTextCode_04(t *testing.T) {
 			"Error='%v' ", err.Error())
 	}
 
-	fileMode, err := fpCfg.GetPermissionsFileMode()
+	fileMode, err := fpCfg.GetCompositePermissionMode()
 
 	if textCode != fileMode.String() {
 		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1066,7 +1066,7 @@ func TestFilePermissionConfig_SetFileModeByTextCode_05(t *testing.T) {
 			"Error='%v' ", err.Error())
 	}
 
-	fileMode, err := fpCfg.GetPermissionsFileMode()
+	fileMode, err := fpCfg.GetCompositePermissionMode()
 
 	if textCode != fileMode.String() {
 		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1088,7 +1088,7 @@ func TestFilePermissionConfig_SetFileModeByTextCode_06(t *testing.T) {
 			"Error='%v' ", err.Error())
 	}
 
-	fileMode, err := fpCfg.GetPermissionsFileMode()
+	fileMode, err := fpCfg.GetCompositePermissionMode()
 
 	if textCode != fileMode.String() {
 		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1110,7 +1110,7 @@ func TestFilePermissionConfig_SetFileModeByTextCode_07(t *testing.T) {
 			"Error='%v' ", err.Error())
 	}
 
-	fileMode, err := fpCfg.GetPermissionsFileMode()
+	fileMode, err := fpCfg.GetCompositePermissionMode()
 
 	if textCode != fileMode.String() {
 		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1132,7 +1132,7 @@ func TestFilePermissionConfig_SetFileModeByTextCode_08(t *testing.T) {
 			"Error='%v' ", err.Error())
 	}
 
-	fileMode, err := fpCfg.GetPermissionsFileMode()
+	fileMode, err := fpCfg.GetCompositePermissionMode()
 
 	if textCode != fileMode.String() {
 		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1154,7 +1154,7 @@ func TestFilePermissionConfig_SetFileModeByTextCode_09(t *testing.T) {
 			"Error='%v' ", err.Error())
 	}
 
-	fileMode, err := fpCfg.GetPermissionsFileMode()
+	fileMode, err := fpCfg.GetCompositePermissionMode()
 
 	if textCode != fileMode.String() {
 		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1176,7 +1176,7 @@ func TestFilePermissionConfig_SetFileModeByTextCode_10(t *testing.T) {
 			"Error='%v' ", err.Error())
 	}
 
-	fileMode, err := fpCfg.GetPermissionsFileMode()
+	fileMode, err := fpCfg.GetCompositePermissionMode()
 
 	if textCode != fileMode.String() {
 		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1198,7 +1198,7 @@ func TestFilePermissionConfig_SetFileModeByTextCode_11(t *testing.T) {
 			"Error='%v' ", err.Error())
 	}
 
-	fileMode, err := fpCfg.GetPermissionsFileMode()
+	fileMode, err := fpCfg.GetCompositePermissionMode()
 
 	if textCode != fileMode.String() {
 		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1220,7 +1220,7 @@ func TestFilePermissionConfig_SetFileModeByTextCode_12(t *testing.T) {
 			"Error='%v' ", err.Error())
 	}
 
-	fileMode, err := fpCfg.GetPermissionsFileMode()
+	fileMode, err := fpCfg.GetCompositePermissionMode()
 
 	if textCode != fileMode.String() {
 		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1242,7 +1242,7 @@ func TestFilePermissionConfig_SetFileModeByTextCode_13(t *testing.T) {
 			"Error='%v' ", err.Error())
 	}
 
-	fileMode, err := fpCfg.GetPermissionsFileMode()
+	fileMode, err := fpCfg.GetCompositePermissionMode()
 
 	if textCode != fileMode.String() {
 		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1264,7 +1264,7 @@ func TestFilePermissionConfig_SetFileModeByTextCode_14(t *testing.T) {
 			"Error='%v' ", err.Error())
 	}
 
-	fileMode, err := fpCfg.GetPermissionsFileMode()
+	fileMode, err := fpCfg.GetCompositePermissionMode()
 
 	if textCode != fileMode.String() {
 		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1286,7 +1286,7 @@ func TestFilePermissionConfig_SetFileModeByTextCode_15(t *testing.T) {
 			"Error='%v' ", err.Error())
 	}
 
-	fileMode, err := fpCfg.GetPermissionsFileMode()
+	fileMode, err := fpCfg.GetCompositePermissionMode()
 
 	if textCode != fileMode.String() {
 		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1308,7 +1308,7 @@ func TestFilePermissionConfig_SetFileModeByTextCode_16(t *testing.T) {
 			"Error='%v' ", err.Error())
 	}
 
-	fileMode, err := fpCfg.GetPermissionsFileMode()
+	fileMode, err := fpCfg.GetCompositePermissionMode()
 
 	if textCode != fileMode.String() {
 		t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",

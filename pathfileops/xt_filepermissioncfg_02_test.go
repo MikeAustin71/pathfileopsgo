@@ -219,7 +219,7 @@ func TestFilePermissionConfig_GetEntryTypeComponent_07(t *testing.T) {
 
 }
 
-func TestFilePermissionConfig_GetFileMode_01(t *testing.T) {
+func TestFilePermissionConfig_GetCompositePermissionMode_01(t *testing.T) {
 
 	expectedFileMode := os.FileMode(0666)
 
@@ -230,10 +230,10 @@ func TestFilePermissionConfig_GetFileMode_01(t *testing.T) {
 			"(os.FileMode(0666)). Error='%v' ", err.Error())
 	}
 
-	fMode, err := fPerm.GetPermissionsFileMode()
+	fMode, err := fPerm.GetCompositePermissionMode()
 
 	if err != nil {
-		t.Errorf("Error returned by fPerm.GetPermissionsFileMode() "+
+		t.Errorf("Error returned by fPerm.GetCompositePermissionMode() "+
 			"Error='%v' ", err.Error())
 	}
 
@@ -245,7 +245,7 @@ func TestFilePermissionConfig_GetFileMode_01(t *testing.T) {
 	}
 }
 
-func TestFilePermissionConfig_GetFileMode_02(t *testing.T) {
+func TestFilePermissionConfig_GetCompositePermissionMode_02(t *testing.T) {
 
 	expectedFileMode := os.FileMode(0666)
 
@@ -258,10 +258,10 @@ func TestFilePermissionConfig_GetFileMode_02(t *testing.T) {
 
 	fPerm.isInitialized = false
 
-	_, err = fPerm.GetPermissionsFileMode()
+	_, err = fPerm.GetCompositePermissionMode()
 
 	if err == nil {
-		t.Errorf("Expected error to be returned by fPerm.GetPermissionsFileMode() " +
+		t.Errorf("Expected error to be returned by fPerm.GetCompositePermissionMode() " +
 			"because isInitialized flag is 'false'. However, NO ERROR WAS RETURNED!!")
 	}
 
