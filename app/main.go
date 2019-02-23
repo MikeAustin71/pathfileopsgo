@@ -317,10 +317,10 @@ func mainTest24() {
 		return
 	}
 
-	fMode, err := fPerm.GetFileMode()
+	fMode, err := fPerm.GetPermissionsFileMode()
 
 	if err != nil {
-		fmt.Printf("Error returned by fPerm.GetFileMode(). "+
+		fmt.Printf("Error returned by fPerm.GetPermissionsFileMode(). "+
 			"modeStr='%v' Error='%v' \n", modeStr, err.Error())
 		return
 	}

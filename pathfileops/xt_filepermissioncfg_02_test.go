@@ -230,10 +230,10 @@ func TestFilePermissionConfig_GetFileMode_01(t *testing.T) {
 			"(os.FileMode(0666)). Error='%v' ", err.Error())
 	}
 
-	fMode, err := fPerm.GetFileMode()
+	fMode, err := fPerm.GetPermissionsFileMode()
 
 	if err != nil {
-		t.Errorf("Error returned by fPerm.GetFileMode() "+
+		t.Errorf("Error returned by fPerm.GetPermissionsFileMode() "+
 			"Error='%v' ", err.Error())
 	}
 
@@ -258,10 +258,10 @@ func TestFilePermissionConfig_GetFileMode_02(t *testing.T) {
 
 	fPerm.isInitialized = false
 
-	_, err = fPerm.GetFileMode()
+	_, err = fPerm.GetPermissionsFileMode()
 
 	if err == nil {
-		t.Errorf("Expected error to be returned by fPerm.GetFileMode() " +
+		t.Errorf("Expected error to be returned by fPerm.GetPermissionsFileMode() " +
 			"because isInitialized flag is 'false'. However, NO ERROR WAS RETURNED!!")
 	}
 
