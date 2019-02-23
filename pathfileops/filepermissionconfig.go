@@ -314,11 +314,21 @@ func (fPerm *FilePermissionConfig) GetPermissionNarrativeText() string {
 	txtCode, err := fPerm.GetPermissionTextCode()
 
 	if err != nil {
-		sb.WriteString("  Permission Code: INVALID!\n")
+		sb.WriteString("  -Permission Code: INVALID!")
 	} else {
-		sb.WriteString("  Permission Code: " + txtCode + "\n")
+		sb.WriteString("  -Permission Code: " + txtCode + " ")
 	}
 
+	fileMode, err := fPerm.GetCompositePermissionMode()
+
+	if err != nil {
+		sb.WriteString("  -File Mode Value: INVALID!")
+	} else {
+		sb.WriteString(fmt.Sprintf("  -File Mode Value: %s",
+			strconv.FormatInt(int64(fileMode), 8)))
+	}
+
+	sb.WriteString("\n")
 	return sb.String()
 }
 

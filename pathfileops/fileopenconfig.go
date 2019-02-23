@@ -302,9 +302,11 @@ func (fOpenCfg *FileOpenConfig) GetFileOpenNarrativeText() string {
 	err := fOpenCfg.fileOpenType.IsValid()
 
 	if err == nil {
-		sb.WriteString("File Open Type: " + fOpenCfg.fileOpenType.String() + "\n")
+		typeStr := fOpenCfg.fileOpenType.String()
+		typeStr = strings.Replace(typeStr, "Type", "", 1)
+		sb.WriteString("File Open Type: " + typeStr + " ")
 	} else {
-		sb.WriteString("File Open Type: INVALID!!!\n")
+		sb.WriteString("File Open Type: INVALID!!! ")
 	}
 
 	if fOpenCfg.fileOpenModes == nil ||
@@ -313,7 +315,7 @@ func (fOpenCfg *FileOpenConfig) GetFileOpenNarrativeText() string {
 		fOpenCfg.fileOpenModes[0] = FOpenMode.ModeNone()
 	}
 
-	sb.WriteString("File Open Modes: ")
+	sb.WriteString(" -File Open Modes: ")
 
 	for i := 0; i < len(fOpenCfg.fileOpenModes); i++ {
 
@@ -324,9 +326,11 @@ func (fOpenCfg *FileOpenConfig) GetFileOpenNarrativeText() string {
 		err = fOpenCfg.fileOpenModes[i].IsValid()
 
 		if err != nil {
-			sb.WriteString(fmt.Sprintf("Mode: Index=%v INVALID!", i))
+			sb.WriteString(fmt.Sprintf("Index=%v INVALID!", i))
 		} else {
-			sb.WriteString(fmt.Sprintf("Mode: %s", fOpenCfg.fileOpenModes[i].String()))
+			modeStr := fOpenCfg.fileOpenModes[i].String()
+			modeStr = strings.Replace(modeStr, "Mode", "", 1)
+			sb.WriteString(fmt.Sprintf("%s", modeStr))
 		}
 
 	}

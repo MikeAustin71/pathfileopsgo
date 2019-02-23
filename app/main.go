@@ -36,8 +36,46 @@ func main() {
 
 func main() {
 
-	mainTest31()
+	mainTest32()
+}
 
+func mainTest33() {
+
+	fOpenCfg, err := pf.FileOpenConfig{}.New(
+		pf.FOpenType.TypeReadWrite(),
+		pf.FOpenMode.ModeCreate(),
+		pf.FOpenMode.ModeExclusive())
+
+	if err != nil {
+		fmt.Printf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+		return
+	}
+
+	openCodes := fOpenCfg.GetFileOpenNarrativeText()
+
+	fmt.Println()
+	fmt.Println("FileOpenConfig{}.GetFileOpenNarrativeText()")
+	fmt.Println("Open Codes: ", openCodes)
+}
+
+func mainTest32() {
+
+	textCode := "-rwxrwxrwx"
+
+	fpCfg, err := pf.FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		fmt.Printf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+		return
+	}
+
+	narrativeCode := fpCfg.GetPermissionNarrativeText()
+
+	fmt.Println()
+	fmt.Println("Test FilePermissionConfig{}.GetPermissionNarrativeText()")
+	fmt.Println("          textCode: ", textCode)
+	fmt.Println("narrativeText Code: ", narrativeCode)
 }
 
 func mainTest31() {
