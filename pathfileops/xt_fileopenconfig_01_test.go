@@ -2,6 +2,7 @@ package pathfileops
 
 import (
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -801,6 +802,57 @@ func TestFileOpenConfig_GetFileOpenModes_04(t *testing.T) {
 	if fileOpenModes[0] != FOpenMode.ModeNone() {
 		t.Error("Error: Expected fileOpenModes[0] == FOpenMode.ModeNone(). " +
 			"It is NOT!")
+	}
+
+}
+
+func TestFileOpenConfig_GetFileOpenTextString_01(t *testing.T) {
+
+	fOpenCfg, err := FileOpenConfig{}.New(
+		FOpenType.TypeReadWrite(),
+		FOpenMode.ModeCreate(),
+		FOpenMode.ModeExclusive())
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+	}
+
+	txt := fOpenCfg.GetFileOpenNarrativeText()
+
+	if strings.Index(txt, "TypeReadWrite") == -1 {
+		t.Error("Error: Could not locate 'TypeReadWrite' in FileOpen Text!")
+	}
+
+	if strings.Index(txt, "ModeCreate") == -1 {
+		t.Error("Error: Could not locate 'ModeCreate' in FileOpen Text!")
+	}
+
+	if strings.Index(txt, "ModeExclusive") == -1 {
+		t.Error("Error: Could not locate 'ModeExclusive' in FileOpen Text!")
+	}
+
+}
+
+func TestFileOpenConfig_GetFileOpenTextString_02(t *testing.T) {
+
+	fOpenCfg, err := FileOpenConfig{}.New(
+		FOpenType.TypeReadWrite(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+	}
+
+	fOpenCfg.fileOpenModes = nil
+
+	txt := fOpenCfg.GetFileOpenNarrativeText()
+
+	if strings.Index(txt, "TypeReadWrite") == -1 {
+		t.Error("Error: Could not locate 'TypeReadWrite' in FileOpen Text!")
+	}
+
+	if strings.Index(txt, "ModeNone") == -1 {
+		t.Error("Error: Could not locate 'ModeNone' in FileOpen Text!")
 	}
 
 }

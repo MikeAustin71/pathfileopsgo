@@ -3,8 +3,57 @@ package pathfileops
 import (
 	"os"
 	"strconv"
+	"strings"
 	"testing"
 )
+
+func TestFilePermissionConfig_GetCompositePermissionMode_01(t *testing.T) {
+
+	expectedFileMode := os.FileMode(0666)
+
+	fPerm, err := FilePermissionConfig{}.NewByFileMode(expectedFileMode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode"+
+			"(os.FileMode(0666)). Error='%v' ", err.Error())
+	}
+
+	fMode, err := fPerm.GetCompositePermissionMode()
+
+	if err != nil {
+		t.Errorf("Error returned by fPerm.GetCompositePermissionMode() "+
+			"Error='%v' ", err.Error())
+	}
+
+	if expectedFileMode != fMode {
+		t.Errorf("Error: Expected File Mode octal value='%v'. Instead, "+
+			"File Mode octal value ='%v' ",
+			strconv.FormatInt(int64(expectedFileMode), 8),
+			strconv.FormatInt(int64(fMode), 8))
+	}
+}
+
+func TestFilePermissionConfig_GetCompositePermissionMode_02(t *testing.T) {
+
+	expectedFileMode := os.FileMode(0666)
+
+	fPerm, err := FilePermissionConfig{}.NewByFileMode(expectedFileMode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode"+
+			"(os.FileMode(0666)). Error='%v' ", err.Error())
+	}
+
+	fPerm.isInitialized = false
+
+	_, err = fPerm.GetCompositePermissionMode()
+
+	if err == nil {
+		t.Errorf("Expected error to be returned by fPerm.GetCompositePermissionMode() " +
+			"because isInitialized flag is 'false'. However, NO ERROR WAS RETURNED!!")
+	}
+
+}
 
 func TestFilePermissionConfig_GetEntryTypeComponent_01(t *testing.T) {
 
@@ -215,54 +264,6 @@ func TestFilePermissionConfig_GetEntryTypeComponent_07(t *testing.T) {
 	if err == nil {
 		t.Error("Expected an error from fpCfg.GetEntryTypeComponent() because " +
 			"fpCfg.fileMode has an invalid code. NO ERROR WAS RETURNED!")
-	}
-
-}
-
-func TestFilePermissionConfig_GetCompositePermissionMode_01(t *testing.T) {
-
-	expectedFileMode := os.FileMode(0666)
-
-	fPerm, err := FilePermissionConfig{}.NewByFileMode(expectedFileMode)
-
-	if err != nil {
-		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode"+
-			"(os.FileMode(0666)). Error='%v' ", err.Error())
-	}
-
-	fMode, err := fPerm.GetCompositePermissionMode()
-
-	if err != nil {
-		t.Errorf("Error returned by fPerm.GetCompositePermissionMode() "+
-			"Error='%v' ", err.Error())
-	}
-
-	if expectedFileMode != fMode {
-		t.Errorf("Error: Expected File Mode octal value='%v'. Instead, "+
-			"File Mode octal value ='%v' ",
-			strconv.FormatInt(int64(expectedFileMode), 8),
-			strconv.FormatInt(int64(fMode), 8))
-	}
-}
-
-func TestFilePermissionConfig_GetCompositePermissionMode_02(t *testing.T) {
-
-	expectedFileMode := os.FileMode(0666)
-
-	fPerm, err := FilePermissionConfig{}.NewByFileMode(expectedFileMode)
-
-	if err != nil {
-		t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode"+
-			"(os.FileMode(0666)). Error='%v' ", err.Error())
-	}
-
-	fPerm.isInitialized = false
-
-	_, err = fPerm.GetCompositePermissionMode()
-
-	if err == nil {
-		t.Errorf("Expected error to be returned by fPerm.GetCompositePermissionMode() " +
-			"because isInitialized flag is 'false'. However, NO ERROR WAS RETURNED!!")
 	}
 
 }
@@ -1314,6 +1315,29 @@ func TestFilePermissionConfig_GetPermissionComponents_09(t *testing.T) {
 	if err == nil {
 		t.Error("Expected an error return from fPerm.GetPermissionComponents() " +
 			"because fPerm was not initialized. NO ERROR WAS RETURNED!!")
+	}
+
+}
+
+func TestFilePermissionConfig_GetPermissionNarrativeText(t *testing.T) {
+
+	expectedTextCode := "-rwxrwxrwx"
+
+	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
+			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
+	}
+
+	narTxt := fPerm.GetPermissionNarrativeText()
+
+	if strings.Index(narTxt, "ModeFile") == -1 {
+		t.Error("Error: Expected narrative text to include 'ModeFile'. It did NOT!")
+	}
+
+	if strings.Index(narTxt, expectedTextCode) == -1 {
+		t.Errorf("Error: Expected narrative text to include '%v'. It did NOT!", expectedTextCode)
 	}
 
 }

@@ -216,23 +216,6 @@ func (fPerm *FilePermissionConfig) GetPermissionBits() (os.FileMode, error) {
 	return fPerm.fileMode.Perm(), nil
 }
 
-// GetPermissionTextCode - Returns the file mode permissions expressed as
-// a text string. The returned string includes the full and complete
-// 10-character permission code.
-//
-func (fPerm *FilePermissionConfig) GetPermissionTextCode() (string, error) {
-	ePrefix := "FilePermissionConfig.GetPermissionTextCode() "
-
-	if !fPerm.isInitialized {
-		return "",
-			errors.New(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT been initialized. " +
-				"The FileMode is INVALID!")
-	}
-
-	return fPerm.fileMode.String(), nil
-}
-
 // GetPermissionComponents - Returns the two components of a permission configuration.
 //
 // ------------------------------------------------------------------------
@@ -298,6 +281,63 @@ func (fPerm *FilePermissionConfig) GetPermissionComponents() (
 	err = nil
 
 	return osMode, permissionBits, err
+}
+
+// GetPermissionNarrativeText - Returns a string containing a narrative
+// text description of the current permission codes.
+//
+func (fPerm *FilePermissionConfig) GetPermissionNarrativeText() string {
+
+	sb := strings.Builder{}
+	sb.Grow(300)
+
+	err := fPerm.IsValid()
+
+	if err != nil {
+		sb.WriteString("This FilePermissionConfig instances is INVALID!")
+		return sb.String()
+	}
+
+	osMode, err := fPerm.GetEntryTypeComponent()
+
+	if err != nil {
+		sb.WriteString("Entry Type: INVALID!")
+	} else {
+
+		osModeStr := osMode.String()
+
+		osModeStr = strings.Replace(osModeStr, "ModeNone", "ModeFile", 1)
+
+		sb.WriteString(fmt.Sprintf("Entry Type: %s", osModeStr))
+	}
+
+	txtCode, err := fPerm.GetPermissionTextCode()
+
+	if err != nil {
+		sb.WriteString("  Permission Code: INVALID!\n")
+	} else {
+		sb.WriteString("  Permission Code: " + txtCode + "\n")
+	}
+
+	return sb.String()
+}
+
+// GetPermissionTextCode - Returns the file mode permissions expressed as
+// a text string. The returned string includes the full and complete
+// 10-character permission code.
+//
+func (fPerm *FilePermissionConfig) GetPermissionTextCode() (string, error) {
+
+	ePrefix := "FilePermissionConfig.GetPermissionTextCode() "
+
+	if !fPerm.isInitialized {
+		return "",
+			errors.New(ePrefix +
+				"Error: This FilePermissionConfig instance has NOT been initialized. " +
+				"The FileMode is INVALID!")
+	}
+
+	return fPerm.fileMode.String(), nil
 }
 
 // IsValid - If the current FilePermissionConfig instance is judged to be
