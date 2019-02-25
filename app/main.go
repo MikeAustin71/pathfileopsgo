@@ -36,7 +36,28 @@ func main() {
 
 func main() {
 
-	mainTest32()
+	mainTest34()
+}
+
+func mainTest34() {
+
+	textCode := "-rwxrwxrwx"
+
+	fpCfg, err := pf.FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		fmt.Printf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+		return
+	}
+
+	octalCode := fpCfg.GetPermissionFileModeValueText()
+
+	fmt.Println("       Permission Codes")
+	fmt.Println("----------------------------------")
+	fmt.Println("Original Text Code: ", textCode)
+	fmt.Printf("Octal Code: %s", octalCode)
+
 }
 
 func mainTest33() {

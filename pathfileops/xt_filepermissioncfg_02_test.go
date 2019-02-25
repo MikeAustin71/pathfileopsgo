@@ -1363,9 +1363,22 @@ func TestFilePermissionConfig_GetPermissionFileModeValueText_02(t *testing.T) {
 
 }
 
+func TestFilePermissionConfig_GetPermissionFileModeValueText_03(t *testing.T) {
+
+	fPerm := FilePermissionConfig{}
+
+	actualFileModeValueText := fPerm.GetPermissionFileModeValueText()
+
+	if strings.Index(strings.ToLower(actualFileModeValueText), "invalid") == -1 {
+		t.Error("Expected error stirng containing 'invalid'. No such error string was received.")
+	}
+
+}
+
 func TestFilePermissionConfig_GetPermissionNarrativeText_01(t *testing.T) {
 
 	expectedTextCode := "-rwxrwxrwx"
+	expectedFileModeVal := "0777"
 
 	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
 
@@ -1382,6 +1395,50 @@ func TestFilePermissionConfig_GetPermissionNarrativeText_01(t *testing.T) {
 
 	if strings.Index(narTxt, expectedTextCode) == -1 {
 		t.Errorf("Error: Expected narrative text to include '%v'. It did NOT!", expectedTextCode)
+	}
+
+	if strings.Index(narTxt, expectedFileModeVal) == -1 {
+		t.Errorf("Error: Expected narrative text to include '%v'. It did NOT!", expectedFileModeVal)
+	}
+
+}
+
+func TestFilePermissionConfig_GetPermissionNarrativeText_02(t *testing.T) {
+
+	expectedTextCode := "drwxrwxrwx"
+	expectedFileModeVal := "020000000777"
+
+	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
+			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
+	}
+
+	narTxt := fPerm.GetPermissionNarrativeText()
+
+	if strings.Index(narTxt, "ModeDir") == -1 {
+		t.Error("Error: Expected narrative text to include 'ModeFile'. It did NOT!")
+	}
+
+	if strings.Index(narTxt, expectedTextCode) == -1 {
+		t.Errorf("Error: Expected narrative text to include '%v'. It did NOT!", expectedTextCode)
+	}
+
+	if strings.Index(narTxt, expectedFileModeVal) == -1 {
+		t.Errorf("Error: Expected narrative text to include '%v'. It did NOT!", expectedFileModeVal)
+	}
+
+}
+
+func TestFilePermissionConfig_GetPermissionNarrativeText_03(t *testing.T) {
+
+	fPerm := FilePermissionConfig{}
+
+	x := fPerm.GetPermissionNarrativeText()
+
+	if strings.Index(strings.ToLower(x), "invalid") == -1 {
+		t.Error("Expected error string containing 'invalid'. No such error string was received.")
 	}
 
 }

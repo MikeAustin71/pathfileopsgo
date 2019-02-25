@@ -96,10 +96,12 @@ func (fPerm *FilePermissionConfig) GetIsDir() (bool, error) {
 
 	ePrefix := "FilePermissionConfig.GetIsDir() "
 
-	if !fPerm.isInitialized {
+	err := fPerm.IsValid()
+
+	if err != nil {
 		return false,
-			errors.New(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
+			fmt.Errorf(ePrefix+
+				"Error: This FilePermissionConfig instance is INVALID! %v ", err.Error())
 	}
 
 	return fPerm.fileMode.IsDir(), nil
@@ -126,10 +128,12 @@ func (fPerm *FilePermissionConfig) GetEntryTypeComponent() (OsFilePermissionCode
 
 	ePrefix := "FilePermissionConfig.GetEntryTypeComponent() "
 
-	if !fPerm.isInitialized {
+	err := fPerm.IsValid()
+
+	if err != nil {
 		return OsFilePermissionCode(0),
-			errors.New(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
+			fmt.Errorf(ePrefix+
+				"Error: This FilePermissionConfig instance is INVALID! %v", err.Error())
 	}
 
 	fMode := fPerm.fileMode &^ os.FileMode(0777)
@@ -159,11 +163,13 @@ func (fPerm *FilePermissionConfig) GetCompositePermissionMode() (os.FileMode, er
 
 	ePrefix := "FilePermissionConfig.GetCompositePermissionMode() "
 
-	if !fPerm.isInitialized {
+	err := fPerm.IsValid()
+
+	if err != nil {
 		return os.FileMode(0),
-			errors.New(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT been initialized. " +
-				"The FileMode is INVALID!")
+			fmt.Errorf(ePrefix+
+				"Error: This FilePermissionConfig instance is INVALID! "+
+				"%v", err.Error())
 	}
 
 	return fPerm.fileMode, nil
@@ -178,10 +184,13 @@ func (fPerm *FilePermissionConfig) GetIsRegular() (bool, error) {
 
 	ePrefix := "FilePermissionConfig.GetIsRegular() "
 
-	if !fPerm.isInitialized {
+	err := fPerm.IsValid()
+
+	if err != nil {
 		return false,
-			errors.New(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT been initialized. The FileMode is INVALID!")
+			fmt.Errorf(ePrefix+
+				"Error: This FilePermissionConfig instance is INVALID! "+
+				"%v", err.Error())
 	}
 
 	return fPerm.fileMode.IsRegular(), nil
@@ -206,11 +215,13 @@ func (fPerm *FilePermissionConfig) GetPermissionBits() (os.FileMode, error) {
 
 	ePrefix := "FilePermissionConfig.GetPermissionBits() "
 
-	if !fPerm.isInitialized {
+	err := fPerm.IsValid()
+
+	if err != nil {
 		return os.FileMode(0),
-			errors.New(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT been initialized. " +
-				"The FileMode is INVALID!")
+			fmt.Errorf(ePrefix+
+				"Error: This FilePermissionConfig instance is INVALID. "+
+				"%s", err.Error())
 	}
 
 	return fPerm.fileMode.Perm(), nil
@@ -253,16 +264,18 @@ func (fPerm *FilePermissionConfig) GetPermissionComponents() (
 
 	ePrefix := "FilePermissionConfig.GetPermissionComponents() "
 
-	if !fPerm.isInitialized {
+	var err2 error
+
+	err2 = fPerm.IsValid()
+
+	if err != nil {
 		err =
-			errors.New(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT been initialized. " +
-				"The FileMode is INVALID!")
+			fmt.Errorf(ePrefix+
+				"Error: This FilePermissionConfig instance INVALID. "+
+				"%v", err2.Error())
 
 		return osMode, permissionBits, err
 	}
-
-	var err2 error
 
 	osMode, err2 = fPerm.GetEntryTypeComponent()
 
@@ -290,13 +303,23 @@ func (fPerm *FilePermissionConfig) GetPermissionFileModeValueText() string {
 	sb := strings.Builder{}
 	sb.Grow(300)
 
+	err := fPerm.IsValid()
+
+	if err != nil {
+		sb.WriteString("This FilePermissionConfig instance is INVALID! " + err.Error())
+		return sb.String()
+	}
+
 	fileMode, err := fPerm.GetCompositePermissionMode()
 
 	if err != nil {
 		sb.WriteString("Permission File Mode Value: INVALID!")
 	} else {
-		sb.WriteString(fmt.Sprintf("Permission File Mode Value: %s",
-			strconv.FormatInt(int64(fileMode), 8)))
+
+		octalValStr := "0" + fmt.Sprintf("%d", FileHelper{}.ConvertDecimalToOctal(int(fileMode)))
+
+		sb.WriteString(octalValStr)
+
 	}
 
 	sb.WriteString("\n")
@@ -315,7 +338,7 @@ func (fPerm *FilePermissionConfig) GetPermissionNarrativeText() string {
 	err := fPerm.IsValid()
 
 	if err != nil {
-		sb.WriteString("This FilePermissionConfig instances is INVALID!")
+		sb.WriteString("This FilePermissionConfig instance is INVALID! " + err.Error())
 		return sb.String()
 	}
 
@@ -345,8 +368,11 @@ func (fPerm *FilePermissionConfig) GetPermissionNarrativeText() string {
 	if err != nil {
 		sb.WriteString("  -File Mode Value: INVALID!")
 	} else {
+
+		octalValStr := "0" + fmt.Sprintf("%d", FileHelper{}.ConvertDecimalToOctal(int(fileMode)))
+
 		sb.WriteString(fmt.Sprintf("  -File Mode Value: %s",
-			strconv.FormatInt(int64(fileMode), 8)))
+			octalValStr))
 	}
 
 	sb.WriteString("\n")
@@ -361,11 +387,12 @@ func (fPerm *FilePermissionConfig) GetPermissionTextCode() (string, error) {
 
 	ePrefix := "FilePermissionConfig.GetPermissionTextCode() "
 
-	if !fPerm.isInitialized {
+	err := fPerm.IsValid()
+
+	if err != nil {
 		return "",
-			errors.New(ePrefix +
-				"Error: This FilePermissionConfig instance has NOT been initialized. " +
-				"The FileMode is INVALID!")
+			fmt.Errorf(ePrefix+
+				"Error: This FilePermissionConfig instance is INVALID! %v ", err.Error())
 	}
 
 	return fPerm.fileMode.String(), nil
