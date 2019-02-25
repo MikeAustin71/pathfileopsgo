@@ -318,11 +318,11 @@ func (fPerm *FilePermissionConfig) GetPermissionFileModeValueText() string {
 
 		octalValStr := "0" + fmt.Sprintf("%d", FileHelper{}.ConvertDecimalToOctal(int(fileMode)))
 
+		octalValStr = strings.Trim(octalValStr, " ")
+
 		sb.WriteString(octalValStr)
 
 	}
-
-	sb.WriteString("\n")
 
 	return sb.String()
 }

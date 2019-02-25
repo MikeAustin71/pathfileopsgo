@@ -132,11 +132,11 @@ func (fAccess *FileAccessControl) GetCompositeFileOpenCode() (int, error) {
 	return fileOpenCodes, nil
 }
 
-// GetCompositePermissionCode - Returns the complete permission code as a type
+// GetCompositePermissionMode - Returns the complete permission code as a type
 // os.FileMode.
-func (fAccess *FileAccessControl) GetCompositePermissionCode() (os.FileMode, error) {
+func (fAccess *FileAccessControl) GetCompositePermissionMode() (os.FileMode, error) {
 
-	ePrefix := "FileAccessControl.GetCompositePermissionCode() "
+	ePrefix := "FileAccessControl.GetCompositePermissionMode() "
 
 	err := fAccess.IsValid()
 
@@ -151,6 +151,21 @@ func (fAccess *FileAccessControl) GetCompositePermissionCode() (os.FileMode, err
 	}
 
 	return permissionCode, nil
+}
+
+// GetCompositePermissionModeText - Returns the composite permission file mode
+// numerical value expressed as text.
+func (fAccess *FileAccessControl) GetCompositePermissionModeText() string {
+
+	ePrefix := "FileAccessControl.GetCompositePermissionModeText() "
+
+	err := fAccess.IsValid()
+
+	if err != nil {
+		return ePrefix + "Current File Access Control Instance is INVALID! " + err.Error()
+	}
+
+	return fAccess.permissions.GetPermissionFileModeValueText()
 }
 
 // GetFileOpenAndPermissionCodes - Returns both the complete File Open Code
