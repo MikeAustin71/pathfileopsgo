@@ -1319,6 +1319,42 @@ func TestFilePermissionConfig_GetPermissionComponents_09(t *testing.T) {
 
 }
 
+func TestFilePermissionConfig_GetPermissionComponents_10(t *testing.T) {
+
+	fPerm := FilePermissionConfig{}
+
+	_, _, err := fPerm.GetPermissionComponents()
+
+	if err == nil {
+		t.Error("Expected error returned from fPerm.GetPermissionComponents() " +
+			"because fPerm has not been initialized. However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
+func TestFilePermissionConfig_GetPermissionComponents_11(t *testing.T) {
+
+	expectedTextCode := "-rw-rw-rw-"
+
+	fPerm, err := FilePermissionConfig{}.New(expectedTextCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(expectedTextCode). "+
+			"expectedTextCode='%v' Error='%v' ", expectedTextCode, err.Error())
+	}
+
+	fPerm.fileMode = os.FileMode(52999999)
+
+	_, _, err = fPerm.GetPermissionComponents()
+
+	if err == nil {
+		t.Error("Expected error returned by fPerm.GetPermissionComponents() " +
+			"because fPerm.fileMode = os.FileMode(52999999). " +
+			"However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
 func TestFilePermissionConfig_GetPermissionFileModeValueText_01(t *testing.T) {
 
 	expectedTextCode := "-rwxrwxrwx"
