@@ -546,6 +546,42 @@ func TestFileAccessControl_GetCompositePermissionModeText_02(t *testing.T) {
 
 func TestFileAccessControl_GetCompositePermissionModeText_03(t *testing.T) {
 
+	textCode := "-rwxrwxrwx"
+
+	fPermCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+	}
+
+	fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
+
+	if err != nil {
+		t.Errorf("Error returned by FileAccessControl{}.New("+
+			"fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+	}
+
+	fAccess1.permissions = FilePermissionConfig{}
+
+	fModeText := fAccess1.GetCompositePermissionModeText()
+
+	if strings.Index(strings.ToLower(fModeText), "invalid") == -1 {
+		t.Error("Expected fModeText of contain 'invalid' because fAccess1.permissions" +
+			" is empty. However, no error was detected!")
+	}
+
+}
+
+func TestFileAccessControl_GetCompositePermissionModeText_04(t *testing.T) {
+
 	fAccess1 := FileAccessControl{}
 
 	fModeText := fAccess1.GetCompositePermissionModeText()

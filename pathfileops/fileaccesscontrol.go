@@ -8,7 +8,8 @@ import (
 )
 
 // FileAccessControl encapsulates the codes required the open files and
-// configure file permissions.
+// configure file permissions. As such this type encapsulates types
+// FilePermissionConfig and FileOpenConfig.
 //
 type FileAccessControl struct {
 	isInitialized bool
