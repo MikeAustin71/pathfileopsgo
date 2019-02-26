@@ -628,3 +628,217 @@ func TestFileAccessControl_GetCompositePermissionModeText_04(t *testing.T) {
 	}
 
 }
+
+func TestFileAccessControl_GetFileOpenAndPermissionCodes_01(t *testing.T) {
+
+	textCode := "-rw-rw-rw-"
+
+	fPermCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+	}
+
+	fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
+
+	if err != nil {
+		t.Errorf("Error returned by FileAccessControl{}.New("+
+			"fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+	}
+
+	fOpenCode, fPermCode, err := fAccess1.GetFileOpenAndPermissionCodes()
+
+	if err != nil {
+		t.Errorf("Error returned by fAccess1.GetFileOpenAndPermissionCodes() "+
+			"Error='%v' \n", err.Error())
+	}
+
+	if fOpenCode != int(FOpenType.TypeReadWrite()) {
+		t.Error("Expected fOpenCode to contain FOpenType.TypeReadWrite(). It did Not!")
+	}
+
+	if textCode != fPermCode.String() {
+		t.Errorf("Expected fPermCode.String() == '%v'. Actual File Mode Text == '%v'. ",
+			textCode, fPermCode.String())
+	}
+
+}
+
+func TestFileAccessControl_GetFileOpenAndPermissionCodes_02(t *testing.T) {
+
+	textCode := "-rw-rw-rw-"
+
+	fPermCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+	}
+
+	fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
+
+	if err != nil {
+		t.Errorf("Error returned by FileAccessControl{}.New("+
+			"fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+	}
+
+	fOpenCode, fPermCode, err := fAccess1.GetFileOpenAndPermissionCodes()
+
+	if err != nil {
+		t.Errorf("Error returned by fAccess1.GetFileOpenAndPermissionCodes() "+
+			"Error='%v' \n", err.Error())
+	}
+
+	if fOpenCode != int(FOpenType.TypeReadOnly()) {
+		t.Error("Expected fOpenCode to contain FOpenType.TypeReadWrite(). It did Not!")
+	}
+
+	if textCode != fPermCode.String() {
+		t.Errorf("Expected fPermCode.String() == '%v'. Actual File Mode Text == '%v'. ",
+			textCode, fPermCode.String())
+	}
+
+}
+
+func TestFileAccessControl_GetFileOpenAndPermissionCodes_03(t *testing.T) {
+
+	textCode := "drwxrwxrwx"
+
+	fPermCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+	}
+
+	fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
+
+	if err != nil {
+		t.Errorf("Error returned by FileAccessControl{}.New("+
+			"fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+	}
+
+	fOpenCode, fPermCode, err := fAccess1.GetFileOpenAndPermissionCodes()
+
+	if err != nil {
+		t.Errorf("Error returned by fAccess1.GetFileOpenAndPermissionCodes() "+
+			"Error='%v' \n", err.Error())
+	}
+
+	if fOpenCode != int(FOpenType.TypeWriteOnly()) {
+		t.Error("Expected fOpenCode to contain FOpenType.TypeReadWrite(). It did Not!")
+	}
+
+	if textCode != fPermCode.String() {
+		t.Errorf("Expected fPermCode.String() == '%v'. Actual File Mode Text == '%v'. ",
+			textCode, fPermCode.String())
+	}
+
+}
+
+func TestFileAccessControl_GetFileOpenAndPermissionCodes_04(t *testing.T) {
+
+	textCode := "drwxrwxrwx"
+
+	fPermCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+	}
+
+	fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
+
+	if err != nil {
+		t.Errorf("Error returned by FileAccessControl{}.New("+
+			"fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+	}
+
+	fAccess1.fileOpenCodes = FileOpenConfig{}
+
+	_, _, err = fAccess1.GetFileOpenAndPermissionCodes()
+
+	if err == nil {
+		t.Errorf("Expected an error from fAccess1.GetFileOpenAndPermissionCodes() " +
+			"because fAcess1.fileOpenCodes are uninitialized. However, NO ERROR WAS RETURNED! \n")
+	}
+
+}
+
+func TestFileAccessControl_GetFileOpenAndPermissionCodes_05(t *testing.T) {
+
+	textCode := "drwxrwxrwx"
+
+	fPermCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+	}
+
+	fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
+
+	if err != nil {
+		t.Errorf("Error returned by FileAccessControl{}.New("+
+			"fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+	}
+
+	fAccess1.permissions = FilePermissionConfig{}
+
+	_, _, err = fAccess1.GetFileOpenAndPermissionCodes()
+
+	if err == nil {
+		t.Errorf("Expected an error from fAccess1.GetFileOpenAndPermissionCodes() " +
+			"because fAcess1.permissions are uninitialized. However, NO ERROR WAS RETURNED! \n")
+	}
+
+}
+
+func TestFileAccessControl_GetFileOpenAndPermissionCodes_06(t *testing.T) {
+
+	fAccess1 := FileAccessControl{}
+
+	_, _, err := fAccess1.GetFileOpenAndPermissionCodes()
+
+	if err == nil {
+		t.Errorf("Expected an error from fAccess1.GetFileOpenAndPermissionCodes() " +
+			"because fAcess1 was uninitialized. However, NO ERROR WAS RETURNED! \n")
+	}
+
+}
