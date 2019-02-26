@@ -880,6 +880,11 @@ func TestFileAccessControl_GetFileOpenConfig_01(t *testing.T) {
 			"The two are NOT equal!")
 	}
 
+	if !fAccess1FileOpenCfg.Equal(&fOpenCfg) {
+		t.Error("Expected returned fAccess1FileOpenCfg to equal the original file open " +
+			"configuration. The two are NOT equal!")
+	}
+
 }
 
 func TestFileAccessControl_GetFileOpenConfig_02(t *testing.T) {
@@ -966,6 +971,135 @@ func TestFileAccessControl_GetFileOpenConfig_04(t *testing.T) {
 		t.Error("Expected error from fAccess1.GetFileOpenConfig() " +
 			"because fAccess1 is uninitialized. " +
 			"However, NO ERROR WAS RETURNED!\n")
+	}
+
+}
+
+func TestFileAccessControl_GetFilePermissionConfig_01(t *testing.T) {
+
+	textCode := "-rw-rw-rw-"
+
+	fPermCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+	}
+
+	fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
+
+	if err != nil {
+		t.Errorf("Error returned by FileAccessControl{}.New("+
+			"fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+	}
+
+	fActualPermCfg, err := fAccess1.GetFilePermissionConfig()
+
+	if err != nil {
+		t.Errorf("Error returned by fAccess1.GetFilePermissionConfig() "+
+			"Error='%v' \n", err.Error())
+	}
+
+	if !fPermCfg.Equal(&fActualPermCfg) {
+		t.Error("Expected the original file permission config to equal the " +
+			"returned file permission config. They ARE NOT EQUAL!")
+	}
+
+	if !fActualPermCfg.Equal(&fPermCfg) {
+		t.Error("Expected the returned file permission config to equal the " +
+			"original file permission config. They ARE NOT EQUAL!")
+	}
+
+}
+
+func TestFileAccessControl_GetFilePermissionConfig_02(t *testing.T) {
+
+	textCode := "-rw-rw-rw-"
+
+	fPermCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+	}
+
+	fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
+
+	if err != nil {
+		t.Errorf("Error returned by FileAccessControl{}.New("+
+			"fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+	}
+
+	fAccess1.fileOpenCodes = FileOpenConfig{}
+
+	_, err = fAccess1.GetFilePermissionConfig()
+
+	if err == nil {
+		t.Error("Expected error return from fAccess1.GetFilePermissionConfig() " +
+			"because fAccess1.fileOpenCodes are uninitialized. \n")
+	}
+
+}
+
+func TestFileAccessControl_GetFilePermissionConfig_03(t *testing.T) {
+
+	textCode := "-rw-rw-rw-"
+
+	fPermCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+	}
+
+	fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
+
+	if err != nil {
+		t.Errorf("Error returned by FileAccessControl{}.New("+
+			"fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+	}
+
+	fAccess1.permissions = FilePermissionConfig{}
+
+	_, err = fAccess1.GetFilePermissionConfig()
+
+	if err == nil {
+		t.Error("Expected error return from fAccess1.GetFilePermissionConfig() " +
+			"because fAccess1.permissions are uninitialized. \n")
+	}
+
+}
+
+func TestFileAccessControl_GetFilePermissionConfig_04(t *testing.T) {
+
+	fAccess1 := FileAccessControl{}
+
+	_, err := fAccess1.GetFilePermissionConfig()
+
+	if err == nil {
+		t.Error("Expected error return from fAccess1.GetFilePermissionConfig() " +
+			"because fAccess1 is uninitialized. \n")
 	}
 
 }
