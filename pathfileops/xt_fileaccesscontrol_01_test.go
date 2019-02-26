@@ -1256,3 +1256,160 @@ func TestFileAccessControl_SetFileOpenCodes_04(t *testing.T) {
 	}
 
 }
+
+func TestFileAccessControl_SetFilePermissionCodes_01(t *testing.T) {
+
+	textCode := "-rw-rw-rw-"
+
+	fPermCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+	}
+
+	fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
+
+	if err != nil {
+		t.Errorf("Error returned by FileAccessControl{}.New("+
+			"fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+	}
+
+	textCode2 := "drwxrwxrwx"
+
+	fPermCfg2, err := FilePermissionConfig{}.New(textCode2)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	err = fAccess1.SetFilePermissionCodes(fPermCfg2)
+
+	if err != nil {
+		t.Errorf("Error returned by fAccess1.SetFilePermissionCodes(fPermCfg2). "+
+			"Error='%v' \n", err.Error())
+	}
+
+	actualFPermCfg2, err := fAccess1.GetFilePermissionConfig()
+
+	if err != nil {
+		t.Errorf("Error returned by actualFPermCfg2 = fAccess1.GetFilePermissionConfig(). "+
+			"Error='%v' \n", err.Error())
+	}
+
+	if !fPermCfg2.Equal(&actualFPermCfg2) {
+		t.Error("Expected fPermCfg2 to equal actualFPermCfg2. " +
+			"THEY ARE NOT EQUAL!")
+	}
+
+	if !actualFPermCfg2.Equal(&fPermCfg2) {
+		t.Error("Expected actualFOpen2Cfg to equal fOpenCfg2. " +
+			"THEY ARE NOT EQUAL!")
+	}
+
+}
+
+func TestFileAccessControl_SetFilePermissionCodes_02(t *testing.T) {
+
+	textCode := "-rw-rw-rw-"
+
+	fPermCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
+		FOpenMode.ModeNone())
+
+	if err != nil {
+		t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+	}
+
+	fAccess1 := FileAccessControl{}
+
+	err = fAccess1.SetFileOpenCodes(fOpenCfg)
+
+	if err != nil {
+		t.Errorf("Error returned by fAccess1.SetFileOpenCodes(fOpenCfg). "+
+			"Error='%v' \n", err.Error())
+	}
+
+	err = fAccess1.SetFilePermissionCodes(fPermCfg)
+
+	if err != nil {
+		t.Errorf("Error returned by fAccess1.SetFilePermissionCodes(fPermCfg). "+
+			"Error='%v' \n", err.Error())
+	}
+
+	if fAccess1.isInitialized == false {
+		t.Error("Expected fAccess1.isInitialized == 'true'. Instead, it is 'false'. ")
+	}
+
+	actualFPermCfg, err := fAccess1.GetFilePermissionConfig()
+
+	if err != nil {
+		t.Errorf("Error returned by actualFPermCfg = fAccess1.GetFilePermissionConfig(). "+
+			"Error='%v' \n", err.Error())
+	}
+
+	if !fPermCfg.Equal(&actualFPermCfg) {
+		t.Error("Expected fPermCfg to equal actualFPermCfg. " +
+			"THEY ARE NOT EQUAL!")
+	}
+
+	if !actualFPermCfg.Equal(&fPermCfg) {
+		t.Error("Expected actualFPermCfg to equal fPermCfg. " +
+			"THEY ARE NOT EQUAL!")
+	}
+}
+
+func TestFileAccessControl_SetFilePermissionCodes_03(t *testing.T) {
+
+	textCode := "-rw-rw-rw-"
+
+	fPermCfg, err := FilePermissionConfig{}.New(textCode)
+
+	if err != nil {
+		t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
+			"textCode='%v' Error='%v'", textCode, err.Error())
+	}
+
+	fAccess1 := FileAccessControl{}
+
+	err = fAccess1.SetFilePermissionCodes(fPermCfg)
+
+	if err != nil {
+		t.Errorf("Error returned by fAccess1.SetFilePermissionCodes(fPermCfg). "+
+			"Error='%v' \n", err.Error())
+	}
+
+	if fAccess1.isInitialized == true {
+		t.Error("Expected fAccess1.isInitialized to equal 'false'. " +
+			"Instead, it is 'true'.")
+	}
+}
+
+func TestFileAccessControl_SetFilePermissionCodes_04(t *testing.T) {
+
+	fPermCfg := FilePermissionConfig{}
+
+	fAccess1 := FileAccessControl{}
+
+	err := fAccess1.SetFilePermissionCodes(fPermCfg)
+
+	if err == nil {
+		t.Error("Expected error return from fAccess1.SetFilePermissionCodes(fPermCfg) " +
+			"because fPermCfg is uninitialized. However, NO ERROR WAS RETURNED!\n")
+	}
+
+}
