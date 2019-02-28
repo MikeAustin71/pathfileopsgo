@@ -925,6 +925,7 @@ func (fMgr *FileMgr) CloseThisFile() error {
 
 	if fMgr.filePtr == nil {
 		fMgr.isFilePtrOpen = false
+		fMgr.fileAccessStatus.Empty()
 		return nil
 	}
 
@@ -963,6 +964,11 @@ func (fMgr *FileMgr) CloseThisFile() error {
 	err = fMgr.filePtr.Close()
 
 	if err != nil {
+
+		fMgr.isFilePtrOpen = false
+		fMgr.filePtr = nil
+		fMgr.fileAccessStatus.Empty()
+
 		return fmt.Errorf(ePrefix+
 			"Received Error from fMgr.filePtr.Close(). "+
 			"fMgr.absolutePathFileName= '%v' ", fMgr.absolutePathFileName)
@@ -1101,30 +1107,13 @@ func (fMgr *FileMgr) CreateDirAndFile() error {
 		return err
 	}
 
-	err = fMgr.dMgr.IsDirMgrValid(ePrefix)
+	if !fMgr.dMgr.DoesDirMgrAbsolutePathExist() {
 
-	if err != nil {
-		return err
-	}
-
-	fh := FileHelper{}
-
-	if !fh.DoesFileExist(fMgr.dMgr.absolutePath) {
-		// Directory does NOT exist, create it!
-
-		err := fh.MakeDirAll(fMgr.dMgr.absolutePath)
+		err = fMgr.dMgr.MakeDir()
 
 		if err != nil {
-			return fmt.Errorf(ePrefix+"Errors from FileHelper:"+
-				"MakeDirAll(fMgr.dMgr.absolutePath). fMgr.dMgr.absolutePath='%v'  Error='%v' ",
-				fMgr.dMgr.absolutePath, err.Error())
+			return fmt.Errorf(ePrefix+"- Directory Create Failed! %v", err.Error())
 		}
-
-		fMgr.dMgr.doesAbsolutePathExist = true
-
-	} else {
-
-		fMgr.dMgr.doesAbsolutePathExist = true
 
 	}
 
@@ -1155,37 +1144,19 @@ func (fMgr *FileMgr) CreateThisFile() error {
 
 	ePrefix := "FileMgr:CreateThisFile() "
 
-	fh := FileHelper{}
-
-	if !fMgr.isInitialized {
-		return errors.New(ePrefix + "Error: FileMgr is NOT Initialized!")
-	}
-
-	if !fMgr.dMgr.isAbsolutePathPopulated {
-		return errors.New(ePrefix + "Error: FileMgrDMgr.isAbsolutePathPopulated is NOT populated!")
-	}
-
-	if fMgr.absolutePathFileName == "" {
-		fMgr.isAbsolutePathFileNamePopulated = false
-		return errors.New(ePrefix + "Error: FileMgr.absolutePathFileName is EMPTY!")
-	}
-
-	if !fh.DoesFileExist(fMgr.dMgr.absolutePath) {
-		fMgr.dMgr.doesAbsolutePathExist = false
-		return fmt.Errorf(ePrefix+
-			"Error: FileMgr.dMgr.absolutePath Does NOT exist! Create the path. "+
-			"FileMgr.dMgr.absolutePath='%v'", fMgr.dMgr.absolutePath)
-	}
-
 	var err error
 
-	fMgr.filePtr, err = os.Create(fMgr.absolutePathFileName)
+	err = fMgr.IsFileMgrValid(ePrefix)
 
 	if err != nil {
+		return err
+	}
+
+	if !fMgr.dMgr.DoesDirMgrAbsolutePathExist() {
+
 		return fmt.Errorf(ePrefix+
-			"Error creating File. Error returned from "+
-			"os.Create(fMgr.absolutePathFileName). fMgr.absolutePathFileName='%v' Error='%v' ",
-			fMgr.absolutePathFileName, err.Error())
+			"Error: Directory Path DOES NOT EXIST! "+
+			"FileMgr.dMgr.absolutePath='%v' Error='%v' ", fMgr.dMgr.absolutePath, err.Error())
 	}
 
 	//  OpenFile(name, O_RDWR|O_CREATE|O_TRUNC, 0666)
@@ -1208,19 +1179,22 @@ func (fMgr *FileMgr) CreateThisFile() error {
 		return fmt.Errorf(ePrefix+"%v", err.Error())
 	}
 
-	fMgr.fileAccessStatus, err = FileAccessControl{}.New(fOpenCfg, fPermCfg)
+	fileAccessCfg, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
 
 	if err != nil {
-		_ = fMgr.filePtr.Close()
-		fMgr.isFilePtrOpen = false
-		fMgr.fileAccessStatus.Empty()
 		return fmt.Errorf(ePrefix+"%v", err.Error())
 	}
 
-	fMgr.isFilePtrOpen = true
+	err = fMgr.OpenThisFile(fileAccessCfg)
+
+	if err != nil {
+
+		return fmt.Errorf(ePrefix+
+			"Error opening file from os.OpenFile(): '%v' Error= '%v'\n",
+			fMgr.absolutePathFileName, err.Error())
+	}
 
 	return nil
-
 }
 
 // DeleteThisFile - Deletes the file identified by FileMgr.absolutePathFileName
@@ -2276,8 +2250,18 @@ func (fMgr FileMgr) NewFromDirStrFileNameStr(
 // in the 'FileAccessControl' instance passed as 'fileAccessCtrl'.
 //
 func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
-	ePrefix := "FileMgr.OpenThisFileReadWrite() "
+	ePrefix := "FileMgr.OpenThisFile() "
 	var err error
+
+	err = fMgr.IsFileMgrValid(ePrefix)
+
+	if err != nil {
+		return err
+	}
+
+	if fMgr.filePtr != nil {
+		_ = fMgr.CloseThisFile()
+	}
 
 	err = fileAccessCtrl.IsValid()
 
@@ -2286,54 +2270,14 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
 			"%v\n", err.Error())
 	}
 
-	if !fMgr.isInitialized {
-		return errors.New(ePrefix +
-			"Error: The File Manager data structure has NOT been initialized.\n")
-	}
+	if !fMgr.dMgr.DoesDirMgrAbsolutePathExist() {
 
-	if !fMgr.isAbsolutePathFileNamePopulated {
-		return errors.New(ePrefix +
-			"Error: FileMgr.absolutePathFileName has NOT been initialized and populated.\n")
-	}
-
-	if fMgr.absolutePathFileName == "" {
-		fMgr.isAbsolutePathFileNamePopulated = false
-		return errors.New(ePrefix +
-			"Error: FileMgr.absolutePathFileName is EMPTY!\n")
-	}
-
-	if fMgr.filePtr != nil {
-		_ = fMgr.CloseThisFile()
-		fMgr.filePtr = nil
-		fMgr.isFilePtrOpen = false
-	}
-
-	doesFileExist, err := fMgr.DoesThisFileExist()
-
-	if err != nil {
-		return fmt.Errorf(ePrefix+
-			"Error returned from fMgr.DoesThisFileExist() - %v\n", err.Error())
-	}
-
-	if !doesFileExist {
-
-		err = fMgr.CreateDirAndFile()
+		err = fMgr.dMgr.MakeDir()
 
 		if err != nil {
-			return fmt.Errorf(ePrefix+
-				"Error from fMgr.CreateDirAndFile(fMgr.absolutePathFileName). "+
-				"absolutePathFileName='%v'. Error='%v'\n", fMgr.absolutePathFileName, err.Error())
+			return fmt.Errorf(ePrefix+"%v", err.Error())
 		}
 
-		if fMgr.filePtr != nil {
-			_ = fMgr.CloseThisFile()
-			fMgr.filePtr = nil
-			fMgr.isFilePtrOpen = false
-			fMgr.fileAccessStatus.Empty()
-		}
-
-		fMgr.doesAbsolutePathFileNameExist = true
-		fMgr.isAbsolutePathFileNamePopulated = true
 	}
 
 	fMgr.fileAccessStatus = fileAccessCtrl.CopyOut()
@@ -2366,25 +2310,32 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
 // FileMgr object as a 'Read-Only' File. Subsequent operations may
 // read from this file but may NOT write to this file.
 //
+// If the file does not currently exist, an error will be returned.
 //
 func (fMgr *FileMgr) OpenThisFileReadOnly() error {
 	ePrefix := "FileMgr.OpenThisFileReadOnly() "
 	var err error
 
-	if !fMgr.isInitialized {
-		return errors.New(ePrefix +
-			"Error: The File Manager data structure has NOT been initialized.")
+	err = fMgr.IsFileMgrValid(ePrefix)
+
+	if err != nil {
+		return err
 	}
 
-	if !fMgr.isAbsolutePathFileNamePopulated {
-		return errors.New(ePrefix +
-			"Error: FileMgr.absolutePathFileName has NOT been initialized and populated.")
+	if fMgr.filePtr != nil {
+		_ = fMgr.CloseThisFile()
 	}
 
-	if fMgr.absolutePathFileName == "" {
-		fMgr.isAbsolutePathFileNamePopulated = false
-		return errors.New(ePrefix +
-			"Error: FileMgr.absolutePathFileName is EMPTY!")
+	doesFileExist, err := fMgr.DoesThisFileExist()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	if !doesFileExist {
+
+		return fmt.Errorf(ePrefix+"The file to be opened as read-only, DOES NOT EXIST! "+
+			"File Name: %v", fMgr.absolutePathFileName)
 	}
 
 	fileOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(), FOpenMode.ModeNone())
@@ -2429,20 +2380,36 @@ func (fMgr *FileMgr) OpenThisFileReadWrite() error {
 
 	ePrefix := "FileMgr.OpenThisFileReadWrite() "
 
-	if !fMgr.isInitialized {
-		return errors.New(ePrefix +
-			"Error: The File Manager data structure has NOT been initialized.")
+	err = fMgr.IsFileMgrValid(ePrefix)
+
+	if err != nil {
+		return err
 	}
 
-	if !fMgr.isAbsolutePathFileNamePopulated {
-		return errors.New(ePrefix +
-			"Error: FileMgr.absolutePathFileName has NOT been initialized and populated.")
+	if fMgr.filePtr != nil {
+		_ = fMgr.CloseThisFile()
 	}
 
-	if fMgr.absolutePathFileName == "" {
-		fMgr.isAbsolutePathFileNamePopulated = false
-		return errors.New(ePrefix +
-			"Error: FileMgr.absolutePathFileName is EMPTY!")
+	doesFileExist, err := fMgr.DoesThisFileExist()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	if !doesFileExist {
+
+		err = fMgr.CreateDirAndFile()
+
+		if err != nil {
+			return fmt.Errorf(ePrefix+"%v", err.Error())
+		}
+
+		err = fMgr.CloseThisFile()
+
+		if err != nil {
+			return fmt.Errorf(ePrefix+"%v", err.Error())
+		}
+
 	}
 
 	fileOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(), FOpenMode.ModeNone())
