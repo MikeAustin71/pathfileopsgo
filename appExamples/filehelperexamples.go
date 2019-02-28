@@ -111,14 +111,14 @@ func CreateFileOnTopOfExistingFile() {
 	ePrefix := "CreateFileOnTopOfExistingFile() "
 
 	if err != nil {
-		_ = fMgr.CloseFile()
+		_ = fMgr.CloseThisFile()
 		panic(fmt.Errorf(ePrefix+
 			"- Error: FileMgr{}.NewFromPathFileNameExtStr(tstFile) Failed. tstFile='%v' Error='%v'",
 			tstFile, err.Error()))
 	}
 
 	if err != nil {
-		_ = fMgr.CloseFile()
+		_ = fMgr.CloseThisFile()
 		panic(errors.New(fmt.Sprintf(ePrefix+
 			"Error Creating File: '%v' Error: %v", tstFile, err.Error())))
 	}
@@ -128,11 +128,11 @@ func CreateFileOnTopOfExistingFile() {
 	_, err = fMgr.WriteStrToFile(str)
 
 	if err != nil {
-		_ = fMgr.CloseFile()
+		_ = fMgr.CloseThisFile()
 		panic(fmt.Errorf(ePrefix+" %v ", err.Error()))
 	}
 
-	err = fMgr.CloseFile()
+	err = fMgr.CloseThisFile()
 
 	if err != nil {
 		panic(fmt.Errorf(ePrefix+" %v ", err.Error()))

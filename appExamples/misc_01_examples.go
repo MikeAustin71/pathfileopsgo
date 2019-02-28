@@ -611,7 +611,7 @@ func TestWriteFile() {
 	fmt.Println("Expected String Length: ", lExpectedStr)
 	fmt.Println("Bytes Written To File: ", bytesWritten)
 
-	_ = fMgr.CloseFile()
+	_ = fMgr.CloseThisFile()
 
 	/*
 		bytesRead, err := fMgr.ReadAllFile()
@@ -638,7 +638,7 @@ func TestWriteFile() {
 			return
 		}
 
-		fMgr.CloseFile()
+		fMgr.CloseThisFile()
 
 		doesFileExist := fh.DoesFileExist(filePath)
 
@@ -692,13 +692,13 @@ func TestOpenFile() {
 
 	if err != nil {
 		fmt.Printf(ePrefix+"Error returned from ioutil.ReadAll(fMgr.filePtr) filePath='%v'  Error='%v'", filePath, err.Error())
-		_ = fMgr.CloseFile()
+		_ = fMgr.CloseThisFile()
 		return
 	}
 
 	str := string(b)
 
-	err = fMgr.CloseFile()
+	err = fMgr.CloseThisFile()
 
 	if err != nil {
 		fmt.Printf(ePrefix+

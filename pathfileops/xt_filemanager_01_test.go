@@ -128,13 +128,15 @@ func TestFileMgr_CreateDirAndFile_01(t *testing.T) {
 	}
 
 	if fh.DoesFileExist(fileMgr.dMgr.absolutePath) {
-		t.Errorf(fmt.Sprintf("Error: Failed to delete existing path '%v'", fileMgr.dMgr.absolutePath))
+		t.Errorf(fmt.Sprintf("Error: Failed to delete existing path '%v'",
+			fileMgr.dMgr.absolutePath))
 	}
 
 	err = fileMgr.CreateDirAndFile()
 
 	if err != nil {
-		t.Errorf("Failed to Create Directory and File '%v', received Error:'%v'", fileMgr.absolutePathFileName, err.Error())
+		t.Errorf("Failed to Create Directory and File '%v', received Error:'%v'",
+			fileMgr.absolutePathFileName, err.Error())
 	}
 
 	if !fh.DoesFileExist(fileMgr.absolutePathFileName) {
@@ -149,10 +151,10 @@ func TestFileMgr_CreateDirAndFile_01(t *testing.T) {
 		t.Errorf("Received error from fileMgr.WriteStrToFile(s). s='%v'  Error='%v' ", s, err.Error())
 	}
 
-	err = fileMgr.CloseFile()
+	err = fileMgr.CloseThisFile()
 
 	if err != nil {
-		t.Errorf("Received error from fileMgr.CloseFile(). fileMgr.absolutePathFileName='%v'  Error='%v' ", fileMgr.absolutePathFileName, err.Error())
+		t.Errorf("Received error from fileMgr.CloseThisFile(). fileMgr.absolutePathFileName='%v'  Error='%v' ", fileMgr.absolutePathFileName, err.Error())
 	}
 
 	err = fileMgr.dMgr.DeleteAll()

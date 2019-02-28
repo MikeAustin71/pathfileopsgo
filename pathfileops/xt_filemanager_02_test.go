@@ -26,7 +26,7 @@ func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
 	b, err := ioutil.ReadAll(fMgr.filePtr)
 
 	if err != nil {
-		_ = fMgr.CloseFile()
+		_ = fMgr.CloseThisFile()
 		t.Errorf("Error returned from ioutil.ReadAll(fMgr.filePtr) filePath='%v'  Error='%v'", filePath, err.Error())
 		return
 	}
@@ -39,7 +39,7 @@ func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
 		t.Errorf("Expected Read String='%v'. Instead, Actual Read String='%v'", expectedStr, actualStr)
 	}
 
-	_ = fMgr.CloseFile()
+	_ = fMgr.CloseThisFile()
 
 }
 
@@ -66,7 +66,7 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
 
 	if err != nil {
 
-		_ = fMgr.CloseFile()
+		_ = fMgr.CloseThisFile()
 
 		t.Errorf("Error returned from ioutil.ReadAll(fMgr.filePtr) filePath='%v'  Error='%v'", filePath, err.Error())
 
@@ -79,13 +79,13 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
 
 	if expectedStr != actualStr {
 
-		_ = fMgr.CloseFile()
+		_ = fMgr.CloseThisFile()
 
 		t.Errorf("Expected Read String='%v'. Instead, Actual Read String='%v'", expectedStr, actualStr)
 		return
 	}
 
-	_ = fMgr.CloseFile()
+	_ = fMgr.CloseThisFile()
 
 }
 
@@ -134,7 +134,7 @@ func TestFileMgr_ReadFileBytes_01(t *testing.T) {
 		t.Errorf("Expected Bytes Read='%v'.  Instead, Actual Bytes Read='%v'", expectedBytesRead, bytesRead)
 	}
 
-	_ = fMgr.CloseFile()
+	_ = fMgr.CloseThisFile()
 
 }
 
@@ -203,10 +203,10 @@ func TestFileMgr_WriteStrToFile_01(t *testing.T) {
 		t.Errorf("Error returned from fMgr.WriteStrToFile(expectedStr)  expectedStr='%v'  Error='%v'", expectedStr, err.Error())
 	}
 
-	err = fMgr.CloseFile()
+	err = fMgr.CloseThisFile()
 
 	if err != nil {
-		t.Errorf("Error returned from fMgr.CloseFile() No 1.  Error='%v'", err.Error())
+		t.Errorf("Error returned from fMgr.CloseThisFile() No 1.  Error='%v'", err.Error())
 	}
 
 	bytesRead, err := fMgr.ReadAllFile()
@@ -229,10 +229,10 @@ func TestFileMgr_WriteStrToFile_01(t *testing.T) {
 		t.Errorf("Error: expectedStr written='%v'  Actual string read='%v'", expectedStr, actualStr)
 	}
 
-	err = fMgr.CloseFile()
+	err = fMgr.CloseThisFile()
 
 	if err != nil {
-		t.Errorf("Error returned by fMgr.CloseFile() No 2. Error='%v'", err.Error())
+		t.Errorf("Error returned by fMgr.CloseThisFile() No 2. Error='%v'", err.Error())
 	}
 
 	err = fMgr.DeleteThisFile()

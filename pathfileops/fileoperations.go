@@ -1,18 +1,18 @@
 package pathfileops
 
 import (
-  "errors"
-  "fmt"
+	"errors"
+	"fmt"
 )
 
 // FileOps - This type is used to manage and coordinate various
 // operations performed on files. Hence the name, File Operations.
 //
 type FileOps struct {
-  isInitialized bool
-  source        FileMgr
-  destination   FileMgr
-  opToExecute   FileOperationCode
+	isInitialized bool
+	source        FileMgr
+	destination   FileMgr
+	opToExecute   FileOperationCode
 }
 
 // CopyOut - Returns a deep copy of the current
@@ -20,18 +20,18 @@ type FileOps struct {
 //
 func (fops *FileOps) CopyOut() FileOps {
 
-  if !fops.isInitialized {
-    return FileOps{}
-  }
+	if !fops.isInitialized {
+		return FileOps{}
+	}
 
-  newFOps := FileOps{}
+	newFOps := FileOps{}
 
-  newFOps.source = fops.source.CopyOut()
-  newFOps.destination = fops.destination.CopyOut()
+	newFOps.source = fops.source.CopyOut()
+	newFOps.destination = fops.destination.CopyOut()
 
-  newFOps.isInitialized = true
+	newFOps.isInitialized = true
 
-  return newFOps
+	return newFOps
 
 }
 
@@ -43,19 +43,19 @@ func (fops *FileOps) CopyOut() FileOps {
 // If any data field is found to be unequal, this method returns 'false'.
 func (fops *FileOps) Equal(fops2 *FileOps) bool {
 
-  if !fops.source.Equal(&fops2.source) {
-    return false
-  }
+	if !fops.source.Equal(&fops2.source) {
+		return false
+	}
 
-  if !fops.destination.Equal(&fops2.destination) {
-    return false
-  }
+	if !fops.destination.Equal(&fops2.destination) {
+		return false
+	}
 
-  if fops.opToExecute != fops2.opToExecute {
-    return false
-  }
+	if fops.opToExecute != fops2.opToExecute {
+		return false
+	}
 
-  return true
+	return true
 }
 
 // EqualPathFileNameExt - Compares two File Operations Types, 'FileOps'. The method
@@ -71,34 +71,34 @@ func (fops *FileOps) Equal(fops2 *FileOps) bool {
 // this method returns 'false'.
 func (fops *FileOps) EqualPathFileNameExt(fops2 *FileOps) bool {
 
-  if !fops.source.EqualPathFileNameExt(&fops2.source) {
-    return false
-  }
+	if !fops.source.EqualPathFileNameExt(&fops2.source) {
+		return false
+	}
 
-  if !fops.destination.EqualPathFileNameExt(&fops2.destination) {
-    return false
-  }
+	if !fops.destination.EqualPathFileNameExt(&fops2.destination) {
+		return false
+	}
 
-  return true
+	return true
 }
 
 // IsInitialized - Returns a boolean value indicating whether
 // this FileOps instance has been properly initialized.
 //
 func (fops *FileOps) IsInitialized() bool {
-  return fops.isInitialized
+	return fops.isInitialized
 }
 
 // GetSource - Returns a deep copy of the
 // source FileMgr instance.
 func (fops *FileOps) GetSource() FileMgr {
-  return fops.source.CopyOut()
+	return fops.source.CopyOut()
 }
 
 // GetSource - Returns a deep copy of the
 // destination FileMgr instance.
 func (fops *FileOps) GetDestination() FileMgr {
-  return fops.destination.CopyOut()
+	return fops.destination.CopyOut()
 }
 
 // NewByFileMgrs - Creates and returns a new FileOps
@@ -106,32 +106,32 @@ func (fops *FileOps) GetDestination() FileMgr {
 // 'destination' File Managers.
 //
 func (fops FileOps) NewByFileMgrs(
-  source,
-  destination FileMgr) (FileOps, error) {
+	source,
+	destination FileMgr) (FileOps, error) {
 
-  ePrefix := "FileOps.NewByFileMgrs() "
+	ePrefix := "FileOps.NewByFileMgrs() "
 
-  err := source.IsFileMgrValid(ePrefix + "sourceFileMgr Error: ")
+	err := source.IsFileMgrValid(ePrefix + "sourceFileMgr Error: ")
 
-  if err != nil {
-    return FileOps{},
-      fmt.Errorf("Source File Manager INVALID! %v", err.Error())
-  }
+	if err != nil {
+		return FileOps{},
+			fmt.Errorf("Source File Manager INVALID! %v", err.Error())
+	}
 
-  err = destination.IsFileMgrValid(ePrefix + "destinationFileMgr Error:")
+	err = destination.IsFileMgrValid(ePrefix + "destinationFileMgr Error:")
 
-  if err != nil {
-    return FileOps{},
-      fmt.Errorf("Destination File Manager INVALID! %v", err.Error())
-  }
+	if err != nil {
+		return FileOps{},
+			fmt.Errorf("Destination File Manager INVALID! %v", err.Error())
+	}
 
-  fOpsNew := FileOps{}
+	fOpsNew := FileOps{}
 
-  fOpsNew.source = source.CopyOut()
-  fOpsNew.destination = destination.CopyOut()
-  fOpsNew.isInitialized = true
+	fOpsNew.source = source.CopyOut()
+	fOpsNew.destination = destination.CopyOut()
+	fOpsNew.isInitialized = true
 
-  return fOpsNew, nil
+	return fOpsNew, nil
 }
 
 // NewByDirMgrFileName - Creates and returns a new FileOps instance
@@ -142,51 +142,51 @@ func (fops FileOps) NewByFileMgrs(
 // If the destinationFileNameExt string is an empty string, it will default
 // to the 'sourceFileNameExt'
 func (fops FileOps) NewByDirMgrFileName(
-  sourceDir DirMgr,
-  sourceFileNameExt string,
-  destinationDir DirMgr,
-  destinationFileNameExt string) (FileOps, error) {
+	sourceDir DirMgr,
+	sourceFileNameExt string,
+	destinationDir DirMgr,
+	destinationFileNameExt string) (FileOps, error) {
 
-  ePrefix := "FileOps.NewByDirMgrFileName() "
+	ePrefix := "FileOps.NewByDirMgrFileName() "
 
-  var err error
+	var err error
 
-  fOpsNew := FileOps{}
+	fOpsNew := FileOps{}
 
-  err = sourceDir.IsDirMgrValid(ePrefix + "sourceDir Error: ")
+	err = sourceDir.IsDirMgrValid(ePrefix + "sourceDir Error: ")
 
-  if err != nil {
-    return FileOps{},
-      err
-  }
+	if err != nil {
+		return FileOps{},
+			err
+	}
 
-  fOpsNew.source, err = FileMgr{}.NewFromDirMgrFileNameExt(sourceDir, sourceFileNameExt)
+	fOpsNew.source, err = FileMgr{}.NewFromDirMgrFileNameExt(sourceDir, sourceFileNameExt)
 
-  if err != nil {
-    return FileOps{},
-      fmt.Errorf(ePrefix+"Source File Error: %v", err.Error())
-  }
+	if err != nil {
+		return FileOps{},
+			fmt.Errorf(ePrefix+"Source File Error: %v", err.Error())
+	}
 
-  if len(destinationFileNameExt) == 0 {
-    destinationFileNameExt = sourceFileNameExt
-  }
+	if len(destinationFileNameExt) == 0 {
+		destinationFileNameExt = sourceFileNameExt
+	}
 
-  err = destinationDir.IsDirMgrValid(ePrefix + "destinationDir Error: ")
+	err = destinationDir.IsDirMgrValid(ePrefix + "destinationDir Error: ")
 
-  if err != nil {
-    return FileOps{}, err
-  }
+	if err != nil {
+		return FileOps{}, err
+	}
 
-  fOpsNew.destination, err = FileMgr{}.NewFromDirMgrFileNameExt(destinationDir, destinationFileNameExt)
+	fOpsNew.destination, err = FileMgr{}.NewFromDirMgrFileNameExt(destinationDir, destinationFileNameExt)
 
-  if err != nil {
-    return FileOps{},
-      fmt.Errorf(ePrefix+"Destination File Error: %v", err.Error())
-  }
+	if err != nil {
+		return FileOps{},
+			fmt.Errorf(ePrefix+"Destination File Error: %v", err.Error())
+	}
 
-  fOpsNew.isInitialized = true
+	fOpsNew.isInitialized = true
 
-  return fOpsNew, nil
+	return fOpsNew, nil
 }
 
 // NewByPathFileNameExtStrs - Creates and returns a new FileOps instance
@@ -195,32 +195,32 @@ func (fops FileOps) NewByDirMgrFileName(
 // path name, file name and extension of the destination file.
 //
 func (fops FileOps) NewByPathFileNameExtStrs(
-  sourcePathFileNameExt string,
-  destinationPathFileNameExt string) (FileOps, error) {
+	sourcePathFileNameExt string,
+	destinationPathFileNameExt string) (FileOps, error) {
 
-  ePrefix := "FileOps.NewByPathFileNameExtStrs() "
+	ePrefix := "FileOps.NewByPathFileNameExtStrs() "
 
-  fOpsNew := FileOps{}
+	fOpsNew := FileOps{}
 
-  var err error
+	var err error
 
-  fOpsNew.source, err = FileMgr{}.NewFromPathFileNameExtStr(sourcePathFileNameExt)
+	fOpsNew.source, err = FileMgr{}.NewFromPathFileNameExtStr(sourcePathFileNameExt)
 
-  if err != nil {
-    return FileOps{},
-      fmt.Errorf(ePrefix+"Source File Error: %v", err.Error())
-  }
+	if err != nil {
+		return FileOps{},
+			fmt.Errorf(ePrefix+"Source File Error: %v", err.Error())
+	}
 
-  fOpsNew.destination, err = FileMgr{}.NewFromPathFileNameExtStr(destinationPathFileNameExt)
+	fOpsNew.destination, err = FileMgr{}.NewFromPathFileNameExtStr(destinationPathFileNameExt)
 
-  if err != nil {
-    return FileOps{},
-      fmt.Errorf(ePrefix+"Destination File Error: %v", err.Error())
-  }
+	if err != nil {
+		return FileOps{},
+			fmt.Errorf(ePrefix+"Destination File Error: %v", err.Error())
+	}
 
-  fOpsNew.isInitialized = true
+	fOpsNew.isInitialized = true
 
-  return fOpsNew, nil
+	return fOpsNew, nil
 }
 
 // NewByDirStrsAndFileNameExtStrs - Creates and returns a new FileOps instance
@@ -231,46 +231,46 @@ func (fops FileOps) NewByPathFileNameExtStrs(
 // will be defaulted to a string value equal to 'sourceFileNameExtStr'.
 //
 func (fops FileOps) NewByDirStrsAndFileNameExtStrs(
-  sourceDirStr string,
-  sourceFileNameExtStr string,
-  destinationDirStr string,
-  destinationFileNameExtStr string) (FileOps, error) {
+	sourceDirStr string,
+	sourceFileNameExtStr string,
+	destinationDirStr string,
+	destinationFileNameExtStr string) (FileOps, error) {
 
-  ePrefix := "FileOps.NewByPathFileNameExtStrs() "
+	ePrefix := "FileOps.NewByPathFileNameExtStrs() "
 
-  fOpsNew := FileOps{}
+	fOpsNew := FileOps{}
 
-  var err error
+	var err error
 
-  if len(sourceDirStr) == 0 {
-    return FileOps{}, errors.New(ePrefix + "Error: 'sourceDirStr' is an EMPTY STRING!")
-  }
+	if len(sourceDirStr) == 0 {
+		return FileOps{}, errors.New(ePrefix + "Error: 'sourceDirStr' is an EMPTY STRING!")
+	}
 
-  if len(sourceFileNameExtStr) == 0 {
-    return FileOps{}, errors.New(ePrefix + "Error: 'sourceFileNameExtStr' is an EMPTY STRING!")
-  }
+	if len(sourceFileNameExtStr) == 0 {
+		return FileOps{}, errors.New(ePrefix + "Error: 'sourceFileNameExtStr' is an EMPTY STRING!")
+	}
 
-  if len(destinationFileNameExtStr) == 0 {
-    destinationFileNameExtStr = sourceFileNameExtStr
-  }
+	if len(destinationFileNameExtStr) == 0 {
+		destinationFileNameExtStr = sourceFileNameExtStr
+	}
 
-  fOpsNew.source, err = FileMgr{}.NewFromDirStrFileNameStr(sourceDirStr, sourceFileNameExtStr)
+	fOpsNew.source, err = FileMgr{}.NewFromDirStrFileNameStr(sourceDirStr, sourceFileNameExtStr)
 
-  if err != nil {
-    return FileOps{},
-      fmt.Errorf(ePrefix+"Source File Error: %v", err.Error())
-  }
+	if err != nil {
+		return FileOps{},
+			fmt.Errorf(ePrefix+"Source File Error: %v", err.Error())
+	}
 
-  fOpsNew.destination, err = FileMgr{}.NewFromDirStrFileNameStr(destinationDirStr, destinationFileNameExtStr)
+	fOpsNew.destination, err = FileMgr{}.NewFromDirStrFileNameStr(destinationDirStr, destinationFileNameExtStr)
 
-  if err != nil {
-    return FileOps{},
-      fmt.Errorf(ePrefix+"Destination File Error: %v", err.Error())
-  }
+	if err != nil {
+		return FileOps{},
+			fmt.Errorf(ePrefix+"Destination File Error: %v", err.Error())
+	}
 
-  fOpsNew.isInitialized = true
+	fOpsNew.isInitialized = true
 
-  return fOpsNew, nil
+	return fOpsNew, nil
 
 }
 
@@ -360,99 +360,99 @@ func (fops FileOps) NewByDirStrsAndFileNameExtStrs(
 //
 func (fops *FileOps) ExecuteFileOperation(fileOp FileOperationCode) error {
 
-  ePrefix := "FileOps.ExecuteFileOperation() "
+	ePrefix := "FileOps.ExecuteFileOperation() "
 
-  fops.opToExecute = fileOp
-  var err error
+	fops.opToExecute = fileOp
+	var err error
 
-  err = nil
+	err = nil
 
-  switch fops.opToExecute {
+	switch fops.opToExecute {
 
-  case fileOpCode.None():
-    err = errors.New("Error: Input parameter 'fileOp' is 'NONE' or No Operation!")
+	case fileOpCode.None():
+		err = errors.New("Error: Input parameter 'fileOp' is 'NONE' or No Operation!")
 
-  case fileOpCode.MoveSourceFileToDestination():
-    err = fops.moveSourceFileToDestination()
+	case fileOpCode.MoveSourceFileToDestination():
+		err = fops.moveSourceFileToDestination()
 
-  case fileOpCode.DeleteDestinationFile():
-    err = fops.deleteDestinationFile()
+	case fileOpCode.DeleteDestinationFile():
+		err = fops.deleteDestinationFile()
 
-  case fileOpCode.DeleteSourceFile():
-    err = fops.deleteSourceFile()
+	case fileOpCode.DeleteSourceFile():
+		err = fops.deleteSourceFile()
 
-  case fileOpCode.DeleteSourceAndDestinationFiles():
-    err = fops.deleteSourceAndDestinationFiles()
+	case fileOpCode.DeleteSourceAndDestinationFiles():
+		err = fops.deleteSourceAndDestinationFiles()
 
-  case fileOpCode.CopySourceToDestinationByHardLinkByIo():
-    err = fops.copySrcToDestByHardLinkByIo()
+	case fileOpCode.CopySourceToDestinationByHardLinkByIo():
+		err = fops.copySrcToDestByHardLinkByIo()
 
-  case fileOpCode.CopySourceToDestinationByIoByHardLink():
-    err = fops.copySrcToDestByIoByHardLink()
+	case fileOpCode.CopySourceToDestinationByIoByHardLink():
+		err = fops.copySrcToDestByIoByHardLink()
 
-  case fileOpCode.CopySourceToDestinationByHardLink():
-    err = fops.copySrcToDestByHardLink()
+	case fileOpCode.CopySourceToDestinationByHardLink():
+		err = fops.copySrcToDestByHardLink()
 
-  case fileOpCode.CopySourceToDestinationByIo():
-    err = fops.copySrcToDestByIo()
+	case fileOpCode.CopySourceToDestinationByIo():
+		err = fops.copySrcToDestByIo()
 
-  case fileOpCode.CreateSourceDir():
-    err = fops.createSrcDirectory()
+	case fileOpCode.CreateSourceDir():
+		err = fops.createSrcDirectory()
 
-  case fileOpCode.CreateSourceDirAndFile():
-    err = fops.createSrcDirectoryAndFile()
+	case fileOpCode.CreateSourceDirAndFile():
+		err = fops.createSrcDirectoryAndFile()
 
-  case fileOpCode.CreateSourceFile():
-    err = fops.createSrcFile()
+	case fileOpCode.CreateSourceFile():
+		err = fops.createSrcFile()
 
-  case fileOpCode.CreateDestinationDir():
-    err = fops.createDestDirectory()
+	case fileOpCode.CreateDestinationDir():
+		err = fops.createDestDirectory()
 
-  case fileOpCode.CreateDestinationDirAndFile():
-    err = fops.createDestDirectoryAndFile()
+	case fileOpCode.CreateDestinationDirAndFile():
+		err = fops.createDestDirectoryAndFile()
 
-  case fileOpCode.CreateDestinationFile():
-    err = fops.createDestFile()
+	case fileOpCode.CreateDestinationFile():
+		err = fops.createDestFile()
 
-  default:
-    err = errors.New("Invalid 'FileOperationCode' Execution Command! ")
-  }
+	default:
+		err = errors.New("Invalid 'FileOperationCode' Execution Command! ")
+	}
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return nil
+	return nil
 }
 
 // deleteDestinationFile - Deletes the destination file in the
 // current FileOps instance.
 func (fops *FileOps) deleteDestinationFile() error {
 
-  ePrefix := "FileOps.deleteDestinationFile() Destination Deletion Failed: "
+	ePrefix := "FileOps.deleteDestinationFile() Destination Deletion Failed: "
 
-  err := fops.destination.DeleteThisFile()
+	err := fops.destination.DeleteThisFile()
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return nil
+	return nil
 }
 
 // deleteSourceFile - Deletes the source file in the current
 // FileOps instance.
 func (fops *FileOps) deleteSourceFile() error {
 
-  ePrefix := "FileOps.FileOperationCode(0).DeleteSourceFile()() Source Deletion Failed: "
+	ePrefix := "FileOps.FileOperationCode(0).DeleteSourceFile()() Source Deletion Failed: "
 
-  err := fops.source.DeleteThisFile()
+	err := fops.source.DeleteThisFile()
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return nil
+	return nil
 }
 
 // deleteSourceAndDestinationFiles - Deletes both the source
@@ -460,53 +460,53 @@ func (fops *FileOps) deleteSourceFile() error {
 // instance.
 func (fops *FileOps) deleteSourceAndDestinationFiles() error {
 
-  cumErrMsg := "FileOps.FileOperationCode(0).DeleteSourceAndDestinationFiles()- "
+	cumErrMsg := "FileOps.FileOperationCode(0).DeleteSourceAndDestinationFiles()- "
 
-  cumErrLen := len(cumErrMsg)
+	cumErrLen := len(cumErrMsg)
 
-  err := fops.destination.DeleteThisFile()
+	err := fops.destination.DeleteThisFile()
 
-  if err != nil {
-    cumErrMsg += "Destination Deletion Failed: " + err.Error() + "\n"
-  }
+	if err != nil {
+		cumErrMsg += "Destination Deletion Failed: " + err.Error() + "\n"
+	}
 
-  err = fops.source.DeleteThisFile()
+	err = fops.source.DeleteThisFile()
 
-  if err != nil {
-    cumErrMsg += "Source Deletion Failed: " + err.Error() + "\n"
-  }
+	if err != nil {
+		cumErrMsg += "Source Deletion Failed: " + err.Error() + "\n"
+	}
 
-  if len(cumErrMsg) != cumErrLen {
-    return errors.New(cumErrMsg)
-  }
+	if len(cumErrMsg) != cumErrLen {
+		return errors.New(cumErrMsg)
+	}
 
-  return nil
+	return nil
 }
 
 func (fops *FileOps) copySrcToDestByIoByHardLink() error {
 
-  ePrefix := "FileOps.copySrcToDestByIoByHardLink() "
+	ePrefix := "FileOps.copySrcToDestByIoByHardLink() "
 
-  err := fops.source.CopyFileMgrByIoByLink(&fops.destination)
+	err := fops.source.CopyFileMgrByIoByLink(&fops.destination)
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return nil
+	return nil
 }
 
 func (fops *FileOps) copySrcToDestByHardLinkByIo() error {
 
-  ePrefix := "FileOps.copySrcToDestByHardLinkByIo() "
+	ePrefix := "FileOps.copySrcToDestByHardLinkByIo() "
 
-  err := fops.source.CopyFileMgrByLinkByIo(&fops.destination)
+	err := fops.source.CopyFileMgrByLinkByIo(&fops.destination)
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return nil
+	return nil
 }
 
 // copySrcToDestByIo - Copies source file to destination
@@ -514,28 +514,28 @@ func (fops *FileOps) copySrcToDestByHardLinkByIo() error {
 //
 func (fops *FileOps) copySrcToDestByIo() error {
 
-  ePrefix := "FileOps.copySrcToDestByIo() "
+	ePrefix := "FileOps.copySrcToDestByIo() "
 
-  err := fops.source.CopyFileMgrByIo(&fops.destination)
+	err := fops.source.CopyFileMgrByIo(&fops.destination)
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return nil
+	return nil
 }
 
 func (fops *FileOps) copySrcToDestByHardLink() error {
 
-  ePrefix := "FileOps.copySrcToDestByHardLink() "
+	ePrefix := "FileOps.copySrcToDestByHardLink() "
 
-  err := fops.source.CopyFileMgrByLink(&fops.destination)
+	err := fops.source.CopyFileMgrByLink(&fops.destination)
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return nil
+	return nil
 }
 
 // createSrcDirectory - Creates the source directory using
@@ -543,15 +543,15 @@ func (fops *FileOps) copySrcToDestByHardLink() error {
 //
 func (fops *FileOps) createSrcDirectory() error {
 
-  ePrefix := "FileOps.createSrcDirectory() "
+	ePrefix := "FileOps.createSrcDirectory() "
 
-  err := fops.source.CreateDir()
+	err := fops.source.CreateDir()
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return nil
+	return nil
 }
 
 // createSrcDirectoryAndFile - Creates the source file
@@ -560,15 +560,15 @@ func (fops *FileOps) createSrcDirectory() error {
 //
 func (fops *FileOps) createSrcDirectoryAndFile() error {
 
-  ePrefix := "FileOps.createSrcDirectoryAndFile() "
+	ePrefix := "FileOps.createSrcDirectoryAndFile() "
 
-  err := fops.source.CreateDirAndFile()
+	err := fops.source.CreateDirAndFile()
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return nil
+	return nil
 }
 
 // createSrcFile - Creates the source file using
@@ -576,15 +576,15 @@ func (fops *FileOps) createSrcDirectoryAndFile() error {
 //
 func (fops *FileOps) createSrcFile() error {
 
-  ePrefix := "FileOps.createSrcFile() "
+	ePrefix := "FileOps.createSrcFile() "
 
-  err := fops.source.CreateFile()
+	err := fops.source.CreateThisFile()
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return nil
+	return nil
 }
 
 // createDestDirectory - Creates the destination
@@ -593,15 +593,15 @@ func (fops *FileOps) createSrcFile() error {
 //
 func (fops *FileOps) createDestDirectory() error {
 
-  ePrefix := "FileOps.createSrcDirectory() "
+	ePrefix := "FileOps.createSrcDirectory() "
 
-  err := fops.destination.CreateDir()
+	err := fops.destination.CreateDir()
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return nil
+	return nil
 }
 
 // createDestDirectoryAndFile - Creates the destination
@@ -610,15 +610,15 @@ func (fops *FileOps) createDestDirectory() error {
 //
 func (fops *FileOps) createDestDirectoryAndFile() error {
 
-  ePrefix := "FileOps.createDestDirectoryAndFile() "
+	ePrefix := "FileOps.createDestDirectoryAndFile() "
 
-  err := fops.destination.CreateDirAndFile()
+	err := fops.destination.CreateDirAndFile()
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return nil
+	return nil
 }
 
 // createDestFile - Creates the destination file using
@@ -626,15 +626,15 @@ func (fops *FileOps) createDestDirectoryAndFile() error {
 //
 func (fops *FileOps) createDestFile() error {
 
-  ePrefix := "FileOps.createDestFile() "
+	ePrefix := "FileOps.createDestFile() "
 
-  err := fops.destination.CreateFile()
+	err := fops.destination.CreateThisFile()
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return nil
+	return nil
 }
 
 // moveSourceFileToDestination - Moves the source file
@@ -643,14 +643,13 @@ func (fops *FileOps) createDestFile() error {
 //
 func (fops *FileOps) moveSourceFileToDestination() error {
 
-  ePrefix := "FileOps.createDestFile() "
+	ePrefix := "FileOps.createDestFile() "
 
-  _, err := fops.source.MoveFileToNewDirMgr(fops.destination.GetDirMgr())
+	_, err := fops.source.MoveFileToNewDirMgr(fops.destination.GetDirMgr())
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
 
-  return nil
+	return nil
 }
-
