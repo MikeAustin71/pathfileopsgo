@@ -2461,9 +2461,65 @@ func (dMgr *DirMgr) IsVolumeNamePopulated() bool {
 	return dMgr.isVolumePopulated
 }
 
-// MakeDir - If the directory path identified
-// by the current DirMgr object does not exist,
-// this method will create that directory path.
+// MakeDir - If the directory path identified by the current DirMgr
+// object does not exist, this method will create that directory path.
+// The path will be created using permission specifications passed through
+// input parameter 'fPermCfg'.
+//
+func (dMgr *DirMgr) MakeDirWithPermission(fPermCfg FilePermissionConfig) error {
+
+	ePrefix := "DirMgr.MakeDir() "
+	var err error
+
+	err = dMgr.IsDirMgrValid(ePrefix)
+
+	if err != nil {
+		return err
+	}
+
+	err = fPermCfg.IsValid()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	modePerm, err := fPermCfg.GetCompositePermissionMode()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	dMgr.DoesDirMgrPathExist()
+	dMgr.DoesDirMgrAbsolutePathExist()
+
+	if dMgr.doesAbsolutePathExist {
+		// No need to create directory, it already
+		// exists.
+		return nil
+	}
+
+	err = os.MkdirAll(dMgr.absolutePath, modePerm)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned from os.MkdirAll(dMgr.absolutePath, "+
+			"modePerm) dMgr.absolutePath='%v' modePerm='%v'  Error='%v'",
+			dMgr.absolutePath, modePerm.String(), err.Error())
+	}
+
+	dMgr.DoesDirMgrPathExist()
+	dMgr.DoesDirMgrAbsolutePathExist()
+
+	// No errors - directory created.
+	return nil
+
+}
+
+// MakeDir - If the directory path identified by the current DirMgr
+// object does not exist, this method will create that directory path.
+// The permission specification used to create the directory is
+// 'drwxrwxrwx' which is equivalent to octal value, '020000000777'
+//
 func (dMgr *DirMgr) MakeDir() error {
 
 	ePrefix := "DirMgr.MakeDir() "
@@ -2481,55 +2537,11 @@ func (dMgr *DirMgr) MakeDir() error {
 		return fmt.Errorf(ePrefix+"%v", err.Error())
 	}
 
-	modePerm, err := fPermCfg.GetCompositePermissionMode()
+	err = dMgr.MakeDirWithPermission(fPermCfg)
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+"%v", err.Error())
 	}
-
-	if dMgr.isAbsolutePathPopulated {
-
-		if dMgr.doesAbsolutePathExist {
-			// No need to create directory, it already
-			// exists.
-			return nil
-		}
-
-		err = os.MkdirAll(dMgr.absolutePath, modePerm)
-
-		if err != nil {
-			return fmt.Errorf(ePrefix+
-				"Error returned from os.MkdirAll(dMgr.absolutePath, "+
-				"modePerm) dMgr.absolutePath='%v' modePerm='%v'  Error='%v'",
-				dMgr.absolutePath, modePerm.String(), err.Error())
-		}
-
-		dMgr.DoesDirMgrPathExist()
-		dMgr.DoesDirMgrAbsolutePathExist()
-
-		// No errors - directory created.
-		return nil
-	}
-
-	// dMgr.isPathPopulated MUST equal 'true'
-
-	if dMgr.doesPathExist {
-		// No need to create directory, it already
-		// exists.
-		return nil
-	}
-
-	err = os.MkdirAll(dMgr.path, modePerm)
-
-	if err != nil {
-		return fmt.Errorf(ePrefix+
-			"Error returned from os.MkdirAll(dMgr.path, modePerm) "+
-			"dMgr.path='%v' modePerm='%v'  Error='%v'",
-			dMgr.path, modePerm, err.Error())
-	}
-
-	dMgr.DoesDirMgrPathExist()
-	dMgr.DoesDirMgrAbsolutePathExist()
 
 	// No errors - directory created.
 	return nil
