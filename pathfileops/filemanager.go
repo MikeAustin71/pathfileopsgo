@@ -1,6 +1,7 @@
 package pathfileops
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"io"
@@ -41,6 +42,8 @@ type FileMgr struct {
 	fileNameExt                     string
 	isFileNameExtPopulated          bool
 	filePtr                         *os.File
+	fileBufRdr                      *bufio.Reader
+	fileBufWriter                   *bufio.Writer
 	isFilePtrOpen                   bool
 	fileAccessStatus                FileAccessControl
 	actualFileInfo                  FileInfoPlus
@@ -56,6 +59,8 @@ func (fMgr *FileMgr) CloseThisFile() error {
 	if fMgr.filePtr == nil {
 		fMgr.isFilePtrOpen = false
 		fMgr.fileAccessStatus.Empty()
+		fMgr.fileBufRdr = nil
+		fMgr.fileBufWriter = nil
 		return nil
 	}
 
@@ -81,6 +86,8 @@ func (fMgr *FileMgr) CloseThisFile() error {
 					fMgr.isFilePtrOpen = false
 					fMgr.filePtr = nil
 					fMgr.fileAccessStatus.Empty()
+					fMgr.fileBufRdr = nil
+					fMgr.fileBufWriter = nil
 
 					return fmt.Errorf(ePrefix+
 						"Error returned from fMgr.FlushBytesToDisk().  "+
@@ -96,6 +103,8 @@ func (fMgr *FileMgr) CloseThisFile() error {
 	fMgr.isFilePtrOpen = false
 	fMgr.filePtr = nil
 	fMgr.fileAccessStatus.Empty()
+	fMgr.fileBufRdr = nil
+	fMgr.fileBufWriter = nil
 
 	if err != nil {
 
@@ -1447,7 +1456,15 @@ func (fMgr *FileMgr) FlushBytesToDisk() error {
 		err = fMgr.filePtr.Sync()
 
 		if err != nil {
-			return fmt.Errorf(ePrefix + "Error returned from fMgr.filePtr.Sync()")
+			return fmt.Errorf(ePrefix+"Error returned from fMgr.filePtr.Sync() Error='%v'", err.Error())
+		}
+
+		if fMgr.fileBufWriter != nil {
+			err = fMgr.fileBufWriter.Flush()
+			if err != nil {
+				return fmt.Errorf(ePrefix+"Error returned from fMgr.fileBufWriter.Flush(). Error='%v' ", err.Error())
+			}
+
 		}
 
 	}
@@ -2289,6 +2306,27 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
 
 	fMgr.isFilePtrOpen = true
 
+	fOpenCfg, err := fMgr.fileAccessStatus.GetFileOpenConfig()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"Error returned by fMgr.fileAccessStatus.GetFileOpenConfig(). "+
+			"Error='%v' ", err.Error())
+	}
+
+	fOpenType := fOpenCfg.GetFileOpenType()
+
+	if fOpenType == FOpenType.TypeReadOnly() ||
+		fOpenType == FOpenType.TypeReadWrite() {
+
+		fMgr.fileBufRdr = bufio.NewReader(fMgr.filePtr)
+	}
+
+	if fOpenType == FOpenType.TypeWriteOnly() ||
+		fOpenType == FOpenType.TypeReadWrite() {
+
+		fMgr.fileBufWriter = bufio.NewWriter(fMgr.filePtr)
+	}
+
 	return nil
 }
 
@@ -2432,7 +2470,7 @@ func (fMgr *FileMgr) OpenThisFileReadWrite() error {
 // nil.
 func (fMgr *FileMgr) ReadAllFile() ([]byte, error) {
 
-  ePrefix := "FileMgr.ReadAllFile() "
+	ePrefix := "FileMgr.ReadAllFile() "
 	var err error
 
 	err = fMgr.IsFileMgrValid("")
@@ -2446,13 +2484,8 @@ func (fMgr *FileMgr) ReadAllFile() ([]byte, error) {
 
 		if fMgr.filePtr != nil {
 
-			err = fMgr.CloseThisFile()
+			_ = fMgr.CloseThisFile()
 
-			if err != nil {
-				return []byte{}, fmt.Errorf(ePrefix+
-					"Error: Failed to Close '%v'. Error='%v'",
-					fMgr.absolutePathFileName, err.Error())
-			}
 		}
 
 		// If the path and file name do not exist, this method will
@@ -2466,7 +2499,6 @@ func (fMgr *FileMgr) ReadAllFile() ([]byte, error) {
 					fMgr.absolutePathFileName, err.Error())
 		}
 
-		fMgr.isFilePtrOpen = true
 	}
 
 	bytesRead, err := ioutil.ReadAll(fMgr.filePtr)
@@ -2480,6 +2512,64 @@ func (fMgr *FileMgr) ReadAllFile() ([]byte, error) {
 	}
 
 	return bytesRead, nil
+}
+
+// ReadBufBytes - Effectively, this method reads a file one line
+// at a time and returns the line as an array of bytes. The delimiter
+// for lines read is specified by input parameter 'delim'.
+//
+// This method uses the 'bufio' package.
+//
+func (fMgr *FileMgr) ReadBufBytes(delim byte) ([]byte, error) {
+
+	ePrefix := "FileMgr.ReadBuffBytes() "
+	var err error
+
+	err = fMgr.IsFileMgrValid("")
+
+	if err != nil {
+		return []byte{}, fmt.Errorf(ePrefix+
+			"Error - This File Manager is INVALID! Error='%v'", err.Error())
+	}
+
+	if !fMgr.isFilePtrOpen || fMgr.filePtr == nil {
+
+		if fMgr.filePtr != nil {
+
+			_ = fMgr.CloseThisFile()
+
+		}
+		// If the path and file name do not exist, this method will
+		// attempt to create said path and file name.
+		err = fMgr.OpenThisFileReadWrite()
+
+		if err != nil {
+			return []byte{},
+				fmt.Errorf(ePrefix+
+					"Error returned by fMgr.OpenThisFileReadWrite()  fileName='%v'  Error='%v'",
+					fMgr.absolutePathFileName, err.Error())
+		}
+
+	}
+
+	bytes, err := fMgr.fileBufRdr.ReadBytes(delim)
+
+	if err != nil &&
+		err == io.EOF {
+
+		err2 := fMgr.CloseThisFile()
+
+		if err2 != nil {
+			return bytes, fmt.Errorf(ePrefix+"Reached EOF. Error From fMgr.CloseThisFile(). "+
+				"Error='%v' ", err2.Error())
+		}
+
+		return bytes, err
+
+	}
+
+	return bytes, nil
+
 }
 
 // ReadFileBytes - Reads bytes from the file identified by the current FileMgr
@@ -2497,11 +2587,6 @@ func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (int, error) {
 	ePrefix := "FileMgr.ReadFileBytes() "
 	var err error
 
-	if !fMgr.isInitialized {
-		return 0, errors.New(ePrefix +
-			"Error: The File Manager data structure has NOT been initialized.")
-	}
-
 	err = fMgr.IsFileMgrValid("")
 
 	if err != nil {
@@ -2509,28 +2594,11 @@ func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (int, error) {
 			"Error - This File Manager is INVALID! Error='%v'", err.Error())
 	}
 
-	if !fMgr.isAbsolutePathFileNamePopulated {
-		return 0,
-			errors.New(ePrefix +
-				"Error: FileMgr.absolutePathFileName has NOT been initialized and populated.")
-	}
-
-	if fMgr.absolutePathFileName == "" {
-		fMgr.isAbsolutePathFileNamePopulated = false
-		return 0,
-			errors.New(ePrefix + " Error: FileMgr.absolutePathFileName is EMPTY!")
-	}
-
 	if !fMgr.isFilePtrOpen || fMgr.filePtr == nil {
 
 		if fMgr.filePtr != nil {
-			err = fMgr.CloseThisFile()
 
-			if err != nil {
-				return 0, fmt.Errorf(ePrefix+
-					"Error: Failed to close fMgr.absolutePathFileName='%v'. Error='%v' ",
-					fMgr.absolutePathFileName, err.Error())
-			}
+			_ = fMgr.CloseThisFile()
 
 		}
 
@@ -2545,7 +2613,6 @@ func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (int, error) {
 					fMgr.absolutePathFileName, err.Error())
 		}
 
-		fMgr.isFilePtrOpen = true
 	}
 
 	bytesRead, err := fMgr.filePtr.Read(byteBuff)
@@ -2830,6 +2897,34 @@ func (fMgr *FileMgr) SetFileInfo(info os.FileInfo) error {
 	}
 
 	return nil
+}
+
+// WriteBytesBuff - Writes bytes to file using the 'bufio' package
+//
+func (fMgr *FileMgr) WriteBytesBuff(b []byte) (int, error) {
+
+	ePrefix := "FileMgr.WriteBytesToFile() "
+	var err error
+
+	err = fMgr.IsFileMgrValid(ePrefix)
+
+	if err != nil {
+		return -1, err
+	}
+
+	if fMgr.fileBufWriter == nil {
+		return -1, fmt.Errorf("File has NOT been opened for write operations! "+
+			"File: %v ", fMgr.absolutePathFileName)
+	}
+
+	bytesWritten, err := fMgr.fileBufWriter.Write(b)
+
+	if err != nil {
+		return bytesWritten, fmt.Errorf(ePrefix+"Error returned by fMgr.fileBufWriter.Write(b). "+
+			"Error='%v' ", err.Error())
+	}
+
+	return bytesWritten, nil
 }
 
 // WriteBytesToFileWrites a string to the File identified by
