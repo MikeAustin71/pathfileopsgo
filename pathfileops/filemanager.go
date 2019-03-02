@@ -2431,29 +2431,15 @@ func (fMgr *FileMgr) OpenThisFileReadWrite() error {
 // If no errors are encountered the returned 'error' value is
 // nil.
 func (fMgr *FileMgr) ReadAllFile() ([]byte, error) {
-	ePrefix := "FileMgr.ReadAllFile() "
-	var err error
 
-	if !fMgr.isInitialized {
-		return []byte{}, errors.New(ePrefix +
-			"Error: The File Manager data structure has NOT been initialized.")
-	}
+  ePrefix := "FileMgr.ReadAllFile() "
+	var err error
 
 	err = fMgr.IsFileMgrValid("")
 
 	if err != nil {
 		return []byte{}, fmt.Errorf(ePrefix+
 			"Error - This File Manager is INVALID! Error='%v'", err.Error())
-	}
-
-	if !fMgr.isAbsolutePathFileNamePopulated {
-		return []byte{}, errors.New(ePrefix +
-			"Error: FileMgr.absolutePathFileName has NOT been initialized and populated.")
-	}
-
-	if fMgr.absolutePathFileName == "" {
-		fMgr.isAbsolutePathFileNamePopulated = false
-		return []byte{}, errors.New(ePrefix + "Error: FileMgr.absolutePathFileName is EMPTY!")
 	}
 
 	if !fMgr.isFilePtrOpen || fMgr.filePtr == nil {
