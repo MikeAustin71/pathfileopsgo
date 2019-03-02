@@ -89,6 +89,37 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
 
 }
 
+func TestFileMgr_ResetFileInfo_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
+
+	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+	if err != nil {
+		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+	}
+
+	err = fMgr.ResetFileInfo()
+
+	if err != nil {
+		t.Errorf("Error returned by fMgr.ResetFileInfo(). Error='%v' ", err.Error())
+	}
+
+	fInfoPlus, err := fMgr.GetFileInfoPlus()
+
+	if err != nil {
+		t.Errorf("Error returned by fMgr.GetFileInfoPlus(). Error='%v' ", err.Error())
+	}
+
+	if "testRead2008.txt" != fInfoPlus.fName {
+		t.Errorf("Expected file name== 'testRead2008.txt'. "+
+			"Instead, file name=='%v' ", fInfoPlus.fName)
+	}
+
+}
+
 func TestFileMgr_ReadFileBytes_01(t *testing.T) {
 
 	fh := FileHelper{}
