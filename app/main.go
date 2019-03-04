@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
 /*
@@ -36,7 +37,63 @@ func main() {
 
 func main() {
 
-	mainTest34()
+	mainTest35()
+}
+
+func mainTest35() {
+
+	expectedStr := "Now is the time for all good men\n"
+
+	fh := pf.FileHelper{}
+
+	filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+	fMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+	if err != nil {
+		fmt.Printf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+	}
+
+	delim := byte('\n')
+
+	bytes, err := fMgr.ReadFileLine(delim)
+
+	if err != nil {
+		fmt.Printf("Error returned by fMgr.ReadFileLine(delim) on Line#1. " +
+			"Error='%v'", err.Error())
+	}
+
+	actualStr := string(bytes)
+
+	err = fMgr.CloseThisFile()
+
+	if err != nil {
+		fmt.Printf("Error returned by fMgr.CloseThisFile(). Error='%v'",
+			err.Error())
+	}
+
+
+	if  expectedStr != actualStr {
+
+		fmt.Println("Length Expected String: ", len(expectedStr))
+		fmt.Println("  Length Actual String: ", len(actualStr))
+		expectedStr2 := "!" + expectedStr + "!"
+		expectedStr2 = strings.Replace(expectedStr2,"\r", "*", -1)
+		expectedStr2 = strings.Replace(expectedStr2,"\n", "%", -1)
+
+		actualStr2 := "!" + actualStr + "!"
+		actualStr2 = strings.Replace(actualStr2,"\r", "*", -1)
+		actualStr2 = strings.Replace(actualStr2,"\n", "%", -1)
+
+		fmt.Println("        Expected String: ", expectedStr2)
+		fmt.Println("          Actual String: ", actualStr2)
+
+
+	} else {
+		fmt.Println("************ Success **************")
+	}
+
+
 }
 
 func mainTest34() {

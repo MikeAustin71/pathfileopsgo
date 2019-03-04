@@ -3,6 +3,7 @@ package pathfileops
 import (
   "io/ioutil"
   "os"
+  "strings"
   "testing"
 )
 
@@ -89,11 +90,11 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
 
 }
 
-func TestFileMgr_ResetFileInfo_01(t *testing.T) {
+func TestFileMgr_ReadFileLine_01(t *testing.T) {
 
   fh := FileHelper{}
 
-  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -101,21 +102,54 @@ func TestFileMgr_ResetFileInfo_01(t *testing.T) {
     t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
   }
 
-  err = fMgr.ResetFileInfo()
+  delim := byte('\n')
+
+  bytes, err := fMgr.ReadFileLine(delim)
 
   if err != nil {
-    t.Errorf("Error returned by fMgr.ResetFileInfo(). Error='%v' ", err.Error())
+    t.Errorf("Error returned by fMgr.ReadFileLine(delim) on Line#1. " +
+      "Error='%v'", err.Error())
   }
 
-  fInfoPlus, err := fMgr.GetFileInfoPlus()
+  err = fMgr.CloseThisFile()
 
   if err != nil {
-    t.Errorf("Error returned by fMgr.GetFileInfoPlus(). Error='%v' ", err.Error())
+    t.Errorf("Error returned by fMgr.CloseThisFile(). Error='%v'",
+      err.Error())
   }
 
-  if "testRead2008.txt" != fInfoPlus.fName {
-    t.Errorf("Expected file name== 'testRead2008.txt'. "+
-      "Instead, file name=='%v' ", fInfoPlus.fName)
+  actualStr := string(bytes)
+
+  actualStr = strings.Replace(actualStr,"\r\n", "", -1)
+
+  if  "Now is the time for all good men" != actualStr {
+    t.Errorf("Expected line #1 = 'Now is the time for all good men\n'. Instead, " +
+      "line #1 = '%v'", actualStr)
+  }
+
+}
+
+func TestFileMgr_ReadFileLine_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  delim := byte('\n')
+
+  fMgr.isInitialized = false
+
+  _, err = fMgr.ReadFileLine(delim)
+
+  if err == nil {
+    t.Error("Expected error return from fMgr.ReadFileLine(delim) on Line#1 " +
+      "because fMgr.isInitialized = false. However, NO ERROR WAS RETURNED! ")
   }
 
 }
@@ -165,7 +199,67 @@ func TestFileMgr_ReadFileBytes_01(t *testing.T) {
     t.Errorf("Expected Bytes Read='%v'.  Instead, Actual Bytes Read='%v'", expectedBytesRead, bytesRead)
   }
 
-  _ = fMgr.CloseThisFile()
+  err = fMgr.CloseThisFile()
+
+  if err !=nil {
+    t.Errorf("Error returned from fMgr.CloseThisFile() Error='%v'", err.Error())
+  }
+
+}
+
+func TestFileMgr_ReadFileBytes_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  fMgr.isInitialized = false
+
+  byteBuff := make([]byte, 2048, 2048)
+
+  _, err = fMgr.ReadFileBytes(byteBuff)
+
+  if err == nil {
+    t.Error("Expected error return from fMgr.ReadFileBytes(byteBuff) " +
+      "because fMgr.isInitialized = false. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_ResetFileInfo_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  err = fMgr.ResetFileInfo()
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.ResetFileInfo(). Error='%v' ", err.Error())
+  }
+
+  fInfoPlus, err := fMgr.GetFileInfoPlus()
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.GetFileInfoPlus(). Error='%v' ", err.Error())
+  }
+
+  if "testRead2008.txt" != fInfoPlus.fName {
+    t.Errorf("Expected file name== 'testRead2008.txt'. "+
+      "Instead, file name=='%v' ", fInfoPlus.fName)
+  }
 
 }
 

@@ -20,7 +20,7 @@ import (
 	Dependencies:
 	-------------
 
-	Type 'FileMgr' depend on type,'FileHelper'
+	Type 'FileMgr' depends on type,'FileHelper'
   which is contained in source code file,
 	'filehelper.go' located in this directory.
 
@@ -28,6 +28,15 @@ import (
 
 // FileMgr - This type and its associated methods are used to manage
 // organize and control disk files and file permissions.
+//
+// Dependencies:
+//
+// Type 'FileMgr' depends on type,'FileHelper'
+// which is contained in source code file,
+// 'filehelper.go' located in this directory.
+//
+// To create an instance of type 'FileMgr' use one of the
+// 'FileMgr.New' methods.
 //
 type FileMgr struct {
 	isInitialized                   bool
@@ -2603,89 +2612,6 @@ func (fMgr *FileMgr) ReadAllFile() (bytesRead []byte, err error) {
 	return bytesRead, err
 }
 
-// ReadFileLine - Effectively, this method reads a file one line
-// at a time and returns the line as an array of bytes. The delimiter
-// for lines read is specified by input parameter 'delim'.
-//
-// This method uses the 'bufio' package.
-//
-// If End Of File (EOF) is reached, this method returns the 'bytesRead' and
-// an error which is equal to 'io.EOF'.
-//
-func (fMgr *FileMgr) ReadFileLine(delim byte) (bytesRead []byte, err error) {
-
-	ePrefix := "FileMgr.ReadBuffBytes() "
-	bytesRead = []byte{}
-	err = nil
-
-	var err2 error
-
-	err2 = fMgr.IsFileMgrValid("")
-
-	if err2 != nil {
-		err =
-			fmt.Errorf(ePrefix+
-				"Error: This File Manger is INVALID! fileNameExt='%v'  Error='%v'",
-				fMgr.absolutePathFileName, err2.Error())
-
-		return bytesRead, err
-	}
-
-	invalidAccessType := true
-
-	fOpenType, err2 := fMgr.fileAccessStatus.GetFileOpenType()
-
-	if err2 == nil {
-
-		if fOpenType == FOpenType.TypeReadOnly() ||
-			fOpenType == FOpenType.TypeReadWrite() {
-
-			invalidAccessType = false
-		}
-	}
-
-	if !fMgr.isFilePtrOpen ||
-		fMgr.filePtr == nil ||
-		fMgr.fileBufRdr == nil ||
-		err2 != nil ||
-		invalidAccessType {
-
-		// If the path and file name do not exist, this method will
-		// attempt to create said path and file name.
-		err2 = fMgr.OpenThisFileReadWrite()
-
-		if err2 != nil {
-			err =
-				fmt.Errorf(ePrefix+
-					" - fMgr.OpenThisFileReadWrite() returned errors: %v",
-					err2.Error())
-
-			return bytesRead, err
-		}
-
-	}
-
-	err = nil
-
-	fMgr.dataMutex.Lock()
-
-	bytesRead, err2 = fMgr.fileBufRdr.ReadBytes(delim)
-
-	fMgr.dataMutex.Unlock()
-
-	if err2 != nil &&
-		err2 == io.EOF {
-		err = err2
-
-	} else if err2 != nil {
-
-		err = fmt.Errorf("Error returned from fMgr.fileBufRdr.ReadBytes(delim). "+
-			"Error='%v' ", err2.Error())
-	}
-
-	return bytesRead, err
-}
-
 // ReadFileBytes - Reads bytes from the file identified by the current FileMgr
 // object. Bytes are stored in 'byteBuff', a byte array passed in as an input
 // parameter.
@@ -2769,6 +2695,89 @@ func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (bytesRead int, err error) {
 	}
 
 	return bytesRead, err
+}
+
+// ReadFileLine - Effectively, this method reads a file one line
+// at a time and returns the line as an array of bytes. The delimiter
+// for lines read is specified by input parameter 'delim'.
+//
+// This method uses the 'bufio' package.
+//
+// If End Of File (EOF) is reached, this method returns the 'bytesRead' and
+// an error which is equal to 'io.EOF'.
+//
+func (fMgr *FileMgr) ReadFileLine(delim byte) (bytesRead []byte, err error) {
+
+  ePrefix := "FileMgr.ReadBuffBytes() "
+  bytesRead = []byte{}
+  err = nil
+
+  var err2 error
+
+  err2 = fMgr.IsFileMgrValid("")
+
+  if err2 != nil {
+    err =
+      fmt.Errorf(ePrefix+
+        "Error: This File Manger is INVALID! fileNameExt='%v'  Error='%v'",
+        fMgr.absolutePathFileName, err2.Error())
+
+    return bytesRead, err
+  }
+
+  invalidAccessType := true
+
+  fOpenType, err2 := fMgr.fileAccessStatus.GetFileOpenType()
+
+  if err2 == nil {
+
+    if fOpenType == FOpenType.TypeReadOnly() ||
+      fOpenType == FOpenType.TypeReadWrite() {
+
+      invalidAccessType = false
+    }
+  }
+
+  if !fMgr.isFilePtrOpen ||
+    fMgr.filePtr == nil ||
+    fMgr.fileBufRdr == nil ||
+    err2 != nil ||
+    invalidAccessType {
+
+    // If the path and file name do not exist, this method will
+    // attempt to create said path and file name.
+    err2 = fMgr.OpenThisFileReadWrite()
+
+    if err2 != nil {
+      err =
+        fmt.Errorf(ePrefix+
+          " - fMgr.OpenThisFileReadWrite() returned errors: %v",
+          err2.Error())
+
+      return bytesRead, err
+    }
+
+  }
+
+  err = nil
+
+  fMgr.dataMutex.Lock()
+
+  bytesRead, err2 = fMgr.fileBufRdr.ReadBytes(delim)
+
+  fMgr.dataMutex.Unlock()
+
+  if err2 != nil &&
+    err2 == io.EOF {
+    err = err2
+
+  } else if err2 != nil {
+
+    err = fmt.Errorf("Error returned from fMgr.fileBufRdr.ReadBytes(delim). "+
+      "Error='%v' ", err2.Error())
+  }
+
+  return bytesRead, err
 }
 
 // ResetFileInfo - Acquires the current os.FileInfo
