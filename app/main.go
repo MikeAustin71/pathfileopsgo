@@ -3,6 +3,7 @@ package main
 import (
 	pf "../pathfileops"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -37,12 +38,76 @@ func main() {
 
 func main() {
 
-	mainTest35()
+	mainTest36()
+}
+
+func mainTest36() {
+
+	expectedStr := "Thank you, for your support."
+
+	fh := pf.FileHelper{}
+
+	filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+	fMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+	if err != nil {
+		fmt.Printf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+	}
+
+	delim := byte('\n')
+
+	bytes := make([]byte, 0, 1000)
+
+	for i := 0; i < 4; i++ {
+
+		bytes, err = fMgr.ReadFileLine(delim)
+
+		if err != nil &&
+			err != io.EOF {
+			fmt.Printf("Error returned by fMgr.ReadFileLine(delim) on Line#1. "+
+				"Error='%v'", err.Error())
+		}
+
+	}
+
+	isErrEOF := false
+
+	if err == io.EOF {
+		isErrEOF = true
+	}
+
+	actualStr := string(bytes)
+
+	actualStr = strings.Replace(actualStr, "\r\n", "", -1)
+
+	err = fMgr.CloseThisFile()
+
+	if err != nil {
+		fmt.Printf("Error returned by fMgr.CloseThisFile(). Error='%v'",
+			err.Error())
+	}
+
+	isExpectedEqualActual := false
+
+	if actualStr == expectedStr {
+		isExpectedEqualActual = true
+	}
+
+	fmt.Println("           ExpectedStr: ", expectedStr)
+	fmt.Println("             ActualStr: ", actualStr)
+	fmt.Println("ExpectedStr==ActualStr: ", isExpectedEqualActual)
+	fmt.Println("         error==io.EOF: ", isErrEOF)
+
+	if isExpectedEqualActual {
+		fmt.Println()
+		fmt.Println("********** SUCCESS **********")
+	}
 }
 
 func mainTest35() {
 
-	expectedStr := "Now is the time for all good men\n"
+	expectedStr := "Now is the time for all good men"
 
 	fh := pf.FileHelper{}
 
@@ -59,7 +124,7 @@ func mainTest35() {
 	bytes, err := fMgr.ReadFileLine(delim)
 
 	if err != nil {
-		fmt.Printf("Error returned by fMgr.ReadFileLine(delim) on Line#1. " +
+		fmt.Printf("Error returned by fMgr.ReadFileLine(delim) on Line#1. "+
 			"Error='%v'", err.Error())
 	}
 
@@ -72,27 +137,22 @@ func mainTest35() {
 			err.Error())
 	}
 
+	fmt.Println("Length Expected String: ", len(expectedStr))
+	fmt.Println("  Length Actual String: ", len(actualStr))
+	expectedStr2 := "!" + expectedStr + "!"
+	expectedStr2 = strings.Replace(expectedStr2, "\r", "*", -1)
+	expectedStr2 = strings.Replace(expectedStr2, "\n", "%", -1)
 
-	if  expectedStr != actualStr {
+	actualStr2 := "!" + actualStr + "!"
+	actualStr2 = strings.Replace(actualStr2, "\r", "*", -1)
+	actualStr2 = strings.Replace(actualStr2, "\n", "%", -1)
 
-		fmt.Println("Length Expected String: ", len(expectedStr))
-		fmt.Println("  Length Actual String: ", len(actualStr))
-		expectedStr2 := "!" + expectedStr + "!"
-		expectedStr2 = strings.Replace(expectedStr2,"\r", "*", -1)
-		expectedStr2 = strings.Replace(expectedStr2,"\n", "%", -1)
+	fmt.Println("        Expected String: ", expectedStr2)
+	fmt.Println("          Actual String: ", actualStr2)
 
-		actualStr2 := "!" + actualStr + "!"
-		actualStr2 = strings.Replace(actualStr2,"\r", "*", -1)
-		actualStr2 = strings.Replace(actualStr2,"\n", "%", -1)
-
-		fmt.Println("        Expected String: ", expectedStr2)
-		fmt.Println("          Actual String: ", actualStr2)
-
-
-	} else {
+	if expectedStr2 == actualStr2 {
 		fmt.Println("************ Success **************")
 	}
-
 
 }
 
