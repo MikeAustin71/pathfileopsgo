@@ -91,6 +91,48 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
 
 }
 
+func TestFileMgr_ReadAllFile_01(t *testing.T) {
+
+	expectedBytes := int(8819)
+
+	fh := FileHelper{}
+
+	filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/checkfiles03_02/testRead857268.txt")
+
+	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+	if err != nil {
+		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). " +
+			"filePath='%v'  Error='%v'", filePath, err.Error())
+	}
+
+	bytesRead, err := fMgr.ReadAllFile()
+
+	if err != nil {
+		t.Errorf("Error returned by fMgr.ReadAllFile(). Error='%v' ",
+			err.Error())
+	}
+
+	lenBytesRead := len(bytesRead)
+
+	if expectedBytes != lenBytesRead {
+		t.Errorf("Error: Expected number of bytes read='%v'. Instead, " +
+			"the number of bytes read='%v' ", expectedBytes, lenBytesRead)
+	}
+
+	err = fMgr.CloseThisFile()
+
+	if err != nil {
+		t.Errorf("Error returned by fMgr.CloseThisFile(). Error='%v' ",
+			err.Error())
+	}
+
+	if fMgr.filePtr != nil {
+		t.Error("Error: Expected fMgr.filePtr == nil. fMgr.filePtr IS NOT NIL!")
+	}
+
+}
+
 func TestFileMgr_ReadFileLine_01(t *testing.T) {
 
 	fh := FileHelper{}
@@ -100,7 +142,8 @@ func TestFileMgr_ReadFileLine_01(t *testing.T) {
 	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
 	if err != nil {
-		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). " +
+		  "filePath='%v'  Error='%v'", filePath, err.Error())
 	}
 
 	delim := byte('\n')
@@ -144,7 +187,8 @@ func TestFileMgr_ReadFileLine_02(t *testing.T) {
 	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
 	if err != nil {
-		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). " +
+		  "filePath='%v'  Error='%v'", filePath, err.Error())
 	}
 
 	delim := byte('\n')
@@ -169,7 +213,77 @@ func TestFileMgr_ReadFileLine_03(t *testing.T) {
 	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
 	if err != nil {
-		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). " +
+		  "filePath='%v'  Error='%v'", filePath, err.Error())
+	}
+
+	delim := byte('\n')
+
+	bytes := make([]byte, 0, 50)
+
+	for i := 0; i < 4; i++ {
+
+		bytes, err = fMgr.ReadFileLine(delim)
+
+		if err != nil &&
+			err != io.EOF {
+			t.Errorf("Error returned by fMgr.ReadFileLine(delim) on Line#1. "+
+				"Error='%v'", err.Error())
+		}
+	}
+
+	isErrEOF := false
+
+	if err == io.EOF {
+		isErrEOF = true
+	}
+
+	err = fMgr.CloseThisFile()
+
+	if err != nil {
+		t.Errorf("Error returned by fMgr.CloseThisFile(). Error='%v'",
+			err.Error())
+	}
+
+	if fMgr.filePtr != nil {
+		t.Error("ERROR: After fMgr.CloseThisFile() expected fMgr.filePtr==nil. " +
+			"fMgr.filePtr IS NOT EQUAL TO NIL!")
+	}
+
+	actualStr := string(bytes)
+
+	actualStr = strings.Replace(actualStr, "\r\n", "", -1)
+
+	if "Thank you, for your support." != actualStr {
+		t.Errorf("Expected line #4 = 'Thank you, for your support.'. Instead, "+
+			"line #4 = '%v'", actualStr)
+	}
+
+	if !isErrEOF {
+		t.Error("ERROR: Expected the last error return from fMgr.ReadFileLine(delim) " +
+			"to be io.EOF. Instead, error WAS NOT equal to io.EOF!")
+	}
+
+}
+
+func TestFileMgr_ReadFileLine_04(t *testing.T) {
+
+	fh := FileHelper{}
+
+	filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+	if err != nil {
+		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). " +
+		  "filePath='%v'  Error='%v'", filePath, err.Error())
+	}
+
+	err = fMgr.OpenThisFileReadOnly()
+
+	if err != nil {
+		t.Errorf("Error returned from fMgr.OpenThisFileReadOnly(). Error='%v'",
+			err.Error())
 	}
 
 	delim := byte('\n')
@@ -230,7 +344,8 @@ func TestFileMgr_ReadFileBytes_01(t *testing.T) {
 	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
 	if err != nil {
-		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). " +
+		  "filePath='%v'  Error='%v'", filePath, err.Error())
 	}
 
 	byteBuff := make([]byte, 2048, 2048)
@@ -238,7 +353,8 @@ func TestFileMgr_ReadFileBytes_01(t *testing.T) {
 	bytesRead, err := fMgr.ReadFileBytes(byteBuff)
 
 	if err != nil {
-		t.Errorf("Error returned from fMgr.ReadFileBytes(byteBuff). filePath='%v'  Error='%v'", filePath, err.Error())
+		t.Errorf("Error returned from fMgr.ReadFileBytes(byteBuff). " +
+		  "filePath='%v'  Error='%v'", filePath, err.Error())
 	}
 
 	var rStr = make([]rune, 0, 2048)
@@ -288,7 +404,8 @@ func TestFileMgr_ReadFileBytes_02(t *testing.T) {
 	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
 	if err != nil {
-		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). " +
+		  "filePath='%v'  Error='%v'", filePath, err.Error())
 	}
 
 	fMgr.isInitialized = false
@@ -313,7 +430,8 @@ func TestFileMgr_ResetFileInfo_01(t *testing.T) {
 	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
 	if err != nil {
-		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+		t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). " +
+		  "filePath='%v'  Error='%v'", filePath, err.Error())
 	}
 
 	err = fMgr.ResetFileInfo()
