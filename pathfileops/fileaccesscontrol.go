@@ -211,6 +211,23 @@ func (fAccess *FileAccessControl) GetFileOpenConfig() (FileOpenConfig, error) {
 	return fAccess.fileOpenCodes.CopyOut(), nil
 }
 
+
+// GetFileOpenType - Returns the File Open Type associated with the
+// FileOpenConfig type stored as 'FileAccessControl.fileOpenCodes'.
+//
+func (fAccess *FileAccessControl) GetFileOpenType() (FileOpenType, error) {
+
+	ePrefix := "FileAccessControl.GetFileOpenConfig() "
+
+	err := fAccess.IsValid()
+
+	if err != nil {
+		return FileOpenType(99999), fmt.Errorf(ePrefix +"%v", err.Error())
+	}
+
+	return fAccess.fileOpenCodes.GetFileOpenType(), nil
+}
+
 // GetFilePermissionConfig - Returns a deep copy of the FilePermissionConfig type
 // encapsulated by the current FileAccessControl instance.
 func (fAccess *FileAccessControl) GetFilePermissionConfig() (FilePermissionConfig, error) {
