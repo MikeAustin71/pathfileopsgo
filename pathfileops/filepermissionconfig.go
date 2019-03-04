@@ -967,9 +967,9 @@ func (fPerm *FilePermissionConfig) SetFileModeByOctalDigits(octalFileModeCode in
 //   -rwxrwx---   0770           File - read, write, & execute for owner and group
 //   -rwxrwxrwx   0777           File - read, write, & execute for owner, group and others
 //   ---x--x--x   0111           File - execute
-//   --w--w--w-   0222           File - write
+//   --w--w--w-   0222           File - write only
 //   --wx-wx-wx   0333           File - write & execute
-//   -r--r--r--   0444           File - read
+//   -r--r--r--   0444           File - read only
 //   -r-xr-xr-x   0555           File - read & execute
 //   -rw-rw-rw-   0666           File - read & write
 //   -rwxr-----   0740           File - Owner can read, write, & execute. Group can only read;
