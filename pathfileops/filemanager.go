@@ -1570,6 +1570,16 @@ func (fMgr *FileMgr) GetDirMgr() DirMgr {
 	return fMgr.dMgr.CopyOut()
 }
 
+// GetFileBytesWritten - Returns the sum of private member variables,
+// 'FileMgr.buffBytesWritten' + 'FileMgr.fileBytesWritten'.
+//
+// These variables records the number of bytes written to the FileMgr's
+// target file since it was opened with 'Write' or 'Read-Write' permissions.
+//
+func (fMgr *FileMgr) GetFileBytesWritten() uint64 {
+	return fMgr.buffBytesWritten + fMgr.fileBytesWritten
+}
+
 // GetFileExt() - returns a string containing the
 // File Extension for this File Manager instance.
 func (fMgr *FileMgr) GetFileExt() string {
