@@ -39,12 +39,68 @@ func main() {
 func main() {
 
 	mainTest37()
+
+	mainTest38()
+}
+
+func mainTest38() {
+
+	testText := "Damn the torpedoes full speed account!\n"
+	rawFilePath := "D:\\T08\\testWriteFile801294.txt"
+	lenTestText := len(testText)
+
+	fh := pf.FileHelper{}
+
+	filePath := fh.AdjustPathSlash(rawFilePath)
+
+	fMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+	if err != nil {
+		fmt.Printf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+			"filePathName='%v'  Error='%v'", filePath, err.Error())
+		return
+	}
+
+	err = fMgr.OpenThisFileWriteOnlyAppend()
+
+	if err != nil {
+		_ = fMgr.CloseThisFile()
+		fmt.Printf("Error returned by fMgr.OpenThisFileWriteOnlyAppend(). Error='%v' ",
+			err.Error())
+		return
+	}
+
+	bytesToWrite := []byte(testText)
+
+	numBytesWritten, err := fMgr.WriteBytesToFile(bytesToWrite)
+
+	if err != nil {
+		_ = fMgr.CloseThisFile()
+		fmt.Printf("Error returned by fMgr.WriteBytesToFile(bytesToWrite). Error='%v' ",
+			err.Error())
+		return
+	}
+
+	err = fMgr.CloseThisFile()
+
+	if err != nil {
+		fmt.Printf("Error returned by #1 fMgr.CloseThisFile().")
+		return
+	}
+
+	fmt.Println()
+	fmt.Println("    mainTest38()   ")
+	fmt.Println("***** SUCCESS *****")
+	fmt.Println("              Test Text: ", testText)
+	fmt.Println("    Length of Test Text: ", lenTestText)
+	fmt.Println("Number of Bytes Written: ", numBytesWritten)
+
 }
 
 func mainTest37() {
 
 
-  testText := "Now is the time for all good men to come to the aid of their country."
+  testText := "Now is the time for all good men to come to the aid of their country.\n"
   rawFilePath := "D:\\T08\\testWriteFile801294.txt"
   lenTestText := len(testText)
 
@@ -96,7 +152,10 @@ func mainTest37() {
     return
   }
 
-  fmt.Println("***** SUCCESS *****")
+
+	fmt.Println()
+	fmt.Println("    mainTest37()   ")
+	fmt.Println("***** SUCCESS *****")
   fmt.Println("              Test Text: ", testText)
   fmt.Println("    Length of Test Text: ", lenTestText)
   fmt.Println("Number of Bytes Written: ", numBytesWritten)

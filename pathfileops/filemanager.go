@@ -63,7 +63,12 @@ type FileMgr struct {
 }
 
 // CloseThisFile - This method will call the Close()
-// method on the current file pointer, FileHelper.filePtr
+// method on the current file pointer, FileMgr.filePtr.
+//
+// In addition, if the file has been opened for Write or
+// Read-Write, this method will automatically flush the
+// file buffers.
+//
 func (fMgr *FileMgr) CloseThisFile() error {
 
   ePrefix := "FileMgr.CloseThisFile() "
@@ -2104,7 +2109,7 @@ func (fMgr FileMgr) New(pathFileNameExt string) (FileMgr, error) {
   if err != nil {
     return FileMgr{}, fmt.Errorf(ePrefix+
       "Error returned from fMgrOut.SetFileMgrFromPathFileName(pathFileNameExt) "+
-      "pathFileNameExt='%v'  Error='%v'", pathFileNameExt, err.Error())
+      "pathFileNameExt='%v'  Error='%v'\n", pathFileNameExt, err.Error())
   }
 
   if isEmpty {
@@ -2112,132 +2117,14 @@ func (fMgr FileMgr) New(pathFileNameExt string) (FileMgr, error) {
       "Error: Returned FileMgr is Empty! pathFileNameExt='%v' ", pathFileNameExt)
   }
 
-  if !fMgrOut.isInitialized {
+  err = fMgrOut.IsFileMgrValid("")
+
+  if err != nil {
     return FileMgr{}, fmt.Errorf(ePrefix+
-      "Error: New File Manager is NOT properly initialized! pathFileNameExt='%v' ", pathFileNameExt)
+      "New File Manager is INVALID! pathFileNameExt='%v' Error='%v' ", pathFileNameExt, err.Error())
   }
 
   return fMgrOut, nil
-}
-
-// NewFromPathFileNameExtStr - Creates a new File Manager ('FileMgr') instance. This
-// method receives an input parameter of type string and parses out the path, file
-// name and file extension.
-//
-// The file data is returned in the data fields of the new FileMgr object.
-//
-// This method is identical to method 'New()'.
-//
-// ------------------------------------------------------------------------
-//
-// Input Parameter:
-//
-//	pathFileNameExt string - Must consist of a valid path, file name
-//	                         and file extension. The file need not exist.
-//	                         Failure to provide a properly formatted path
-//	                         path, file name will result in an error.
-//
-// ------------------------------------------------------------------------
-//
-// Usage:
-//
-//	fmgr := FileMgr{}.NewFromPathFileNameExtStr("../common/fileName.ext")
-//
-func (fMgr FileMgr) NewFromPathFileNameExtStr(pathFileNameExt string) (FileMgr, error) {
-
-  ePrefix := "FileMgr.NewFromPathFileNameExtStr() "
-
-  if pathFileNameExt == "" {
-    return FileMgr{}, errors.New(ePrefix + "-Error: pathFileNameExt is Empty!")
-  }
-
-  fMgrOut := FileMgr{}
-
-  isEmpty, err := fMgrOut.SetFileMgrFromPathFileName(pathFileNameExt)
-
-  if err != nil {
-    return FileMgr{}, fmt.Errorf(ePrefix+
-      "Error returned from fMgrOut.SetFileMgrFromPathFileName(pathFileNameExt) "+
-      "pathFileNameExt='%v'  Error='%v'", pathFileNameExt, err.Error())
-  }
-
-  if isEmpty {
-    return FileMgr{}, fmt.Errorf(ePrefix+
-      "Error: Returned FileMgr is Empty! pathFileNameExt='%v' ", pathFileNameExt)
-  }
-
-  if !fMgrOut.isInitialized {
-    return FileMgr{}, fmt.Errorf(ePrefix+
-      "Error: New File Manager is NOT properly initialized! pathFileNameExt='%v' ", pathFileNameExt)
-  }
-
-  return fMgrOut, nil
-}
-
-// NewFromFileInfo - Creates and returns a new FileMgr object based on input from a
-// directory path string and an os.FileInfo object.
-//
-// ----------------------------------------------------------------------------------
-//
-// Input Parameters
-//
-//	pathStr         string - The directory path. NOTE: This does NOT contain the
-//	                         file name.
-//
-//	info       os.FileInfo - A valid and populated FileInfo structure containing the
-//	                         file name.
-//
-// ------------------------------------------------------------------------
-//
-// Return Values
-//
-//	FileMgr       - If the method completes successfully, a valid FileMgr instance
-//	                is returned containing information on the file specified in the
-//	                input parameter 'info'.
-//
-//
-//	error         - If this method completes successfully, the returned error
-//	                Type is set equal to 'nil'. If an error condition is encountered,
-//	                this method will return an error Type which encapsulates an
-//	                appropriate error message.
-//
-func (fMgr FileMgr) NewFromFileInfo(pathStr string, info os.FileInfo) (FileMgr, error) {
-
-  ePrefix := "FileMgr.NewFromFInfo() "
-  var err error
-
-  fh := FileHelper{}
-
-  pathStr, err = fh.AddPathSeparatorToEndOfPathStr(pathStr)
-
-  if err != nil {
-    return FileMgr{},
-      fmt.Errorf(ePrefix+
-        "Error returned from fh.AddPathSeparatorToEndOfPathStr(pathStr). "+
-        "pathStr='%v' Error='%v'", pathStr, err.Error())
-  }
-
-  pathFileName := pathStr + info.Name()
-
-  fmgr2 := FileMgr{}
-
-  isEmpty, err := fmgr2.SetFileMgrFromPathFileName(pathFileName)
-
-  if err != nil {
-    return FileMgr{},
-      fmt.Errorf(ePrefix+
-        "Error returned from fmgr2.SetFileMgrFromPathFileName(pathFileName). "+
-        "pathFileName='%v' Error='%v'", pathFileName, err.Error())
-  }
-
-  if isEmpty {
-    return FileMgr{}, fmt.Errorf(ePrefix+
-      "Error returned FileMgr is Empty! pathFileName='%v'", pathFileName)
-  }
-
-  fmgr2.actualFileInfo = FileInfoPlus{}.NewFromPathFileInfo(pathStr, info)
-
-  return fmgr2, nil
 }
 
 // NewFromDirMgrFileNameExt - this method is designed to create a new File Manager (FileMgr)
@@ -2251,6 +2138,49 @@ func (fMgr FileMgr) NewFromFileInfo(pathStr string, info os.FileInfo) (FileMgr, 
 // 'dirMgr' and 'fileNameExt' will be combined to create a new File Manager (FileMgr) with a
 // properly configured path, file name and file extension.
 //
+// ----------------------------------------------------------------------------------
+//
+// Input Parameters:
+//
+//  dirMgr      DirMgr - A valid and properly initialized Directory Manager (type: DirMgr).
+//                       This object contains the file path which will be combined with the
+//                       the second input parameter, 'fileNameExt' to create the new File
+//                       Manager (type: FileMgr)
+//
+//  fileNameExt string - A string containing the file name and file extension which will be
+//                       used to create the new File Manager (type: FileMgr).
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+//	FileMgr       - If the method completes successfully, a valid FileMgr instance
+//	                is returned containing information on the file specified in the
+//	                two input parameters 'dirMgr' and 'fileNameExt'.
+//
+//
+//	error         - If this method completes successfully, the returned error
+//	                Type is set equal to 'nil'. If an error condition is encountered,
+//	                this method will return an error Type which contains an appropriate
+//	                error message.
+//
+//
+// ------------------------------------------------------------------------
+//
+// Usage:
+//
+//  dMgr, err := DirMgr{}.New("D:\\TestDir")
+//
+//  if err != nil {
+//   fmt.Printf("Error='%v' \n", err.Error())
+//   return
+//  }
+//
+//  fileNameExt := "yourFile.txt"
+//
+//  fMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, fileNameExt)
+//
+//
 func (fMgr FileMgr) NewFromDirMgrFileNameExt(
   dirMgr DirMgr,
   fileNameExt string) (FileMgr, error) {
@@ -2263,15 +2193,12 @@ func (fMgr FileMgr) NewFromDirMgrFileNameExt(
         "Error: Input Parameter fileNameExt is a zero length string!")
   }
 
-  if dirMgr.isInitialized {
-    err := dirMgr.IsDirMgrValid("")
+  err := dirMgr.IsDirMgrValid("")
 
-    if err != nil {
-      return FileMgr{},
-        errors.New(ePrefix +
-          "Error: DirMgr object, 'dirMgr', passed as input parameter is INVALID!")
-    }
-
+  if err != nil {
+    return FileMgr{},
+      fmt.Errorf(ePrefix +
+        "Error: Input parameter 'dirMgr' is INVALID! Error='%v' ", err.Error())
   }
 
   fmgr2 := FileMgr{}
@@ -2281,7 +2208,7 @@ func (fMgr FileMgr) NewFromDirMgrFileNameExt(
   if err != nil {
     return FileMgr{}, fmt.Errorf(ePrefix+
       "Error returned by fmgr2.SetFileMgrFromDirMgrFileName(dirMgr, fileNameExt). "+
-      "Error='%v'", err.Error())
+      "Error='%v'\n", err.Error())
   }
 
   if isEmpty {
@@ -2290,11 +2217,55 @@ func (fMgr FileMgr) NewFromDirMgrFileNameExt(
       "dirMgr, fileNameExt) dirMgr.path='%v' fileNameExt='%v'", dirMgr.path, fileNameExt)
   }
 
+  err = fmgr2.IsFileMgrValid("")
+
+  if err != nil {
+    return FileMgr{}, fmt.Errorf(ePrefix +
+      "The new File Manager is INVALID! Error='%v' ", err.Error())
+  }
+
   return fmgr2, nil
 }
 
 // NewFromDirStrFileNameStr - Creates a new file manager object (FileMgr) from a directory
 // string and a File Name and Extension string passed as input parameters.
+//
+// ----------------------------------------------------------------------------------
+//
+// Input Parameters:
+//
+//  dirStr         string - A string containing the directory or file path which will be
+//                          combined with the second input parameter, 'fileNameExt' to
+//                          create the new File Manager (type: FileMgr).
+//
+//  fileNameExtStr string - A string containing the file name and file extension which will be
+//                          used to create the new File Manager (type: FileMgr).
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+//	FileMgr       - If the method completes successfully, a valid FileMgr instance
+//	                is returned containing information on the file specified in the
+//	                two input parameters 'dirStr' and 'fileNameExtStr'.
+//
+//
+//	error         - If this method completes successfully, the returned error
+//	                Type is set equal to 'nil'. If an error condition is encountered,
+//	                this method will return an error Type which contains an appropriate
+//	                error message.
+//
+//
+// ------------------------------------------------------------------------
+//
+// Usage:
+//
+//  dirStr := "D:\\TestDir"
+//
+//  fileNameExtStr := "yourFile.txt"
+//
+//  fMgr, err := FileMgr{}.NewFromDirStrFileNameStr(dirStr, fileNameExtStr)
+//
 func (fMgr FileMgr) NewFromDirStrFileNameStr(
   dirStr,
   fileNameExtStr string) (FileMgr, error) {
@@ -2333,6 +2304,137 @@ func (fMgr FileMgr) NewFromDirStrFileNameStr(
 
   return fMgr2, nil
 
+}
+
+
+// NewFromFileInfo - Creates and returns a new FileMgr object based on input from a
+// directory path string and an os.FileInfo object.
+//
+// ----------------------------------------------------------------------------------
+//
+// Input Parameters:
+//
+//  dirPathStr      string - The directory path. NOTE: This does NOT contain the
+//	                         file name.
+//
+//	info       os.FileInfo - A valid and populated FileInfo structure containing the
+//	                         file name.
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+//	FileMgr       - If the method completes successfully, a valid FileMgr instance
+//	                is returned containing information on the file specified in the
+//	                input parameter 'info'.
+//
+//
+//	error         - If this method completes successfully, the returned error
+//	                Type is set equal to 'nil'. If an error condition is encountered,
+//	                this method will return an error Type which encapsulates an
+//	                appropriate error message.
+//
+func (fMgr FileMgr) NewFromFileInfo(dirPathStr string, info os.FileInfo) (FileMgr, error) {
+
+  ePrefix := "FileMgr.NewFromFileInfo() "
+  var err error
+
+  fh := FileHelper{}
+
+  dirPathStr, err = fh.AddPathSeparatorToEndOfPathStr(dirPathStr)
+
+  if err != nil {
+    return FileMgr{},
+      fmt.Errorf(ePrefix+
+        "Error returned from fh.AddPathSeparatorToEndOfPathStr(dirPathStr). "+
+        "dirPathStr='%v' Error='%v'", dirPathStr, err.Error())
+  }
+
+  pathFileName := dirPathStr + info.Name()
+
+  fmgr2 := FileMgr{}
+
+  isEmpty, err := fmgr2.SetFileMgrFromPathFileName(pathFileName)
+
+  if err != nil {
+    return FileMgr{},
+      fmt.Errorf(ePrefix+
+        "Error returned from fmgr2.SetFileMgrFromPathFileName(pathFileName). "+
+        "pathFileName='%v' Error='%v'\n", pathFileName, err.Error())
+  }
+
+  if isEmpty {
+    return FileMgr{}, fmt.Errorf(ePrefix+
+      "Error returned FileMgr is Empty! pathFileName='%v'", pathFileName)
+  }
+
+  fmgr2.actualFileInfo = FileInfoPlus{}.NewFromPathFileInfo(dirPathStr, info)
+
+  err = fmgr2.IsFileMgrValid("")
+
+  if err != nil {
+    return FileMgr{},
+      fmt.Errorf(ePrefix + "The New File Manager is INVALID! Error='%v' ", err.Error() )
+  }
+
+  return fmgr2, nil
+}
+
+// NewFromPathFileNameExtStr - Creates a new File Manager ('FileMgr') instance. This
+// method receives an input parameter of type string and parses out the path, file
+// name and file extension.
+//
+// The file data is returned in the data fields of the new FileMgr object.
+//
+// This method is identical to method 'New()'.
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameter:
+//
+//  pathFileNameExt string - Must consist of a valid path, file name
+//                           and file extension. The file need not exist.
+//                           Failure to provide a properly formatted path
+//                           path and file name will result in an error.
+//                           The file extension is optional.
+//
+// ------------------------------------------------------------------------
+//
+// Usage:
+//
+//	fmgr := FileMgr{}.NewFromPathFileNameExtStr("../somedirectory/fileName.ext")
+//
+func (fMgr FileMgr) NewFromPathFileNameExtStr(pathFileNameExt string) (FileMgr, error) {
+
+  ePrefix := "FileMgr.NewFromPathFileNameExtStr() "
+
+  if pathFileNameExt == "" {
+    return FileMgr{}, errors.New(ePrefix + "-Error: pathFileNameExt is Empty!")
+  }
+
+  fMgrOut := FileMgr{}
+
+  isEmpty, err := fMgrOut.SetFileMgrFromPathFileName(pathFileNameExt)
+
+  if err != nil {
+    return FileMgr{}, fmt.Errorf(ePrefix+
+      "Error returned from fMgrOut.SetFileMgrFromPathFileName(pathFileNameExt) "+
+      "pathFileNameExt='%v'  Error='%v' \n", pathFileNameExt, err.Error())
+  }
+
+  if isEmpty {
+    return FileMgr{}, fmt.Errorf(ePrefix+
+      "Error: Returned FileMgr is Empty! pathFileNameExt='%v' ", pathFileNameExt)
+  }
+
+  err = fMgrOut.IsFileMgrValid("")
+
+  if err != nil {
+    return FileMgr{}, fmt.Errorf(ePrefix+
+      "New File Manager is INVALID! pathFileNameExt='%v' Error='%v'", pathFileNameExt, err.Error())
+  }
+
+  return fMgrOut, nil
 }
 
 // OpenThisFile - Opens the file identified by the current FileMgr object
@@ -2645,6 +2747,76 @@ func (fMgr *FileMgr) OpenThisFileWriteOnly() error {
   }
 
   return nil
+}
+
+// OpenThisFileWriteOnlyAppend - Opens the current file for 'Write Only'
+// with an 'Append' mode. All bytes written to the file will be written
+// at the end of the current file and none of the file's original content
+// will be overwritten.
+//
+func (fMgr *FileMgr) OpenThisFileWriteOnlyAppend() error {
+  var err error
+
+  ePrefix := "FileMgr.OpenThisFileWriteOnlyAppend() "
+
+  err = fMgr.IsFileMgrValid(ePrefix)
+
+  if err != nil {
+    return err
+  }
+
+  if fMgr.filePtr != nil {
+    _ = fMgr.CloseThisFile()
+  }
+
+  doesFileExist, err := fMgr.DoesThisFileExist()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"%v", err.Error())
+  }
+
+  if !doesFileExist {
+
+    err = fMgr.CreateDirAndFile()
+
+    if err != nil {
+      return fmt.Errorf(ePrefix+"%v", err.Error())
+    }
+
+    err = fMgr.CloseThisFile()
+
+    if err != nil {
+      return fmt.Errorf(ePrefix+"%v", err.Error())
+    }
+
+  }
+
+  fileOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeWriteOnly(), FOpenMode.ModeAppend())
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"%v", err.Error())
+  }
+
+  filePermCfg, err := FilePermissionConfig{}.New("--w--w--w-")
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"%v", err.Error())
+  }
+
+  fileAccessCfg, err := FileAccessControl{}.New(fileOpenCfg, filePermCfg)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"%v", err.Error())
+  }
+
+  err = fMgr.OpenThisFile(fileAccessCfg)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"%v", err.Error())
+  }
+
+  return nil
+
 }
 
 // ReadAllFile - Reads the file identified by the current FileMgr
