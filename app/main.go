@@ -38,8 +38,71 @@ func main() {
 
 func main() {
 
-	mainTest36()
+	mainTest37()
 }
+
+func mainTest37() {
+
+
+  testText := "Now is the time for all good men to come to the aid of their country."
+  rawFilePath := "D:\\T08\\testWriteFile801294.txt"
+  lenTestText := len(testText)
+
+  fh := pf.FileHelper{}
+
+  filePath := fh.AdjustPathSlash(rawFilePath)
+
+  fMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    fmt.Printf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePathName='%v'  Error='%v'", filePath, err.Error())
+    return
+  }
+
+  err = fMgr.CreateThisFile()
+
+  if err != nil {
+    _ = fMgr.CloseThisFile()
+    fmt.Printf("Error returned by fMgr.CreateThisFile(). Error='%v' ",
+      err.Error())
+    return
+  }
+
+  err = fMgr.OpenThisFileWriteOnly()
+
+  if err != nil {
+    _ = fMgr.CloseThisFile()
+    fmt.Printf("Error returned by fMgr.OpenThisFileWriteOnly(). Error='%v' ",
+      err.Error())
+    return
+  }
+
+  bytesToWrite := []byte(testText)
+
+  numBytesWritten, err := fMgr.WriteBytesToFile(bytesToWrite)
+
+  if err != nil {
+    _ = fMgr.CloseThisFile()
+    fmt.Printf("Error returned by fMgr.WriteBytesToFile(bytesToWrite). Error='%v' ",
+      err.Error())
+    return
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    fmt.Printf("Error returned by #1 fMgr.CloseThisFile().")
+    return
+  }
+
+  fmt.Println("***** SUCCESS *****")
+  fmt.Println("              Test Text: ", testText)
+  fmt.Println("    Length of Test Text: ", lenTestText)
+  fmt.Println("Number of Bytes Written: ", numBytesWritten)
+
+}
+
 
 func mainTest36() {
 
