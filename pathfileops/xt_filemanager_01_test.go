@@ -112,6 +112,86 @@ func TestFileMgr_CopyFileToDirByIoByLink_01(t *testing.T) {
 
 }
 
+func TestFileMgr_CopyFileToDirByIoByLink_02(t *testing.T) {
+
+	sourceFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+
+	fh := FileHelper{}
+	adjustedSourceFile := fh.AdjustPathSlash(sourceFile)
+	absoluteSourceFile, err := fh.MakeAbsolutePath(adjustedSourceFile)
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath(adjustedSourceFile). "+
+			"Error='%v' ", err.Error())
+	}
+
+	srcFMgr, err := FileMgr{}.New(absoluteSourceFile)
+
+	if err != nil {
+		t.Errorf("Error returned by FileMgr{}.New(absoluteSourceFile). "+
+			"Error='%v' ", err.Error())
+	}
+
+	rawDestPath := fh.AdjustPathSlash("../checkfiles/checkfiles02")
+
+	destDMgr, err := DirMgr{}.New(rawDestPath)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.New(rawDestPath). "+
+			"rawDestPath='%v'  Error='%v'", rawDestPath, err.Error())
+	}
+
+	srcFMgr.isInitialized = false
+
+	err = srcFMgr.CopyFileToDirByIoByLink(destDMgr)
+
+	if err == nil {
+		t.Error("Expected an error from srcFMgr.CopyFileToDirByIoByLink(destDMgr) because " +
+			"srcFMgr.isInitialized == false. However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
+func TestFileMgr_CopyFileToDirByIoByLink_03(t *testing.T) {
+
+	sourceFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+
+	fh := FileHelper{}
+	adjustedSourceFile := fh.AdjustPathSlash(sourceFile)
+	absoluteSourceFile, err := fh.MakeAbsolutePath(adjustedSourceFile)
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath(adjustedSourceFile). "+
+			"Error='%v' ", err.Error())
+	}
+
+	srcFMgr, err := FileMgr{}.New(absoluteSourceFile)
+
+	if err != nil {
+		t.Errorf("Error returned by FileMgr{}.New(absoluteSourceFile). "+
+			"Error='%v' ", err.Error())
+	}
+
+	rawDestPath := fh.AdjustPathSlash("../checkfiles/checkfiles02")
+
+	destDMgr, err := DirMgr{}.New(rawDestPath)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.New(rawDestPath). "+
+			"rawDestPath='%v'  Error='%v'", rawDestPath, err.Error())
+	}
+
+	destDMgr.isInitialized = false
+
+	err = srcFMgr.CopyFileToDirByIoByLink(destDMgr)
+
+	if err == nil {
+		t.Error("Expected an error from srcFMgr.CopyFileToDirByIoByLink(destDMgr) because " +
+			"srcFMgr.isInitialized == false. However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
 func TestFileMgr_CopyFileMgrByIoByLink_01(t *testing.T) {
 
 	expectedFileNameExt := "newerFileForTest_01.txt"
