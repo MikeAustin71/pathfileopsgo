@@ -862,6 +862,33 @@ func TestFileMgr_GetFileInfo_01(t *testing.T) {
 	}
 }
 
+func TestFileMgr_GetFileInfo_02(t *testing.T) {
+
+	fh := FileHelper{}
+	targetFile := "../filesfortest/newfilesfortest/iDoNotExist_01.txt"
+	absPath, err := fh.MakeAbsolutePath(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath(targetFile). "+
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	srcFMgr, err := FileMgr{}.New(absPath)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(absPath). "+
+			"absPath='%v' Error='%v'", absPath, err.Error())
+	}
+
+	_, err = srcFMgr.GetFileInfo()
+
+	if err == nil {
+		t.Error("Error expected error return from srcFMgr.GetFileInfo() because " +
+			"file does not exist. However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
 func TestFileMgr_GetFileInfoPlus_01(t *testing.T) {
 
 	fh := FileHelper{}
@@ -889,6 +916,60 @@ func TestFileMgr_GetFileInfoPlus_01(t *testing.T) {
 	if expectedFileNameExt != actualFileNameExt {
 		t.Errorf("Error: Expected File Name:='%v'.  Instead, File Name='%v'",
 			expectedFileNameExt, actualFileNameExt)
+	}
+
+}
+
+func TestFileMgr_GetFileInfoPlus_02(t *testing.T) {
+
+	fh := FileHelper{}
+	targetFile := "../filesfortest/newfilesfortest/iDoNotExist_01.txt"
+	absPath, err := fh.MakeAbsolutePath(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath(targetFile). "+
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	srcFMgr, err := FileMgr{}.New(absPath)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(absPath). "+
+			"absPath='%v' Error='%v'", absPath, err.Error())
+	}
+
+	_, err = srcFMgr.GetFileInfoPlus()
+
+	if err == nil {
+		t.Error("Error expected error return from srcFMgr.GetFileInfoPlus() because " +
+			"file does not exist. However, NO ERROR WAS RETURNED!")
+	}
+}
+
+func TestFileMgr_GetFileName_01(t *testing.T) {
+	fh := FileHelper{}
+	targetFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+	absPath, err := fh.MakeAbsolutePath(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath(targetFile). "+
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	srcFMgr, err := FileMgr{}.New(absPath)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(absPath). "+
+			"absPath='%v' Error='%v'", absPath, err.Error())
+	}
+
+	expectedFileName := "newerFileForTest_01"
+
+	actualFileName := srcFMgr.GetFileName()
+
+	if expectedFileName != actualFileName {
+		t.Errorf("Error: Expected File Name='%v'. Instead, actual File Name='%v'",
+			expectedFileName, actualFileName)
 	}
 
 }
