@@ -1739,36 +1739,11 @@ func (fMgr *FileMgr) GetFileExt() string {
 	return fMgr.fileExt
 }
 
-// GetFileInfoPlus - Returns a FileInfoPlus instance containing
-// os.FileInfo and other data on the current FileManager instance.
-//
-func (fMgr *FileMgr) GetFileInfoPlus() (FileInfoPlus, error) {
-	ePrefix := "FileMgr.GetFileInfoPlus() "
-
-	err := fMgr.IsFileMgrValid(ePrefix)
-
-	if err != nil {
-		return FileInfoPlus{}, err
-	}
-
-	info, err := os.Stat(fMgr.absolutePathFileName)
-
-	if err != nil {
-		return FileInfoPlus{},
-			fmt.Errorf(ePrefix+"Error returned by "+
-				"os.Stat(fMgr.absolutePathFileName). fMgr.absolutePathFileName='%v'  Error='%v'",
-				fMgr.absolutePathFileName, err.Error())
-	}
-
-	fMgr.actualFileInfo = FileInfoPlus{}.NewFromPathFileInfo(fMgr.dMgr.absolutePath, info)
-
-	return fMgr.actualFileInfo.CopyOut(), nil
-}
-
 // GetFileInfo - Wrapper function for os.Stat(). This method
 // can be used to return FileInfo data on the specific file identified
-// by FileMgr.absolutePathFileName. If the file does NOT exist,
-// an error will be triggered.
+// by FileMgr.absolutePathFileName.
+//
+// An error will be triggered if the file path does NOT exist!
 //
 // type FileInfo interface {
 // 	Name() string       // base name of the file
@@ -1782,10 +1757,10 @@ func (fMgr *FileMgr) GetFileInfo() (os.FileInfo, error) {
 
 	ePrefix := "FileMgr.DeleteThisFile() "
 
-	if !fMgr.isInitialized {
-		return nil,
-			errors.New(ePrefix +
-				"Error: This data structure is NOT initialized.")
+	err := fMgr.IsFileMgrValid(ePrefix)
+
+	if err != nil {
+		return nil, err
 	}
 
 	if !fMgr.isAbsolutePathFileNamePopulated {
@@ -1805,9 +1780,9 @@ func (fMgr *FileMgr) GetFileInfo() (os.FileInfo, error) {
 
 	info, err := os.Stat(fMgr.absolutePathFileName)
 
-	fMgr.dataMutex.Unlock()
-
 	if err != nil {
+		fMgr.dataMutex.Unlock()
+
 		return nil,
 			fmt.Errorf(ePrefix+"Error returned by "+
 				"os.Stat(fMgr.absolutePathFileName). fMgr.absolutePathFileName='%v'  Error='%v'",
@@ -1816,7 +1791,34 @@ func (fMgr *FileMgr) GetFileInfo() (os.FileInfo, error) {
 
 	fMgr.actualFileInfo = FileInfoPlus{}.NewFromPathFileInfo(fMgr.dMgr.absolutePath, info)
 
+	fMgr.dataMutex.Unlock()
+
 	return info, nil
+}
+
+// GetFileInfoPlus - Returns a FileInfoPlus instance containing
+// os.FileInfo and other data on the current FileManager instance.
+//
+// An error will be triggered if the file path does NOT exist!
+//
+func (fMgr *FileMgr) GetFileInfoPlus() (FileInfoPlus, error) {
+
+	ePrefix := "FileMgr.GetFileInfoPlus() "
+
+	err := fMgr.IsFileMgrValid(ePrefix)
+
+	if err != nil {
+		return FileInfoPlus{}, err
+	}
+
+	err = fMgr.ResetFileInfo()
+
+	if err != nil {
+		return FileInfoPlus{},
+			fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	return fMgr.actualFileInfo.CopyOut(), nil
 }
 
 // GetFileName - returns the file name for this
@@ -3300,6 +3302,8 @@ func (fMgr *FileMgr) ReadFileString(delim byte) (stringRead string, err error) {
 // data associated with the file identified by the
 // current FileMgr instance.
 //
+// An error will be triggered if the file path does NOT exist!
+//
 func (fMgr *FileMgr) ResetFileInfo() error {
 
 	ePrefix := "ResetFileInfo() "
@@ -3314,15 +3318,18 @@ func (fMgr *FileMgr) ResetFileInfo() error {
 
 	info, err := os.Stat(fMgr.absolutePathFileName)
 
-	fMgr.dataMutex.Unlock()
-
 	if err != nil {
+
+		fMgr.dataMutex.Unlock()
+
 		return fmt.Errorf(ePrefix+"Error returned by "+
 			"os.Stat(fMgr.absolutePathFileName). fMgr.absolutePathFileName='%v'  Error='%v'",
 			fMgr.absolutePathFileName, err.Error())
 	}
 
 	fMgr.actualFileInfo = FileInfoPlus{}.NewFromPathFileInfo(fMgr.dMgr.absolutePath, info)
+
+	fMgr.dataMutex.Unlock()
 
 	return nil
 }
