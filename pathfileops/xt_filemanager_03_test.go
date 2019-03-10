@@ -677,6 +677,49 @@ func TestFileMgr_GetAbsolutePathFileName_01(t *testing.T) {
 
 }
 
+func TestFileMgr_GetBufioReader(t *testing.T) {
+
+	expectedFileNameExt := "newerFileForTest_01.txt"
+
+	fh := FileHelper{}
+	adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+
+	dMgr, err := DirMgr{}.New(adjustedPath)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). "+
+			"adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+	}
+
+	srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt). "+
+			"dMgr.absolutePath='%v' expectedFileNameExt='%v'  Error='%v'", dMgr.absolutePath, adjustedPath, err.Error())
+	}
+
+	err = srcFMgr.OpenThisFileReadOnly()
+
+	if err != nil {
+		t.Errorf("Error returned by srcFMgr.OpenThisFileReadOnly(). "+
+			"FileName:'%v' Error='%v' ", srcFMgr.GetAbsolutePathFileName(), err.Error())
+	}
+
+	bufReader := srcFMgr.GetBufioReader()
+
+	if bufReader == nil {
+		t.Error("Error: Expected pointer return from srcFMgr.GetBufioReader(). " +
+			"Pointer IS NIL!")
+	}
+
+	err = srcFMgr.CloseThisFile()
+
+	if err != nil {
+		t.Errorf("Error returned from srcFMgr.CloseThisFile(). "+
+			"Error='%v' ", err.Error())
+	}
+}
+
 func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
 	fh := FileHelper{}
 	setupSrcFile := fh.AdjustPathSlash("..\\logTest\\FileMgmnt\\TestFile003.txt")
