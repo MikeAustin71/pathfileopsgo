@@ -1594,6 +1594,9 @@ func (fMgr *FileMgr) EqualPathFileNameExt(fmgr2 *FileMgr) bool {
 // Empty - resets all data fields in the FileMgr structure to
 // their uninitialized or zero state.
 func (fMgr *FileMgr) Empty() {
+
+	fMgr.dataMutex.Lock()
+
 	fMgr.isInitialized = false
 	fMgr.dMgr = DirMgr{}
 	fMgr.originalPathFileName = ""
@@ -1610,7 +1613,12 @@ func (fMgr *FileMgr) Empty() {
 	fMgr.isFilePtrOpen = false
 	fMgr.fileAccessStatus.Empty()
 	fMgr.actualFileInfo = FileInfoPlus{}
+	fMgr.fileBufRdr = nil
+	fMgr.fileBufWriter = nil
+	fMgr.fileBytesWritten = 0
+	fMgr.buffBytesWritten = 0
 
+	fMgr.dataMutex.Unlock()
 }
 
 // FlushBytesToDisk - After Writing bytes to a file, use this

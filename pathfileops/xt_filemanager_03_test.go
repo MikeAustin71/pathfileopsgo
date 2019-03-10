@@ -6,6 +6,37 @@ import (
 	"testing"
 )
 
+func TestFileMgr_Empty_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	relPath1 := "..\\logTest\\CmdrX\\CmdrX.log"
+	filePath1, err := fh.MakeAbsolutePath(relPath1)
+
+	if err != nil {
+		t.Errorf("Error returned by filePath1, err := fh.MakeAbsolutePath(relPath1). "+
+			"relPath1='%v' Error='%v'", relPath1, err.Error())
+	}
+
+	fileMgr1, err := FileMgr{}.New(filePath1)
+
+	if err != nil {
+		t.Errorf("Received Error on FileMgr{}.NewFromPathFileNameExtStr(filePath1). "+
+			"filePath1='%v' Error='%v'", filePath1, err.Error())
+	}
+
+	fileMgr1.Empty()
+
+	fileMgr2 := FileMgr{}
+	fileMgr2.Empty()
+
+	if !fileMgr1.Equal(&fileMgr2) {
+		t.Error("Error: Expected empty fileMgr1 to equal empty fileMgr2. " +
+			"However, THEY ARE NOT EQUAL!")
+	}
+
+}
+
 func TestFileMgr_Equal_01(t *testing.T) {
 	fh := FileHelper{}
 
