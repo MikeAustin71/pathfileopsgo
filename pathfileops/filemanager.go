@@ -1133,12 +1133,17 @@ func (fMgr *FileMgr) CopyFileToDirByLinkByIo(dir DirMgr) error {
 
 // CopyIn - Copies data from an incoming FileMgr object
 // into the current FileMgr object.
+//
+// Note: Internal file pointer will not be copied.
+//
 func (fMgr *FileMgr) CopyIn(fmgr2 *FileMgr) {
 
 	if fmgr2 == nil {
 		panic("FileMgr.CopyIn() - Input parameter is a nil pointer!")
 	}
 
+	fMgr.dataMutex.Lock()
+	fmgr2.dataMutex.Lock()
 	fMgr.isInitialized = fmgr2.isInitialized
 	fMgr.dMgr.CopyIn(&fmgr2.dMgr)
 	fMgr.originalPathFileName = fmgr2.originalPathFileName
@@ -1151,17 +1156,26 @@ func (fMgr *FileMgr) CopyIn(fmgr2 *FileMgr) {
 	fMgr.isFileExtPopulated = fmgr2.isFileExtPopulated
 	fMgr.fileNameExt = fmgr2.fileNameExt
 	fMgr.isFileNameExtPopulated = fmgr2.isFileNameExtPopulated
-	fMgr.filePtr = fmgr2.filePtr
-	fMgr.isFilePtrOpen = fmgr2.isFilePtrOpen
+	fMgr.filePtr = nil
+	fMgr.isFilePtrOpen = false
 	fMgr.fileAccessStatus = fmgr2.fileAccessStatus.CopyOut()
 	fMgr.actualFileInfo = fmgr2.actualFileInfo.CopyOut()
+	fMgr.fileBytesWritten = 0
+	fMgr.buffBytesWritten = 0
+	fmgr2.dataMutex.Unlock()
+	fMgr.dataMutex.Unlock()
 
 	return
 }
 
 // CopyOut - Duplicates the file information in the current
 // FileMgr object and returns it as a new FileMgr object.
+//
+// Note: Internal File Pointer will not be copied.
+//
 func (fMgr *FileMgr) CopyOut() FileMgr {
+
+	fMgr.dataMutex.Lock()
 
 	fmgr2 := FileMgr{}
 
@@ -1177,10 +1191,14 @@ func (fMgr *FileMgr) CopyOut() FileMgr {
 	fmgr2.isFileExtPopulated = fMgr.isFileExtPopulated
 	fmgr2.fileNameExt = fMgr.fileNameExt
 	fmgr2.isFileNameExtPopulated = fMgr.isFileNameExtPopulated
-	fmgr2.filePtr = fMgr.filePtr
-	fmgr2.isFilePtrOpen = fMgr.isFilePtrOpen
+	fmgr2.filePtr = nil
+	fmgr2.isFilePtrOpen = false
 	fmgr2.fileAccessStatus = fMgr.fileAccessStatus.CopyOut()
 	fmgr2.actualFileInfo = fMgr.actualFileInfo.CopyOut()
+	fmgr2.fileBytesWritten = 0
+	fmgr2.buffBytesWritten = 0
+
+	fMgr.dataMutex.Unlock()
 
 	return fmgr2
 }
