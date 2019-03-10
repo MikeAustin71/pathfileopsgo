@@ -765,6 +765,7 @@ func TestFileMgr_GetBufioWriter_01(t *testing.T) {
 }
 
 func TestFileMgr_GetDirMgr_01(t *testing.T) {
+
 	expectedFileNameExt := "newerFileForTest_01.txt"
 
 	fh := FileHelper{}
@@ -794,6 +795,39 @@ func TestFileMgr_GetDirMgr_01(t *testing.T) {
 		t.Errorf("Error: Expected returned directory path='%v'. Instead, "+
 			"returned directory path='%v' ",
 			expectedDirMgrPath, actualDirMgrPath)
+	}
+
+}
+
+func TestFileMgr_GetFileExt(t *testing.T) {
+
+	expectedFileNameExt := "newerFileForTest_01.txt"
+
+	fh := FileHelper{}
+	adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+
+	dMgr, err := DirMgr{}.New(adjustedPath)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). "+
+			"adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+	}
+
+	srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt). "+
+			"dMgr.absolutePath='%v' expectedFileNameExt='%v'  Error='%v'", dMgr.absolutePath, adjustedPath, err.Error())
+	}
+
+	expectedFileExt := ".txt"
+
+	actualFileExt := srcFMgr.GetFileExt()
+
+	if expectedFileExt != actualFileExt {
+		t.Errorf("Error: Expected returned file extension='%v'. Instead "+
+			"returned file extension='%v' ",
+			expectedFileExt, actualFileExt)
 	}
 
 }

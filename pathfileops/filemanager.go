@@ -1725,8 +1725,16 @@ func (fMgr *FileMgr) GetFileBytesWritten() uint64 {
 	return fMgr.buffBytesWritten + fMgr.fileBytesWritten
 }
 
-// GetFileExt() - returns a string containing the
-// File Extension for this File Manager instance.
+// GetFileExt() - returns a string containing the File Extension for this
+// File Manager instance.
+//
+// IMPORTANT:
+// The returned file extension will contain the preceding dot separator.
+//
+//    Example:
+//                           File Name: "newerFileForTest_01.txt"
+//             Returned File Extension: ".txt"
+//
 func (fMgr *FileMgr) GetFileExt() string {
 	return fMgr.fileExt
 }
