@@ -3,6 +3,7 @@ package pathfileops
 import (
 	"fmt"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -644,6 +645,34 @@ func TestFileMgr_EqualPathFileNameExt_05(t *testing.T) {
 		t.Errorf("Error: expected fileMgr1 absolute path file name ext to NOT equal fileMgr2 "+
 			"absolute path file name ext. Paths ARE EQUAL! \n fileMgr1='%v' \n fileMgr2='%v'\n",
 			fileMgr1.GetAbsolutePath(), fileMgr2.GetAbsolutePath())
+	}
+
+}
+
+func TestFileMgr_GetAbsolutePathFileName_01(t *testing.T) {
+	fh := FileHelper{}
+	relPath1 := "..\\logTest\\CmdrX\\CmdrX.log"
+
+	filePath1, err := fh.MakeAbsolutePath(relPath1)
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1). "+
+			"relPath1='%v' Error='%v'", relPath1, err.Error())
+	}
+
+	fileMgr1, err := FileMgr{}.New(filePath1)
+
+	if err != nil {
+		t.Errorf("Received Error on FileMgr{}.New(filePath1). Error='%v' ", err.Error())
+	}
+
+	absPathFileName := fileMgr1.GetAbsolutePathFileName()
+	absPathFileName = strings.ToLower(absPathFileName)
+	filePath1 = strings.ToLower(filePath1)
+
+	if filePath1 != absPathFileName {
+		t.Errorf("Error: Expected absPathFileName='%v'. Instead, absPathFileName='%v' ",
+			filePath1, absPathFileName)
 	}
 
 }
