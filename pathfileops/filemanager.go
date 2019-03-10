@@ -1855,6 +1855,26 @@ func (fMgr *FileMgr) GetOriginalPathFileName() string {
 //
 // If the file does NOT exist, this method will return an error.
 //
+// Examples:
+//
+//   Permission
+//     Text        Octal            File Access
+//     Codes      Notation          Permission Descriptions
+//
+//   ----------     0000             File - no permissions
+//   -rwx------     0700             File - read, write, & execute only for owner
+//   -rwxrwx---     0770             File - read, write, & execute for owner and group
+//   -rwxrwxrwx     0777             File - read, write, & execute for owner, group and others
+//   ---x--x--x     0111             File - execute
+//   --w--w--w-     0222             File - write only
+//   --wx-wx-wx     0333             File - write & execute
+//   -r--r--r--     0444             File - read only
+//   -r-xr-xr-x     0555             File - read & execute
+//   -rw-rw-rw-     0666             File - read & write
+//   -rwxr-----     0740             File - Owner can read, write, & execute. Group can only read;
+//                                   File - others have no permissions
+//   drwxrwxrwx     20000000777      File - Directory - read, write, & execute for owner, group and others
+//
 func (fMgr *FileMgr) GetFilePermissionTextCodes() (string, error) {
 
 	ePrefix := "FileMgrGetFilePermissionTextCodes() "
@@ -1865,16 +1885,12 @@ func (fMgr *FileMgr) GetFilePermissionTextCodes() (string, error) {
 		return "", err
 	}
 
-	info, err := os.Stat(fMgr.absolutePathFileName)
+	err = fMgr.ResetFileInfo()
 
 	if err != nil {
 		return "",
-			fmt.Errorf(ePrefix+"Error returned by "+
-				"os.Stat(fMgr.absolutePathFileName). fMgr.absolutePathFileName='%v'  Error='%v'",
-				fMgr.absolutePathFileName, err.Error())
+			fmt.Errorf(ePrefix+" %v ", err.Error())
 	}
-
-	fMgr.actualFileInfo = FileInfoPlus{}.NewFromPathFileInfo(fMgr.dMgr.absolutePath, info)
 
 	fPerm, err := FilePermissionConfig{}.NewByFileMode(fMgr.actualFileInfo.Mode())
 

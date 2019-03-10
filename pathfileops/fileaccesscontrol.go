@@ -211,7 +211,6 @@ func (fAccess *FileAccessControl) GetFileOpenConfig() (FileOpenConfig, error) {
 	return fAccess.fileOpenCodes.CopyOut(), nil
 }
 
-
 // GetFileOpenType - Returns the File Open Type associated with the
 // FileOpenConfig type stored as 'FileAccessControl.fileOpenCodes'.
 //
@@ -222,7 +221,7 @@ func (fAccess *FileAccessControl) GetFileOpenType() (FileOpenType, error) {
 	err := fAccess.IsValid()
 
 	if err != nil {
-		return FileOpenType(99999), fmt.Errorf(ePrefix +"%v", err.Error())
+		return FileOpenType(99999), fmt.Errorf(ePrefix+"%v", err.Error())
 	}
 
 	return fAccess.fileOpenCodes.GetFileOpenType(), nil

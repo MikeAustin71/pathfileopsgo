@@ -1025,6 +1025,76 @@ func TestFileMgr_GetOriginalPathFileName_01(t *testing.T) {
 
 }
 
+func TestFileMgr_GetFilePermissionTextCodes_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+	srcFMgr, err := FileMgr{}.New(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+			"absPath='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	err = srcFMgr.OpenThisFileReadWrite()
+
+	if err != nil {
+
+		_ = srcFMgr.CloseThisFile()
+
+		t.Errorf("Error returned by srcFMgr.OpenThisFileReadWrite(). "+
+			"Error='%v' ", err.Error())
+
+	}
+
+	expectedPermissionCodes := "-rw-rw-rw-"
+
+	actualPermissionTextCodes, err := srcFMgr.GetFilePermissionTextCodes()
+
+	if err != nil {
+		_ = srcFMgr.CloseThisFile()
+		t.Errorf("Error returned by srcFMgr.GetFilePermissionTextCodes(). Error='%v'",
+			err.Error())
+	}
+
+	err = srcFMgr.CloseThisFile()
+
+	if err != nil {
+		t.Errorf("Error returned by #2 srcFMgr.CloseThisFile(). "+
+			"Error='%v'", err.Error())
+	}
+
+	if expectedPermissionCodes != actualPermissionTextCodes {
+		t.Errorf("Error: Expected Permission Code='%v'. Instead, Permission Code='%v'",
+			expectedPermissionCodes, actualPermissionTextCodes)
+	}
+
+}
+
+func TestFileMgr_GetFilePermissionTextCodes_02(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/iDoNotExist_01.txt")
+
+	srcFMgr, err := FileMgr{}.New(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+			"absPath='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	_, err = srcFMgr.GetFilePermissionTextCodes()
+
+	if err == nil {
+		t.Error("Expected error return from srcFMgr.GetFilePermissionTextCodes() " +
+			"because file does not exist. However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
 func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
 	fh := FileHelper{}
 	setupSrcFile := fh.AdjustPathSlash("..\\logTest\\FileMgmnt\\TestFile003.txt")
