@@ -832,6 +832,36 @@ func TestFileMgr_GetFileExt(t *testing.T) {
 
 }
 
+func TestFileMgr_GetFileInfo_01(t *testing.T) {
+
+	fh := FileHelper{}
+	targetFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+	absPath, err := fh.MakeAbsolutePath(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned by fh.MakeAbsolutePath(targetFile). "+
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	srcFMgr, err := FileMgr{}.New(absPath)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(absPath). "+
+			"absPath='%v' Error='%v'", absPath, err.Error())
+	}
+
+	fInfo, err := srcFMgr.GetFileInfo()
+
+	expectedFileNameExt := strings.ToLower(srcFMgr.GetFileNameExt())
+
+	actualFileNameExt := strings.ToLower(fInfo.Name())
+
+	if expectedFileNameExt != actualFileNameExt {
+		t.Errorf("Error: Expected File Name:='%v'.  Instead, File Name='%v'",
+			expectedFileNameExt, actualFileNameExt)
+	}
+}
+
 func TestFileMgr_GetFileInfoPlus_01(t *testing.T) {
 
 	fh := FileHelper{}
