@@ -764,6 +764,40 @@ func TestFileMgr_GetBufioWriter_01(t *testing.T) {
 
 }
 
+func TestFileMgr_GetDirMgr_01(t *testing.T) {
+	expectedFileNameExt := "newerFileForTest_01.txt"
+
+	fh := FileHelper{}
+	adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+
+	dMgr, err := DirMgr{}.New(adjustedPath)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). "+
+			"adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+	}
+
+	srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt). "+
+			"dMgr.absolutePath='%v' expectedFileNameExt='%v'  Error='%v'", dMgr.absolutePath, adjustedPath, err.Error())
+	}
+
+	expectedDirMgrPath := strings.ToLower(dMgr.GetAbsolutePath())
+
+	srcDMgr := srcFMgr.GetDirMgr()
+
+	actualDirMgrPath := strings.ToLower(srcDMgr.GetAbsolutePath())
+
+	if expectedDirMgrPath != actualDirMgrPath {
+		t.Errorf("Error: Expected returned directory path='%v'. Instead, "+
+			"returned directory path='%v' ",
+			expectedDirMgrPath, actualDirMgrPath)
+	}
+
+}
+
 func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
 	fh := FileHelper{}
 	setupSrcFile := fh.AdjustPathSlash("..\\logTest\\FileMgmnt\\TestFile003.txt")
