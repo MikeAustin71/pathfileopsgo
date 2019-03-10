@@ -1055,6 +1055,11 @@ func (fMgr *FileMgr) CopyFileStrByLink(dstPathFileNameExt string) error {
 			"dstPathFileNameExt='%v' Error='%v'", dstPathFileNameExt, err.Error())
 	}
 
+	if !fMgr.doesAbsolutePathFileNameExist {
+		return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST! "+
+			"FileName='%v' ", fMgr.absolutePathFileName)
+	}
+
 	err = fMgr.CopyFileMgrByLink(&fMgrDest)
 
 	if err != nil {
