@@ -196,6 +196,12 @@ func (fMgr *FileMgr) CopyFileToDirByIoByLink(dir DirMgr) error {
 			dir.absolutePath, fMgr.fileNameExt, err.Error())
 	}
 
+	if fMgr.EqualAbsPaths(&newFMgr) {
+		return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+			"Source File: '%v'  Destination File: '%v' ",
+			fMgr.absolutePathFileName, newFMgr.absolutePathFileName)
+	}
+
 	err = fMgr.CopyFileMgrByIoByLink(&newFMgr)
 
 	if err != nil {
@@ -257,6 +263,12 @@ func (fMgr *FileMgr) CopyFileToDirByLinkByIo(dir DirMgr) error {
 			dir.absolutePath, fMgr.fileNameExt, err.Error())
 	}
 
+	if fMgr.EqualAbsPaths(&newFMgr) {
+		return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+			"Source File: '%v'  Destination File: '%v' ",
+			fMgr.absolutePathFileName, newFMgr.absolutePathFileName)
+	}
+
 	err = fMgr.CopyFileMgrByLinkByIo(&newFMgr)
 
 	if err != nil {
@@ -310,6 +322,12 @@ func (fMgr *FileMgr) CopyFileToDirByIo(dir DirMgr) error {
 			"Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dir, "+
 			"fMgr.fileNameExt) dir.absolutePath='%v'  fMgr.fileNameExt='%v'  Error='%v'",
 			dir.absolutePath, fMgr.fileNameExt, err.Error())
+	}
+
+	if fMgr.EqualAbsPaths(&newFMgr) {
+		return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+			"Source File: '%v'  Destination File: '%v' ",
+			fMgr.absolutePathFileName, newFMgr.absolutePathFileName)
 	}
 
 	err = fMgr.CopyFileMgrByIo(&newFMgr)
@@ -366,6 +384,12 @@ func (fMgr *FileMgr) CopyFileToDirByLink(dir DirMgr) error {
 			"Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dir, "+
 			"fMgr.fileNameExt) dir.absolutePath='%v'  fMgr.fileNameExt='%v'  Error='%v'",
 			dir.absolutePath, fMgr.fileNameExt, err.Error())
+	}
+
+	if fMgr.EqualAbsPaths(&newFMgr) {
+		return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+			"Source File: '%v'  Destination File: '%v' ",
+			fMgr.absolutePathFileName, newFMgr.absolutePathFileName)
 	}
 
 	err = fMgr.CopyFileMgrByLink(&newFMgr)
@@ -458,19 +482,22 @@ func (fMgr *FileMgr) CopyFileMgrByIoByLink(fMgrDest *FileMgr) error {
 			"Copy operation aborted! Destination File='%v' ", fMgrDest.absolutePathFileName)
 	}
 
-	// Source and destination files are the same file.
-	// No need to copy over source. Just return - Copy
-	// operation complete.
-	if destFileExists && os.SameFile(fMgr.actualFileInfo, fMgrDest.actualFileInfo) {
-		return nil
-	}
-
 	// See Reference:
 	// https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 
 	fh := FileHelper{}
 
+	if fMgr.EqualAbsPaths(fMgrDest) {
+		return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+			"Source File: '%v'  Destination File: '%v' ",
+			fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+	}
+
+	fMgr.dataMutex.Lock()
+
 	err = fh.CopyFileByIoByLink(fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+
+	fMgr.dataMutex.Unlock()
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+
@@ -576,11 +603,10 @@ func (fMgr *FileMgr) CopyFileMgrByLinkByIo(fMgrDest *FileMgr) error {
 			"Copy operation aborted! Destination File='%v' ", fMgrDest.absolutePathFileName)
 	}
 
-	// Source and destination files are the same file.
-	// No need to copy over source. Just return - Copy
-	// operation complete.
-	if destFileExists && os.SameFile(fMgr.actualFileInfo, fMgrDest.actualFileInfo) {
-		return nil
+	if fMgr.EqualAbsPaths(fMgrDest) {
+		return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+			"Source File: '%v'  Destination File: '%v' ",
+			fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
 	}
 
 	// See Reference:
@@ -588,7 +614,11 @@ func (fMgr *FileMgr) CopyFileMgrByLinkByIo(fMgrDest *FileMgr) error {
 
 	fh := FileHelper{}
 
+	fMgr.dataMutex.Lock()
+
 	err = fh.CopyFileByLinkByIo(fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+
+	fMgr.dataMutex.Unlock()
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+
@@ -690,11 +720,10 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
 			"Copy operation aborted! Destination File='%v' ", fMgrDest.absolutePathFileName)
 	}
 
-	// Source and destination files are the same file.
-	// No need to copy over source. Just return - Copy
-	// operation complete.
-	if destFileExists && os.SameFile(fMgr.actualFileInfo, fMgrDest.actualFileInfo) {
-		return nil
+	if fMgr.EqualAbsPaths(fMgrDest) {
+		return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+			"Source File: '%v'  Destination File: '%v' ",
+			fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
 	}
 
 	// See Reference:
@@ -702,7 +731,11 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
 
 	fh := FileHelper{}
 
+	fMgr.dataMutex.Lock()
+
 	err = fh.CopyFileByIo(fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+
+	fMgr.dataMutex.Unlock()
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+
@@ -804,11 +837,10 @@ func (fMgr *FileMgr) CopyFileMgrByLink(fMgrDest *FileMgr) error {
 			"Copy operation aborted! Destination File='%v' ", fMgrDest.absolutePathFileName)
 	}
 
-	// Source and destination files are the same file.
-	// No need to copy over source. Just return - Copy
-	// operation complete.
-	if destFileExists && os.SameFile(fMgr.actualFileInfo, fMgrDest.actualFileInfo) {
-		return nil
+	if fMgr.EqualAbsPaths(fMgrDest) {
+		return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+			"Source File: '%v'  Destination File: '%v' ",
+			fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
 	}
 
 	err = fMgrDest.dMgr.MakeDir()
@@ -822,7 +854,11 @@ func (fMgr *FileMgr) CopyFileMgrByLink(fMgrDest *FileMgr) error {
 
 	fh := FileHelper{}
 
+	fMgr.dataMutex.Lock()
+
 	err = fh.CopyFileByLink(fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+
+	fMgr.dataMutex.Unlock()
 
 	if err != nil {
 		return fmt.Errorf(ePrefix+
@@ -898,6 +934,12 @@ func (fMgr *FileMgr) CopyFileStrByIoByLink(dstPathFileNameExt string) error {
 			"FileName='%v' ", fMgr.absolutePathFileName)
 	}
 
+	if fMgr.EqualAbsPaths(&fMgrDest) {
+		return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+			"Source File: '%v'  Destination File: '%v' ",
+			fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+	}
+
 	err = fMgr.CopyFileMgrByIoByLink(&fMgrDest)
 
 	if err != nil {
@@ -955,6 +997,12 @@ func (fMgr *FileMgr) CopyFileStrByLinkByIo(dstPathFileNameExt string) error {
 			"FileName='%v' ", fMgr.absolutePathFileName)
 	}
 
+	if fMgr.EqualAbsPaths(&fMgrDest) {
+		return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+			"Source File: '%v'  Destination File: '%v' ",
+			fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+	}
+
 	err = fMgr.CopyFileMgrByLinkByIo(&fMgrDest)
 
 	if err != nil {
@@ -1005,6 +1053,12 @@ func (fMgr *FileMgr) CopyFileStrByIo(dstPathFileNameExt string) error {
 	if !fMgr.doesAbsolutePathFileNameExist {
 		return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST! "+
 			"FileName='%v' ", fMgr.absolutePathFileName)
+	}
+
+	if fMgr.EqualAbsPaths(&fMgrDest) {
+		return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+			"Source File: '%v'  Destination File: '%v' ",
+			fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
 	}
 
 	err = fMgr.CopyFileMgrByIo(&fMgrDest)
@@ -1058,6 +1112,12 @@ func (fMgr *FileMgr) CopyFileStrByLink(dstPathFileNameExt string) error {
 	if !fMgr.doesAbsolutePathFileNameExist {
 		return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST! "+
 			"FileName='%v' ", fMgr.absolutePathFileName)
+	}
+
+	if fMgr.EqualAbsPaths(&fMgrDest) {
+		return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+			"Source File: '%v'  Destination File: '%v' ",
+			fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
 	}
 
 	err = fMgr.CopyFileMgrByLink(&fMgrDest)
