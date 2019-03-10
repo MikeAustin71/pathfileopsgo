@@ -5,6 +5,49 @@ import (
 	"testing"
 )
 
+func TestFileMgr_CopyIn_01(t *testing.T) {
+	fh := FileHelper{}
+
+	commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
+	expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
+	fileName := "xt_dirmgr_01_test"
+	fileNameExt := "xt_dirmgr_01_test.go"
+	extName := ".go"
+
+	fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(commonDir)
+
+	if err != nil {
+		t.Error("Received Error on GetPathFileNameElements Error:", err)
+	}
+
+	fMgr2 := FileMgr{}
+
+	fMgr2.CopyIn(&fileMgr)
+
+	if fMgr2.fileName != fileName {
+		t.Error(fmt.Sprintf("Expected CopyToThis to return fileName == '%v', instead got: ", fileName), fMgr2.fileName)
+	}
+
+	if fMgr2.fileExt != extName {
+		t.Error(fmt.Sprintf("Expected CopyToThis to return fileExt == '%v', instead got: ", extName), fMgr2.fileExt)
+	}
+
+	if fMgr2.fileNameExt != fileNameExt {
+		t.Error(fmt.Sprintf("Expected CopyToThis to return fileNameExt == '%v', instead got: ", fileNameExt), fMgr2.fileNameExt)
+	}
+
+	if fMgr2.dMgr.path != expectedDir {
+		t.Error(fmt.Sprintf("Expected CopyToThis to return path == '%v', instead got: ", expectedDir), fMgr2.dMgr.path)
+	}
+
+	result := fMgr2.Equal(&fileMgr)
+
+	if result != true {
+		t.Error("Expected Equal to return 'true' for fMgr2==fileMgr, instead got: ", result)
+	}
+
+}
+
 func TestFileMgr_CopyOut_01(t *testing.T) {
 
 	fh := FileHelper{}
