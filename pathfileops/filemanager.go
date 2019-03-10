@@ -1839,6 +1839,10 @@ func (fMgr *FileMgr) GetFileNameExt() string {
 // GetOriginalPathFileName - Returns the path and file name
 // used originally to configure this File Manager object.
 //
+// Note: The original path and file name will be adjusted
+// to reflect the path operators used in the operating system
+// for the host computer.
+//
 func (fMgr *FileMgr) GetOriginalPathFileName() string {
 
 	return fMgr.originalPathFileName

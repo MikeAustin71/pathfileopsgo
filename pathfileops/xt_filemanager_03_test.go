@@ -1002,6 +1002,29 @@ func TestFileMgr_GetFileNameExt_01(t *testing.T) {
 
 }
 
+func TestFileMgr_GetOriginalPathFileName_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+	srcFMgr, err := FileMgr{}.New(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+			"absPath='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	originalPathFileName := srcFMgr.GetOriginalPathFileName()
+
+	if targetFile != originalPathFileName {
+		t.Errorf("Error: Expected Original Path and File Name='%v'. Instead, "+
+			"Original Path and File Name='%v'",
+			targetFile, originalPathFileName)
+	}
+
+}
+
 func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
 	fh := FileHelper{}
 	setupSrcFile := fh.AdjustPathSlash("..\\logTest\\FileMgmnt\\TestFile003.txt")
