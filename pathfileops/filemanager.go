@@ -1002,6 +1002,11 @@ func (fMgr *FileMgr) CopyFileStrByIo(dstPathFileNameExt string) error {
 			"dstPathFileNameExt='%v' Error='%v'", dstPathFileNameExt, err.Error())
 	}
 
+	if !fMgr.doesAbsolutePathFileNameExist {
+		return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST! "+
+			"FileName='%v' ", fMgr.absolutePathFileName)
+	}
+
 	err = fMgr.CopyFileMgrByIo(&fMgrDest)
 
 	if err != nil {
