@@ -1836,19 +1836,6 @@ func (fMgr *FileMgr) GetFileNameExt() string {
 	return fMgr.fileNameExt
 }
 
-// GetOriginalPathFileName - Returns the path and file name
-// used originally to configure this File Manager object.
-//
-// Note: The original path and file name will be adjusted
-// to reflect the path operators used in the operating system
-// for the host computer.
-//
-func (fMgr *FileMgr) GetOriginalPathFileName() string {
-
-	return fMgr.originalPathFileName
-
-}
-
 // GetFilePermissionTextCodes - If the current file exists on disk,
 // this method will return the File Permission Codes, otherwise known
 // as the unix permission bits, in the form of a 10-character string.
@@ -1919,6 +1906,18 @@ func (fMgr *FileMgr) GetFilePermissionTextCodes() (string, error) {
 //
 func (fMgr *FileMgr) GetFilePtr() *os.File {
 	return fMgr.filePtr
+}
+
+// GetOriginalPathFileName - Returns the path and file name
+// used originally to configure this File Manager object.
+//
+// Note: The original path and file name will be adjusted
+// to reflect the path operators used in the operating system
+// for the host computer.
+//
+func (fMgr *FileMgr) GetOriginalPathFileName() string {
+
+	return fMgr.originalPathFileName
 }
 
 // IsAbsolutePathFileNamePopulated - Returns a boolean value

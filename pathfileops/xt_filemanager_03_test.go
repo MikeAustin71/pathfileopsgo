@@ -1095,6 +1095,45 @@ func TestFileMgr_GetFilePermissionTextCodes_02(t *testing.T) {
 
 }
 
+func TestFileMgr_GetFilePtr_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+	srcFMgr, err := FileMgr{}.New(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+			"absPath='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	err = srcFMgr.OpenThisFileReadOnly()
+
+	if err != nil {
+
+		_ = srcFMgr.CloseThisFile()
+
+		t.Errorf("Error returned by srcFMgr.OpenThisFileReadOnly(). "+
+			"Error='%v' ", err.Error())
+
+	}
+
+	fPtr := srcFMgr.GetFilePtr()
+
+	if fPtr == nil {
+		t.Error("Error: Expected a populated file pointer. However, the file pointer is nil!")
+	}
+
+	err = srcFMgr.CloseThisFile()
+
+	if err != nil {
+		t.Errorf("Error returned by final srcFMgr.CloseThisFile(). Error='%v' ",
+			err.Error())
+	}
+
+}
+
 func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
 	fh := FileHelper{}
 	setupSrcFile := fh.AdjustPathSlash("..\\logTest\\FileMgmnt\\TestFile003.txt")
