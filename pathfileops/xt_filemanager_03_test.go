@@ -1002,29 +1002,6 @@ func TestFileMgr_GetFileNameExt_01(t *testing.T) {
 
 }
 
-func TestFileMgr_GetOriginalPathFileName_01(t *testing.T) {
-
-	fh := FileHelper{}
-
-	targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
-
-	srcFMgr, err := FileMgr{}.New(targetFile)
-
-	if err != nil {
-		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
-			"absPath='%v' Error='%v'", targetFile, err.Error())
-	}
-
-	originalPathFileName := srcFMgr.GetOriginalPathFileName()
-
-	if targetFile != originalPathFileName {
-		t.Errorf("Error: Expected Original Path and File Name='%v'. Instead, "+
-			"Original Path and File Name='%v'",
-			targetFile, originalPathFileName)
-	}
-
-}
-
 func TestFileMgr_GetFilePermissionTextCodes_01(t *testing.T) {
 
 	fh := FileHelper{}
@@ -1130,6 +1107,77 @@ func TestFileMgr_GetFilePtr_01(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error returned by final srcFMgr.CloseThisFile(). Error='%v' ",
 			err.Error())
+	}
+
+}
+
+func TestFileMgr_GetFileSize_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+	srcFMgr, err := FileMgr{}.New(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+			"absPath='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	actualFileSize := srcFMgr.GetFileSize()
+
+	expectedFileSize := int64(29)
+
+	if expectedFileSize != actualFileSize {
+		t.Errorf("Expected file size='29'. Instead, file size='%v'",
+			actualFileSize)
+	}
+
+}
+
+func TestFileMgr_GetFileSize_02(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/iDontExist_01.txt")
+
+	srcFMgr, err := FileMgr{}.New(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+			"absPath='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	actualFileSize := srcFMgr.GetFileSize()
+
+	expectedFileSize := int64(-1)
+
+	if expectedFileSize != actualFileSize {
+		t.Errorf("Expected file size='-1'. Instead, file size='%v'",
+			actualFileSize)
+	}
+
+}
+
+func TestFileMgr_GetOriginalPathFileName_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+	srcFMgr, err := FileMgr{}.New(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+			"absPath='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	originalPathFileName := srcFMgr.GetOriginalPathFileName()
+
+	if targetFile != originalPathFileName {
+		t.Errorf("Error: Expected Original Path and File Name='%v'. Instead, "+
+			"Original Path and File Name='%v'",
+			targetFile, originalPathFileName)
 	}
 
 }

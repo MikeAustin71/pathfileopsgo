@@ -1908,6 +1908,23 @@ func (fMgr *FileMgr) GetFilePtr() *os.File {
 	return fMgr.filePtr
 }
 
+// GetFileSize() - Returns os.FileInfo.Size() length in bytes for regular files;
+// system-dependent for others.
+//
+// If the File Manager file does NOT exist, or if there is a file-path error, the
+// value returned is -1.
+//
+func (fMgr *FileMgr) GetFileSize() int64 {
+
+	err := fMgr.ResetFileInfo()
+
+	if err != nil {
+		return int64(-1)
+	}
+
+	return fMgr.actualFileInfo.Size()
+}
+
 // GetOriginalPathFileName - Returns the path and file name
 // used originally to configure this File Manager object.
 //
