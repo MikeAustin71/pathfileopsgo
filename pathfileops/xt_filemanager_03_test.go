@@ -1134,6 +1134,41 @@ func TestFileMgr_GetFilePtr_01(t *testing.T) {
 
 }
 
+func TestFileMgr_IsAbsolutePathFileNamePopulated_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+	srcFMgr, err := FileMgr{}.New(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+			"absPath='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	isAbsPathFileName := srcFMgr.IsAbsolutePathFileNamePopulated()
+
+	if !isAbsPathFileName {
+		t.Error("Error: Expected Absolute Path File Name to be populated. " +
+			"It was NOT!")
+	}
+
+}
+
+func TestFileMgr_IsAbsolutePathFileNamePopulated_02(t *testing.T) {
+
+	srcFMgr := FileMgr{}
+
+	isAbsPathFileName := srcFMgr.IsAbsolutePathFileNamePopulated()
+
+	if isAbsPathFileName {
+		t.Error("Error: Expected Absolute Path File Name NOT populated. " +
+			"WRONG - It IS populated!")
+	}
+
+}
+
 func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
 	fh := FileHelper{}
 	setupSrcFile := fh.AdjustPathSlash("..\\logTest\\FileMgmnt\\TestFile003.txt")
