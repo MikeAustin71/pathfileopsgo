@@ -62,6 +62,64 @@ type FileMgr struct {
 	dataMutex                       sync.Mutex // Used internally to ensure thread safe operations
 }
 
+// ChangePermissionMode - This method is a wrapper for os.Chmod().
+//
+// ChangePermissionMode changes the permissions mode of the named file to mode. If the file is a symbolic
+// link, it changes the mode of the link's target. If there is an error, it will be of type
+// *PathError.
+//
+// A different subset of the mode bits are used, depending on the operating system.
+//
+// On Unix, the mode's permission bits, ModeSetuid, ModeSetgid, and ModeSticky are used.
+//
+// On Windows, the mode must be non-zero but otherwise only the 0200 bit (owner writable) of mode
+// is used; it controls whether the file's read-only attribute is set or cleared. attribute. The
+// other bits are currently unused. Use mode 0400 for a read-only file and 0600 for a
+// readable+writable file.
+//
+//   For Windows - Eligible permission codes are:
+//
+//     'modeStr'      Octal
+//      Symbolic      Mode Value     File Access
+//
+//      -r--r--r--     0444          File - read only
+//      -rw-rw-rw-     0666          File - read & write
+//
+// On Plan 9, the mode's permission bits, ModeAppend, ModeExclusive, and ModeTemporary are used.
+//
+func (fMgr *FileMgr) ChangePermissionMode(mode FilePermissionConfig) error {
+
+	ePrefix := "FileMgr.ChangePermissionMode() "
+
+	err := fMgr.IsFileMgrValid(ePrefix)
+
+	if err != nil {
+		return err
+	}
+
+	if !fMgr.doesAbsolutePathFileNameExist {
+		return fmt.Errorf(ePrefix+"Error: This file does NOT exist! "+
+			"File Name:'%v' ", fMgr.absolutePathFileName)
+	}
+
+	fileMode, err := mode.GetCompositePermissionMode()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	err = os.Chmod(fMgr.absolutePathFileName, fileMode)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+
+			"Error returned by os.Chmod(fMgr.absolutePathFileName, fileMode). "+
+			"fileMode='%v' Error='%v' ",
+			mode.GetPermissionFileModeValueText(), err.Error())
+	}
+
+	return nil
+}
+
 // CloseThisFile - This method will call the Close()
 // method on the current file pointer, FileMgr.filePtr.
 //
@@ -1460,7 +1518,6 @@ func (fMgr *FileMgr) DoesThisFileExist() (bool, error) {
 		fMgr.actualFileInfo = FileInfoPlus{}.NewFromPathFileInfo(fMgr.absolutePathFileName, info)
 	}
 
-	fMgr.dMgr.DoesDirMgrPathExist()
 	fMgr.dMgr.DoesDirMgrPathExist()
 
 	return fMgr.doesAbsolutePathFileNameExist, nil

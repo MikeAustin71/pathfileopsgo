@@ -5,6 +5,76 @@ import (
 	"testing"
 )
 
+func TestFileMgr_ChangePermissionMode_01(t *testing.T) {
+
+	filePath := "../filesfortest/modefilesfortest/modeFileTest_01.txt"
+
+	fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+			"filePathName='%v'  Error='%v'", filePath, err.Error())
+		return
+	}
+
+	basePermission, err := FilePermissionConfig{}.New("-rw-rw-rw-")
+
+	if err != nil {
+		t.Errorf("Error returned from FilePermissionConfig{}.New(\"-rw-rw-rw-\"). "+
+			"Error='%v'", err.Error())
+	}
+
+	basePermissionText, _ := basePermission.GetPermissionTextCode()
+
+	err = fMgr.ChangePermissionMode(basePermission)
+
+	if err != nil {
+		t.Errorf("Error returned from fMgr.ChangePermissionMode(basePermission). "+
+			"basePermission='%v' Error='%v'", basePermissionText, err.Error())
+	}
+
+	requestedNewPerm, err := FilePermissionConfig{}.New("-r--r--r--")
+
+	if err != nil {
+		t.Errorf("Error returned from FilePermissionConfig{}.New(\"-r--r--r--\"). "+
+			"Error='%v'", err.Error())
+	}
+
+	requestedNewPermText, err := requestedNewPerm.GetPermissionTextCode()
+
+	if err != nil {
+		t.Errorf("Error returned from requestedNewPerm.GetPermissionTextCode(). "+
+			"Error='%v' ", err.Error())
+	}
+
+	err = fMgr.ChangePermissionMode(requestedNewPerm)
+
+	if err != nil {
+		t.Errorf("Error returned from fMgr.ChangePermissionMode(requestedNewPerm). "+
+			"Error='%v'", err.Error())
+	}
+
+	actualNewPermCodeText, err := fMgr.GetFilePermissionTextCodes()
+
+	if err != nil {
+		t.Errorf("Error returned from #1 fMgr.GetFilePermissionTextCodes(). "+
+			"Error='%v'", err.Error())
+	}
+
+	if requestedNewPermText != actualNewPermCodeText {
+		t.Errorf("Error expected permission='%v'. Instead, permission='%v' ",
+			requestedNewPermText, actualNewPermCodeText)
+	}
+
+	err = fMgr.ChangePermissionMode(basePermission)
+
+	if err != nil {
+		t.Errorf("Error returned from fMgr.ChangePermissionMode(basePermission). "+
+			"basePermission='%v' Error='%v'", basePermissionText, err.Error())
+	}
+
+}
+
 func TestFileMgr_CopyIn_01(t *testing.T) {
 	fh := FileHelper{}
 

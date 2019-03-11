@@ -38,9 +38,88 @@ func main() {
 
 func main() {
 
-	mainTest37()
+	mainTest39()
+}
 
-	mainTest38()
+func mainTest39() {
+
+	filePath := "../filesfortest/modefilesfortest/modeFileTest_01.txt"
+
+	fMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+	if err != nil {
+		fmt.Printf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+			"filePathName='%v'  Error='%v'", filePath, err.Error())
+		return
+	}
+
+	originalPermCode, err := fMgr.GetFilePermissionTextCodes()
+
+	if err != nil {
+		fmt.Printf("Error returned from fMgr.GetFilePermissionTextCodes(). "+
+			"filePathName='%v'  Error='%v'", filePath, err.Error())
+		return
+	}
+
+	fmt.Println("**** mainTest39 ****")
+	fmt.Println("-------------------------------------------------------------------")
+	fmt.Println("                     File Name: ", fMgr.GetAbsolutePathFileName())
+	fmt.Println("      Original Permission Code: ", originalPermCode)
+
+	newPerm, err := pf.FilePermissionConfig{}.New("-r--r--r--")
+
+	if err != nil {
+		fmt.Printf("Error returned from FilePermissionConfig{}.New(\"-r--r--r--\"). "+
+			"Error='%v'", err.Error())
+		return
+	}
+
+	err = fMgr.ChangePermissionMode(newPerm)
+
+	if err != nil {
+		fmt.Printf("Error returned from fMgr.ChangePermissionMode(newPerm). "+
+			"Error='%v'", err.Error())
+		return
+	}
+
+	newActualPermCode, err := fMgr.GetFilePermissionTextCodes()
+
+	if err != nil {
+		fmt.Printf("Error returned from #2 fMgr.GetFilePermissionTextCodes(). "+
+			"Error='%v'", err.Error())
+		return
+	}
+
+	newPermText, _ := newPerm.GetPermissionTextCode()
+
+	fmt.Println(" New Requested Permission Code: ", newPermText)
+	fmt.Println("    New Actual Permission Code: ", newActualPermCode)
+
+	newPerm, err = pf.FilePermissionConfig{}.New("-rw-rw-rw-")
+
+	err = fMgr.ChangePermissionMode(newPerm)
+
+	if err != nil {
+		fmt.Printf("Error returned from #2 fMgr.ChangePermissionMode(newPerm). "+
+			"Error='%v'", err.Error())
+		return
+	}
+
+	newPermText, _ = newPerm.GetPermissionTextCode()
+
+	newActualPermCode, err = fMgr.GetFilePermissionTextCodes()
+
+	if err != nil {
+		fmt.Printf("Error returned from #3 fMgr.GetFilePermissionTextCodes(). "+
+			"Error='%v'", err.Error())
+		return
+	}
+
+	fmt.Println("Last Requested Permission Code: ", newPermText)
+	fmt.Println("   Last Actual Permission Code: ", newActualPermCode)
+
+	fmt.Println("-------------------------------------------------------------------")
+	fmt.Println("                     SUCCESS!!")
 }
 
 func mainTest38() {
@@ -99,69 +178,66 @@ func mainTest38() {
 
 func mainTest37() {
 
+	testText := "Now is the time for all good men to come to the aid of their country.\n"
+	rawFilePath := "D:\\T08\\testWriteFile801294.txt"
+	lenTestText := len(testText)
 
-  testText := "Now is the time for all good men to come to the aid of their country.\n"
-  rawFilePath := "D:\\T08\\testWriteFile801294.txt"
-  lenTestText := len(testText)
+	fh := pf.FileHelper{}
 
-  fh := pf.FileHelper{}
+	filePath := fh.AdjustPathSlash(rawFilePath)
 
-  filePath := fh.AdjustPathSlash(rawFilePath)
+	fMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
-  fMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(filePath)
+	if err != nil {
+		fmt.Printf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+			"filePathName='%v'  Error='%v'", filePath, err.Error())
+		return
+	}
 
-  if err != nil {
-    fmt.Printf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
-      "filePathName='%v'  Error='%v'", filePath, err.Error())
-    return
-  }
+	err = fMgr.CreateThisFile()
 
-  err = fMgr.CreateThisFile()
+	if err != nil {
+		_ = fMgr.CloseThisFile()
+		fmt.Printf("Error returned by fMgr.CreateThisFile(). Error='%v' ",
+			err.Error())
+		return
+	}
 
-  if err != nil {
-    _ = fMgr.CloseThisFile()
-    fmt.Printf("Error returned by fMgr.CreateThisFile(). Error='%v' ",
-      err.Error())
-    return
-  }
+	err = fMgr.OpenThisFileWriteOnly()
 
-  err = fMgr.OpenThisFileWriteOnly()
+	if err != nil {
+		_ = fMgr.CloseThisFile()
+		fmt.Printf("Error returned by fMgr.OpenThisFileWriteOnly(). Error='%v' ",
+			err.Error())
+		return
+	}
 
-  if err != nil {
-    _ = fMgr.CloseThisFile()
-    fmt.Printf("Error returned by fMgr.OpenThisFileWriteOnly(). Error='%v' ",
-      err.Error())
-    return
-  }
+	bytesToWrite := []byte(testText)
 
-  bytesToWrite := []byte(testText)
+	numBytesWritten, err := fMgr.WriteBytesToFile(bytesToWrite)
 
-  numBytesWritten, err := fMgr.WriteBytesToFile(bytesToWrite)
+	if err != nil {
+		_ = fMgr.CloseThisFile()
+		fmt.Printf("Error returned by fMgr.WriteBytesToFile(bytesToWrite). Error='%v' ",
+			err.Error())
+		return
+	}
 
-  if err != nil {
-    _ = fMgr.CloseThisFile()
-    fmt.Printf("Error returned by fMgr.WriteBytesToFile(bytesToWrite). Error='%v' ",
-      err.Error())
-    return
-  }
+	err = fMgr.CloseThisFile()
 
-  err = fMgr.CloseThisFile()
-
-  if err != nil {
-    fmt.Printf("Error returned by #1 fMgr.CloseThisFile().")
-    return
-  }
-
+	if err != nil {
+		fmt.Printf("Error returned by #1 fMgr.CloseThisFile().")
+		return
+	}
 
 	fmt.Println()
 	fmt.Println("    mainTest37()   ")
 	fmt.Println("***** SUCCESS *****")
-  fmt.Println("              Test Text: ", testText)
-  fmt.Println("    Length of Test Text: ", lenTestText)
-  fmt.Println("Number of Bytes Written: ", numBytesWritten)
+	fmt.Println("              Test Text: ", testText)
+	fmt.Println("    Length of Test Text: ", lenTestText)
+	fmt.Println("Number of Bytes Written: ", numBytesWritten)
 
 }
-
 
 func mainTest36() {
 
