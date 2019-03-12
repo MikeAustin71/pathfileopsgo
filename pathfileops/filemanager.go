@@ -2343,6 +2343,21 @@ func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err erro
 //
 // ------------------------------------------------------------------------
 //
+// Return Values:
+//
+//	FileMgr       - If the method completes successfully, a valid FileMgr instance
+//	                is returned containing information on the file specified in the
+//	                two input parameter 'pathFileNameExt'.
+//
+//
+//	error         - If this method completes successfully, the returned error
+//	                Type is set equal to 'nil'. If an error condition is encountered,
+//	                this method will return an error Type which contains an appropriate
+//	                error message.
+//
+//
+// ------------------------------------------------------------------------
+//
 // Usage:
 //
 //	fmgr := FileMgr{}.New("../common/fileName.ext")
@@ -2855,79 +2870,6 @@ func (fMgr *FileMgr) OpenThisFileReadOnly() error {
 	return nil
 }
 
-// OpenThisFileReadWrite - Opens the file identified by the current
-// FileMgr object. If successful, this method will use
-// FileMgr.absolutePathFileName to open an *os.File or File Pointer.
-//
-// As the method's name implies, the 'FileMgr.absolutePathFileName'
-// will be opened for reading and writing. If FileMgr.absolutePathFileName
-// does not exist, it will be created. The FileMode is set to'-rw-rw-rw-' and
-// the permission Mode= '0666'.
-//
-func (fMgr *FileMgr) OpenThisFileReadWrite() error {
-	var err error
-
-	ePrefix := "FileMgr.OpenThisFileReadWrite() "
-
-	err = fMgr.IsFileMgrValid(ePrefix)
-
-	if err != nil {
-		return err
-	}
-
-	if fMgr.filePtr != nil {
-		_ = fMgr.CloseThisFile()
-	}
-
-	doesFileExist, err := fMgr.DoesThisFileExist()
-
-	if err != nil {
-		return fmt.Errorf(ePrefix+"%v", err.Error())
-	}
-
-	if !doesFileExist {
-
-		err = fMgr.CreateDirAndFile()
-
-		if err != nil {
-			return fmt.Errorf(ePrefix+"%v", err.Error())
-		}
-
-		err = fMgr.CloseThisFile()
-
-		if err != nil {
-			return fmt.Errorf(ePrefix+"%v", err.Error())
-		}
-
-	}
-
-	fileOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(), FOpenMode.ModeNone())
-
-	if err != nil {
-		return fmt.Errorf(ePrefix+"%v", err.Error())
-	}
-
-	filePermCfg, err := FilePermissionConfig{}.New("-rw-rw-rw-")
-
-	if err != nil {
-		return fmt.Errorf(ePrefix+"%v", err.Error())
-	}
-
-	fileAccessCfg, err := FileAccessControl{}.New(fileOpenCfg, filePermCfg)
-
-	if err != nil {
-		return fmt.Errorf(ePrefix+"%v", err.Error())
-	}
-
-	err = fMgr.OpenThisFile(fileAccessCfg)
-
-	if err != nil {
-		return fmt.Errorf(ePrefix+"%v", err.Error())
-	}
-
-	return nil
-}
-
 // OpenThisFileWriteOnly - Opens the current file for 'WriteOnly'
 // operations.  If successful, this method will use FileMgr.absolutePathFileName
 // to open an *os.File or File Pointer.
@@ -3069,6 +3011,79 @@ func (fMgr *FileMgr) OpenThisFileWriteOnlyAppend() error {
 
 	return nil
 
+}
+
+// OpenThisFileReadWrite - Opens the file identified by the current
+// FileMgr object. If successful, this method will use
+// FileMgr.absolutePathFileName to open an *os.File or File Pointer.
+//
+// As the method's name implies, the 'FileMgr.absolutePathFileName'
+// will be opened for reading and writing. If FileMgr.absolutePathFileName
+// does not exist, it will be created. The FileMode is set to'-rw-rw-rw-' and
+// the permission Mode= '0666'.
+//
+func (fMgr *FileMgr) OpenThisFileReadWrite() error {
+	var err error
+
+	ePrefix := "FileMgr.OpenThisFileReadWrite() "
+
+	err = fMgr.IsFileMgrValid(ePrefix)
+
+	if err != nil {
+		return err
+	}
+
+	if fMgr.filePtr != nil {
+		_ = fMgr.CloseThisFile()
+	}
+
+	doesFileExist, err := fMgr.DoesThisFileExist()
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	if !doesFileExist {
+
+		err = fMgr.CreateDirAndFile()
+
+		if err != nil {
+			return fmt.Errorf(ePrefix+"%v", err.Error())
+		}
+
+		err = fMgr.CloseThisFile()
+
+		if err != nil {
+			return fmt.Errorf(ePrefix+"%v", err.Error())
+		}
+
+	}
+
+	fileOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(), FOpenMode.ModeNone())
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	filePermCfg, err := FilePermissionConfig{}.New("-rw-rw-rw-")
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	fileAccessCfg, err := FileAccessControl{}.New(fileOpenCfg, filePermCfg)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	err = fMgr.OpenThisFile(fileAccessCfg)
+
+	if err != nil {
+		return fmt.Errorf(ePrefix+"%v", err.Error())
+	}
+
+	return nil
 }
 
 // ReadAllFile - Reads the file identified by the current FileMgr
