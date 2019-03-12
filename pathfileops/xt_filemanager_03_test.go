@@ -1227,7 +1227,7 @@ func TestFileMgr_IsFileExtPopulated_01(t *testing.T) {
 
 	if err != nil {
 		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
-			"absPath='%v' Error='%v'", targetFile, err.Error())
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
 	}
 
 	isFileExtPopulated := srcFMgr.IsFileExtPopulated()
@@ -1278,7 +1278,7 @@ func TestFileMgr_IsFileNameExtPopulated_01(t *testing.T) {
 
 	if err != nil {
 		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
-			"absPath='%v' Error='%v'", targetFile, err.Error())
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
 	}
 
 	isFileNameExtPopulated := srcFMgr.IsFileNameExtPopulated()
@@ -1343,7 +1343,7 @@ func TestFileMgr_IsFileNamePopulated_01(t *testing.T) {
 
 	if err != nil {
 		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
-			"absPath='%v' Error='%v'", targetFile, err.Error())
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
 	}
 
 	isFileNamePopulated := srcFMgr.IsFileNamePopulated()
@@ -1391,6 +1391,75 @@ func TestFileMgr_IsFileNamePopulated_03(t *testing.T) {
 
 	if isFileNamePopulated {
 		t.Error("Expected srcFMgr.IsFileNamePopulated() == 'false'. Instead, it is 'true'")
+	}
+
+}
+
+func TestFileMgr_IsFilePointerOpen_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+	srcFMgr, err := FileMgr{}.New(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	err = srcFMgr.OpenThisFileReadOnly()
+
+	if err != nil {
+		_ = srcFMgr.CloseThisFile()
+		t.Errorf("Error returned from srcFMgr.OpenThisFileReadOnly(). "+
+			"Error='%v'", err.Error())
+	}
+
+	isFilePointerOpen := srcFMgr.IsFilePointerOpen()
+
+	err = srcFMgr.CloseThisFile()
+
+	if err != nil {
+		t.Errorf("Error returned from final srcFMgr.CloseThisFile(). "+
+			"Error='%v'", err.Error())
+	}
+
+	if !isFilePointerOpen {
+		t.Error("Expected isFilePointerOpen = 'true'. Instead, it is FALSE!")
+	}
+
+}
+
+func TestFileMgr_IsFilePointerOpen_02(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+	srcFMgr, err := FileMgr{}.New(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	isFilePointerOpen := srcFMgr.IsFilePointerOpen()
+
+	if isFilePointerOpen {
+		t.Error("Expected isFilePointerOpen = 'false'. Instead, it is TRUE!")
+	}
+
+}
+
+func TestFileMgr_IsFilePointerOpen_03(t *testing.T) {
+
+	srcFMgr := FileMgr{}
+
+	isFilePointerOpen := srcFMgr.IsFilePointerOpen()
+
+	if isFilePointerOpen {
+		t.Error("Expected isFilePointerOpen = 'false'. Instead, it is TRUE!")
 	}
 
 }
