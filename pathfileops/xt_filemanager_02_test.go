@@ -1255,6 +1255,73 @@ func TestFileMgr_CopyFileToDirByLink_03(t *testing.T) {
 
 }
 
+func TestFileMgr_CreateDir_01(t *testing.T) {
+	fh := FileHelper{}
+	testFile := fh.AdjustPathSlash("../createFilesTest/Level01/Level02/Level03/TestFile011.txt")
+	fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(testFile)
+
+	if err != nil {
+		t.Errorf("Error thrown on FileHelper:GetPathFileNameElements():'%v'", err.Error())
+	}
+
+	if fh.DoesFileExist(fileMgr.dMgr.absolutePath) {
+
+		err = fh.DeleteDirPathAll(fileMgr.dMgr.absolutePath)
+
+		if err != nil {
+			t.Errorf("Error thrown on fh.DeleteDirPathAll(fileMgr.dMgr.absolutePath). "+
+				" fileMgr.dMgr.absolutePath='%v'   Error='%v' ", fileMgr.dMgr.absolutePath, err.Error())
+		}
+
+	}
+
+	if fh.DoesFileExist(fileMgr.dMgr.absolutePath) {
+		t.Errorf("Error: Failed to delete existing path '%v'",
+			fileMgr.dMgr.absolutePath)
+	}
+
+	err = fileMgr.CreateDir()
+
+	if err != nil {
+		t.Errorf("Error returned from fileMgr.CreateDir(). Error='%v'",
+			err.Error())
+	}
+
+	dirMgr := fileMgr.GetDirMgr()
+
+	if !fh.DoesFileExist(dirMgr.GetAbsolutePath()) {
+		t.Errorf("Error: Failed to create directory path '%v'. "+
+			"PATH DOES NOT EXIST!",
+			dirMgr.GetAbsolutePath())
+	} else {
+
+		err = dirMgr.DeleteAll()
+
+		if err != nil {
+			t.Errorf("Error returned from dirMgr.DeleteAll(). Error='%v'",
+				err.Error())
+		}
+
+		if fh.DoesFileExist(dirMgr.GetAbsolutePath()) {
+			t.Errorf("ERROR: Final Deletion of Directory Path FAILED! "+
+				"File Manager Directory Path='%v' ", dirMgr.GetAbsolutePath())
+		}
+	}
+}
+
+func TestFileMgr_CreateDir_02(t *testing.T) {
+
+	fileMgr := FileMgr{}
+
+	err := fileMgr.CreateDir()
+
+	if err == nil {
+		t.Error("Expected error return from fileMgr.CreateDir() because " +
+			"File Manager was NOT initialized. However, NO ERROR WAS RETURNED!")
+	}
+
+}
+
 func TestFileMgr_CreateDirAndFile_01(t *testing.T) {
 	fh := FileHelper{}
 	testFile := fh.AdjustPathSlash("../createFilesTest/Level01/Level02/Level03/TestFile011.txt")
@@ -1276,8 +1343,8 @@ func TestFileMgr_CreateDirAndFile_01(t *testing.T) {
 	}
 
 	if fh.DoesFileExist(fileMgr.dMgr.absolutePath) {
-		t.Errorf(fmt.Sprintf("Error: Failed to delete existing path '%v'",
-			fileMgr.dMgr.absolutePath))
+		t.Errorf("Error: Failed to delete existing path '%v'",
+			fileMgr.dMgr.absolutePath)
 	}
 
 	err = fileMgr.CreateDirAndFile()

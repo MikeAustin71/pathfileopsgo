@@ -1976,6 +1976,12 @@ func (dMgr *DirMgr) FindWalkDirFiles(
 //
 func (dMgr *DirMgr) GetAbsolutePath() string {
 
+	err := dMgr.IsDirMgrValid("")
+
+	if err != nil {
+		return ""
+	}
+
 	return dMgr.absolutePath
 }
 

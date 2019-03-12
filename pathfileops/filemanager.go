@@ -1282,26 +1282,15 @@ func (fMgr *FileMgr) CreateDir() error {
 		return err
 	}
 
-	fh := FileHelper{}
+	doesDirExist := fMgr.dMgr.DoesDirMgrAbsolutePathExist()
 
-	if !fh.DoesFileExist(fMgr.dMgr.absolutePath) {
-		// Directory does NOT exist, create it!
-
-		err := fh.MakeDirAll(fMgr.dMgr.absolutePath)
+	if !doesDirExist {
+		// Directory path does NOT exist. Create it!
+		err = fMgr.dMgr.MakeDir()
 
 		if err != nil {
-			return fmt.Errorf(ePrefix+
-				"Errors from FileHelper:"+
-				"MakeDirAll(fMgr.dMgr.absolutePath). "+
-				"fMgr.dMgr.absolutePath='%v'  Error='%v' ",
-				fMgr.dMgr.absolutePath, err.Error())
+			return fmt.Errorf(ePrefix+"%v", err.Error())
 		}
-
-		fMgr.dMgr.doesAbsolutePathExist = true
-
-	} else {
-
-		fMgr.dMgr.doesAbsolutePathExist = true
 
 	}
 
@@ -1729,8 +1718,8 @@ func (fMgr *FileMgr) FlushBytesToDisk() error {
 // Only the absolute path is returned as a 'string'.
 //
 func (fMgr *FileMgr) GetAbsolutePath() string {
-	dMgr := fMgr.GetDirMgr()
-	return dMgr.GetAbsolutePath()
+
+	return fMgr.dMgr.GetAbsolutePath()
 }
 
 // GetAbsolutePathFileName - Returns the absolute path,
