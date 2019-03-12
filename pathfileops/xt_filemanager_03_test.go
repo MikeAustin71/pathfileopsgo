@@ -1464,6 +1464,59 @@ func TestFileMgr_IsFilePointerOpen_03(t *testing.T) {
 
 }
 
+func TestFileMgr_IsInitialized_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+	srcFMgr, err := FileMgr{}.New(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	isInitialized := srcFMgr.IsInitialized()
+
+	if !isInitialized {
+		t.Error("Expected isInitialized = 'true'. Instead, it is FALSE!")
+	}
+}
+
+func TestFileMgr_IsInitialized_02(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+	srcFMgr, err := FileMgr{}.New(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	srcFMgr.Empty()
+
+	isInitialized := srcFMgr.IsInitialized()
+
+	if isInitialized {
+		t.Error("Expected isInitialized = 'false'. Instead, it is TRUE!")
+	}
+}
+
+func TestFileMgr_IsInitialized_03(t *testing.T) {
+
+	srcFMgr := FileMgr{}
+
+	isInitialized := srcFMgr.IsInitialized()
+
+	if isInitialized {
+		t.Error("Expected isInitialized = 'false'. Instead, it is TRUE!")
+	}
+}
+
 func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
 	fh := FileHelper{}
 	setupSrcFile := fh.AdjustPathSlash("..\\logTest\\FileMgmnt\\TestFile003.txt")
