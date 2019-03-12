@@ -1268,6 +1268,71 @@ func TestFileMgr_IsFileExtPopulated_02(t *testing.T) {
 
 }
 
+func TestFileMgr_IsFileNameExtPopulated_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+	srcFMgr, err := FileMgr{}.New(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+			"absPath='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	isFileNameExtPopulated := srcFMgr.IsFileNameExtPopulated()
+
+	if !isFileNameExtPopulated {
+		t.Error("Expected srcFMgr.IsFileNameExtPopulated() == 'true'. Instead, it is 'false'")
+	}
+
+}
+
+func TestFileMgr_IsFileNameExtPopulated_02(t *testing.T) {
+	fh := FileHelper{}
+
+	targetDir := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+	targetFile := "newerFileForTest_01"
+
+	dirMgr, err := DirMgr{}.New(targetDir)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.New(targetDir). "+
+			"targetDir='%v' Error='%v'", targetDir, err.Error())
+	}
+
+	srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dirMgr, targetFile)
+
+	if err != nil {
+		t.Errorf("FileMgr{}.NewFromDirMgrFileNameExt(dirMgr, targetFile). "+
+			"DirMgr='%v' targetFile='%v' Error='%v'",
+			dirMgr.GetAbsolutePath(), targetFile, err.Error())
+	}
+
+	isFileNamePopulated := srcFMgr.IsFileNameExtPopulated()
+
+	if isFileNamePopulated {
+
+		t.Errorf("Expected srcFMgr.IsFileNameExtPopulated() == 'false'. Instead, it is 'true'. "+
+			"FileName='%v' File Extension='%v' Len File Ext= '%v' ",
+			srcFMgr.GetFileName(), srcFMgr.GetFileExt(), len(srcFMgr.GetFileExt()))
+	}
+
+}
+
+func TestFileMgr_IsFileNameExtPopulated_03(t *testing.T) {
+
+	srcFMgr := FileMgr{}
+
+	isFileNamePopulated := srcFMgr.IsFileNameExtPopulated()
+
+	if isFileNamePopulated {
+		t.Error("Expected srcFMgr.IsFileNameExtPopulated() == 'false'. Instead, it is 'true'")
+	}
+
+}
+
 func TestFileMgr_IsFileNamePopulated_01(t *testing.T) {
 
 	fh := FileHelper{}
@@ -1284,7 +1349,7 @@ func TestFileMgr_IsFileNamePopulated_01(t *testing.T) {
 	isFileNamePopulated := srcFMgr.IsFileNamePopulated()
 
 	if !isFileNamePopulated {
-		t.Error("Expected srcFMgr.IsFileExtPopulated() == 'true'. Instead, it is 'false'")
+		t.Error("Expected srcFMgr.IsFileNamePopulated() == 'true'. Instead, it is 'false'")
 	}
 }
 
@@ -1313,7 +1378,7 @@ func TestFileMgr_IsFileNamePopulated_02(t *testing.T) {
 	isFileNamePopulated := srcFMgr.IsFileNamePopulated()
 
 	if !isFileNamePopulated {
-		t.Error("Expected srcFMgr.IsFileExtPopulated() == 'true'. Instead, it is 'false'")
+		t.Error("Expected srcFMgr.IsFileNamePopulated() == 'true'. Instead, it is 'false'")
 	}
 
 }
@@ -1325,7 +1390,7 @@ func TestFileMgr_IsFileNamePopulated_03(t *testing.T) {
 	isFileNamePopulated := srcFMgr.IsFileNamePopulated()
 
 	if isFileNamePopulated {
-		t.Error("Expected srcFMgr.IsFileExtPopulated() == 'false'. Instead, it is 'true'")
+		t.Error("Expected srcFMgr.IsFileNamePopulated() == 'false'. Instead, it is 'true'")
 	}
 
 }

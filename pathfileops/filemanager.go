@@ -2057,6 +2057,30 @@ func (fMgr *FileMgr) IsFileMgrValid(errorPrefixStr string) error {
 	return nil
 }
 
+// IsFileNameExtPopulated - Returns a boolean value indicating whether both the
+// File Name and Extension for this File Manager instance have been populated.
+//
+// If either the File Name or the File Extension is blank (empty), this method
+// returns false.
+//
+// Both the File Name AND the File Extension must be populated before this method
+// returns 'true'.
+//
+func (fMgr *FileMgr) IsFileNameExtPopulated() bool {
+
+	if len(fMgr.fileExt) > 0 &&
+		len(fMgr.fileName) > 0 {
+
+		fMgr.isFileNameExtPopulated = true
+
+	} else {
+
+		fMgr.isFileNameExtPopulated = false
+	}
+
+	return fMgr.isFileNameExtPopulated
+}
+
 // IsFileNamePopulated - returns a boolean value
 // indicating whether the file name for this File
 // Manager object is populated.
@@ -2070,20 +2094,6 @@ func (fMgr *FileMgr) IsFileNamePopulated() bool {
 	}
 
 	return fMgr.isFileNamePopulated
-}
-
-// IsFileNameExtPopulated - Returns a boolean value indicating
-// whether the File Name and Extension for this File Manager
-// instance has been populated.
-func (fMgr *FileMgr) IsFileNameExtPopulated() bool {
-
-	if len(fMgr.fileNameExt) == 0 {
-		fMgr.isFileNameExtPopulated = false
-	} else {
-		fMgr.isFileNameExtPopulated = true
-	}
-
-	return fMgr.isFileNameExtPopulated
 }
 
 // IsFilePointerOpen - Returns a boolean value indicating

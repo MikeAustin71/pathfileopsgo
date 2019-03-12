@@ -38,7 +38,40 @@ func main() {
 
 func main() {
 
-	mainTest39()
+	mainTest40()
+}
+
+func mainTest40() {
+	fh := pf.FileHelper{}
+
+	targetDir := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+	targetFile := "newerFileForTest_01"
+
+	dirMgr, err := pf.DirMgr{}.New(targetDir)
+
+	if err != nil {
+		fmt.Printf("Error returned from DirMgr{}.New(targetDir). "+
+			"targetDir='%v' Error='%v'", targetDir, err.Error())
+		return
+	}
+
+	srcFMgr, err := pf.FileMgr{}.NewFromDirMgrFileNameExt(dirMgr, targetFile)
+
+	if err != nil {
+		fmt.Printf("FileMgr{}.NewFromDirMgrFileNameExt(dirMgr, targetFile). "+
+			"DirMgr='%v' targetFile='%v' Error='%v'",
+			dirMgr.GetAbsolutePath(), targetFile, err.Error())
+	}
+
+	isFileNamePopulated := srcFMgr.IsFileNameExtPopulated()
+
+	if isFileNamePopulated {
+
+		fmt.Printf("Expected srcFMgr.IsFileNameExtPopulated() == 'false'. Instead, it is 'true'. \n"+
+			"FileName='%v' File Extension='%v' Len File Ext= '%v' ",
+			srcFMgr.GetFileName(), srcFMgr.GetFileExt(), len(srcFMgr.GetFileExt()))
+	}
+
 }
 
 func mainTest39() {
