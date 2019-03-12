@@ -1012,7 +1012,7 @@ func TestFileMgr_GetFilePermissionTextCodes_01(t *testing.T) {
 
 	if err != nil {
 		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
-			"absPath='%v' Error='%v'", targetFile, err.Error())
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
 	}
 
 	err = srcFMgr.OpenThisFileReadWrite()
@@ -1060,7 +1060,7 @@ func TestFileMgr_GetFilePermissionTextCodes_02(t *testing.T) {
 
 	if err != nil {
 		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
-			"absPath='%v' Error='%v'", targetFile, err.Error())
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
 	}
 
 	_, err = srcFMgr.GetFilePermissionTextCodes()
@@ -1082,7 +1082,7 @@ func TestFileMgr_GetFilePtr_01(t *testing.T) {
 
 	if err != nil {
 		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
-			"absPath='%v' Error='%v'", targetFile, err.Error())
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
 	}
 
 	err = srcFMgr.OpenThisFileReadOnly()
@@ -1121,7 +1121,7 @@ func TestFileMgr_GetFileSize_01(t *testing.T) {
 
 	if err != nil {
 		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
-			"absPath='%v' Error='%v'", targetFile, err.Error())
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
 	}
 
 	actualFileSize := srcFMgr.GetFileSize()
@@ -1145,7 +1145,7 @@ func TestFileMgr_GetFileSize_02(t *testing.T) {
 
 	if err != nil {
 		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
-			"absPath='%v' Error='%v'", targetFile, err.Error())
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
 	}
 
 	actualFileSize := srcFMgr.GetFileSize()
@@ -1169,7 +1169,7 @@ func TestFileMgr_GetOriginalPathFileName_01(t *testing.T) {
 
 	if err != nil {
 		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
-			"absPath='%v' Error='%v'", targetFile, err.Error())
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
 	}
 
 	originalPathFileName := srcFMgr.GetOriginalPathFileName()
@@ -1192,7 +1192,7 @@ func TestFileMgr_IsAbsolutePathFileNamePopulated_01(t *testing.T) {
 
 	if err != nil {
 		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
-			"absPath='%v' Error='%v'", targetFile, err.Error())
+			"targetFile='%v' Error='%v'", targetFile, err.Error())
 	}
 
 	isAbsPathFileName := srcFMgr.IsAbsolutePathFileNamePopulated()
@@ -1213,6 +1213,119 @@ func TestFileMgr_IsAbsolutePathFileNamePopulated_02(t *testing.T) {
 	if isAbsPathFileName {
 		t.Error("Error: Expected Absolute Path File Name NOT populated. " +
 			"WRONG - It IS populated!")
+	}
+
+}
+
+func TestFileMgr_IsFileExtPopulated_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+	srcFMgr, err := FileMgr{}.New(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+			"absPath='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	isFileExtPopulated := srcFMgr.IsFileExtPopulated()
+
+	if !isFileExtPopulated {
+		t.Error("Expected srcFMgr.IsFileExtPopulated() == 'true'. Instead, it is 'false'")
+	}
+
+}
+
+func TestFileMgr_IsFileExtPopulated_02(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetDir := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+	targetFile := "newerFileForTest_01"
+
+	dirMgr, err := DirMgr{}.New(targetDir)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.New(targetDir). "+
+			"targetDir='%v' Error='%v'", targetDir, err.Error())
+	}
+
+	srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dirMgr, targetFile)
+
+	if err != nil {
+		t.Errorf("FileMgr{}.NewFromDirMgrFileNameExt(dirMgr, targetFile). "+
+			"DirMgr='%v' targetFile='%v' Error='%v'",
+			dirMgr.GetAbsolutePath(), targetFile, err.Error())
+	}
+
+	isFileExtPopulated := srcFMgr.IsFileExtPopulated()
+
+	if isFileExtPopulated {
+		t.Error("Expected srcFMgr.IsFileExtPopulated() == 'false'. Instead, it is 'true'")
+	}
+
+}
+
+func TestFileMgr_IsFileNamePopulated_01(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+	srcFMgr, err := FileMgr{}.New(targetFile)
+
+	if err != nil {
+		t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+			"absPath='%v' Error='%v'", targetFile, err.Error())
+	}
+
+	isFileNamePopulated := srcFMgr.IsFileNamePopulated()
+
+	if !isFileNamePopulated {
+		t.Error("Expected srcFMgr.IsFileExtPopulated() == 'true'. Instead, it is 'false'")
+	}
+}
+
+func TestFileMgr_IsFileNamePopulated_02(t *testing.T) {
+
+	fh := FileHelper{}
+
+	targetDir := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+	targetFile := "newerFileForTest_01"
+
+	dirMgr, err := DirMgr{}.New(targetDir)
+
+	if err != nil {
+		t.Errorf("Error returned from DirMgr{}.New(targetDir). "+
+			"targetDir='%v' Error='%v'", targetDir, err.Error())
+	}
+
+	srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dirMgr, targetFile)
+
+	if err != nil {
+		t.Errorf("FileMgr{}.NewFromDirMgrFileNameExt(dirMgr, targetFile). "+
+			"DirMgr='%v' targetFile='%v' Error='%v'",
+			dirMgr.GetAbsolutePath(), targetFile, err.Error())
+	}
+
+	isFileNamePopulated := srcFMgr.IsFileNamePopulated()
+
+	if !isFileNamePopulated {
+		t.Error("Expected srcFMgr.IsFileExtPopulated() == 'true'. Instead, it is 'false'")
+	}
+
+}
+
+func TestFileMgr_IsFileNamePopulated_03(t *testing.T) {
+
+	srcFMgr := FileMgr{}
+
+	isFileNamePopulated := srcFMgr.IsFileNamePopulated()
+
+	if isFileNamePopulated {
+		t.Error("Expected srcFMgr.IsFileExtPopulated() == 'false'. Instead, it is 'true'")
 	}
 
 }
