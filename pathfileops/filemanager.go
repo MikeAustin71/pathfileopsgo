@@ -9,6 +9,7 @@ import (
   "os"
   "strings"
   "sync"
+  "time"
 )
 
 /*
@@ -1867,6 +1868,86 @@ func (fMgr *FileMgr) GetFileInfoPlus() (FileInfoPlus, error) {
   return fMgr.actualFileInfo.CopyOut(), nil
 }
 
+// GetFileModTime - Returns the time of the last file modification as a
+// type, 'time.Time'.
+//
+// If the file does NOT exist, an error is returned.
+//
+func (fMgr *FileMgr) GetFileModTime() (time.Time, error) {
+
+  ePrefix := "FileMgr.GetFileModTime() "
+
+  err := fMgr.ResetFileInfo()
+
+  if err != nil {
+    return time.Time{},
+      fmt.Errorf(ePrefix+"%v", err.Error())
+  }
+
+  return fMgr.actualFileInfo.ModTime(), nil
+}
+
+// GetFileModTimeStr - Returns the time of the last file modification as
+// a string. If the file does NOT exist, an error is returned.
+//
+//
+// ----------------------------------------------------------------------------------
+//
+// Input Parameters:
+//
+//  timeFormat  string - A format string used to format the last modification time for
+//                       the file identified by the current File Manager (FileMgr) instance.
+//
+//                       If the string is empty ("") or if the time format is invalid, the
+//                       method will automatically format the time using the default format,
+//                       "2019-03-12 21:49:00:00".
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+//	string        - The time at which the current file was last modified formatted
+//	                as a string. The time format is determined by input parameter
+//                  'timeFormat'. If 'timeFormat' is empty or if 'timeFormat' is an
+//                  an invalid format, the default format "2019-03-12 21:49:00:00"
+//                  will be substituted.
+//
+//	error         - If this method completes successfully, the returned error
+//	                Type is set equal to 'nil'. If an error condition is encountered,
+//	                this method will return an error Type which contains an appropriate
+//	                error message.
+//
+//                  Note an error will be returned if the file identified by the current
+//                  File Manager instance does NOT exist.
+//
+func (fMgr *FileMgr) GetFileModTimeStr(timeFormat string) (string, error) {
+
+  ePrefix := "FileMgr.GetFileModTimeStr() "
+
+  err := fMgr.ResetFileInfo()
+
+  if err != nil {
+    return "",
+      fmt.Errorf(ePrefix+"%v", err.Error())
+  }
+
+  defaultFmt := "2006-01-02 15:04:05 -0700 MST"
+
+  if timeFormat == "" {
+    timeFormat = defaultFmt
+  }
+
+  t := fMgr.actualFileInfo.ModTime()
+
+  tStr := t.Format(timeFormat)
+
+  if tStr == timeFormat {
+    tStr = t.Format(defaultFmt)
+  }
+
+  return tStr, nil
+}
+
 // GetFileName - returns the file name for this
 // File Manager.
 //
@@ -3448,6 +3529,8 @@ func (fMgr *FileMgr) ResetFileInfo() error {
   info, err := os.Stat(fMgr.absolutePathFileName)
 
   if err != nil {
+
+    fMgr.actualFileInfo = FileInfoPlus{}
 
     fMgr.dataMutex.Unlock()
 

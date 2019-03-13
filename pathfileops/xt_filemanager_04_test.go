@@ -303,6 +303,171 @@ func TestFileMgr_GetFileInfoPlus_02(t *testing.T) {
   }
 }
 
+func TestFileMgr_GetFileModTime_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/level_1_2_test.txt")
+
+  srcFMgr, err := FileMgr{}.New(targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+      "targetFile='%v' Error='%v'\n", targetFile, err.Error())
+    return
+  }
+
+  timeFormatSpec := "2006-01-02 15:04:05 -0700 MST"
+
+  modTime, err := srcFMgr.GetFileModTime()
+
+  if err != nil {
+    t.Errorf("Error returned from srcFMgr.GetFileModTime(). "+
+      "targetFile='%v' Error='%v'\n", targetFile, err.Error())
+  }
+
+  expectedTimeStr := modTime.Format(timeFormatSpec)
+
+  modTimeStr, err := srcFMgr.GetFileModTimeStr("")
+
+  if err != nil {
+    t.Errorf("Error returned from srcFMgr.GetFileModTimeStr(\"\"). "+
+      "targetFile='%v' Error='%v'\n", targetFile, err.Error())
+  }
+
+  if expectedTimeStr != modTimeStr {
+    t.Errorf("Expected Time String='%v'. Instead, Time String='%v'. ",
+      expectedTimeStr, modTimeStr)
+  }
+
+}
+
+func TestFileMgr_GetFileModTime_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/level_1_2_test.txt")
+
+  srcFMgr, err := FileMgr{}.New(targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+      "targetFile='%v' Error='%v'\n", targetFile, err.Error())
+    return
+  }
+
+  modTime, err := srcFMgr.GetFileModTime()
+
+  if err != nil {
+    t.Errorf("Error returned from srcFMgr.GetFileModTime(). "+
+      "targetFile='%v' Error='%v'\n", targetFile, err.Error())
+  }
+
+  timeFmtSpec := "Monday 2006-01-02 15:04:05.000000000 -0700 MST"
+
+  expectedTimeStr := modTime.Format(timeFmtSpec)
+
+  modTimeStr, err := srcFMgr.GetFileModTimeStr(timeFmtSpec)
+
+  if err != nil {
+    t.Errorf("Error returned from srcFMgr.GetFileModTimeStr(\"\"). "+
+      "targetFile='%v' Error='%v'\n", targetFile, err.Error())
+  }
+
+  if expectedTimeStr != modTimeStr {
+    t.Errorf("Expected Time String='%v'. Instead, Time String='%v'. ",
+      expectedTimeStr, modTimeStr)
+  }
+
+}
+
+func TestFileMgr_GetFileModTime_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/level_1_2_test.txt")
+
+  srcFMgr, err := FileMgr{}.New(targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+      "targetFile='%v' Error='%v'\n", targetFile, err.Error())
+    return
+  }
+
+  modTime, err := srcFMgr.GetFileModTime()
+
+  if err != nil {
+    t.Errorf("Error returned from srcFMgr.GetFileModTime(). "+
+      "targetFile='%v' Error='%v'\n", targetFile, err.Error())
+  }
+
+  timeFormatSpec := "2006-01-02 15:04:05 -0700 MST"
+
+  expectedTimeStr := modTime.Format(timeFormatSpec)
+
+  modTimeStr, err := srcFMgr.GetFileModTimeStr("xx-xx-xxxx xx:xx:xx")
+
+  if err != nil {
+    t.Errorf("Error returned from srcFMgr.GetFileModTimeStr(\"\"). "+
+      "targetFile='%v' Error='%v'\n", targetFile, err.Error())
+  }
+
+  if expectedTimeStr != modTimeStr {
+    t.Errorf("Expected Time String='%v'. Instead, Time String='%v'. ",
+      expectedTimeStr, modTimeStr)
+  }
+
+}
+
+func TestFileMgr_GetFileModTime_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/level_1_2_test.txt")
+
+  srcFMgr, err := FileMgr{}.New(targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+      "targetFile='%v' Error='%v'\n", targetFile, err.Error())
+    return
+  }
+
+  srcFMgr.isInitialized = false
+
+  _, err = srcFMgr.GetFileModTimeStr("")
+
+  if err == nil {
+    t.Error("Expected error return from srcFMgr.GetFileModTimeStr(\"\") " +
+      "because the target file DOES NOT EXIST! However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_GetFileModTime_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/iDoNotExist.txt")
+
+  srcFMgr, err := FileMgr{}.New(targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+      "targetFile='%v' Error='%v'\n", targetFile, err.Error())
+    return
+  }
+
+  _, err = srcFMgr.GetFileModTimeStr("")
+
+  if err == nil {
+    t.Error("Expected error return from srcFMgr.GetFileModTimeStr(\"\") " +
+      "because the target file DOES NOT EXIST! However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
 func TestFileMgr_GetFileName_01(t *testing.T) {
   fh := FileHelper{}
   targetFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
@@ -406,7 +571,6 @@ func TestFileMgr_GetFilePermissionConfig_01(t *testing.T) {
       "targetFile='%v' Error='%v'", targetFile, err.Error())
   }
 
-
   if expectedPermissionCodes != actualPermissionTextCodes {
     t.Errorf("Error: Expected Permission Code='%v'. Instead, Permission Code='%v'",
       expectedPermissionCodes, actualPermissionTextCodes)
@@ -430,9 +594,8 @@ func TestFileMgr_GetFilePermissionConfig_02(t *testing.T) {
 
   if err == nil {
     t.Error("Expected an error return from srcFMgr.GetFilePermissionConfig() " +
-      "because the file does NOT exist. However, NO ERROR WAS RETURNED!" )
+      "because the file does NOT exist. However, NO ERROR WAS RETURNED!")
   }
-
 
 }
 
@@ -454,7 +617,7 @@ func TestFileMgr_GetFilePermissionConfig_03(t *testing.T) {
 
   if err == nil {
     t.Error("Expected an error return from srcFMgr.GetFilePermissionConfig() " +
-      "because the file manager (srcFmgr) is invalid. However, NO ERROR WAS RETURNED!" )
+      "because the file manager (srcFmgr) is invalid. However, NO ERROR WAS RETURNED!")
   }
 
 }
