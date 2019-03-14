@@ -3820,7 +3820,11 @@ func (fMgr *FileMgr) SetFileInfo(info os.FileInfo) error {
     return errors.New(ePrefix + "info.IsDir()=='true'. This is a Directory NOT A FILE!")
   }
 
+  fMgr.dataMutex.Lock()
+
   fMgr.actualFileInfo = FileInfoPlus{}.NewFromFileInfo(info)
+
+  fMgr.dataMutex.Unlock()
 
   if !fMgr.actualFileInfo.IsFInfoInitialized {
     return fmt.Errorf(ePrefix+
