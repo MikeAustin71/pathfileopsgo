@@ -4,6 +4,7 @@ import (
   "fmt"
   "io/ioutil"
   "os"
+  "strings"
   "testing"
 )
 
@@ -109,6 +110,101 @@ func TestFileHelper_AddPathSeparatorToEndOfPathStr_04(t *testing.T) {
 
 }
 
+func TestFileHelper_ChangeWorkingDir_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  currAbsDir, err := fh.GetAbsCurrDir()
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetAbsCurrDir(). "+
+      "Error='%v'", err.Error())
+  }
+
+  targetPath := fh.AdjustPathSlash("../filesfortest/iDontExist")
+
+  err = fh.ChangeWorkingDir(targetPath)
+
+  if err == nil {
+    t.Error("Expected error return from fh.ChangeWorkingDir(targetPath) " +
+      "because targetPath does NOT exist. However, NO ERROR WAS RETURNED!")
+  }
+
+  currAbsDir2, err := fh.GetAbsCurrDir()
+
+  if err != nil {
+    t.Errorf("Error returned by #2 fh.GetAbsCurrDir(). "+
+      "Error='%v'", err.Error())
+  }
+
+  currAbsDir2 = strings.ToLower(currAbsDir2)
+  currAbsDirX := strings.ToLower(currAbsDir)
+
+  if currAbsDirX != currAbsDir2 {
+
+    err = fh.ChangeWorkingDir(currAbsDir)
+
+    if err != nil {
+      t.Errorf("Failed to reset current working directory %v. "+
+        "Error='%v' ", currAbsDir, err.Error())
+    }
+
+  }
+
+}
+
+func TestFileHelper_ChangeWorkingDir_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  currAbsDir, err := fh.GetAbsCurrDir()
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetAbsCurrDir(). "+
+      "Error='%v'", err.Error())
+  }
+
+  targetPath, err := fh.MakeAbsolutePath("../filesfortest/newfilesfortest")
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(). "+
+      "Error='%v'", err.Error())
+  }
+
+  err = fh.ChangeWorkingDir(targetPath)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.ChangeWorkingDir(targetPath). "+
+      "targetPath='%v' Error='%v'", targetPath, err.Error())
+  }
+
+  currAbsDir2, err := fh.GetAbsCurrDir()
+
+  if err != nil {
+    t.Errorf("Error returned by #2 fh.GetAbsCurrDir(). "+
+      "Error='%v'", err.Error())
+  }
+
+  currAbsDir2 = strings.ToLower(currAbsDir2)
+  currAbsDirX := strings.ToLower(targetPath)
+
+  if currAbsDirX != currAbsDir2 {
+
+    t.Errorf("Expected new working directory='%v'. Instead, "+
+      "new working directory='%v' ",
+      currAbsDirX, currAbsDir2)
+
+  }
+
+  err = fh.ChangeWorkingDir(currAbsDir)
+
+  if err != nil {
+    t.Errorf("Failed to reset current working directory %v. "+
+      "Error='%v' ", currAbsDir, err.Error())
+  }
+
+}
+
 func TestFileHelper_CleanDirStr_01(t *testing.T) {
   fh := FileHelper{}
   testPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
@@ -117,7 +213,8 @@ func TestFileHelper_CleanDirStr_01(t *testing.T) {
   cleanDirStr, isDirEmpty, err := fh.CleanDirStr(testPath)
 
   if err != nil {
-    t.Errorf("Error returned by fh.CleanDirStr(testPath). testPath='%v' Error='%v'", testPath, err.Error())
+    t.Errorf("Error returned by fh.CleanDirStr(testPath). "+
+      "testPath='%v' Error='%v'", testPath, err.Error())
   }
 
   if isDirEmpty {

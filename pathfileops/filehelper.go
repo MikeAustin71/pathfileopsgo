@@ -86,7 +86,9 @@ func (fh FileHelper) ChangeWorkingDir(dirPath string) error {
   err := os.Chdir(dirPath)
 
   if err != nil {
-    return err
+    ePrefix := "FileHelper.ChangeWorkingDir() "
+    return fmt.Errorf(ePrefix+"Error returned by os.Chdir(dirPath). "+
+      "dirPath='%v' Error='%v'", dirPath, err)
   }
 
   return nil
