@@ -605,6 +605,14 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 
   ePrefix := "FileHelper.CopyFileByLink() "
 
+  src = strings.TrimRight(src, " ")
+
+  src = strings.TrimLeft(src, " ")
+
+  dst = strings.TrimRight(dst, " ")
+
+  dst = strings.TrimLeft(dst, " ")
+
   if len(src) == 0 {
     err = errors.New(ePrefix + "Error: Input parameter 'src' is ZERO length string!")
   }
