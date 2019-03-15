@@ -54,7 +54,9 @@ type FileMgr struct {
   isFileNameExtPopulated          bool
   filePtr                         *os.File
   fileBufRdr                      *bufio.Reader
+  fileRdrBufSize                  int
   fileBufWriter                   *bufio.Writer
+  fileWriterBufSize               int
   isFilePtrOpen                   bool
   fileAccessStatus                FileAccessControl
   actualFileInfo                  FileInfoPlus
@@ -2842,13 +2844,6 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
 
   fMgr.fileAccessStatus = fileAccessCtrl.CopyOut()
 
-  fOpenCfg, err := fMgr.fileAccessStatus.GetFileOpenConfig()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+"Error returned by fMgr.fileAccessStatus.GetFileOpenConfig(). "+
-      "Error='%v' ", err.Error())
-  }
-
   fOpenParm, fPermParm, err := fMgr.fileAccessStatus.GetFileOpenAndPermissionCodes()
 
   if err != nil {
@@ -2877,20 +2872,6 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
   }
 
   fMgr.isFilePtrOpen = true
-
-  fOpenType := fOpenCfg.GetFileOpenType()
-
-  if fOpenType == FOpenType.TypeReadOnly() ||
-    fOpenType == FOpenType.TypeReadWrite() {
-
-    fMgr.fileBufRdr = bufio.NewReader(fMgr.filePtr)
-  }
-
-  if fOpenType == FOpenType.TypeWriteOnly() ||
-    fOpenType == FOpenType.TypeReadWrite() {
-
-    fMgr.fileBufWriter = bufio.NewWriter(fMgr.filePtr)
-  }
 
   return nil
 }
@@ -3220,7 +3201,6 @@ func (fMgr *FileMgr) ReadAllFile() (bytesRead []byte, err error) {
 
   if !fMgr.isFilePtrOpen ||
     fMgr.filePtr == nil ||
-    fMgr.fileBufRdr == nil ||
     err2 != nil ||
     invalidAccessType {
 
@@ -3303,7 +3283,6 @@ func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (bytesRead int, err error) {
 
   if !fMgr.isFilePtrOpen ||
     fMgr.filePtr == nil ||
-    fMgr.fileBufRdr == nil ||
     err2 != nil ||
     invalidAccessType {
 
@@ -3325,6 +3304,14 @@ func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (bytesRead int, err error) {
   err = nil
 
   fMgr.dataMutex.Lock()
+
+  if fMgr.fileBufRdr == nil {
+    if fMgr.fileRdrBufSize > 0 {
+      fMgr.fileBufRdr = bufio.NewReaderSize(fMgr.filePtr, fMgr.fileRdrBufSize)
+    } else {
+      fMgr.fileBufRdr = bufio.NewReader(fMgr.filePtr)
+    }
+  }
 
   bytesRead, err2 = fMgr.fileBufRdr.Read(byteBuff)
 
@@ -3387,7 +3374,6 @@ func (fMgr *FileMgr) ReadFileLine(delim byte) (bytesRead []byte, err error) {
 
   if !fMgr.isFilePtrOpen ||
     fMgr.filePtr == nil ||
-    fMgr.fileBufRdr == nil ||
     err2 != nil ||
     invalidAccessType {
 
@@ -3409,6 +3395,14 @@ func (fMgr *FileMgr) ReadFileLine(delim byte) (bytesRead []byte, err error) {
   err = nil
 
   fMgr.dataMutex.Lock()
+
+  if fMgr.fileBufRdr == nil {
+    if fMgr.fileRdrBufSize > 0 {
+      fMgr.fileBufRdr = bufio.NewReaderSize(fMgr.filePtr, fMgr.fileRdrBufSize)
+    } else {
+      fMgr.fileBufRdr = bufio.NewReader(fMgr.filePtr)
+    }
+  }
 
   bytesRead, err2 = fMgr.fileBufRdr.ReadBytes(delim)
 
@@ -3468,7 +3462,6 @@ func (fMgr *FileMgr) ReadFileString(delim byte) (stringRead string, err error) {
 
   if !fMgr.isFilePtrOpen ||
     fMgr.filePtr == nil ||
-    fMgr.fileBufRdr == nil ||
     err2 != nil ||
     invalidAccessType {
 
@@ -3490,6 +3483,14 @@ func (fMgr *FileMgr) ReadFileString(delim byte) (stringRead string, err error) {
   err = nil
 
   fMgr.dataMutex.Lock()
+
+  if fMgr.fileBufRdr == nil {
+    if fMgr.fileRdrBufSize > 0 {
+      fMgr.fileBufRdr = bufio.NewReaderSize(fMgr.filePtr, fMgr.fileRdrBufSize)
+    } else {
+      fMgr.fileBufRdr = bufio.NewReader(fMgr.filePtr)
+    }
+  }
 
   stringRead, err2 = fMgr.fileBufRdr.ReadString(delim)
 
@@ -3546,42 +3547,20 @@ func (fMgr *FileMgr) ResetFileInfo() error {
   return nil
 }
 
-// SetBufioReader - Sets the internal *bufio.Reader, 'fMgr.fileBufRdr'.
-// This internal reader is automatically initialized whenever the file
-// is opened for Read or Read-Write operations.
+// SetReaderBufferSize - Sets the Read Buffer size in bytes.
+// If the value is less than 1, the buffer size will be set
+// to the system default size.
 //
-func (fMgr *FileMgr) SetBufioReader(bufioReader *bufio.Reader) error {
-
-  if bufioReader == nil {
-    ePrefix := "FileMgr.SetBufioReader() "
-    return errors.New(ePrefix + "Error: Input parameter, 'bufioReader' is nil!")
-  }
-
-  fMgr.fileBufRdr = nil
-  fMgr.dataMutex.Lock()
-  fMgr.fileBufRdr = bufioReader
-  fMgr.dataMutex.Unlock()
-  return nil
+func (fMgr *FileMgr) SetReaderBufferSize(readBuffSize int) {
+  fMgr.fileRdrBufSize = readBuffSize
 }
 
-// SetBufioWriter - Sets the internal *bufio.Writer, 'fMgr.fileBufWriter'.
-// This internal Writer is automatically initialized whenever the file
-// is opened for Write or Read-Write operations.
+// SetWriterBufferSize - Sets the Write Buffer size in bytes.
+// If the value is less than 1, the buffer size will be set
+// to the system default size.
 //
-func (fMgr *FileMgr) SetBufioWriter(bufioWriter *bufio.Writer) error {
-
-  if bufioWriter == nil {
-    ePrefix := "FileMgr.SetBufioWriter() "
-    return errors.New(ePrefix + "Error: Input parameter, 'bufioWriter' is nil!")
-  }
-
-  fMgr.fileBufWriter = nil
-  fMgr.dataMutex.Lock()
-  fMgr.fileBufWriter = bufioWriter
-  fMgr.dataMutex.Unlock()
-
-  return nil
-
+func (fMgr *FileMgr) SetWriterBufferSize(writeBuffSize int) {
+  fMgr.fileWriterBufSize = writeBuffSize
 }
 
 // SetFileMgrFromDirMgrFileName - Sets the data fields of the current FileMgr object
@@ -3878,7 +3857,6 @@ func (fMgr *FileMgr) WriteBytesToFile(bytes []byte) (numBytesWritten int, err er
 
   if !fMgr.isFilePtrOpen ||
     fMgr.filePtr == nil ||
-    fMgr.fileBufWriter == nil ||
     err2 != nil ||
     invalidAccessType {
 
@@ -3900,6 +3878,14 @@ func (fMgr *FileMgr) WriteBytesToFile(bytes []byte) (numBytesWritten int, err er
   err = nil
 
   fMgr.dataMutex.Lock()
+
+  if fMgr.fileBufWriter == nil {
+    if fMgr.fileWriterBufSize > 0 {
+      fMgr.fileBufWriter = bufio.NewWriterSize(fMgr.filePtr, fMgr.fileWriterBufSize)
+    } else {
+      fMgr.fileBufWriter = bufio.NewWriter(fMgr.filePtr)
+    }
+  }
 
   numBytesWritten, err2 = fMgr.fileBufWriter.Write(bytes)
 
@@ -3962,7 +3948,6 @@ func (fMgr *FileMgr) WriteStrToFile(str string) (numBytesWritten int, err error)
 
   if !fMgr.isFilePtrOpen ||
     fMgr.filePtr == nil ||
-    fMgr.fileBufWriter == nil ||
     err2 != nil ||
     invalidAccessType {
 
@@ -3984,6 +3969,14 @@ func (fMgr *FileMgr) WriteStrToFile(str string) (numBytesWritten int, err error)
   err = nil
 
   fMgr.dataMutex.Lock()
+
+  if fMgr.fileBufWriter == nil {
+    if fMgr.fileWriterBufSize > 0 {
+      fMgr.fileBufWriter = bufio.NewWriterSize(fMgr.filePtr, fMgr.fileWriterBufSize)
+    } else {
+      fMgr.fileBufWriter = bufio.NewWriter(fMgr.filePtr)
+    }
+  }
 
   numBytesWritten, err2 = fMgr.fileBufWriter.WriteString(str)
 

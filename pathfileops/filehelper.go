@@ -299,6 +299,9 @@ func (fh FileHelper) CleanFileNameExtStr(fileNameExtStr string) (fileNameExt str
   isEmpty = true
   err = nil
 
+  fileNameExtStr = strings.TrimRight(fileNameExtStr, " ")
+  fileNameExtStr = strings.TrimLeft(fileNameExtStr, " ")
+
   if len(fileNameExtStr) == 0 {
     err = errors.New(ePrefix + "Error: Input parameter fileNameExtStr is a Zero Length String!")
     return

@@ -64,9 +64,9 @@ func TestFileMgr_GetBufioReader_01(t *testing.T) {
 
   bufReader := srcFMgr.GetBufioReader()
 
-  if bufReader == nil {
-    t.Error("Error: Expected pointer return from srcFMgr.GetBufioReader(). " +
-      "Pointer IS NIL!")
+  if bufReader != nil {
+    t.Error("Error: Expected pointer return from srcFMgr.GetBufioReader() to be 'NIL'. " +
+      "However, POINTER IS POPULATED!")
   }
 
   err = srcFMgr.CloseThisFile()
@@ -107,9 +107,9 @@ func TestFileMgr_GetBufioWriter_01(t *testing.T) {
 
   bufReader := srcFMgr.GetBufioWriter()
 
-  if bufReader == nil {
-    t.Error("Error: Expected pointer return from srcFMgr.GetBufioWriter(). " +
-      "Pointer IS NIL!")
+  if bufReader != nil {
+    t.Error("Error: Expected pointer return from srcFMgr.GetBufioWriter() to " +
+      "to be 'NIL'.  However, POINTER IS POPULATED!")
   }
 
   err = srcFMgr.CloseThisFile()
