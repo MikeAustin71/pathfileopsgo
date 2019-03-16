@@ -2088,6 +2088,34 @@ func (fMgr *FileMgr) GetOriginalPathFileName() string {
   return fMgr.originalPathFileName
 }
 
+// GetReaderBufferSize() - Returns the size for the internal
+// Bufio Reader's buffer. If the value is less than 1 it means
+// that the buffer will be set to the default size at the next
+// 'Read' Operation.
+//
+func (fMgr *FileMgr) GetReaderBufferSize() int {
+
+  if fMgr.fileBufRdr != nil {
+    fMgr.fileRdrBufSize = fMgr.fileBufRdr.Size()
+  }
+
+  return fMgr.fileRdrBufSize
+}
+
+// GetWriterBufferSize() - Returns the size for the internal
+// Bufio Writers's buffer. If the value is less than 1 it means
+// that the buffer will be set to the default size at the next
+// 'Write' Operation.
+//
+func (fMgr *FileMgr) GetWriterBufferSize() int {
+
+  if fMgr.fileBufWriter != nil {
+    fMgr.fileWriterBufSize = fMgr.fileBufWriter.Size()
+  }
+
+  return fMgr.fileWriterBufSize
+}
+
 // IsAbsolutePathFileNamePopulated - Returns a boolean value
 // indicating whether absolute path and file name is
 // initialized and populated.

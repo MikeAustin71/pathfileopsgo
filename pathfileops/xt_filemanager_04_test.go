@@ -802,6 +802,102 @@ func TestFileMgr_GetOriginalPathFileName_01(t *testing.T) {
 
 }
 
+func TestFileMgr_GetReaderBufferSize_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+  srcFMgr, err := FileMgr{}.New(targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+      "targetFile='%v' Error='%v'", targetFile, err.Error())
+  }
+
+  readBufSize := srcFMgr.GetReaderBufferSize()
+
+  if readBufSize != 0 {
+    t.Errorf("Error: Expected Bufio Read Buffer Size='0'. Instead, "+
+      "Read Buffer Size ='%v' ", readBufSize)
+  }
+
+}
+
+func TestFileMgr_GetReaderBufferSize_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+  srcFMgr, err := FileMgr{}.New(targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+      "targetFile='%v' Error='%v'", targetFile, err.Error())
+  }
+
+  expectedBufSize := int(20000)
+
+  srcFMgr.SetReaderBufferSize(expectedBufSize)
+
+  readBufSize := srcFMgr.GetReaderBufferSize()
+
+  if expectedBufSize != readBufSize {
+    t.Errorf("Error: Expected Bufio Read Buffer Size='%v'. Instead, "+
+      "Read Buffer Size ='%v' ", expectedBufSize, readBufSize)
+  }
+
+}
+
+func TestFileMgr_GetWriterBufferSize_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+  srcFMgr, err := FileMgr{}.New(targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+      "targetFile='%v' Error='%v'", targetFile, err.Error())
+  }
+
+  actualWriterBuffSize := srcFMgr.GetWriterBufferSize()
+
+  if actualWriterBuffSize != 0 {
+    t.Errorf("Error: Expected Bufio Write Buffer Size='0'. Instead, "+
+      "Write Buffer Size ='%v' ", actualWriterBuffSize)
+  }
+
+}
+
+func TestFileMgr_GetWriterBufferSize_02(t *testing.T) {
+
+  expectedWriteBufSize := int(20000)
+
+  fh := FileHelper{}
+
+  targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+  srcFMgr, err := FileMgr{}.New(targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+      "targetFile='%v' Error='%v'", targetFile, err.Error())
+  }
+
+  srcFMgr.SetWriterBufferSize(expectedWriteBufSize)
+
+  actualWriterBuffSize := srcFMgr.GetWriterBufferSize()
+
+  if actualWriterBuffSize != expectedWriteBufSize {
+    t.Errorf("Error: Expected Bufio Write Buffer Size='%v'. Instead, "+
+      "Write Buffer Size ='%v' ", expectedWriteBufSize, actualWriterBuffSize)
+  }
+
+}
+
 func TestFileMgr_IsAbsolutePathFileNamePopulated_01(t *testing.T) {
 
   fh := FileHelper{}
