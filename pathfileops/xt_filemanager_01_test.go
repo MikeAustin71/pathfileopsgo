@@ -75,6 +75,94 @@ func TestFileMgr_ChangePermissionMode_01(t *testing.T) {
 
 }
 
+func TestFileMgr_ChangePermissionMode_02(t *testing.T) {
+
+  filePath := "../filesfortest/modefilesfortest/iDoNotExist.txt"
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePathName='%v'  Error='%v'", filePath, err.Error())
+    return
+  }
+
+  basePermission, err := FilePermissionConfig{}.New("-rw-rw-rw-")
+
+  if err != nil {
+    t.Errorf("Error returned from FilePermissionConfig{}.New(\"-rw-rw-rw-\"). "+
+      "Error='%v'", err.Error())
+  }
+
+  err = fMgr.ChangePermissionMode(basePermission)
+
+  if err == nil {
+    t.Errorf(" Expected error return from fMgr.ChangePermissionMode(basePermission) " +
+      "because file does NOT exist. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_ChangePermissionMode_03(t *testing.T) {
+
+  filePath := "../filesfortest/modefilesfortest/modeFileTest_01.txt"
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePathName='%v'  Error='%v'", filePath, err.Error())
+    return
+  }
+
+  basePermission, err := FilePermissionConfig{}.New("-rw-rw-rw-")
+
+  if err != nil {
+    t.Errorf("Error returned from FilePermissionConfig{}.New(\"-rw-rw-rw-\"). "+
+      "Error='%v'", err.Error())
+  }
+
+  basePermission.isInitialized = false
+
+  err = fMgr.ChangePermissionMode(basePermission)
+
+  if err == nil {
+    t.Errorf(" Expected error return from fMgr.ChangePermissionMode(basePermission) " +
+      "because file does NOT exist. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_ChangePermissionMode_04(t *testing.T) {
+
+  filePath := "../filesfortest/modefilesfortest/modeFileTest_01.txt"
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePathName='%v'  Error='%v'", filePath, err.Error())
+    return
+  }
+
+  basePermission, err := FilePermissionConfig{}.New("-rw-rw-rw-")
+
+  if err != nil {
+    t.Errorf("Error returned from FilePermissionConfig{}.New(\"-rw-rw-rw-\"). "+
+      "Error='%v'", err.Error())
+  }
+
+  fMgr.isInitialized = false
+
+  err = fMgr.ChangePermissionMode(basePermission)
+
+  if err == nil {
+    t.Errorf(" Expected error return from fMgr.ChangePermissionMode(basePermission) " +
+      "because file does NOT exist. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
 func TestFileMgr_CopyIn_01(t *testing.T) {
   fh := FileHelper{}
 
