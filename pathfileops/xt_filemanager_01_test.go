@@ -515,6 +515,36 @@ func TestFileMgr_CopyFileMgrByIo_05(t *testing.T) {
 
 }
 
+func TestFileMgr_CopyFileMgrByIo_06(t *testing.T) {
+
+  expectedFileNameExt := "newerFileForTest_01.txt"
+
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+
+  dMgr, err := DirMgr{}.New(adjustedPath)
+
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
+
+  srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt). dMgr.absolutePath='%v' expectedFileNameExt='%v'  Error='%v'", dMgr.absolutePath, adjustedPath, err.Error())
+  }
+
+  destFMgr := srcFMgr.CopyOut()
+
+  err = srcFMgr.CopyFileMgrByIo(&destFMgr)
+
+  if err == nil {
+    t.Error("Expected error return from CopyFileMgrByIo(&destFMgr) because " +
+      "source file is equivalent to destination file. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
 func TestFileMgr_CopyFileMgrByIoByLink_01(t *testing.T) {
 
   expectedFileNameExt := "newerFileForTest_01.txt"
@@ -789,6 +819,36 @@ func TestFileMgr_CopyFileMgrByIoByLink_06(t *testing.T) {
   if err == nil {
     t.Error("Expected error return from  srcFMgr.CopyFileMgrByIoByLink(&destFMgr) because " +
       "srcFMgr does NOT exist. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_CopyFileMgrByIoByLink_07(t *testing.T) {
+
+  expectedFileNameExt := "newerFileForTest_01.txt"
+
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+
+  dMgr, err := DirMgr{}.New(adjustedPath)
+
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
+
+  srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt). dMgr.absolutePath='%v' expectedFileNameExt='%v'  Error='%v'", dMgr.absolutePath, adjustedPath, err.Error())
+  }
+
+  destFMgr := srcFMgr.CopyOut()
+
+  err = srcFMgr.CopyFileMgrByIoByLink(&destFMgr)
+
+  if err == nil {
+    t.Error("Expected error return from  srcFMgr.CopyFileMgrByIoByLink(&destFMgr) because " +
+      "srcFMgr is equivalent to destFMgr. However, NO ERROR WAS RETURNED!")
   }
 
 }
