@@ -1404,6 +1404,82 @@ func TestFileMgr_CopyFileMgrByLinkByIo_04(t *testing.T) {
 
 }
 
+func TestFileMgr_CopyFileMgrByLinkByIo_05(t *testing.T) {
+
+  sourceFile := "../filesfortest/newfilesfortest/iDoNotExist.txt"
+
+  fh := FileHelper{}
+  adjustedSourceFile := fh.AdjustPathSlash(sourceFile)
+  absoluteSourceFile, err := fh.MakeAbsolutePath(adjustedSourceFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(adjustedSourceFile). "+
+      "Error='%v' ", err.Error())
+  }
+
+  srcFMgr, err := FileMgr{}.New(absoluteSourceFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileMgr{}.New(absoluteSourceFile). "+
+      "Error='%v' ", err.Error())
+  }
+
+  rawDestPath := fh.AdjustPathSlash("../checkfiles/checkfiles02")
+
+  destDMgr, err := DirMgr{}.New(rawDestPath)
+
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.New(rawDestPath). "+
+      "rawDestPath='%v'  Error='%v'", rawDestPath, err.Error())
+  }
+
+  newFileMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, sourceFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(). "+
+      "Error='%v'", err.Error())
+  }
+
+  err = srcFMgr.CopyFileMgrByLinkByIo(&newFileMgr)
+
+  if err == nil {
+    t.Error("Expected error return from srcFMgr.CopyFileMgrByLinkByIo(&newFileMgr) " +
+      "because srcFMgr does NOT exist. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_CopyFileMgrByLinkByIo_06(t *testing.T) {
+
+  sourceFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+
+  fh := FileHelper{}
+  adjustedSourceFile := fh.AdjustPathSlash(sourceFile)
+  absoluteSourceFile, err := fh.MakeAbsolutePath(adjustedSourceFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(adjustedSourceFile). "+
+      "Error='%v' ", err.Error())
+  }
+
+  srcFMgr, err := FileMgr{}.New(absoluteSourceFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileMgr{}.New(absoluteSourceFile). "+
+      "Error='%v' ", err.Error())
+  }
+
+  newFileMgr := srcFMgr.CopyOut()
+
+  err = srcFMgr.CopyFileMgrByLinkByIo(&newFileMgr)
+
+  if err == nil {
+    t.Error("Expected error return from srcFMgr.CopyFileMgrByLinkByIo(&newFileMgr) " +
+      "because srcFMgr is equivalent to newFileMgr. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
 func TestFileMgr_CopyFileStrByIo_01(t *testing.T) {
 
   sourceFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
