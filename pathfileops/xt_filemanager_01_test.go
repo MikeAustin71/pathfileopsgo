@@ -163,6 +163,47 @@ func TestFileMgr_ChangePermissionMode_04(t *testing.T) {
 
 }
 
+func TestFileMgr_CloseThisFile_01(t *testing.T) {
+  fh := FileHelper{}
+
+  testFile := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
+
+  fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(testFile)
+
+  if err != nil {
+    t.Error("Received Error on GetPathFileNameElements Error:", err)
+  }
+
+  fileMgr.isInitialized = false
+
+  err = fileMgr.CloseThisFile()
+
+  if err == nil {
+    t.Error("Expected error return from fileMgr.CloseThisFile() because " +
+      "fileMgr is Invalid. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_CloseThisFile_02(t *testing.T) {
+  fh := FileHelper{}
+
+  testFile := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
+
+  fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(testFile)
+
+  if err != nil {
+    t.Error("Received Error on GetPathFileNameElements Error:", err)
+  }
+
+  err = fileMgr.CloseThisFile()
+
+  if err != nil {
+    t.Error("Error: File Pointer is 'nil' and NO ERROR should have been returned!")
+  }
+
+}
+
 func TestFileMgr_CopyIn_01(t *testing.T) {
   fh := FileHelper{}
 
