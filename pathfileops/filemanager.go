@@ -1223,6 +1223,8 @@ func (fMgr *FileMgr) CopyIn(fmgr2 *FileMgr) {
   fMgr.actualFileInfo = fmgr2.actualFileInfo.CopyOut()
   fMgr.fileBytesWritten = 0
   fMgr.buffBytesWritten = 0
+  fMgr.fileRdrBufSize = fmgr2.fileRdrBufSize
+  fMgr.fileWriterBufSize = fmgr2.fileWriterBufSize
   fmgr2.dataMutex.Unlock()
   fMgr.dataMutex.Unlock()
 
@@ -1258,6 +1260,8 @@ func (fMgr *FileMgr) CopyOut() FileMgr {
   fmgr2.actualFileInfo = fMgr.actualFileInfo.CopyOut()
   fmgr2.fileBytesWritten = 0
   fmgr2.buffBytesWritten = 0
+  fmgr2.fileRdrBufSize = fMgr.fileRdrBufSize
+  fmgr2.fileWriterBufSize = fMgr.fileWriterBufSize
 
   fMgr.dataMutex.Unlock()
 
@@ -1533,7 +1537,9 @@ func (fMgr *FileMgr) Equal(fmgr2 *FileMgr) bool {
     fMgr.fileNameExt != fmgr2.fileNameExt ||
     fMgr.isFileNameExtPopulated != fmgr2.isFileNameExtPopulated ||
     fMgr.filePtr != fmgr2.filePtr ||
-    fMgr.isFilePtrOpen != fmgr2.isFilePtrOpen {
+    fMgr.isFilePtrOpen != fmgr2.isFilePtrOpen ||
+    fMgr.fileRdrBufSize != fmgr2.fileRdrBufSize ||
+    fMgr.fileWriterBufSize != fmgr2.fileWriterBufSize {
 
     return false
   }
@@ -1666,6 +1672,8 @@ func (fMgr *FileMgr) Empty() {
   fMgr.fileBufWriter = nil
   fMgr.fileBytesWritten = 0
   fMgr.buffBytesWritten = 0
+  fMgr.fileRdrBufSize = 0
+  fMgr.fileWriterBufSize = 0
 
   fMgr.dataMutex.Unlock()
 }
