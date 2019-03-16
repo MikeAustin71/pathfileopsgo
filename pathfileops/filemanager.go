@@ -254,6 +254,12 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
       fMgr.absolutePathFileName)
   }
 
+  if fMgr.EqualAbsPaths(fMgrDest) {
+    return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+      "Source File: '%v'  Destination File: '%v' ",
+      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+  }
+
   if !fMgr.actualFileInfo.Mode().IsRegular() {
     return fmt.Errorf(ePrefix+
       "Error: Source file is a Non-Regular "+
@@ -279,12 +285,6 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
     return fmt.Errorf(ePrefix+
       "Error: Destination file exists and it is NOT a 'regular' file. "+
       "Copy operation aborted! Destination File='%v' ", fMgrDest.absolutePathFileName)
-  }
-
-  if fMgr.EqualAbsPaths(fMgrDest) {
-    return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
-      "Source File: '%v'  Destination File: '%v' ",
-      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
   }
 
   // See Reference:
@@ -376,6 +376,12 @@ func (fMgr *FileMgr) CopyFileMgrByIoByLink(fMgrDest *FileMgr) error {
       fMgr.absolutePathFileName)
   }
 
+  if fMgr.EqualAbsPaths(fMgrDest) {
+    return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+      "Source File: '%v'  Destination File: '%v' ",
+      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+  }
+
   if !fMgr.actualFileInfo.Mode().IsRegular() {
     return fmt.Errorf(ePrefix+
       "Error: Source file is a Non-Regular "+
@@ -407,12 +413,6 @@ func (fMgr *FileMgr) CopyFileMgrByIoByLink(fMgrDest *FileMgr) error {
   // https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 
   fh := FileHelper{}
-
-  if fMgr.EqualAbsPaths(fMgrDest) {
-    return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
-      "Source File: '%v'  Destination File: '%v' ",
-      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
-  }
 
   fMgr.dataMutex.Lock()
 
@@ -493,6 +493,12 @@ func (fMgr *FileMgr) CopyFileMgrByLink(fMgrDest *FileMgr) error {
       fMgr.absolutePathFileName)
   }
 
+  if fMgr.EqualAbsPaths(fMgrDest) {
+    return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+      "Source File: '%v'  Destination File: '%v' ",
+      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+  }
+
   if !fMgr.actualFileInfo.Mode().IsRegular() {
     return fmt.Errorf(ePrefix+
       "Error: Source file is a Non-Regular "+
@@ -518,12 +524,6 @@ func (fMgr *FileMgr) CopyFileMgrByLink(fMgrDest *FileMgr) error {
     return fmt.Errorf(ePrefix+
       "Error: Destination file exists and it is NOT a 'regular' file. "+
       "Copy operation aborted! Destination File='%v' ", fMgrDest.absolutePathFileName)
-  }
-
-  if fMgr.EqualAbsPaths(fMgrDest) {
-    return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
-      "Source File: '%v'  Destination File: '%v' ",
-      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
   }
 
   err = fMgrDest.dMgr.MakeDir()
@@ -565,68 +565,6 @@ func (fMgr *FileMgr) CopyFileMgrByLink(fMgrDest *FileMgr) error {
       "Error: After attempted file copy to destination file. Destination "+
       "file does NOT exist! fMgrDest.absolutePathFileName='%v'",
       fMgrDest.absolutePathFileName)
-  }
-
-  return nil
-}
-
-// CopyFileToDirByLink - Copies the file identified by the current File Manager
-// (FileMgr) instance to another directory specified by input parameter 'dir',
-// an instance of type 'DirMgr'.
-//
-// Note that if the destination directory does not exist, this method will
-// attempt to create it.
-//
-// This method will make one attempt to copy the source file to the specified
-// destination directory using a technique known as a 'Hard Link'. This technique
-// will utilize a hard symbolic link to the existing source file in order to
-// create the destination file.
-//
-// If the 'Hard Link' copy operation fails, and error will be returned.
-//
-// Reference:
-// https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
-//
-func (fMgr *FileMgr) CopyFileToDirByLink(dir DirMgr) error {
-
-  ePrefix := "FileMgr.CopyFileToDirByLink() "
-
-  err := fMgr.IsFileMgrValid("")
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+"This File Manager instance is INVALID! Error='%v' ", err.Error())
-  }
-
-  err = dir.IsDirMgrValid("")
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error: Input parmater dir is INVALID! Error='%v'",
-      err.Error())
-  }
-
-  newFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dir, fMgr.fileNameExt)
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dir, "+
-      "fMgr.fileNameExt) dir.absolutePath='%v'  fMgr.fileNameExt='%v'  Error='%v'",
-      dir.absolutePath, fMgr.fileNameExt, err.Error())
-  }
-
-  if fMgr.EqualAbsPaths(&newFMgr) {
-    return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
-      "Source File: '%v'  Destination File: '%v' ",
-      fMgr.absolutePathFileName, newFMgr.absolutePathFileName)
-  }
-
-  err = fMgr.CopyFileMgrByLink(&newFMgr)
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned from fMgr.CopyFileMgrByLink(&newFMgr) "+
-      "newFMgr.absolutePathFileName='%v'  Error='%v'",
-      newFMgr.absolutePathFileName, err.Error())
   }
 
   return nil
@@ -682,6 +620,12 @@ func (fMgr *FileMgr) CopyFileMgrByLinkByIo(fMgrDest *FileMgr) error {
       fMgr.absolutePathFileName)
   }
 
+  if fMgr.EqualAbsPaths(fMgrDest) {
+    return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+      "Source File: '%v'  Destination File: '%v' ",
+      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+  }
+
   if !fMgr.actualFileInfo.Mode().IsRegular() {
     return fmt.Errorf(ePrefix+
       "Error: Source file is a Non-Regular "+
@@ -707,12 +651,6 @@ func (fMgr *FileMgr) CopyFileMgrByLinkByIo(fMgrDest *FileMgr) error {
     return fmt.Errorf(ePrefix+
       "Error: Destination file exists and it is NOT a 'regular' file. "+
       "Copy operation aborted! Destination File='%v' ", fMgrDest.absolutePathFileName)
-  }
-
-  if fMgr.EqualAbsPaths(fMgrDest) {
-    return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
-      "Source File: '%v'  Destination File: '%v' ",
-      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
   }
 
   // See Reference:
@@ -781,17 +719,17 @@ func (fMgr *FileMgr) CopyFileStrByIo(dstPathFileNameExt string) error {
     return fmt.Errorf(ePrefix+"This File Manager instance is INVALID! Error='%v' ", err.Error())
   }
 
+  if !fMgr.doesAbsolutePathFileNameExist {
+    return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST! "+
+      "FileName='%v' ", fMgr.absolutePathFileName)
+  }
+
   fMgrDest, err := FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt)
 
   if err != nil {
     return fmt.Errorf(ePrefix+
       "Error returned by FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt). "+
       "dstPathFileNameExt='%v' Error='%v'", dstPathFileNameExt, err.Error())
-  }
-
-  if !fMgr.doesAbsolutePathFileNameExist {
-    return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST! "+
-      "FileName='%v' ", fMgr.absolutePathFileName)
   }
 
   if fMgr.EqualAbsPaths(&fMgrDest) {
@@ -845,17 +783,17 @@ func (fMgr *FileMgr) CopyFileStrByIoByLink(dstPathFileNameExt string) error {
     return fmt.Errorf(ePrefix+"This File Manager instance is INVALID! Error='%v' ", err.Error())
   }
 
+  if !fMgr.doesAbsolutePathFileNameExist {
+    return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST! "+
+      "FileName='%v' ", fMgr.absolutePathFileName)
+  }
+
   fMgrDest, err := FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt)
 
   if err != nil {
     return fmt.Errorf(ePrefix+
       "Error returned by FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt). "+
       "dstPathFileNameExt='%v' Error='%v'", dstPathFileNameExt, err.Error())
-  }
-
-  if !fMgr.doesAbsolutePathFileNameExist {
-    return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST! "+
-      "FileName='%v' ", fMgr.absolutePathFileName)
   }
 
   if fMgr.EqualAbsPaths(&fMgrDest) {
@@ -904,17 +842,17 @@ func (fMgr *FileMgr) CopyFileStrByLink(dstPathFileNameExt string) error {
     return fmt.Errorf(ePrefix+"This File Manager instance is INVALID! Error='%v' ", err.Error())
   }
 
+  if !fMgr.doesAbsolutePathFileNameExist {
+    return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST! "+
+      "FileName='%v' ", fMgr.absolutePathFileName)
+  }
+
   fMgrDest, err := FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt)
 
   if err != nil {
     return fmt.Errorf(ePrefix+
       "Error returned by FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt). "+
       "dstPathFileNameExt='%v' Error='%v'", dstPathFileNameExt, err.Error())
-  }
-
-  if !fMgr.doesAbsolutePathFileNameExist {
-    return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST! "+
-      "FileName='%v' ", fMgr.absolutePathFileName)
   }
 
   if fMgr.EqualAbsPaths(&fMgrDest) {
@@ -967,17 +905,17 @@ func (fMgr *FileMgr) CopyFileStrByLinkByIo(dstPathFileNameExt string) error {
     return fmt.Errorf(ePrefix+"This File Manager instance is INVALID! Error='%v' ", err.Error())
   }
 
+  if !fMgr.doesAbsolutePathFileNameExist {
+    return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST! "+
+      "FileName='%v' ", fMgr.absolutePathFileName)
+  }
+
   fMgrDest, err := FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt)
 
   if err != nil {
     return fmt.Errorf(ePrefix+
       "Error returned by FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt). "+
       "dstPathFileNameExt='%v' Error='%v'", dstPathFileNameExt, err.Error())
-  }
-
-  if !fMgr.doesAbsolutePathFileNameExist {
-    return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST! "+
-      "FileName='%v' ", fMgr.absolutePathFileName)
   }
 
   if fMgr.EqualAbsPaths(&fMgrDest) {
@@ -1021,6 +959,11 @@ func (fMgr *FileMgr) CopyFileToDirByIo(dir DirMgr) error {
 
   if err != nil {
     return fmt.Errorf(ePrefix+"This File Manager instance is INVALID! Error='%v' ", err.Error())
+  }
+
+  if !fMgr.doesAbsolutePathFileNameExist {
+    return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST! "+
+      "FileName='%v' ", fMgr.absolutePathFileName)
   }
 
   err = dir.IsDirMgrValid("")
@@ -1090,6 +1033,11 @@ func (fMgr *FileMgr) CopyFileToDirByIoByLink(dir DirMgr) error {
     return fmt.Errorf(ePrefix+"This File Manager instance is INVALID! Error='%v' ", err.Error())
   }
 
+  if !fMgr.doesAbsolutePathFileNameExist {
+    return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST! "+
+      "FileName='%v' ", fMgr.absolutePathFileName)
+  }
+
   err = dir.IsDirMgrValid("")
 
   if err != nil {
@@ -1118,6 +1066,73 @@ func (fMgr *FileMgr) CopyFileToDirByIoByLink(dir DirMgr) error {
   if err != nil {
     return fmt.Errorf(ePrefix+
       "Error returned from fMgr.CopyFileMgrByIoByLink(&newFMgr) "+
+      "newFMgr.absolutePathFileName='%v'  Error='%v'",
+      newFMgr.absolutePathFileName, err.Error())
+  }
+
+  return nil
+}
+
+// CopyFileToDirByLink - Copies the file identified by the current File Manager
+// (FileMgr) instance to another directory specified by input parameter 'dir',
+// an instance of type 'DirMgr'.
+//
+// Note that if the destination directory does not exist, this method will
+// attempt to create it.
+//
+// This method will make one attempt to copy the source file to the specified
+// destination directory using a technique known as a 'Hard Link'. This technique
+// will utilize a hard symbolic link to the existing source file in order to
+// create the destination file.
+//
+// If the 'Hard Link' copy operation fails, and error will be returned.
+//
+// Reference:
+// https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+func (fMgr *FileMgr) CopyFileToDirByLink(dir DirMgr) error {
+
+  ePrefix := "FileMgr.CopyFileToDirByLink() "
+
+  err := fMgr.IsFileMgrValid("")
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"This File Manager instance is INVALID! Error='%v' ", err.Error())
+  }
+
+  if !fMgr.doesAbsolutePathFileNameExist {
+    return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST! "+
+      "FileName='%v' ", fMgr.absolutePathFileName)
+  }
+
+  err = dir.IsDirMgrValid("")
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Error: Input parmater dir is INVALID! Error='%v'",
+      err.Error())
+  }
+
+  newFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dir, fMgr.fileNameExt)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dir, "+
+      "fMgr.fileNameExt) dir.absolutePath='%v'  fMgr.fileNameExt='%v'  Error='%v'",
+      dir.absolutePath, fMgr.fileNameExt, err.Error())
+  }
+
+  if fMgr.EqualAbsPaths(&newFMgr) {
+    return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same! "+
+      "Source File: '%v'  Destination File: '%v' ",
+      fMgr.absolutePathFileName, newFMgr.absolutePathFileName)
+  }
+
+  err = fMgr.CopyFileMgrByLink(&newFMgr)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Error returned from fMgr.CopyFileMgrByLink(&newFMgr) "+
       "newFMgr.absolutePathFileName='%v'  Error='%v'",
       newFMgr.absolutePathFileName, err.Error())
   }
@@ -1155,6 +1170,11 @@ func (fMgr *FileMgr) CopyFileToDirByLinkByIo(dir DirMgr) error {
 
   if err != nil {
     return fmt.Errorf(ePrefix+"This File Manager instance is INVALID! Error='%v' ", err.Error())
+  }
+
+  if !fMgr.doesAbsolutePathFileNameExist {
+    return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST! "+
+      "FileName='%v' ", fMgr.absolutePathFileName)
   }
 
   err = dir.IsDirMgrValid("")

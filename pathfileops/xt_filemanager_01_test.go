@@ -1137,7 +1137,7 @@ func TestFileMgr_CopyFileMgrByLink_05(t *testing.T) {
 
 func TestFileMgr_CopyFileMgrByLink_06(t *testing.T) {
 
-  sourceFile := "../filesfortest/newfilesfortest/iDoNotExist.txt"
+  sourceFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
 
   fh := FileHelper{}
   adjustedSourceFile := fh.AdjustPathSlash(sourceFile)
@@ -1703,6 +1703,38 @@ func TestFileMgr_CopyFileStrByIo_04(t *testing.T) {
   if err == nil {
     t.Error("Expected error return from srcFMgr.CopyFileStrByIo(rawAbsDestPath) " +
       "because source file does NOT exist. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_CopyFileStrByIo_05(t *testing.T) {
+
+  sourceFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+
+  fh := FileHelper{}
+
+  absoluteSourceFile, err := fh.MakeAbsolutePath(sourceFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(adjustedSourceFile). "+
+      "Error='%v' ", err.Error())
+  }
+
+  srcFMgr, err := FileMgr{}.New(absoluteSourceFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileMgr{}.New(absoluteSourceFile). "+
+      "Error='%v' ", err.Error())
+  }
+
+  rawAbsDestPath := srcFMgr.GetAbsolutePathFileName()
+
+  err = srcFMgr.CopyFileStrByIo(rawAbsDestPath)
+
+  if err == nil {
+    t.Error("Expected error return from srcFMgr.CopyFileStrByIo(rawAbsDestPath) " +
+      "because source file is equivalent to destination file. " +
+      "However, NO ERROR WAS RETURNED!")
   }
 
 }
