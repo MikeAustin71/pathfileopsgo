@@ -1397,7 +1397,7 @@ func (fMgr *FileMgr) CreateThisFile() error {
 
     return fmt.Errorf(ePrefix+
       "Error: Directory Path DOES NOT EXIST! "+
-      "FileMgr.dMgr.absolutePath='%v' Error='%v' ", fMgr.dMgr.absolutePath, err.Error())
+      "DirPath='%v' ", fMgr.dMgr.GetAbsolutePath())
   }
 
   //  OpenFile(name, O_RDWR|O_CREATE|O_TRUNC, 0666)
@@ -1507,16 +1507,6 @@ func (fMgr *FileMgr) DoesThisFileExist() (bool, error) {
     return false,
       errors.New(ePrefix +
         "Error: The File Manager data structure has NOT been initialized.")
-  }
-
-  if fMgr.isAbsolutePathFileNamePopulated == false {
-    return false,
-      errors.New(ePrefix + " Error: absolutePathFileName is NOT POPULATED!")
-  }
-
-  if fMgr.absolutePathFileName == "" {
-    fMgr.isAbsolutePathFileNamePopulated = false
-    return false, errors.New(ePrefix + " Error: absolutePathFileName is EMPTY!")
   }
 
   fMgr.dataMutex.Lock()
@@ -1742,7 +1732,7 @@ func (fMgr *FileMgr) FlushBytesToDisk() error {
   return nil
 }
 
-// GetAbsolutePathFileName - Returns the absolute path
+// GetAbsolutePath - Returns the absolute path
 // for the current File Manager instance.
 //
 // Note: The file name and file extension are NOT included.
@@ -2196,13 +2186,13 @@ func (fMgr *FileMgr) IsFileMgrValid(errorPrefixStr string) error {
     return errors.New(ePrefix + " Error: absolutePathFileName is EMPTY!")
   }
 
-  _, _ = fMgr.DoesThisFileExist()
-
   err := fMgr.dMgr.IsDirMgrValid(ePrefix)
 
   if err != nil {
     return fmt.Errorf("FileMgr Directory Manager INVALID - %v", err.Error())
   }
+
+  _, _ = fMgr.DoesThisFileExist()
 
   return nil
 }

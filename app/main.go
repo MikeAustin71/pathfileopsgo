@@ -38,7 +38,27 @@ func main() {
 
 func main() {
 
-  mainTest41()
+  mainTest42()
+}
+
+func mainTest42() {
+  fh := pf.FileHelper{}
+  testFile := fh.AdjustPathSlash("../iDoNotExist/TestFile011.txt")
+  fileMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(testFile)
+
+  if err != nil {
+    fmt.Printf("Error thrown on FileHelper:GetPathFileNameElements():'%v'", err.Error())
+    return
+  }
+
+  err = fileMgr.CreateThisFile()
+
+  if err == nil {
+    fmt.Printf("Expected error return from fileMgr.CreateThisFile() because " +
+      "the fileMgr directory does NOT exist. However, NO ERROR WAS RETURNED!")
+    return
+  }
+
 }
 
 func mainTest41() {
@@ -245,7 +265,7 @@ func mainTest38() {
   fmt.Println()
   fmt.Println("    mainTest38()   ")
   fmt.Println("***** SUCCESS *****")
-  fmt.Println("              Test Text: ", testText)
+  fmt.Printf("              Test Text: %v", testText)
   fmt.Println("    Length of Test Text: ", lenTestText)
   fmt.Println("Number of Bytes Written: ", numBytesWritten)
 
@@ -308,7 +328,7 @@ func mainTest37() {
   fmt.Println()
   fmt.Println("    mainTest37()   ")
   fmt.Println("***** SUCCESS *****")
-  fmt.Println("              Test Text: ", testText)
+  fmt.Printf("              Test Text: %v", testText)
   fmt.Println("    Length of Test Text: ", lenTestText)
   fmt.Println("Number of Bytes Written: ", numBytesWritten)
 
