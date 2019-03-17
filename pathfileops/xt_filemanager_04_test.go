@@ -1092,6 +1092,13 @@ func TestFileMgr_GetWriterBufferSize_03(t *testing.T) {
       err.Error())
   }
 
+  err = srcFMgr.DeleteThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned by srcFMgr.DeleteThisFile(). Error='%v' ",
+      err.Error())
+  }
+
   if actualWriterBuffSize < 10 {
     t.Errorf("Error: Expected Bufio Write Buffer Size > 10. Instead, "+
       "Write Buffer Size ='%v' ", actualWriterBuffSize)
