@@ -1303,12 +1303,6 @@ func (fMgr *FileMgr) CreateDir() error {
     return err
   }
 
-  err = fMgr.dMgr.IsDirMgrValid(ePrefix)
-
-  if err != nil {
-    return err
-  }
-
   doesDirExist := fMgr.dMgr.DoesDirMgrAbsolutePathExist()
 
   if !doesDirExist {

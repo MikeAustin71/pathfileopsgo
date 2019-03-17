@@ -6,6 +6,37 @@ import (
   "testing"
 )
 
+func TestFileMgr_GetAbsolutePath(t *testing.T) {
+
+  fh := FileHelper{}
+  relPath1 := "..\\logTest\\CmdrX\\CmdrX.log"
+
+  filePath1, err := fh.MakeAbsolutePath(relPath1)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1). "+
+      "relPath1='%v' Error='%v'", relPath1, err.Error())
+  }
+
+  fileMgr1, err := FileMgr{}.New(filePath1)
+
+  if err != nil {
+    t.Errorf("Received Error on FileMgr{}.New(filePath1). Error='%v' ", err.Error())
+  }
+
+  fMgr1DMgr := fileMgr1.GetDirMgr()
+
+  expectedAbsPath := fMgr1DMgr.GetAbsolutePath()
+
+  actualAbsPath := fileMgr1.GetAbsolutePath()
+
+  if expectedAbsPath != actualAbsPath {
+    t.Errorf("Expected absolute path='%v'. Instead, absolute path='%v' ",
+      expectedAbsPath, actualAbsPath)
+  }
+
+}
+
 func TestFileMgr_GetAbsolutePathFileName_01(t *testing.T) {
   fh := FileHelper{}
   relPath1 := "..\\logTest\\CmdrX\\CmdrX.log"
