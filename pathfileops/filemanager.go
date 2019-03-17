@@ -1976,7 +1976,7 @@ func (fMgr *FileMgr) GetFileNameExt() string {
 //
 func (fMgr *FileMgr) GetFilePermissionConfig() (FilePermissionConfig, error) {
 
-  ePrefix := "FileMgrGetFilePermissionTextCodes() "
+  ePrefix := "FileMgr.GetFilePermissionConfig() "
 
   err := fMgr.ResetFileInfo()
 
@@ -2025,7 +2025,7 @@ func (fMgr *FileMgr) GetFilePermissionConfig() (FilePermissionConfig, error) {
 //
 func (fMgr *FileMgr) GetFilePermissionTextCodes() (string, error) {
 
-  ePrefix := "FileMgrGetFilePermissionTextCodes() "
+  ePrefix := "FileMgr.GetFilePermissionTextCodes() "
 
   err := fMgr.ResetFileInfo()
 
