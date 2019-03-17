@@ -1445,6 +1445,11 @@ func (fMgr *FileMgr) DeleteThisFile() error {
       "Error: This FileMgr object is INVALID!  Error='%v'", err.Error())
   }
 
+  // If file does not exist, return with no error.
+  if !fMgr.doesAbsolutePathFileNameExist {
+    return nil
+  }
+
   if fMgr.filePtr != nil {
 
     err = fMgr.CloseThisFile()
@@ -2262,13 +2267,7 @@ func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (newFMgr FileMgr, err erro
   if lPath == 0 {
     err = errors.New(ePrefix +
       "Error: Input parameter 'dirPath' is a Zero length string!")
-    return
-  }
-
-  if !fMgr.isInitialized {
-    err = errors.New(ePrefix +
-      "Error: The current FileMgr object is NOT Initialized! It is EMPTY!")
-    return
+    return newFMgr, err
   }
 
   err2 := fMgr.IsFileMgrValid("")
@@ -2277,14 +2276,14 @@ func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (newFMgr FileMgr, err erro
     err = fmt.Errorf(ePrefix+
       "Error: Current FileMgr object is INVALID!. Error='%v'",
       err2.Error())
-    return
+    return newFMgr, err
   }
 
   if !fMgr.doesAbsolutePathFileNameExist {
     err = fmt.Errorf(ePrefix+
       "Error: The source files does NOT exist. srcFile='%v' ",
       fMgr.absolutePathFileName)
-    return
+    return newFMgr, err
   }
 
   dMgr, err2 := DirMgr{}.New(dirPath)
@@ -2293,23 +2292,26 @@ func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (newFMgr FileMgr, err erro
     err = fmt.Errorf(ePrefix+
       "Error returned from DirMgr{}.NewFromPathFileNameExtStr(dirPath). dirPath='%v'  Error='%v'",
       dirPath, err2.Error())
-    return
+    return newFMgr, err
   }
 
-  if !dMgr.isInitialized {
+  err2 = dMgr.IsDirMgrValid("")
+
+  if err2 != nil {
+
     err = fmt.Errorf(ePrefix+
       "Error: Input parameter 'dirPath' "+
-      "generated an empty DirMgr object. dirPath='%v'", dirPath)
-    return
+      "generated an INVALID DirMgr. dirPath='%v' Error='%v' ", dirPath, err2)
+    return newFMgr, err
   }
 
   pathExists, absPathExists := dMgr.DoesDirectoryExist()
 
-  if !pathExists && !absPathExists {
+  if !pathExists || !absPathExists {
     err = fmt.Errorf(ePrefix+
       "Error: Target Destination path DOES NOT EXIST! dirPath='%v'",
       dirPath)
-    return
+    return newFMgr, err
   }
 
   newFMgr, err2 = fMgr.MoveFileToNewDirMgr(dMgr)
@@ -2322,7 +2324,9 @@ func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (newFMgr FileMgr, err erro
     return
   }
 
-  return newFMgr, nil
+  err = nil
+
+  return newFMgr, err
 }
 
 // MoveFileToNewDirMgr - This method will move the file identified
@@ -2342,75 +2346,50 @@ func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err erro
   newFMgr = FileMgr{}
   err = nil
 
-  if !fMgr.isInitialized {
-    err = errors.New(ePrefix +
-      "Error: The current FileMgr object is NOT initialized. It is Empty!")
-    return
-  }
-
   err2 := fMgr.IsFileMgrValid("")
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+"Error: Current FileMgr object is INVALID!. Error='%v'",
       err2.Error())
-    return
+    return newFMgr, err
   }
 
-  if !dMgr.isInitialized {
-    err = errors.New(ePrefix +
-      "Error: Input parameter 'dMgr' is NOT initialized. It is Empty!")
-    return
+  if !fMgr.doesAbsolutePathFileNameExist {
+    err = fmt.Errorf(ePrefix+
+      "Error: The source file identified by the current FileMgr object DOES NOT EXIST! "+
+      "source file='%v'", fMgr.absolutePathFileName)
+    return newFMgr, err
   }
 
   err2 = dMgr.IsDirMgrValid("")
 
   if err2 != nil {
-    err = errors.New(ePrefix + "Error: Input parameter 'dMgr' reports as INVALID!")
-    return
+    err = fmt.Errorf(ePrefix+"Error: Input parameter 'dMgr' reports as INVALID! "+
+      "Error='%v'", err2.Error())
+    return newFMgr, err
   }
 
-  if !dMgr.doesAbsolutePathExist && !dMgr.doesPathExist {
+  if !dMgr.doesAbsolutePathExist || !dMgr.doesPathExist {
     err = fmt.Errorf(ePrefix+
       "Error: Destination path DOES NOT EXIST!. "+
       "For this DirMgr object, both absolutePath and path DO NOT EXIST! "+
       "dMgr.absolutePath='%v'  dMgr.path='%v'", dMgr.absolutePath, dMgr.path)
-    return
+    return newFMgr, err
   }
 
-  srcFileExists, err2 := fMgr.DoesThisFileExist()
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+
-      "Error returned by fMgr.DoesThisFileExist(). "+
-      "fMgr.absolutePathFileName='%v'  Error='%v'", fMgr.absolutePathFileName, err2.Error())
-    return
-  }
-
-  if !srcFileExists {
-    err = fmt.Errorf(ePrefix+
-      "Error: The source file identified by the current FileMgr object DOES NOT EXIST! "+
-      "fMgr.absolutePathFileName='%v'", fMgr.absolutePathFileName)
-    return
-  }
-
-  var destPathFileName string
-
-  if dMgr.doesAbsolutePathExist {
-    destPathFileName = dMgr.GetAbsolutePathWithSeparator() + fMgr.fileNameExt
-  } else {
-    destPathFileName = dMgr.GetPathWithSeparator() + fMgr.fileNameExt
-  }
+  destPathFileName := dMgr.GetAbsolutePathWithSeparator() + fMgr.fileNameExt
 
   fh := FileHelper{}
-  _, err = fh.MoveFile(fMgr.absolutePathFileName, destPathFileName)
+  _, err2 = fh.MoveFile(fMgr.absolutePathFileName, destPathFileName)
 
-  if err != nil {
-    return FileMgr{},
-      fmt.Errorf(ePrefix+
-        "Error returned from "+
-        "fh.MoveFile(fMgr.absolutePathFileName, destPathFileName). "+
-        "fMgr.absolutePathFileName='%v' pathFile='%v' Error='%v'",
-        fMgr.absolutePathFileName, destPathFileName, err.Error())
+  if err2 != nil {
+    newFMgr = FileMgr{}
+    err = fmt.Errorf(ePrefix+
+      "Error returned from "+
+      "fh.MoveFile(fMgr.absolutePathFileName, destPathFileName). "+
+      "fMgr.absolutePathFileName='%v' pathFile='%v' Error='%v'",
+      fMgr.absolutePathFileName, destPathFileName, err.Error())
+    return newFMgr, err
   }
 
   newFMgr, err2 = FileMgr{}.NewFromPathFileNameExtStr(destPathFileName)
@@ -2420,29 +2399,29 @@ func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err erro
     err = fmt.Errorf(ePrefix+
       "Error returned by FileMgr{}.NewFromPathFileNameExtStr(destPathFileName). destPathFileName='%v' "+
       "Error='%v'", destPathFileName, err2.Error())
-    return
+    return newFMgr, err
   }
 
   doesFileExist, err2 := fMgr.DoesThisFileExist()
 
   if err2 != nil {
     newFMgr = FileMgr{}
-    err = fmt.Errorf(ePrefix+"Error: Old file still exists! Error='%v'",
+    err = fmt.Errorf(ePrefix+"Error returned from old file existance test. "+
+      "fMgr.DoesThisFileExist() Error='%v'",
       err2.Error())
-    return
+    return newFMgr, err
   }
 
   if doesFileExist == true {
     newFMgr = FileMgr{}
     err = fmt.Errorf(ePrefix+"Error: Old file still exists! Old File Name: %v ",
       fMgr.absolutePathFileName)
-    return
+    return newFMgr, err
   }
 
   err = nil
 
   return newFMgr, err
-
 }
 
 // New - Creates a new File Manager ('FileMgr') instance. This method receives an
