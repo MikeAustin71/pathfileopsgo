@@ -560,6 +560,38 @@ func TestFileMgr_NewFromDirStrFileNameStr_01(t *testing.T) {
 
 }
 
+func TestFileMgr_NewFromDirStrFileNameStr_02(t *testing.T) {
+
+  expectedFileNameExt := "newerFileForTest_01.txt"
+
+  rawPath := ""
+
+  _, err := FileMgr{}.NewFromDirStrFileNameStr(rawPath, expectedFileNameExt)
+
+  if err == nil {
+    t.Error("Expected error return from FileMgr{}." +
+      "NewFromDirStrFileNameStr(rawPath, expectedFileNameExt) because " +
+      "rawPath is an empty string. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_NewFromDirStrFileNameStr_03(t *testing.T) {
+
+  expectedFileNameExt := ""
+
+  rawPath := "../filesfortest/newfilesfortest"
+
+  _, err := FileMgr{}.NewFromDirStrFileNameStr(rawPath, expectedFileNameExt)
+
+  if err == nil {
+    t.Error("Expected error return from FileMgr{}." +
+      "NewFromDirStrFileNameStr(rawPath, expectedFileNameExt) because " +
+      "expectedFileNameExt is an empty string. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
 func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
   fh := FileHelper{}
 
