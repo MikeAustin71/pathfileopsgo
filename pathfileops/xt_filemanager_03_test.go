@@ -476,7 +476,8 @@ func TestFileMgr_DeleteThisFile_01(t *testing.T) {
   fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(testFile)
 
   if err != nil {
-    t.Errorf("Error thrown on FileHelper:GetPathFileNameElements():'%v'", err.Error())
+    t.Errorf("Error returned by FileMgr{}.NewFromPathFileNameExtStr(testFile). "+
+      "testFile='%v' Error='%v'", testFile, err.Error())
   }
 
   fileMgr.isInitialized = false
@@ -488,6 +489,45 @@ func TestFileMgr_DeleteThisFile_01(t *testing.T) {
       "the fileMgr is invalid. However, NO ERROR WAS RETURNED!")
   }
 
+}
+
+func TestFileMgr_DeleteThisFile_02(t *testing.T) {
+  fh := FileHelper{}
+  testFile := fh.AdjustPathSlash("../checkfiles/scratchTestFile995681.txt")
+
+  fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(testFile)
+
+  if err != nil {
+    t.Errorf("Error thrown on FileMgr{}.NewFromPathFileNameExtStr(testFile). "+
+      "testFile='%v' Error='%v'", testFile, err.Error())
+  }
+
+  err = fileMgr.CreateThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned by fileMgr.CreateThisFile(). "+
+      "File='%v' Error='%v'", fileMgr.GetAbsolutePathFileName(), err.Error())
+  }
+
+  err = fileMgr.DeleteThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned by fileMgr.CreateThisFile(). "+
+      "File='%v' Error='%v'", fileMgr.GetAbsolutePathFileName(), err.Error())
+  }
+
+  if fh.DoesFileExist(fileMgr.GetAbsolutePathFileName()) {
+    t.Errorf("Error: Test file WAS NOT DELETED. File='%v' ",
+      fileMgr.GetAbsolutePathFileName())
+
+    err = fh.DeleteDirFile(fileMgr.GetAbsolutePathFileName())
+
+    if err != nil {
+      t.Errorf("Error: 2nd Attempted deletion of test file FAILED! "+
+        "File='%v' ", fileMgr.GetAbsolutePathFileName())
+    }
+
+  }
 }
 
 func TestFileMgr_DoesThisFileExist_01(t *testing.T) {
