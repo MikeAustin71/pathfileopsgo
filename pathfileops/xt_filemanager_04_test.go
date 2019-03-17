@@ -1661,6 +1661,36 @@ func TestFileMgr_MoveFileToNewDirMgr_04(t *testing.T) {
 
 }
 
+func TestFileMgr_MoveFileToNewDirMgr_05(t *testing.T) {
+
+  fh := FileHelper{}
+  setupSrcFile := fh.AdjustPathSlash("..\\logTest\\FileMgmnt\\TestFile003.txt")
+
+  srcFileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(setupSrcFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(srcFile). "+
+      "srcFile='%v'  Error='%v'", setupSrcFile, err.Error())
+  }
+
+  destDir := fh.AdjustPathSlash("..\\xxxIDoNotExist")
+
+  destDMgr, err := DirMgr{}.New(destDir)
+
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.New(destDir). "+
+      "directory='%v'  Error='%v'", destDir, err.Error())
+  }
+
+  _, err = srcFileMgr.MoveFileToNewDirMgr(destDMgr)
+
+  if err == nil {
+    t.Error("Expected error return from srcFileMgr.MoveFileToNewDirMgr(dMgr) " +
+      "because dMgr does NOT exist. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
 func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
   fh := FileHelper{}
   setupSrcFile := fh.AdjustPathSlash("..\\logTest\\FileMgmnt\\TestFile003.txt")
@@ -1848,6 +1878,27 @@ func TestFileMgr_MoveFileToNewDir_04(t *testing.T) {
   if err == nil {
     t.Error("Expected error return from  srcFileMgr.MoveFileToNewDir(destDir) " +
       "because source file does NOT exist. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_MoveFileToNewDir_05(t *testing.T) {
+  fh := FileHelper{}
+  srcFile := fh.AdjustPathSlash("..\\logTest\\FileMgmnt\\TestFile003.txt")
+  destDir := fh.AdjustPathSlash("..\\iDoNotExit")
+
+  srcFileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(srcFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(srcFile). "+
+      "srcFile='%v'  Error='%v'", srcFile, err.Error())
+  }
+
+  _, err = srcFileMgr.MoveFileToNewDir(destDir)
+
+  if err == nil {
+    t.Error("Expected error return from  srcFileMgr.MoveFileToNewDir(destDir) " +
+      "because destDir does NOT exist. However, NO ERROR WAS RETURNED!")
   }
 
 }

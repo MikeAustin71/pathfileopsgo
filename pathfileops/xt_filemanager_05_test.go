@@ -493,6 +493,32 @@ func TestFileMgr_NewFromDirMgrFileNameExt_04(t *testing.T) {
 
 }
 
+func TestFileMgr_NewFromDirMgrFileNameExt_05(t *testing.T) {
+
+  expectedFileNameExt := "$%!*().#+_"
+
+  fh := FileHelper{}
+
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+
+  dMgr, err := DirMgr{}.New(adjustedPath)
+
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). "+
+      "adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
+
+  _, err = FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
+
+  if err == nil {
+    t.Errorf("Expected error return from FileMgr{}" +
+      "NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt) " +
+      "because the expectedFileNameExt contains invalid characters. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
 func TestFileMgr_NewFromDirStrFileNameStr_01(t *testing.T) {
 
   expectedFileNameExt := "newerFileForTest_01.txt"

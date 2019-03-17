@@ -2255,6 +2255,9 @@ func (fMgr *FileMgr) IsInitialized() bool {
 // The new file located in the new directory will be returned in the return
 // parameter 'newFMgr'.
 //
+// If input parameter 'dirPth' contains a directory path which does not
+// currently exist, this method will return an error.
+//
 func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (newFMgr FileMgr, err error) {
 
   newFMgr = FileMgr{}
@@ -2340,6 +2343,9 @@ func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (newFMgr FileMgr, err erro
 //
 // The new file located in the new directory will be returned in the return
 // parameter 'newFMgr'.
+//
+// If the input parameter 'dMgr' does not contain a path which currently
+// exists, an error will be returned.
 //
 func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err error) {
   ePrefix := "FileMgr.MoveFileToNewDirMgr() "
