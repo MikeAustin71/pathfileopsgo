@@ -1824,19 +1824,6 @@ func (fMgr *FileMgr) GetFileInfo() (os.FileInfo, error) {
     return nil, err
   }
 
-  if !fMgr.isAbsolutePathFileNamePopulated {
-    return nil,
-      errors.New(ePrefix +
-        "Error: absolutePathFileName is NOT populated/initialized.")
-  }
-
-  if fMgr.absolutePathFileName == "" {
-    fMgr.isAbsolutePathFileNamePopulated = false
-    return nil,
-      errors.New(ePrefix +
-        "Error: absolutePathFileName is EMPTY!")
-  }
-
   fMgr.dataMutex.Lock()
 
   info, err := os.Stat(fMgr.absolutePathFileName)

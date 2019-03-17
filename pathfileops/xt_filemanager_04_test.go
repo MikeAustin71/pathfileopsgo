@@ -277,6 +277,35 @@ func TestFileMgr_GetFileInfo_02(t *testing.T) {
 
 }
 
+func TestFileMgr_GetFileInfo_03(t *testing.T) {
+
+  fh := FileHelper{}
+  targetFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+  absPath, err := fh.MakeAbsolutePath(targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(targetFile). "+
+      "targetFile='%v' Error='%v'", targetFile, err.Error())
+  }
+
+  srcFMgr, err := FileMgr{}.New(absPath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(absPath). "+
+      "absPath='%v' Error='%v'", absPath, err.Error())
+  }
+
+  srcFMgr.isInitialized = false
+
+  _, err = srcFMgr.GetFileInfo()
+
+  if err == nil {
+    t.Error("Error expected error return from srcFMgr.GetFileInfo() because " +
+      "srcFMgr is invalid. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
 func TestFileMgr_GetFileInfoPlus_01(t *testing.T) {
 
   fh := FileHelper{}
@@ -296,6 +325,11 @@ func TestFileMgr_GetFileInfoPlus_01(t *testing.T) {
   }
 
   fInfoPlus, err := srcFMgr.GetFileInfoPlus()
+
+  if err != nil {
+    t.Errorf("Error returned from srcFMgr.GetFileInfoPlus(). "+
+      "absPath='%v' Error='%v'", absPath, err.Error())
+  }
 
   expectedFileNameExt := strings.ToLower(srcFMgr.GetFileNameExt())
 
@@ -332,6 +366,35 @@ func TestFileMgr_GetFileInfoPlus_02(t *testing.T) {
     t.Error("Error expected error return from srcFMgr.GetFileInfoPlus() because " +
       "file does not exist. However, NO ERROR WAS RETURNED!")
   }
+}
+
+func TestFileMgr_GetFileInfoPlus_03(t *testing.T) {
+
+  fh := FileHelper{}
+  targetFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+  absPath, err := fh.MakeAbsolutePath(targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(targetFile). "+
+      "targetFile='%v' Error='%v'", targetFile, err.Error())
+  }
+
+  srcFMgr, err := FileMgr{}.New(absPath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(absPath). "+
+      "absPath='%v' Error='%v'", absPath, err.Error())
+  }
+
+  srcFMgr.isInitialized = false
+
+  _, err = srcFMgr.GetFileInfoPlus()
+
+  if err == nil {
+    t.Error("Error expected error return from srcFMgr.GetFileInfoPlus() because " +
+      "srcFMgr is invalid. However, NO ERROR WAS RETURNED!")
+  }
+
 }
 
 func TestFileMgr_GetFileModTime_01(t *testing.T) {
