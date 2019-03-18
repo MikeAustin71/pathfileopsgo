@@ -38,7 +38,54 @@ func main() {
 
 func main() {
 
-  mainTest42()
+  mainTest44()
+}
+
+func mainTest44() {
+
+  expectedFileNameExt := "$!#%^&*()_=.t%t"
+
+  rawPath := "../filesfortest/newfilesfortest"
+
+  _, err := pf.FileMgr{}.NewFromDirStrFileNameStr(rawPath, expectedFileNameExt)
+
+  if err == nil {
+    fmt.Println("Expected error return from FileMgr{}." +
+      "NewFromDirStrFileNameStr(rawPath, expectedFileNameExt) because " +
+      "expectedFileNameExt consists of invalid characters. " +
+      "However, NO ERROR WAS RETURNED!")
+    return
+  }
+
+  fmt.Println()
+  fmt.Println("Completed without error.")
+  fmt.Println()
+}
+
+func mainTest43() {
+
+  fh := pf.FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+
+  absPath, err := fh.MakeAbsolutePath(adjustedPath)
+
+  if err != nil {
+    fmt.Printf("Error returned from fh.MakeAbsolutePath(adjustedPath). adjustedPath='%v'  "+
+      "Error='%v'", adjustedPath, err.Error())
+    return
+  }
+
+  var info os.FileInfo
+
+  _, err = pf.FileMgr{}.NewFromFileInfo(absPath, info)
+
+  if err == nil {
+    fmt.Println("Expected an error from FileMgr{}.NewFromFileInfo(absPath, info) because " +
+      "input parameter 'info' is INVALID!  However, NO ERROR WAS RETURNED!")
+
+    return
+  }
+
 }
 
 func mainTest42() {

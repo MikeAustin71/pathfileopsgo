@@ -362,6 +362,61 @@ func TestFileMgr_NewFromFileInfo_01(t *testing.T) {
 
 }
 
+func TestFileMgr_NewFromFileInfo_02(t *testing.T) {
+
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+
+  absPath, err := fh.MakeAbsolutePath(adjustedPath)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.MakeAbsolutePath(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
+
+  var info os.FileInfo
+
+  _, err = FileMgr{}.NewFromFileInfo(absPath, info)
+
+  if err == nil {
+    t.Errorf("Expected an error from FileMgr{}.NewFromFileInfo(absPath, info) because " +
+      "input parameter 'info' is INVALID!  However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_NewFromFileInfo_03(t *testing.T) {
+
+  expectedFileNameExt := "newerFileForTest_01.txt"
+
+  fh := FileHelper{}
+
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+
+  absPath, err := fh.MakeAbsolutePath(adjustedPath)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.MakeAbsolutePath(adjustedPath). "+
+      "adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
+
+  absPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
+
+  info, err := fh.GetFileInfoFromPath(absPathFileNameExt)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+  }
+
+  absPath = "../iDoNotExist"
+
+  _, err = FileMgr{}.NewFromFileInfo(absPath, info)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromFileInfo(absPath, info). absPath='%v' info.Name()='%v'  Error='%v'", absPath, info.Name(), err.Error())
+  }
+
+}
+
 func TestFileMgr_NewFromDirMgrFileNameExt_01(t *testing.T) {
 
   expectedFileNameExt := "newerFileForTest_01.txt"
@@ -614,6 +669,40 @@ func TestFileMgr_NewFromDirStrFileNameStr_03(t *testing.T) {
     t.Error("Expected error return from FileMgr{}." +
       "NewFromDirStrFileNameStr(rawPath, expectedFileNameExt) because " +
       "expectedFileNameExt is an empty string. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_NewFromDirStrFileNameStr_04(t *testing.T) {
+
+  expectedFileNameExt := "$!#%^&*()_=.t%t"
+
+  rawPath := "../filesfortest/newfilesfortest"
+
+  _, err := FileMgr{}.NewFromDirStrFileNameStr(rawPath, expectedFileNameExt)
+
+  if err == nil {
+    t.Error("Expected error return from FileMgr{}." +
+      "NewFromDirStrFileNameStr(rawPath, expectedFileNameExt) because " +
+      "expectedFileNameExt consists of invalid characters. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_NewFromDirStrFileNameStr_05(t *testing.T) {
+
+  expectedFileNameExt := "newerFileForTest_01.txt"
+
+  rawPath := ""
+
+  _, err := FileMgr{}.NewFromDirStrFileNameStr(rawPath, expectedFileNameExt)
+
+  if err == nil {
+    t.Error("Expected error return from FileMgr{}." +
+      "NewFromDirStrFileNameStr(rawPath, expectedFileNameExt) because " +
+      "raw path is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
   }
 
 }
