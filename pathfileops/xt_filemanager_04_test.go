@@ -786,6 +786,30 @@ func TestFileMgr_GetFilePermissionTextCodes_02(t *testing.T) {
 
 }
 
+func TestFileMgr_GetFilePermissionTextCodes_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+  srcFMgr, err := FileMgr{}.New(targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+      "targetFile='%v' Error='%v'", targetFile, err.Error())
+  }
+
+  srcFMgr.isInitialized = false
+
+  _, err = srcFMgr.GetFilePermissionTextCodes()
+
+  if err == nil {
+    t.Error("Expected error return from srcFMgr.GetFilePermissionTextCodes() " +
+      "because srcFMgr is invalid. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
 func TestFileMgr_GetFilePtr_01(t *testing.T) {
 
   fh := FileHelper{}
@@ -869,6 +893,32 @@ func TestFileMgr_GetFileSize_02(t *testing.T) {
   if expectedFileSize != actualFileSize {
     t.Errorf("Expected file size='-1'. Instead, file size='%v'",
       actualFileSize)
+  }
+
+}
+
+func TestFileMgr_GetFileSize_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+  srcFMgr, err := FileMgr{}.New(targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(targetFile). "+
+      "targetFile='%v' Error='%v'", targetFile, err.Error())
+  }
+
+  srcFMgr.isInitialized = false
+
+  actualFileSize := srcFMgr.GetFileSize()
+
+  expectedFileSize := int64(-1)
+
+  if expectedFileSize != actualFileSize {
+    t.Errorf("Expected file size='%v'. Instead, file size='%v'",
+      expectedFileSize, actualFileSize)
   }
 
 }

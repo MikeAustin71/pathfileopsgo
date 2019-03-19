@@ -404,7 +404,8 @@ func TestFileMgr_NewFromFileInfo_03(t *testing.T) {
   info, err := fh.GetFileInfoFromPath(absPathFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+    t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). "+
+      "absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
   }
 
   absPath = "../iDoNotExist"
@@ -412,7 +413,8 @@ func TestFileMgr_NewFromFileInfo_03(t *testing.T) {
   _, err = FileMgr{}.NewFromFileInfo(absPath, info)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromFileInfo(absPath, info). absPath='%v' info.Name()='%v'  Error='%v'", absPath, info.Name(), err.Error())
+    t.Errorf("Error returned from FileMgr{}.NewFromFileInfo(absPath, info). "+
+      "absPath='%v' info.Name()='%v'  Error='%v'", absPath, info.Name(), err.Error())
   }
 
 }
