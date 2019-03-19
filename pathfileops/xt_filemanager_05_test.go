@@ -417,6 +417,40 @@ func TestFileMgr_NewFromFileInfo_03(t *testing.T) {
 
 }
 
+func TestFileMgr_NewFromFileInfo_04(t *testing.T) {
+
+  expectedFileNameExt := "newerFileForTest_01.txt"
+
+  fh := FileHelper{}
+
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+
+  absPath, err := fh.MakeAbsolutePath(adjustedPath)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.MakeAbsolutePath(adjustedPath). "+
+      "adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
+
+  absPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
+
+  info, err := fh.GetFileInfoFromPath(absPathFileNameExt)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+  }
+
+  absPath = ""
+
+  _, err = FileMgr{}.NewFromFileInfo(absPath, info)
+
+  if err == nil {
+    t.Error("Expected an error from FileMgr{}.NewFromFileInfo(absPath, info) because " +
+      "absPath is an empty string. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
 func TestFileMgr_NewFromDirMgrFileNameExt_01(t *testing.T) {
 
   expectedFileNameExt := "newerFileForTest_01.txt"
@@ -707,6 +741,129 @@ func TestFileMgr_NewFromDirStrFileNameStr_05(t *testing.T) {
 
 }
 
+func TestFileMgr_OpenThisFile_01(t *testing.T) {
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  err = fMgr.OpenThisFile(FileAccessControl{})
+
+  if err == nil {
+    t.Error("Expected error return from fMgr.OpenThisFile(FileAccessControl{}) because " +
+      "input parameter FileAccessControl{} is invalid. However, NO ERROR WAS RETURNED!")
+  }
+
+  _ = fMgr.CloseThisFile()
+
+}
+
+func TestFileMgr_OpenThisFile_02(t *testing.T) {
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../iDoNotExist/iDoNotExist2008.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePath='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite())
+
+  if err != nil {
+    t.Errorf("Error returned from FileOpenConfig{}.New(FOpenType.TypeReadWrite()). "+
+      "Error='%v'", err.Error())
+  }
+
+  fPerm, err := FilePermissionConfig{}.New("-rwxrwxrwx")
+
+  if err != nil {
+    t.Errorf("Error returned from FilePermissionConfig{}.New(\"-rwxrwxrwx\"). "+
+      "Error='%v'", err.Error())
+  }
+
+  fileAccessCtrl, err := FileAccessControl{}.New(fOpenCfg, fPerm)
+
+  if err != nil {
+    t.Errorf("Error returned from FileAccessControl{}.New(fOpenCfg, fPerm). "+
+      "Error='%v'", err.Error())
+  }
+
+  err = fMgr.OpenThisFile(fileAccessCtrl)
+
+  if err == nil {
+    t.Error("Expected error return from fMgr.OpenThisFile(FileAccessControl{}) because " +
+      "input parameter FileAccessControl{} is invalid. However, NO ERROR WAS RETURNED!")
+  }
+
+  _ = fMgr.CloseThisFile()
+
+}
+
+func TestFileMgr_OpenThisFile_03(t *testing.T) {
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/scratchTestFile0812.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  err = fMgr.CreateThisFile()
+
+  fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly())
+
+  if err != nil {
+    t.Errorf("Error returned from FileOpenConfig{}.New(FOpenType.TypeReadWrite()). "+
+      "Error='%v'", err.Error())
+  }
+
+  fPerm, err := FilePermissionConfig{}.New("-r--r--r--")
+
+  if err != nil {
+    t.Errorf("Error returned from FilePermissionConfig{}.New(\"-r--r--r--\"). "+
+      "Error='%v'", err.Error())
+  }
+
+  fileAccessCtrl, err := FileAccessControl{}.New(fOpenCfg, fPerm)
+
+  if err != nil {
+    t.Errorf("Error returned from FileAccessControl{}.New(fOpenCfg, fPerm). "+
+      "Error='%v'", err.Error())
+  }
+
+  err = fMgr.OpenThisFile(fileAccessCtrl)
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.OpenThisFile(fileAccessCtrl). "+
+      "Error='%v'", err.Error())
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.CloseThisFile(). "+
+      "Error='%v'", err.Error())
+  }
+
+  err = fMgr.DeleteThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.DeleteThisFile(). "+
+      "Error='%v'", err.Error())
+  }
+
+}
+
 func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
   fh := FileHelper{}
 
@@ -741,6 +898,107 @@ func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
   }
 
   _ = fMgr.CloseThisFile()
+
+}
+
+func TestFileMgr_OpenThisFileReadOnly_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePath='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  fMgr.isInitialized = false
+
+  err = fMgr.OpenThisFileReadOnly()
+
+  if err == nil {
+    t.Error("Expected error return from fMgr.OpenThisFileReadOnly() because " +
+      "fMgr is invalid. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_OpenThisFileReadOnly_03(t *testing.T) {
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/scratchTestRead067894.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePath='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  err = fMgr.DeleteThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned from #1 fMgr.DeleteThisFile(). "+
+      "filePath='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  err = fMgr.CreateThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.CreateThisFile(). "+
+      "filePath='%v'  Error='%v'", fMgr.GetAbsolutePath(), err.Error())
+  }
+
+  err = fMgr.OpenThisFileReadOnly()
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.OpenThisFileReadOnly(). "+
+      "filePath='%v'  Error='%v'", fMgr.GetAbsolutePath(), err.Error())
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.CloseThisFile(). "+
+      "Error='%v'", err.Error())
+  }
+
+  err = fMgr.DeleteThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.DeleteThisFile(). "+
+      "Error='%v'", err.Error())
+  }
+
+}
+
+func TestFileMgr_OpenThisFileReadOnly_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/iDoNotExist.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePath='%v'  Error='%v'", fMgr.GetAbsolutePath(), err.Error())
+  }
+
+  _ = fMgr.DeleteThisFile()
+
+  err = fMgr.OpenThisFileReadOnly()
+
+  if err == nil {
+    t.Error("Expected an error return from fMgr.OpenThisFileReadOnly() because " +
+      "the fMgr file does NOT exist. However, NO ERROR WAS RETURNED!")
+  }
+
+  _ = fMgr.CloseThisFile()
+
+  _ = fMgr.DeleteThisFile()
 
 }
 
