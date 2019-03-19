@@ -461,12 +461,18 @@ func TestFileMgr_CreateThisFile_02(t *testing.T) {
     t.Errorf("Error thrown on FileHelper:GetPathFileNameElements():'%v'", err.Error())
   }
 
+  dirMgr := fileMgr.GetDirMgr()
+
+  _ = dirMgr.DeleteAll()
+
   err = fileMgr.CreateThisFile()
 
   if err == nil {
     t.Error("Expected error return from fileMgr.CreateThisFile() because " +
       "the fileMgr directory does NOT exist. However, NO ERROR WAS RETURNED!")
   }
+
+  _ = dirMgr.DeleteAll()
 
 }
 

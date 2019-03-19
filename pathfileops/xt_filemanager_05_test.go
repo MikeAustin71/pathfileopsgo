@@ -805,6 +805,10 @@ func TestFileMgr_OpenThisFile_02(t *testing.T) {
 
   _ = fMgr.CloseThisFile()
 
+  dMgr := fMgr.GetDirMgr()
+
+  _ = dMgr.DeleteAll()
+
 }
 
 func TestFileMgr_OpenThisFile_03(t *testing.T) {
