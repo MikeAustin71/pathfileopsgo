@@ -870,6 +870,51 @@ func TestFileMgr_OpenThisFile_03(t *testing.T) {
 
 }
 
+func TestFileMgr_OpenThisFile_04(t *testing.T) {
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly())
+
+  if err != nil {
+    t.Errorf("Error returned from FileOpenConfig{}.New(FOpenType.TypeReadWrite()). "+
+      "Error='%v'", err.Error())
+  }
+
+  fPerm, err := FilePermissionConfig{}.New("-r--r--r--")
+
+  if err != nil {
+    t.Errorf("Error returned from FilePermissionConfig{}.New(\"-r--r--r--\"). "+
+      "Error='%v'", err.Error())
+  }
+
+  fileAccessCtrl, err := FileAccessControl{}.New(fOpenCfg, fPerm)
+
+  if err != nil {
+    t.Errorf("Error returned from FileAccessControl{}.New(fOpenCfg, fPerm). "+
+      "Error='%v'", err.Error())
+  }
+
+  fMgr.isInitialized = false
+
+  err = fMgr.OpenThisFile(fileAccessCtrl)
+
+  if err == nil {
+    t.Error("Expected error return from fMgr.OpenThisFile(fileAccessCtrl) because " +
+      "fMgr is invalid. However, NO ERROR WAS RETURNED!")
+  }
+
+  _ = fMgr.CloseThisFile()
+
+}
+
 func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
   fh := FileHelper{}
 
@@ -1048,6 +1093,47 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
   }
 
   err = fMgr.CloseThisFile()
+
+}
+
+func TestFileMgr_OpenThisFileWriteOnly_01(t *testing.T) {
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/scratchTestRead647182.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePath='%v'  Error='%v'", fMgr.GetAbsolutePathFileName(), err.Error())
+  }
+
+  err = fMgr.CreateThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.CreateThisFile(). "+
+      "filePath='%v'  Error='%v'", fMgr.GetAbsolutePathFileName(), err.Error())
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned from #1 fMgr.CloseThisFile(). "+
+      "filePath='%v'  Error='%v'", fMgr.GetAbsolutePathFileName(), err.Error())
+  }
+
+  fMgr.isInitialized = false
+
+  err = fMgr.OpenThisFileWriteOnly()
+
+  if err == nil {
+    t.Error("Expected an error returned from fMgr.OpenThisFileWriteOnly() because " +
+      "fMgr is invalid. However, NO ERROR WAS RETURNED!")
+  }
+
+  fMgr.isInitialized = false
+
+  _ = fMgr.CloseThisFile()
 
 }
 

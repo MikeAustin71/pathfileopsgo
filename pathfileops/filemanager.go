@@ -2872,6 +2872,9 @@ func (fMgr FileMgr) NewFromPathFileNameExtStr(pathFileNameExt string) (FileMgr, 
 // using the file open parameters and file permission parameters contained
 // in the 'FileAccessControl' instance passed as 'fileAccessCtrl'.
 //
+// Note: If the FileMgr directory path does not exist, this method will
+// create that directory path.
+//
 func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
   ePrefix := "FileMgr.OpenThisFile() "
   var err error
@@ -2959,6 +2962,9 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
 // If successful, the FileMode is set to "-r--r--r--" and the permission
 // Mode is set to '0444'.
 //
+// Note: If the directory path for this 'FileMgr' does not exist, this
+// method will return an error.
+//
 func (fMgr *FileMgr) OpenThisFileReadOnly() error {
   ePrefix := "FileMgr.OpenThisFileReadOnly() "
   var err error
@@ -3021,6 +3027,9 @@ func (fMgr *FileMgr) OpenThisFileReadOnly() error {
 // will be opened for writing only. If FileMgr.absolutePathFileName
 // does not exist, it will be created. The FileMode is set to "--w--w--w-" and
 // the permission Mode is set to '0222'.
+//
+// Note: If the directory path for this 'FileMgr' does not exist, this
+// method will return an error.
 //
 func (fMgr *FileMgr) OpenThisFileWriteOnly() error {
   var err error
