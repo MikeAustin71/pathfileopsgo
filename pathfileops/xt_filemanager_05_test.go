@@ -1099,7 +1099,7 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
 func TestFileMgr_OpenThisFileWriteOnly_01(t *testing.T) {
   fh := FileHelper{}
 
-  filePath := fh.AdjustPathSlash("../checkfiles/scratchTestRead647182.txt")
+  filePath := fh.AdjustPathSlash("../checkfiles/scratchTestWrite647182.txt")
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1131,10 +1131,56 @@ func TestFileMgr_OpenThisFileWriteOnly_01(t *testing.T) {
       "fMgr is invalid. However, NO ERROR WAS RETURNED!")
   }
 
-  fMgr.isInitialized = false
+  fMgr.isInitialized = true
 
   _ = fMgr.CloseThisFile()
 
+  _ = fMgr.DeleteThisFile()
+}
+
+func TestFileMgr_OpenThisFileWriteOnly_02(t *testing.T) {
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/newDir/scratchTestWrite655349.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePath='%v'  Error='%v'", fMgr.GetAbsolutePathFileName(), err.Error())
+  }
+
+  err = fMgr.OpenThisFileWriteOnly()
+
+  if err != nil {
+    _ = fMgr.CloseThisFile()
+    _ = fMgr.DeleteThisFile()
+    t.Errorf("Error returned from fMgr.OpenThisFileWriteOnly(). "+
+      "filePath='%v'  Error='%v'", fMgr.GetAbsolutePathFileName(), err.Error())
+  }
+
+  if !fMgr.DoesFileExist() {
+    _ = fMgr.CloseThisFile()
+    _ = fMgr.DeleteThisFile()
+    t.Errorf("Error: The test file %v should have been created. However, the file "+
+      "does NOT exist!", fMgr.GetAbsolutePathFileName())
+  }
+
+  numOfBytesWritten, err := fMgr.WriteStrToFile("Hello world!")
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.WriteStrToFile(\"Hello world!\"). "+
+      "filePath='%v'  Error='%v'", fMgr.GetAbsolutePathFileName(), err.Error())
+  }
+
+  if numOfBytesWritten < 12 {
+    t.Errorf("Expected at least 12-bytes to be written to file. However, "+
+      "only %v-bytes were written. ", numOfBytesWritten)
+  }
+
+  _ = fMgr.CloseThisFile()
+
+  _ = fMgr.DeleteThisFile()
 }
 
 func TestFileMgr_OpenThisFileWriteOnlyAppend_01(t *testing.T) {

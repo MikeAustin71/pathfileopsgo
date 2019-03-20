@@ -1494,6 +1494,29 @@ func (fMgr *FileMgr) DeleteThisFile() error {
   return nil
 }
 
+// DoesFileExist - returns 'true' if the subject FileMgr
+// file does in fact exist. If the file does NOT exist,
+// a boolean value of 'false' is returned.
+//
+// This is very similar to 'FileMgr.DoesThisFileExist()'
+// however, this method does not return an error.
+//
+// If this method encounters an error, a boolean value
+// of 'false' will be return.
+//
+func (fMgr *FileMgr) DoesFileExist() bool {
+
+  ePrefix := "FileMgr.DoesFileExist() "
+
+  err := fMgr.IsFileMgrValid(ePrefix)
+
+  if err != nil {
+    return false
+  }
+
+  return fMgr.doesAbsolutePathFileNameExist
+}
+
 // DoesThisFileExist - Returns a boolean value
 // designating whether the file specified by the
 // current FileMgr.absolutePathFileName field
@@ -2962,7 +2985,7 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
 // If successful, the FileMode is set to "-r--r--r--" and the permission
 // Mode is set to '0444'.
 //
-// Note: If the directory path for this 'FileMgr' does not exist, this
+// Note: If the 'FileMgr' directory path or file do not exist, this
 // method will return an error.
 //
 func (fMgr *FileMgr) OpenThisFileReadOnly() error {
@@ -3028,8 +3051,8 @@ func (fMgr *FileMgr) OpenThisFileReadOnly() error {
 // does not exist, it will be created. The FileMode is set to "--w--w--w-" and
 // the permission Mode is set to '0222'.
 //
-// Note: If the directory path for this 'FileMgr' does not exist, this
-// method will return an error.
+// Note: If the 'FileMgr' directory path and file do not exist, this
+// method will will create them.
 //
 func (fMgr *FileMgr) OpenThisFileWriteOnly() error {
   var err error
@@ -3099,6 +3122,9 @@ func (fMgr *FileMgr) OpenThisFileWriteOnly() error {
 // with an 'Append' mode. All bytes written to the file will be written
 // at the end of the current file and none of the file's original content
 // will be overwritten.
+//
+// Note: If the 'FileMgr' directory path and file do not exist, this
+// method will will create them.
 //
 func (fMgr *FileMgr) OpenThisFileWriteOnlyAppend() error {
   var err error
@@ -3173,6 +3199,9 @@ func (fMgr *FileMgr) OpenThisFileWriteOnlyAppend() error {
 // will be opened for reading and writing. If FileMgr.absolutePathFileName
 // does not exist, it will be created. The FileMode is set to'-rw-rw-rw-' and
 // the permission Mode= '0666'.
+//
+// Note: If the 'FileMgr' directory path and file do not exist, this
+// method will will create them.
 //
 func (fMgr *FileMgr) OpenThisFileReadWrite() error {
   var err error
