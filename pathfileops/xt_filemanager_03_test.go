@@ -536,6 +536,41 @@ func TestFileMgr_DeleteThisFile_02(t *testing.T) {
   }
 }
 
+func TestFileMgr_DoesFileExist_01(t *testing.T) {
+
+  testFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+  fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(testFile)
+
+  if err != nil {
+    t.Errorf("Error thrown on FileHelper:GetPathFileNameElements():'%v'", err.Error())
+  }
+
+  fileMgr.isInitialized = false
+
+  if fileMgr.DoesFileExist() {
+    t.Error("Expected return value fileMgr.DoesFileExist()='false' because" +
+      "the fileMgr is invalid. However, the return value was 'true'!")
+  }
+
+}
+
+func TestFileMgr_DoesFileExist_02(t *testing.T) {
+
+  testFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+
+  fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(testFile)
+
+  if err != nil {
+    t.Errorf("Error thrown on FileHelper:GetPathFileNameElements():'%v'", err.Error())
+  }
+
+  if !fileMgr.DoesFileExist() {
+    t.Error("Expected return value fileMgr.DoesFileExist()='true' because" +
+      "the 'FileMgr' file does exist. However, the return value was 'false'!")
+  }
+
+}
+
 func TestFileMgr_DoesThisFileExist_01(t *testing.T) {
   fh := FileHelper{}
   testFile := fh.AdjustPathSlash("../createFilesTest/Level01/Level02/Level03/TestFile011.txt")
