@@ -1277,6 +1277,37 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_01(t *testing.T) {
   }
 }
 
+func TestFileMgr_OpenThisFileWriteOnlyAppend_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/scratchTestWriteFX471985.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePathName='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  err = fMgr.OpenThisFileWriteOnlyAppend()
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.OpenThisFileWriteOnly(). Error='%v' ",
+      err.Error())
+  }
+
+  if !fMgr.DoesFileExist() {
+    t.Errorf("Error: Expected target file to be created. However, File:'%v' "+
+      "does NOT exist.", fMgr.GetAbsolutePathFileName())
+  }
+
+  _ = fMgr.CloseThisFile()
+
+  _ = fMgr.DeleteThisFile()
+
+}
+
 func TestFileMgr_ReadAllFile_01(t *testing.T) {
 
   expectedBytes := int(8819)
@@ -1315,6 +1346,79 @@ func TestFileMgr_ReadAllFile_01(t *testing.T) {
 
   if fMgr.filePtr != nil {
     t.Error("Error: Expected fMgr.filePtr == nil. fMgr.filePtr IS NOT NIL!")
+  }
+
+}
+
+func TestFileMgr_ReadAllFile_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/checkfiles03_02/testRead857268.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePath='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  fMgr.isInitialized = false
+
+  _, err = fMgr.ReadAllFile()
+
+  if err == nil {
+    t.Error("Expected an error return from fMgr.ReadAllFile() because " +
+      "'fMgr' is invalid. However, NO ERROR WAS RETURNED!")
+  }
+
+  fMgr.isInitialized = true
+
+  _ = fMgr.CloseThisFile()
+
+}
+
+func TestFileMgr_ReadAllFile_03(t *testing.T) {
+
+  expectedBytes := int(155)
+
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePath='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  err = fMgr.OpenThisFileReadWrite()
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePath='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  bytesRead, err := fMgr.ReadAllFile()
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.ReadAllFile(). Error='%v' ",
+      err.Error())
+  }
+
+  lenBytesRead := len(bytesRead)
+
+  if expectedBytes != lenBytesRead {
+    t.Errorf("Error: Expected number of bytes read='%v'. Instead, "+
+      "the number of bytes read='%v' ", expectedBytes, lenBytesRead)
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.CloseThisFile(). Error='%v' ",
+      err.Error())
   }
 
 }
@@ -1521,6 +1625,49 @@ func TestFileMgr_ReadFileLine_04(t *testing.T) {
 
 }
 
+func TestFileMgr_ReadFileLine_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePath='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  delim := byte('\n')
+
+  fMgr.fileBufRdr = nil
+  fMgr.fileRdrBufSize = 16384
+
+  bytes, err := fMgr.ReadFileLine(delim)
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.ReadFileLine(delim) on Line#1. "+
+      "Error='%v'", err.Error())
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.CloseThisFile(). Error='%v'",
+      err.Error())
+  }
+
+  actualStr := string(bytes)
+
+  actualStr = strings.Replace(actualStr, "\r\n", "", -1)
+
+  if "Now is the time for all good men" != actualStr {
+    t.Errorf("Expected line #1 = 'Now is the time for all good men'. Instead, "+
+      "line #1 = '%v'", actualStr)
+  }
+
+}
+
 func TestFileMgr_ReadFileBytes_01(t *testing.T) {
 
   fh := FileHelper{}
@@ -1604,6 +1751,62 @@ func TestFileMgr_ReadFileBytes_02(t *testing.T) {
     t.Error("Expected error return from fMgr.ReadFileBytes(byteBuff) " +
       "because fMgr.isInitialized = false. However, NO ERROR WAS RETURNED!")
   }
+
+}
+
+func TestFileMgr_ReadFileBytes_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePath='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  byteBuff := make([]byte, 2048, 2048)
+
+  fMgr.fileBufRdr = nil
+  fMgr.fileRdrBufSize = 16384
+
+  bytesRead, err := fMgr.ReadFileBytes(byteBuff)
+
+  if err != nil {
+    _ = fMgr.CloseThisFile()
+    t.Errorf("Error returned from fMgr.ReadFileBytes(byteBuff). "+
+      "filePath='%v'  Error='%v'", fMgr.GetAbsolutePathFileName(), err.Error())
+  }
+
+  var rStr = make([]rune, 0, 2048)
+
+  for i := 0; i < len(byteBuff); i++ {
+
+    if byteBuff[i] == 0 {
+      break
+    }
+
+    rStr = append(rStr, rune(byteBuff[i]))
+
+  }
+
+  expectedStr := "Test Read File. Do NOT alter the contents of this file."
+  actualStr := string(rStr)
+
+  if expectedStr != actualStr {
+    _ = fMgr.CloseThisFile()
+    t.Errorf("Expected Read String='%v'. Instead, Actual Read String='%v'", expectedStr, actualStr)
+  }
+
+  expectedBytesRead := len(expectedStr)
+
+  if expectedBytesRead != bytesRead {
+    t.Errorf("Expected Bytes Read='%v'.  Instead, Actual Bytes Read='%v'", expectedBytesRead, bytesRead)
+  }
+
+  _ = fMgr.CloseThisFile()
 
 }
 
