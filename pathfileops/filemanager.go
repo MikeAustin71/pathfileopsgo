@@ -3659,8 +3659,8 @@ func (fMgr *FileMgr) SetWriterBufferSize(writeBuffSize int) {
 //
 // Return Values:
 //
-//	isEmpty       - This value is set to 'true' if, and only if, all internal
-//                  values are set of valid legitimate values.
+//	isEmpty       - This value is set to 'false' if, and only if, all internal
+//                  values are set to valid legitimate values.
 //
 //	error         - If this method completes successfully, the returned error
 //	                Type is set equal to 'nil'. If an error condition is encountered,
@@ -3815,7 +3815,7 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
 //
 // Return Values:
 //
-//	isEmpty       - This value is set to 'true' if, and only if, all internal
+//	isEmpty       - This value is set to 'false' if, and only if, all internal
 //                  values are set of valid legitimate values.
 //
 //	error         - If this method completes successfully, the returned error
