@@ -38,7 +38,80 @@ func main() {
 
 func main() {
 
-  mainTest44()
+  mainTest46()
+  mainTest45()
+}
+
+func mainTest46() {
+  expectedFileNameExt := "newerFileForTest_01.txt"
+
+  fh := pf.FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+
+  absPath, err := fh.MakeAbsolutePath(adjustedPath)
+
+  if err != nil {
+    fmt.Printf("Error returned from fh.MakeAbsolutePath(adjustedPath). "+
+      "adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+    return
+  }
+
+  absPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
+
+  info, err := fh.GetFileInfoFromPath(absPathFileNameExt)
+
+  if err != nil {
+    fmt.Printf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). "+
+      "absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+    return
+  }
+
+  fMgr, err := pf.FileMgr{}.NewFromDirStrFileNameStr(absPath, expectedFileNameExt)
+
+  fmt.Println("****** mainTest46() ******")
+  fmt.Println("   actual File Name: ", expectedFileNameExt)
+  fmt.Println("        info Name(): ", info.Name())
+  fmt.Println("fMgr File Extension: ", fMgr.GetFileExt())
+  fmt.Println("     fMgr File Name: ", fMgr.GetFileName())
+  fmt.Println(" fMgr File Name Ext: ", fMgr.GetFileNameExt())
+  fmt.Println()
+}
+
+func mainTest45() {
+  //filesfortest/basefilesfortest/basefilenoext
+
+  expectedFileNameExt := "basefilenoext"
+
+  fh := pf.FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/basefilesfortest")
+
+  absPath, err := fh.MakeAbsolutePath(adjustedPath)
+
+  if err != nil {
+    fmt.Printf("Error returned from fh.MakeAbsolutePath(adjustedPath). "+
+      "adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+    return
+  }
+
+  absPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
+
+  info, err := fh.GetFileInfoFromPath(absPathFileNameExt)
+
+  if err != nil {
+    fmt.Printf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). "+
+      "absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+    return
+  }
+
+  fMgr, err := pf.FileMgr{}.NewFromDirStrFileNameStr(absPath, expectedFileNameExt)
+  fmt.Println()
+  fmt.Println("****** mainTest45() ******")
+  fmt.Println("   actual File Name: ", expectedFileNameExt)
+  fmt.Println("        info Name(): ", info.Name())
+  fmt.Println("fMgr File Extension: ", fMgr.GetFileExt())
+  fmt.Println("     fMgr File Name: ", fMgr.GetFileName())
+  fmt.Println(" fMgr File Name Ext: ", fMgr.GetFileNameExt())
+  fmt.Println()
 }
 
 func mainTest44() {

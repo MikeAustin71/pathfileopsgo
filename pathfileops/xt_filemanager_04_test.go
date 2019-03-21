@@ -1,6 +1,7 @@
 package pathfileops
 
 import (
+  "fmt"
   "strings"
   "testing"
 )
@@ -607,6 +608,37 @@ func TestFileMgr_GetFileNameExt_01(t *testing.T) {
   }
 
   expectedFileNameExt := "newerFileForTest_01.txt"
+
+  actualFileNameExt := srcFMgr.GetFileNameExt()
+
+  if expectedFileNameExt != actualFileNameExt {
+    t.Errorf("Error: Expected File Name Ext='%v'. Instead, actual File Name Ext='%v'",
+      expectedFileNameExt, actualFileNameExt)
+  }
+
+}
+
+func TestFileMgr_GetFileNameExt_02(t *testing.T) {
+  fh := FileHelper{}
+
+  expectedFileNameExt := "basefilenoext"
+
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/basefilesfortest")
+
+  absPath, err := fh.MakeAbsolutePath(adjustedPath)
+
+  if err != nil {
+    fmt.Printf("Error returned from fh.MakeAbsolutePath(adjustedPath). "+
+      "adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+    return
+  }
+
+  srcFMgr, err := FileMgr{}.NewFromDirStrFileNameStr(absPath, expectedFileNameExt)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(absPath). "+
+      "absPath='%v' Error='%v'", absPath, err.Error())
+  }
 
   actualFileNameExt := srcFMgr.GetFileNameExt()
 

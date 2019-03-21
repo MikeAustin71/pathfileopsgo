@@ -1201,3 +1201,20 @@ func TestFileMgr_NewFromDirStrFileNameStr_05(t *testing.T) {
   }
 
 }
+
+func TestFileMgr_NewFromDirStrFileNameStr_06(t *testing.T) {
+
+  expectedFileNameExt := "newerFileForTest_01.txt"
+
+  rawPath := "    "
+
+  _, err := FileMgr{}.NewFromDirStrFileNameStr(rawPath, expectedFileNameExt)
+
+  if err == nil {
+    t.Error("Expected error return from FileMgr{}." +
+      "NewFromDirStrFileNameStr(rawPath, expectedFileNameExt) because " +
+      "raw path consists of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}

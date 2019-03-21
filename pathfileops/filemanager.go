@@ -1805,8 +1805,11 @@ func (fMgr *FileMgr) GetFileBytesWritten() uint64 {
 // The returned file extension will contain the preceding dot separator.
 //
 //    Example:
-//                           File Name: "newerFileForTest_01.txt"
+//            File Name Plus Extension: "newerFileForTest_01.txt"
 //             Returned File Extension: ".txt"
+//
+//            File Name Plus Extension: "newerFileForTest_01"
+//             Returned File Extension: ""
 //
 func (fMgr *FileMgr) GetFileExt() string {
   return fMgr.fileExt
@@ -1977,6 +1980,14 @@ func (fMgr *FileMgr) GetFileModTimeStr(timeFormat string) (string, error) {
 // GetFileName - returns the file name for this
 // File Manager.
 //
+//    Example:
+//
+//            File Name Plus Extension: "newerFileForTest_01.txt"
+//                  Returned File Name: "newerFileForTest_01"
+//
+//            File Name Plus Extension: "newerFileForTest_01"
+//                  Returned File Name: "newerFileForTest_01"
+//
 func (fMgr *FileMgr) GetFileName() string {
   return fMgr.fileName
 }
@@ -1984,6 +1995,14 @@ func (fMgr *FileMgr) GetFileName() string {
 // GetFileNameExt - Returns a string containing the
 // combination of file name and file extension configured
 // for this File Manager instance
+//
+//    Example:
+//
+//            File Name Plus Extension: "newerFileForTest_01.txt"
+//   Returned File Name Plus Extension: "newerFileForTest_01.txt"
+//
+//            File Name Plus Extension: "newerFileForTest_01"
+//   Returned File Name Plus Extension: "newerFileForTest_01"
 //
 func (fMgr *FileMgr) GetFileNameExt() string {
   return fMgr.fileNameExt
@@ -3652,6 +3671,49 @@ func (fMgr *FileMgr) SetWriterBufferSize(writeBuffSize int) {
   fMgr.fileWriterBufSize = writeBuffSize
 }
 
+// SetFileInfo - Used to initialize the os.FileInfo structure maintained as
+// part of the current FileMgr object.
+//
+// Be careful: Failure of the input parameter to match the current FileMgr file name
+// will trigger an error.
+//
+func (fMgr *FileMgr) SetFileInfo(info os.FileInfo) error {
+
+  ePrefix := "FileMgr.SetFileInfo() "
+
+  if info == nil {
+    return errors.New(ePrefix + "Error: Input parameter 'info' is 'nil' and INVALID!")
+  }
+
+  if info.Name() == "" {
+    return errors.New(ePrefix + "Error: info.Name() is an EMPTY string!")
+  }
+
+  if info.IsDir() {
+    return errors.New(ePrefix + "info.IsDir()=='true'. This is a Directory NOT A FILE!")
+  }
+
+  if strings.ToLower(info.Name()) != strings.ToLower(fMgr.fileNameExt) {
+    return fmt.Errorf(ePrefix+
+      "Error: Input parameter 'info' does NOT match current FileMgr file name. "+
+      "FileMgr File Name='%v' info File Name='%v' ", fMgr.fileNameExt, info.Name())
+  }
+
+  fMgr.dataMutex.Lock()
+
+  fMgr.actualFileInfo = FileInfoPlus{}.NewFromFileInfo(info)
+
+  fMgr.dataMutex.Unlock()
+
+  if !fMgr.actualFileInfo.IsFInfoInitialized {
+    return fmt.Errorf(ePrefix+
+      "Error: Failed to initialize fMgr.actualFileInfo object. info.Name()='%v'",
+      info.Name())
+  }
+
+  return nil
+}
+
 // SetFileMgrFromDirMgrFileName - Sets the data fields of the current FileMgr object
 // based on a DirMgr object and a File Name string which are passed as input parameters.
 //
@@ -3894,38 +3956,6 @@ func (fMgr *FileMgr) SetFileMgrFromPathFileName(
   err = nil
 
   return
-}
-
-// SetFileInfo - Used to initialize the os.FileInfo structure maintained as
-// part of the current FileMgr object.
-func (fMgr *FileMgr) SetFileInfo(info os.FileInfo) error {
-  ePrefix := "FileMgr.SetFileInfo() "
-
-  if info == nil {
-    return errors.New(ePrefix + "Error: Input parameter 'info' is 'nil' and INVALID!")
-  }
-
-  if info.Name() == "" {
-    return errors.New(ePrefix + "Error: info.Name() is an EMPTY string!")
-  }
-
-  if info.IsDir() {
-    return errors.New(ePrefix + "info.IsDir()=='true'. This is a Directory NOT A FILE!")
-  }
-
-  fMgr.dataMutex.Lock()
-
-  fMgr.actualFileInfo = FileInfoPlus{}.NewFromFileInfo(info)
-
-  fMgr.dataMutex.Unlock()
-
-  if !fMgr.actualFileInfo.IsFInfoInitialized {
-    return fmt.Errorf(ePrefix+
-      "Error: Failed to initialize fMgr.actualFileInfo object. info.Name()='%v'",
-      info.Name())
-  }
-
-  return nil
 }
 
 // WriteBytesToFile a string to the File identified by

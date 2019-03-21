@@ -81,6 +81,82 @@ func TestFileMgr_SetFileInfo_02(t *testing.T) {
 
 }
 
+func TestFileMgr_SetFileInfo_03(t *testing.T) {
+
+  expectedFileNameExt := "newerFileForTest_01.txt"
+
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+
+  absPath, err := fh.MakeAbsolutePath(adjustedPath)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.MakeAbsolutePath(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
+
+  absPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
+
+  info, err := fh.GetFileInfoFromPath(absPath)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+  }
+
+  fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+  }
+
+  err = fmgr.SetFileInfo(info)
+
+  if err == nil {
+    t.Error("Expected an error from fmgr.SetFileInfo(info) because input parameter 'info' " +
+      "is a directory an not a file. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_SetFileInfo_04(t *testing.T) {
+
+  expectedFileNameExt := "newerFileForTest_01.txt"
+
+  alternativeFileNameExt := "newerFileForTest_03.txt"
+
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+
+  absPath, err := fh.MakeAbsolutePath(adjustedPath)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.MakeAbsolutePath(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
+
+  absPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
+
+  absAlternatePathFileNameExt := absPath + string(os.PathSeparator) + alternativeFileNameExt
+
+  info, err := fh.GetFileInfoFromPath(absAlternatePathFileNameExt)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+  }
+
+  fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+  }
+
+  err = fmgr.SetFileInfo(info)
+
+  if err == nil {
+    t.Error("Expected an error from fmgr.SetFileInfo(info) because input parameter 'info' " +
+      "is a file name which is different from fmgr file name. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
 func TestFileMgr_SetFileMgrFromDirMgrFileName_01(t *testing.T) {
 
   expectedFileNameExt := "newerFileForTest_01.txt"
@@ -445,6 +521,122 @@ func TestFileMgr_WriteBytesToFile_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fMgr2.DeleteThisFile(). Error='%v' ",
       err.Error())
+  }
+
+}
+
+func TestFileMgr_WriteBytesToFile_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testText := "Now is the time for all good men to come to the aid of their country."
+
+  lenTestText := len(testText)
+
+  filePath := fh.AdjustPathSlash("../checkfiles/scratchTestWriteVV6431271.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePathName='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  err = fMgr.DeleteThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.DeleteThisFile(). "+
+      "filePathName='%v'  Error='%v'", fMgr.GetAbsolutePathFileName(), err.Error())
+  }
+
+  err = fMgr.CreateThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.CreateThisFile(). Error='%v' ",
+      err.Error())
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.CloseThisFile(). "+
+      "Error='%v' ", err.Error())
+  }
+
+  if !fMgr.DoesFileExist() {
+    t.Errorf("Error: Failed to create File Name:'%v'. Terminating test.",
+      fMgr.GetAbsolutePathFileName())
+    return
+  }
+
+  bytesToWrite := []byte(testText)
+
+  numBytesWritten, err := fMgr.WriteBytesToFile(bytesToWrite)
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.WriteBytesToFile(bytesToWrite). Error='%v' ",
+      err.Error())
+  }
+
+  err = fMgr.FlushBytesToDisk()
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.FlushBytesToDisk(). Error='%v' ",
+      err.Error())
+  }
+
+  verifyBytesWritten := fMgr.GetFileBytesWritten()
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned by #2 fMgr.CloseThisFile().")
+  }
+
+  bytesRead := make([]byte, lenTestText+5)
+
+  numBytesRead, err := fMgr.ReadFileBytes(bytesRead)
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.ReadFileBytes(bytesRead). Error='%v'",
+      err.Error())
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned by #3 fMgr.CloseThisFile().")
+  }
+
+  err = fMgr.DeleteThisFile()
+
+  if err != nil {
+    t.Errorf("fMgr.DeleteThisFile() FAILED! Error='%v'", err.Error())
+  }
+
+  stringRead := string(bytesRead)
+
+  stringRead = stringRead[:len(bytesRead)-5]
+
+  if testText != stringRead {
+    t.Errorf("Error: Expected stringRead='%v'. Instead, stringRead='%v' ",
+      testText, stringRead)
+  }
+
+  if verifyBytesWritten != uint64(lenTestText) {
+    t.Errorf("Error: verifyBytesWritten != lenTestText. verifyBytesWritten='%v' "+
+      "lenTestText='%v' ", verifyBytesWritten, lenTestText)
+  }
+
+  if numBytesRead != lenTestText {
+    t.Errorf("Error: numBytesRead != lenTestText. numBytesRead='%v' "+
+      "lenTestText='%v' ", numBytesRead, lenTestText)
+  }
+
+  if numBytesRead != numBytesWritten {
+    t.Errorf("Error: numBytesRead != numBytesWritten. numBytesRead='%v' "+
+      "numBytesWritten='%v' ", numBytesRead, numBytesWritten)
+
   }
 
 }

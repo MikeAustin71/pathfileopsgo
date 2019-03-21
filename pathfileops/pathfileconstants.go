@@ -4,23 +4,23 @@ the management, organization and control of disk files and directories.
 
 This package incorporates three primary types:
 
-	1. FileHelper - A series of generalized file maintenance utilities
+  1. FileHelper - A series of generalized file maintenance utilities
 
-	2. DirMgr     - Directory Manager: Designed for the creation, management
-	                and control of directory paths.
+  2. DirMgr     - Directory Manager: Designed for the creation, management
+                  and control of directory paths.
 
-	3. FileMgr    - File Manager: Designed for the creation, management and
-	                control of disk files.
+  3. FileMgr    - File Manager: Designed for the creation, management and
+                  control of disk files.
 
 In addition, the following are used to manage collections of
 'DirMgr' and 'FileMgr' types.
 
-	1. DirMgrCollection  - Processes and manages collections of type 'DirMgr'
+  1. DirMgrCollection  - Processes and manages collections of type 'DirMgr'
 
-	2. FileMgrCollection - Processes and manages collections of type 'FileMgr'
+  2. FileMgrCollection - Processes and manages collections of type 'FileMgr'
 
-	3. FileOpsCollection - Manages collections of operations performed on disk
-	                       files and directories.
+  3. FileOpsCollection - Manages collections of operations performed on disk
+                         files and directories.
 
 
 The source code repository for this package is located at:
@@ -124,7 +124,11 @@ type FileInfoPlus struct {
   dataSrc  interface{} // FileInfo.Sys() underlying data source (can return nil)
 }
 
-// Name - base name of the file
+// Name - base name of the file.
+//  Example:
+//              Complete File Name: "newerFileForTest_01.txt"
+//    Base Name returned by Name(): "newerFileForTest_01.txt"
+//
 func (fip FileInfoPlus) Name() string {
 
   return fip.fName
