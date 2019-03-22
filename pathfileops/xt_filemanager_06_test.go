@@ -358,6 +358,37 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
 
   err = fMgr.CloseThisFile()
 
+  if err != nil {
+    t.Errorf("Error returned from final fMgr.CloseThisFile(). Error='%v' ",
+      err.Error())
+  }
+
+}
+
+func TestFileMgr_OpenThisFileReadWrite_02(t *testing.T) {
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePath='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  fMgr.isInitialized = false
+
+  err = fMgr.OpenThisFileReadWrite()
+
+  if err == nil {
+    t.Error("Expected error return from fMgr.OpenThisFileReadWrite() because " +
+      "'fMgr' is invalid. However, NO ERROR WAS RETURNED!")
+  }
+
+  fMgr.isInitialized = true
+
+  _ = fMgr.CloseThisFile()
+
 }
 
 func TestFileMgr_OpenThisFileWriteOnly_01(t *testing.T) {
@@ -569,6 +600,41 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_02(t *testing.T) {
   _ = fMgr.CloseThisFile()
 
   _ = fMgr.DeleteThisFile()
+
+}
+
+func TestFileMgr_OpenThisFileWriteOnlyAppend_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/scratchTestWriteJU81294823.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePathName='%v'  Error='%v'", filePath, err.Error())
+  }
+
+  fMgr.isInitialized = false
+
+  err = fMgr.OpenThisFileWriteOnlyAppend()
+
+  if err == nil {
+    t.Error("Expected error return from fMgr.OpenThisFileWriteOnlyAppend() because " +
+      "'fMgr' is invalid. However, NO ERROR WAS RETURNED!")
+  }
+
+  fMgr.isInitialized = true
+
+  _ = fMgr.CloseThisFile()
+
+  _ = fMgr.DeleteThisFile()
+
+  if fMgr.DoesFileExist() {
+    t.Errorf("Error: Expected target file to be deleted. However, File:'%v' "+
+      "DOES exist.", fMgr.GetAbsolutePathFileName())
+  }
 
 }
 

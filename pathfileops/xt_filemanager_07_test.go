@@ -278,6 +278,96 @@ func TestFileMgr_SetFileMgrFromDirMgrFileName_04(t *testing.T) {
 
 }
 
+func TestFileMgr_SetFileMgrFromDirMgrFileName_05(t *testing.T) {
+
+  expectedFileNameExt := "basefilenoext"
+
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/basefilesfortest")
+
+  dMgr, err := DirMgr{}.New(adjustedPath)
+
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). "+
+      "adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
+
+  fMgr := FileMgr{}
+
+  isEmpty, err := fMgr.SetFileMgrFromDirMgrFileName(dMgr, expectedFileNameExt)
+
+  if isEmpty {
+    t.Error("Expected that after fMgr.SetFileMgrFromDirMgrFileName(dMgr, expectedFileNameExt) " +
+      "isEmpty=='false'. Instead, isEmpty=='true'.")
+  }
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.SetFileMgrFromDirMgrFileName(dMgr, expectedFileNameExt). "+
+      "dMgr='%v' expectedFileNameExt='%v'  Error='%v'",
+      dMgr.GetAbsolutePath(), expectedFileNameExt, err.Error())
+  }
+
+  absPath, err := fh.MakeAbsolutePath(adjustedPath)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.MakeAbsolutePath(adjustedPath). "+
+      "adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
+
+  expectedAbsPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
+
+  if expectedAbsPathFileNameExt != fMgr.GetAbsolutePathFileName() {
+    t.Errorf("Expected absolutePathFileName='%v'.  Instead, absolutePathFileName='%v'",
+      expectedAbsPathFileNameExt, fMgr.GetAbsolutePathFileName())
+  }
+
+}
+
+func TestFileMgr_SetFileMgrFromDirMgrFileName_06(t *testing.T) {
+
+  expectedFileNameExt := ".xgitignore"
+
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/basefilesfortest")
+
+  dMgr, err := DirMgr{}.New(adjustedPath)
+
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). "+
+      "adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
+
+  fMgr := FileMgr{}
+
+  isEmpty, err := fMgr.SetFileMgrFromDirMgrFileName(dMgr, expectedFileNameExt)
+
+  if isEmpty {
+    t.Error("Expected that after fMgr.SetFileMgrFromDirMgrFileName(dMgr, expectedFileNameExt) " +
+      "isEmpty=='false'. Instead, isEmpty=='true'.")
+  }
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.SetFileMgrFromDirMgrFileName(dMgr, expectedFileNameExt). "+
+      "dMgr='%v' expectedFileNameExt='%v'  Error='%v'",
+      dMgr.GetAbsolutePath(), expectedFileNameExt, err.Error())
+  }
+
+  absPath, err := fh.MakeAbsolutePath(adjustedPath)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.MakeAbsolutePath(adjustedPath). "+
+      "adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
+
+  expectedAbsPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
+
+  if expectedAbsPathFileNameExt != fMgr.GetAbsolutePathFileName() {
+    t.Errorf("Expected absolutePathFileName='%v'.  Instead, absolutePathFileName='%v'",
+      expectedAbsPathFileNameExt, fMgr.GetAbsolutePathFileName())
+  }
+
+}
+
 func TestFileMgr_SetFileMgrFromPathFileName_01(t *testing.T) {
 
   fh := FileHelper{}
@@ -368,6 +458,138 @@ func TestFileMgr_SetFileMgrFromPathFileName_03(t *testing.T) {
     t.Error("Expected error return from fileMgr.SetFileMgrFromPathFileName(\"    \") " +
       "because the input parameter consists of blank spaces. " +
       "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_SetFileMgrFromPathFileName_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  relPath := "..\\filesfortest\\basefilesfortest\\basefilenoext"
+  pathFileNameExt, err := fh.MakeAbsolutePath(relPath)
+
+  if err != nil {
+    t.Errorf("Received Error on fh.MakeAbsolutePath(relPath). "+
+      "relPath='%v'  Error='%v'", relPath, err.Error())
+  }
+
+  fileName := "basefilenoext"
+  fileNameExt := "basefilenoext"
+  extName := ""
+
+  fileMgr := FileMgr{}
+
+  isEmpty, err := fileMgr.SetFileMgrFromPathFileName(pathFileNameExt)
+
+  if err != nil {
+    t.Errorf("Received Error on fileMgr.SetFileMgrFromPathFileName(pathFileNameExt)  "+
+      "pathFileNameExt='%v' Error='%v'",
+      pathFileNameExt, err.Error())
+  }
+
+  if isEmpty {
+    t.Error("Error: after fileMgr.SetFileMgrFromPathFileName(pathFileNameExt) expected " +
+      "isEmpty='false'. Instead, isEmpty='false'. ")
+  }
+
+  if fileMgr.fileName != fileName {
+    t.Error(fmt.Sprintf("Expected File Name, %v, got:", fileName), fileMgr.fileName)
+  }
+
+  if fileMgr.fileExt != extName {
+    t.Error(fmt.Sprintf("Expected File Extension, %v, got:", extName), fileMgr.fileExt)
+  }
+
+  if fileMgr.fileNameExt != fileNameExt {
+    t.Error(fmt.Sprintf("Expected File Name + Extension, %v, got:", fileNameExt), fileMgr.fileNameExt)
+  }
+
+  if !fileMgr.isInitialized {
+    t.Error("Expected fileMgr.isInitialized=='true', got:", fileMgr.isInitialized)
+  }
+
+  if !fileMgr.isFileNamePopulated {
+    t.Error("Expected fileMgr.isFileNamePopulated=='true', got:", fileMgr.isFileNamePopulated)
+  }
+
+  if !fileMgr.isFileNameExtPopulated {
+    t.Error("Expected fileMgr.isFileNameExtPopulated=='true', got:", fileMgr.isFileNameExtPopulated)
+  }
+
+  if fileMgr.isFileExtPopulated {
+    t.Error("Expected fileMgr.isFileExtPopulated=='false', got:", fileMgr.isFileExtPopulated)
+  }
+
+  if !fileMgr.isAbsolutePathFileNamePopulated {
+    t.Error("Expected fileMgr.isAbsolutePathFileNamePopulated=='true', got:",
+      fileMgr.isAbsolutePathFileNamePopulated)
+  }
+
+}
+
+func TestFileMgr_SetFileMgrFromPathFileName_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  relPath := "..\\filesfortest\\basefilesfortest\\.xgitignore"
+  pathFileNameExt, err := fh.MakeAbsolutePath(relPath)
+
+  if err != nil {
+    t.Errorf("Received Error on fh.MakeAbsolutePath(relPath). "+
+      "relPath='%v'  Error='%v'", relPath, err.Error())
+  }
+
+  fileName := ".xgitignore"
+  fileNameExt := ".xgitignore"
+  extName := ""
+
+  fileMgr := FileMgr{}
+
+  isEmpty, err := fileMgr.SetFileMgrFromPathFileName(pathFileNameExt)
+
+  if err != nil {
+    t.Errorf("Received Error on fileMgr.SetFileMgrFromPathFileName(pathFileNameExt)  "+
+      "pathFileNameExt='%v' Error='%v'",
+      pathFileNameExt, err.Error())
+  }
+
+  if isEmpty {
+    t.Error("Error: after fileMgr.SetFileMgrFromPathFileName(pathFileNameExt) expected " +
+      "isEmpty='false'. Instead, isEmpty='false'. ")
+  }
+
+  if fileMgr.fileName != fileName {
+    t.Error(fmt.Sprintf("Expected File Name, %v, got:", fileName), fileMgr.fileName)
+  }
+
+  if fileMgr.fileExt != extName {
+    t.Error(fmt.Sprintf("Expected File Extension, %v, got:", extName), fileMgr.fileExt)
+  }
+
+  if fileMgr.fileNameExt != fileNameExt {
+    t.Error(fmt.Sprintf("Expected File Name + Extension, %v, got:", fileNameExt), fileMgr.fileNameExt)
+  }
+
+  if !fileMgr.isInitialized {
+    t.Error("Expected fileMgr.isInitialized=='true', got:", fileMgr.isInitialized)
+  }
+
+  if !fileMgr.isFileNamePopulated {
+    t.Error("Expected fileMgr.isFileNamePopulated=='true', got:", fileMgr.isFileNamePopulated)
+  }
+
+  if !fileMgr.isFileNameExtPopulated {
+    t.Error("Expected fileMgr.isFileNameExtPopulated=='true', got:", fileMgr.isFileNameExtPopulated)
+  }
+
+  if fileMgr.isFileExtPopulated {
+    t.Error("Expected fileMgr.isFileExtPopulated=='false', got:", fileMgr.isFileExtPopulated)
+  }
+
+  if !fileMgr.isAbsolutePathFileNamePopulated {
+    t.Error("Expected fileMgr.isAbsolutePathFileNamePopulated=='true', got:",
+      fileMgr.isAbsolutePathFileNamePopulated)
   }
 
 }

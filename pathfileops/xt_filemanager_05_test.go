@@ -468,6 +468,28 @@ func TestFileMgr_MoveFileToNewDir_05(t *testing.T) {
 
 }
 
+func TestFileMgr_MoveFileToNewDir_06(t *testing.T) {
+  fh := FileHelper{}
+  srcFile := fh.AdjustPathSlash("..\\logTest\\FileMgmnt\\TestFile003.txt")
+  destDir := fh.AdjustPathSlash("     ")
+
+  srcFileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(srcFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(srcFile). "+
+      "srcFile='%v'  Error='%v'", srcFile, err.Error())
+  }
+
+  _, err = srcFileMgr.MoveFileToNewDir(destDir)
+
+  if err == nil {
+    t.Error("Expected error return from  srcFileMgr.MoveFileToNewDir(destDir) " +
+      "because the 'destDir' string consists of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
 func TestFileMgr_New_01(t *testing.T) {
 
   fh := FileHelper{}

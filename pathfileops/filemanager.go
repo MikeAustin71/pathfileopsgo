@@ -1903,11 +1903,6 @@ func (fMgr *FileMgr) GetFileModTime() (time.Time, error) {
       fmt.Errorf(ePrefix+"%v", err.Error())
   }
 
-  if !fMgr.doesAbsolutePathFileNameExist {
-    return time.Time{},
-      errors.New(ePrefix + "The current (FileMgr) file DOES NOT EXIST!")
-  }
-
   return fMgr.actualFileInfo.ModTime(), nil
 }
 
@@ -1953,11 +1948,6 @@ func (fMgr *FileMgr) GetFileModTimeStr(timeFormat string) (string, error) {
   if err != nil {
     return "",
       fmt.Errorf(ePrefix+"%v", err.Error())
-  }
-
-  if !fMgr.doesAbsolutePathFileNameExist {
-    return "",
-      errors.New(ePrefix + "The current (FileMgr) file DOES NOT EXIST!")
   }
 
   defaultFmt := "2006-01-02 15:04:05 -0700 MST"
@@ -3650,6 +3640,10 @@ func (fMgr *FileMgr) ResetFileInfo() error {
 
   if err != nil {
     return err
+  }
+
+  if !fMgr.doesAbsolutePathFileNameExist {
+    return fmt.Errorf(ePrefix + "Current FileMgr file DOES NOT EXIST!")
   }
 
   return nil
