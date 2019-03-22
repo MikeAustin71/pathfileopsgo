@@ -1646,6 +1646,18 @@ func (fh FileHelper) GetExecutablePathFileName() (string, error) {
 //
 // When an extension is returned in the 'ext' variable, this
 // extension includes a leading dot. Example: '.txt'
+//
+//    Example:
+//
+//     Actual File Name Plus Extension: "newerFileForTest_01.txt"
+//             Returned File Extension: "txt"
+//
+//     Actual File Name Plus Extension: "newerFileForTest_01"
+//             Returned File Extension: ""
+//
+//     Actual File Name Plus Extension: ".gitignore"
+//             Returned File Extension: ""
+//
 func (fh FileHelper) GetFileExtension(pathFileNameExt string) (ext string, isEmpty bool, err error) {
   ePrefix := "FileHelper.GetFileExt() "
 
@@ -1718,6 +1730,16 @@ func (fh FileHelper) GetFileExtension(pathFileNameExt string) (ext string, isEmp
   }
 
   lenSlashIdxs := len(slashIdxs)
+
+  if lenSlashIdxs == 0 &&
+    lenDotIdxs == 1 &&
+    dotIdxs[lenDotIdxs-1] == 0 {
+    // deal with the case .gitignore
+    ext = ""
+    isEmpty = true
+    err = nil
+    return
+  }
 
   if lenSlashIdxs == 0 {
     ext = testPathFileNameExt[dotIdxs[lenDotIdxs-1]:]
@@ -1839,7 +1861,7 @@ func (fh FileHelper) GetFileLastModificationDate(
 //
 func (fh FileHelper) GetFileNameWithExt(pathFileNameExt string) (fNameExt string, isEmpty bool, err error) {
 
-  ePrefix := "FileHelper.GetFileNameWithExt"
+  ePrefix := "FileHelper.GetFileNameWithExt "
   fNameExt = ""
   isEmpty = true
   err = nil
@@ -1946,10 +1968,9 @@ func (fh FileHelper) GetFileNameWithExt(pathFileNameExt string) (fNameExt string
     fNameExt = ""
 
     if firstCharIdx > dotIdxs[lDotIdxs-1] {
-      // Example '.txt' - Invalid File name and extension
-      isEmpty = true
-      err = fmt.Errorf(ePrefix+"Error: File extension exists but no file name. result='%v'", testPathFileNameExt)
-      return
+      // Example '.txt' - Valid File name and extension
+      // such as '.gitignore'
+      fNameExt = testPathFileNameExt[dotIdxs[lDotIdxs-1]:]
 
     } else if firstCharIdx < dotIdxs[lDotIdxs-1] {
       fNameExt = testPathFileNameExt[firstCharIdx:]
@@ -1986,9 +2007,21 @@ func (fh FileHelper) GetFileNameWithExt(pathFileNameExt string) (fNameExt string
 // without the path or extension. If the returned
 // File Name is an empty string, isEmpty is set to true.
 //
-//  Example:
-//    pathFileNameExt = ./pathfilego/003_filehelper/common/xt_dirmgr_01_test.go
-//    Returned 'fName' = dirmgr_01_test
+//
+//    Example:
+//
+//          Actual Path Plus File Name: = "./pathfilego/003_filehelper/common/xt_dirmgr_01_test.go"
+//                  Returned File Name: = "dirmgr_01_test"
+//
+//     Actual File Name Plus Extension: "newerFileForTest_01.txt"
+//                  Returned File Name: "newerFileForTest_01"
+//
+//     Actual File Name Plus Extension: "newerFileForTest_01"
+//                  Returned File Name: "newerFileForTest_01"
+//
+//     Actual File Name Plus Extension: ".gitignore"
+//                  Returned File Name: ".gitignore"
+//
 //
 func (fh FileHelper) GetFileNameWithoutExt(
   pathFileNameExt string) (fName string, isEmpty bool, err error) {
@@ -2046,6 +2079,20 @@ func (fh FileHelper) GetFileNameWithoutExt(
   }
 
   lDotIdxs := len(dotIdxs)
+
+  if lDotIdxs == 1 &&
+    dotIdxs[lDotIdxs-1] == 0 {
+    // Outlier Case: .gitignore
+    fName = fileNameExt[0:]
+
+    if fName == "" {
+      isEmpty = true
+    } else {
+      isEmpty = false
+    }
+    err = nil
+    return
+  }
 
   // Primary Case: filename.ext
   if lDotIdxs > 0 {

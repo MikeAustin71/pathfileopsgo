@@ -1170,7 +1170,7 @@ func TestFileMgr_NewFromDirStrFileNameStr_03(t *testing.T) {
 
 func TestFileMgr_NewFromDirStrFileNameStr_04(t *testing.T) {
 
-  expectedFileNameExt := "$!#%^&*()_=.t%t"
+  expectedFileNameExt := "     "
 
   rawPath := "../filesfortest/newfilesfortest"
 
@@ -1179,7 +1179,7 @@ func TestFileMgr_NewFromDirStrFileNameStr_04(t *testing.T) {
   if err == nil {
     t.Error("Expected error return from FileMgr{}." +
       "NewFromDirStrFileNameStr(rawPath, expectedFileNameExt) because " +
-      "expectedFileNameExt consists of invalid characters. " +
+      "expectedFileNameExt consists of blank spaces. " +
       "However, NO ERROR WAS RETURNED!")
   }
 

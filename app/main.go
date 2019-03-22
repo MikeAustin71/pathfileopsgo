@@ -38,8 +38,44 @@ func main() {
 
 func main() {
 
-  mainTest46()
-  mainTest45()
+  mainTest47()
+
+}
+
+func mainTest47() {
+  // D:\gowork\src\MikeAustin71\pathfileopsgo\filesfortest\basefilesfortest\.xgitignore
+  expectedFileNameExt := ".xgitignore"
+
+  fh := pf.FileHelper{}
+  absPath := fh.AdjustPathSlash("D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest\\basefilesfortest")
+
+  absPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
+
+  info, err := fh.GetFileInfoFromPath(absPathFileNameExt)
+
+  if err != nil {
+    fmt.Printf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). "+
+      "absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+    return
+  }
+
+  fMgr, err := pf.FileMgr{}.NewFromDirStrFileNameStr(absPath, expectedFileNameExt)
+
+  if err != nil {
+    fmt.Printf("Error returned from FileMgr{}.NewFromDirStrFileNameStr(absPath, "+
+      "expectedFileNameExt). "+
+      "absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+    return
+  }
+
+  fmt.Println("****** mainTest47() ******")
+  fmt.Println("   actual File Name: ", expectedFileNameExt)
+  fmt.Println("        info Name(): ", info.Name())
+  fmt.Println("fMgr File Extension: ", fMgr.GetFileExt())
+  fmt.Println("     fMgr File Name: ", fMgr.GetFileName())
+  fmt.Println(" fMgr File Name Ext: ", fMgr.GetFileNameExt())
+  fmt.Println()
+
 }
 
 func mainTest46() {
