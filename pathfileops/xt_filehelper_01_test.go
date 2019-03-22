@@ -487,6 +487,19 @@ func TestFileHelper_CleanFileNameExtStr_05(t *testing.T) {
 
 }
 
+func TestFileHelper_CleanFileNameExtStr_06(t *testing.T) {
+  fh := FileHelper{}
+
+  _, _, err := fh.CleanFileNameExtStr("...\\")
+
+  if err == nil {
+    t.Error("Expected error return from fh.CleanFileNameExtStr(\"    \") " +
+      "because the input parameter includes 3-dots ('...'). " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
 func TestFileHelper_ConvertOctalToDecimal_01(t *testing.T) {
 
   fh := FileHelper{}
@@ -601,6 +614,118 @@ func TestFileHelper_CopyFile_01(t *testing.T) {
   if !fh.DoesFileExist(destFile) {
     t.Error(fmt.Sprintf("Expected destination file: '%v' does NOT Exist.", destFile))
   }
+}
+
+func TestFileHelper_CopyFileByIo_01(t *testing.T) {
+
+  rawDestFile := "..\\checkfiles\\scratchTestCopyFile80179658.txt"
+
+  destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
+
+  if err != nil {
+    if err != nil {
+      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile). "+
+        "rawDestFile='%v' Error='%v' ", rawDestFile, err.Error())
+    }
+  }
+  _ = FileHelper{}.DeleteDirFile(destFile)
+
+  err = FileHelper{}.CopyFileByIo("", destFile)
+
+  if err == nil {
+    t.Error("Expected error from FileHelper{}.CopyFileByIo(\"\", destFile) " +
+      "because input parameter source file is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  _ = FileHelper{}.DeleteDirFile(destFile)
+
+}
+
+func TestFileHelper_CopyFileByIo_02(t *testing.T) {
+
+  rawSrcFile := "..\\filesfortest\\levelfilesfortest\\level_0_0_test.txt"
+
+  srcFile, err := FileHelper{}.MakeAbsolutePath(rawSrcFile)
+
+  if err != nil {
+    if err != nil {
+      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile). "+
+        "rawSrcFile='%v' Error='%v' ", rawSrcFile, err.Error())
+    }
+  }
+
+  err = FileHelper{}.CopyFileByIo(srcFile, "")
+
+  if err == nil {
+    t.Error("Expected error from FileHelper{}.CopyFileByIo(srcFile,\"\") " +
+      "because input parameter destination file is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_CopyFileByIo_03(t *testing.T) {
+
+  rawDestFile := "..\\checkfiles\\scratchTestCopyFile2047552.txt"
+
+  destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
+
+  if err != nil {
+    if err != nil {
+      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile). "+
+        "rawDestFile='%v' Error='%v' ", rawDestFile, err.Error())
+    }
+  }
+
+  _ = FileHelper{}.DeleteDirFile(destFile)
+
+  rawSrcFile := "..\\checkfiles\\iDoNOTExist.txt"
+
+  srcFile, err := FileHelper{}.MakeAbsolutePath(rawSrcFile)
+
+  if err != nil {
+    if err != nil {
+      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile). "+
+        "rawSrcFile='%v' Error='%v' ", rawSrcFile, err.Error())
+    }
+  }
+
+  err = FileHelper{}.CopyFileByIo(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected error from FileHelper{}.CopyFileByIo(srcFile,destFile) " +
+      "because input parameter source file does not exist. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  _ = FileHelper{}.DeleteDirFile(destFile)
+
+}
+
+func TestFileHelper_CopyFileByIo_04(t *testing.T) {
+
+  rawDestFile := "..\\filesfortest\\levelfilesfortest\\level_0_0_test.txt"
+
+  destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
+
+  if err != nil {
+    if err != nil {
+      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile). "+
+        "rawDestFile='%v' Error='%v' ", rawDestFile, err.Error())
+    }
+  }
+
+  srcFile := destFile
+
+  err = FileHelper{}.CopyFileByIo(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected error from FileHelper{}.CopyFileByIo(srcFile,destFile) " +
+      "because input parameter source file is equivalent to destination file. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
 }
 
 func TestFileHelper_CopyFileByLink_01(t *testing.T) {
