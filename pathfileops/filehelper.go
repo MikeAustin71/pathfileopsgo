@@ -697,6 +697,9 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 // "io.Copy()" is the only method used to copy the designated source
 // file. If this method fails, an error is returned.
 //
+// If source file is equivalent to the destination file, no action will
+// be taken and no error will be returned.
+//
 func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   ePrefix := "FileHelper.CopyFileByIo() "
   err = nil

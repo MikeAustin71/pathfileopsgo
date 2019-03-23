@@ -720,10 +720,10 @@ func TestFileHelper_CopyFileByIo_04(t *testing.T) {
 
   err = FileHelper{}.CopyFileByIo(srcFile, destFile)
 
-  if err == nil {
-    t.Error("Expected error from FileHelper{}.CopyFileByIo(srcFile,destFile) " +
+  if err != nil {
+    t.Error("Did not expect error from FileHelper{}.CopyFileByIo(srcFile,destFile) " +
       "because input parameter source file is equivalent to destination file. " +
-      "However, NO ERROR WAS RETURNED!")
+      "However, AN ERROR WAS RETURNED!")
   }
 
 }
