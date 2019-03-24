@@ -3221,13 +3221,109 @@ func (fh FileHelper) MoveFile(src, dst string) (copyByLink bool, err error) {
   return copyByLink, err
 }
 
+// OpenFile - wrapper for os.OpenFile. This method may be used to open or
+// create files depending on the File Open and File Permission parameters.
+//
+func (fh FileHelper) OpenFile(
+  targetPathFileName string,
+  fileOpenCfg FileOpenConfig,
+  filePermissionCfg FilePermissionConfig) (filePtr *os.File, err error) {
+
+  filePtr = nil
+  err = nil
+  errCode := 0
+  ePrefix := "FileHelper.OpenFile() "
+
+  errCode, _, targetPathFileName = fh.isStringEmptyOrBlank(targetPathFileName)
+
+  if errCode == -1 {
+    err = errors.New(ePrefix + "Input parameter 'targetPathFileName' is an empty string!")
+    return filePtr, err
+  }
+
+  if errCode == -2 {
+    err = errors.New(ePrefix +
+      "Input parameter 'targetPathFileName' consists of all spaces!")
+    return filePtr, err
+  }
+
+  fOpenCode, err2 := fileOpenCfg.GetCompositeFileOpenCode()
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+"%v", err2.Error())
+    return filePtr, err
+  }
+
+  fileMode, err2 := filePermissionCfg.GetCompositePermissionMode()
+
+  filePtr, err2 = os.OpenFile(targetPathFileName, fOpenCode, fileMode)
+
+  if err2 != nil {
+
+    if os.IsNotExist(err2) {
+      err = fmt.Errorf(ePrefix+"The 'targetPathFileName' DOES NOT EXIST! "+
+        "targetPathFileName='%v' Error='%v' ",
+        targetPathFileName, err2.Error())
+      filePtr = nil
+      return filePtr, err
+    }
+
+    err = fmt.Errorf(ePrefix+
+      "Error returned by os.OpenFile(targetPathFileName, fOpenCode, fileMode) "+
+      "targetpathFileName='%v' Error='%v' ", targetPathFileName, err.Error())
+
+    return filePtr, err
+  }
+
+  err = nil
+
+  return filePtr, err
+}
+
 // OpenFileForReading - Wrapper function for os.Open() method which opens
 // files on disk. 'Open' opens the named file for reading.
 // If successful, methods on the returned file can be used for reading;
 // the associated file descriptor has mode O_RDONLY. If there is an error,
 // it will be of type *PathError. (See CreateThisFile() above.
-func (fh FileHelper) OpenFileForReading(fileName string) (*os.File, error) {
-  return os.Open(fileName)
+func (fh FileHelper) OpenFileForReading(fileName string) (filePtr *os.File, err error) {
+  ePrefix := "FileHelper.OpenFileForReading() "
+
+  filePtr = nil
+  err = nil
+  var err2 error
+  errCode := 0
+
+  errCode, _, fileName = fh.isStringEmptyOrBlank(fileName)
+
+  if errCode == -1 {
+    err = errors.New(ePrefix + "Input parameter 'fileName' is an empty string!")
+    return filePtr, err
+  }
+
+  if errCode == -2 {
+    err = errors.New(ePrefix +
+      "Input parameter 'fileName' consists of all spaces!")
+    return filePtr, err
+  }
+
+  filePtr, err2 = os.Open(fileName)
+
+  if err2 != nil && os.IsNotExist(err2) {
+    err = fmt.Errorf(ePrefix+"Input parameter 'fileName' does NOT exist! "+
+      "fileName='%v' os.Open(fileName) Error='%v' ",
+      fileName, err2.Error())
+    filePtr = nil
+    return filePtr, err
+  }
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+"Error returned by os.Open(fileName). "+
+      "fileName='%v' Error='%v' ", fileName, err2.Error())
+  }
+
+  err = nil
+
+  return filePtr, err
 }
 
 // RemovePathSeparatorFromEndOfPathString - Remove Trailing path Separator from
