@@ -38,8 +38,39 @@ func main() {
 
 func main() {
 
-  mainTest47()
+  mainTest48()
 
+}
+
+func mainTest48() {
+
+  targetDir := "D:\\T03\\WebSite_15\\Vehicle_01"
+
+  searchParm := "*.cs"
+
+  fh := pf.FileHelper{}
+
+  foundfiles, err := fh.FindFilesInPath(targetDir, searchParm)
+
+  if err != nil {
+    fmt.Printf("Error returned from fh.FindFilesInPath(targetDir, searchParm). "+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  lFoundFiles := len(foundfiles)
+
+  if lFoundFiles == 0 {
+    fmt.Printf("FoundFiles is a zero length string array! \n")
+    return
+  }
+
+  for i := 0; i < lFoundFiles; i++ {
+    fmt.Printf("%2d. Found File: %v \n", i+1, foundfiles[i])
+  }
+
+  fmt.Println()
+  fmt.Println("Successful Completion!")
 }
 
 func mainTest47() {

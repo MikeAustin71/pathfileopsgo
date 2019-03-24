@@ -40,12 +40,19 @@ type FileHelper struct {
 // path string and return it to the calling method.
 //
 func (fh FileHelper) AddPathSeparatorToEndOfPathStr(pathStr string) (string, error) {
-  lStr := len(pathStr)
 
   ePrefix := "FileHelper.AddPathSeparatorToEndOfPathStr() "
 
-  if lStr == 0 {
-    return "", errors.New(ePrefix + "Error: Zero length input parameter, 'pathStr'!")
+  errCode := 0
+  lStr := 0
+  errCode, lStr, pathStr = fh.isStringEmptyOrBlank(pathStr)
+
+  if errCode == -1 {
+    return "", fmt.Errorf(ePrefix + "Error: Input parameter 'pathStr' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return "", fmt.Errorf(ePrefix + "Error: Input parameter 'pathStr' consists of blank spaces!")
   }
 
   if pathStr[lStr-1] == os.PathSeparator {
@@ -74,6 +81,17 @@ func (fh FileHelper) AddPathSeparatorToEndOfPathStr(pathStr string) (string, err
 // AdjustPathSlash will standardize path
 // separators according to operating system
 func (fh FileHelper) AdjustPathSlash(path string) string {
+  errCode := 0
+
+  errCode, _, path = fh.isStringEmptyOrBlank(path)
+
+  if errCode == -1 {
+    return ""
+  }
+
+  if errCode == -2 {
+    return ""
+  }
 
   return fp.FromSlash(path)
 }
@@ -83,10 +101,22 @@ func (fh FileHelper) AdjustPathSlash(path string) string {
 // is an error, it will be of type *PathError.
 func (fh FileHelper) ChangeWorkingDir(dirPath string) error {
 
+  ePrefix := "FileHelper.ChangeWorkingDir() "
+  errCode := 0
+
+  errCode, _, dirPath = fh.isStringEmptyOrBlank(dirPath)
+
+  if errCode == -1 {
+    return fmt.Errorf(ePrefix + "Error: Input parameter 'dirPath' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return fmt.Errorf(ePrefix + "Error: Input parameter 'dirPath' consists of blank spaces!")
+  }
+
   err := os.Chdir(dirPath)
 
   if err != nil {
-    ePrefix := "FileHelper.ChangeWorkingDir() "
     return fmt.Errorf(ePrefix+"Error returned by os.Chdir(dirPath). "+
       "dirPath='%v' Error='%v'", dirPath, err)
   }
@@ -109,16 +139,18 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (dirName string, isEmpty boo
   isEmpty = true
   err = nil
 
-  if len(dirNameStr) == 0 {
-    err = errors.New(ePrefix + "Error: Input parameter 'dirNameStr' is a Zero Length String!")
-    return
+  errCode := 0
+
+  errCode, _, dirNameStr = fh.isStringEmptyOrBlank(dirNameStr)
+
+  if errCode == -1 {
+    return "", true,
+      fmt.Errorf(ePrefix + "Error: Input parameter 'dirNameStr' is an empty string!")
   }
 
-  dirNameStr = strings.TrimLeft(strings.TrimRight(dirNameStr, " "), " ")
-
-  if len(dirNameStr) == 0 {
-    err = errors.New(ePrefix + "Error: After trimming white space, input parameter 'dirNameStr' is a Zero length string!")
-    return
+  if errCode == -2 {
+    return "", true,
+      fmt.Errorf(ePrefix + "Error: Input parameter 'dirNameStr' consists of blank spaces!")
   }
 
   adjustedDirName := fh.AdjustPathSlash(dirNameStr)
@@ -126,12 +158,15 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (dirName string, isEmpty boo
   lAdjustedDirName := len(adjustedDirName)
 
   if lAdjustedDirName == 0 {
-    err = errors.New(ePrefix + "Error: After adjusting for path separators, input parameter 'dirNameStr' is an empty string!")
+    err = errors.New(ePrefix +
+      "Error: After adjusting for path separators, input parameter 'dirNameStr' is an empty string!")
     return
   }
 
   if strings.Contains(adjustedDirName, "...") {
-    err = fmt.Errorf(ePrefix+"Error: Invalid Directory string. Contains invalid dots. adjustedDirName='%v' ", adjustedDirName)
+    err = fmt.Errorf(ePrefix+
+      "Error: Invalid Directory string. Contains invalid dots. adjustedDirName='%v' ",
+      adjustedDirName)
     return
   }
 
@@ -202,7 +237,9 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (dirName string, isEmpty boo
   firstCharIdx, lastCharIdx, err2 := fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedDirName)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedDirName). adjustedDirName='%v'  Error='%v'", adjustedDirName, err2.Error())
+    err = fmt.Errorf(ePrefix+
+      "Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedDirName). "+
+      "adjustedDirName='%v'  Error='%v'", adjustedDirName, err2.Error())
     return
   }
 
@@ -221,14 +258,17 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (dirName string, isEmpty boo
   interiorDotPathIdx := strings.LastIndex(adjustedDirName, "."+string(os.PathSeparator))
 
   if interiorDotPathIdx > firstCharIdx {
-    err = fmt.Errorf(ePrefix+"Error: INVALID PATH. Invalid interior relative path detected! adjustedDirName='%v'", adjustedDirName)
+    err = fmt.Errorf(ePrefix+
+      "Error: INVALID PATH. Invalid interior relative path detected! adjustedDirName='%v'",
+      adjustedDirName)
     return
   }
 
   slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(adjustedDirName)
 
   if err2 != nil {
-    err = fmt.Errorf("Error returned by fh.GetPathSeparatorIndexesInPathStr(adjustedDirName). adjusteDirName='%v'  Error='%v'", adjustedDirName, err2.Error())
+    err = fmt.Errorf("Error returned by fh.GetPathSeparatorIndexesInPathStr(adjustedDirName). "+
+      "adjusteDirName='%v'  Error='%v'", adjustedDirName, err2.Error())
     return
   }
 
@@ -244,7 +284,9 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (dirName string, isEmpty boo
   dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(adjustedDirName)
 
   if err2 != nil {
-    err = fmt.Errorf("Error returned by fh.GetDotSeparatorIndexesInPathStr(adjustedDirName). adjustedDirName='%v'  Error='%v'", adjustedDirName, err2.Error())
+    err = fmt.Errorf("Error returned by fh.GetDotSeparatorIndexesInPathStr(adjustedDirName). "+
+      "adjustedDirName='%v'  Error='%v'",
+      adjustedDirName, err2.Error())
     return
   }
 
@@ -299,12 +341,18 @@ func (fh FileHelper) CleanFileNameExtStr(fileNameExtStr string) (fileNameExt str
   isEmpty = true
   err = nil
 
-  fileNameExtStr = strings.TrimRight(fileNameExtStr, " ")
-  fileNameExtStr = strings.TrimLeft(fileNameExtStr, " ")
+  errCode := 0
 
-  if len(fileNameExtStr) == 0 {
-    err = errors.New(ePrefix + "Error: Input parameter fileNameExtStr is a Zero Length String!")
-    return
+  errCode, _, fileNameExtStr = fh.isStringEmptyOrBlank(fileNameExtStr)
+
+  if errCode == -1 {
+    return "", true,
+      fmt.Errorf(ePrefix + "Error: Input parameter 'fileNameExtStr' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return "", true,
+      fmt.Errorf(ePrefix + "Error: Input parameter 'fileNameExtStr' consists of blank spaces!")
   }
 
   adjustedFileNameExt := fh.AdjustPathSlash(fileNameExtStr)
@@ -608,21 +656,26 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 
   ePrefix := "FileHelper.CopyFileByLink() "
 
-  src = strings.TrimRight(src, " ")
+  errCode := 0
 
-  src = strings.TrimLeft(src, " ")
+  errCode, _, src = fh.isStringEmptyOrBlank(src)
 
-  dst = strings.TrimRight(dst, " ")
-
-  dst = strings.TrimLeft(dst, " ")
-
-  if len(src) == 0 {
-    err = errors.New(ePrefix + "Error: Input parameter 'src' is ZERO length string!")
+  if errCode == -1 {
+    return fmt.Errorf(ePrefix + "Error: Input parameter 'src' is an empty string!")
   }
 
-  if len(dst) == 0 {
-    err = errors.New(ePrefix + "Error: Input parameter 'dst' is a ZERO length string!")
-    return
+  if errCode == -2 {
+    return fmt.Errorf(ePrefix + "Error: Input parameter 'src' consists of blank spaces!")
+  }
+
+  errCode, _, dst = fh.isStringEmptyOrBlank(dst)
+
+  if errCode == -1 {
+    return fmt.Errorf(ePrefix + "Error: Input parameter 'dst' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return fmt.Errorf(ePrefix + "Error: Input parameter 'dst' consists of blank spaces!")
   }
 
   if !fh.DoesFileExist(src) {
@@ -650,14 +703,17 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 
     if !os.IsNotExist(err2) {
       // Must be PathError - path does not exist
-      err = fmt.Errorf(ePrefix+"Destination File path Error - path does NOT exist. Destination File='%v' Error: %v", dst, err2.Error())
+      err = fmt.Errorf(ePrefix+"Destination File path Error - path does NOT exist. "+
+        "Destination File='%v' Error: %v", dst, err2.Error())
       return
     }
 
   } else {
 
     if !(dfi.Mode().IsRegular()) {
-      err = fmt.Errorf(ePrefix+"non-regular destination file - Cannot Overwrite destination file. Destination File='%v'  Destination File Mode= '%v'", dfi.Name(), dfi.Mode().String())
+      err = fmt.Errorf(ePrefix+"non-regular destination file - Cannot Overwrite "+
+        "destination file. Destination File='%v'  Destination File Mode= '%v'",
+        dfi.Name(), dfi.Mode().String())
       return
     }
 
@@ -703,23 +759,26 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   ePrefix := "FileHelper.CopyFileByIo() "
   err = nil
+  errCode := 0
 
-  if len(src) == 0 {
-    err = errors.New(ePrefix +
-      "Error: Input parameter 'src' is a ZERO length string!")
-    return err
+  errCode, _, src = fh.isStringEmptyOrBlank(src)
+
+  if errCode == -1 {
+    return fmt.Errorf(ePrefix + "Error: Input parameter 'src' is an empty string!")
   }
 
-  if len(dst) == 0 {
-    err = errors.New(ePrefix +
-      "Error: Input parameter 'dst' is a ZERO length string!")
-    return err
+  if errCode == -2 {
+    return fmt.Errorf(ePrefix + "Error: Input parameter 'src' consists of blank spaces!")
   }
 
-  if !fh.DoesFileExist(src) {
-    err = fmt.Errorf(ePrefix+
-      "Error: Input parameter 'src' file DOES NOT EXIST! src='%v'", src)
-    return err
+  errCode, _, dst = fh.isStringEmptyOrBlank(dst)
+
+  if errCode == -1 {
+    return fmt.Errorf(ePrefix + "Error: Input parameter 'dst' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return fmt.Errorf(ePrefix + "Error: Input parameter 'dst' consists of blank spaces!")
   }
 
   sfi, err2 := os.Stat(src)
@@ -729,7 +788,7 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
       // Must be PathError - source path & file name do not exist!
       err = fmt.Errorf(ePrefix+
         "Source File path Error - path does NOT exist. Source File='%v' Error: %v",
-        src, err.Error())
+        src, err2.Error())
       return err
     }
 
@@ -741,7 +800,8 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   if !sfi.Mode().IsRegular() {
     // cannot copy non-regular files (e.g., directories,
     // symlinks, devices, etc.)
-    err = fmt.Errorf(ePrefix+"Error non-regular source file ='%v' source file Mode='%v'", sfi.Name(), sfi.Mode().String())
+    err = fmt.Errorf(ePrefix+"Error non-regular source file ='%v' source file Mode='%v'",
+      sfi.Name(), sfi.Mode().String())
     return err
   }
 
@@ -775,9 +835,6 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
 
   // Create a new destination file and copy source
   // file contents to the destination file.
-
-  //err = fh.copyFileByIOCopy(src, dst)
-  //return
 
   in, err2 := os.Open(src)
 
@@ -852,219 +909,32 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
 
 }
 
-// CreateThisFile - Wrapper function for os.Create
+// CreateThisFile - Wrapper function for os.Create. If the 'pathFileName' does
+// not exist a type *PathError will be returned.
+//
 func (fh FileHelper) CreateFile(pathFileName string) (*os.File, error) {
-  return os.Create(pathFileName)
-}
 
-// DeleteFilesWalkDir - This method searches for files residing in the
-// directory tree identified by the input parameter 'startPath'. The
-// method 'walks the directory tree' locating all files in the directory
-// tree which match the file selection criteria submitted as method input
-// parameter, 'deleteFileSelectionCriteria'.
-//
-// If a file matches the File Selection Criteria, it is DELETED. By the way,
-// if ALL the file selection criterion are set to zero values or 'Inactive',
-// then ALL FILES IN THE DIRECTORY ARE DELETED!!!
-//
-// A record of file deletions is included in the returned DirectoryDeleteFileInfo
-// structure (DirectoryDeleteFileInfo.DeletedFiles).
-//
-//
-// ------------------------------------------------------------------------
-//
-// Important:
-//
-// !!! BE CAREFUL !!! This method deletes files in a specified directory tree.
-//
-// ------------------------------------------------------------------------
-//
-// Input Parameters:
-//
-//
-//	startPath string        - This directory path string specifies the
-//	                          directory containing files which will be matched
-//	                          for deletion according to the file selection criteria.
-//
-//	deleteFileSelectionCriteria FileSelectionCriteria
-//	                          This input parameter should be configured with the desired file
-//	                          selection criteria. Files matching this criteria will be deleted.
-//
-//	                          _________________________________________________________________
-//
-//	                          type FileSelectionCriteria struct {
-//	                            FileNamePatterns        []string
-//	                            FilesOlderThan          time.Time
-//	                            FilesNewerThan          time.Time
-//	                            SelectByFileMode        os.FileMode
-//	                            SelectCriterionMode     FileSelectCriterionMode
-//	                           }
-//
-//	                           The FileSelectionCriteria type allows for configuration of single or multiple
-//	                           file selection criterion. The 'SelectCriterionMode' can be used to specify
-//	                           whether the file must match all or any one of the active file selection criterion.
-//
-//	                           Elements of the FileSelectionCriteria are described below:
-//
-//	                           FileNamePatterns []string - An array of strings which may define
-//	                                                       one or more search patterns. If a file
-//	                                                       name matches any one of the search pattern
-//	                                                       strings, it is deemed to be a 'match'
-//	                                                       for this search pattern criterion.
-//	                                                       Example Patterns:
-//	                                                       "*.log"
-//	                                                       "current*.txt"
-//
-//	                                                       If this string array has zero length or if
-//	                                                       all the strings are empty strings, then this
-//	                                                       file search criterion is considered 'Inactive'
-//	                                                       or 'Not Set'.
-//
-//
-//	                           FilesOlderThan time.Time  - This date time type is compared to file
-//	                                                       modification date times in order to determine
-//	                                                       whether the file is older than the 'FilesOlderThan'
-//	                                                       file selection criterion. If the file modification
-//	                                                       date time is older than the 'FilesOlderThan' date time,
-//	                                                       that file is considered a 'match'	for this file selection
-//	                                                       criterion.
-//
-//	                                                       If the value of 'FilesOlderThan' is set to time zero,
-//	                                                       the default value for type time.Time{}, then this
-//	                                                       file selection criterion is considered to be 'Inactive'
-//	                                                       or 'Not Set'.
-//
-//	                           FilesNewerThan time.Time  - This date time type is compared to the file
-//	                                                       modification date time in order to determine
-//	                                                       whether the file is newer than the 'FilesNewerThan'
-//	                                                       file selection criterion. If the file modification
-//	                                                       date time is newer than the 'FilesNewerThan' date time,
-//	                                                       that file is considered a 'match' for this file selection
-//	                                                       criterion.
-//
-//	                                                       If the value of 'FilesNewerThan' is set to time zero,
-//	                                                       the default value for type time.Time{}, then this file
-//	                                                       selection criterion is considered to be 'Inactive' or
-//	                                                       'Not Set'.
-//
-//	                           SelectByFileMode os.FileMode - os.FileMode is an uint32 value. This file selection
-//	                                                          criterion allows for the selection of files by File
-//	                                                          Mode. File Modes are compared to the value of
-//	                                                          'SelectByFileMode'. If the File Mode for a given file
-//	                                                          is equal to the value of 'SelectByFileMode', that file
-//	                                                          is considered to be a 'match' for this file selection
-//	                                                          criterion.
-//
-//	                                                          If the value of 'SelectByFileMode' is set equal to zero,
-//	                                                          then this file selection criterion is considered
-//	                                                          'Inactive' or 'Not Set'.
-//
-//	                          _________________________________________________________________
-//
-//	SelectCriterionMode	FileSelectCriterionMode -
-//	                          This parameter selects the manner in which the file selection
-//	                          criteria above are applied in determining a 'match' for file
-//	                          selection purposes. 'SelectCriterionMode' may be set to one of
-//	                          two constant values:
-//
-//	                          _________________________________________________________________
-//
-//	                          FileSelectMode.ANDSelect() - File selected if all active selection criteria
-//	                                                   are satisfied.
-//
-//	                                    If this constant value is specified for the file selection mode,
-//	                                    then a given file will not be judged as 'selected' unless all of
-//	                                    the active selection criterion are satisfied. In other words, if
-//	                                    three active search criterion are provided for 'FileNamePatterns',
-//	                                    'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
-//	                                    selected unless it has satisfied all three criterion in this example.
-//
-//	                          FileSelectMode.ORSelect()  - File selected if any active selection criterion
-//	                                                   is satisfied.
-//
-//	                                    If this constant value is specified for the file selection mode,
-//	                                    then a given file will be selected if any one of the active file
-//	                                    selection criterion is satisfied. In other words, if three active
-//	                                    search criterion are provided for 'FileNamePatterns', 'FilesOlderThan'
-//	                                    and 'FilesNewerThan', then a file will be selected if it satisfies any
-//	                                    one of the three criterion in this example.
-//
-//	                          _________________________________________________________________
-//
-//
-// ------------------------------------------------------------------------
-//
-// IMPORTANT:
-//
-//
-//
-// If all of the file selection criterion in the FileSelectionCriteria object are
-// 'Inactive' or 'Not Set' (set to their zero or default values), then all of
-// the files processed will be selected and DELETED.
-//
-// 			Example:
-//					FileNamePatterns 	= ZERO Length Array
-//          filesOlderThan 		= time.Time{}
-//					filesNewerThan 		= time.Time{}
-//					SelectByFileMode 	= uint32(0)
-//
-//					In this example, all of the selection criterion are
-//					'Inactive' and therefore all of the files encountered
-//					in the target directory tree will be SELECTED FOR DELETION!
-//
-// ------------------------------------------------------------------------
-//
-// Return Values:
-//
-//	DirectoryDeleteFileInfo - If successful, files matching the file selection criteria
-//	                          specified in input parameter 'deleteFileSelectionCriteria'
-//	                          will be DELETED and returned in a 'DirectoryDeleteFileInfo'
-//	                          structure field, DirectoryDeleteFileInfo.DeletedFiles.
-//
-//	                          Note: It is a good idea to check the returned field
-//	                                    DirectoryDeleteFileInfo.ErrReturns
-//	                          to determine if any internal system errors were encountered during file processing.
-//
-//	  _____________________________________________________
-//
-//	  type DirectoryDeleteFileInfo struct {
-//	    StartPath            string   // Starting directory path submitted as an input parameter
-//	                                  //     to this method
-//	    dirMgrs            []DirMgr   // Returned information on directories found in directory tree
-//	    ErrReturns         []string   // Internal System Errors encountered
-//
-//	    DeleteFileSelectCriteria FileSelectionCriteria // File Selection Criteria submitted as an
-//	                                                   //   input parameter to this method.
-//	    DeletedFiles []FileWalkInfo   // Information on the files deleted by this method.
-//	  }
-//
-//	  _____________________________________________________
-//
-//	error - If a program execution error is encountered during processing, it will
-//	        returned as an 'error' type. Also, see the comment on DirectoryDeleteFileInfo.ErrReturns,
-//	        above.
-//
-func (fh FileHelper) DeleteFilesWalkDir(startPath string, deleteFileSelectionCriteria FileSelectionCriteria) (DirectoryDeleteFileInfo, error) {
-  ePrefix := "FileHelper.DeleteFilesWalkDir() "
+  ePrefix := "FileHelper.CreateFile() "
+  errCode := 0
 
-  deleteFilesInfo := DirectoryDeleteFileInfo{}
+  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
 
-  startPath = fh.RemovePathSeparatorFromEndOfPathString(startPath)
-
-  if !fh.DoesFileExist(startPath) {
-    return deleteFilesInfo, fmt.Errorf(ePrefix+"Error: startPath DOES NOT EXIST! startPath='%v'", startPath)
+  if errCode == -1 {
+    return nil, fmt.Errorf(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
   }
 
-  deleteFilesInfo.StartPath = startPath
-  deleteFilesInfo.DeleteFileSelectCriteria = deleteFileSelectionCriteria
+  if errCode == -2 {
+    return nil, fmt.Errorf(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
+  }
 
-  err := fp.Walk(deleteFilesInfo.StartPath, fh.makeFileHelperWalkDirDeleteFilesFunc(&deleteFilesInfo))
+  filePtr, err := os.Create(pathFileName)
 
   if err != nil {
-    return deleteFilesInfo, fmt.Errorf(ePrefix+"Error returned by  FileHelper.makeFileHelperWalkDirDeleteFilesFunc(&dWalkInfo). dWalkInfo.StartPath='%v' Error='%v' ", deleteFilesInfo.StartPath, err.Error())
+    return nil, fmt.Errorf(ePrefix+"Error returned from os.Create(pathFileName): '%v' ",
+      err.Error())
   }
 
-  return deleteFilesInfo, nil
+  return filePtr, nil
 }
 
 // DeleteDirFile - Wrapper function for Remove.
@@ -1073,8 +943,16 @@ func (fh FileHelper) DeleteFilesWalkDir(startPath string, deleteFileSelectionCri
 func (fh FileHelper) DeleteDirFile(pathFile string) error {
   ePrefix := "FileHelper.DeleteDirFile() "
 
-  if len(pathFile) == 0 {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'pathFile' is a Zero length string!")
+  errCode := 0
+
+  errCode, _, pathFile = fh.isStringEmptyOrBlank(pathFile)
+
+  if errCode == -1 {
+    return fmt.Errorf(ePrefix + "Error: Input parameter 'pathFile' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return fmt.Errorf(ePrefix + "Error: Input parameter 'pathFile' consists of blank spaces!")
   }
 
   if !fh.DoesFileExist(pathFile) {
@@ -1097,14 +975,28 @@ func (fh FileHelper) DeleteDirFile(pathFile string) error {
 // error it encounters. If the path does not exist,
 // RemoveAll returns nil (no error).
 func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
+
   ePrefix := "FileHelper.DeleteDirPathAll() "
 
-  if len(pathDir) == 0 {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'pathDir' is a ZERO length string!")
+  errCode := 0
+
+  errCode, _, pathDir = fh.isStringEmptyOrBlank(pathDir)
+
+  if errCode == -1 {
+    return fmt.Errorf(ePrefix + "Error: Input parameter 'pathDir' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return fmt.Errorf(ePrefix + "Error: Input parameter 'pathDir' consists of blank spaces!")
   }
 
   // If the path does NOT exist,
   // 'RemoveAll()' returns 'nil'.
+  if !fh.DoesFileExist(pathDir) {
+    // Doesn't exist. Nothing to do.
+    return nil
+  }
+
   err := os.RemoveAll(pathDir)
 
   if err != nil {
@@ -1130,23 +1022,52 @@ func (fh FileHelper) DoesFileExist(pathFileName string) bool {
 // the function will return the associated FileInfo structure.
 func (fh FileHelper) DoesFileInfoExist(pathFileName string) (doesFInfoExist bool, fInfo os.FileInfo, err error) {
 
+  ePrefix := "FileHelper.DoesFileInfoExist() "
   doesFInfoExist = false
 
-  if fInfo, err = os.Stat(pathFileName); os.IsNotExist(err) {
+  errCode := 0
+
+  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
+
+  if errCode == -1 {
+    return doesFInfoExist, nil,
+      fmt.Errorf(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return doesFInfoExist, nil,
+      fmt.Errorf(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
+  }
+
+  var err2 error
+
+  if fInfo, err2 = os.Stat(pathFileName); os.IsNotExist(err2) {
+    err = fmt.Errorf(ePrefix+"Error from os.Stat(pathFileName). "+
+      "'pathFileName' does NOT exist! pathfileName='%v' Error='%v' ", pathFileName, err2)
     return doesFInfoExist, fInfo, err
   }
 
   doesFInfoExist = true
+  err = nil
 
-  return doesFInfoExist, fInfo, nil
-
+  return doesFInfoExist, fInfo, err
 }
 
+// DoesStringEndWithPathSeparator - Returns 'true' if the string ends with a
+// valid Path Separator. ('/' or '\' depending on the operating system)
+//
 func (fh FileHelper) DoesStringEndWithPathSeparator(pathStr string) bool {
 
-  lenStr := len(pathStr)
+  errCode := 0
+  lenStr := 0
 
-  if lenStr < 1 {
+  errCode, lenStr, pathStr = fh.isStringEmptyOrBlank(pathStr)
+
+  if errCode == -1 {
+    return false
+  }
+
+  if errCode == -2 {
     return false
   }
 
@@ -1176,9 +1097,47 @@ func (fh FileHelper) DoesStringEndWithPathSeparator(pathStr string) bool {
 // of directories existing in the designated, 'pathName', depending on the
 // 'fileSearchPattern' passed as an input parameter.
 //
+// If Input Parameters 'pathName' or 'fileSearchPattern' are empty strings or consist
+// of all space characters, this method will return an error.
+//
+//   Example 'fileSearchPattern' values:
+//         "*"     = Returns all files and directories (everything)
+//         "*.*"   = Returns files which have a file extension
+//         "*.txt" = Returns only files with a "txt" file extension
+//
 func (fh FileHelper) FindFilesInPath(pathName, fileSearchPattern string) ([]string, error) {
 
-  ePrefix := "FileHelper) FindFilesInPath()"
+  ePrefix := "FileHelper.FindFilesInPath() "
+
+  var err error
+  errCode := 0
+
+  errCode, _, pathName = fh.isStringEmptyOrBlank(pathName)
+
+  if errCode == -1 {
+    return []string{}, fmt.Errorf(ePrefix + "Error: Input parameter 'pathName' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return []string{}, fmt.Errorf(ePrefix + "Error: Input parameter 'pathName' consists of blank spaces!")
+  }
+
+  errCode, _, fileSearchPattern = fh.isStringEmptyOrBlank(fileSearchPattern)
+
+  if errCode == -1 {
+    return []string{}, fmt.Errorf(ePrefix + "Error: Input parameter 'fileSearchPattern' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return []string{}, fmt.Errorf(ePrefix + "Error: Input parameter 'fileSearchPattern' consists of blank spaces!")
+  }
+
+  pathName, err = fh.MakeAbsolutePath(pathName)
+
+  if err != nil {
+    return []string{},
+      fmt.Errorf(ePrefix+"%v", err.Error())
+  }
 
   fInfo, err := os.Stat(pathName)
 
@@ -1526,7 +1485,9 @@ func (fh *FileHelper) FilterFileName(info os.FileInfo, fileSelectionCriteria Fil
 //          be returned as an 'error' type. Also, see the comment on 'DirectoryTreeInfo.ErrReturns',
 //          above.
 //
-func (fh FileHelper) FindFilesWalkDirectory(startPath string, fileSelectCriteria FileSelectionCriteria) (DirectoryTreeInfo, error) {
+func (fh FileHelper) FindFilesWalkDirectory(
+  startPath string,
+  fileSelectCriteria FileSelectionCriteria) (DirectoryTreeInfo, error) {
 
   ePrefix := "FileHelper.FindFilesWalkDirectory() "
 
@@ -3543,81 +3504,59 @@ func (fh FileHelper) WriteFileStr(str string, fPtr *os.File) (int, error) {
   FileHelper private methods
 */
 
-// copyFileByIOCopy - Copies file from source to destination file.
-// Note: If 'src' file does NOT exist, an error will be returned.
+// isStringEmptyOrBlank - Analyzes a string to determine if the string is 'empty' or
+// if the string consists of all blanks (spaces).
 //
-// No validity checks are performed on 'dest' file. If 'dest' file currently
-// exists, it will be truncated to zero bytes and overwritten.
+// ------------------------------------------------------------------------
 //
-// This method is called by FileHelper:CopyFileByIo(). Use FileHelper:CopyFileByIo()
-// for ordinary file copy operations since it provides validity checks on 'src' and
-// 'dest' files.
+// Return Values:
 //
-// This method utilizes one method of file copy, "io.Copy(out, in)". If this fails an
-// error will be returned.
+//     int - Integer Values Returned:
+//           -1 = string is empty
+//           -2 = string consists entirely of spaces
+//            0 = string contains non-space characters
 //
-// Reference: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//  string - The original input parameter string ('testStr') from which the
+//           leading and trailing spaces have been deleted.
+//           Examples:
 //
-/*
-func (fh FileHelper) copyFileByIOCopy(src, dst string) (err error) {
-  ePrefix := "FileHelper.copyFileByIOCopy() "
+//              1. 'testStr'     = "  a string   "
+//                 return string = "a string"
+//
+//              2. 'testStr'     = "    "
+//                 return string = ""
+//
+//              3. 'testStr'     = ""
+//                 return string = ""
+//
+//
+func (fh FileHelper) isStringEmptyOrBlank(testStr string) (errCode int, strLen int, newStr string) {
 
-  err = nil
+  errCode = 0
+  strLen = 0
+  newStr = ""
 
-  if len(src) == 0 {
-    err = errors.New(ePrefix + "Error: Input parameter 'src' is a ZERO length string!")
-    return
+  if len(testStr) == 0 {
+    errCode = -1
+    return errCode, strLen, newStr
   }
 
-  if len(dst) == 0 {
-    err = errors.New(ePrefix + "Error: Input parameter 'dst' is a ZERO length string!")
-    return
+  newStr = strings.TrimLeft(testStr, " ")
+
+  newStr = strings.TrimRight(newStr, " ")
+
+  strLen = len(newStr)
+
+  if strLen == 0 {
+    errCode = -2
+    newStr = ""
+    return errCode, strLen, newStr
   }
 
-  if !fh.DoesFileExist(src) {
-    err = fmt.Errorf(ePrefix+"Error: Source file does NOT exist! src='%v'", src)
-    return err
-  }
+  errCode = 0
 
-  in, err2 := os.Open(src)
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error returned from os.Open(src) src='%v'  Error='%v'", src, err2.Error())
-    return err
-  }
-
-  out, err2 := os.Create(dst)
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error returned from os.Create(dst) dst='%v'  Error='%v'", dst, err2.Error())
-    _ = in.Close()
-    return err
-  }
-
-  if _, err2 = io.Copy(out, in); err2 != nil {
-    _ = in.Close()
-    _ = out.Close()
-    err = fmt.Errorf(ePrefix+"Error returned from io.Copy(dst, src) dst='%v'  src='%v'  Error='%v' ", dst, src, err2.Error())
-    return
-  }
-
-  // flush file buffers in memory
-  err2 = out.Sync()
-
-  if err2 != nil {
-    _ = in.Close()
-    _ = out.Close()
-    err = fmt.Errorf(ePrefix+"Error returned from out.Sync() out=dst='%v' Error='%v'", dst, err2.Error())
-    return
-  }
-
-  err = nil
-  _ = in.Close()
-  _ = out.Close()
-
-  return
+  return errCode, strLen, newStr
 }
-*/
 
 // makeFileHelperWalkDirDeleteFilesFunc - Used in conjunction with DirMgr.DeleteWalDirFiles
 // to select and delete files residing the directory tree identified by the current DirMgr

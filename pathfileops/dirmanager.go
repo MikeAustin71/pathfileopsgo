@@ -179,14 +179,14 @@ func (dMgr *DirMgr) DeleteAll() error {
 //
 // Example 'filePatterns'
 //
-// *.*              will match all files in directory.
-// *.html    				will match  anyfilename.html
-// a*								will match  appleJack.txt
-// j????row.txt     will match  j1x34row.txt
-// data[0-9]*				will match 	data123.csv
+//   *.*              will match all files in directory.
+//   *.html    				will match  anyfilename.html
+//   a*								will match  appleJack.txt
+//   j????row.txt     will match  j1x34row.txt
+//   data[0-9]*				will match 	data123.csv
 //
-// Reference For Matching Details:
-//  https://golang.org/pkg/path/filepath/#Match
+//   Reference For Matching Details:
+//     https://golang.org/pkg/path/filepath/#Match
 //
 func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) error {
 
@@ -1119,32 +1119,25 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
   return errStrs
 }
 
-// ExecuteDirectoryTreeOps - Performs File Operations
-// on specified 'selected' files in the directory tree
-// identified by the current 'DirMgr' instance.
+// ExecuteDirectoryTreeOps - Performs File Operations on specified 'selected'
+// files in the directory tree identified by the current 'DirMgr' instance.
 //
-// If you wish to perform File Operations ONLY on the
-// current directory and NOT THE ENTIRE DIRECTORY TREE,
-// see Function "ExecuteDirectoryFileOps(), below.
+// If you wish to perform File Operations ONLY on the current directory and
+// NOT THE ENTIRE DIRECTORY TREE, see Function "ExecuteDirectoryFileOps(), below.
 //
-// The types of File Operations performed are generally
-// classified as 'file copy' and 'file deletion' operations.
-// The precise file operation applied is defined by the
-// the type, 'FileOperationCode' which provides a series of
-// constants, or enumerations, used to identify the specific
-// file operation applied. Input parameter, 'fileOps' is an
-// array of type 'FileOperationCode' elements. Multiple file
-// operations can be applied to a single file. For instance,
-// a 'copy source to destination' operation can be followed
-// by a 'delete source file' operation.
+// The types of File Operations performed are generally classified as 'file copy'
+// and 'file deletion' operations. The precise file operation applied is defined
+// by the the type, 'FileOperationCode' which provides a series of constants, or
+// enumerations, used to identify the specific file operation applied. Input
+// parameter, 'fileOps' is an array of type 'FileOperationCode' elements. Multiple
+// file operations can be applied to a single file. For instance, a 'copy source to
+// destination' operation can be followed by a 'delete source file' operation.
 //
-// The 'selected' files are identified by input parameter
-// 'fileSelectCriteria' of type 'FileSelectionCriteria'.
-// This file selection criteria is compared against all files
-// in the directory tree identified by the current 'DirMgr'
-// instance. When a match is found, that file is treated as
-// a 'selected' file and designated file operations are
-// performed on that file.
+// The 'selected' files are identified by input parameter 'fileSelectCriteria' of
+// type 'FileSelectionCriteria'. This file selection criteria is compared against
+// all files in the current directory tree identified by the current 'DirMgr'
+// instance. When a match is found, that file is treated as a 'selected' file and
+// designated file operations are performed on that file.
 //
 // ------------------------------------------------------------------------
 //
