@@ -110,6 +110,19 @@ func TestFileHelper_AddPathSeparatorToEndOfPathStr_04(t *testing.T) {
 
 }
 
+func TestFileHelper_AddPathSeparatorToEndOfPathStr_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  _, err := fh.AddPathSeparatorToEndOfPathStr("      ")
+
+  if err == nil {
+    t.Error("Expected error return from fh.AddPathSeparatorToEndOfPathStr(\"\") " +
+      "because input parameter consists of all space characters. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
 func TestFileHelper_ChangeWorkingDir_01(t *testing.T) {
 
   fh := FileHelper{}
@@ -201,6 +214,28 @@ func TestFileHelper_ChangeWorkingDir_02(t *testing.T) {
   if err != nil {
     t.Errorf("Failed to reset current working directory %v. "+
       "Error='%v' ", currAbsDir, err.Error())
+  }
+
+}
+
+func TestFileHelper_ChangeWorkingDir_03(t *testing.T) {
+
+  err := FileHelper{}.ChangeWorkingDir("")
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}.ChangeWorkingDir(\"\") " +
+      "because the input parameter is an empty string.")
+  }
+
+}
+
+func TestFileHelper_ChangeWorkingDir_04(t *testing.T) {
+
+  err := FileHelper{}.ChangeWorkingDir("   ")
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}.ChangeWorkingDir(\"   \") " +
+      "because the input parameter consists of all spaces.")
   }
 
 }
@@ -500,6 +535,48 @@ func TestFileHelper_CleanFileNameExtStr_06(t *testing.T) {
 
 }
 
+func TestFileHelper_CleanFileNameExtStr_07(t *testing.T) {
+  fh := FileHelper{}
+  testPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest/.gitignore")
+  expectedFileNameExt := ".gitignore"
+  result, isFileNameEmpty, err := fh.CleanFileNameExtStr(testPath)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.CleanFileNameExtStr(testPath). testPath='%v' Error='%v'", testPath, err.Error())
+  }
+
+  if isFileNameEmpty {
+    t.Error("Expected isFileNameEmpty='false'. Instead, isFileNameEmpty='true'")
+  }
+
+  if expectedFileNameExt != result {
+    t.Errorf("Expected fh.CleanFileNameExtStr to return '%v'. Instead, it returned '%v'", expectedFileNameExt, result)
+  }
+
+}
+
+func TestFileHelper_CleanFileNameExtStr_08(t *testing.T) {
+  fh := FileHelper{}
+  testPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01")
+  expectedFileNameExt := "newerFileForTest_01"
+  result, isFileNameEmpty, err := fh.CleanFileNameExtStr(testPath)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.CleanFileNameExtStr(testPath). testPath='%v' Error='%v'",
+      testPath, err.Error())
+  }
+
+  if isFileNameEmpty {
+    t.Error("Expected isFileNameEmpty='false'. Instead, isFileNameEmpty='true'")
+  }
+
+  if expectedFileNameExt != result {
+    t.Errorf("Expected fh.CleanFileNameExtStr to return '%v'. Instead, it returned '%v'",
+      expectedFileNameExt, result)
+  }
+
+}
+
 func TestFileHelper_ConvertOctalToDecimal_01(t *testing.T) {
 
   fh := FileHelper{}
@@ -728,6 +805,61 @@ func TestFileHelper_CopyFileByIo_04(t *testing.T) {
 
 }
 
+func TestFileHelper_CopyFileByIo_05(t *testing.T) {
+
+  rawDestFile := "..\\checkfiles\\scratchDestTestKJ5901375.txt"
+  fh := FileHelper{}
+
+  destFile, err := fh.MakeAbsolutePath(rawDestFile)
+
+  if err != nil {
+    if err != nil {
+      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile). "+
+        "rawDestFile='%v' Error='%v' ", rawDestFile, err.Error())
+    }
+  }
+
+  err = FileHelper{}.CopyFileByIo("   ", destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from  err = FileHelper{}.CopyFileByIo(\"   \", destFile)" +
+      "because input parameter source file name consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if fh.DoesFileExist(destFile) {
+    err = fh.DeleteDirFile(destFile)
+    if err != nil {
+      t.Errorf("Error returned from last attempt to delte destFile. "+
+        "fh.DeleteDirFile(destFile) destFile='%v' Error='%v' ", destFile, err.Error())
+    }
+  }
+}
+
+func TestFileHelper_CopyFileByIo_06(t *testing.T) {
+
+  rawSrcFile := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  fh := FileHelper{}
+
+  srcFile, err := fh.MakeAbsolutePath(rawSrcFile)
+
+  if err != nil {
+    if err != nil {
+      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile). "+
+        "rawSrcFile='%v' Error='%v' ", rawSrcFile, err.Error())
+    }
+  }
+
+  err = FileHelper{}.CopyFileByIo(srcFile, "   ")
+
+  if err == nil {
+    t.Error("Expected an error return from  err = FileHelper{}.CopyFileByIo(src, \"    \")" +
+      "because input parameter destination file consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
 func TestFileHelper_CopyFileByLink_01(t *testing.T) {
 
   testDestFile := "../filesfortest/levelfilesfortest/level_9_9_test.txt"
@@ -750,6 +882,26 @@ func TestFileHelper_CopyFileByLink_01(t *testing.T) {
 
 func TestFileHelper_CopyFileByLink_02(t *testing.T) {
 
+  testDestFile := "../filesfortest/levelfilesfortest/level_9_9_test.txt"
+
+  destFile, err := FileHelper{}.MakeAbsolutePath(testDestFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(testDestFile). "+
+      "testDestFile='%v' Error='%v' ", testDestFile, err.Error())
+  }
+
+  err = FileHelper{}.CopyFileByLink("     ", destFile)
+
+  if err == nil {
+    t.Error("Expected error return from FileHelper{}.CopyFileByLink(\"    \", destFile) " +
+      "because src parameter consists of all space characters. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_CopyFileByLink_03(t *testing.T) {
+
   testSrcFile := "../filesfortest/levelfilesfortest/level_9_9_test.txt"
 
   srcFile, err := FileHelper{}.MakeAbsolutePath(testSrcFile)
@@ -764,6 +916,88 @@ func TestFileHelper_CopyFileByLink_02(t *testing.T) {
   if err == nil {
     t.Error("Expected error return from FileHelper{}.CopyFileByLink(srcFile, \"\") " +
       "because destination parameter was an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_CopyFileByLink_04(t *testing.T) {
+
+  testSrcFile := "../filesfortest/levelfilesfortest/level_9_9_test.txt"
+
+  srcFile, err := FileHelper{}.MakeAbsolutePath(testSrcFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(testSrcFile). "+
+      "testSrcFile='%v' Error='%v' ", testSrcFile, err.Error())
+  }
+
+  err = FileHelper{}.CopyFileByLink(srcFile, "     ")
+
+  if err == nil {
+    t.Error("Expected error return from FileHelper{}.CopyFileByLink(srcFile, \"    \") " +
+      "because destination parameter consists of all space characters. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_CopyFileByLink_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testSrcFile := "../filesfortest/levelfilesfortest/iDoNotExist.txt"
+
+  srcFile, err := fh.MakeAbsolutePath(testSrcFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(testSrcFile). "+
+      "testSrcFile='%v' Error='%v' ", testSrcFile, err.Error())
+  }
+
+  testDestFile := "../checkfiles/scratchDestTileJJ459821.txt"
+
+  destFile, err := FileHelper{}.MakeAbsolutePath(testDestFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(testDestFile). "+
+      "testDestFile='%v' Error='%v' ", testDestFile, err.Error())
+  }
+
+  err = FileHelper{}.CopyFileByLink(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected error return from FileHelper{}.CopyFileByLink(srcFile, destFile) " +
+      "because srcFile does not exist. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if fh.DoesFileExist(destFile) == true {
+    err = fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error attempting file deletion of File='%v'. Error='%v' ",
+        destFile, err.Error())
+    }
+  }
+}
+
+func TestFileHelper_CopyFileByLink_06(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testSrcFile := "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+
+  srcFile, err := fh.MakeAbsolutePath(testSrcFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(testSrcFile). "+
+      "testSrcFile='%v' Error='%v' ", testSrcFile, err.Error())
+  }
+
+  err = FileHelper{}.CopyFileByLink(srcFile, srcFile)
+
+  if err == nil {
+    t.Error("Expected error return from FileHelper{}.CopyFileByLink(srcFile, srcFile) " +
+      "because srcFile and destFile are equivalent. " +
       "However, NO ERROR WAS RETURNED!")
   }
 }
@@ -849,6 +1083,91 @@ func TestFileHelper_CreateFile_02(t *testing.T) {
 
   if s != fOvrWriteTxt {
     t.Errorf("Was expecting to read text: '%v', instead received text: %v", fOvrWriteTxt, s)
+  }
+
+}
+
+func TestFileHelper_CreateFile_03(t *testing.T) {
+
+  _, err := FileHelper{}.CreateFile("")
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}.CreateFile(\"\") " +
+      "because the input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_CreateFile_04(t *testing.T) {
+
+  _, err := FileHelper{}.CreateFile("    ")
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}.CreateFile(\"   \") " +
+      "because the input parameter consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_DeleteDirFile_01(t *testing.T) {
+
+  err := FileHelper{}.DeleteDirFile("")
+
+  if err == nil {
+    t.Error("Expected error return from FileHelper{}.DeleteDirFile(\"\") " +
+      "because the input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_DeleteDirFile_02(t *testing.T) {
+
+  err := FileHelper{}.DeleteDirFile("   ")
+
+  if err == nil {
+    t.Error("Expected error return from FileHelper{}.DeleteDirFile(\"  \") " +
+      "because the input parameter consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_DeleteDirPathAll_01(t *testing.T) {
+
+  err := FileHelper{}.DeleteDirPathAll("")
+
+  if err == nil {
+    t.Error("Expected error return from FileHelper{}.DeleteDirPathAll(\"\") " +
+      "because the input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_DeleteDirPathAll_02(t *testing.T) {
+
+  err := FileHelper{}.DeleteDirPathAll("    ")
+
+  if err == nil {
+    t.Error("Expected error return from FileHelper{}.DeleteDirPathAll(\"      \") " +
+      "because the input parameter consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_DeleteDirPathAll_03(t *testing.T) {
+
+  targetPath := "../createFilesTest/pathDoesNotExist/fileDoesNotExist.txt"
+
+  err := FileHelper{}.DeleteDirPathAll(targetPath)
+
+  if err != nil {
+    t.Errorf("An error was NOT expected from FileHelper{}.DeleteDirPathAll(targetPath) "+
+      "because the input parameter targetPath does not exist. "+
+      "However, AN ERROR WAS RETURNED! targetPath='%v' Error='%v' ",
+      targetPath, err.Error())
   }
 
 }

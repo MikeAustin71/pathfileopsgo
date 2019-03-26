@@ -329,10 +329,21 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (dirName string, isEmpty boo
 
 // CleanFileNameExtStr - Cleans up a file name extension string.
 //
-// Example:
-// fileNameExt = '../dir1/dir2/fileName.ext' returns "fileName.ext"
-// fileNameExt = 'fileName.ext" returns "fileName.ext"
-// fileNameExt = '../dir1/dir2/' returns "" and isEmpty=true
+//   Example:
+//     fileNameExt = '../dir1/dir2/fileName.ext'
+//                   returns "fileName.ext" and isEmpty=false
+//
+//     fileNameExt = 'fileName.ext"
+//                    returns "fileName.ext" and isEmpty=false
+//
+//     fileNameExt = '../dir1/dir2/'
+//                    returns "" and isEmpty=true
+//
+//     fileNameExt = '../filesfortest/newfilesfortest/newerFileForTest_01'
+//                   returns "newerFileForTest_01" and isEmpty=false
+//
+//     fileNameExt = '../filesfortest/newfilesfortest/.gitignore'
+//                   returns ".gitignore" and isEmpty=false
 //
 func (fh FileHelper) CleanFileNameExtStr(fileNameExtStr string) (fileNameExt string, isEmpty bool, err error) {
 
@@ -909,8 +920,15 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
 
 }
 
-// CreateThisFile - Wrapper function for os.Create. If the 'pathFileName' does
+// CreateFile - Wrapper function for os.Create. If the 'pathFileName' does
 // not exist a type *PathError will be returned.
+//
+// This method will 'create' the file designated by input parameter 'pathFileName'.
+// 'pathFileName' should consist of a valid path, file name. The file name may consist
+// of a file name and file extension or simply a file name.
+//
+// If successful, this method will return a valid pointer to a type 'os.File' and
+// an error value of 'nil'.
 //
 func (fh FileHelper) CreateFile(pathFileName string) (*os.File, error) {
 
@@ -1010,6 +1028,14 @@ func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
 // designating whether the passed file name
 // exists.
 func (fh FileHelper) DoesFileExist(pathFileName string) bool {
+
+  errCode := 0
+
+  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
+
+  if errCode < 0 {
+    return false
+  }
 
   status, _, _ := fh.DoesFileInfoExist(pathFileName)
 
