@@ -48,11 +48,11 @@ func (fh FileHelper) AddPathSeparatorToEndOfPathStr(pathStr string) (string, err
   errCode, lStr, pathStr = fh.isStringEmptyOrBlank(pathStr)
 
   if errCode == -1 {
-    return "", fmt.Errorf(ePrefix + "Error: Input parameter 'pathStr' is an empty string!")
+    return "", errors.New(ePrefix + "Error: Input parameter 'pathStr' is an empty string!")
   }
 
   if errCode == -2 {
-    return "", fmt.Errorf(ePrefix + "Error: Input parameter 'pathStr' consists of blank spaces!")
+    return "", errors.New(ePrefix + "Error: Input parameter 'pathStr' consists of blank spaces!")
   }
 
   if pathStr[lStr-1] == os.PathSeparator {
@@ -107,11 +107,11 @@ func (fh FileHelper) ChangeWorkingDir(dirPath string) error {
   errCode, _, dirPath = fh.isStringEmptyOrBlank(dirPath)
 
   if errCode == -1 {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'dirPath' is an empty string!")
+    return errors.New(ePrefix + "Error: Input parameter 'dirPath' is an empty string!")
   }
 
   if errCode == -2 {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'dirPath' consists of blank spaces!")
+    return errors.New(ePrefix + "Error: Input parameter 'dirPath' consists of blank spaces!")
   }
 
   err := os.Chdir(dirPath)
@@ -145,12 +145,12 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (dirName string, isEmpty boo
 
   if errCode == -1 {
     return "", true,
-      fmt.Errorf(ePrefix + "Error: Input parameter 'dirNameStr' is an empty string!")
+      errors.New(ePrefix + "Error: Input parameter 'dirNameStr' is an empty string!")
   }
 
   if errCode == -2 {
     return "", true,
-      fmt.Errorf(ePrefix + "Error: Input parameter 'dirNameStr' consists of blank spaces!")
+      errors.New(ePrefix + "Error: Input parameter 'dirNameStr' consists of blank spaces!")
   }
 
   adjustedDirName := fh.AdjustPathSlash(dirNameStr)
@@ -358,12 +358,12 @@ func (fh FileHelper) CleanFileNameExtStr(fileNameExtStr string) (fileNameExt str
 
   if errCode == -1 {
     return "", true,
-      fmt.Errorf(ePrefix + "Error: Input parameter 'fileNameExtStr' is an empty string!")
+      errors.New(ePrefix + "Error: Input parameter 'fileNameExtStr' is an empty string!")
   }
 
   if errCode == -2 {
     return "", true,
-      fmt.Errorf(ePrefix + "Error: Input parameter 'fileNameExtStr' consists of blank spaces!")
+      errors.New(ePrefix + "Error: Input parameter 'fileNameExtStr' consists of blank spaces!")
   }
 
   adjustedFileNameExt := fh.AdjustPathSlash(fileNameExtStr)
@@ -672,21 +672,21 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
   errCode, _, src = fh.isStringEmptyOrBlank(src)
 
   if errCode == -1 {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'src' is an empty string!")
+    return errors.New(ePrefix + "Error: Input parameter 'src' is an empty string!")
   }
 
   if errCode == -2 {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'src' consists of blank spaces!")
+    return errors.New(ePrefix + "Error: Input parameter 'src' consists of blank spaces!")
   }
 
   errCode, _, dst = fh.isStringEmptyOrBlank(dst)
 
   if errCode == -1 {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'dst' is an empty string!")
+    return errors.New(ePrefix + "Error: Input parameter 'dst' is an empty string!")
   }
 
   if errCode == -2 {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'dst' consists of blank spaces!")
+    return errors.New(ePrefix + "Error: Input parameter 'dst' consists of blank spaces!")
   }
 
   if !fh.DoesFileExist(src) {
@@ -775,21 +775,21 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   errCode, _, src = fh.isStringEmptyOrBlank(src)
 
   if errCode == -1 {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'src' is an empty string!")
+    return errors.New(ePrefix + "Error: Input parameter 'src' is an empty string!")
   }
 
   if errCode == -2 {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'src' consists of blank spaces!")
+    return errors.New(ePrefix + "Error: Input parameter 'src' consists of blank spaces!")
   }
 
   errCode, _, dst = fh.isStringEmptyOrBlank(dst)
 
   if errCode == -1 {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'dst' is an empty string!")
+    return errors.New(ePrefix + "Error: Input parameter 'dst' is an empty string!")
   }
 
   if errCode == -2 {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'dst' consists of blank spaces!")
+    return errors.New(ePrefix + "Error: Input parameter 'dst' consists of blank spaces!")
   }
 
   sfi, err2 := os.Stat(src)
@@ -938,11 +938,11 @@ func (fh FileHelper) CreateFile(pathFileName string) (*os.File, error) {
   errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
 
   if errCode == -1 {
-    return nil, fmt.Errorf(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
+    return nil, errors.New(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
   }
 
   if errCode == -2 {
-    return nil, fmt.Errorf(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
+    return nil, errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
   }
 
   filePtr, err := os.Create(pathFileName)
@@ -966,11 +966,11 @@ func (fh FileHelper) DeleteDirFile(pathFile string) error {
   errCode, _, pathFile = fh.isStringEmptyOrBlank(pathFile)
 
   if errCode == -1 {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'pathFile' is an empty string!")
+    return errors.New(ePrefix + "Error: Input parameter 'pathFile' is an empty string!")
   }
 
   if errCode == -2 {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'pathFile' consists of blank spaces!")
+    return errors.New(ePrefix + "Error: Input parameter 'pathFile' consists of blank spaces!")
   }
 
   if !fh.DoesFileExist(pathFile) {
@@ -1001,11 +1001,11 @@ func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
   errCode, _, pathDir = fh.isStringEmptyOrBlank(pathDir)
 
   if errCode == -1 {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'pathDir' is an empty string!")
+    return errors.New(ePrefix + "Error: Input parameter 'pathDir' is an empty string!")
   }
 
   if errCode == -2 {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'pathDir' consists of blank spaces!")
+    return errors.New(ePrefix + "Error: Input parameter 'pathDir' consists of blank spaces!")
   }
 
   // If the path does NOT exist,
@@ -1037,16 +1037,28 @@ func (fh FileHelper) DoesFileExist(pathFileName string) bool {
     return false
   }
 
-  status, _, _ := fh.DoesFileInfoExist(pathFileName)
+  _, err2 := os.Stat(pathFileName)
 
-  return status
+  if err2 != nil {
+    return false
+  }
+
+  return true
 }
 
 // DoesFileInfoExist - returns a boolean value indicating
 // whether the path and file name passed to the function
-// actually exists. Note: If the file actually exists,
-// the function will return the associated FileInfo structure.
-func (fh FileHelper) DoesFileInfoExist(pathFileName string) (doesFInfoExist bool, fInfo os.FileInfo, err error) {
+// actually exists.
+//
+// If the file actually exists, the function will return
+// the associated FileInfo structure.
+//
+// However, if 'pathFileName' does NOT exist, an error will
+// be returned, return value 'doesFInfoExist' will be set to
+// 'false' and return value 'fInfo' will be set to nil.
+//
+func (fh FileHelper) DoesFileInfoExist(
+  pathFileName string) (doesFInfoExist bool, fInfo os.FileInfo, err error) {
 
   ePrefix := "FileHelper.DoesFileInfoExist() "
   doesFInfoExist = false
@@ -1057,12 +1069,12 @@ func (fh FileHelper) DoesFileInfoExist(pathFileName string) (doesFInfoExist bool
 
   if errCode == -1 {
     return doesFInfoExist, nil,
-      fmt.Errorf(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
+      errors.New(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
   }
 
   if errCode == -2 {
     return doesFInfoExist, nil,
-      fmt.Errorf(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
+      errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
   }
 
   var err2 error
@@ -1070,6 +1082,12 @@ func (fh FileHelper) DoesFileInfoExist(pathFileName string) (doesFInfoExist bool
   if fInfo, err2 = os.Stat(pathFileName); os.IsNotExist(err2) {
     err = fmt.Errorf(ePrefix+"Error from os.Stat(pathFileName). "+
       "'pathFileName' does NOT exist! pathfileName='%v' Error='%v' ", pathFileName, err2)
+    return doesFInfoExist, fInfo, err
+  }
+
+  if err2 != nil {
+    err = fmt.Errorf("Error returned by os.Stat(pathFileName). "+
+      "pathFileName='%v' Error='%v' ", pathFileName, err.Error())
     return doesFInfoExist, fInfo, err
   }
 
@@ -1089,11 +1107,7 @@ func (fh FileHelper) DoesStringEndWithPathSeparator(pathStr string) bool {
 
   errCode, lenStr, pathStr = fh.isStringEmptyOrBlank(pathStr)
 
-  if errCode == -1 {
-    return false
-  }
-
-  if errCode == -2 {
+  if errCode < 0 {
     return false
   }
 
@@ -1102,103 +1116,6 @@ func (fh FileHelper) DoesStringEndWithPathSeparator(pathStr string) bool {
   }
 
   return false
-}
-
-// FindFilesInPath - Will apply a search pattern to files and directories
-// in the path designated by input parameter, 'pathName'. If the files
-// and or directory names match the input parameter, 'fileSearchPattern'
-// they will be returned in an array of strings.
-//
-// Be Advised!  The names returned in the string array may consist of both
-// files and directory names, depending on the specified, 'fileSearchPattern'.
-//
-// This method uses the "path/filepath" function, 'Glob'. Reference:
-//				https://golang.org/pkg/path/filepath/#Glob
-//
-// The File matching patterns depend on the 'go' "path/filepath" function,
-// 'Match'.  Reference
-// https://golang.org/pkg/path/filepath/#Match
-//
-// Note: This method will NOT search sub-directories. It will return the names
-// of directories existing in the designated, 'pathName', depending on the
-// 'fileSearchPattern' passed as an input parameter.
-//
-// If Input Parameters 'pathName' or 'fileSearchPattern' are empty strings or consist
-// of all space characters, this method will return an error.
-//
-//   Example 'fileSearchPattern' values:
-//         "*"     = Returns all files and directories (everything)
-//         "*.*"   = Returns files which have a file extension
-//         "*.txt" = Returns only files with a "txt" file extension
-//
-func (fh FileHelper) FindFilesInPath(pathName, fileSearchPattern string) ([]string, error) {
-
-  ePrefix := "FileHelper.FindFilesInPath() "
-
-  var err error
-  errCode := 0
-
-  errCode, _, pathName = fh.isStringEmptyOrBlank(pathName)
-
-  if errCode == -1 {
-    return []string{}, fmt.Errorf(ePrefix + "Error: Input parameter 'pathName' is an empty string!")
-  }
-
-  if errCode == -2 {
-    return []string{}, fmt.Errorf(ePrefix + "Error: Input parameter 'pathName' consists of blank spaces!")
-  }
-
-  errCode, _, fileSearchPattern = fh.isStringEmptyOrBlank(fileSearchPattern)
-
-  if errCode == -1 {
-    return []string{}, fmt.Errorf(ePrefix + "Error: Input parameter 'fileSearchPattern' is an empty string!")
-  }
-
-  if errCode == -2 {
-    return []string{}, fmt.Errorf(ePrefix + "Error: Input parameter 'fileSearchPattern' consists of blank spaces!")
-  }
-
-  pathName, err = fh.MakeAbsolutePath(pathName)
-
-  if err != nil {
-    return []string{},
-      fmt.Errorf(ePrefix+"%v", err.Error())
-  }
-
-  fInfo, err := os.Stat(pathName)
-
-  if err != nil && os.IsNotExist(err) {
-    return []string{},
-      errors.New(ePrefix + "Error: Input parameter 'pathName' DOES NOT EXIST!")
-  }
-
-  if err != nil {
-    return []string{},
-      fmt.Errorf(ePrefix+
-        "Error returned by os.Stat(pathName). "+
-        "pathName='%v' Error='%v' ", pathName, err.Error())
-  }
-
-  if !fInfo.IsDir() {
-    return []string{},
-      fmt.Errorf(ePrefix+"Error: The path exists, but it NOT a directory! "+
-        "pathName='%v' ", pathName)
-  }
-
-  // fInfo is a Directory.
-
-  searchStr := fh.JoinPathsAdjustSeparators(pathName, fileSearchPattern)
-
-  results, err := fp.Glob(searchStr)
-
-  if err != nil {
-    return []string{},
-      fmt.Errorf(ePrefix+
-        "Error returned by fp.Glob(searchStr). "+
-        "searchStr='%v' Error='%v' ", searchStr, err.Error())
-  }
-
-  return results, nil
 }
 
 // FilterFileName - Utility method designed to determine whether a file described by a filePath string
@@ -1228,11 +1145,18 @@ func (fh FileHelper) FindFilesInPath(pathName, fileSearchPattern string) ([]stri
 // If three criteria are 'set', then the file must comply with all three criterion in order to be judged
 // as matched ('isMatchedFile=true').
 //
-func (fh *FileHelper) FilterFileName(info os.FileInfo, fileSelectionCriteria FileSelectionCriteria) (isMatchedFile bool, err error) {
+func (fh *FileHelper) FilterFileName(
+  info os.FileInfo,
+  fileSelectionCriteria FileSelectionCriteria) (isMatchedFile bool, err error) {
 
   ePrefix := "FileHelper.FilterFileName() "
   isMatchedFile = false
   err = nil
+
+  if info == nil {
+    err = errors.New(ePrefix + "Input parameter 'info' is 'nil' and INVALID!")
+    return isMatchedFile, err
+  }
 
   isPatternSet, isPatternMatch, err2 := fh.SearchFilePatternMatch(info, fileSelectionCriteria)
 
@@ -1340,6 +1264,107 @@ func (fh *FileHelper) FilterFileName(info os.FileInfo, fileSelectionCriteria Fil
   return
 }
 
+// FindFilesInPath - Will apply a search pattern to files and directories
+// in the path designated by input parameter, 'pathName'. If the files
+// and or directory names match the input parameter, 'fileSearchPattern'
+// they will be returned in an array of strings.
+//
+// Be Advised!  The names returned in the string array may consist of both
+// files and directory names, depending on the specified, 'fileSearchPattern'.
+//
+// This method uses the "path/filepath" function, 'Glob'. Reference:
+//				https://golang.org/pkg/path/filepath/#Glob
+//
+// The File matching patterns depend on the 'go' "path/filepath" function,
+// 'Match'.  Reference
+// https://golang.org/pkg/path/filepath/#Match
+//
+// Note: This method will NOT search sub-directories. It will return the names
+// of directories existing in the designated, 'pathName', depending on the
+// 'fileSearchPattern' passed as an input parameter.
+//
+// If Input Parameters 'pathName' or 'fileSearchPattern' are empty strings or consist
+// of all space characters, this method will return an error.
+//
+//   Example 'fileSearchPattern' values:
+//         "*"     = Returns all files and directories (everything)
+//         "*.*"   = Returns files which have a file extension
+//         "*.txt" = Returns only files with a "txt" file extension
+//
+func (fh FileHelper) FindFilesInPath(pathName, fileSearchPattern string) ([]string, error) {
+
+  ePrefix := "FileHelper.FindFilesInPath() "
+
+  var err error
+  errCode := 0
+
+  errCode, _, pathName = fh.isStringEmptyOrBlank(pathName)
+
+  if errCode == -1 {
+    return []string{},
+      errors.New(ePrefix + "Error: Input parameter 'pathName' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return []string{},
+      errors.New(ePrefix + "Error: Input parameter 'pathName' consists of blank spaces!")
+  }
+
+  errCode, _, fileSearchPattern = fh.isStringEmptyOrBlank(fileSearchPattern)
+
+  if errCode == -1 {
+    return []string{},
+      errors.New(ePrefix + "Error: Input parameter 'fileSearchPattern' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return []string{},
+      errors.New(ePrefix + "Error: Input parameter 'fileSearchPattern' consists of blank spaces!")
+  }
+
+  pathName, err = fh.MakeAbsolutePath(pathName)
+
+  if err != nil {
+    return []string{},
+      fmt.Errorf(ePrefix+"%v", err.Error())
+  }
+
+  fInfo, err := os.Stat(pathName)
+
+  if err != nil && os.IsNotExist(err) {
+    return []string{},
+      errors.New(ePrefix + "Error: Input parameter 'pathName' DOES NOT EXIST!")
+  }
+
+  if err != nil {
+    return []string{},
+      fmt.Errorf(ePrefix+
+        "Error returned by os.Stat(pathName). "+
+        "pathName='%v' Error='%v' ", pathName, err.Error())
+  }
+
+  if !fInfo.IsDir() {
+    return []string{},
+      fmt.Errorf(ePrefix+"Error: The path exists, but it NOT a directory! "+
+        "pathName='%v' ", pathName)
+  }
+
+  // fInfo is a Directory.
+
+  searchStr := fh.JoinPathsAdjustSeparators(pathName, fileSearchPattern)
+
+  results, err := fp.Glob(searchStr)
+
+  if err != nil {
+    return []string{},
+      fmt.Errorf(ePrefix+
+        "Error returned by fp.Glob(searchStr). "+
+        "searchStr='%v' Error='%v' ", searchStr, err.Error())
+  }
+
+  return results, nil
+}
+
 // FindFilesWalkDirectory - This method returns file information on files residing in a specified
 // directory tree identified by the input parameter, 'startPath'.
 //
@@ -1355,11 +1380,15 @@ func (fh *FileHelper) FilterFileName(info os.FileInfo, fileSelectionCriteria Fil
 //
 // Input Parameter:
 //
+//  startPath                         string - A string consisting of the starting path or
+//                                             or directory from which the find files search
+//                                             operation will commence.
 //
 //  fileSelectCriteria FileSelectionCriteria -
 //	    This input parameter should be configured with the desired file
 //	    selection criteria. Files matching this criteria will be returned as
-//	    'Found Files'.
+//	    'Found Files'. If file 'fileSelectCriteria' is uninitialized (FileSelectionCriteria{}).
+//      all directories and files will be returned from the 'startPath'
 //
 //
 //       _______________________________________________________________________________________________
@@ -1479,6 +1508,11 @@ func (fh *FileHelper) FilterFileName(info os.FileInfo, fileSelectionCriteria Fil
 //     in the target directory will be selected and returned
 //     as 'Found Files'.
 //
+//     This same effect can be achieved by simply creating an
+//     empty file selection instance:
+//
+//             FileSelectionCriteria{}
+//
 //
 // ------------------------------------------------------------------------
 //
@@ -1519,22 +1553,49 @@ func (fh FileHelper) FindFilesWalkDirectory(
 
   findFilesInfo := DirectoryTreeInfo{}
 
+  errCode := 0
+
+  errCode, _, startPath = fh.isStringEmptyOrBlank(startPath)
+
+  if errCode == -1 {
+    return findFilesInfo,
+      errors.New(ePrefix + "Error: Input parameter 'startPath' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return findFilesInfo,
+      errors.New(ePrefix + "Error: Input parameter 'startPath' consists of blank spaces!")
+  }
+
   startPath = fh.RemovePathSeparatorFromEndOfPathString(startPath)
 
+  var err error
+
+  startPath, err = fh.MakeAbsolutePath(startPath)
+
+  if err != nil {
+    return findFilesInfo,
+      fmt.Errorf(ePrefix+"Error returned by fh.MakeAbsolutePath(startPath). "+
+        "startPath='%v' Error='%v' ", startPath, err.Error())
+  }
+
   if !fh.DoesFileExist(startPath) {
-    return findFilesInfo, fmt.Errorf(ePrefix+"Error - startPath DOES NOT EXIST! startPath='%v'", startPath)
+    return findFilesInfo, fmt.Errorf(ePrefix+
+      "Error - startPath DOES NOT EXIST! startPath='%v'", startPath)
   }
 
   findFilesInfo.StartPath = startPath
 
   findFilesInfo.FileSelectCriteria = fileSelectCriteria
 
-  // err := fp.Walk(findFilesInfo.StartPath, fh.MakeWalkDirGetFilesFunc(dInfo))
-  err := fp.Walk(findFilesInfo.StartPath, fh.makeFileHelperWalkDirFindFilesFunc(&findFilesInfo))
+  err = fp.Walk(findFilesInfo.StartPath, fh.makeFileHelperWalkDirFindFilesFunc(&findFilesInfo))
 
   if err != nil {
 
-    return findFilesInfo, fmt.Errorf(ePrefix+"Error returned from fp.Walk(findFilesInfo.StartPath, fh.makeFileHelperWalkDirFindFilesFunc(&findFilesInfo)). startPath='%v' Error='%v'", startPath, err.Error())
+    return findFilesInfo,
+      fmt.Errorf(ePrefix+
+        "Error returned from fp.Walk(findFilesInfo.StartPath, fh.makeFileHelperWalkDirFindFilesFunc"+
+        "(&findFilesInfo)). startPath='%v' Error='%v'", startPath, err.Error())
   }
 
   return findFilesInfo, nil
@@ -1565,40 +1626,76 @@ func (fh FileHelper) GetAbsPathFromFilePath(filePath string) (string, error) {
   return absPath, nil
 }
 
-// GetAbsCurrDir - returns
-// the absolute path of the
-// current working directory
+// GetAbsCurrDir - Returns the absolute path of the current working
+// directory.
+//
+// The current work directory is determined by a call to os.Getwd().
+// 'Getwd()' returns a rooted path name corresponding to the current directory.
+// If the current directory can be reached via multiple paths (due to
+// symbolic links), 'Getwd()' may return any one of them.
+//
 func (fh FileHelper) GetAbsCurrDir() (string, error) {
   ePrefix := "FileHelper.GetAbsCurrDir() "
 
-  dir, err := fh.GetCurrentDir()
+  dir, err := os.Getwd()
 
   if err != nil {
-    return dir, fmt.Errorf(ePrefix+"Error returned from fh.GetCurrentDir(). Error='%v'", err.Error())
+    return "", fmt.Errorf(ePrefix+
+      "Error returned from os.Getwd(). Error='%v'", err.Error())
   }
 
-  return fh.MakeAbsolutePath(dir)
+  absDir, err := fh.MakeAbsolutePath(dir)
+
+  if err != nil {
+    return "", fmt.Errorf(ePrefix+
+      "Error returned by fh.MakeAbsolutePath(dir). Error='%v' ",
+      err.Error())
+
+  }
+
+  return absDir, nil
 }
 
-// GetCurrentDir - Wrapper function for
-// Getwd(). Getwd returns a rooted path name
-// corresponding to the current directory.
-// If the current directory can be reached via
-// multiple paths (due to symbolic links),
-// Getwd may return any one of them.
+// GetCurrentDir - Wrapper function for Getwd(). Getwd returns a
+// rooted path name corresponding to the current directory.
+// If the current directory can be reached via multiple paths
+// (due to symbolic links), Getwd may return any one of them.
 func (fh FileHelper) GetCurrentDir() (string, error) {
-  return os.Getwd()
+
+  ePrefix := "FileHelper.GetCurrentDir()"
+
+  currDir, err := os.Getwd()
+
+  if err != nil {
+    return "",
+      fmt.Errorf(ePrefix+"Error returned by os.Getwd(). Error='%v' ",
+        err.Error())
+  }
+
+  return currDir, nil
 }
 
 // GetDotSeparatorIndexesInPathStr - Returns an array of integers representing the
-// indexes of dots ('.') located in input paramter 'pathStr'
+// indexes of dots ('.') located in input parameter 'pathStr'.
+//
 func (fh FileHelper) GetDotSeparatorIndexesInPathStr(pathStr string) ([]int, error) {
 
   ePrefix := "FileHelper.GetDotSeparatorIndexesInPathStr() "
-  lPathStr := len(pathStr)
 
-  if lPathStr == 0 {
-    return []int{}, fmt.Errorf(ePrefix + "Error: Zero length 'pathStr' passed to this method!")
+  errCode := 0
+
+  lPathStr := 0
+
+  errCode, lPathStr, pathStr = fh.isStringEmptyOrBlank(pathStr)
+
+  if errCode == -1 {
+    return []int{},
+      errors.New(ePrefix + "Error: Input parameter 'pathStr' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return []int{},
+      errors.New(ePrefix + "Error: Input parameter 'pathStr' consists of blank spaces!")
   }
 
   var dotIdxs []int
@@ -1615,17 +1712,41 @@ func (fh FileHelper) GetDotSeparatorIndexesInPathStr(pathStr string) ([]int, err
   }
 
   return dotIdxs, nil
-
 }
 
-// GetExecutablePathFileName - Gets the file name
-// and path of the executable that started the
-// current process
+// GetExecutablePathFileName - Gets the path and file name of the
+// executable that started the current process.
+//
+// This executable path and file name is generated by a call to
+// os.Executable().
+//
+// os.Executable() returns the path name for the executable that started
+// the current process. There is no guarantee that the path is still
+// pointing to the correct executable. If a symlink was used to start
+// the process, depending on the operating system, the result might
+// be the symlink or the path it pointed to. If a stable result is
+// needed, path/filepath.EvalSymlinks might help.
+//
+// Executable returns an absolute path unless an error occurred.
+//
+// The main use case is finding resources located relative to an
+// executable.
+//
+// Executable is not supported on nacl.
+//
 func (fh FileHelper) GetExecutablePathFileName() (string, error) {
+
+  ePrefix := "FileHelper.GetExecutablePathFileName() "
+
   ex, err := os.Executable()
 
-  return ex, err
+  if err != nil {
+    return "",
+      fmt.Errorf(ePrefix+"Error returned by os.Executable(). Error='%v' ",
+        err.Error())
+  }
 
+  return ex, err
 }
 
 // GetFileExt - Returns the File Extension with
@@ -1757,8 +1878,9 @@ func (fh FileHelper) GetFileExtension(pathFileNameExt string) (ext string, isEmp
 
 // GetFileInfoFromPath - Wrapper function for os.Stat(). This method
 // can be used to return FileInfo data on a specific file. If the file
-// does NOT exist, an error will be triggered. This method is similar to
-// FileHelpter.DoesFileInfoExist().
+// does NOT exist, an error will be triggered.
+//
+// This method is similar to FileHelper.DoesFileInfoExist().
 //
 //  type FileInfo interface {
 //    Name()    string       // base name of the file
@@ -1771,8 +1893,38 @@ func (fh FileHelper) GetFileExtension(pathFileNameExt string) (ext string, isEmp
 //
 func (fh FileHelper) GetFileInfoFromPath(pathFileName string) (os.FileInfo, error) {
 
-  return os.Stat(pathFileName)
+  ePrefix := "FileHelper.GetFileInfoFromPath() "
+  errCode := 0
 
+  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
+
+  if errCode == -1 {
+    return nil,
+      errors.New(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return nil,
+      errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
+  }
+
+  fileInfo, err := os.Stat(pathFileName)
+
+  if os.IsNotExist(err) {
+    return nil, fmt.Errorf(ePrefix+
+      "Error: Input parameter 'pathFileName' does NOT exist! "+
+      "pathFileName='%v' Error='%v' ",
+      pathFileName, err.Error())
+  }
+
+  if err != nil {
+    return nil,
+      fmt.Errorf(ePrefix+
+        "Error returned by os.Stat(pathFileName). pathFileName='%v' "+
+        "Error='%v' ", pathFileName, err.Error())
+  }
+
+  return fileInfo, nil
 }
 
 // GetFileLastModificationDate - Returns the last modification'
@@ -1788,14 +1940,25 @@ func (fh FileHelper) GetFileLastModificationDate(
   const fmtDateTimeNanoSecondStr = "2006-01-02 15:04:05.000000000"
   var zeroTime time.Time
 
-  if pathFileName == "" {
-    return zeroTime, "",
-      errors.New(ePrefix + "Error: Input parameter 'pathFileName' is empty string!")
+  errCode := 0
+
+  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
+
+  if errCode == -1 {
+    return time.Time{}, "",
+      errors.New(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
   }
+
+  if errCode == -2 {
+    return time.Time{}, "",
+      errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
+  }
+
+  errCode, _, customTimeFmt = fh.isStringEmptyOrBlank(customTimeFmt)
 
   fmtStr := customTimeFmt
 
-  if len(fmtStr) == 0 {
+  if errCode < 0 {
     fmtStr = fmtDateTimeNanoSecondStr
   }
 
@@ -1849,25 +2012,25 @@ func (fh FileHelper) GetFileLastModificationDate(
 //                           'isEmpty' will be set to 'true' and 'err' return 'nil'. In this situation, no
 //                           error will be returned.
 //
-func (fh FileHelper) GetFileNameWithExt(pathFileNameExt string) (fNameExt string, isEmpty bool, err error) {
+func (fh FileHelper) GetFileNameWithExt(
+  pathFileNameExt string) (fNameExt string, isEmpty bool, err error) {
 
   ePrefix := "FileHelper.GetFileNameWithExt "
   fNameExt = ""
   isEmpty = true
   err = nil
+  errCode := 0
 
-  if len(pathFileNameExt) == 0 {
-    err = errors.New(ePrefix +
-      "Error: Input parameter 'pathFileNameExt' is a ZERO Length string!")
-    return
+  errCode, _, pathFileNameExt = fh.isStringEmptyOrBlank(pathFileNameExt)
+
+  if errCode == -1 {
+    return "", true,
+      errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' is an empty string!")
   }
 
-  pathFileNameExt = strings.TrimLeft(strings.TrimRight(pathFileNameExt, " "), " ")
-
-  if pathFileNameExt == "" {
-    err = errors.New(ePrefix +
-      "Error: After trimming 'pathFileNameExt', input parameter 'pathFileNameExt' is a ZERO Length string!")
-    return
+  if errCode == -2 {
+    return "", true,
+      errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' consists of blank spaces!")
   }
 
   testPathFileNameExt := fh.AdjustPathSlash(pathFileNameExt)
@@ -2021,18 +2184,18 @@ func (fh FileHelper) GetFileNameWithoutExt(
   isEmpty = true
   fName = ""
   err = nil
+  errCode := 0
 
-  if len(pathFileNameExt) == 0 {
-    err = errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' is a ZERO Length string!")
-    return
+  errCode, _, pathFileNameExt = fh.isStringEmptyOrBlank(pathFileNameExt)
+
+  if errCode == -1 {
+    return "", true,
+      errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' is an empty string!")
   }
 
-  pathFileNameExt = strings.TrimLeft(strings.TrimRight(pathFileNameExt, " "), " ")
-
-  if pathFileNameExt == "" {
-    err = errors.New(ePrefix +
-      "Error: After trimming 'pathFileNameExt', input parameter 'pathFileNameExt' is a ZERO Length string!")
-    return
+  if errCode == -2 {
+    return "", true,
+      errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' consists of blank spaces!")
   }
 
   testPathFileNameExt := fh.AdjustPathSlash(pathFileNameExt)
@@ -2124,16 +2287,28 @@ func (fh FileHelper) GetFileNameWithoutExt(
 // Example On Windows: "D:\fDir1\fDir2" - first character index will
 // be 3 denoting character 'f'.
 //
-func (fh FileHelper) GetFirstLastNonSeparatorCharIndexInPathStr(pathStr string) (firstIdx, lastIdx int, err error) {
+func (fh FileHelper) GetFirstLastNonSeparatorCharIndexInPathStr(
+  pathStr string) (firstIdx, lastIdx int, err error) {
 
   ePrefix := "FileHelper.GetFirstNonSeparatorCharIndexInPathStr() "
   lPathStr := len(pathStr)
   firstIdx = -1
   lastIdx = -1
+  errCode := 0
 
-  if lPathStr == 0 {
-    err = fmt.Errorf(ePrefix + "Error: Zero length 'pathStr' passed to this method!")
-    return
+  errCode, _, pathStr = fh.isStringEmptyOrBlank(pathStr)
+
+  if errCode == -1 {
+
+    err = errors.New(ePrefix + "Error: Input parameter 'pathStr' is an empty string!")
+
+    return firstIdx, lastIdx, err
+  }
+
+  if errCode == -2 {
+    err = errors.New(ePrefix + "Error: Input parameter 'pathStr' consists of blank spaces!")
+
+    return firstIdx, lastIdx, err
   }
 
   pathStr = fp.FromSlash(pathStr)
@@ -2141,8 +2316,10 @@ func (fh FileHelper) GetFirstLastNonSeparatorCharIndexInPathStr(pathStr string) 
   lPathStr = len(pathStr)
 
   if lPathStr == 0 {
+
     err = fmt.Errorf(ePrefix + "Error: After path Separator adjustment, 'pathStr' is a Zero length string!")
-    return
+
+    return firstIdx, lastIdx, err
   }
 
   // skip the volume name. Don't count
@@ -2236,9 +2413,18 @@ func (fh FileHelper) GetFirstLastNonSeparatorCharIndexInPathStr(pathStr string) 
 //
 func (fh FileHelper) GetLastPathElement(pathName string) (string, error) {
   ePrefix := "FileHelper.GetLastPathElement() "
+  errCode := 0
 
-  if len(pathName) == 0 {
-    return "", errors.New(ePrefix + "Error: Input parameter 'pathName' is a Zero Length String!")
+  errCode, _, pathName = fh.isStringEmptyOrBlank(pathName)
+
+  if errCode == -1 {
+    return "",
+      errors.New(ePrefix + "Error: Input parameter 'pathName' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return "",
+      errors.New(ePrefix + "Error: Input parameter 'pathName' consists of blank spaces!")
   }
 
   adjustedPath := fh.AdjustPathSlash(pathName)
@@ -2257,24 +2443,27 @@ func (fh FileHelper) GetLastPathElement(pathName string) (string, error) {
 // GetPathAndFileNameExt - Breaks out path and fileName+Ext elements from
 // a path string. If both path and fileName are empty strings, this method
 // returns an error.
-func (fh FileHelper) GetPathAndFileNameExt(pathFileNameExt string) (pathDir, fileNameExt string, bothAreEmpty bool, err error) {
+func (fh FileHelper) GetPathAndFileNameExt(
+  pathFileNameExt string) (pathDir, fileNameExt string, bothAreEmpty bool, err error) {
 
   ePrefix := "FileHelper.GetPathAndFileNameExt() "
   pathDir = ""
   fileNameExt = ""
   bothAreEmpty = true
   err = nil
+  errCode := 0
+  trimmedFileNameExt := ""
 
-  if pathFileNameExt == "" {
-    err = errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' is a Zero length string!")
-    return
+  errCode, _, trimmedFileNameExt = fh.isStringEmptyOrBlank(pathFileNameExt)
+
+  if errCode == -1 {
+    err = errors.New(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
+    return pathDir, fileNameExt, bothAreEmpty, err
   }
 
-  trimmedFileNameExt := strings.TrimLeft(strings.TrimRight(pathFileNameExt, " "), " ")
-
-  if len(trimmedFileNameExt) == 0 {
-    err = errors.New(ePrefix + "Error: Trimmed input parameter 'pathFileNameExt' is a Zero length string!")
-    return
+  if errCode == -2 {
+    err = errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
+    return pathDir, fileNameExt, bothAreEmpty, err
   }
 
   xFnameExt, isEmpty, err2 := fh.GetFileNameWithExt(trimmedFileNameExt)
@@ -2378,43 +2567,57 @@ func (fh FileHelper) GetPathAndFileNameExt(pathFileNameExt string) (pathDir, fil
 //  pathFileNameExt = "...\"    returns ERROR
 //  pathFileNameExt = ".\pathfile\003_filehelper\wt_HowToRunTests.md"  returns ".\pathfile\003_filehelper"
 //
-func (fh FileHelper) GetPathFromPathFileName(pathFileNameExt string) (dirPath string, isEmpty bool, err error) {
+func (fh FileHelper) GetPathFromPathFileName(
+  pathFileNameExt string) (dirPath string, isEmpty bool, err error) {
+
   ePrefix := "FileHelper.GetPathFromPathFileName() "
   dirPath = ""
   isEmpty = true
   err = nil
+  errCode := 0
 
-  if len(pathFileNameExt) == 0 {
-    err = errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' is a ZERO length string!")
-    return
+  errCode, _, pathFileNameExt = fh.isStringEmptyOrBlank(pathFileNameExt)
+
+  if errCode == -1 {
+    err = errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' is an empty string!")
+    return dirPath, isEmpty, err
+  }
+
+  if errCode == -2 {
+    err =
+      errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' consists of blank spaces!")
+    return dirPath, isEmpty, err
   }
 
   testPathStr, isDirEmpty, err2 := fh.CleanDirStr(pathFileNameExt)
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+"Error returned by fh.CleanDirStr(pathFileNameExt). pathFileNameExt='%v'  Error='%v'", pathFileNameExt, err2.Error())
-    return
+    return dirPath, isEmpty, err
   }
 
   if isDirEmpty {
     dirPath = ""
     isEmpty = true
     err = nil
-    return
+    return dirPath, isEmpty, err
   }
 
   lTestPathStr := len(testPathStr)
 
   if lTestPathStr == 0 {
-    err = errors.New(ePrefix + "Error: AdjustPathSlash was applied to 'pathStr'. The 'testPathStr' string is a Zero Length string!")
-    return
+    err = errors.New(ePrefix +
+      "Error: AdjustPathSlash was applied to 'pathStr'. The 'testPathStr' string is a Zero Length string!")
+    return dirPath, isEmpty, err
   }
 
   slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(testPathStr)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error returned by fh.GetPathSeparatorIndexesInPathStr(testPathStr). testPathStr='%v'  Error='%v'", testPathStr, err2.Error())
-    return
+    err = fmt.Errorf(ePrefix+
+      "Error returned by fh.GetPathSeparatorIndexesInPathStr(testPathStr). testPathStr='%v'  Error='%v'",
+      testPathStr, err2.Error())
+    return dirPath, isEmpty, err
   }
 
   lSlashIdxs := len(slashIdxs)
@@ -2422,14 +2625,20 @@ func (fh FileHelper) GetPathFromPathFileName(pathFileNameExt string) (dirPath st
   firstGoodChar, lastGoodChar, err2 := fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathStr)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathStr). testPathStr='%v'  Error='%v'", testPathStr, err2.Error())
+    err = fmt.Errorf(ePrefix+
+      "Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathStr). "+
+      "testPathStr='%v'  Error='%v'",
+      testPathStr, err2.Error())
+    return dirPath, isEmpty, err
   }
 
   dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(testPathStr)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error returned by fh.GetDotSeparatorIndexesInPathStr(testPathStr). testPathStr='%v'  Error='%v'", testPathStr, err2.Error())
-    return
+    err = fmt.Errorf(ePrefix+
+      "Error returned by fh.GetDotSeparatorIndexesInPathStr(testPathStr). "+
+      "testPathStr='%v'  Error='%v'", testPathStr, err2.Error())
+    return dirPath, isEmpty, err
   }
 
   lDotIdxs := len(dotIdxs)
@@ -2445,7 +2654,7 @@ func (fh FileHelper) GetPathFromPathFileName(pathFileNameExt string) (dirPath st
   } else if strings.Contains(testPathStr, "...") {
 
     err = fmt.Errorf(ePrefix+"Error: PATH CONTAINS INVALID Dot Characters! testPathStr='%v'", testPathStr)
-    return
+    return dirPath, isEmpty, err
 
   } else if firstGoodChar == -1 || lastGoodChar == -1 {
 
@@ -2453,12 +2662,12 @@ func (fh FileHelper) GetPathFromPathFileName(pathFileNameExt string) (dirPath st
 
     if err2 != nil {
       err = fmt.Errorf(ePrefix+"Error returned from fh.MakeAbsolutePath(testPathStr). testPathStr='%v' Error='%v'", testPathStr, err2.Error())
-      return
+      return dirPath, isEmpty, err
     }
 
     if absPath == "" {
       err = fmt.Errorf(ePrefix+"Error: Could not convert 'testPathStr' to Absolute path! tesPathStr='%v'", testPathStr)
-      return
+      return dirPath, isEmpty, err
     }
 
     finalPathStr = testPathStr
@@ -2468,7 +2677,7 @@ func (fh FileHelper) GetPathFromPathFileName(pathFileNameExt string) (dirPath st
     dirPath = ""
     isEmpty = true
     err = nil
-    return
+    return dirPath, isEmpty, err
 
   } else if lDotIdxs == 0 {
     //path separators are present but there are no dots in the string
@@ -2490,12 +2699,12 @@ func (fh FileHelper) GetPathFromPathFileName(pathFileNameExt string) (dirPath st
 
   } else {
     err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING. testPathStr='%v'", testPathStr)
-    return
+    return dirPath, isEmpty, err
   }
 
   if len(finalPathStr) == 0 {
     err = fmt.Errorf(ePrefix + "Error: Processed path is a Zero Length String!")
-    return
+    return dirPath, isEmpty, err
   }
 
   //Successfully isolated and returned a valid
@@ -2510,20 +2719,31 @@ func (fh FileHelper) GetPathFromPathFileName(pathFileNameExt string) (dirPath st
 
   err = nil
 
-  return
-
+  return dirPath, isEmpty, err
 }
 
 // GetPathSeparatorIndexesInPathStr - Returns an array containing the indexes of
 // path Separators (Forward slashes or backward slashes depending on operating
 // system).
-func (fh FileHelper) GetPathSeparatorIndexesInPathStr(pathStr string) ([]int, error) {
+func (fh FileHelper) GetPathSeparatorIndexesInPathStr(
+  pathStr string) ([]int, error) {
 
   ePrefix := "FileHelper.GetPathSeparatorIndexesInPathStr() "
-  lPathStr := len(pathStr)
+  errCode := 0
+  lPathStr := 0
 
-  if lPathStr == 0 {
-    return []int{}, fmt.Errorf(ePrefix + "Error: Zero length 'pathStr' passed to this method!")
+  errCode, lPathStr, pathStr = fh.isStringEmptyOrBlank(pathStr)
+
+  if errCode == -1 {
+    return []int{},
+      errors.New(ePrefix +
+        "Error: Input parameter 'pathStr' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return []int{},
+      errors.New(ePrefix +
+        "Error: Input parameter 'pathStr' consists of blank spaces!")
   }
 
   var slashIdxs []int
@@ -2548,23 +2768,42 @@ func (fh FileHelper) GetPathSeparatorIndexesInPathStr(pathStr string) ([]int, er
 // a given directory path.
 func (fh FileHelper) GetVolumeName(pathStr string) string {
 
+  errCode := 0
+
+  errCode, _, pathStr = fh.isStringEmptyOrBlank(pathStr)
+
+  if errCode < 0 {
+    return ""
+  }
+
   return fp.VolumeName(pathStr)
 }
 
 // GetVolumeSeparatorIdxInPathStr - Returns the index of the
 // Windows volume separator from an path string.
-func (fh FileHelper) GetVolumeSeparatorIdxInPathStr(pathStr string) (volIdx int, err error) {
+//
+func (fh FileHelper) GetVolumeSeparatorIdxInPathStr(
+  pathStr string) (volIdx int, err error) {
 
   ePrefix := "FileHelper.GetVolumeSeparatorIdxInPathStr()"
 
   volIdx = -1
   err = nil
+  errCode := 0
+  lPathStr := 0
 
-  lPathStr := len(pathStr)
+  errCode, lPathStr, pathStr = fh.isStringEmptyOrBlank(pathStr)
 
-  if lPathStr == 0 {
-    err = fmt.Errorf(ePrefix + "Error: Input parameter pathStr is a Zero Length string!")
-    return
+  if errCode == -1 {
+    err =
+      errors.New(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
+    return volIdx, err
+  }
+
+  if errCode == -2 {
+    err =
+      errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
+    return volIdx, err
   }
 
   for i := 0; i < lPathStr; i++ {
@@ -2572,14 +2811,13 @@ func (fh FileHelper) GetVolumeSeparatorIdxInPathStr(pathStr string) (volIdx int,
     if rune(pathStr[i]) == ':' {
       volIdx = i
       err = nil
-      return
+      return volIdx, err
     }
-
   }
 
   volIdx = -1
   err = nil
-  return
+  return volIdx, err
 }
 
 // IsAbsolutePath - Wrapper function for path.IsAbs()

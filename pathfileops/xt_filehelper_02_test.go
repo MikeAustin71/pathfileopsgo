@@ -5,6 +5,274 @@ import (
   "time"
 )
 
+func TestFileHelper_FindFilesInPath_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath("+
+      "\"../dirmgrtests/levelfilesfortest \") "+
+      "Error='%v' ", err.Error())
+  }
+
+  sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath("+
+      "\"..../filesfortest/levelfilesfortest \") "+
+      "Error='%v' ", err.Error())
+  }
+
+  targetDir, err := DirMgr{}.New(targetDirStr)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
+      "targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
+  }
+
+  sourceDir, err := DirMgr{}.New(sourceDirStr)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
+      "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
+  }
+
+  if targetDir.DoesDirMgrAbsolutePathExist() {
+
+    err = targetDir.DeleteAll()
+
+    if err != nil {
+      t.Errorf("Error returned by targetDir.DeleteAll() "+
+        "targetDir='%v' Error='%v' ",
+        targetDir.GetAbsolutePath(), err.Error())
+    }
+  }
+
+  // Target Directory does NOT Exist
+
+  fileSelect := FileSelectionCriteria{}
+
+  fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
+
+  fileOps := make([]FileOperationCode, 1, 5)
+
+  fileOps[0] = FileOperationCode(0).CopySourceToDestinationByIo()
+
+  errStrs := sourceDir.ExecuteDirectoryFileOps(fileSelect, fileOps, targetDir)
+
+  if len(errStrs) > 0 {
+    for i := 0; i < len(errStrs); i++ {
+      t.Errorf("sourceDir.ExecuteDirectoryFileOps-Error: %v", errStrs[i])
+    }
+  }
+
+  foundFiles, err := fh.FindFilesInPath(targetDir.GetAbsolutePath(), "*.*")
+
+  lenFoundFiles := len(foundFiles)
+
+  if lenFoundFiles != 5 {
+    t.Errorf("Error: Expected to find 5-files. Instead, found %v-files! ",
+      lenFoundFiles)
+  }
+
+  _ = targetDir.DeleteAll()
+
+}
+
+func TestFileHelper_FindFilesInPath_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath("+
+      "\"../dirmgrtests/levelfilesfortest \") "+
+      "Error='%v' ", err.Error())
+  }
+
+  sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath("+
+      "\"..../filesfortest/levelfilesfortest \") "+
+      "Error='%v' ", err.Error())
+  }
+
+  targetDir, err := DirMgr{}.New(targetDirStr)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
+      "targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
+  }
+
+  sourceDir, err := DirMgr{}.New(sourceDirStr)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
+      "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
+  }
+
+  if targetDir.DoesDirMgrAbsolutePathExist() {
+
+    err = targetDir.DeleteAll()
+
+    if err != nil {
+      t.Errorf("Error returned by targetDir.DeleteAll() "+
+        "targetDir='%v' Error='%v' ",
+        targetDir.GetAbsolutePath(), err.Error())
+    }
+  }
+
+  // Target Directory does NOT Exist
+
+  fileSelect := FileSelectionCriteria{}
+
+  fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
+
+  fileOps := make([]FileOperationCode, 1, 5)
+
+  fileOps[0] = FileOperationCode(0).CopySourceToDestinationByIo()
+
+  errStrs := sourceDir.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDir)
+
+  if len(errStrs) > 0 {
+    for i := 0; i < len(errStrs); i++ {
+      t.Errorf("sourceDir.ExecuteDirectoryTreeOps-Error: %v", errStrs[i])
+    }
+  }
+
+  foundFiles, err := fh.FindFilesInPath(targetDir.GetAbsolutePath(), "*")
+
+  lenFoundFiles := len(foundFiles)
+
+  if lenFoundFiles != 6 {
+    t.Errorf("Error: Expected to find 6-files. Instead, found %v-files! ",
+      lenFoundFiles)
+  }
+
+  _ = targetDir.DeleteAll()
+
+}
+
+func TestFileHelper_FindFilesInPath_03(t *testing.T) {
+  fh := FileHelper{}
+
+  foundFiles, err := fh.FindFilesInPath("", "*.*")
+
+  if err == nil {
+    t.Error("Expected error return from fh.FindFilesInPath(\"\", \"*.*\") " +
+      "because first input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  lFFiles := len(foundFiles)
+
+  if lFFiles != 0 {
+    t.Errorf("Expected that found files array returned from "+
+      "fh.FindFilesInPath(\"\", \"*.*\") would be zero length because "+
+      "the first input parameter is an empty string."+
+      "However, length of found files='%v' ", lFFiles)
+  }
+
+}
+
+func TestFileHelper_FindFilesInPath_04(t *testing.T) {
+  fh := FileHelper{}
+
+  foundFiles, err := fh.FindFilesInPath("   ", "*.*")
+
+  if err == nil {
+    t.Error("Expected error return from fh.FindFilesInPath(\"   \", \"*.*\") " +
+      "because first input parameter consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  lFFiles := len(foundFiles)
+
+  if lFFiles != 0 {
+    t.Errorf("Expected that found files array returned from "+
+      "fh.FindFilesInPath(\"    \", \"*.*\") would be zero length because "+
+      "the first input parameter consists entirely of empty spaces. "+
+      "However, length of found files='%v' ", lFFiles)
+  }
+
+}
+
+func TestFileHelper_FindFilesInPath_05(t *testing.T) {
+  fh := FileHelper{}
+
+  pathFileName := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir"
+
+  foundFiles, err := fh.FindFilesInPath(pathFileName, "")
+
+  if err == nil {
+    t.Error("Expected error return from fh.FindFilesInPath(pathFileName, \"\") " +
+      "because the second input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  lFFiles := len(foundFiles)
+
+  if lFFiles != 0 {
+    t.Errorf("Expected that found files array returned from "+
+      "fh.FindFilesInPath(pathFileName, \"\") would be zero length because "+
+      "the second input parameter is an empty string."+
+      "However, length of found files='%v' ", lFFiles)
+  }
+
+}
+
+func TestFileHelper_FindFilesInPath_06(t *testing.T) {
+  fh := FileHelper{}
+
+  pathFileName := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir"
+
+  foundFiles, err := fh.FindFilesInPath(pathFileName, "    ")
+
+  if err == nil {
+    t.Error("Expected error return from fh.FindFilesInPath(pathFileName, \"   \") " +
+      "because the second input parameter consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  lFFiles := len(foundFiles)
+
+  if lFFiles != 0 {
+    t.Errorf("Expected that found files array returned from "+
+      "fh.FindFilesInPath(pathFileName, \"   \") would be zero length because "+
+      "the second input parameter consists entirely of empty spaces. "+
+      "However, length of found files='%v' ", lFFiles)
+  }
+
+}
+
+func TestFileHelper_FindFilesInPath_07(t *testing.T) {
+  fh := FileHelper{}
+
+  pathFileName := "../filesfortest/levelfilesfortest/level_01_dir/iDoNotExistDir"
+
+  foundFiles, err := fh.FindFilesInPath(pathFileName, "*.*")
+
+  if err == nil {
+    t.Error("Expected error return from fh.FindFilesInPath(pathFileName, \"*.*\") " +
+      "because input parameter 'pathFileName' DOES NOT EXIST. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  lFFiles := len(foundFiles)
+
+  if lFFiles != 0 {
+    t.Errorf("Expected that found files array returned from "+
+      "fh.FindFilesInPath(pathFileName, \"*.*\") would be zero length because "+
+      "the input parameter 'pathFileName' DOES NOT EXIST. "+
+      "However, length of found files='%v' ", lFFiles)
+  }
+
+}
+
 func TestFileHelper_FilterFileName_01(t *testing.T) {
 
   fia := FileInfoPlus{}
@@ -516,158 +784,201 @@ func TestFileHelper_FilterFileName_11(t *testing.T) {
     t.Errorf("Expected that File would be found. However, File WAS NOT found - Error. "+
       "fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
   }
-
 }
 
-func TestFileHelper_FindFilesInPath_01(t *testing.T) {
+func TestFileHelper_FilterFileName_12(t *testing.T) {
+
+  fh := FileHelper{}
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{""}
+  fsc.FilesOlderThan = time.Time{}
+  fsc.FilesNewerThan = time.Time{}
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  isFound, err := fh.FilterFileName(nil, fsc)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.FilterFileName(nil, fsc) because " +
+      "the first input parameter is 'nil'. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if isFound {
+    t.Error("Expected isFound=='false'. Instead, isFound=='true'. ")
+  }
+}
+
+func TestFileHelper_FindFilesWalkDirectory_01(t *testing.T) {
 
   fh := FileHelper{}
 
-  targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
+  searchPattern := "*.*"
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = time.Time{}
+  fsc.FilesNewerThan = time.Time{}
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  startPath := "../filesfortest/levelfilesfortest/level_01_dir"
+  dTreeInfo, err := fh.FindFilesWalkDirectory(startPath, fsc)
 
   if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"../dirmgrtests/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fh.FindFilesWalkDirectory(startPath, fsc). "+
+      "startPath='%v' Error='%v' ", startPath, err.Error())
   }
 
-  sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
+  numOfDirs := dTreeInfo.Directories.GetNumOfDirs()
 
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"..../filesfortest/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
+  if numOfDirs == 0 {
+    t.Error("Error: Expected found directories to be greater than zero. " +
+      "ZERO DIRECTORIES FOUND!")
   }
 
-  targetDir, err := DirMgr{}.New(targetDirStr)
+  numOfFiles := dTreeInfo.FoundFiles.GetNumOfFileMgrs()
 
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
-      "targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
+  if numOfFiles == 0 {
+    t.Error("Error: Expected found files to be greater than zero. " +
+      "ZERO FILES FOUND!")
   }
-
-  sourceDir, err := DirMgr{}.New(sourceDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
-      "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
-  }
-
-  if targetDir.DoesDirMgrAbsolutePathExist() {
-
-    err = targetDir.DeleteAll()
-
-    if err != nil {
-      t.Errorf("Error returned by targetDir.DeleteAll() "+
-        "targetDir='%v' Error='%v' ",
-        targetDir.GetAbsolutePath(), err.Error())
-    }
-  }
-
-  // Target Directory does NOT Exist
-
-  fileSelect := FileSelectionCriteria{}
-
-  fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
-
-  fileOps := make([]FileOperationCode, 1, 5)
-
-  fileOps[0] = FileOperationCode(0).CopySourceToDestinationByIo()
-
-  errStrs := sourceDir.ExecuteDirectoryFileOps(fileSelect, fileOps, targetDir)
-
-  if len(errStrs) > 0 {
-    for i := 0; i < len(errStrs); i++ {
-      t.Errorf("sourceDir.ExecuteDirectoryFileOps-Error: %v", errStrs[i])
-    }
-  }
-
-  foundFiles, err := fh.FindFilesInPath(targetDir.GetAbsolutePath(), "*.*")
-
-  lenFoundFiles := len(foundFiles)
-
-  if lenFoundFiles != 5 {
-    t.Errorf("Error: Expected to find 5-files. Instead, found %v-files! ",
-      lenFoundFiles)
-  }
-
-  _ = targetDir.DeleteAll()
 
 }
 
-func TestFileHelper_FindFilesInPath_02(t *testing.T) {
+func TestFileHelper_FindFilesWalkDirectory_02(t *testing.T) {
 
   fh := FileHelper{}
 
-  targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
+  fsc := FileSelectionCriteria{}
+
+  startPath := "../filesfortest/levelfilesfortest/level_01_dir"
+  dTreeInfo, err := fh.FindFilesWalkDirectory(startPath, fsc)
 
   if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"../dirmgrtests/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fh.FindFilesWalkDirectory(startPath, fsc). "+
+      "startPath='%v' Error='%v' ", startPath, err.Error())
   }
 
-  sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
+  numOfDirs := dTreeInfo.Directories.GetNumOfDirs()
+
+  if numOfDirs == 0 {
+    t.Error("Error: Expected found directories to be greater than zero. " +
+      "ZERO DIRECTORIES FOUND!")
+  }
+
+  numOfFiles := dTreeInfo.FoundFiles.GetNumOfFileMgrs()
+
+  if numOfFiles == 0 {
+    t.Error("Error: Expected found files to be greater than zero. " +
+      "ZERO FILES FOUND!")
+  }
+}
+
+func TestFileHelper_FindFilesWalkDirectory_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  searchPattern := "*.*"
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = time.Time{}
+  fsc.FilesNewerThan = time.Time{}
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  startPath := "../filesfortest/iDoNotExist/childDoesNotExist"
+
+  _, err := fh.FindFilesWalkDirectory(startPath, fsc)
+
+  if err == nil {
+    t.Errorf("Error returned by fh.FindFilesWalkDirectory(startPath, fsc). "+
+      "startPath='%v' Error='%v' ", startPath, err.Error())
+  }
+
+}
+
+func TestFileHelper_FindFilesWalkDirectory_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  searchPattern := "*.*"
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = time.Time{}
+  fsc.FilesNewerThan = time.Time{}
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  _, err := fh.FindFilesWalkDirectory("", fsc)
+
+  if err == nil {
+    t.Error("Expected error return from fh.FindFilesWalkDirectory(\"\", fsc) " +
+      "because first input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_FindFilesWalkDirectory_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  searchPattern := "*.*"
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = time.Time{}
+  fsc.FilesNewerThan = time.Time{}
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  _, err := fh.FindFilesWalkDirectory("    ", fsc)
+
+  if err == nil {
+    t.Error("Expected error return from fh.FindFilesWalkDirectory(\"    \", fsc) " +
+      "because first input parameter consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_FindFilesWalkDirectory_06(t *testing.T) {
+
+  fh := FileHelper{}
+
+  searchPattern := "*.*"
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = time.Time{}
+  fsc.FilesNewerThan = time.Time{}
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  startPath := "../testdestdir"
+  dTreeInfo, err := fh.FindFilesWalkDirectory(startPath, fsc)
 
   if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"..../filesfortest/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fh.FindFilesWalkDirectory(startPath, fsc). "+
+      "startPath='%v' Error='%v' ", startPath, err.Error())
   }
 
-  targetDir, err := DirMgr{}.New(targetDirStr)
+  numOfDirs := dTreeInfo.Directories.GetNumOfDirs()
 
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
-      "targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
+  if numOfDirs == 0 {
+    t.Error("Error: Expected found directories to be greater than zero. " +
+      "ZERO DIRECTORIES FOUND!")
   }
 
-  sourceDir, err := DirMgr{}.New(sourceDirStr)
+  numOfFiles := dTreeInfo.FoundFiles.GetNumOfFileMgrs()
 
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
-      "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
+  if numOfFiles != 0 {
+    t.Errorf("Expected zero found files. Instead, files were found. Error!"+
+      "numOfFiles='%v' ", numOfFiles)
   }
-
-  if targetDir.DoesDirMgrAbsolutePathExist() {
-
-    err = targetDir.DeleteAll()
-
-    if err != nil {
-      t.Errorf("Error returned by targetDir.DeleteAll() "+
-        "targetDir='%v' Error='%v' ",
-        targetDir.GetAbsolutePath(), err.Error())
-    }
-  }
-
-  // Target Directory does NOT Exist
-
-  fileSelect := FileSelectionCriteria{}
-
-  fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
-
-  fileOps := make([]FileOperationCode, 1, 5)
-
-  fileOps[0] = FileOperationCode(0).CopySourceToDestinationByIo()
-
-  errStrs := sourceDir.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDir)
-
-  if len(errStrs) > 0 {
-    for i := 0; i < len(errStrs); i++ {
-      t.Errorf("sourceDir.ExecuteDirectoryTreeOps-Error: %v", errStrs[i])
-    }
-  }
-
-  foundFiles, err := fh.FindFilesInPath(targetDir.GetAbsolutePath(), "*")
-
-  lenFoundFiles := len(foundFiles)
-
-  if lenFoundFiles != 6 {
-    t.Errorf("Error: Expected to find 6-files. Instead, found %v-files! ",
-      lenFoundFiles)
-  }
-
-  _ = targetDir.DeleteAll()
 
 }
 
@@ -888,6 +1199,28 @@ func TestFileHelper_GetFileExtension_09(t *testing.T) {
 
   if result != expectedExt {
     t.Errorf("Expected GetFileExt to return result == '%v' for file extension. Instead result='%v' ", expectedExt, result)
+  }
+
+}
+
+func TestFileHelper_GetFileExtension_10(t *testing.T) {
+
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash(".\\dirmgr_test")
+
+  result, isEmpty, err := fh.GetFileExtension(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetFileExt(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+  }
+
+  if isEmpty != true {
+    t.Errorf("Expected isEmpty GetFileExt for absent file extension to return 'true'. Instead, isEmpty='%v' ", isEmpty)
+  }
+
+  if result != "" {
+    t.Errorf("Expected GetFileExt to return empty result for absent file extension. Instead file extension='%v' ", result)
   }
 
 }

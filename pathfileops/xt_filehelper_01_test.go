@@ -995,10 +995,10 @@ func TestFileHelper_CopyFileByLink_06(t *testing.T) {
 
   err = FileHelper{}.CopyFileByLink(srcFile, srcFile)
 
-  if err == nil {
-    t.Error("Expected error return from FileHelper{}.CopyFileByLink(srcFile, srcFile) " +
-      "because srcFile and destFile are equivalent. " +
-      "However, NO ERROR WAS RETURNED!")
+  if err != nil {
+    t.Errorf("Expected NO error return from FileHelper{}.CopyFileByLink(srcFile, srcFile) "+
+      "because srcFile and destFile are equivalent. "+
+      "However, AS ERROR WAS RETURNED! Error='%v' ", err.Error())
   }
 }
 
@@ -1172,24 +1172,221 @@ func TestFileHelper_DeleteDirPathAll_03(t *testing.T) {
 
 }
 
-func TestFileHelper_ExtractBlankFileExt(t *testing.T) {
+func TestFileHelper_DoesFileExist_01(t *testing.T) {
 
   fh := FileHelper{}
 
-  commonDir := fh.AdjustPathSlash(".\\dirmgr_test")
+  doesFileExist := fh.DoesFileExist("")
 
-  result, isEmpty, err := fh.GetFileExtension(commonDir)
+  if doesFileExist {
+    t.Error("Expected doesFileExist='false' because input parameter " +
+      "for fh.DoesFileExist(\"\") is an " +
+      "empty string. However, doesFileExist='true'!")
+  }
+
+}
+
+func TestFileHelper_DoesFileExist_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  doesFileExist := fh.DoesFileExist("   ")
+
+  if doesFileExist {
+    t.Error("Expected doesFileExist='false' because input parameter " +
+      "for fh.DoesFileExist(\"  \") consists entirely of blank spaces. " +
+      "However, doesFileExist='true'!")
+  }
+
+}
+
+func TestFileHelper_DoesFileInfoExist_01(t *testing.T) {
+  fh := FileHelper{}
+
+  doesFileExist, fInfo, err := fh.DoesFileInfoExist("")
+
+  if err == nil {
+    t.Error("Expected error from fh.DoesFileInfoExist(\"\") because " +
+      "input parameter is an empty string. However, NO ERROR WAS RETURNED!")
+  }
+
+  if doesFileExist != false {
+    t.Error("Expected doesFileExist=='false' because input parameter for " +
+      "fh.DoesFileInfoExist(\"\") is an empty string. " +
+      "However, doesFileExist=='true'!")
+  }
+
+  if fInfo != nil {
+    t.Error("Expected fInfo=='nil' because input parameter for " +
+      "fh.DoesFileInfoExist(\"\") is an empty string. " +
+      "However, fInfo is NOT 'nil'!")
+  }
+
+}
+
+func TestFileHelper_DoesFileInfoExist_02(t *testing.T) {
+  fh := FileHelper{}
+
+  doesFileExist, fInfo, err := fh.DoesFileInfoExist("   ")
+
+  if err == nil {
+    t.Error("Expected error from fh.DoesFileInfoExist(\"    \") because " +
+      "input parameter consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if doesFileExist != false {
+    t.Error("Expected doesFileExist=='false' because input parameter for " +
+      "fh.DoesFileInfoExist(\"\") consists entirely of blank spaces. " +
+      "However, doesFileExist=='true'!")
+  }
+
+  if fInfo != nil {
+    t.Error("Expected fInfo=='nil' because input parameter for " +
+      "fh.DoesFileInfoExist(\"    \") consists entirely of blank spaces. " +
+      "However, fInfo is NOT 'nil'!")
+  }
+
+}
+
+func TestFileHelper_DoesFileInfoExist_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testFile := "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+
+  expectedFileName := "level_0_1_test.txt"
+
+  doesFileExist, fInfo, err := fh.DoesFileInfoExist(testFile)
 
   if err != nil {
-    t.Errorf("Error returned by fh.GetFileExt(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+    t.Errorf("Error returned by fh.DoesFileInfoExist(testFile). "+
+      "testFile='%v' Error='%v' ", testFile, err.Error())
   }
 
-  if isEmpty != true {
-    t.Errorf("Expected isEmpty GetFileExt for absent file extension to return 'true'. Instead, isEmpty='%v' ", isEmpty)
+  if doesFileExist == false {
+    t.Error("Expected doesFileExist=='true' because input parameter for " +
+      "fh.DoesFileInfoExist(testFile) actually exists. " +
+      "However, doesFileExist=='false' !")
   }
 
-  if result != "" {
-    t.Errorf("Expected GetFileExt to return empty result for absent file extension. Instead file extension='%v' ", result)
+  if fInfo == nil {
+    t.Error("Expected fInfo!='nil' because input parameter for " +
+      "fh.DoesFileInfoExist(testFile) actually exists. " +
+      "However, fInfo IS 'nil'!")
+  }
+
+  actualFileName := strings.ToLower(fInfo.Name())
+
+  if expectedFileName != actualFileName {
+    t.Errorf("Expected actual file name='%v'. Instead, actual file name='%v'.",
+      expectedFileName, actualFileName)
+  }
+
+}
+
+func TestFileHelper_DoesFileInfoExist_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testFile := "../filesfortest/levelfilesfortest/iDoNotExist.txt"
+
+  doesFileExist, fInfo, err := fh.DoesFileInfoExist(testFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.DoesFileInfoExist(testFile). " +
+      "because 'testFile' does NOT exist. However, NO ERROR WAS RETURNED!")
+  }
+
+  if doesFileExist == true {
+    t.Error("Expected doesFileExist=='false' because input parameter for " +
+      "fh.DoesFileInfoExist(testFile) DOES NOT EXIST. " +
+      "However, doesFileExist=='true' !")
+  }
+
+  if fInfo != nil {
+    t.Error("Expected fInfo=='nil' because input parameter for " +
+      "fh.DoesFileInfoExist(testFile) DOES NOT EXIST. " +
+      "However, fInfo IS NOT 'nil'!")
+  }
+
+}
+
+func TestFileHelper_DoesStringEndWithPathSeparator_01(t *testing.T) {
+  rawtestStr := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/"
+
+  fh := FileHelper{}
+
+  testStr := fh.AdjustPathSlash(rawtestStr)
+
+  doesEndWithSep := fh.DoesStringEndWithPathSeparator(testStr)
+
+  if !doesEndWithSep {
+    t.Errorf("Error: fh.DoesStringEndWithPathSeparator(testStr) returned "+
+      "'false'. Expected a return value of 'true' because testStr ends "+
+      "with path separator.  testStr='%v'", testStr)
+  }
+
+}
+
+func TestFileHelper_DoesStringEndWithPathSeparator_02(t *testing.T) {
+
+  rawtestStr := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir"
+
+  fh := FileHelper{}
+
+  testStr := fh.AdjustPathSlash(rawtestStr)
+
+  doesEndWithSep := fh.DoesStringEndWithPathSeparator(testStr)
+
+  if doesEndWithSep {
+    t.Errorf("Error: fh.DoesStringEndWithPathSeparator(testStr) returned "+
+      "'true'. Expected a return value of 'false' because testStr does NOT "+
+      "end with a path separator. testStr='%v'", testStr)
+  }
+
+}
+
+func TestFileHelper_DoesStringEndWithPathSeparator_03(t *testing.T) {
+
+  rawtestStr := "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+
+  fh := FileHelper{}
+
+  testStr := fh.AdjustPathSlash(rawtestStr)
+
+  doesEndWithSep := fh.DoesStringEndWithPathSeparator(testStr)
+
+  if doesEndWithSep {
+    t.Errorf("Error: fh.DoesStringEndWithPathSeparator(testStr) returned "+
+      "'true'. Expected a return value of 'false' because testStr does NOT "+
+      "end with a path separator. testStr='%v'", testStr)
+  }
+
+}
+
+func TestFileHelper_DoesStringEndWithPathSeparator_04(t *testing.T) {
+
+  fh := FileHelper{}
+  doesEndWithSep := fh.DoesStringEndWithPathSeparator("")
+
+  if doesEndWithSep {
+    t.Error("Error: fh.DoesStringEndWithPathSeparator(\"\") returned " +
+      "'true'. Expected a return value of 'false' because input parameter " +
+      "is an empty string. ")
+  }
+
+}
+
+func TestFileHelper_DoesStringEndWithPathSeparator_05(t *testing.T) {
+
+  fh := FileHelper{}
+  doesEndWithSep := fh.DoesStringEndWithPathSeparator("    ")
+
+  if doesEndWithSep {
+    t.Error("Error: fh.DoesStringEndWithPathSeparator(\"   \") returned " +
+      "'true'. Expected a return value of 'false' because input parameter " +
+      "consists entirely of blank spaces. ")
   }
 
 }
