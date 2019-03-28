@@ -1,6 +1,7 @@
 package pathfileops
 
 import (
+  "fmt"
   "testing"
   "time"
 )
@@ -982,6 +983,70 @@ func TestFileHelper_FindFilesWalkDirectory_06(t *testing.T) {
 
 }
 
+func TestFileHelper_GetAbsPathFromFilePath_01(t *testing.T) {
+
+  _, err := FileHelper{}.GetAbsPathFromFilePath("")
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}." +
+      "GetAbsPathFromFilePath(\"\") because the input parameter is an " +
+      "empty string. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_GetAbsPathFromFilePath_02(t *testing.T) {
+
+  _, err := FileHelper{}.GetAbsPathFromFilePath("    ")
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}." +
+      "GetAbsPathFromFilePath(\"     \") because the input parameter consists " +
+      "entirely of blank spaces. However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetDotSeparatorIndexesInPathStr_01(t *testing.T) {
+  fh := FileHelper{}
+
+  _, err := fh.GetDotSeparatorIndexesInPathStr("")
+
+  if err == nil {
+    t.Error("Expected an error return from fh." +
+      "GetDotSeparatorIndexesInPathStr(\"\") because the input parameter is an " +
+      "empty string. However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetDotSeparatorIndexesInPathStr_02(t *testing.T) {
+  fh := FileHelper{}
+
+  _, err := fh.GetDotSeparatorIndexesInPathStr("   ")
+
+  if err == nil {
+    t.Error("Expected an error return from fh." +
+      "GetDotSeparatorIndexesInPathStr(\"  \") because the input parameter consists " +
+      "entirely of blank spaces. However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetExecutablePathFileName_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  exePathFileName, err := fh.GetExecutablePathFileName()
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetExecutablePathFileName(). "+
+      "Error='%v' ", err.Error())
+  }
+
+  if len(exePathFileName) == 0 {
+    t.Error("Error: The Executable path an file name returned by " +
+      "fh.GetExecutablePathFileName() is a zero length string!")
+  }
+}
+
 func TestFileHelper_GetFileExtension_01(t *testing.T) {
   fh := FileHelper{}
 
@@ -1225,6 +1290,152 @@ func TestFileHelper_GetFileExtension_10(t *testing.T) {
 
 }
 
+func TestFileHelper_GetFileExtension_11(t *testing.T) {
+  fh := FileHelper{}
+
+  result, isEmpty, err := fh.GetFileExtension("   ")
+
+  if err == nil {
+    t.Error("Expected an error to be returned from fh.GetFileExt(\"    \") because " +
+      "the input parameter consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if true != isEmpty {
+    t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead, isEmpty='%v' ",
+      true, isEmpty)
+  }
+
+  if result != "" {
+    t.Errorf("Expected GetFileExt to return and empty string. Instead, result='%v' ",
+      result)
+  }
+}
+
+func TestFileHelper_GetFileInfoFromPath_01(t *testing.T) {
+  fh := FileHelper{}
+
+  _, err := fh.GetFileInfoFromPath("")
+
+  if err == nil {
+    t.Error("Expected error from fh.GetFileInfoFromPath(\"\") " +
+      "because the input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetFileInfoFromPath_02(t *testing.T) {
+  fh := FileHelper{}
+
+  _, err := fh.GetFileInfoFromPath("    ")
+
+  if err == nil {
+    t.Error("Expected error from fh.GetFileInfoFromPath(\"   \") " +
+      "because the input parameter consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetFileLastModificationDate_01(t *testing.T) {
+
+  fh := FileHelper{}
+  target, err := fh.MakeAbsolutePath(fh.AdjustPathSlash(alogtopTest2Text))
+
+  if err != nil {
+    t.Error("Error from FileHelper:MakeAbsolutePath(): ", err.Error())
+  }
+
+  tStrFmt := "2006-01-02 15:04:05.000000000"
+
+  fileTime, tStr, err := fh.GetFileLastModificationDate(target, tStrFmt)
+
+  if err != nil {
+    t.Error("Error from FileHelper:GetFileLastModificationDate():", err.Error())
+  }
+
+  fInfo, err := fh.GetFileInfoFromPath(target)
+
+  if err != nil {
+    t.Error("Error from FileHelper:GetFileInfoFromPath():", err.Error())
+  }
+
+  actualFileTime := fInfo.ModTime()
+
+  expected := actualFileTime.Format(tStrFmt)
+
+  if tStr != expected {
+    t.Errorf("Expected Time String for file %v == %v, received time string: %v", target, expected, tStr)
+  }
+
+  if !actualFileTime.Equal(fileTime) {
+    t.Error(fmt.Sprintf("Expected Time value %v, instead got:", actualFileTime), fileTime)
+  }
+}
+
+func TestFileHelper_GetFileLastModificationDate_02(t *testing.T) {
+
+  fh := FileHelper{}
+  tStrFmt := "2006-01-02 15:04:05.000000000"
+
+  _, _, err := fh.GetFileLastModificationDate("", tStrFmt)
+
+  if err == nil {
+    t.Error("Expected error return from fh.GetFileLastModificationDate" +
+      "(\"\", tStrFmt) because the first input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetFileLastModificationDate_03(t *testing.T) {
+
+  fh := FileHelper{}
+  tStrFmt := "2006-01-02 15:04:05.000000000"
+
+  _, _, err := fh.GetFileLastModificationDate("   ", tStrFmt)
+
+  if err == nil {
+    t.Error("Expected error return from fh.GetFileLastModificationDate" +
+      "(\"    \", tStrFmt) because the first input parameter consists entirely of " +
+      "blank spaces. However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetFileLastModificationDate_04(t *testing.T) {
+
+  fh := FileHelper{}
+  target, err := fh.MakeAbsolutePath(fh.AdjustPathSlash(alogtopTest2Text))
+
+  if err != nil {
+    t.Error("Error from FileHelper:MakeAbsolutePath(): ", err.Error())
+  }
+
+  tStrFmt := ""
+
+  fileTime, tStr, err := fh.GetFileLastModificationDate(target, tStrFmt)
+
+  if err != nil {
+    t.Error("Error from FileHelper:GetFileLastModificationDate():", err.Error())
+  }
+
+  fInfo, err := fh.GetFileInfoFromPath(target)
+
+  if err != nil {
+    t.Error("Error from FileHelper:GetFileInfoFromPath():", err.Error())
+  }
+
+  actualFileTime := fInfo.ModTime()
+
+  expected := actualFileTime.Format("2006-01-02 15:04:05.000000000")
+
+  if tStr != expected {
+    t.Errorf("Expected Time String for file %v == %v, received time string: %v", target, expected, tStr)
+  }
+
+  if !actualFileTime.Equal(fileTime) {
+    t.Error(fmt.Sprintf("Expected Time value %v, instead got:", actualFileTime), fileTime)
+  }
+}
+
 func TestFileHelper_GetFileNameWithExt_01(t *testing.T) {
   fh := FileHelper{}
 
@@ -1417,13 +1628,15 @@ func TestFileHelper_GetFileNameWithExt_08(t *testing.T) {
 func TestFileHelper_GetFileNameWithExt_09(t *testing.T) {
   fh := FileHelper{}
 
-  commonDir := fh.AdjustPathSlash("")
+  commonDir := ""
   expectedFNameExt := ""
 
   fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
 
   if err == nil {
-    t.Errorf("Error error returned from fh.GetFileNameWithExt(commonDir). Result- commonDir='%v' No Error Returned!", commonDir)
+    t.Errorf("Expected error return from fh.GetFileNameWithExt(commonDir) " +
+      "because 'commonDir' is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
   }
 
   if isEmpty != true {
@@ -1431,55 +1644,32 @@ func TestFileHelper_GetFileNameWithExt_09(t *testing.T) {
   }
 
   if expectedFNameExt != fNameExt {
-    t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ", expectedFNameExt, fNameExt)
+    t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
+      expectedFNameExt, fNameExt)
   }
 
 }
 
-func TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_01(t *testing.T) {
-
-  rawPath := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+func TestFileHelper_GetFileNameWithExt_10(t *testing.T) {
   fh := FileHelper{}
-  adjustedPath := fh.AdjustPathSlash(rawPath)
 
-  firstCharIdx, lastCharIdx, err := fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedPath)
+  commonDir := "   "
+  expectedFNameExt := ""
 
-  if err != nil {
-    t.Errorf("Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+
+  if err == nil {
+    t.Errorf("Expected error return from fh.GetFileNameWithExt(commonDir) " +
+      "because 'commonDir' consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
   }
 
-  if firstCharIdx != 3 {
-    t.Errorf("Expected first char index= '3'.  Instead, first char index= '%v'", firstCharIdx)
+  if isEmpty != true {
+    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", true, isEmpty)
   }
 
-  expectedLastIdx := len(adjustedPath) - 1
-
-  if expectedLastIdx != lastCharIdx {
-    t.Errorf("Expected last index = '%v'.  Instead, last index = '%v'", expectedLastIdx, lastCharIdx)
+  if expectedFNameExt != fNameExt {
+    t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
+      expectedFNameExt, fNameExt)
   }
-
-}
-
-func TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_02(t *testing.T) {
-
-  rawPath := "D:/filesfortest/newfilesfortest/newerFileForTest_01.txt"
-  fh := FileHelper{}
-  adjustedPath := fh.AdjustPathSlash(rawPath)
-
-  firstCharIdx, lastCharIdx, err := fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedPath)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
-  }
-
-  if firstCharIdx != 3 {
-    t.Errorf("Expected first char index= '3'.  Instead, first char index= '%v'", firstCharIdx)
-  }
-
-  expectedLastIdx := len(adjustedPath) - 1
-
-  if expectedLastIdx != lastCharIdx {
-    t.Errorf("Expected last index = '%v'.  Instead, last index = '%v'", expectedLastIdx, lastCharIdx)
-  }
-
 }

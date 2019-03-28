@@ -1601,31 +1601,6 @@ func (fh FileHelper) FindFilesWalkDirectory(
   return findFilesInfo, nil
 }
 
-// GetAbsPathFromFilePath - Supply a string containing both
-// the path file name and extension and return the path
-// element.
-func (fh FileHelper) GetAbsPathFromFilePath(filePath string) (string, error) {
-  ePrefix := "FileHelper.GetAbsPathFromFilePath() "
-
-  if len(filePath) == 0 {
-    return "", errors.New(ePrefix + "Error: Input parameter 'filePath' is an EMPTY string!")
-  }
-
-  testFilePath := fh.AdjustPathSlash(filePath)
-
-  if len(testFilePath) == 0 {
-    return "", errors.New(ePrefix + "Error: After adjusting path Separators, filePath resolves to an empty string!")
-  }
-
-  absPath, err := fh.MakeAbsolutePath(testFilePath)
-
-  if err != nil {
-    return "", fmt.Errorf(ePrefix + "Error returned from ")
-  }
-
-  return absPath, nil
-}
-
 // GetAbsCurrDir - Returns the absolute path of the current working
 // directory.
 //
@@ -1654,6 +1629,50 @@ func (fh FileHelper) GetAbsCurrDir() (string, error) {
   }
 
   return absDir, nil
+}
+
+// GetAbsPathFromFilePath - Supply a string containing both the path file name and extension.
+// This method will then return the absolute value of that path, file name and file extension.
+//
+func (fh FileHelper) GetAbsPathFromFilePath(filePath string) (string, error) {
+
+  ePrefix := "FileHelper.GetAbsPathFromFilePath() "
+
+  errCode := 0
+
+  errCode, _, filePath = fh.isStringEmptyOrBlank(filePath)
+
+  if errCode == -1 {
+    return "",
+      errors.New(ePrefix + "Error: Input parameter 'filePath' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return "",
+      errors.New(ePrefix + "Error: Input parameter 'filePath' consists of blank spaces!")
+  }
+
+  testFilePath := fh.AdjustPathSlash(filePath)
+
+  errCode, _, testFilePath = fh.isStringEmptyOrBlank(testFilePath)
+
+  if errCode < 0 {
+    return "",
+      errors.New(ePrefix +
+        "Error: After adjusting path Separators, filePath resolves to an empty string!")
+  }
+
+  absPath, err := fh.MakeAbsolutePath(testFilePath)
+
+  if err != nil {
+    return "",
+      fmt.Errorf(ePrefix+
+        "Error returned from fh.MakeAbsolutePath(testFilePath). "+
+        "testFilePath='%v' Error='%v' ",
+        testFilePath, err.Error())
+  }
+
+  return absPath, nil
 }
 
 // GetCurrentDir - Wrapper function for Getwd(). Getwd returns a
@@ -1769,27 +1788,41 @@ func (fh FileHelper) GetExecutablePathFileName() (string, error) {
 //     Actual File Name Plus Extension: ".gitignore"
 //             Returned File Extension: ""
 //
-func (fh FileHelper) GetFileExtension(pathFileNameExt string) (ext string, isEmpty bool, err error) {
+func (fh FileHelper) GetFileExtension(
+  pathFileNameExt string) (ext string, isEmpty bool, err error) {
   ePrefix := "FileHelper.GetFileExt() "
 
   ext = ""
   isEmpty = true
   err = nil
 
-  pathFileNameExt = strings.TrimLeft(strings.TrimRight(pathFileNameExt, " "), " ")
+  errCode := 0
 
-  if len(pathFileNameExt) == 0 {
-    err = errors.New(ePrefix + "Error: After trimming 'pathFileNameExt'. Input parameter 'pathFileNameExt' is a Zero length string!")
-    return
+  errCode, _, pathFileNameExt = fh.isStringEmptyOrBlank(pathFileNameExt)
+
+  if errCode == -1 {
+    err =
+      errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' is an empty string!")
+
+    return ext, isEmpty, err
+  }
+
+  if errCode == -2 {
+    err =
+      errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' consists of blank spaces!")
+
+    return ext, isEmpty, err
   }
 
   testPathFileNameExt := fh.AdjustPathSlash(pathFileNameExt)
 
-  lenTestPathFileNameExt := len(testPathFileNameExt)
+  errCode, _, testPathFileNameExt = fh.isStringEmptyOrBlank(testPathFileNameExt)
 
-  if lenTestPathFileNameExt == 0 {
-    err = errors.New(ePrefix + "Error: Cleaned version of 'pathFileNameExt', 'testPathFileNameExt' is a ZERO length string!")
-    return
+  if errCode < 0 {
+    err = errors.New(ePrefix +
+      "Error: Cleaned version of 'pathFileNameExt', 'testPathFileNameExt' is an empty string!")
+
+    return ext, isEmpty, err
   }
 
   dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(testPathFileNameExt)
@@ -1798,7 +1831,7 @@ func (fh FileHelper) GetFileExtension(pathFileNameExt string) (ext string, isEmp
     ext = ""
     isEmpty = true
     err = fmt.Errorf(ePrefix+"Error returned from fh.GetDotSeparatorIndexesInPathStr(testPathFileNameExt). testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2)
-    return
+    return ext, isEmpty, err
   }
 
   lenDotIdxs := len(dotIdxs)
@@ -1809,17 +1842,20 @@ func (fh FileHelper) GetFileExtension(pathFileNameExt string) (ext string, isEmp
     ext = ""
     isEmpty = true
     err = nil
-    return
+    return ext, isEmpty, err
 
   }
 
-  firstGoodCharIdx, lastGoodCharIdx, err2 := fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileNameExt)
+  firstGoodCharIdx, lastGoodCharIdx, err2 :=
+    fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileNameExt)
 
   if err2 != nil {
     ext = ""
     isEmpty = true
-    err = fmt.Errorf(ePrefix+"Error returned from fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileNameExt). testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2)
-    return
+    err = fmt.Errorf(ePrefix+
+      "Error returned from fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileNameExt). "+
+      "testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2)
+    return ext, isEmpty, err
   }
 
   // Deal with the case where pathFileNameExt contains no
@@ -1828,7 +1864,7 @@ func (fh FileHelper) GetFileExtension(pathFileNameExt string) (ext string, isEmp
     ext = ""
     isEmpty = true
     err = nil
-    return
+    return ext, isEmpty, err
   }
 
   slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(testPathFileNameExt)
@@ -1836,8 +1872,10 @@ func (fh FileHelper) GetFileExtension(pathFileNameExt string) (ext string, isEmp
   if err2 != nil {
     ext = ""
     isEmpty = true
-    err = fmt.Errorf(ePrefix+"Error returned from fh.GetPathSeparatorIndexesInPathStr(testPathFileNameExt). testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2)
-    return
+    err = fmt.Errorf(ePrefix+
+      "Error returned from fh.GetPathSeparatorIndexesInPathStr(testPathFileNameExt). "+
+      "testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2)
+    return ext, isEmpty, err
   }
 
   lenSlashIdxs := len(slashIdxs)
@@ -1849,14 +1887,14 @@ func (fh FileHelper) GetFileExtension(pathFileNameExt string) (ext string, isEmp
     ext = ""
     isEmpty = true
     err = nil
-    return
+    return ext, isEmpty, err
   }
 
   if lenSlashIdxs == 0 {
     ext = testPathFileNameExt[dotIdxs[lenDotIdxs-1]:]
     isEmpty = false
     err = nil
-    return
+    return ext, isEmpty, err
   }
 
   // lenDotIdxs and lenSlasIdxs both greater than zero
@@ -1866,14 +1904,14 @@ func (fh FileHelper) GetFileExtension(pathFileNameExt string) (ext string, isEmp
     ext = testPathFileNameExt[dotIdxs[lenDotIdxs-1]:]
     isEmpty = false
     err = nil
-    return
+    return ext, isEmpty, err
 
   }
 
   ext = ""
   isEmpty = true
   err = nil
-  return
+  return ext, isEmpty, err
 }
 
 // GetFileInfoFromPath - Wrapper function for os.Stat(). This method
@@ -1929,8 +1967,11 @@ func (fh FileHelper) GetFileInfoFromPath(pathFileName string) (os.FileInfo, erro
 
 // GetFileLastModificationDate - Returns the last modification'
 // date/time on a specific file. If input parameter 'customTimeFmt'
-// string is empty, default time format will be used to format the
+// string is empty, a default time format will be used to format the
 // returned time string.
+//
+// The default date time format is:
+//     "2006-01-02 15:04:05.000000000"
 //
 func (fh FileHelper) GetFileLastModificationDate(
   pathFileName string,
@@ -2024,13 +2065,15 @@ func (fh FileHelper) GetFileNameWithExt(
   errCode, _, pathFileNameExt = fh.isStringEmptyOrBlank(pathFileNameExt)
 
   if errCode == -1 {
-    return "", true,
+    err =
       errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' is an empty string!")
+    return fNameExt, isEmpty, err
   }
 
   if errCode == -2 {
-    return "", true,
+    err =
       errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' consists of blank spaces!")
+    return fNameExt, isEmpty, err
   }
 
   testPathFileNameExt := fh.AdjustPathSlash(pathFileNameExt)
@@ -2041,12 +2084,14 @@ func (fh FileHelper) GetFileNameWithExt(
     testPathFileNameExt = strings.TrimPrefix(testPathFileNameExt, volName)
   }
 
-  lTestPathFileNameExt := len(testPathFileNameExt)
+  lTestPathFileNameExt := 0
 
-  if lTestPathFileNameExt == 0 {
+  errCode, lTestPathFileNameExt, testPathFileNameExt = fh.isStringEmptyOrBlank(testPathFileNameExt)
+
+  if errCode < 0 {
     err = errors.New(ePrefix +
-      "Error: Cleaned version of 'pathFileNameExt', 'testPathFileNameExt' is a ZERO Length string!")
-    return
+      "Error: Cleaned version of 'pathFileNameExt', 'testPathFileNameExt' is an empty string!")
+    return fNameExt, isEmpty, err
   }
 
   firstCharIdx, lastCharIdx, err2 := fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileNameExt)
@@ -2055,7 +2100,7 @@ func (fh FileHelper) GetFileNameWithExt(
     err = fmt.Errorf(ePrefix+
       "Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileNameExt). "+
       "testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2.Error())
-    return
+    return fNameExt, isEmpty, err
   }
 
   // There are no alpha numeric characters present.
@@ -2063,7 +2108,7 @@ func (fh FileHelper) GetFileNameWithExt(
   if firstCharIdx == -1 || lastCharIdx == -1 {
     isEmpty = true
     err = nil
-    return
+    return fNameExt, isEmpty, err
   }
 
   slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(testPathFileNameExt)
@@ -2072,7 +2117,7 @@ func (fh FileHelper) GetFileNameWithExt(
     err = fmt.Errorf(ePrefix+
       "Error returned by fh.GetPathSeparatorIndexesInPathStr(testPathFileNameExt). "+
       "testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2.Error())
-    return
+    return fNameExt, isEmpty, err
   }
 
   dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(testPathFileNameExt)
@@ -2081,8 +2126,7 @@ func (fh FileHelper) GetFileNameWithExt(
     err = fmt.Errorf(ePrefix+
       "Error returned by fh.GetDotSeparatorIndexesInPathStr(testPathFileNameExt). "+
       "testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2.Error())
-    return
-
+    return fNameExt, isEmpty, err
   }
 
   lSlashIdxs := len(slashIdxs)
@@ -2110,7 +2154,7 @@ func (fh FileHelper) GetFileNameWithExt(
     }
 
     err = nil
-    return
+    return fNameExt, isEmpty, err
   }
 
   // There are no path separators lSlashIdxs == 0
@@ -2136,7 +2180,7 @@ func (fh FileHelper) GetFileNameWithExt(
     }
 
     err = nil
-    return
+    return fNameExt, isEmpty, err
   }
 
   // Must be lSlashIdxs == 0 && lDotIdxs ==  0
@@ -2153,7 +2197,7 @@ func (fh FileHelper) GetFileNameWithExt(
 
   err = nil
 
-  return
+  return fNameExt, isEmpty, err
 }
 
 // GetFileNameWithoutExt - returns the file name
@@ -2181,29 +2225,33 @@ func (fh FileHelper) GetFileNameWithoutExt(
 
   ePrefix := "FileHelper.GetFileNameWithoutExt() "
 
-  isEmpty = true
   fName = ""
+  isEmpty = true
   err = nil
   errCode := 0
 
   errCode, _, pathFileNameExt = fh.isStringEmptyOrBlank(pathFileNameExt)
 
   if errCode == -1 {
-    return "", true,
+    err =
       errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' is an empty string!")
+    return fName, isEmpty, err
   }
 
   if errCode == -2 {
-    return "", true,
+    err =
       errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' consists of blank spaces!")
+    return fName, isEmpty, err
   }
 
   testPathFileNameExt := fh.AdjustPathSlash(pathFileNameExt)
 
-  if len(testPathFileNameExt) == 0 {
+  errCode, _, testPathFileNameExt = fh.isStringEmptyOrBlank(testPathFileNameExt)
+
+  if errCode < 0 {
     err = errors.New(ePrefix +
-      "Error: Adjusted path version of 'pathFileNameExt', 'testPathFileNameExt' is a ZERO Length string!")
-    return
+      "Error: Adjusted path version of 'pathFileNameExt', 'testPathFileNameExt' is an empty string!")
+    return fName, isEmpty, err
   }
 
   fileNameExt, isFileNameExtEmpty, err2 := fh.GetFileNameWithExt(testPathFileNameExt)
@@ -2212,14 +2260,14 @@ func (fh FileHelper) GetFileNameWithoutExt(
     err = fmt.Errorf(ePrefix+
       "Error returned from fh.GetFileNameWithExt(testPathFileNameExt) testPathFileNameExt='%v'  Error='%v'",
       testPathFileNameExt, err2.Error())
-    return
+    return fName, isEmpty, err
   }
 
   if isFileNameExtEmpty {
     isEmpty = true
     fName = ""
     err = nil
-    return
+    return fName, isEmpty, err
   }
 
   dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(fileNameExt)
@@ -2228,7 +2276,7 @@ func (fh FileHelper) GetFileNameWithoutExt(
     err = fmt.Errorf(ePrefix+
       "Error returned from fh.GetDotSeparatorIndexesInPathStr(fileNameExt). fileNameExt='%v'  Error='%v'",
       fileNameExt, err2.Error())
-    return
+    return fName, isEmpty, err
   }
 
   lDotIdxs := len(dotIdxs)
@@ -2244,7 +2292,7 @@ func (fh FileHelper) GetFileNameWithoutExt(
       isEmpty = false
     }
     err = nil
-    return
+    return fName, isEmpty, err
   }
 
   // Primary Case: filename.ext
@@ -2257,7 +2305,7 @@ func (fh FileHelper) GetFileNameWithoutExt(
       isEmpty = false
     }
     err = nil
-    return
+    return fName, isEmpty, err
   }
 
   // Secondary Case: filename
@@ -2270,7 +2318,7 @@ func (fh FileHelper) GetFileNameWithoutExt(
   }
 
   err = nil
-  return
+  return fName, isEmpty, err
 }
 
 // GetFirstLastNonSeparatorCharIndexInPathStr - Basically this method returns
@@ -2291,7 +2339,6 @@ func (fh FileHelper) GetFirstLastNonSeparatorCharIndexInPathStr(
   pathStr string) (firstIdx, lastIdx int, err error) {
 
   ePrefix := "FileHelper.GetFirstNonSeparatorCharIndexInPathStr() "
-  lPathStr := len(pathStr)
   firstIdx = -1
   lastIdx = -1
   errCode := 0
@@ -2313,11 +2360,13 @@ func (fh FileHelper) GetFirstLastNonSeparatorCharIndexInPathStr(
 
   pathStr = fp.FromSlash(pathStr)
 
-  lPathStr = len(pathStr)
+  lPathStr := 0
 
-  if lPathStr == 0 {
+  errCode, lPathStr, pathStr = fh.isStringEmptyOrBlank(pathStr)
 
-    err = fmt.Errorf(ePrefix + "Error: After path Separator adjustment, 'pathStr' is a Zero length string!")
+  if errCode < 0 {
+
+    err = fmt.Errorf(ePrefix + "Error: After path Separator adjustment, 'pathStr' is an empty string!")
 
     return firstIdx, lastIdx, err
   }
@@ -2398,7 +2447,7 @@ func (fh FileHelper) GetFirstLastNonSeparatorCharIndexInPathStr(
 
   err = nil
 
-  return
+  return firstIdx, lastIdx, err
 }
 
 // GetLastPathElement - Analyzes a 'pathName' string and returns the last
