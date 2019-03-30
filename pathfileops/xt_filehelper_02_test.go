@@ -1336,6 +1336,20 @@ func TestFileHelper_GetFileInfoFromPath_02(t *testing.T) {
   }
 }
 
+func TestFileHelper_GetFileInfoFromPath_03(t *testing.T) {
+  fh := FileHelper{}
+
+  rawPath := "../filesfortest/levelfilesfortest/iDoNotExist.txt"
+
+  _, err := fh.GetFileInfoFromPath(rawPath)
+
+  if err == nil {
+    t.Error("Expected error from fh.GetFileInfoFromPath(rawPath) " +
+      "because the input parameter 'rawPath' does NOT exist. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+}
+
 func TestFileHelper_GetFileLastModificationDate_01(t *testing.T) {
 
   fh := FileHelper{}

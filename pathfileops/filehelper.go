@@ -486,12 +486,12 @@ func (fh FileHelper) CleanPathStr(pathStr string) string {
 //
 // Usage:
 //
-// initialDecimalValue := 511
-// expectedOctalValue := 777
+//  initialDecimalValue := 511
+//  expectedOctalValue := 777
 //
-// actualOctalValue := ConvertDecimalToOctal(initialDecimalValue)
+//  actualOctalValue := ConvertDecimalToOctal(initialDecimalValue)
 //
-// 'actualOctalValue' is now equal to integer value '777'.
+//  'actualOctalValue' is now equal to integer value '777'.
 //
 // ------------------------------------------------------------------------
 //
@@ -2454,11 +2454,12 @@ func (fh FileHelper) GetFirstLastNonSeparatorCharIndexInPathStr(
 // element in the path. If 'pathName' ends in a path separator ('/'), this
 // method returns an empty string.
 //
-// Example:
-// pathName = '../dir1/dir2/fileName.ext' will return "fileName.ext"
-// pathName = '../dir1/dir2/' will return ""
-// pathName = 'fileName.ext' will return "fileName.ext"
-// pathName = '../dir1/dir2/dir3' will return "dir3"
+//  Example:
+//
+//  pathName = '../dir1/dir2/fileName.ext' will return "fileName.ext"
+//  pathName = '../dir1/dir2/' will return ""
+//  pathName = 'fileName.ext' will return "fileName.ext"
+//  pathName = '../dir1/dir2/dir3' will return "dir3"
 //
 func (fh FileHelper) GetLastPathElement(pathName string) (string, error) {
   ePrefix := "FileHelper.GetLastPathElement() "

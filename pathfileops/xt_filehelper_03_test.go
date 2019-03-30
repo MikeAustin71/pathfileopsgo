@@ -289,6 +289,111 @@ func TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_04(t *testing.T) 
   }
 }
 
+func TestFileHelper_GetLastPathElement_01(t *testing.T) {
+
+  fh := FileHelper{}
+  expectedLastPathElement := "level_4_0_test.txt"
+
+  testPathFileName := fh.AdjustPathSlash(
+    "filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir/level_04_dir/" +
+      expectedLastPathElement)
+
+  lastPathElement, err := fh.GetLastPathElement(testPathFileName)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetLastPathElement(testPathFileName). "+
+      "testPathFileName='%v' Error='%v' ", testPathFileName, err.Error())
+  }
+
+  if expectedLastPathElement != lastPathElement {
+    t.Errorf("Error: Expected lastPathElement='%v'. Instead, lastPathElement='%v' ",
+      expectedLastPathElement, lastPathElement)
+  }
+
+}
+
+func TestFileHelper_GetLastPathElement_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  _, err := fh.GetLastPathElement("")
+
+  if err == nil {
+    t.Error("Expected an error return from fh.GetLastPathElement(\"\") " +
+      "because the input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetLastPathElement_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  _, err := fh.GetLastPathElement("")
+
+  if err == nil {
+    t.Error("Expected an error return from fh.GetLastPathElement(\"\") " +
+      "because the input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetLastPathElement_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  _, err := fh.GetLastPathElement("  ")
+
+  if err == nil {
+    t.Error("Expected an error return from fh.GetLastPathElement(\"   \") " +
+      "because the input parameter consists entirely of empty spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetLastPathElement_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  expectedLastPathElement := "level_04_dir"
+
+  testPathFileName := fh.AdjustPathSlash(
+    "filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir/" +
+      expectedLastPathElement)
+
+  lastPathElement, err := fh.GetLastPathElement(testPathFileName)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetLastPathElement(testPathFileName). "+
+      "testPathFileName='%v' Error='%v' ", testPathFileName, err.Error())
+  }
+
+  if expectedLastPathElement != lastPathElement {
+    t.Errorf("Error: Expected lastPathElement='%v'. Instead, lastPathElement='%v' ",
+      expectedLastPathElement, lastPathElement)
+  }
+
+}
+
+func TestFileHelper_GetLastPathElement_06(t *testing.T) {
+
+  fh := FileHelper{}
+  expectedLastPathElement := "level_4_0_test.txt"
+
+  lastPathElement, err := fh.GetLastPathElement(expectedLastPathElement)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetLastPathElement(expectedLastPathElement). "+
+      "expectedLastPathElement='%v' Error='%v' ", expectedLastPathElement, err.Error())
+  }
+
+  if expectedLastPathElement != lastPathElement {
+    t.Errorf("Error: Expected lastPathElement='%v'. Instead, lastPathElement='%v' ",
+      expectedLastPathElement, lastPathElement)
+  }
+
+}
+
 func TestFileHelper_GetPathFromPathFileName_01(t *testing.T) {
   fh := FileHelper{}
 
