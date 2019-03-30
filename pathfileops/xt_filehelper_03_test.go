@@ -694,6 +694,28 @@ func TestFileHelper_GetPathFromPathFileName_12(t *testing.T) {
 
 }
 
+func TestFileHelper_GetPathFromPathFileName_13(t *testing.T) {
+  fh := FileHelper{}
+
+  result, isEmpty, err := fh.GetPathFromPathFileName("     ")
+
+  if err == nil {
+    t.Error("Expected an error return from fh.GetPathFromPathFileName(\"   \") " +
+      "because the input parameter consists entirely of spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if isEmpty == false {
+    t.Error("Expected isEmpty='true', instead isEmpty='false' ")
+  }
+
+  if result != "" {
+    t.Errorf("Expected GetPathFromPathFileName to return path == 'empty string'.  "+
+      "Instead path=='%v' ", result)
+  }
+
+}
+
 func TestFileHelper_GetPathAndFileNameExt_01(t *testing.T) {
 
   fh := FileHelper{}
@@ -824,4 +846,110 @@ func TestFileHelper_GetPathAndFileNameExt_04(t *testing.T) {
     t.Errorf("Expected GetPathAndFileNameExt to return fileNameExt == '%v'. Instead, fileNameExt == '%v' ", expectedFileNameExt, fileNameExt)
   }
 
+}
+
+func TestFileHelper_GetPathAndFileNameExt_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt("")
+
+  if err == nil {
+    t.Error("Expected error return from fh.GetPathAndFileNameExt(\"\") because " +
+      "the input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if pathDir != "" {
+    t.Errorf("Expected pathDir would be an empty string. Instead, pathDir='%v'",
+      pathDir)
+  }
+
+  if fileNameExt != "" {
+    t.Errorf("Expected fileNameExt would be an empty string. Instead, pathDir='%v'",
+      fileNameExt)
+  }
+
+  if bothAreEmpty == false {
+    t.Error("Expected bothAreEmpty='true'. Instead, bothArEmpty='false'. ")
+  }
+
+}
+
+func TestFileHelper_GetPathAndFileNameExt_06(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt("    ")
+
+  if err == nil {
+    t.Error("Expected error return from fh.GetPathAndFileNameExt(\"   \") because " +
+      "the input parameter consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if pathDir != "" {
+    t.Errorf("Expected pathDir would be an empty string. Instead, pathDir='%v'",
+      pathDir)
+  }
+
+  if fileNameExt != "" {
+    t.Errorf("Expected fileNameExt would be an empty string. Instead, pathDir='%v'",
+      fileNameExt)
+  }
+
+  if bothAreEmpty == false {
+    t.Error("Expected bothAreEmpty='true'. Instead, bothArEmpty='false'. ")
+  }
+
+}
+
+func TestFileHelper_GetPathSeparatorIndexesInPathStr_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  idxs, err := fh.GetPathSeparatorIndexesInPathStr("")
+
+  if err == nil {
+    t.Error("Expected error return from fh.GetPathSeparatorIndexesInPathStr(\"\") " +
+      "because the input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if len(idxs) != 0 {
+    t.Errorf("Expected length of indexes='0'. Instead length of indexes='%v' ",
+      len(idxs))
+  }
+
+}
+
+func TestFileHelper_GetPathSeparatorIndexesInPathStr_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  idxs, err := fh.GetPathSeparatorIndexesInPathStr("     ")
+
+  if err == nil {
+    t.Error("Expected error return from fh.GetPathSeparatorIndexesInPathStr(\"     \") " +
+      "because the input parameter consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if len(idxs) != 0 {
+    t.Errorf("Expected length of indexes='0'. Instead length of indexes='%v' ",
+      len(idxs))
+  }
+
+}
+
+func TestFileHelper_GetVolumeName_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  volumeName := fh.GetVolumeName("")
+
+  if volumeName != "" {
+    t.Errorf("Expected an empty string return from fh.GetVolumeName(\"\") because "+
+      "the input parameter is an empty string. Instead, the return value='%v' ", volumeName)
+  }
 }

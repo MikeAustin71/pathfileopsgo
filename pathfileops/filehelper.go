@@ -2815,7 +2815,14 @@ func (fh FileHelper) GetPathSeparatorIndexesInPathStr(
 }
 
 // GetVolumeName - Returns the volume name of associated with
-// a given directory path.
+// a given directory path. The method calls the function
+// 'path/filepath.VolumeName().
+//
+// VolumeName returns leading volume name.
+// Given "C:\foo\bar" it returns "C:" on Windows.
+// Given "\\host\share\foo" it returns "\\host\share".
+// On other platforms it returns "".
+//
 func (fh FileHelper) GetVolumeName(pathStr string) string {
 
   errCode := 0
@@ -2827,47 +2834,6 @@ func (fh FileHelper) GetVolumeName(pathStr string) string {
   }
 
   return fp.VolumeName(pathStr)
-}
-
-// GetVolumeSeparatorIdxInPathStr - Returns the index of the
-// Windows volume separator from an path string.
-//
-func (fh FileHelper) GetVolumeSeparatorIdxInPathStr(
-  pathStr string) (volIdx int, err error) {
-
-  ePrefix := "FileHelper.GetVolumeSeparatorIdxInPathStr()"
-
-  volIdx = -1
-  err = nil
-  errCode := 0
-  lPathStr := 0
-
-  errCode, lPathStr, pathStr = fh.isStringEmptyOrBlank(pathStr)
-
-  if errCode == -1 {
-    err =
-      errors.New(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
-    return volIdx, err
-  }
-
-  if errCode == -2 {
-    err =
-      errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
-    return volIdx, err
-  }
-
-  for i := 0; i < lPathStr; i++ {
-
-    if rune(pathStr[i]) == ':' {
-      volIdx = i
-      err = nil
-      return volIdx, err
-    }
-  }
-
-  volIdx = -1
-  err = nil
-  return volIdx, err
 }
 
 // IsAbsolutePath - Wrapper function for path.IsAbs()
@@ -2916,27 +2882,49 @@ func (fh FileHelper) IsAbsolutePath(pathStr string) bool {
 //  err             error   - If an error is encountered during processing, it is returned here.
 //                            If no error occurs, 'err' is set to 'nil'.
 //
-func (fh FileHelper) IsPathFileString(pathFileStr string) (isPathFileStr bool, cannotDetermine bool, testPathFileStr string, err error) {
+func (fh FileHelper) IsPathFileString(
+  pathFileStr string) (isPathFileStr bool,
+  cannotDetermine bool,
+  testPathFileStr string,
+  err error) {
 
   ePrefix := "FileHelper.IsPathFileString() "
 
-  if len(pathFileStr) == 0 {
-    isPathFileStr = false
-    cannotDetermine = false // High confidence in result
-    testPathFileStr = ""
-    err = errors.New(ePrefix + "Error - Zero Length input parameter 'pathFileStr'.")
-    return
+  isPathFileStr = false
+  cannotDetermine = false // High confidence in result
+  testPathFileStr = ""
+  err = nil
+
+  errCode := 0
+
+  errCode, _, pathFileStr = fh.isStringEmptyOrBlank(pathFileStr)
+
+  if errCode == -1 {
+    err =
+      errors.New(ePrefix +
+        "Error: Input parameter 'pathFileStr' is an empty string!")
+    return isPathFileStr, cannotDetermine, testPathFileStr, err
+  }
+
+  if errCode == -2 {
+    err =
+      errors.New(ePrefix +
+        "Error: Input parameter 'pathFileStr' consists of blank spaces!")
+
+    return isPathFileStr, cannotDetermine, testPathFileStr, err
   }
 
   testPathFileStr = fp.FromSlash(pathFileStr)
-  lTestPathStr := len(testPathFileStr)
+  lTestPathStr := 0
 
-  if lTestPathStr == 0 {
-    isPathFileStr = false
-    cannotDetermine = false // High confidence in result
+  errCode, lTestPathStr, testPathFileStr = fh.isStringEmptyOrBlank(testPathFileStr)
+
+  if errCode < 0 {
+    err = fmt.Errorf(ePrefix+
+      "Error - fp.Clean(fp.FromSlash(pathFileStr)) yielded a Zero Length "+
+      "String. pathFileStr='%v'", pathFileStr)
     testPathFileStr = ""
-    err = fmt.Errorf(ePrefix+"Error - fp.Clean(fp.FromSlash(pathFileStr)) yielded a Zero Length String. pathFileStr='%v'", pathFileStr)
-    return
+    return isPathFileStr, cannotDetermine, testPathFileStr, err
   }
 
   // See if path actually exists on disk and
@@ -2949,25 +2937,25 @@ func (fh FileHelper) IsPathFileString(pathFileStr string) (isPathFileStr bool, c
       isPathFileStr = true
       cannotDetermine = false // High confidence in result
       err = nil
-      return
+      return isPathFileStr, cannotDetermine, testPathFileStr, err
 
     } else {
       isPathFileStr = false
       cannotDetermine = false // High confidence in result
       err = nil
-      return
+      return isPathFileStr, cannotDetermine, testPathFileStr, err
     }
 
   }
 
   // Ok - We know the testPathFileStr does NOT exist on disk
 
-  if strings.Contains(testPathFileStr, "...") {
+  if strings.Contains(testPathFileStr, "...") ||
+    strings.Contains(testPathFileStr, "....") {
     isPathFileStr = false
     cannotDetermine = false // High confidence in result
     err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING! testPathFileStr='%v'", testPathFileStr)
-    return
-
+    return isPathFileStr, cannotDetermine, testPathFileStr, err
   }
 
   firstCharIdx, lastCharIdx, err2 := fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileStr)
@@ -2976,7 +2964,7 @@ func (fh FileHelper) IsPathFileString(pathFileStr string) (isPathFileStr bool, c
     isPathFileStr = false
     cannotDetermine = false // High confidence in result
     err = fmt.Errorf(ePrefix+"Error returned from fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileStr) testPathFileStr='%v'  Error='%v'", testPathFileStr, err2.Error())
-    return
+    return isPathFileStr, cannotDetermine, testPathFileStr, err
   }
 
   if firstCharIdx == -1 || lastCharIdx == -1 {
@@ -2985,7 +2973,7 @@ func (fh FileHelper) IsPathFileString(pathFileStr string) (isPathFileStr bool, c
     isPathFileStr = false
     cannotDetermine = false // High confidence in result
     err = nil
-    return
+    return isPathFileStr, cannotDetermine, testPathFileStr, err
   }
 
   volName := fp.VolumeName(testPathFileStr)
@@ -2995,7 +2983,7 @@ func (fh FileHelper) IsPathFileString(pathFileStr string) (isPathFileStr bool, c
     isPathFileStr = false
     cannotDetermine = false // High confidence in result
     err = nil
-    return
+    return isPathFileStr, cannotDetermine, testPathFileStr, err
   }
 
   slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(testPathFileStr)
@@ -3004,7 +2992,7 @@ func (fh FileHelper) IsPathFileString(pathFileStr string) (isPathFileStr bool, c
     isPathFileStr = false
     cannotDetermine = true
     err = fmt.Errorf(ePrefix+"fh.GetPathSeparatorIndexesInPathStr(testPathFileStr) returned error. testPathFileStr='%v' Error='%v'", testPathFileStr, err2.Error())
-    return
+    return isPathFileStr, cannotDetermine, testPathFileStr, err
   }
 
   dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(testPathFileStr)
@@ -3013,7 +3001,7 @@ func (fh FileHelper) IsPathFileString(pathFileStr string) (isPathFileStr bool, c
     isPathFileStr = false
     cannotDetermine = true // Uncertain outcome. Cannot determine if this is a path string
     err = fmt.Errorf(ePrefix+"fh.GetDotSeparatorIndexesInPathStr(testPathFileStr) retured error. testPathFileStr='%v' Error='%v'", testPathFileStr, err2.Error())
-    return
+    return isPathFileStr, cannotDetermine, testPathFileStr, err
   }
 
   lenDotIdx := len(dotIdxs)
@@ -3025,8 +3013,7 @@ func (fh FileHelper) IsPathFileString(pathFileStr string) (isPathFileStr bool, c
     isPathFileStr = false
     cannotDetermine = false // high degree of certainty
     err = nil
-    return
-
+    return isPathFileStr, cannotDetermine, testPathFileStr, err
   }
 
   // We know the string contains one or more path separators
@@ -3039,15 +3026,13 @@ func (fh FileHelper) IsPathFileString(pathFileStr string) (isPathFileStr bool, c
       isPathFileStr = true
       cannotDetermine = true // Maybe, really can't tell if xray is a directory or a file!
       err = nil
-      return
-
+      return isPathFileStr, cannotDetermine, testPathFileStr, err
     }
 
     isPathFileStr = false
     cannotDetermine = false // high degree of certainty
     err = nil
-    return
-
+    return isPathFileStr, cannotDetermine, testPathFileStr, err
   }
 
   // We know that the test string contains both path separators and
@@ -3058,7 +3043,7 @@ func (fh FileHelper) IsPathFileString(pathFileStr string) (isPathFileStr bool, c
     isPathFileStr = true
     cannotDetermine = false // high degree of certainty
     err = nil
-    return
+    return isPathFileStr, cannotDetermine, testPathFileStr, err
   }
 
   // Check to determine if last character in testPathFileStr is a PathSeparator
@@ -3067,7 +3052,7 @@ func (fh FileHelper) IsPathFileString(pathFileStr string) (isPathFileStr bool, c
     isPathFileStr = false
     cannotDetermine = false // high degree of certainty
     err = nil
-    return
+    return isPathFileStr, cannotDetermine, testPathFileStr, err
   }
 
   // Cannot be certain of the result.
@@ -3075,7 +3060,7 @@ func (fh FileHelper) IsPathFileString(pathFileStr string) (isPathFileStr bool, c
   isPathFileStr = false
   cannotDetermine = true
   err = nil
-  return
+  return isPathFileStr, cannotDetermine, testPathFileStr, err
 }
 
 // IsPathString - Attempts to determine whether a string is a
