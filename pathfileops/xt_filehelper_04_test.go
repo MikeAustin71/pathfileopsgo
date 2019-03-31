@@ -9,10 +9,11 @@ import (
   "time"
 )
 
-func TestFileHelper_IsAbsolutePath(t *testing.T) {
+func TestFileHelper_IsAbsolutePath_01(t *testing.T) {
 
   fh := FileHelper{}
-  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
+  commonDir := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/" +
+    "level_03_dir/level_3_1_test.txt")
 
   result := fh.IsAbsolutePath(commonDir)
 
@@ -22,11 +23,54 @@ func TestFileHelper_IsAbsolutePath(t *testing.T) {
 
 }
 
-/*
-func TestFileHelper_IsPathFileString_01(t *testing.T) {
+func TestFileHelper_IsAbsolutePath_02(t *testing.T) {
+
+  fh := FileHelper{}
+  absPathDir := fh.AdjustPathSlash("D:/gowork/src/MikeAustin71/pathfileopsgo/filesfortest/" +
+    "levelfilesfortest/level_01_dir/level_02_dir/level_03_dir/level_3_1_test.txt")
+
+  result := fh.IsAbsolutePath(absPathDir)
+
+  if result == false {
+    t.Error("IsAbsolutePath result is INVALID. Absolute path classified as Relative Path!")
+  }
 
 }
-*/
+
+func TestFileHelper_IsPathFileString_01(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/" +
+    "level_02_dir/level_03_dir/level_3_1_test.txt")
+
+  expectedPathFile := fh.AdjustPathSlash("..\\filesfortest\\levelfilesfortest\\level_01_dir\\" +
+    "level_02_dir\\level_03_dir\\level_3_1_test.txt")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+  }
+
+  if pathFileType != PathFileType.PathFile() {
+    t.Errorf("Expected PathFileTypeCode='PathFile'. Instead, PathFileTypeCode='%v' ",
+      pathFileType.String())
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+
+}
 
 func TestFileHelper_JoinPathsAdjustSeparators_01(t *testing.T) {
   fh := FileHelper{}
@@ -85,7 +129,7 @@ func TestFileHelper_JoinMismatchedPathsAdjustSeparators_04(t *testing.T) {
 
 func TestFileHelper_JoinMismatchedPathsAdjustSeparators_05(t *testing.T) {
   fh := FileHelper{}
-  path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common\\")
+  path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common//")
   file1 := "xt_dirmgr_01_test.go"
   expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/xt_dirmgr_01_test.go")
 
@@ -139,9 +183,10 @@ func TestFileHelper_JoinMismatchedPathsAdjustSeparators_07(t *testing.T) {
 
 func TestFileHelper_JoinPaths_03(t *testing.T) {
   fh := FileHelper{}
-  path1 := "../../../pathfilego/003_filehelper/common"
-  file1 := "xt_dirmgr_01_test.go"
-  expected1 := "..\\..\\..\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go"
+  path1 := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir"
+  file1 := "level_3_1_test.txt"
+  expected1 := fh.AdjustPathSlash(
+    "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir/level_3_1_test.txt")
 
   result1 := fh.JoinPaths(path1, file1)
 
@@ -153,9 +198,11 @@ func TestFileHelper_JoinPaths_03(t *testing.T) {
 
 func TestFileHelper_JoinBadPaths_04(t *testing.T) {
   fh := FileHelper{}
-  path1 := "../../../pathfilego/003_filehelper/common/"
-  file1 := "./xt_dirmgr_01_test.go"
-  expected1 := "..\\..\\..\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go"
+  path1 := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir"
+  file1 := "./level_3_1_test.txt"
+
+  expected1 := fh.AdjustPathSlash(
+    "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir/level_3_1_test.txt")
 
   result1 := fh.JoinPaths(path1, file1)
 
@@ -167,9 +214,9 @@ func TestFileHelper_JoinBadPaths_04(t *testing.T) {
 
 func TestFileHelper_MoveFile_01(t *testing.T) {
   fh := FileHelper{}
-  setupFile := fh.AdjustPathSlash("..\\logTest\\FileMgmnt\\TestFile003.txt")
-  srcFile := fh.AdjustPathSlash("..\\logTest\\FileSrc\\TestFile003.txt")
-  destFile := fh.AdjustPathSlash("..\\logTest\\TestFile004.txt")
+  setupFile := fh.AdjustPathSlash("..//logTest//FileMgmnt//TestFile003.txt")
+  srcFile := fh.AdjustPathSlash("..//logTest//FileSrc//TestFile003.txt")
+  destFile := fh.AdjustPathSlash("..//logTest//TestFile004.txt")
 
   if fh.DoesFileExist(destFile) {
     err := fh.DeleteDirFile(destFile)
@@ -342,7 +389,7 @@ func createALogTestBottomDir() error {
 
   nowTime := appLib.DateTimeUtility{}.GetDateTimeNanoSecText(time.Now().Local())
 
-  _, err5 := f.WriteString("Sample Write - " + nowTime + "\n")
+  _, err5 := f.WriteString("Sample Write - " + nowTime + "/n")
 
   if err5 != nil {
     _ = f.Close()
