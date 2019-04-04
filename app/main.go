@@ -38,8 +38,33 @@ func main() {
 
 func main() {
 
-  mainTest48()
+  mainTest49()
 
+}
+
+func mainTest49() {
+  fh := pf.FileHelper{}
+
+  absPathDir := fh.AdjustPathSlash("D:/gowork/src/MikeAustin71/pathfileopsgo/filesfortest/" +
+    "levelfilesfortest/level_01_dir/level_02_dir/level_03_dir/level_3_1_test.txt")
+
+  result := fh.IsAbsolutePath(absPathDir)
+
+  fmt.Println("TestPath: ", absPathDir)
+  fmt.Println("fh.IsAbsolutePath Result: ", result)
+
+  verifyAbsPath, err := fh.MakeAbsolutePath(absPathDir)
+
+  if err != nil {
+    fmt.Printf("Error returned by fh.MakeAbsolutePath(absPathDir). "+
+      "absPathDir='%v' Error='%v' ", absPathDir, err.Error())
+    return
+  }
+
+  fmt.Println("-----------------------------------------------")
+  fmt.Println("MakeAbsolutePath(absPathDir) Result: ", verifyAbsPath)
+
+  return
 }
 
 func mainTest48() {

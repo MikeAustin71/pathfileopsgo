@@ -2836,12 +2836,32 @@ func (fh FileHelper) GetVolumeName(pathStr string) string {
   return fp.VolumeName(pathStr)
 }
 
-// IsAbsolutePath - Wrapper function for path.IsAbs()
-// https://golang.org/pkg/path/#IsAbs
-// This method reports whether the input parameter is
-// an absolute path.
+// IsAbsolutePath - Compares the input parameter 'pathStr' to
+// the absolute path representation for 'pathStr' to determine
+// whether 'pathStr' represents an absolute path.
+//
 func (fh FileHelper) IsAbsolutePath(pathStr string) bool {
-  return path.IsAbs(pathStr)
+
+  // Adjust the path separators for the current operating
+  // system.
+  correctDelimPathStr := fh.AdjustPathSlash(pathStr)
+
+  correctDelimPathStr = strings.ToLower(correctDelimPathStr)
+
+  absPath, err := fh.MakeAbsolutePath(pathStr)
+
+  if err != nil {
+    return false
+  }
+
+  absPath = strings.ToLower(absPath)
+
+  if absPath == correctDelimPathStr {
+    return true
+  }
+
+  //return path.IsAbs(pathStr)
+  return false
 }
 
 // IsPathFileString - Returns 'true' if the it is determined that
@@ -3463,13 +3483,27 @@ func (fh FileHelper) MakeAbsolutePath(relPath string) (string, error) {
 
   ePrefix := "FileHelper.MakeAbsolutePath() "
 
-  if len(relPath) == 0 {
-    return "", errors.New(ePrefix + "Error: Input Parameter 'relPath' is an EMPTY string!")
+  errCode := 0
+
+  errCode, _, relPath = fh.isStringEmptyOrBlank(relPath)
+
+  if errCode == -1 {
+    return "",
+      errors.New(ePrefix +
+        "Error: Input parameter 'relPath' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return "",
+      errors.New(ePrefix +
+        "Error: Input parameter 'relPath' consists of blank spaces!")
   }
 
   testRelPath := fh.AdjustPathSlash(relPath)
 
-  if len(testRelPath) == 0 {
+  errCode, _, testRelPath = fh.isStringEmptyOrBlank(testRelPath)
+
+  if errCode < 0 {
     return "", errors.New(ePrefix +
       "Error: Input Parameter 'relPath' adjusted for path Separators is an EMPTY string!")
   }
