@@ -1,0 +1,11 @@
+
+Converting Tabs To Spaces
+Source Material
+
+https://thenewstack.io/spaces-vs-tabs-a-20-year-debate-and-now-this-what-the-hell-is-wrong-with-go/
+
+Converting Tabs to Spaces
+https://eev.ee/blog/2016/06/04/converting-a-git-repo-from-tabs-to-spaces/
+https://gist.github.com/eevee/6721177
+https://eev.ee/blog/2016/06/04/converting-a-git-repo-from-tabs-to-spaces/
+https://alexzaytsev.me/2014/10/19/git-filter-to-convert-spaces-to-tabs-and-vice-versa/
