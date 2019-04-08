@@ -1,10 +1,10 @@
 package pathfileops
 
 import (
-	"fmt"
-	"os"
-	"reflect"
-	"strings"
+  "fmt"
+  "os"
+  "reflect"
+  "strings"
 )
 
 // mFileOpenModeIntToString - This map is used to map enumeration values
@@ -88,18 +88,18 @@ func (fOpenMode FileOpenMode) ModeTruncate() FileOpenMode { return FileOpenMode(
 //
 func (fOpenMode FileOpenMode) IsValid() error {
 
-	fOpenMode.checkInitializeMaps(false)
+  fOpenMode.checkInitializeMaps(false)
 
-	_, ok := mFileOpenModeIntToString[int(fOpenMode)]
+  _, ok := mFileOpenModeIntToString[int(fOpenMode)]
 
-	if !ok {
-		ePrefix := "FileOpenMode.IsValid() "
-		return fmt.Errorf(ePrefix+
-			"Error: Ivalid FileOpenMode! Current FileOpenMode='%v'",
-			fOpenMode)
-	}
+  if !ok {
+    ePrefix := "FileOpenMode.IsValid() "
+    return fmt.Errorf(ePrefix+
+      "Error: Ivalid FileOpenMode! Current FileOpenMode='%v'",
+      fOpenMode)
+  }
 
-	return nil
+  return nil
 }
 
 // ParseString - Receives a string and attempts to match it with
@@ -159,68 +159,68 @@ func (fOpenMode FileOpenMode) IsValid() error {
 //   In any cases shown above, t is now equal to FileOpenMode(0).Append()
 //
 func (fOpenMode FileOpenMode) ParseString(
-	valueString string,
-	caseSensitive bool) (FileOpenMode, error) {
+  valueString string,
+  caseSensitive bool) (FileOpenMode, error) {
 
-	ePrefix := "FileOpenMode.ParseString() "
+  ePrefix := "FileOpenMode.ParseString() "
 
-	fOpenMode.checkInitializeMaps(false)
+  fOpenMode.checkInitializeMaps(false)
 
-	result := FileOpenMode(0)
+  result := FileOpenMode(0)
 
-	lenValueStr := len(valueString)
+  lenValueStr := len(valueString)
 
-	if strings.HasSuffix(valueString, "()") {
-		valueString = valueString[0 : lenValueStr-2]
-		lenValueStr -= 2
-	}
+  if strings.HasSuffix(valueString, "()") {
+    valueString = valueString[0 : lenValueStr-2]
+    lenValueStr -= 2
+  }
 
-	if lenValueStr < 3 {
-		return result,
-			fmt.Errorf(ePrefix+
-				"Input parameter 'valueString' is INVALID! valueString='%v' ", valueString)
-	}
+  if lenValueStr < 3 {
+    return result,
+      fmt.Errorf(ePrefix+
+        "Input parameter 'valueString' is INVALID! valueString='%v' ", valueString)
+  }
 
-	var ok bool
-	var idx int
+  var ok bool
+  var idx int
 
-	if caseSensitive {
+  if caseSensitive {
 
-		if !strings.HasPrefix(valueString, "Mode") {
-			valueString = "Mode" + valueString
-		}
+    if !strings.HasPrefix(valueString, "Mode") {
+      valueString = "Mode" + valueString
+    }
 
-		idx, ok = mFileOpenModeStringToInt[valueString]
+    idx, ok = mFileOpenModeStringToInt[valueString]
 
-		if !ok {
-			return FileOpenMode(0),
-				fmt.Errorf(ePrefix+
-					"'valueString' did NOT MATCH a FileOpenMode. valueString='%v' ", valueString)
-		}
+    if !ok {
+      return FileOpenMode(0),
+        fmt.Errorf(ePrefix+
+          "'valueString' did NOT MATCH a FileOpenMode. valueString='%v' ", valueString)
+    }
 
-		result = FileOpenMode(idx)
+    result = FileOpenMode(idx)
 
-	} else {
+  } else {
 
-		valueString = strings.ToLower(valueString)
+    valueString = strings.ToLower(valueString)
 
-		if !strings.HasPrefix(valueString, "mode") {
-			valueString = "mode" + valueString
-		}
+    if !strings.HasPrefix(valueString, "mode") {
+      valueString = "mode" + valueString
+    }
 
-		idx, ok = mFileOpenModeLwrCaseStringToInt[valueString]
+    idx, ok = mFileOpenModeLwrCaseStringToInt[valueString]
 
-		if !ok {
-			return FileOpenMode(0),
-				fmt.Errorf(ePrefix+
-					"'valueString' did NOT MATCH a FileOpenMode. valueString='%v' ", valueString)
-		}
+    if !ok {
+      return FileOpenMode(0),
+        fmt.Errorf(ePrefix+
+          "'valueString' did NOT MATCH a FileOpenMode. valueString='%v' ", valueString)
+    }
 
-		result =
-			FileOpenMode(idx)
-	}
+    result =
+      FileOpenMode(idx)
+  }
 
-	return result, nil
+  return result, nil
 }
 
 // String - Returns a string with the name of the enumeration associated
@@ -247,15 +247,15 @@ func (fOpenMode FileOpenMode) ParseString(
 //
 func (fOpenMode FileOpenMode) String() string {
 
-	fOpenMode.checkInitializeMaps(false)
+  fOpenMode.checkInitializeMaps(false)
 
-	str, ok := mFileOpenModeIntToString[int(fOpenMode)]
+  str, ok := mFileOpenModeIntToString[int(fOpenMode)]
 
-	if !ok {
-		return ""
-	}
+  if !ok {
+    return ""
+  }
 
-	return str
+  return str
 }
 
 // Value - This is a utility method which is not part of the
@@ -267,7 +267,7 @@ func (fOpenMode FileOpenMode) String() string {
 // enumerations for this type.
 //
 func (fOpenMode FileOpenMode) Value() int {
-	return int(fOpenMode)
+  return int(fOpenMode)
 }
 
 // checkInitializeMaps - String and value comparisons performed on enumerations
@@ -293,45 +293,45 @@ func (fOpenMode FileOpenMode) Value() int {
 //
 func (fOpenMode FileOpenMode) checkInitializeMaps(reInitialize bool) {
 
-	if !reInitialize &&
-		mFileOpenModeIntToString != nil &&
-		len(mFileOpenModeIntToString) > 5 &&
-		mFileOpenModeStringToInt != nil &&
-		len(mFileOpenModeStringToInt) > 5 &&
-		mFileOpenModeLwrCaseStringToInt != nil &&
-		len(mFileOpenModeLwrCaseStringToInt) > 5 {
-		return
-	}
+  if !reInitialize &&
+    mFileOpenModeIntToString != nil &&
+    len(mFileOpenModeIntToString) > 5 &&
+    mFileOpenModeStringToInt != nil &&
+    len(mFileOpenModeStringToInt) > 5 &&
+    mFileOpenModeLwrCaseStringToInt != nil &&
+    len(mFileOpenModeLwrCaseStringToInt) > 5 {
+    return
+  }
 
-	var t = FOpenMode.ModeAppend()
+  var t = FOpenMode.ModeAppend()
 
-	mFileOpenModeIntToString = make(map[int]string, 0)
-	mFileOpenModeStringToInt = make(map[string]int, 0)
-	mFileOpenModeLwrCaseStringToInt = make(map[string]int, 0)
+  mFileOpenModeIntToString = make(map[int]string, 0)
+  mFileOpenModeStringToInt = make(map[string]int, 0)
+  mFileOpenModeLwrCaseStringToInt = make(map[string]int, 0)
 
-	s := reflect.TypeOf(t)
+  s := reflect.TypeOf(t)
 
-	r := reflect.TypeOf(int(0))
-	args := [1]reflect.Value{reflect.Zero(s)}
+  r := reflect.TypeOf(int(0))
+  args := [1]reflect.Value{reflect.Zero(s)}
 
-	for i := 0; i < s.NumMethod(); i++ {
+  for i := 0; i < s.NumMethod(); i++ {
 
-		f := s.Method(i).Name
+    f := s.Method(i).Name
 
-		if f == "String" ||
-			f == "ParseString" ||
-			f == "Value" ||
-			f == "IsValid" ||
-			f == "checkInitializeMaps" {
-			continue
-		}
+    if f == "String" ||
+      f == "ParseString" ||
+      f == "Value" ||
+      f == "IsValid" ||
+      f == "checkInitializeMaps" {
+      continue
+    }
 
-		value := s.Method(i).Func.Call(args[:])[0].Convert(r).Int()
-		x := int(value)
-		mFileOpenModeIntToString[x] = f
-		mFileOpenModeStringToInt[f] = x
-		mFileOpenModeLwrCaseStringToInt[strings.ToLower(f)] = x
-	}
+    value := s.Method(i).Func.Call(args[:])[0].Convert(r).Int()
+    x := int(value)
+    mFileOpenModeIntToString[x] = f
+    mFileOpenModeStringToInt[f] = x
+    mFileOpenModeLwrCaseStringToInt[strings.ToLower(f)] = x
+  }
 
 }
 

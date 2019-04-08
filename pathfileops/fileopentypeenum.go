@@ -1,10 +1,10 @@
 package pathfileops
 
 import (
-	"fmt"
-	"os"
-	"reflect"
-	"strings"
+  "fmt"
+  "os"
+  "reflect"
+  "strings"
 )
 
 // mFileOpenTypeIntToString - This map is used to map enumeration values
@@ -73,18 +73,18 @@ func (fOpenType FileOpenType) TypeReadWrite() FileOpenType { return FileOpenType
 //
 func (fOpenType FileOpenType) IsValid() error {
 
-	fOpenType.checkInitializeMaps(false)
+  fOpenType.checkInitializeMaps(false)
 
-	_, ok := mFileOpenTypeIntToString[int(fOpenType)]
+  _, ok := mFileOpenTypeIntToString[int(fOpenType)]
 
-	if !ok {
-		ePrefix := "FileOpenType.IsValid() "
-		return fmt.Errorf(ePrefix+
-			"Error: Invalid FileOpenType! Current FileOpenType='%v'",
-			fOpenType)
-	}
+  if !ok {
+    ePrefix := "FileOpenType.IsValid() "
+    return fmt.Errorf(ePrefix+
+      "Error: Invalid FileOpenType! Current FileOpenType='%v'",
+      fOpenType)
+  }
 
-	return nil
+  return nil
 }
 
 // ParseString - Receives a string and attempts to match it with
@@ -148,68 +148,68 @@ func (fOpenType FileOpenType) IsValid() error {
 //   In of the cases shown above, t is now equal to FileOpenType(0).ReadOnly()
 //
 func (fOpenType FileOpenType) ParseString(
-	valueString string,
-	caseSensitive bool) (FileOpenType, error) {
+  valueString string,
+  caseSensitive bool) (FileOpenType, error) {
 
-	ePrefix := "FileOpenType.ParseString() "
+  ePrefix := "FileOpenType.ParseString() "
 
-	fOpenType.checkInitializeMaps(false)
+  fOpenType.checkInitializeMaps(false)
 
-	result := FileOpenType(0)
+  result := FileOpenType(0)
 
-	lenValueStr := len(valueString)
+  lenValueStr := len(valueString)
 
-	if strings.HasSuffix(valueString, "()") {
-		valueString = valueString[0 : lenValueStr-2]
-		lenValueStr -= 2
-	}
+  if strings.HasSuffix(valueString, "()") {
+    valueString = valueString[0 : lenValueStr-2]
+    lenValueStr -= 2
+  }
 
-	if lenValueStr < 3 {
-		return result,
-			fmt.Errorf(ePrefix+
-				"Input parameter 'valueString' is INVALID! valueString='%v' ", valueString)
-	}
+  if lenValueStr < 3 {
+    return result,
+      fmt.Errorf(ePrefix+
+        "Input parameter 'valueString' is INVALID! valueString='%v' ", valueString)
+  }
 
-	var ok bool
-	var idx int
+  var ok bool
+  var idx int
 
-	if caseSensitive {
+  if caseSensitive {
 
-		if !strings.HasPrefix(valueString, "Type") {
-			valueString = "Type" + valueString
-		}
+    if !strings.HasPrefix(valueString, "Type") {
+      valueString = "Type" + valueString
+    }
 
-		idx, ok = mFileOpenTypeStringToInt[valueString]
+    idx, ok = mFileOpenTypeStringToInt[valueString]
 
-		if !ok {
-			return FileOpenType(0),
-				fmt.Errorf(ePrefix+
-					"'valueString' did NOT MATCH a FileOpenType. valueString='%v' ", valueString)
-		}
+    if !ok {
+      return FileOpenType(0),
+        fmt.Errorf(ePrefix+
+          "'valueString' did NOT MATCH a FileOpenType. valueString='%v' ", valueString)
+    }
 
-		result = FileOpenType(idx)
+    result = FileOpenType(idx)
 
-	} else {
+  } else {
 
-		valueString = strings.ToLower(valueString)
+    valueString = strings.ToLower(valueString)
 
-		if !strings.HasPrefix(valueString, "type") {
-			valueString = "type" + valueString
-		}
+    if !strings.HasPrefix(valueString, "type") {
+      valueString = "type" + valueString
+    }
 
-		idx, ok = mFileOpenTypeLwrCaseStringToInt[valueString]
+    idx, ok = mFileOpenTypeLwrCaseStringToInt[valueString]
 
-		if !ok {
-			return FileOpenType(0),
-				fmt.Errorf(ePrefix+
-					"'valueString' did NOT MATCH a FileOpenType. valueString='%v' ", valueString)
-		}
+    if !ok {
+      return FileOpenType(0),
+        fmt.Errorf(ePrefix+
+          "'valueString' did NOT MATCH a FileOpenType. valueString='%v' ", valueString)
+    }
 
-		result =
-			FileOpenType(idx)
-	}
+    result =
+      FileOpenType(idx)
+  }
 
-	return result, nil
+  return result, nil
 }
 
 // String - Returns a string with the name of the enumeration associated
@@ -237,15 +237,15 @@ func (fOpenType FileOpenType) ParseString(
 //
 func (fOpenType FileOpenType) String() string {
 
-	fOpenType.checkInitializeMaps(false)
+  fOpenType.checkInitializeMaps(false)
 
-	str, ok := mFileOpenTypeIntToString[int(fOpenType)]
+  str, ok := mFileOpenTypeIntToString[int(fOpenType)]
 
-	if !ok {
-		return ""
-	}
+  if !ok {
+    return ""
+  }
 
-	return str
+  return str
 }
 
 // Value - This is a utility method which is not part of the
@@ -257,7 +257,7 @@ func (fOpenType FileOpenType) String() string {
 // enumerations for this type.
 //
 func (fOpenType FileOpenType) Value() int {
-	return int(fOpenType)
+  return int(fOpenType)
 }
 
 // checkInitializeMaps - String and value comparisons performed on enumerations
@@ -283,44 +283,44 @@ func (fOpenType FileOpenType) Value() int {
 //
 func (fOpenType FileOpenType) checkInitializeMaps(reInitialize bool) {
 
-	if !reInitialize &&
-		mFileOpenTypeIntToString != nil &&
-		len(mFileOpenTypeIntToString) > 3 &&
-		mFileOpenTypeStringToInt != nil &&
-		len(mFileOpenTypeStringToInt) > 3 &&
-		mFileOpenTypeLwrCaseStringToInt != nil &&
-		len(mFileOpenTypeLwrCaseStringToInt) > 3 {
-		return
-	}
+  if !reInitialize &&
+    mFileOpenTypeIntToString != nil &&
+    len(mFileOpenTypeIntToString) > 3 &&
+    mFileOpenTypeStringToInt != nil &&
+    len(mFileOpenTypeStringToInt) > 3 &&
+    mFileOpenTypeLwrCaseStringToInt != nil &&
+    len(mFileOpenTypeLwrCaseStringToInt) > 3 {
+    return
+  }
 
-	var t = FileOpenType(0).TypeReadOnly()
+  var t = FileOpenType(0).TypeReadOnly()
 
-	mFileOpenTypeIntToString = make(map[int]string, 0)
-	mFileOpenTypeStringToInt = make(map[string]int, 0)
-	mFileOpenTypeLwrCaseStringToInt = make(map[string]int, 0)
+  mFileOpenTypeIntToString = make(map[int]string, 0)
+  mFileOpenTypeStringToInt = make(map[string]int, 0)
+  mFileOpenTypeLwrCaseStringToInt = make(map[string]int, 0)
 
-	s := reflect.TypeOf(t)
+  s := reflect.TypeOf(t)
 
-	r := reflect.TypeOf(int(0))
-	args := [1]reflect.Value{reflect.Zero(s)}
+  r := reflect.TypeOf(int(0))
+  args := [1]reflect.Value{reflect.Zero(s)}
 
-	for i := 0; i < s.NumMethod(); i++ {
+  for i := 0; i < s.NumMethod(); i++ {
 
-		f := s.Method(i).Name
+    f := s.Method(i).Name
 
-		if f == "String" ||
-			f == "ParseString" ||
-			f == "Value" ||
-			f == "IsValid" ||
-			f == "checkInitializeMaps" {
-			continue
-		}
+    if f == "String" ||
+      f == "ParseString" ||
+      f == "Value" ||
+      f == "IsValid" ||
+      f == "checkInitializeMaps" {
+      continue
+    }
 
-		value := s.Method(i).Func.Call(args[:])[0].Convert(r).Int()
-		x := int(value)
-		mFileOpenTypeIntToString[x] = f
-		mFileOpenTypeStringToInt[f] = x
-		mFileOpenTypeLwrCaseStringToInt[strings.ToLower(f)] = x
-	}
+    value := s.Method(i).Func.Call(args[:])[0].Convert(r).Int()
+    x := int(value)
+    mFileOpenTypeIntToString[x] = f
+    mFileOpenTypeStringToInt[f] = x
+    mFileOpenTypeLwrCaseStringToInt[strings.ToLower(f)] = x
+  }
 
 }
