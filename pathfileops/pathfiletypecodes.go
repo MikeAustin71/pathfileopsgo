@@ -36,15 +36,15 @@ var mPathFileTypeCodeToString = map[PathFileTypeCode]string{
 
 type PathFileTypeCode int
 
-func (pfTyp PathFileTypeCode) None() PathFileTypeCode { return 0 }
+func (pfTyp PathFileTypeCode) None() PathFileTypeCode { return PathFileTypeCode(0) }
 
-func (pfTyp PathFileTypeCode) Path() PathFileTypeCode { return 1 }
+func (pfTyp PathFileTypeCode) Path() PathFileTypeCode { return PathFileTypeCode(1) }
 
-func (pfTyp PathFileTypeCode) PathFile() PathFileTypeCode { return 2 }
+func (pfTyp PathFileTypeCode) PathFile() PathFileTypeCode { return PathFileTypeCode(2) }
 
-func (pfTyp PathFileTypeCode) File() PathFileTypeCode { return 3 }
+func (pfTyp PathFileTypeCode) File() PathFileTypeCode { return PathFileTypeCode(3) }
 
-func (pfTyp PathFileTypeCode) Volume() PathFileTypeCode { return 4 }
+func (pfTyp PathFileTypeCode) Volume() PathFileTypeCode { return PathFileTypeCode(4) }
 
 func (pfTyp PathFileTypeCode) ParseString(
   valueString string,

@@ -2951,7 +2951,7 @@ func (fh FileHelper) IsPathFileString(
 
   if err2 == nil {
 
-    if !fInfo.IsDir() {
+    if fInfo.IsDir() {
 
       pathFileType = PathFileType.Path()
 
