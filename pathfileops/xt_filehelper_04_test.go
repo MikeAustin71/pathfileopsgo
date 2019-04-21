@@ -159,9 +159,11 @@ func TestFileHelper_IsPathFileString_04(t *testing.T) {
       "pathFile='%v' Error='%v' ", pathFile, err.Error())
   }
 
-  if pathFileType != PathFileType.Indeterminate() {
-    t.Errorf("Expected PathFileTypeCode='PathFile'. Instead, PathFileTypeCode='%v' ",
-      pathFileType.String())
+  expectedFileType := PathFileType.Indeterminate()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
   }
 
   absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
@@ -192,9 +194,11 @@ func TestFileHelper_IsPathFileString_05(t *testing.T) {
       "pathFile='%v' Error='%v' ", pathFile, err.Error())
   }
 
-  if pathFileType != PathFileType.Volume() {
-    t.Errorf("Expected PathFileTypeCode='Volume'. Instead, PathFileTypeCode='%v' "+
-      "testFilePathStr='%v' ", pathFileType.String(), absolutePath)
+  expectedFileType := PathFileType.Volume()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
   }
 
   absExpectedPathFile := strings.ToLower(expectedPathFile)
@@ -221,14 +225,276 @@ func TestFileHelper_IsPathFileString_06(t *testing.T) {
       "pathFile='%v' Error='%v' ", pathFile, err.Error())
   }
 
-  if pathFileType != PathFileType.Path() {
-    t.Errorf("Expected PathFileTypeCode='Volume'. Instead, PathFileTypeCode='%v' "+
-      "testFilePathStr='%v' ", pathFileType.String(), absolutePath)
+  expectedFileType := PathFileType.Path()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
   }
 
   absExpectedPathFile := strings.ToLower(expectedPathFile)
 
   absolutePath = strings.ToLower(absolutePath)
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+}
+
+func TestFileHelper_IsPathFileString_07(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("fileIDoNotExist.txt")
+
+  expectedPathFile := fh.AdjustPathSlash("fileIDoNotExist.txt")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+  }
+
+  expectedFileType := PathFileType.File()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+}
+
+func TestFileHelper_IsPathFileString_08(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("fileIDoNotExist")
+
+  expectedPathFile := fh.AdjustPathSlash("fileIDoNotExist")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+  }
+
+  expectedFileType := PathFileType.File()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+}
+
+func TestFileHelper_IsPathFileString_09(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("..")
+
+  expectedPathFile := fh.AdjustPathSlash("..")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+  }
+
+  expectedFileType := PathFileType.Path()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+}
+
+func TestFileHelper_IsPathFileString_10(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash(".")
+
+  expectedPathFile := fh.AdjustPathSlash(".")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+  }
+
+  expectedFileType := PathFileType.Path()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+}
+
+func TestFileHelper_IsPathFileString_11(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := ""
+
+  _, _, err := fh.IsPathFileString(pathFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.IsPathFileString(pathFile) " +
+      "because 'pathFile' is an empty string. However, NO ERROR WAS RETURNED! ")
+  }
+
+}
+
+func TestFileHelper_IsPathFileString_12(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := "   "
+
+  _, _, err := fh.IsPathFileString(pathFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.IsPathFileString(pathFile) " +
+      "because 'pathFile' consists of blank spaces. However, NO ERROR WAS RETURNED! ")
+  }
+
+}
+
+func TestFileHelper_IsPathFileString_13(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := "..\\...\\"
+
+  _, _, err := fh.IsPathFileString(pathFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.IsPathFileString(pathFile) " +
+      "because 'pathFile' 3-dots ('...'). However, NO ERROR WAS RETURNED! ")
+  }
+
+}
+
+func TestFileHelper_IsPathFileString_14(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := "....\\"
+
+  _, _, err := fh.IsPathFileString(pathFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.IsPathFileString(pathFile) " +
+      "because 'pathFile' 4-dots ('....'). However, NO ERROR WAS RETURNED! ")
+  }
+
+}
+
+func TestFileHelper_IsPathFileString_15(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash(".\\")
+
+  expectedPathFile := fh.AdjustPathSlash(".\\")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+  }
+
+  expectedFileType := PathFileType.Path()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+}
+
+func TestFileHelper_IsPathFileString_16(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("..\\..\\..\\")
+
+  expectedPathFile := fh.AdjustPathSlash("..\\..\\..\\")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+  }
+
+  expectedFileType := PathFileType.Path()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
 
   if absExpectedPathFile != absolutePath {
     t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",

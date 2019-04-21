@@ -38,7 +38,7 @@ func main() {
 
 func main() {
 
-  mainTest51()
+  mainTest50_2()
 
 }
 
@@ -68,6 +68,53 @@ func mainTest51() {
   fmt.Println("rawPath3: ", rawPath3)
   fmt.Println(" Volume2: ", vol3)
 
+}
+
+func mainTest50_2() {
+
+  fh := pf.FileHelper{}
+  rawPathFile := fh.AdjustPathSlash("...")
+
+  pathFile, err := fh.MakeAbsolutePath(rawPathFile)
+
+  if err != nil {
+    fmt.Printf("Error returned by fh.MakeAbsolutePath(rawPathFile). "+
+      "rawPathFile='%v' Error='%v' ", rawPathFile, err.Error())
+
+    return
+  }
+
+  expectedPathFile := strings.ToLower(rawPathFile)
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(rawPathFile)
+
+  if err != nil {
+    fmt.Printf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
+  }
+
+  expectedPathFileCode := pf.PathFileType.Path()
+
+  if expectedPathFileCode != pathFileType {
+    fmt.Printf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "Expected PathFileType Code: %v  Actual PathFileTypeCode: %v\n"+
+      "absolutePath='%v' \n",
+      expectedPathFileCode.String(), pathFileType.String(),
+      int(expectedPathFileCode), int(pathFileType), absolutePath)
+    return
+  }
+
+  lwcAbsolutePath := strings.ToLower(absolutePath)
+
+  if expectedPathFile != lwcAbsolutePath {
+    fmt.Printf("Error: Expected Absolute Path='%v'\n Actual Absolute Path='%v' ",
+      expectedPathFile, lwcAbsolutePath)
+  }
+
+  fmt.Println("Raw Path: ", pathFile)
+  fmt.Println("Absolute Path: ", absolutePath)
+  fmt.Println(" PathFileType: ", pathFileType.String())
 }
 
 func mainTest50() {

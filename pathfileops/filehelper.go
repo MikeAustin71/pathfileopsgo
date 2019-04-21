@@ -2929,12 +2929,90 @@ func (fh FileHelper) IsPathFileString(
     return pathFileType, absolutePathFile, err
   }
 
-  testAbsPathFileStr, err2 := fh.MakeAbsolutePath(pathFileStr)
+  if strings.Contains(pathFileStr, "...") {
+    pathFileType = PathFileType.None()
+    absolutePathFile = ""
+    err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING! pathFileStr='%v'", pathFileStr)
+    return pathFileType, absolutePathFile, err
+  }
+
+  correctedPathFileStr := fh.AdjustPathSlash(pathFileStr)
+
+  firstCharIdx, lastCharIdx, err2 :=
+    fh.GetFirstLastNonSeparatorCharIndexInPathStr(correctedPathFileStr)
+
+  if err2 != nil {
+    pathFileType = PathFileType.None()
+    absolutePathFile = ""
+    err = fmt.Errorf(ePrefix+
+      "Error returned from fh.GetFirstLastNonSeparatorCharIndexInPathStr"+
+      "(correctedPathFileStr) correctedPathFileStr='%v'  Error='%v'",
+      correctedPathFileStr, err2.Error())
+    return pathFileType, absolutePathFile, err
+  }
+
+  slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(correctedPathFileStr)
+
+  if err2 != nil {
+    pathFileType = PathFileType.None()
+    absolutePathFile = ""
+    err = fmt.Errorf(ePrefix+
+      "fh.GetPathSeparatorIndexesInPathStr(correctedPathFileStr) returned error. "+
+      "correctedPathFileStr='%v' Error='%v'",
+      correctedPathFileStr, err2.Error())
+    return pathFileType, absolutePathFile, err
+  }
+
+  dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(correctedPathFileStr)
+
+  if err2 != nil {
+    pathFileType = PathFileType.None()
+    absolutePathFile = ""
+    err = fmt.Errorf(ePrefix+
+      "fh.GetDotSeparatorIndexesInPathStr(correctedPathFileStr) retured error. "+
+      "correctedPathFileStr='%v' Error='%v'", correctedPathFileStr, err2.Error())
+    return pathFileType, absolutePathFile, err
+  }
+
+  lenDotIdx := len(dotIdxs)
+
+  lenSlashIdx := len(slashIdxs)
+
+  testAbsPathFileStr, err2 := fh.MakeAbsolutePath(correctedPathFileStr)
 
   if err2 != nil {
     err = fmt.Errorf("Error converting pathFileStr to absolute path. "+
       "pathFileStr='%v' Error='%v' ", pathFileStr, err2.Error())
 
+    return pathFileType, absolutePathFile, err
+  }
+
+  if lenDotIdx > 0 &&
+    lenSlashIdx == 0 &&
+    firstCharIdx > -1 {
+    absolutePathFile = testAbsPathFileStr
+    pathFileType = PathFileType.File()
+    err = nil
+    return pathFileType, absolutePathFile, err
+  }
+
+  if lenDotIdx == 0 &&
+    lenSlashIdx == 0 &&
+    firstCharIdx > -1 {
+
+    absolutePathFile = testAbsPathFileStr
+    pathFileType = PathFileType.File()
+    err = nil
+    return pathFileType, absolutePathFile, err
+  }
+
+  if firstCharIdx == -1 &&
+    lastCharIdx == -1 &&
+    lenDotIdx > 0 {
+
+    absolutePathFile = testAbsPathFileStr
+    pathFileType = PathFileType.Path()
+    err = nil
     return pathFileType, absolutePathFile, err
   }
 
@@ -2982,15 +3060,7 @@ func (fh FileHelper) IsPathFileString(
 
   // Ok - We know the testPathFileStr does NOT exist on disk
 
-  if strings.Contains(testAbsPathFileStr, "...") ||
-    strings.Contains(testAbsPathFileStr, "....") {
-    pathFileType = PathFileType.None()
-    absolutePathFile = ""
-    err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING! testAbsPathFileStr='%v'", testAbsPathFileStr)
-    return pathFileType, absolutePathFile, err
-  }
-
-  firstCharIdx, lastCharIdx, err2 :=
+  firstCharIdx, lastCharIdx, err2 =
     fh.GetFirstLastNonSeparatorCharIndexInPathStr(testAbsPathFileStr)
 
   if err2 != nil {
@@ -3027,7 +3097,7 @@ func (fh FileHelper) IsPathFileString(
     return pathFileType, absolutePathFile, err
   }
 
-  slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(testAbsPathFileStr)
+  slashIdxs, err2 = fh.GetPathSeparatorIndexesInPathStr(testAbsPathFileStr)
 
   if err2 != nil {
     pathFileType = PathFileType.None()
@@ -3039,7 +3109,7 @@ func (fh FileHelper) IsPathFileString(
     return pathFileType, absolutePathFile, err
   }
 
-  dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(testAbsPathFileStr)
+  dotIdxs, err2 = fh.GetDotSeparatorIndexesInPathStr(testAbsPathFileStr)
 
   if err2 != nil {
     pathFileType = PathFileType.None()
@@ -3050,9 +3120,9 @@ func (fh FileHelper) IsPathFileString(
     return pathFileType, absolutePathFile, err
   }
 
-  lenDotIdx := len(dotIdxs)
+  lenDotIdx = len(dotIdxs)
 
-  lenSlashIdx := len(slashIdxs)
+  lenSlashIdx = len(slashIdxs)
 
   if lenSlashIdx == 0 &&
     lenDotIdx > 0 {
