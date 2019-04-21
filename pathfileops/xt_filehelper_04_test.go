@@ -769,7 +769,7 @@ func TestFileHelper_JoinPathsAdjustSeparators_09(t *testing.T) {
 
 }
 
-func TestFileHelper_JoinPaths_03(t *testing.T) {
+func TestFileHelper_JoinPaths_01(t *testing.T) {
   fh := FileHelper{}
   path1 := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir"
   file1 := "level_3_1_test.txt"
@@ -779,23 +779,33 @@ func TestFileHelper_JoinPaths_03(t *testing.T) {
   result1 := fh.JoinPaths(path1, file1)
 
   if result1 != expected1 {
-    t.Error(fmt.Sprintf("Joined path and file name. Expected result '%v', instead got:", expected1), result1)
+    t.Errorf("Joined path and file name. Expected result '%v', instead got: %v", expected1, result1)
   }
 
 }
 
-func TestFileHelper_JoinBadPaths_04(t *testing.T) {
+func TestFileHelper_JoinPaths_02(t *testing.T) {
   fh := FileHelper{}
-  path1 := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir"
-  file1 := "./level_3_1_test.txt"
+  path1 := ""
+  path2 := ""
 
-  expected1 := fh.AdjustPathSlash(
-    "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir/level_3_1_test.txt")
+  result1 := fh.JoinPaths(path1, path2)
 
-  result1 := fh.JoinPaths(path1, file1)
+  if result1 != "" {
+    t.Errorf("Expected result = empty string, instead got result='%v'", result1)
+  }
 
-  if result1 != expected1 {
-    t.Error(fmt.Sprintf("Joined path and file name. Expected result '%v', instead got:", expected1), result1)
+}
+
+func TestFileHelper_JoinPaths_03(t *testing.T) {
+  fh := FileHelper{}
+  path1 := "   "
+  path2 := "   "
+
+  result1 := fh.JoinPaths(path1, path2)
+
+  if result1 != "" {
+    t.Errorf("Expected result = empty string, instead got result='%v'", result1)
   }
 
 }

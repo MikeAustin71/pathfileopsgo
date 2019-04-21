@@ -3350,13 +3350,13 @@ func (fh FileHelper) JoinPathsAdjustSeparators(p1 string, p2 string) string {
 
 }
 
-// JoinPaths - correctly joins 2-paths
+// JoinPaths - correctly joins 2-paths. Like the method JoinPathsAdjustSeparators()
+// this method also converts path separators to the correct path separators for
+// the current operating system.
+//
 func (fh FileHelper) JoinPaths(p1 string, p2 string) string {
 
-  adjustedP1 := fh.AdjustPathSlash(p1)
-  adjustedP2 := fh.AdjustPathSlash(p2)
-
-  return fp.Clean(path.Join(fp.Clean(adjustedP1), fp.Clean(adjustedP2)))
+  return fh.JoinPathsAdjustSeparators(p1, p2)
 
 }
 
