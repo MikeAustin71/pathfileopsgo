@@ -38,7 +38,35 @@ func main() {
 
 func main() {
 
-  mainTest50()
+  mainTest51()
+
+}
+
+func mainTest51() {
+  // /d/gowork/src/MikeAustin71/pathfileopsgo/pathfileops
+  // D:\gowork\src\MikeAustin71\pathfileopsgo\pathfileops
+
+  fh := pf.FileHelper{}
+
+  rawPath1 := "/d/gowork/src/MikeAustin71/pathfileopsgo/pathfileops"
+
+  rawPath2 := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\pathfileops"
+
+  rawPath3 := "D:\\"
+
+  vol1 := fh.GetVolumeName(rawPath1)
+
+  fmt.Println("************ mainTest51 ***************")
+  fmt.Println("rawPath1: ", rawPath1)
+  fmt.Println(" Volume1: ", vol1)
+  vol2 := fh.GetVolumeName(rawPath2)
+  fmt.Println("----------------------------------------")
+  fmt.Println("rawPath2: ", rawPath2)
+  fmt.Println(" Volume2: ", vol2)
+  fmt.Println("----------------------------------------")
+  vol3 := fh.GetVolumeName(rawPath3)
+  fmt.Println("rawPath3: ", rawPath3)
+  fmt.Println(" Volume2: ", vol3)
 
 }
 

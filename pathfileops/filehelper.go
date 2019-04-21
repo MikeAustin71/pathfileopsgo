@@ -2875,32 +2875,29 @@ func (fh FileHelper) IsAbsolutePath(pathStr string) bool {
 //
 // Input Parameter:
 //
-//  pathFileStr   string    - The string to be analyzed.
+//  pathFileStr            string - The string to be analyzed.
 //
 // Return Values:
 //
-//  isPathFileStr   bool    - A boolean indicating whether the input parameter
-//                            'pathFileStr' is in fact both a directory path and file name.
+//  pathFileType PathFileTypeCode - Path File Type Code indicating whether the input parameter 'pathFileStr'
+//                                  is a Path, a Path and File, a File or "Indeterminate". "Indeterminate"
+//                                  signals that the nature of 'pathFileStr' cannot be classified as either
+//                                  a Path or a Path and File or a File.
 //
-//  cannotDetermine bool    - A boolean value indicating whether the method could or
-//                            could NOT determine whether input parameter 'pathFileStr'
-//                            is a valid directory path and file name.
-//
-//                            'cannotDetermine' will be set to 'true' if 'pathFileStr'
-//                            does not currently exist on disk and 'pathFileStr' is formatted
-//                            like the following example:
-//                                   "D:\\dirA\\common"
-//                            In this example, the method cannot determine if 'common'
-//                            is a file name or a directory name.
-//
-//  testPathFileStr string  - Input parameter 'pathFileStr' is subjected to cleaning routines
-//                            designed to exclude extraneous characters from the analysis.
-//                            'testPathFileStr' is the actual string on which the analysis was
-//                            performed.
+//                                  --------------------------------------------------------
+//                                  PathFileTypeCodes
+//                                     0 = None
+//                                     1 = Path
+//                                     2 = PathFile
+//                                     3 = File (with no path)
+//                                     4 = Volume
+//                                     5 = Indeterminate - Cannot determine whether string is a Path,
+//                                         Path & File or File
 //
 //
-//  err             error   - If an error is encountered during processing, it is returned here.
-//                            If no error occurs, 'err' is set to 'nil'.
+//  err                     error - If an error is encountered during processing, it is returned here. If no error
+//                                  occurs, 'err' is set to 'nil'. An error will be triggered if the input parameter
+//                                  'pathFileStr' cannot no alpa numeric characters.
 //
 func (fh FileHelper) IsPathFileString(
   pathFileStr string) (pathFileType PathFileTypeCode,
@@ -2932,22 +2929,31 @@ func (fh FileHelper) IsPathFileString(
     return pathFileType, absolutePathFile, err
   }
 
-  testPathFileStr := fp.FromSlash(pathFileStr)
-  lTestPathStr := 0
+  testAbsPathFileStr, err2 := fh.MakeAbsolutePath(pathFileStr)
 
-  errCode, lTestPathStr, testPathFileStr = fh.isStringEmptyOrBlank(testPathFileStr)
+  if err2 != nil {
+    err = fmt.Errorf("Error converting pathFileStr to absolute path. "+
+      "pathFileStr='%v' Error='%v' ", pathFileStr, err2.Error())
 
-  if errCode < 0 {
-    err = fmt.Errorf(ePrefix+
-      "Error - fp.Clean(fp.FromSlash(pathFileStr)) yielded a Zero Length "+
-      "String. pathFileStr='%v'", pathFileStr)
-    testPathFileStr = ""
+    return pathFileType, absolutePathFile, err
+  }
+
+  lTestAbsPathStr := len(testAbsPathFileStr)
+
+  volName := fp.VolumeName(testAbsPathFileStr)
+
+  if strings.ToLower(volName) == strings.ToLower(testAbsPathFileStr) ||
+    strings.ToLower(volName) == strings.ToLower(pathFileStr) {
+    // This is a volume name not a file Name!
+    pathFileType = PathFileType.Volume()
+    absolutePathFile = volName
+    err = nil
     return pathFileType, absolutePathFile, err
   }
 
   // See if path actually exists on disk and
   // then examine the File Info object returned.
-  fInfo, err2 := os.Stat(testPathFileStr)
+  fInfo, err2 := os.Stat(testAbsPathFileStr)
 
   if err2 == nil {
 
@@ -2955,11 +2961,7 @@ func (fh FileHelper) IsPathFileString(
 
       pathFileType = PathFileType.Path()
 
-      absolutePathFile, err2 = fh.MakeAbsolutePath(testPathFileStr)
-
-      if err2 != nil {
-        absolutePathFile = testPathFileStr
-      }
+      absolutePathFile = testAbsPathFileStr
 
       err = nil
 
@@ -2969,11 +2971,7 @@ func (fh FileHelper) IsPathFileString(
 
       pathFileType = PathFileType.PathFile()
 
-      absolutePathFile, err2 = fh.MakeAbsolutePath(testPathFileStr)
-
-      if err2 != nil {
-        absolutePathFile = testPathFileStr
-      }
+      absolutePathFile = testAbsPathFileStr
 
       err = nil
 
@@ -2984,80 +2982,71 @@ func (fh FileHelper) IsPathFileString(
 
   // Ok - We know the testPathFileStr does NOT exist on disk
 
-  if strings.Contains(testPathFileStr, "...") ||
-    strings.Contains(testPathFileStr, "....") {
+  if strings.Contains(testAbsPathFileStr, "...") ||
+    strings.Contains(testAbsPathFileStr, "....") {
     pathFileType = PathFileType.None()
     absolutePathFile = ""
-    err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING! testPathFileStr='%v'", testPathFileStr)
+    err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING! testAbsPathFileStr='%v'", testAbsPathFileStr)
     return pathFileType, absolutePathFile, err
   }
 
-  if testPathFileStr[lTestPathStr-1] == os.PathSeparator {
-    // The last character is a path separator. So, this must
-    // be a path and NOT a path file Name
-    pathFileType = PathFileType.Path()
-    absolutePathFile, err2 = fh.MakeAbsolutePath(testPathFileStr)
-
-    if err2 != nil {
-      absolutePathFile = testPathFileStr
-    }
-
-    err = nil
-
-    return pathFileType, absolutePathFile, err
-  }
-
-  firstCharIdx, lastCharIdx, err2 := fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileStr)
+  firstCharIdx, lastCharIdx, err2 :=
+    fh.GetFirstLastNonSeparatorCharIndexInPathStr(testAbsPathFileStr)
 
   if err2 != nil {
     pathFileType = PathFileType.None()
     absolutePathFile = ""
     err = fmt.Errorf(ePrefix+
-      "Error returned from fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileStr) "+
-      "testPathFileStr='%v'  Error='%v'", testPathFileStr, err2.Error())
+      "Error returned from fh.GetFirstLastNonSeparatorCharIndexInPathStr"+
+      "(testAbsPathFileStr) testAbsPathFileStr='%v'  Error='%v'",
+      testAbsPathFileStr, err2.Error())
     return pathFileType, absolutePathFile, err
   }
 
   if firstCharIdx == -1 || lastCharIdx == -1 {
-    // The pathfilestring contains no alpha numeric characters.
+    // The path-file-string contains no alpha numeric characters.
     // Therefore, it does NOT contain a file name!
     pathFileType = PathFileType.None()
     absolutePathFile = ""
     err = fmt.Errorf(ePrefix+
-      "testPathFileStr does NOT contain alpha numeric characters "+
-      "testPathFileStr='%v'", testPathFileStr)
+      "testAbsPathFileStr does NOT contain alpha numeric characters "+
+      "testAbsPathFileStr='%v'", testAbsPathFileStr)
     return pathFileType, absolutePathFile, err
   }
 
-  volName := fp.VolumeName(testPathFileStr)
+  if testAbsPathFileStr[lTestAbsPathStr-1] == os.PathSeparator {
+    // The last character is a path separator.
+    // Example D:\directory1\directory2\
+    // So, this must be a path and NOT a path file Name
+    pathFileType = PathFileType.Path()
 
-  if volName == testPathFileStr {
-    // This is a volume name not a file Name!
-    pathFileType = PathFileType.Volume()
-    absolutePathFile = volName
+    absolutePathFile = testAbsPathFileStr
+
     err = nil
+
     return pathFileType, absolutePathFile, err
   }
 
-  slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(testPathFileStr)
+  slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(testAbsPathFileStr)
 
   if err2 != nil {
     pathFileType = PathFileType.None()
     absolutePathFile = ""
     err = fmt.Errorf(ePrefix+
-      "fh.GetPathSeparatorIndexesInPathStr(testPathFileStr) returned error. "+
-      "testPathFileStr='%v' Error='%v'", testPathFileStr, err2.Error())
+      "fh.GetPathSeparatorIndexesInPathStr(testAbsPathFileStr) returned error. "+
+      "testAbsPathFileStr='%v' Error='%v'",
+      testAbsPathFileStr, err2.Error())
     return pathFileType, absolutePathFile, err
   }
 
-  dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(testPathFileStr)
+  dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(testAbsPathFileStr)
 
   if err2 != nil {
     pathFileType = PathFileType.None()
     absolutePathFile = ""
     err = fmt.Errorf(ePrefix+
-      "fh.GetDotSeparatorIndexesInPathStr(testPathFileStr) retured error. "+
-      "testPathFileStr='%v' Error='%v'", testPathFileStr, err2.Error())
+      "fh.GetDotSeparatorIndexesInPathStr(testAbsPathFileStr) retured error. "+
+      "testAbsPathFileStr='%v' Error='%v'", testAbsPathFileStr, err2.Error())
     return pathFileType, absolutePathFile, err
   }
 
@@ -3066,41 +3055,53 @@ func (fh FileHelper) IsPathFileString(
   lenSlashIdx := len(slashIdxs)
 
   if lenSlashIdx == 0 &&
-    lenDotIdx == 0 {
-    absolutePathFile, err2 = fh.MakeAbsolutePath(testPathFileStr)
+    lenDotIdx > 0 {
+    // This is a string of alpha numeric characters which
+    // does NOT contain a path separator, but Does contain
+    // a dot separator.
+    // Example "someFileName.txt"
+    // Let's call it a file
+    absolutePathFile = testAbsPathFileStr
 
-    if err2 != nil {
-      pathFileType = PathFileType.None()
-      absolutePathFile = testPathFileStr
-      err = errors.New(ePrefix + "Unknown string type.")
-      return pathFileType, absolutePathFile, err
-    }
     // Call it a file!
+    // Example: "somefilename"
+    pathFileType = PathFileType.File()
+    err = nil
+    return pathFileType, absolutePathFile, err
+
+  }
+
+  if lenSlashIdx == 0 &&
+    lenDotIdx == 0 {
+
+    // the string has no dots and no path separators.
+    absolutePathFile = testAbsPathFileStr
+
+    // Call it a file!
+    // Example: "somefilename"
     pathFileType = PathFileType.File()
     err = nil
     return pathFileType, absolutePathFile, err
   }
 
-  // We know the string contains one or more path separators
+  if lenSlashIdx > 0 &&
+    lenDotIdx == 0 {
 
-  if lenDotIdx == 0 {
-
-    absolutePathFile, err2 = fh.MakeAbsolutePath(testPathFileStr)
-
-    if err2 != nil {
-      absolutePathFile = testPathFileStr
-    }
+    // string contains one or more path separators, but no dots (aka periods)
+    absolutePathFile = testAbsPathFileStr
 
     if lastCharIdx > slashIdxs[lenSlashIdx-1] {
       // Example D:\dir1\dir2\xray
-      // Call it a file!
-      pathFileType = PathFileType.File()
+      // It could be a file or a path. We simply
+      // can't tell.
+      pathFileType = PathFileType.Indeterminate()
 
       err = nil
       return pathFileType, absolutePathFile, err
     }
 
-    // Call it a Path (Directory)
+    // lastCharIdx <= slashIdxs[lenSlashIdx-1]
+    // Call it a Path (aka Directory)
     pathFileType = PathFileType.Path()
     err = nil
     return pathFileType, absolutePathFile, err
@@ -3113,12 +3114,7 @@ func (fh FileHelper) IsPathFileString(
     lastCharIdx > slashIdxs[lenSlashIdx-1] {
 
     // Example D:\dir1\dir2\xray.txt
-
-    absolutePathFile, err2 = fh.MakeAbsolutePath(testPathFileStr)
-
-    if err2 != nil {
-      absolutePathFile = testPathFileStr
-    }
+    absolutePathFile = testAbsPathFileStr
 
     // Call this a path file name
     pathFileType = PathFileType.PathFile()
@@ -3127,13 +3123,10 @@ func (fh FileHelper) IsPathFileString(
   }
 
   // Cannot be certain of the result.
-  // Don't know for sure what this string is
+  // String doesn't conform to any standard pattern for
+  // a file or a path. Don't know for sure what this string is
 
-  absolutePathFile, err2 = fh.MakeAbsolutePath(testPathFileStr)
-
-  if err2 != nil {
-    absolutePathFile = testPathFileStr
-  }
+  absolutePathFile = testAbsPathFileStr
 
   pathFileType = PathFileType.None()
   err = errors.New(ePrefix + "Unknown string type!")

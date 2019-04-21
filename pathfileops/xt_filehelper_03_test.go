@@ -942,6 +942,8 @@ func TestFileHelper_GetPathSeparatorIndexesInPathStr_02(t *testing.T) {
 
 }
 
+// /d/gowork/src/MikeAustin71/pathfileopsgo/pathfileops
+// D:\gowork\src\MikeAustin71\pathfileopsgo\pathfileops
 func TestFileHelper_GetVolumeName_01(t *testing.T) {
 
   fh := FileHelper{}

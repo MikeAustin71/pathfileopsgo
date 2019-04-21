@@ -7,31 +7,36 @@ import (
 )
 
 var mPathFileTypeStringToCode = map[string]PathFileTypeCode{
-  "None":        PathFileTypeCode(0).None(),
-  "Path":        PathFileTypeCode(0).Path(),
-  "PathFile":    PathFileTypeCode(0).PathFile(),
-  "File":        PathFileTypeCode(0).File(),
-  "Volume":      PathFileTypeCode(0).Volume(),
-  "VolumeName":  PathFileTypeCode(0).Volume(),
-  "Volume Name": PathFileTypeCode(0).Volume(),
+  "None":          PathFileTypeCode(0).None(),
+  "Path":          PathFileTypeCode(0).Path(),
+  "PathFile":      PathFileTypeCode(0).PathFile(),
+  "File":          PathFileTypeCode(0).File(),
+  "Volume":        PathFileTypeCode(0).Volume(),
+  "VolumeName":    PathFileTypeCode(0).Volume(),
+  "Volume Name":   PathFileTypeCode(0).Volume(),
+  "indeterminate": PathFileTypeCode(0).Indeterminate(),
+  "Unknown":       PathFileTypeCode(0).Indeterminate(),
 }
 
 var mPathFileTypeLwrCaseStringToCode = map[string]PathFileTypeCode{
-  "none":        PathFileTypeCode(0).None(),
-  "path":        PathFileTypeCode(0).Path(),
-  "pathfile":    PathFileTypeCode(0).PathFile(),
-  "file":        PathFileTypeCode(0).File(),
-  "volume":      PathFileTypeCode(0).Volume(),
-  "volumename":  PathFileTypeCode(0).Volume(),
-  "volume name": PathFileTypeCode(0).Volume(),
+  "none":          PathFileTypeCode(0).None(),
+  "path":          PathFileTypeCode(0).Path(),
+  "pathfile":      PathFileTypeCode(0).PathFile(),
+  "file":          PathFileTypeCode(0).File(),
+  "volume":        PathFileTypeCode(0).Volume(),
+  "volumename":    PathFileTypeCode(0).Volume(),
+  "volume name":   PathFileTypeCode(0).Volume(),
+  "indeterminate": PathFileTypeCode(0).Indeterminate(),
+  "unknown":       PathFileTypeCode(0).Indeterminate(),
 }
 
 var mPathFileTypeCodeToString = map[PathFileTypeCode]string{
-  PathFileTypeCode(0).None():     "None",
-  PathFileTypeCode(0).Path():     "Path",
-  PathFileTypeCode(0).PathFile(): "PathFile",
-  PathFileTypeCode(0).File():     "File",
-  PathFileTypeCode(0).Volume():   "Volume",
+  PathFileTypeCode(0).None():          "None",
+  PathFileTypeCode(0).Path():          "Path",
+  PathFileTypeCode(0).PathFile():      "PathFile",
+  PathFileTypeCode(0).File():          "File",
+  PathFileTypeCode(0).Volume():        "Volume",
+  PathFileTypeCode(0).Indeterminate(): "Indeterminate",
 }
 
 type PathFileTypeCode int
@@ -45,6 +50,10 @@ func (pfTyp PathFileTypeCode) PathFile() PathFileTypeCode { return PathFileTypeC
 func (pfTyp PathFileTypeCode) File() PathFileTypeCode { return PathFileTypeCode(3) }
 
 func (pfTyp PathFileTypeCode) Volume() PathFileTypeCode { return PathFileTypeCode(4) }
+
+// Covers edge cases where it cannot be determined whether the string is a Path and File or
+// a directory path.
+func (pfTyp PathFileTypeCode) Indeterminate() PathFileTypeCode { return PathFileTypeCode(5) }
 
 func (pfTyp PathFileTypeCode) ParseString(
   valueString string,
