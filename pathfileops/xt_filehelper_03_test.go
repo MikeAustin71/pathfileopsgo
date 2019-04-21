@@ -1,6 +1,7 @@
 package pathfileops
 
 import (
+  "strings"
   "testing"
 )
 
@@ -954,4 +955,67 @@ func TestFileHelper_GetVolumeName_01(t *testing.T) {
     t.Errorf("Expected an empty string return from fh.GetVolumeName(\"\") because "+
       "the input parameter is an empty string. Instead, the return value='%v' ", volumeName)
   }
+}
+
+func TestFileHelper_GetVolumeName_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  volumeName := fh.GetVolumeName("  ")
+
+  if volumeName != "" {
+    t.Errorf("Expected an empty string return from fh.GetVolumeName(\"\") because "+
+      "the input parameter consists of blank spaces. Instead, the return value='%v' ", volumeName)
+  }
+}
+
+func TestFileHelper_GetVolumeName_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testVolStr := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\pathfileops"
+
+  expectedVolName := strings.ToLower("D:")
+
+  volumeName := fh.GetVolumeName(testVolStr)
+
+  if expectedVolName != strings.ToLower(volumeName) {
+    t.Errorf("Expected volumeName='%v'. Instead, volName='%v' ",
+      expectedVolName, strings.ToLower(volumeName))
+  }
+
+}
+
+func TestFileHelper_GetVolumeName_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testVolStr := "D:\\"
+
+  expectedVolName := strings.ToLower("D:")
+
+  volumeName := fh.GetVolumeName(testVolStr)
+
+  if expectedVolName != strings.ToLower(volumeName) {
+    t.Errorf("Expected volumeName='%v'. Instead, volName='%v' ",
+      expectedVolName, strings.ToLower(volumeName))
+  }
+
+}
+
+func TestFileHelper_GetVolumeName_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testVolStr := "D:"
+
+  expectedVolName := strings.ToLower("D:")
+
+  volumeName := fh.GetVolumeName(testVolStr)
+
+  if expectedVolName != strings.ToLower(volumeName) {
+    t.Errorf("Expected volumeName='%v'. Instead, volName='%v' ",
+      expectedVolName, strings.ToLower(volumeName))
+  }
+
 }
