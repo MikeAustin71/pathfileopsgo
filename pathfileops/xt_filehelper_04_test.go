@@ -502,6 +502,136 @@ func TestFileHelper_IsPathFileString_16(t *testing.T) {
   }
 }
 
+func TestFileHelper_IsPathString_01(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("..\\..\\..\\")
+  expectedPathStr := fh.AdjustPathSlash("..\\..\\..\\")
+
+  isPath, cannotDetermine, testPathStr, err := fh.IsPathString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+  }
+
+  if true != isPath {
+    t.Errorf("Expected isPath='%v'. Instead, isPath='%v' "+
+      "testPathStr='%v' ", true, isPath, testPathStr)
+  }
+
+  if expectedPathStr != testPathStr {
+    t.Errorf("Error: Expected 'expectedPathStr'='%v'. Instead, 'expectedPathStr='%v'.",
+      expectedPathStr, testPathStr)
+  }
+
+  if false != cannotDetermine {
+    t.Errorf("Error: Expected 'cannotDetermine'='%v'. Instead, 'cannotDetermine'='%v' ",
+      false, cannotDetermine)
+  }
+
+}
+
+func TestFileHelper_IsPathString_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/" +
+    "level_02_dir/level_03_dir")
+
+  expectedPathStr := fh.AdjustPathSlash("..\\filesfortest\\levelfilesfortest\\level_01_dir\\" +
+    "level_02_dir\\level_03_dir")
+
+  isPath, cannotDetermine, testPathStr, err := fh.IsPathString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+  }
+
+  if true != isPath {
+    t.Errorf("Expected isPath='%v'. Instead, isPath='%v' "+
+      "testPathStr='%v' ", true, isPath, testPathStr)
+  }
+
+  if expectedPathStr != testPathStr {
+    t.Errorf("Error: Expected 'expectedPathStr'='%v'. Instead, 'expectedPathStr='%v'.",
+      expectedPathStr, testPathStr)
+  }
+
+  if false != cannotDetermine {
+    t.Errorf("Error: Expected 'cannotDetermine'='%v'. Instead, 'cannotDetermine'='%v' ",
+      false, cannotDetermine)
+  }
+
+}
+
+func TestFileHelper_IsPathString_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/" +
+    "level_02_dir/iDoNotExist")
+
+  expectedPathStr := fh.AdjustPathSlash("..\\filesfortest\\levelfilesfortest\\level_01_dir\\" +
+    "level_02_dir\\iDoNotExist")
+
+  isPath, cannotDetermine, testPathStr, err := fh.IsPathString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+  }
+
+  if false != isPath {
+    t.Errorf("Expected isPath='%v'. Instead, isPath='%v' "+
+      "testPathStr='%v' ", false, isPath, testPathStr)
+  }
+
+  if expectedPathStr != testPathStr {
+    t.Errorf("Error: Expected 'expectedPathStr'='%v'. Instead, 'expectedPathStr='%v'.",
+      expectedPathStr, testPathStr)
+  }
+
+  if true != cannotDetermine {
+    t.Errorf("Error: Expected 'cannotDetermine'='%v'. Instead, 'cannotDetermine'='%v' ",
+      true, cannotDetermine)
+  }
+
+}
+
+func TestFileHelper_IsPathString_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathFile := fh.AdjustPathSlash("")
+
+  _, _, _, err := fh.IsPathString(pathFile)
+
+  if err == nil {
+    t.Errorf("Expected an error return from fh.IsPathString(pathFile) " +
+      "because 'pathFile' is an empty string. " +
+      "However, NO ERROR WAS RETURNE!")
+  }
+
+}
+
+func TestFileHelper_IsPathString_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathFile := fh.AdjustPathSlash("      ")
+
+  _, _, _, err := fh.IsPathString(pathFile)
+
+  if err == nil {
+    t.Errorf("Expected an error return from fh.IsPathString(pathFile) " +
+      "because 'pathFile' consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNE!")
+  }
+
+}
+
 func TestFileHelper_JoinPathsAdjustSeparators_01(t *testing.T) {
   fh := FileHelper{}
   path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common")

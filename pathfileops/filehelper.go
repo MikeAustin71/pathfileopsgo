@@ -2842,6 +2842,14 @@ func (fh FileHelper) GetVolumeName(pathStr string) string {
 //
 func (fh FileHelper) IsAbsolutePath(pathStr string) bool {
 
+  errCode := 0
+
+  errCode, _, pathStr = fh.isStringEmptyOrBlank(pathStr)
+
+  if errCode < 0 {
+    return false
+  }
+
   // Adjust the path separators for the current operating
   // system.
   correctDelimPathStr := fh.AdjustPathSlash(pathStr)
@@ -3254,268 +3262,60 @@ func (fh FileHelper) IsPathString(
 
   ePrefix := "FileHelper.IsPathString() "
 
-  var fInfo os.FileInfo
-
-  lpathStr := len(pathStr)
-
-  if lpathStr == 0 {
-    isPathStr = false
-    cannotDetermine = false
-    testPathStr = ""
-    err = errors.New(ePrefix + "Error - Zero Length input parameter 'pathStr'.")
-    return
-  }
-
-  testPathStr = fp.FromSlash(pathStr)
-  lTestPathStr := len(testPathStr)
-
-  if lTestPathStr == 0 {
-    isPathStr = false
-    cannotDetermine = false
-    testPathStr = ""
-    err = fmt.Errorf(ePrefix+"Error - fp.FromSlash(pathStr) yielded a Zero Length String. pathStr='%v'", pathStr)
-    return
-  }
-
-  // See if path actually exists on disk and
-  // then examine the File Info object returned.
-  fInfo, err = os.Stat(testPathStr)
-
-  if err == nil {
-
-    if fInfo.IsDir() {
-      isPathStr = true
-      cannotDetermine = false
-      err = nil
-      return
-
-    } else {
-      isPathStr = false
-      cannotDetermine = false
-      err = nil
-      return
-    }
-
-  }
-
-  // Ok - We know the testPathStr does NOT exist on disk
-
-  if strings.Contains(testPathStr, "...") {
-    // This is an INVALID path String
-    isPathStr = false
-    cannotDetermine = false
-    err = fmt.Errorf("Error: INVALID PATH String! testPathStr='%v' ", testPathStr)
-    return
-  }
-
-  volName := fp.VolumeName(testPathStr)
-
-  if testPathStr == volName {
-    isPathStr = true
-    cannotDetermine = false
-    err = nil
-    return
-  }
-
-  _, checkPathIsEmpty, err2 := fh.GetPathFromPathFileName(testPathStr)
-
-  if err2 != nil {
-    isPathStr = false
-    cannotDetermine = false
-    err = fmt.Errorf(ePrefix+"fh.GetPathFromPathFileName(testPathStr) returned error. testPathStr='%v' Error='%v'", testPathStr, err2.Error())
-    return
-  }
-
-  if checkPathIsEmpty {
-    isPathStr = false
-    cannotDetermine = false
-    err = nil
-    return
-  }
-
-  slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(testPathStr)
-
-  if err2 != nil {
-    isPathStr = false
-    cannotDetermine = false
-    err = fmt.Errorf(ePrefix+"fh.GetPathSeparatorIndexesInPathStr(testPathStr) returned error. testPathStr='%v' Error='%v'", testPathStr, err2.Error())
-    return
-  }
-
-  dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(testPathStr)
-
-  if err2 != nil {
-    isPathStr = false
-    cannotDetermine = true // Uncertain outcome. Cannot determine if this is a path string
-    err = fmt.Errorf(ePrefix+"fh.GetDotSeparatorIndexesInPathStr(testPathStr) retured error. testPathStr='%v' Error='%v'", testPathStr, err2.Error())
-    return
-  }
-
-  firstNonSepCharIdx, lastNonSepCharIdx, err2 := fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathStr)
-
-  if err2 != nil {
-    isPathStr = false
-    cannotDetermine = true // Uncertain outcome.
-    err = fmt.Errorf(ePrefix+"fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathStr) retured error. testPathStr='%v' Error='%v'", testPathStr, err2.Error())
-    return
-  }
-
-  if firstNonSepCharIdx == -1 || lastNonSepCharIdx == -1 {
-    // All the characters are separator characters.
-    isPathStr = true
-    cannotDetermine = false // High confidence in result
-    err = nil
-    return
-  }
-
-  // *******************************
-  // From here on fristNonSepCharIdx
-  // and lastNonSepCharIdx MUST be
-  // greater than -1
-  // *******************************
-
-  lenDotIdx := len(dotIdxs)
-  lenSlashIdx := len(slashIdxs)
-
-  // Address case "../common"
-  if strings.HasPrefix(testPathStr, "..") {
-
-    if lenDotIdx == 2 {
-      isPathStr = true
-      cannotDetermine = false // High confidence in result
-      err = nil
-      return
-    }
-
-  }
-
-  if strings.HasPrefix(testPathStr, ".") {
-
-    if lenDotIdx == 1 {
-      isPathStr = true
-      cannotDetermine = false // High confidence in result
-      err = nil
-      return
-    }
-
-  }
-
-  if lenDotIdx == 0 && lenSlashIdx == 0 {
-    // Just text name with no path separators
-    // and no dots. This is not a path
-    isPathStr = false
-    cannotDetermine = false // High confidence in result
-    err = nil
-    return
-  }
-
-  // Address Case No Slashes only Dots
-  if lenDotIdx > 0 && lenSlashIdx == 0 {
-
-    // .common
-    if dotIdxs[lenDotIdx-1] < firstNonSepCharIdx {
-      isPathStr = true
-      cannotDetermine = false // High confidence in result
-      err = nil
-      return
-    }
-
-    // common.
-    if dotIdxs[lenDotIdx-1] > firstNonSepCharIdx {
-      isPathStr = false
-      cannotDetermine = false // High confidence in result
-      err = nil
-      return
-    }
-
-  }
-
-  // Address Case No Dots only slashes
-  if lenDotIdx == 0 && lenSlashIdx > 0 {
-
-    isPathStr = true
-    cannotDetermine = false // High confidence in result
-    err = nil
-    return
-
-  }
-
-  // ***********************************
-  // Both lenDotIdx and lenSlashIdx are
-  // greater than zero. Therefore, both
-  // path separators and dot separators
-  // are present.
-  // ***********************************
-
-  // Address Case: PathSeparator at end of PathStr
-  if lTestPathStr-1 == slashIdxs[lenSlashIdx-1] {
-
-    // There is a slash at the end of the path string.
-    // This is definitely a path string.
-    isPathStr = true
-    cannotDetermine = false // High confidence in result
-    err = nil
-    return
-
-  }
-
-  // Address Case where last dot comes after last path separator
-  if dotIdxs[lenDotIdx-1] > firstNonSepCharIdx &&
-    dotIdxs[lenDotIdx-1] > slashIdxs[lenSlashIdx-1] {
-
-    // This is a PathFileName string - NOT a PathStr
-    isPathStr = false
-    cannotDetermine = false // High confidence in result
-    err = nil
-    return
-
-  }
-
-  // Address case where last path separator comes after
-  // the last dot.
-  if slashIdxs[lenSlashIdx-1] > dotIdxs[lenDotIdx-1] {
-    // This is a PathStr
-    isPathStr = true
-    cannotDetermine = false // High confidence in result
-    err = nil
-    return
-  }
-
-  // Address case "/common/xray.txt"
-  if lastNonSepCharIdx > dotIdxs[lenDotIdx-1] &&
-    lastNonSepCharIdx > slashIdxs[lenDotIdx-1] &&
-    dotIdxs[lenDotIdx-1] > slashIdxs[lenDotIdx-1] {
-
-    isPathStr = false
-    cannotDetermine = false // High confidence in result
-    err = nil
-    return
-  }
-
-  // Address case "..\dirA\dirB\xray"
-  // In this method we will assume that
-  // xray is a directory
-
-  if dotIdxs[lenDotIdx-1] < slashIdxs[lenDotIdx-1] &&
-    slashIdxs[lenDotIdx-1] < lastNonSepCharIdx {
-
-    isPathStr = true
-    cannotDetermine = true // Can't be 100% certain that xray
-    // is not a file name.
-    err = nil
-    return
-  }
-
-  // Can't be certain what this string is.
-  // could be either directory path or
-  // directory path and file name. Let
-  // calling method make the call.
-  // Example D:\\DirA\\common
-  // Is common a file name or a directory name.
   isPathStr = false
-  cannotDetermine = true
+  cannotDetermine = false
+  testPathStr = fh.AdjustPathSlash(pathStr)
   err = nil
-  return
+
+  errCode := 0
+
+  errCode, _, pathStr = fh.isStringEmptyOrBlank(pathStr)
+
+  if errCode == -1 {
+    err =
+      errors.New(ePrefix +
+        "Error: Input parameter 'pathStr' is an empty string!")
+    return isPathStr, cannotDetermine, testPathStr, err
+  }
+
+  if errCode == -2 {
+    err =
+      errors.New(ePrefix +
+        "Error: Input parameter 'pathStr' consists of blank spaces!")
+
+    return isPathStr, cannotDetermine, testPathStr, err
+  }
+
+  if strings.Contains(pathStr, "...") {
+    err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING! pathStr='%v'", pathStr)
+    return isPathStr, cannotDetermine, testPathStr, err
+  }
+
+  pathFileType, _, err2 := fh.IsPathFileString(testPathStr)
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+"%v", err2.Error())
+    return isPathStr, cannotDetermine, testPathStr, err
+  }
+
+  if pathFileType == PathFileType.Path() {
+    isPathStr = true
+    cannotDetermine = false
+    err = nil
+    return isPathStr, cannotDetermine, testPathStr, err
+  }
+
+  if pathFileType == PathFileType.Indeterminate() {
+    isPathStr = false
+    cannotDetermine = true
+    err = nil
+    return isPathStr, cannotDetermine, testPathStr, err
+  }
+
+  isPathStr = false
+  cannotDetermine = false
+  err = nil
+  return isPathStr, cannotDetermine, testPathStr, err
 }
 
 // JoinPathsAdjustSeparators - Joins two
