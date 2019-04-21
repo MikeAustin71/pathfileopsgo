@@ -207,6 +207,35 @@ func TestFileHelper_IsPathFileString_05(t *testing.T) {
   }
 }
 
+func TestFileHelper_IsPathFileString_06(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("D:\\")
+
+  expectedPathFile := fh.AdjustPathSlash("D:\\")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+  }
+
+  if pathFileType != PathFileType.Path() {
+    t.Errorf("Expected PathFileTypeCode='Volume'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", pathFileType.String(), absolutePath)
+  }
+
+  absExpectedPathFile := strings.ToLower(expectedPathFile)
+
+  absolutePath = strings.ToLower(absolutePath)
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+}
+
 func TestFileHelper_JoinPathsAdjustSeparators_01(t *testing.T) {
   fh := FileHelper{}
   path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common")
