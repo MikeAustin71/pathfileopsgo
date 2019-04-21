@@ -645,7 +645,7 @@ func TestFileHelper_JoinPathsAdjustSeparators_01(t *testing.T) {
   }
 }
 
-func TestFileHelper_JoinMismatchedPathsAdjustSeparators_02(t *testing.T) {
+func TestFileHelper_JoinPathsAdjustSeparators_02(t *testing.T) {
   fh := FileHelper{}
   path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/")
   file1 := "/xt_dirmgr_01_test.go"
@@ -659,7 +659,7 @@ func TestFileHelper_JoinMismatchedPathsAdjustSeparators_02(t *testing.T) {
 
 }
 
-func TestFileHelper_JoinMismatchedPathsAdjustSeparators_03(t *testing.T) {
+func TestFileHelper_JoinPathsAdjustSeparators_03(t *testing.T) {
   fh := FileHelper{}
   path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common")
   file1 := "/xt_dirmgr_01_test.go"
@@ -673,7 +673,7 @@ func TestFileHelper_JoinMismatchedPathsAdjustSeparators_03(t *testing.T) {
 
 }
 
-func TestFileHelper_JoinMismatchedPathsAdjustSeparators_04(t *testing.T) {
+func TestFileHelper_JoinPathsAdjustSeparators_04(t *testing.T) {
   fh := FileHelper{}
   path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common")
   file1 := "xt_dirmgr_01_test.go"
@@ -687,7 +687,7 @@ func TestFileHelper_JoinMismatchedPathsAdjustSeparators_04(t *testing.T) {
 
 }
 
-func TestFileHelper_JoinMismatchedPathsAdjustSeparators_05(t *testing.T) {
+func TestFileHelper_JoinPathsAdjustSeparators_05(t *testing.T) {
   fh := FileHelper{}
   path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common//")
   file1 := "xt_dirmgr_01_test.go"
@@ -701,7 +701,7 @@ func TestFileHelper_JoinMismatchedPathsAdjustSeparators_05(t *testing.T) {
 
 }
 
-func TestFileHelper_JoinMismatchedPathsAdjustSeparators_06(t *testing.T) {
+func TestFileHelper_JoinPathsAdjustSeparators_06(t *testing.T) {
   fh := FileHelper{}
   path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common//")
   file1 := "//xt_dirmgr_01_test.go"
@@ -715,7 +715,7 @@ func TestFileHelper_JoinMismatchedPathsAdjustSeparators_06(t *testing.T) {
 
 }
 
-func TestFileHelper_JoinMismatchedPathsAdjustSeparators_07(t *testing.T) {
+func TestFileHelper_JoinPathsAdjustSeparators_07(t *testing.T) {
   fh := FileHelper{}
   path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/")
   path12, err := fh.GetAbsPathFromFilePath(path1)
@@ -737,6 +737,34 @@ func TestFileHelper_JoinMismatchedPathsAdjustSeparators_07(t *testing.T) {
   if result1 != expected12 {
     t.Errorf("Joined path and file name. Expected result '%v'. Instead result='%v'",
       expected12, result1)
+  }
+
+}
+
+func TestFileHelper_JoinPathsAdjustSeparators_08(t *testing.T) {
+  fh := FileHelper{}
+  path1 := ""
+  path2 := ""
+
+  result := fh.JoinPathsAdjustSeparators(path1, path2)
+
+  if result != path1 {
+    t.Errorf("Expected result empty string. Instead result='%v'",
+      result)
+  }
+
+}
+
+func TestFileHelper_JoinPathsAdjustSeparators_09(t *testing.T) {
+  fh := FileHelper{}
+  path1 := "   "
+  path2 := "   "
+
+  result := fh.JoinPathsAdjustSeparators(path1, path2)
+
+  if result != "" {
+    t.Errorf("Expected result empty string. Instead result='%v'",
+      result)
   }
 
 }

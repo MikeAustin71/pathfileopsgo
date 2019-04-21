@@ -3323,6 +3323,27 @@ func (fh FileHelper) IsPathString(
 // path separators according to the
 // current operating system.
 func (fh FileHelper) JoinPathsAdjustSeparators(p1 string, p2 string) string {
+
+  errCode := 0
+
+  errCode, _, p1 = fh.isStringEmptyOrBlank(p1)
+
+  if errCode < 0 {
+    p1 = ""
+  }
+
+  errCode, _, p2 = fh.isStringEmptyOrBlank(p2)
+
+  if errCode < 0 {
+    p2 = ""
+  }
+
+  if p1 == "" &&
+    p2 == "" {
+
+    return ""
+  }
+
   ps1 := fp.FromSlash(fp.Clean(p1))
   ps2 := fp.FromSlash(fp.Clean(p2))
   return fp.Clean(fp.FromSlash(path.Join(ps1, ps2)))
