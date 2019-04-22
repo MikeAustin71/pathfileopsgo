@@ -38,11 +38,11 @@ func main() {
 
 func main() {
 
-  mainTest50_2()
+  mainTest51()
 
 }
 
-func mainTest51() {
+func mainTest52() {
   // /d/gowork/src/MikeAustin71/pathfileopsgo/pathfileops
   // D:\gowork\src\MikeAustin71\pathfileopsgo\pathfileops
 
@@ -70,7 +70,7 @@ func mainTest51() {
 
 }
 
-func mainTest50_2() {
+func mainTest51() {
 
   fh := pf.FileHelper{}
   rawPathFile := fh.AdjustPathSlash("...")

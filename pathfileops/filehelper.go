@@ -3401,30 +3401,125 @@ func (fh FileHelper) MakeAbsolutePath(relPath string) (string, error) {
   return p, err
 }
 
-// MakeDirAll - creates a directory named path,
-// along with any necessary parents, and returns nil,
-// or else returns an error. The permission bits perm
-// are used for all directories that MkdirAll creates.
-// If path is already a directory, MkdirAll does nothing
-// and returns nil.
+// MakeDirAll - creates a directory named path, along with any necessary parent directories.
+// The permission bits 'drwxrwxrwx' are used for all directories that MkdirAll creates.
+// If path is already a directory, MkdirAll does nothing and returns nil.
+//
 func (fh FileHelper) MakeDirAll(dirPath string) error {
-  var ModePerm os.FileMode = 0777
-  return os.MkdirAll(dirPath, ModePerm)
-}
-
-// MakeDir - Makes a directory. Returns
-// boolean value of false plus error if
-// the operation fails. If successful,
-// the function returns true.
-func (fh FileHelper) MakeDir(dirPath string) (bool, error) {
-  var ModePerm os.FileMode = 0777
-  err := os.Mkdir(dirPath, ModePerm)
+  ePrefix := "FileHelper.MakeDirAll() "
+  permission, err := FilePermissionConfig{}.New("drwxrwxrwx")
 
   if err != nil {
-    return false, err
+    return fmt.Errorf(ePrefix+"%v", err.Error())
+  }
+
+  err = fh.MakeDirAllPerm(dirPath, permission)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"%v", err.Error())
+  }
+
+  return nil
+}
+
+// MakeDirAllPerm - Creates a directory path along with any necessary parent paths.
+// If the target directory path already exists, this method does nothing and returns.
+//
+// If you wish to grant total access to a directory, consider setting permission code
+// as follows:
+//     FilePermissionConfig{}.New("drwxrwxrwx")
+//
+func (fh FileHelper) MakeDirAllPerm(dirPath string, permission FilePermissionConfig) error {
+  ePrefix := "FileHelper.MakeDirAllPerm() "
+
+  err2 := permission.IsValid()
+
+  if err2 != nil {
+    return fmt.Errorf(ePrefix+"Input parameter 'permission' is INVALID! "+
+      "Error='%v' ", err2.Error())
+  }
+
+  dirPermCode, err2 := permission.GetCompositePermissionMode()
+
+  if err2 != nil {
+    return fmt.Errorf(ePrefix+"INVALID Permission Code "+
+      "Error='%v' ", err2.Error())
+  }
+
+  err2 = os.MkdirAll(dirPath, dirPermCode)
+
+  if err2 != nil {
+    return fmt.Errorf(ePrefix+"Error return from os.MkdirAll(dirPath, permission). "+
+      "dirPath='%v' Error='%v' ", dirPath, err2.Error())
+  }
+
+  return nil
+}
+
+// MakeDir - Creates a single directory. The method returns boolean value of false plus error if
+// the operation fails. If successful, the function returns true.
+//
+// This method will fail if the parent directory does not exist.
+//
+// The permission bits 'drwxrwxrwx' are used for directory creation. If path is already a directory,
+// this method does nothing and returns the values 'true' and nil.
+//
+func (fh FileHelper) MakeDir(dirPath string) (bool, error) {
+
+  ePrefix := "FileHelper.MakeDir() "
+
+  permission, err := FilePermissionConfig{}.New("drwxrwxrwx")
+
+  if err != nil {
+    return false, fmt.Errorf(ePrefix+"%v", err.Error())
+  }
+
+  err = fh.MakeDirPerm(dirPath, permission)
+
+  if err != nil {
+    return false, fmt.Errorf(ePrefix+"%v", err.Error())
   }
 
   return true, nil
+}
+
+// MakeDirPerm - Creates a single directory using the permission codes passed by input
+// parameter 'permission'.
+//
+// This method will fail if the parent directory does not exist. To create all parent
+// directories in the path use method 'FileHelper.MakeDirAllPerm()'.
+//
+// The input parameter 'permission' is type 'FilePermissionConfig'. See method the documentation
+// for method 'FilePermissionConfig.New()' for an explanation of permission codes.
+//
+// An error will be triggered if the 'dirPath' input parameter represents an invalid path
+// or if parent directories in the path do not exist.
+//
+func (fh FileHelper) MakeDirPerm(dirPath string, permission FilePermissionConfig) error {
+  ePrefix := "FileHelper.MakeDirPerm() "
+
+  err2 := permission.IsValid()
+
+  if err2 != nil {
+    return fmt.Errorf(ePrefix+"Input parameter 'permission' is INVALID! "+
+      "Error='%v' ", err2.Error())
+  }
+
+  dirPermCode, err2 := permission.GetCompositePermissionMode()
+
+  if err2 != nil {
+    return fmt.Errorf(ePrefix+"INVALID Permission Code "+
+      "Error='%v' ", err2.Error())
+  }
+
+  err2 = os.Mkdir(dirPath, dirPermCode)
+
+  if err2 != nil {
+    return fmt.Errorf(ePrefix+"Error return from os.Mkdir(dirPath, dirPermCode). "+
+      "dirPath='%v' Error='%v' ", dirPath, err2.Error())
+  }
+
+  return nil
 }
 
 // MoveFile - Copies file from source to destination and, if
