@@ -987,11 +987,10 @@ func (fh FileHelper) DeleteDirFile(pathFile string) error {
   return nil
 }
 
-// DeleteDirPathAll - Wrapper function for RemoveAll
-// RemoveAll removes path and any children it contains.
-// It removes everything it can but returns the first
-// error it encounters. If the path does not exist,
-// RemoveAll returns nil (no error).
+// DeleteDirPathAll - Wrapper function for RemoveAll. This method removes path
+// and any children it contains. It removes everything it can but returns the
+// first error it encounters. If the path does not exist, this method takes no
+// action and returns nil (no error).
 func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
 
   ePrefix := "FileHelper.DeleteDirPathAll() "

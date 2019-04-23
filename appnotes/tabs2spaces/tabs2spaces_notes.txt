@@ -9,3 +9,9 @@ https://eev.ee/blog/2016/06/04/converting-a-git-repo-from-tabs-to-spaces/
 https://gist.github.com/eevee/6721177
 https://eev.ee/blog/2016/06/04/converting-a-git-repo-from-tabs-to-spaces/
 https://alexzaytsev.me/2014/10/19/git-filter-to-convert-spaces-to-tabs-and-vice-versa/
+
+check out is smudge
+https://git-scm.com/book/en/v2/Customizing-Git-Git-Attributes
+
+check in is clean
+just before they are staged and checked in

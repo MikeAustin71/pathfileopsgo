@@ -37,9 +37,66 @@ func main() {
 */
 
 func main() {
+  newDir := "D:\\T08\\x294_1\\x394_1\\x494_1"
 
-  mainTest51()
+  mainTest54(newDir)
 
+}
+
+func mainTest54(targetDir string) {
+  // Deletes everything: files and directories.
+
+  fh := pf.FileHelper{}
+
+  err := fh.DeleteDirPathAll(targetDir)
+
+  if err != nil {
+    fmt.Printf("Error returned by fh.DeleteDirPathAll(targetDir). \n"+
+      "newDir='%v' Error='%v' \n", targetDir, err.Error())
+    return
+  }
+
+  _, err = os.Stat(targetDir)
+
+  if err != nil && !os.IsNotExist(err) {
+    fmt.Printf("Deletion Failed! \n +"+
+      "os.Stat(targetDir) targetDir='%v' \n"+
+      "Error='%v' \n", targetDir, err.Error())
+    return
+  }
+
+  fmt.Println("********** mainTest54 **********")
+  fmt.Println("")
+  fmt.Println("           SUCCESS!!!           ")
+  fmt.Println("Deleted Directory: ", targetDir)
+
+}
+
+func mainTest53(newDir string) {
+  // Creates a New Directory including
+  // parent directories
+  fh := pf.FileHelper{}
+
+  err := fh.MakeDirAll(newDir)
+
+  if err != nil {
+    fmt.Printf("Error returned by fh.MakeDirAll(newDir). \n"+
+      "newDir='%v' Error='%v' \n", newDir, err.Error())
+    return
+  }
+
+  _, err = os.Stat(newDir)
+
+  if err != nil {
+    fmt.Printf("After creation 'newDir' does NOT Exist! \n"+
+      "os.Stat(newDir) newDir='%v' Error='%v'", newDir, err.Error())
+    return
+  }
+
+  fmt.Println("********** mainTest53 **********")
+  fmt.Println("")
+  fmt.Println("           SUCCESS!!!           ")
+  fmt.Println("Created New Directory: ", newDir)
 }
 
 func mainTest52() {
