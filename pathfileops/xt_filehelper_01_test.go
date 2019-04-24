@@ -126,16 +126,18 @@ func TestFileHelper_AddPathSeparatorToEndOfPathStr_05(t *testing.T) {
 func TestFileHelper_AreSameFile_01(t *testing.T) {
   // ..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir\\level_04_dir\\level_4_2_test.txt
 
+  fh := FileHelper{}
+
   rawFile1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
     "\\level_04_dir\\level_4_2_test.txt"
 
-  rawFile2 := rawFile1
+  correctedFile1 := fh.AdjustPathSlash(rawFile1)
 
-  fh := FileHelper{}
+  correctedFile2 := correctedFile1
 
-  relFile1 := fh.AdjustPathSlash(rawFile1)
+  relFile1 := fh.AdjustPathSlash(correctedFile1)
 
-  relFile2 := fh.AdjustPathSlash(rawFile2)
+  relFile2 := fh.AdjustPathSlash(correctedFile2)
 
   filesAreSame, err := fh.AreSameFile(relFile1, relFile2)
 
@@ -154,24 +156,24 @@ func TestFileHelper_AreSameFile_01(t *testing.T) {
 func TestFileHelper_AreSameFile_02(t *testing.T) {
   // ..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir\\level_04_dir\\level_4_2_test.txt
 
+  fh := FileHelper{}
+
   rawFile1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
     "\\level_04_dir\\level_4_2_test.txt"
+
+  correctedFile1 := fh.AdjustPathSlash(rawFile1)
 
   rawFile2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
     "\\level_04_dir\\level_4_3_test.txt"
 
-  fh := FileHelper{}
+  correctedFile2 := fh.AdjustPathSlash(rawFile2)
 
-  relFile1 := fh.AdjustPathSlash(rawFile1)
-
-  relFile2 := fh.AdjustPathSlash(rawFile2)
-
-  filesAreSame, err := fh.AreSameFile(relFile1, relFile2)
+  filesAreSame, err := fh.AreSameFile(correctedFile1, correctedFile2)
 
   if err != nil {
-    t.Errorf("Error returned by fh.AreSameFile(relFile1, relFile2). "+
+    t.Errorf("Error returned by fh.AreSameFile(correctedFile1, correctedFile2). "+
       "relFile1='%v'\nrelFile2='%v'\nError='%v'",
-      relFile1, relFile2, err.Error())
+      correctedFile1, correctedFile2, err.Error())
   }
 
   if filesAreSame {
@@ -191,20 +193,125 @@ func TestFileHelper_AreSameFile_03(t *testing.T) {
 
   fh := FileHelper{}
 
-  relFile1 := fh.AdjustPathSlash(rawFile1)
+  correctedFile1 := fh.AdjustPathSlash(rawFile1)
 
-  relFile2 := fh.AdjustPathSlash(rawFile2)
+  correctedFile2 := fh.AdjustPathSlash(rawFile2)
 
-  filesAreSame, err := fh.AreSameFile(relFile1, relFile2)
+  filesAreSame, err := fh.AreSameFile(correctedFile1, correctedFile2)
 
   if err != nil {
-    t.Errorf("Error returned by fh.AreSameFile(relFile1, relFile2). "+
-      "relFile1='%v'\nrelFile2='%v'\nError='%v'",
-      relFile1, relFile2, err.Error())
+    t.Errorf("Error returned by fh.AreSameFile(correctedFile1, correctedFile2). "+
+      "correctedFile1='%v'\ncorrectedFile2='%v'\nError='%v'",
+      correctedFile1, correctedFile2, err.Error())
   }
 
   if !filesAreSame {
     t.Error("Error: Expected file comparison='true'. Instead, file comparison='false'.")
+  }
+
+}
+
+func TestFileHelper_AreSameFile_04(t *testing.T) {
+  // ..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir\\level_04_dir\\level_4_2_test.txt
+
+  rawFile1 := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir" +
+    "/level_04_dir/iDoNotExist1.txt"
+
+  rawFile2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
+    "\\level_04_dir\\iDoNotExist1.txt"
+
+  fh := FileHelper{}
+
+  correctedFile1 := fh.AdjustPathSlash(rawFile1)
+
+  correctedFile2 := fh.AdjustPathSlash(rawFile2)
+
+  if os.PathSeparator == '/' {
+    correctedFile1 = strings.ReplaceAll(correctedFile1, "/", "\\")
+  }
+
+  if os.PathSeparator == '\\' {
+    correctedFile1 = strings.ReplaceAll(correctedFile1, "\\", "/")
+  }
+
+  _, err := fh.AreSameFile(correctedFile1, correctedFile2)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.AreSameFile" +
+      "(correctedFile1, correctedFile2) " +
+      "because 'relFile1' contained INVALID path separators.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_AreSameFile_05(t *testing.T) {
+  // ..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir\\level_04_dir\\level_4_2_test.txt
+
+  rawFile1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
+    "\\level_04_dir\\iDoNotExist1.txt"
+
+  rawFile2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
+    "\\level_04_dir\\iDoNotExist2.txt"
+
+  fh := FileHelper{}
+
+  correctedFile1 := fh.AdjustPathSlash(rawFile1)
+
+  correctedFile2 := fh.AdjustPathSlash(rawFile2)
+
+  filesAreSame, err := fh.AreSameFile(correctedFile1, correctedFile2)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.AreSameFile(correctedFile1, correctedFile2). "+
+      "correctedFile1='%v'\ncorrectedFile2='%v'\nError='%v'",
+      correctedFile1, correctedFile2, err.Error())
+  }
+
+  if filesAreSame {
+    t.Error("Error: Expected file comparison='false'. Instead, file comparison='true'.")
+  }
+
+}
+
+func TestFileHelper_AreSameFile_06(t *testing.T) {
+
+  correctedFile1 := ""
+
+  rawFile2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
+    "\\level_04_dir\\iDoNotExist2.txt"
+
+  fh := FileHelper{}
+
+  correctedFile2 := fh.AdjustPathSlash(rawFile2)
+
+  _, err := fh.AreSameFile(correctedFile1, correctedFile2)
+
+  if err == nil {
+    t.Error("Expected an err return from fh.AreSameFile(correctedFile1, correctedFile2) " +
+      "because correctedFile1 is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+}
+
+func TestFileHelper_AreSameFile_07(t *testing.T) {
+
+  rawFile1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
+    "\\level_04_dir\\iDoNotExist1.txt"
+
+  correctedFile2 := ""
+
+  fh := FileHelper{}
+
+  correctedFile1 := fh.AdjustPathSlash(rawFile1)
+
+  _, err := fh.AreSameFile(correctedFile1, correctedFile2)
+
+  if err == nil {
+    t.Error("Expected an err return from fh.AreSameFile(correctedFile1, correctedFile2) " +
+      "because correctedFile2 is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }
