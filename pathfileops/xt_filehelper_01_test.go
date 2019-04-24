@@ -990,10 +990,10 @@ func TestFileHelper_CopyFileByIo_04(t *testing.T) {
 
   err = FileHelper{}.CopyFileByIo(srcFile, destFile)
 
-  if err != nil {
-    t.Error("Did not expect error from FileHelper{}.CopyFileByIo(srcFile,destFile) " +
-      "because input parameter source file is equivalent to destination file. " +
-      "However, AN ERROR WAS RETURNED!")
+  if err == nil {
+    t.Error("Expected an error from FileHelper{}.CopyFileByIo(srcFile,destFile) " +
+      "because input parameter source file is equivalent to destination file.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }
@@ -1049,6 +1049,56 @@ func TestFileHelper_CopyFileByIo_06(t *testing.T) {
     t.Error("Expected an error return from  err = FileHelper{}.CopyFileByIo(src, \"    \")" +
       "because input parameter destination file consists entirely of blank spaces. " +
       "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_CopyFileByIo_07(t *testing.T) {
+
+  rawDestFile := "..\\filesfortest\\levelfilesfortest\\level_0_0_test.txt"
+
+  destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
+
+  if err != nil {
+    if err != nil {
+      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile). "+
+        "rawDestFile='%v' Error='%v' ", rawDestFile, err.Error())
+    }
+  }
+
+  srcFile := ""
+
+  err = FileHelper{}.CopyFileByIo(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error from FileHelper{}.CopyFileByIo(srcFile,destFile) " +
+      "because input parameter source file is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+}
+
+func TestFileHelper_CopyFileByIo_08(t *testing.T) {
+
+  destFile := ""
+
+  rawSrcFile := "..\\filesfortest\\levelfilesfortest\\level_0_0_test.txt"
+
+  srcFile, err := FileHelper{}.MakeAbsolutePath(rawSrcFile)
+
+  if err != nil {
+    if err != nil {
+      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile). "+
+        "rawSrcFile='%v' Error='%v' ", rawSrcFile, err.Error())
+    }
+  }
+
+  err = FileHelper{}.CopyFileByIo(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error from FileHelper{}.CopyFileByIo(srcFile,destFile) " +
+      "because input parameter destination file is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }
@@ -1173,7 +1223,6 @@ func TestFileHelper_CopyFileByLink_05(t *testing.T) {
   }
 }
 
-/*
 func TestFileHelper_CopyFileByLink_06(t *testing.T) {
 
   fh := FileHelper{}
@@ -1189,13 +1238,12 @@ func TestFileHelper_CopyFileByLink_06(t *testing.T) {
 
   err = FileHelper{}.CopyFileByLink(srcFile, srcFile)
 
-  if err != nil {
-    t.Errorf("Expected NO error return from FileHelper{}.CopyFileByLink(srcFile, srcFile) "+
-      "because srcFile and destFile are equivalent. "+
-      "However, AS ERROR WAS RETURNED! Error='%v' ", err.Error())
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}.CopyFileByLink" +
+      "(srcFile, srcFile) because Source File and Destination File are equivalent.\n"+
+      "However, NP ERROR WAS RETURNED!\n")
   }
 }
-*/
 
 func TestFileHelper_CreateFile_01(t *testing.T) {
 
