@@ -658,10 +658,20 @@ func (fh FileHelper) CopyFileByLinkByIo(src, dst string) (err error) {
 // method performs the copy operation by creating a hard symbolic
 // link to the source file.
 //
+// By creating a 'linked' file, changing the contents of one file
+// will be reflected in the second. The two linked files are
+// 'mirrors' of each other.
+//
+// Consider using CopyFileByIo() if the 'mirror' feature causes problems.
+//
 // "os.Link(src, dst)" is the only method employed to copy a
 // designated file. If "os.Link(src, dst)" fails, an err is returned.
 //
 // See: https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+// REQUIREMENT: The destination Path must previously exist. The destination file
+// need NOT exist as it will be created. If the destination file currently
+// exists, it will first be deleted and a new linked file will be crated.
 //
 func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 
@@ -708,32 +718,32 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
     return
   }
 
-  dfi, err2 := os.Stat(dst)
+  _, err2 = os.Stat(dst)
 
-  if err2 != nil {
 
-    if !os.IsNotExist(err2) {
-      // Must be PathError - path does not exist
-      err = fmt.Errorf(ePrefix+"Destination File path Error - path does NOT exist. "+
-        "Destination File='%v' Error: %v", dst, err2.Error())
-      return
+  // If the destination file does NOT exist - this is not a problem
+  // because the destination file will be created later.
+
+  if err2 == nil {
+    // The destination file exists. This IS a problem. Link will
+    // fail when attempting to create a link to an existing file.
+
+    err2 = os.Remove(dst)
+
+    if err2 != nil {
+      err = fmt.Errorf(ePrefix +
+        "Error: The target destination file exists and could NOT be deleted! \n" +
+        "destination file='%v' Error='%v' ", dst, err2.Error())
+      return err
     }
 
-  } else {
+    _, err2 = os.Stat(dst)
 
-    if !(dfi.Mode().IsRegular()) {
-      err = fmt.Errorf(ePrefix+"non-regular destination file - Cannot Overwrite "+
-        "destination file. Destination File='%v'  Destination File Mode= '%v'",
-        dfi.Name(), dfi.Mode().String())
-      return
-    }
-
-    // Source and destination have the same path
-    // and file names. They are one in the same
-    // file. Nothing to do.
-    if os.SameFile(sfi, dfi) {
-      err = nil
-      return
+    if err2 == nil {
+      err = fmt.Errorf(ePrefix + "Error: Deletion of preexisting destination file failed! \n" +
+        "The copy link operation cannot proceed! \n" +
+        "destination file='%v' ", dst)
+      return err
     }
 
   }
@@ -742,12 +752,12 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+"- os.Link(src, dst) FAILED! src='%v' dst='%v'  Error='%v'", src, dst, err2.Error())
-    return
+    return err
   }
 
   err = nil
 
-  return
+  return err
 }
 
 // CopyFileByIo - Copies file from source path and file name
@@ -795,16 +805,10 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   sfi, err2 := os.Stat(src)
 
   if err2 != nil {
-    if os.IsNotExist(err2) {
-      // Must be PathError - source path & file name do not exist!
-      err = fmt.Errorf(ePrefix+
-        "Source File path Error - path does NOT exist. Source File='%v' Error: %v",
-        src, err2.Error())
-      return err
-    }
 
     err = fmt.Errorf(ePrefix+
-      "Error returned from os.Stat(src). src='%v'  Error='%v'", src, err2.Error())
+      "Error: Source File is NOT Valid! Error returned from os.Stat(src). \n" +
+      "src='%v'  Error='%v'\n", src, err2.Error())
     return err
   }
 
@@ -818,20 +822,18 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
 
   dfi, err2 := os.Stat(dst)
 
-  if err2 != nil {
+  // If the destination file does NOT exist, this is not a problem
+  // since it will be create later. If the destination Path does
+  // not exist, an error return will be triggered.
 
-    if !os.IsNotExist(err2) {
-      // Must be PathError - path does not exist
-      err = fmt.Errorf(ePrefix+"Destination File path Error - path does NOT exist. Destination File='%v' Error: %v", dst, err.Error())
-      return err
-    }
-
-    // The destination file does not exist
-
-  } else {
+  if err2 == nil {
     // The destination file already exists!
+
     if !dfi.Mode().IsRegular() {
-      err = fmt.Errorf(ePrefix+"Error: non-regular destination file. Cannot Overwrite destination file. Destination file='%v' destination file mode='%v'", dfi.Name(), dfi.Mode().String())
+      err = fmt.Errorf(ePrefix+
+        "Error: non-regular destination file. Cannot Overwrite destination file. " +
+        "Destination file='%v' destination file mode='%v'",
+        dfi.Name(), dfi.Mode().String())
       return err
     }
 
@@ -991,6 +993,20 @@ func (fh FileHelper) DeleteDirFile(pathFile string) error {
 // and any children it contains. It removes everything it can but returns the
 // first error it encounters. If the path does not exist, this method takes no
 // action and returns nil (no error).
+//
+// Consider the following Example:
+//   1. D:\T08\x294_1\x394_1\x494_1  is a directory path that currently exists and
+//      contains files.
+//   2. Call DeleteDirPathAll("D:\\T08\\x294_1")
+//   3. Upon return from method DeleteDirPathAll():
+//      a. Paths
+//          D:\T08\x294_1\x394_1\x494_1 and any files in the 'x494_1' directory are deleted
+//          D:\T08\x294_1\x394_1\ and any files in the 'x394_1' directory are deleted
+//          D:\T08\x294_1\ and any files in the 'x294_1' directory are deleted
+//
+//      b. The Parent Path 'D:\T08' and any files in that parent path 'D:\T08'
+//         directory are unaffected and continue to exist.
+//
 func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
 
   ePrefix := "FileHelper.DeleteDirPathAll() "
@@ -1008,16 +1024,28 @@ func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
   }
 
   // If the path does NOT exist,
-  // 'RemoveAll()' returns 'nil'.
-  if !fh.DoesFileExist(pathDir) {
+  // Do nothing an return.
+  _, err := os.Stat(pathDir)
+
+  if err != nil {
     // Doesn't exist. Nothing to do.
     return nil
   }
 
-  err := os.RemoveAll(pathDir)
+  err = os.RemoveAll(pathDir)
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(pathDir). pathDir='%v'  Error='%v'", pathDir, err.Error())
+    return fmt.Errorf(ePrefix+
+      "Error returned by os.RemoveAll(pathDir). pathDir='%v'  Error='%v'",
+      pathDir, err.Error())
+  }
+
+  _, err = os.Stat(pathDir)
+
+  if err == nil {
+    // Path still exists. Something is wrong.
+    return fmt.Errorf("Delete Failed! 'pathDir' still exists! \n" +
+      "pathDir='%v' ", pathDir)
   }
 
   return nil
@@ -3452,6 +3480,14 @@ func (fh FileHelper) MakeDirAllPerm(dirPath string, permission FilePermissionCon
       "dirPath='%v' Error='%v' ", dirPath, err2.Error())
   }
 
+  _, err2 = os.Stat(dirPath)
+
+  if err2 != nil {
+    return fmt.Errorf(ePrefix +
+      "Error: Directory creation FAILED!. New Directory Path DOES NOT EXIST! \n" +
+      "dirPath='%v' \n", dirPath)
+  }
+
   return nil
 }
 
@@ -3516,6 +3552,14 @@ func (fh FileHelper) MakeDirPerm(dirPath string, permission FilePermissionConfig
   if err2 != nil {
     return fmt.Errorf(ePrefix+"Error return from os.Mkdir(dirPath, dirPermCode). "+
       "dirPath='%v' Error='%v' ", dirPath, err2.Error())
+  }
+
+  _, err2 = os.Stat(dirPath)
+
+  if err2 != nil {
+    return fmt.Errorf(ePrefix +
+      "Error: Directory creation FAILED!. New Directory Path DOES NOT EXIST! \n" +
+      "dirPath='%v' \n", dirPath)
   }
 
   return nil

@@ -37,13 +37,54 @@ func main() {
 */
 
 func main() {
-  newDir := "D:\\T08\\x294_1\\x394_1\\x494_1"
+  source := "D:\\T08\\testWriteFile801294.txt"
 
-  mainTest54(newDir)
+  destination := "D:\\T99\\Level2\\testWriteFile801294.txt"
+
+  mainTest56CopyFileLink(source, destination)
 
 }
 
-func mainTest54(targetDir string) {
+func mainTest56CopyFileLink(source, destination string) {
+
+  fh := pf.FileHelper{}
+
+  err := fh.CopyFileByLink(source, destination)
+
+  if err != nil {
+    fmt.Printf("Error returned by fh.CopyFileByLink(source, destination). \n" +
+      "source='%v'\ndestination='%v'\nError='%v'",
+      source, destination, err.Error())
+    return
+  }
+
+  fmt.Println("********** mainTest56CopyFileLink **********")
+  fmt.Println("")
+  fmt.Println("           SUCCESS!!!           ")
+
+}
+
+func mainTest55CopyFileIo(source, destination string) {
+
+  fh := pf.FileHelper{}
+
+  err := fh.CopyFileByIo(source, destination)
+
+  if err != nil {
+    fmt.Printf("Error returned by fh.CopyFileByIo(source, destination). \n" +
+      "source='%v'\ndestination='%v'\nError='%v'",
+      source, destination, err.Error())
+    return
+  }
+
+  fmt.Println("********** mainTest55CopyFileIo **********")
+  fmt.Println("")
+  fmt.Println("           SUCCESS!!!           ")
+
+
+}
+
+func mainTest54DeleteAll(targetDir string) {
   // Deletes everything: files and directories.
 
   fh := pf.FileHelper{}
@@ -58,21 +99,34 @@ func mainTest54(targetDir string) {
 
   _, err = os.Stat(targetDir)
 
-  if err != nil && !os.IsNotExist(err) {
+  if os.IsExist(err) {
+    fmt.Println("os.Stat(targetDir) returned an 'IsExist' type error!")
+  }
+
+  if os.IsNotExist(err) {
+    fmt.Println("os.Stat(targetDir) returned an 'IsNotExist' type error!")
+  }
+
+  if err !=nil {
+    fmt.Printf("Expected error reads: %v\n\n", err.Error())
+  }
+
+  if err == nil  {
     fmt.Printf("Deletion Failed! \n +"+
       "os.Stat(targetDir) targetDir='%v' \n"+
       "Error='%v' \n", targetDir, err.Error())
     return
   }
 
-  fmt.Println("********** mainTest54 **********")
+
+  fmt.Println("********** mainTest54DeleteAll **********")
   fmt.Println("")
   fmt.Println("           SUCCESS!!!           ")
   fmt.Println("Deleted Directory: ", targetDir)
 
 }
 
-func mainTest53(newDir string) {
+func mainTest53CreateNewDir(newDir string) {
   // Creates a New Directory including
   // parent directories
   fh := pf.FileHelper{}
@@ -93,7 +147,7 @@ func mainTest53(newDir string) {
     return
   }
 
-  fmt.Println("********** mainTest53 **********")
+  fmt.Println("********** mainTest53CreateNewDir **********")
   fmt.Println("")
   fmt.Println("           SUCCESS!!!           ")
   fmt.Println("Created New Directory: ", newDir)
