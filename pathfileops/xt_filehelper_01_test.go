@@ -180,6 +180,35 @@ func TestFileHelper_AreSameFile_02(t *testing.T) {
 
 }
 
+func TestFileHelper_AreSameFile_03(t *testing.T) {
+  // ..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir\\level_04_dir\\level_4_2_test.txt
+
+  rawFile1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
+    "\\level_04_dir\\iDoNotExist1.txt"
+
+  rawFile2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
+    "\\level_04_dir\\iDoNotExist1.txt"
+
+  fh := FileHelper{}
+
+  relFile1 := fh.AdjustPathSlash(rawFile1)
+
+  relFile2 := fh.AdjustPathSlash(rawFile2)
+
+  filesAreSame, err := fh.AreSameFile(relFile1, relFile2)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.AreSameFile(relFile1, relFile2). "+
+      "relFile1='%v'\nrelFile2='%v'\nError='%v'",
+      relFile1, relFile2, err.Error())
+  }
+
+  if !filesAreSame {
+    t.Error("Error: Expected file comparison='true'. Instead, file comparison='false'.")
+  }
+
+}
+
 func TestFileHelper_ChangeWorkingDir_01(t *testing.T) {
 
   fh := FileHelper{}
