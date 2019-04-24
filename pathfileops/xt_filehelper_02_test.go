@@ -6,6 +6,7 @@ import (
   "time"
 )
 
+/*
 func TestFileHelper_FindFilesInPath_01(t *testing.T) {
 
   fh := FileHelper{}
@@ -157,6 +158,7 @@ func TestFileHelper_FindFilesInPath_02(t *testing.T) {
   _ = targetDir.DeleteAll()
 
 }
+*/
 
 func TestFileHelper_FindFilesInPath_03(t *testing.T) {
   fh := FileHelper{}

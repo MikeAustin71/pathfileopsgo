@@ -93,7 +93,156 @@ func (fh FileHelper) AdjustPathSlash(path string) string {
     return ""
   }
 
+  if os.PathSeparator != '\\' {
+    return strings.ReplaceAll(path, "\\", string(os.PathSeparator))
+  }
+
+  if os.PathSeparator != '/' {
+    return strings.ReplaceAll(path, "/", string(os.PathSeparator))
+  }
+
   return fp.FromSlash(path)
+}
+
+// AreSameFile - Compares two paths or path/file names to determine if they are
+// the same and equivalent.
+//
+// An error will be triggered if one or both of the input parameters, 'pathFile1'
+// and 'pathFile2' are empty/blank strings.
+//
+// If the path file input parameters identify the same file, this method returns
+// 'true'.
+//
+// Before calling this method, it would be wise to ensure that both input parameters
+// are using the correct os.PathSeparator character. If the path file strings are
+// using the incorrect path separators, an error will be triggered.
+//
+func (fh FileHelper) AreSameFile(pathFile1, pathFile2 string) (bool, error) {
+
+  ePrefix := "FileHelper.AreSameFile() "
+
+  errCode := 0
+
+  errCode, _, pathFile1 = fh.isStringEmptyOrBlank(pathFile1)
+
+  isEmptyStr1 := false
+
+  if errCode < 0 {
+    isEmptyStr1 = true
+  }
+
+  isEmptyStr2 := false
+
+  errCode, _, pathFile2 = fh.isStringEmptyOrBlank(pathFile2)
+
+  if errCode < 0 {
+    isEmptyStr2 = true
+  }
+
+  if isEmptyStr1 && !isEmptyStr2 {
+    return false, errors.New(ePrefix + "Error: First Path File String is EMPTY and INVALID!")
+  }
+
+  if isEmptyStr2 && !isEmptyStr1 {
+    return false, errors.New(ePrefix +
+      "Error: Second Path File String is EMPTY and INVALID!")
+  }
+
+  if isEmptyStr1 && isEmptyStr2 {
+    return false, errors.New(ePrefix +
+      "Error: Both Path File Strings are EMPTY and INVALID!")
+  }
+
+  correctedPathFile1 := fh.AdjustPathSlash(pathFile1)
+
+  correctedPathFile2 := fh.AdjustPathSlash(pathFile2)
+
+  if correctedPathFile1 != pathFile1 &&
+    correctedPathFile2 != pathFile2 {
+
+    return false, fmt.Errorf(ePrefix+
+      "Error: Both input parameters 'pathFile1' and 'pathFile2' contain INVALID "+
+      "path separators.\npathFile1='%v'\npathFile2='%v'\n",
+      pathFile1, pathFile2)
+  }
+
+  if correctedPathFile1 != pathFile1 {
+
+    return false, fmt.Errorf(ePrefix+
+      "Error: Input parameter 'pathFile1' contains INVALID "+
+      "path separators.\npathFile1='%v'\n", pathFile1)
+  }
+
+  if correctedPathFile2 != pathFile2 {
+
+    return false, fmt.Errorf(ePrefix+
+      "Error: Input parameter 'pathFile2' contains INVALID "+
+      "path separators.\npathFile2='%v'\n", pathFile2)
+  }
+
+  str1Exists := false
+
+  f1, err := os.Stat(pathFile1)
+
+  if err == nil {
+    str1Exists = true
+  }
+
+  str2Exists := false
+
+  f2, err := os.Stat(pathFile2)
+
+  if err == nil {
+    str2Exists = true
+  }
+
+  if str1Exists && str2Exists {
+
+    if os.SameFile(f1, f2) {
+      // pathFile1 and pathFile2 are the same
+      // path and file name.
+
+      return true, nil
+
+    } else {
+
+      return false, nil
+    }
+
+  }
+
+  if str1Exists != str2Exists {
+
+    return false, nil
+  }
+
+  // Both pathFile1 and pathFile2 do NOT exist
+
+  absPathFile1, err := fh.MakeAbsolutePath(pathFile1)
+
+  if err != nil {
+    return false,
+      fmt.Errorf(ePrefix+
+        "Error: %v", err.Error())
+  }
+
+  absPathFile1 = strings.ToLower(absPathFile1)
+
+  absPathFile2, err := fh.MakeAbsolutePath(pathFile2)
+
+  if err != nil {
+    return false,
+      fmt.Errorf(ePrefix+
+        "Error: %v", err.Error())
+  }
+
+  absPathFile2 = strings.ToLower(absPathFile2)
+
+  if absPathFile1 == absPathFile2 {
+    return true, nil
+  }
+
+  return false, nil
 }
 
 // ChangeWorkingDir - Changes the current working directory to the
@@ -720,7 +869,6 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 
   _, err2 = os.Stat(dst)
 
-
   // If the destination file does NOT exist - this is not a problem
   // because the destination file will be created later.
 
@@ -731,8 +879,8 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
     err2 = os.Remove(dst)
 
     if err2 != nil {
-      err = fmt.Errorf(ePrefix +
-        "Error: The target destination file exists and could NOT be deleted! \n" +
+      err = fmt.Errorf(ePrefix+
+        "Error: The target destination file exists and could NOT be deleted! \n"+
         "destination file='%v' Error='%v' ", dst, err2.Error())
       return err
     }
@@ -740,8 +888,8 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
     _, err2 = os.Stat(dst)
 
     if err2 == nil {
-      err = fmt.Errorf(ePrefix + "Error: Deletion of preexisting destination file failed! \n" +
-        "The copy link operation cannot proceed! \n" +
+      err = fmt.Errorf(ePrefix+"Error: Deletion of preexisting destination file failed! \n"+
+        "The copy link operation cannot proceed! \n"+
         "destination file='%v' ", dst)
       return err
     }
@@ -807,7 +955,7 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   if err2 != nil {
 
     err = fmt.Errorf(ePrefix+
-      "Error: Source File is NOT Valid! Error returned from os.Stat(src). \n" +
+      "Error: Source File is NOT Valid! Error returned from os.Stat(src). \n"+
       "src='%v'  Error='%v'\n", src, err2.Error())
     return err
   }
@@ -831,7 +979,7 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
 
     if !dfi.Mode().IsRegular() {
       err = fmt.Errorf(ePrefix+
-        "Error: non-regular destination file. Cannot Overwrite destination file. " +
+        "Error: non-regular destination file. Cannot Overwrite destination file. "+
         "Destination file='%v' destination file mode='%v'",
         dfi.Name(), dfi.Mode().String())
       return err
@@ -1044,7 +1192,7 @@ func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
 
   if err == nil {
     // Path still exists. Something is wrong.
-    return fmt.Errorf("Delete Failed! 'pathDir' still exists! \n" +
+    return fmt.Errorf("Delete Failed! 'pathDir' still exists! \n"+
       "pathDir='%v' ", pathDir)
   }
 
@@ -2385,7 +2533,7 @@ func (fh FileHelper) GetFirstLastNonSeparatorCharIndexInPathStr(
     return firstIdx, lastIdx, err
   }
 
-  pathStr = fp.FromSlash(pathStr)
+  pathStr = fh.AdjustPathSlash(pathStr)
 
   lPathStr := 0
 
@@ -3371,9 +3519,9 @@ func (fh FileHelper) JoinPathsAdjustSeparators(p1 string, p2 string) string {
     return ""
   }
 
-  ps1 := fp.FromSlash(fp.Clean(p1))
-  ps2 := fp.FromSlash(fp.Clean(p2))
-  return fp.Clean(fp.FromSlash(path.Join(ps1, ps2)))
+  ps1 := fh.AdjustPathSlash(fp.Clean(p1))
+  ps2 := fh.AdjustPathSlash(fp.Clean(p2))
+  return fp.Clean(fh.AdjustPathSlash(path.Join(ps1, ps2)))
 
 }
 
@@ -3483,8 +3631,8 @@ func (fh FileHelper) MakeDirAllPerm(dirPath string, permission FilePermissionCon
   _, err2 = os.Stat(dirPath)
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix +
-      "Error: Directory creation FAILED!. New Directory Path DOES NOT EXIST! \n" +
+    return fmt.Errorf(ePrefix+
+      "Error: Directory creation FAILED!. New Directory Path DOES NOT EXIST! \n"+
       "dirPath='%v' \n", dirPath)
   }
 
@@ -3557,8 +3705,8 @@ func (fh FileHelper) MakeDirPerm(dirPath string, permission FilePermissionConfig
   _, err2 = os.Stat(dirPath)
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix +
-      "Error: Directory creation FAILED!. New Directory Path DOES NOT EXIST! \n" +
+    return fmt.Errorf(ePrefix+
+      "Error: Directory creation FAILED!. New Directory Path DOES NOT EXIST! \n"+
       "dirPath='%v' \n", dirPath)
   }
 
