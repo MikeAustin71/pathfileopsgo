@@ -877,7 +877,7 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 
   if areSameFile {
     err = fmt.Errorf(ePrefix + "Error: The source and destination file are the same - equivalent.\n" +
-    "Source File:'%v'\nDestination File:'%v'\n",
+      "Source File:'%v'\nDestination File:'%v'\n",
       correctedSrc, correctedDest)
     return err
   }
