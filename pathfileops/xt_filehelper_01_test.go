@@ -836,56 +836,6 @@ func TestFileHelper_ConvertDecimalToOctal_02(t *testing.T) {
 
 }
 
-func TestFileHelper_CopyFile_01(t *testing.T) {
-
-  fh := FileHelper{}
-  srcFile := fh.AdjustPathSlash("..\\logTest\\Level01\\Level02\\TestFile001.txt")
-  if !fh.DoesFileExist(srcFile) {
-    fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(srcFile)
-
-    if err != nil {
-      t.Errorf("Error returned by FileMgr{}.NewFromPathFileNameExtStr(srcFile). srcFile='%v'. Error='%v'", srcFile, err.Error())
-    }
-
-    err = fmgr.CreateDirAndFile()
-
-    if err != nil {
-      t.Errorf("Error returned by FileMgr{}.CreateDirAndFile(). srcFile='%v'. Error='%v'", srcFile, err.Error())
-    }
-
-    doesFileExist, err := fmgr.DoesThisFileExist()
-
-    if err != nil {
-      t.Errorf("Error returned by FileMgr{}.DoesThisFileExist(). srcFile='%v'. Error='%v'", srcFile, err.Error())
-    }
-
-    if !doesFileExist {
-      t.Errorf("Failed to create Source File == '%v'", srcFile)
-    }
-
-  }
-
-  destFile := fh.AdjustPathSlash("..\\logTest\\TestFile002.txt")
-
-  if fh.DoesFileExist(destFile) {
-    err := fh.DeleteDirFile(destFile)
-
-    if err != nil {
-      t.Error(fmt.Sprintf("Received Error while deleting destination file '%v', Error:", destFile), err)
-    }
-  }
-
-  err := fh.CopyFileByIo(srcFile, destFile)
-
-  if err != nil {
-    t.Error(fmt.Sprintf("Error while Copying Source File, '%v' to  Destination File '%v', Error:", srcFile, destFile), err)
-  }
-
-  if !fh.DoesFileExist(destFile) {
-    t.Error(fmt.Sprintf("Expected destination file: '%v' does NOT Exist.", destFile))
-  }
-}
-
 func TestFileHelper_CopyFileByIo_01(t *testing.T) {
 
   rawDestFile := "..\\checkfiles\\scratchTestCopyFile80179658.txt"
@@ -1037,10 +987,8 @@ func TestFileHelper_CopyFileByIo_06(t *testing.T) {
   srcFile, err := fh.MakeAbsolutePath(rawSrcFile)
 
   if err != nil {
-    if err != nil {
-      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile). "+
-        "rawSrcFile='%v' Error='%v' ", rawSrcFile, err.Error())
-    }
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile). "+
+      "rawSrcFile='%v' Error='%v' ", rawSrcFile, err.Error())
   }
 
   err = FileHelper{}.CopyFileByIo(srcFile, "   ")
@@ -1103,6 +1051,56 @@ func TestFileHelper_CopyFileByIo_08(t *testing.T) {
 
 }
 
+func TestFileHelper_CopyFileByIo_09(t *testing.T) {
+
+  fh := FileHelper{}
+  srcFile := fh.AdjustPathSlash("..\\logTest\\Level01\\Level02\\TestFile001.txt")
+  if !fh.DoesFileExist(srcFile) {
+    fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(srcFile)
+
+    if err != nil {
+      t.Errorf("Error returned by FileMgr{}.NewFromPathFileNameExtStr(srcFile). srcFile='%v'. Error='%v'", srcFile, err.Error())
+    }
+
+    err = fmgr.CreateDirAndFile()
+
+    if err != nil {
+      t.Errorf("Error returned by FileMgr{}.CreateDirAndFile(). srcFile='%v'. Error='%v'", srcFile, err.Error())
+    }
+
+    doesFileExist, err := fmgr.DoesThisFileExist()
+
+    if err != nil {
+      t.Errorf("Error returned by FileMgr{}.DoesThisFileExist(). srcFile='%v'. Error='%v'", srcFile, err.Error())
+    }
+
+    if !doesFileExist {
+      t.Errorf("Failed to create Source File == '%v'", srcFile)
+    }
+
+  }
+
+  destFile := fh.AdjustPathSlash("..\\logTest\\TestFile002.txt")
+
+  if fh.DoesFileExist(destFile) {
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Error(fmt.Sprintf("Received Error while deleting destination file '%v', Error:", destFile), err)
+    }
+  }
+
+  err := fh.CopyFileByIo(srcFile, destFile)
+
+  if err != nil {
+    t.Error(fmt.Sprintf("Error while Copying Source File, '%v' to  Destination File '%v', Error:", srcFile, destFile), err)
+  }
+
+  if !fh.DoesFileExist(destFile) {
+    t.Error(fmt.Sprintf("Expected destination file: '%v' does NOT Exist.", destFile))
+  }
+}
+
 func TestFileHelper_CopyFileByLink_01(t *testing.T) {
 
   testDestFile := "../filesfortest/levelfilesfortest/level_9_9_test.txt"
@@ -1138,7 +1136,7 @@ func TestFileHelper_CopyFileByLink_02(t *testing.T) {
 
   if err == nil {
     t.Error("Expected error return from FileHelper{}.CopyFileByLink(\"    \", destFile) " +
-      "because src parameter consists of all space characters. " +
+      "because src parameter consists entirely of blank spaces. " +
       "However, NO ERROR WAS RETURNED!")
   }
 }
@@ -1240,9 +1238,210 @@ func TestFileHelper_CopyFileByLink_06(t *testing.T) {
 
   if err == nil {
     t.Error("Expected an error return from FileHelper{}.CopyFileByLink" +
-      "(srcFile, srcFile) because Source File and Destination File are equivalent.\n"+
-      "However, NP ERROR WAS RETURNED!\n")
+      "(srcFile, srcFile) because Source File and Destination File are equivalent.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
+}
+
+func TestFileHelper_CopyFileByLink_07(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testSrcFile := "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+
+  srcFile, err := fh.MakeAbsolutePath(testSrcFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(testSrcFile). "+
+      "testSrcFile='%v' Error='%v' ", testSrcFile, err.Error())
+  }
+
+  destFile := ""
+
+  err = FileHelper{}.CopyFileByLink(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}.CopyFileByLink" +
+      "(srcFile, destFile) because Destination File is an EMPTY STRING!\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+}
+
+func TestFileHelper_CopyFileByLink_08(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testSrcFile := "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+
+  srcFile, err := fh.MakeAbsolutePath(testSrcFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(testSrcFile). "+
+      "testSrcFile='%v' Error='%v' ", testSrcFile, err.Error())
+  }
+
+  destFile := "   "
+
+  err = FileHelper{}.CopyFileByLink(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}.CopyFileByLink" +
+      "(srcFile, destFile) because Destination File consists" +
+      "entirely of blank spaces!\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+}
+
+func TestFileHelper_CopyFileByLink_09(t *testing.T) {
+
+  fh := FileHelper{}
+
+  srcFile := ""
+
+  testDestFile := "../filesfortest/levelfilesfortest/iDoNotExist.txt"
+
+  destFile, err := fh.MakeAbsolutePath(testDestFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(testSrcFile). "+
+      "testDestFile='%v' Error='%v' ", testDestFile, err.Error())
+  }
+
+  err = FileHelper{}.CopyFileByLink(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}.CopyFileByLink" +
+      "(srcFile, destFile) because Source File is an EMPTY STRING!\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+}
+
+func TestFileHelper_CopyFileByLink_10(t *testing.T) {
+
+  fh := FileHelper{}
+
+  srcFile := "   "
+
+  testDestFile := "../filesfortest/levelfilesfortest/iDoNotExist.txt"
+
+  destFile, err := fh.MakeAbsolutePath(testDestFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(testSrcFile). "+
+      "testDestFile='%v' Error='%v' ", testDestFile, err.Error())
+  }
+
+  err = FileHelper{}.CopyFileByLink(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}.CopyFileByLink" +
+      "(srcFile, destFile) because Source File consists " +
+      "entirely of blank spaces\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+}
+
+func TestFileHelper_CopyFileByLink_11(t *testing.T) {
+
+  fh := FileHelper{}
+
+  srcFile := "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+
+  destFile := "../createFilesTest/scratchXFg924198.txt"
+
+  if fh.DoesFileExist(destFile) {
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error: Target destination file previously exists and "+
+        "cannot be deleted!\ndestFile='%v'", destFile)
+      return
+    }
+
+  }
+
+  err := fh.CopyFileByLink(srcFile, destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.CopyFileByLink(srcFile, destFile).\n"+
+      "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
+      srcFile, destFile, err.Error())
+  }
+
+  if fh.DoesFileExist(destFile) {
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error After Copy Destination File Existed. However, the attempted "+
+        "Deletion of Destination File Failed. "+
+        "It cannot be deleted!\ndestFile='%v'", destFile)
+      return
+    }
+
+  } else {
+    t.Errorf("Error: CopyFileByLink Failed. Destination File DOES NOT EXIST!\n"+
+      "destFile='%v'\n", destFile)
+  }
+
+}
+
+func TestFileHelper_CopyFileByLink_12(t *testing.T) {
+
+  fh := FileHelper{}
+
+  srcFile := "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+
+  destFile := "../createFilesTest/scratchWRn877214.txt"
+
+  if fh.DoesFileExist(destFile) {
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error: Target destination file previously exists and "+
+        "cannot be deleted!\ndestFile='%v'", destFile)
+      return
+    }
+
+  }
+
+  err := fh.CopyFileByIo(srcFile, destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by ")
+  }
+
+  if !fh.DoesFileExist(destFile) {
+
+    t.Errorf("Error: Setup Failed. Target destination file was NOT created! "+
+      "fh.CopyFileByIo(srcFile, destFile) FAILED!\n"+
+      "srcFile='%v'\ndestFile='%v'", srcFile, destFile)
+    return
+
+  }
+
+  err = fh.CopyFileByLink(srcFile, destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.CopyFileByLink(srcFile, destFile).\n"+
+      "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
+      srcFile, destFile, err.Error())
+  }
+
+  if fh.DoesFileExist(destFile) {
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error After Copy Destination File Existed. However, the attempted "+
+        "Deletion of Destination File Failed. "+
+        "It cannot be deleted!\ndestFile='%v'", destFile)
+      return
+    }
+
+  } else {
+    t.Errorf("Error: CopyFileByLink Failed. Destination File DOES NOT EXIST!\n"+
+      "destFile='%v'\n", destFile)
+  }
+
 }
 
 func TestFileHelper_CreateFile_01(t *testing.T) {
