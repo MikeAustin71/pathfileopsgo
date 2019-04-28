@@ -1053,84 +1053,218 @@ func TestFileHelper_CopyFileByIo_08(t *testing.T) {
 func TestFileHelper_CopyFileByIo_09(t *testing.T) {
 
   fh := FileHelper{}
-  srcFile := fh.AdjustPathSlash("..\\logTest\\Level01\\Level02\\TestFile001.txt")
+  rawSrcFile := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir" +
+    "\\level_03_dir\\level_3_1_test.txt"
+
+  srcFile := fh.AdjustPathSlash(rawSrcFile)
+
   if !fh.DoesFileExist(srcFile) {
-    fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(srcFile)
-
-    if err != nil {
-      t.Errorf("Error returned by FileMgr{}.NewFromPathFileNameExtStr(srcFile). srcFile='%v'. Error='%v'", srcFile, err.Error())
-    }
-
-    err = fmgr.CreateDirAndFile()
-
-    if err != nil {
-      t.Errorf("Error returned by FileMgr{}.CreateDirAndFile(). srcFile='%v'. Error='%v'", srcFile, err.Error())
-    }
-
-    doesFileExist, err := fmgr.DoesThisFileExist()
-
-    if err != nil {
-      t.Errorf("Error returned by FileMgr{}.DoesThisFileExist(). srcFile='%v'. Error='%v'", srcFile, err.Error())
-    }
-
-    if !doesFileExist {
-      t.Errorf("Failed to create Source File == '%v'", srcFile)
-    }
-
+    t.Errorf("ERROR: Setup source file DOES NOT EXIST!\n" +
+      "srcFile='%v' \n", srcFile)
+    return
   }
 
-  destFile := fh.AdjustPathSlash("..\\logTest\\TestFile002.txt")
+  rawDestFile := "..\\checkfiles\\scratchTestFileHelper_CopyFileByIo_09.txt"
+
+  destFile := fh.AdjustPathSlash(rawDestFile)
 
   if fh.DoesFileExist(destFile) {
+
     err := fh.DeleteDirFile(destFile)
 
     if err != nil {
-      t.Error(fmt.Sprintf("Received Error while deleting destination file '%v', Error:", destFile), err)
+      t.Errorf("Error returned from fh.DeleteDirFile(destFile).\n" +
+        "Attempt to delete prexisting version of destination file FAILED!\n" +
+        "destFile='%v'\nError='%v'\n", destFile, err.Error())
+      return
+    }
+
+    if fh.DoesFileExist(destFile) {
+      t.Errorf("ERROR: Prexisting Destination File could NOT be Deleted!\n" +
+        "Destination File:'%v'\n", destFile)
+      return
     }
   }
 
   err := fh.CopyFileByIo(srcFile, destFile)
 
   if err != nil {
-    t.Error(fmt.Sprintf("Error while Copying Source File, '%v' to  Destination File '%v', Error:", srcFile, destFile), err)
+    t.Errorf("Error while Copying Source File to  Destination File!\n" +
+      "Source File='%v'\nDestination File='%v'\nError='%v'\n",
+      srcFile, destFile, err.Error())
   }
 
   if !fh.DoesFileExist(destFile) {
-    t.Error(fmt.Sprintf("Expected destination file: '%v' does NOT Exist.", destFile))
+    t.Error(fmt.Sprintf("After CopyIO Destination File DOES NOT EXIST!\n" +
+      "destFile='%v'\n", destFile))
+    return
   }
-}
 
+  err = fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirFile(destFile).\n" +
+    "During clean-up, the attempted deletion of the destination file FAILED!\n" +
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
+  }
+
+  if fh.DoesFileExist(destFile) {
+    t.Errorf("ERROR: Attempted deletion of the destination file during " +
+      "clean-up FAILED!\ndestFile='%v'", destFile)
+  }
+
+
+}
 
 func TestFileHelper_CopyFileByIo_10(t *testing.T) {
 
-  rawDestFile := "..\\checkfiles\\scratchTestCopyJKC90847211.txt"
+  rawDestFile := "..\\checkfiles\\scratchTestFileHelper_CopyFileByIo_10.txt"
 
-  destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
+  fh := FileHelper{}
+
+  destFile := fh.AdjustPathSlash(rawDestFile)
+
+  err := fh.DeleteDirFile(destFile)
 
   if err != nil {
-    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile). "+
-      "rawDestFile='%v' Error='%v' ", rawDestFile, err.Error())
+    t.Errorf("Error retunred by fh.DeleteDirFile(destFile) during setup.\n" +
+      "Attempt deletion of pre-existing version of destination file FAILED!\n" +
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
+    return
   }
-  _ = FileHelper{}.DeleteDirFile(destFile)
+
+  if fh.DoesFileExist(destFile) {
+    t.Errorf("ERROR: Unable to delete pre-existing version of destination file!\n" +
+      "destFile='%v'", destFile)
+    return
+  }
 
   rawSrcFile := "../filesfortest/levelfilesfortest/level_0_2_test.txt"
 
-  srcFile, err := FileHelper{}.MakeAbsolutePath(rawSrcFile)
+  srcFile := fh.AdjustPathSlash(rawSrcFile)
+
+  err = fh.CopyFileByIo(srcFile, destFile)
 
   if err != nil {
-    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile). "+
-      "rawDestFile='%v' Error='%v' ", rawDestFile, err.Error())
+    t.Errorf("Error returned by FileHelper{}.CopyFileByIo(srcFile, destFile).\n" +
+      "srcFile='%v'\ndestFile='%v\nError='%v'\n",
+      srcFile, destFile, err.Error())
   }
 
-  err = FileHelper{}.CopyFileByIo(srcFile, destFile)
-
-  if err == nil {
-    t.Error("Expected error from FileHelper{}.CopyFileByIo(\"\", destFile) " +
-      "because input parameter source file is an empty string. " +
-      "However, NO ERROR WAS RETURNED!")
+  if !fh.DoesFileExist(destFile) {
+    t.Errorf("ERROR: CopyFileByIo FAILED! The destination file was NOT created!\n" +
+      "destFile='%v'\n", destFile)
+    return
   }
 
-  _ = FileHelper{}.DeleteDirFile(destFile)
+  err = fh.DeleteDirFile(destFile)
+
+  if err!=nil {
+    t.Errorf("Error returned by fh.DeleteDirFile(destFile).\n" +
+      "Attempted deletion of destination file during clean-up FAILED!\n" +
+      "destFile='%v'\nError='%v'\n",destFile, err.Error())
+  }
+
+  if fh.DoesFileExist(destFile) {
+    t.Errorf("ERROR: Attempted deletion of destination file during clean-up FAILED!\n" +
+      "Destination File STILL EXISTS!\n" +
+      "Destination File='%v'\n", destFile)
+  }
+
+}
+
+func TestFileHelper_CopyFileByIo_11(t *testing.T) {
+
+  fh := FileHelper{}
+
+  destFile := "..\\checkfiles\\scratchTestFileHelper_CopyFileByIo_11.txt"
+
+  if fh.DoesFileExist(destFile) {
+
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error retrned by setup fh.DeleteDirFile(destFile).\n" +
+        "Attempted deletion of pre-existing destination file FAILED!\n" +
+        "destFile='%v'\nError='%v'\n", destFile, err.Error())
+      return
+    }
+
+    if fh.DoesFileExist(destFile) {
+      t.Errorf("Attempted deletion of pre-existing destination file FAILED!\n" +
+        "destFile='%v'\n", destFile)
+      return
+    }
+
+  }
+
+  srcFile := "../filesfortest/levelfilesfortest/level_0_2_test.txt"
+
+  err := fh.CopyFileByIo(srcFile, destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by setup fh.CopyFileByIo(srcFile, destFile).\n" +
+      "srcFile='%v'\ndestFile='%v\nError='%v'\n",
+      srcFile, destFile, err.Error())
+  }
+
+  if !fh.DoesFileExist(destFile) {
+    t.Errorf("Error: Attempted creation of setup destination file FAILED!\n" +
+      "destFile='%v'\n", destFile)
+    return
+  }
+
+  srcFile2 := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+
+  err = fh.CopyFileByIo(srcFile2, destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by 2nd Copy fh.CopyFileByIo(srcFile2, destFile).\n" +
+      "srcFile2='%v'\ndestFile='%v\nError='%v'\n",
+      srcFile2, destFile, err.Error())
+  }
+
+  if !fh.DoesFileExist(destFile) {
+    t.Errorf("Error: 2nd Copy of destination file does NOT exist!\n" +
+      "Destination File='%v'\n", destFile)
+    return
+  }
+
+  // 2nd destination file DOES EXIST!
+
+  finfoSrcFile, err := os.Stat(srcFile2)
+
+  if err != nil {
+    t.Errorf("Error returned by os.Stat(srcFile2).\n" +
+      "srcFile2='%v'\nError='%v'\n", srcFile2, err.Error())
+  }
+
+  finfoDestFile, err := os.Stat(destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by os.Stat(destFile).\n" +
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
+
+  if finfoSrcFile.Size() != finfoDestFile.Size() {
+    t.Errorf("The sizes of the source file and destination file DO NOT MATHCH!\n" +
+      "Source File Size='%v'  Destination File Size='%v'.\n",
+      finfoSrcFile.Size(), finfoDestFile.Size())
+  }
+
+  err = fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by clean-up fh.DeleteDirFile(destFile).\n" +
+      "destFile='%v'\nError='%v' ", destFile, err.Error())
+  }
+
+  if fh.DoesFileExist(destFile) {
+    t.Errorf("ERROR: Attempted deletion of destination file FAILED!\n" +
+      "Destination File='%v'\n", destFile)
+  }
 
 }
 
@@ -1423,6 +1557,7 @@ func TestFileHelper_CopyFileByLink_12(t *testing.T) {
 
   fh := FileHelper{}
 
+  testSrcFile := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
   srcFile := "../filesfortest/levelfilesfortest/level_0_1_test.txt"
 
   destFile := "../createFilesTest/scratchWRn877214.txt"
@@ -1438,7 +1573,7 @@ func TestFileHelper_CopyFileByLink_12(t *testing.T) {
 
   }
 
-  err := fh.CopyFileByIo(srcFile, destFile)
+  err := fh.CopyFileByIo(testSrcFile, destFile)
 
   if err != nil {
     t.Errorf("Error returned by ")
@@ -1461,19 +1596,42 @@ func TestFileHelper_CopyFileByLink_12(t *testing.T) {
       srcFile, destFile, err.Error())
   }
 
-  if fh.DoesFileExist(destFile) {
-    err := fh.DeleteDirFile(destFile)
+  if !fh.DoesFileExist(destFile) {
+    t.Errorf("Error: The copy by link operation failed! " +
+      "The destination file does NOT exist.\n"+
+      "destFile='%v'\n",
+      destFile)
+    return
+  }
 
-    if err != nil {
-      t.Errorf("Error After Copy Destination File Existed. However, the attempted "+
-        "Deletion of Destination File Failed. "+
-        "It cannot be deleted!\ndestFile='%v'", destFile)
-      return
-    }
+  // Destination file exists
+  finfoSrc, err := os.Stat(srcFile)
 
-  } else {
-    t.Errorf("Error: CopyFileByLink Failed. Destination File DOES NOT EXIST!\n"+
-      "destFile='%v'\n", destFile)
+  if err != nil {
+    t.Errorf("Error returned by os.Stat(srcFile).\n" +
+      "srcFile='%v'\nError='%v'", srcFile, err.Error())
+  }
+
+  finfoDest, err := os.Stat(destFile)
+
+  if err !=nil {
+    t.Errorf("Error returned by os.Stat(destFile).\n" +
+      "destFile='%v'\nError='%v'", destFile, err.Error())
+  }
+
+  if finfoSrc.Size() != finfoDest.Size() {
+    t.Errorf("Error: Size of source file does NOT match " +
+      "size of destination file.\nSourceFileSize='%v' DestinationFileSize='%v'\n",
+      finfoSrc.Size(), finfoDest.Size(),)
+  }
+
+  err = fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Error After Copy Destination File Existed. However, the attempted "+
+      "Deletion of Destination File Failed. "+
+      "It cannot be deleted!\ndestFile='%v'", destFile)
+    return
   }
 
 }
