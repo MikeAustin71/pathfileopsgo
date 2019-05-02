@@ -1557,10 +1557,12 @@ func TestFileHelper_CopyFileByLink_12(t *testing.T) {
 
   fh := FileHelper{}
 
-  testSrcFile := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
-  srcFile := "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+  testSrcFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_0_3_test.txt")
 
-  destFile := "../createFilesTest/scratchWRn877214.txt"
+  srcFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_0_1_test.txt")
+
+  destFile :=
+    fh.AdjustPathSlash("../createFilesTest/scratchTestFileHelper_CopyFileByLink_12.txt")
 
   if fh.DoesFileExist(destFile) {
     err := fh.DeleteDirFile(destFile)
@@ -1634,6 +1636,42 @@ func TestFileHelper_CopyFileByLink_12(t *testing.T) {
     return
   }
 
+}
+
+func TestFileHelper_CopyFileByLink_13(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testSrcFile := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+
+  srcFile := fh.AdjustPathSlash(testSrcFile)
+
+  err := FileHelper{}.CopyFileByLink(srcFile, srcFile)
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}.CopyFileByLink" +
+      "(srcFile, srcFile) because Source File and Destination File " +
+      "are the same.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+}
+
+func TestFileHelper_CopyFileByLink_14(t *testing.T) {
+
+  fh := FileHelper{}
+
+  srcFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/iDoNotExist.txt")
+
+  destFile :=
+    fh.AdjustPathSlash("../createFilesTest/scratchTestFileHelper_CopyFileByLink_14.txt")
+
+  err := FileHelper{}.CopyFileByLink(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}.CopyFileByLink" +
+      "(srcFile, destFile) because Source File DOES NOT EXIST!\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
 }
 
 func TestFileHelper_CreateFile_01(t *testing.T) {
