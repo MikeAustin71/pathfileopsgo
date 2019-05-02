@@ -27,6 +27,6 @@ Generate the code coverage detail:
 
 
 The following provides for code coverage display in your
-browser:
+browser. Run this on the command line:
 
 `go tool cover -html=xx_coverage.out`
