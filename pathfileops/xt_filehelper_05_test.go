@@ -5,6 +5,7 @@ import (
   "errors"
   "fmt"
   "io"
+  "os"
   "testing"
   "time"
 )
@@ -60,6 +61,167 @@ func TestFileHelper_MakeDirAll_02(t *testing.T) {
       "because the input parameter consists entirely of blank spaces. " +
       "However, NO ERROR WAS RETURNED!")
   }
+}
+
+func TestFileHelper_MakeDirAll_03(t *testing.T) {
+
+  fh := FileHelper{}
+  baseDirPath := fh.AdjustPathSlash("../checkfiles/TestFileHelper_MakeDirAll_03")
+  dirPath := fh.AdjustPathSlash("../checkfiles/TestFileHelper_MakeDirAll_03/tdir01/tdir02/tdir03")
+
+  _, err := os.Stat(baseDirPath)
+
+  if err == nil {
+    err = fh.DeleteDirPathAll(baseDirPath)
+
+    if err != nil {
+      t.Errorf("Error returned by fh.DeleteDirPathAll(baseDirPath) during test setup.\n" +
+        "Attempted deletion of base directory FAILED!\nbaseDirPath='%v'\n",
+        baseDirPath)
+      return
+    }
+
+    _, err = os.Stat(baseDirPath)
+
+    if err == nil {
+      t.Errorf("ERROR: Attempted deletion of baseDirPath during test setup FAILED!\n" +
+        "baseDirPath still exists!\nbaseDirPath='%v'\n", baseDirPath)
+    }
+  }
+
+  err = fh.MakeDirAll(dirPath)
+
+  if err !=nil {
+    t.Errorf("Error returned by fh.MakeDirAll(dirPath).\n" +
+      "dirPath='%v'\nError='%v'", dirPath, err.Error())
+    return
+  }
+
+  _, err = os.Stat(dirPath)
+
+  if err != nil {
+    t.Errorf("Error: fh.MakeDirAll(dirPath) FAILED!\n" +
+      "os.Stat() confirms that dirPath DOES NOT EXIST!\n" +
+      "dirPath='%v'\n", dirPath)
+    return
+  }
+
+  err = fh.DeleteDirPathAll(baseDirPath)
+
+  if err != nil{
+    t.Errorf("Error returned during clean-up by fh.DeleteDirPathAll(baseDirPath).\n" +
+      "baseDirPath='%v'\nError='%v'\n", baseDirPath, err.Error())
+  }
+
+  _, err = os.Stat(baseDirPath)
+
+  if err == nil {
+    t.Errorf("ERROR: baseDirPath still EXISTS! Attempted deletion FAILED!\n" +
+      "baseDirPath='%v'\n", baseDirPath)
+  }
+
+}
+
+func TestFileHelper_MakeDir01(t *testing.T) {
+  fh := FileHelper{}
+  dirPath := fh.AdjustPathSlash("../checkfiles/TestFileHelper_MakeDir01")
+
+  _, err := os.Stat(dirPath)
+
+  if err == nil  {
+
+    err = fh.DeleteDirFile(dirPath)
+
+    if err != nil {
+      t.Errorf("Error during test setup. Directory already exists!\n" +
+        "Attempted directory deletion FAILED!\ndirPath='%v'\n", dirPath)
+      return
+    }
+
+  }
+
+  _, err = os.Stat(dirPath)
+
+  if err == nil {
+    t.Errorf("ERROR: Setup tests directory still exists!\n" +
+      "dirPath='%v'\n", dirPath)
+    return
+  }
+
+  result, err := fh.MakeDir(dirPath)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeDir(dirPath).\n" +
+      "dirPath='%v'\nError='%v'\n", dirPath, err.Error())
+    return
+  }
+
+  if result == false {
+    t.Errorf("Expected MakeDir result='true'. Instead, result='false'.\n" +
+      "dirPath='%v'\n", dirPath)
+  }
+
+  _, err = os.Stat(dirPath)
+
+  if err != nil {
+    t.Errorf("ERROR: MakeDir(dirPath) failed to create test directory.\n" +
+      "dirPath='%v'\n", dirPath)
+    return
+  }
+
+  err = fh.DeleteDirFile(dirPath)
+
+  if err != nil {
+    t.Errorf("Error returned by cleanup fh.DeleteDirFile(dirPath).\n" +
+      "dirPath='%v'\n", dirPath)
+    return
+  }
+
+  _, err = os.Stat(dirPath)
+
+  if err == nil {
+    t.Errorf("Error: Clean-up FAILED! Test directory still exists!\n" +
+      "dirPath='%v'\n", dirPath)
+  }
+
+}
+
+func TestFileHelper_MakeDir02(t *testing.T) {
+
+  fh := FileHelper{}
+  dirPath := ""
+  result, err := fh.MakeDir(dirPath)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.MakeDir(dirPath) because\n" +
+      "'dirPath' is an empty string. However, NO ERROR WAS RETURNED!\n")
+  }
+
+
+  if result == true {
+    t.Error("ERROR: Expected fh.MakeDir(dirPath) result='false' because 'dirPath' " +
+      "is an empty string.\n Instead, result='true'!\n" )
+  }
+
+}
+
+func TestFileHelper_MakeDir03(t *testing.T) {
+
+  fh := FileHelper{}
+  dirPath := "    "
+  result, err := fh.MakeDir(dirPath)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.MakeDir(dirPath) because\n" +
+      "'dirPath' consists entirely of blank spaces. However, NO ERROR WAS RETURNED!\n")
+  }
+
+
+  if result == true {
+    t.Error("ERROR: Expected fh.MakeDir(dirPath) result='false' because 'dirPath' " +
+      "consists entirely of blank spaces.\n Instead, result='true'!\n" )
+  }
+
 }
 
 func TestFileHelper_MoveFile_01(t *testing.T) {

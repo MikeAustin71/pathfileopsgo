@@ -3667,7 +3667,22 @@ func (fh FileHelper) MakeDirAll(dirPath string) error {
 //     FilePermissionConfig{}.New("drwxrwxrwx")
 //
 func (fh FileHelper) MakeDirAllPerm(dirPath string, permission FilePermissionConfig) error {
+
   ePrefix := "FileHelper.MakeDirAllPerm() "
+
+  errCode := 0
+
+  errCode, _, dirPath = fh.isStringEmptyOrBlank(dirPath)
+
+  if errCode == -1 {
+    return  errors.New(ePrefix +
+        "Error: Input parameter 'dirPath' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return errors.New(ePrefix +
+        "Error: Input parameter 'dirPath' consists of blank spaces!")
+  }
 
   err2 := permission.IsValid()
 
@@ -3741,7 +3756,22 @@ func (fh FileHelper) MakeDir(dirPath string) (bool, error) {
 // or if parent directories in the path do not exist.
 //
 func (fh FileHelper) MakeDirPerm(dirPath string, permission FilePermissionConfig) error {
+
   ePrefix := "FileHelper.MakeDirPerm() "
+
+  errCode := 0
+
+  errCode, _, dirPath = fh.isStringEmptyOrBlank(dirPath)
+
+  if errCode == -1 {
+    return  errors.New(ePrefix +
+      "Error: Input parameter 'dirPath' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return errors.New(ePrefix +
+      "Error: Input parameter 'dirPath' consists of blank spaces!")
+  }
 
   err2 := permission.IsValid()
 
