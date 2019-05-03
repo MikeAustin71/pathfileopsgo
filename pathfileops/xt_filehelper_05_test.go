@@ -122,6 +122,144 @@ func TestFileHelper_MakeDirAll_03(t *testing.T) {
 
 }
 
+func TestFileHelper_MakeDirAllPerm01(t *testing.T) {
+
+  fh := FileHelper{}
+  baseDirPath := fh.AdjustPathSlash("../checkfiles/TestFileHelper_MakeDirAllPerm01")
+  dirPath := fh.AdjustPathSlash(
+    "../checkfiles/TestFileHelper_MakeDirAllPerm01/tDir1/tDir2/tDir3/tDir4")
+
+  _, err := os.Stat(baseDirPath)
+
+  if err == nil {
+
+    err = fh.DeleteDirPathAll(baseDirPath)
+    if err != nil {
+      t.Errorf("Error returned by fh.DeleteDirPathAll(baseDirPath) during test startup.\n" +
+        "This means that the baseDirPath and all subsidiary directories could NOT be deleted!\n" +
+        "baseDirPath='%v'\nError='%v'\n", baseDirPath, err.Error())
+      return
+    }
+
+    _, err = os.Stat(baseDirPath)
+
+    if err == nil {
+      t.Errorf("ERROR: During test startup attempts to delete the test baseDirPath FAILED!\n" +
+        "baseDirPath still EXISTS!\nbaseDirPath='%v'\n", baseDirPath)
+      return
+    }
+
+  }
+
+  permissionCfg, err := FilePermissionConfig{}.New("drwxrwxrwx")
+
+  if err != nil{
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"drwxrwxrwx\")\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  permissionCfg.isInitialized = false
+
+  err = fh.MakeDirAllPerm(dirPath, permissionCfg)
+
+  if err == nil {
+    t.Errorf("ERROR: Expected an error return from fh.MakeDirAllPerm(dirPath, permissionCfg)\n" +
+      "because 'permissionCfg' is Invalid. However, NO ERROR WAS RETURNED!\n" +
+      "dirPath='%v'\n", dirPath)
+  }
+
+  _, err = os.Stat(baseDirPath)
+
+  if err == nil {
+
+    err = fh.DeleteDirPathAll(baseDirPath)
+    if err != nil {
+      t.Errorf("Error returned by fh.DeleteDirPathAll(baseDirPath) during test clean-up.\n" +
+        "This means that the baseDirPath and all subsidiary directories could NOT be deleted!\n" +
+        "baseDirPath='%v'\nError='%v'\n", baseDirPath, err.Error())
+      return
+    }
+
+    _, err = os.Stat(baseDirPath)
+
+    if err == nil {
+      t.Errorf("ERROR: During test clean-up attempts to delete the test baseDirPath FAILED!\n" +
+        "baseDirPath still EXISTS!\nbaseDirPath='%v'\n", baseDirPath)
+    }
+
+  }
+
+}
+
+func TestFileHelper_MakeDirPerm_01(t *testing.T) {
+
+  fh := FileHelper{}
+  dirPath := fh.AdjustPathSlash(
+    "../checkfiles/TestFileHelper_MakeDirPerm_01")
+
+  _, err := os.Stat(dirPath)
+
+  if err == nil {
+
+    err = fh.DeleteDirPathAll(dirPath)
+    if err != nil {
+      t.Errorf("Error returned by fh.DeleteDirPathAll(dirPath) during test startup.\n" +
+        "This means that the dirPath could NOT be deleted!\n" +
+        "dirPath='%v'\nError='%v'\n", dirPath, err.Error())
+      return
+    }
+
+    _, err = os.Stat(dirPath)
+
+    if err == nil {
+      t.Errorf("ERROR: During test startup attempts to delete the test dirPath FAILED!\n" +
+        "dirPath still EXISTS!\nbaseDirPath='%v'\n", dirPath)
+      return
+    }
+
+  }
+
+  permissionCfg, err := FilePermissionConfig{}.New("drwxrwxrwx")
+
+  if err != nil{
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"drwxrwxrwx\")\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  permissionCfg.isInitialized = false
+
+  err = fh.MakeDirPerm(dirPath, permissionCfg)
+
+  if err == nil {
+    t.Errorf("ERROR: Expected an error return from fh.MakeDirPerm(dirPath, permissionCfg)\n" +
+      "because 'permissionCfg' is Invalid. However, NO ERROR WAS RETURNED!\n" +
+      "dirPath='%v'\n", dirPath)
+  }
+
+  _, err = os.Stat(dirPath)
+
+  if err == nil {
+
+    err = fh.DeleteDirPathAll(dirPath)
+    if err != nil {
+      t.Errorf("Error returned by fh.DeleteDirPathAll(dirPath) during test clean-up.\n" +
+        "This means that the dirPath could NOT be deleted!\n" +
+        "dirPath='%v'\nError='%v'\n", dirPath, err.Error())
+      return
+    }
+
+    _, err = os.Stat(dirPath)
+
+    if err == nil {
+      t.Errorf("ERROR: During test clean-up attempts to delete the test dirPath FAILED!\n" +
+        "dirPath still EXISTS!\ndirPath='%v'\n", dirPath)
+    }
+
+  }
+
+}
+
 func TestFileHelper_MakeDir01(t *testing.T) {
   fh := FileHelper{}
   dirPath := fh.AdjustPathSlash("../checkfiles/TestFileHelper_MakeDir01")

@@ -3659,12 +3659,51 @@ func (fh FileHelper) MakeDirAll(dirPath string) error {
   return nil
 }
 
-// MakeDirAllPerm - Creates a directory path along with any necessary parent paths.
-// If the target directory path already exists, this method does nothing and returns.
+// MakeDir - Creates a single directory. The method returns boolean
+// value of false plus error if the operation fails. If successful,
+// the function returns true.
 //
-// If you wish to grant total access to a directory, consider setting permission code
-// as follows:
+// This method will fail if the parent directory does not exist.
+//
+// The permission bits 'drwxrwxrwx' are used for directory creation.
+// If path is already a directory, this method does nothing and returns
+// the values 'true' and nil.
+//
+func (fh FileHelper) MakeDir(dirPath string) (bool, error) {
+
+  ePrefix := "FileHelper.MakeDir() "
+
+  permission, err := FilePermissionConfig{}.New("drwxrwxrwx")
+
+  if err != nil {
+    return false, fmt.Errorf(ePrefix+"%v", err.Error())
+  }
+
+  err = fh.MakeDirPerm(dirPath, permission)
+
+  if err != nil {
+    return false, fmt.Errorf(ePrefix+"%v", err.Error())
+  }
+
+  return true, nil
+}
+
+// MakeDirAllPerm - Creates a directory path along with any necessary
+// parent paths.
+//
+// If the target directory path already exists, this method does nothing
+// and returns.
+//
+// The input parameter 'permission' is of type 'FilePermissionConfig'.
+// See method the documentation for method 'FilePermissionConfig.New()'
+// for an explanation of permission codes.
+//
+// If you wish to grant total access to a directory, consider setting
+// permission code as follows:
 //     FilePermissionConfig{}.New("drwxrwxrwx")
+//
+// If the parent directories in parameter 'dirPath' do not yet exist, this
+// method will create them.
 //
 func (fh FileHelper) MakeDirAllPerm(dirPath string, permission FilePermissionConfig) error {
 
@@ -3716,44 +3755,23 @@ func (fh FileHelper) MakeDirAllPerm(dirPath string, permission FilePermissionCon
   return nil
 }
 
-// MakeDir - Creates a single directory. The method returns boolean value of false plus error if
-// the operation fails. If successful, the function returns true.
-//
-// This method will fail if the parent directory does not exist.
-//
-// The permission bits 'drwxrwxrwx' are used for directory creation. If path is already a directory,
-// this method does nothing and returns the values 'true' and nil.
-//
-func (fh FileHelper) MakeDir(dirPath string) (bool, error) {
-
-  ePrefix := "FileHelper.MakeDir() "
-
-  permission, err := FilePermissionConfig{}.New("drwxrwxrwx")
-
-  if err != nil {
-    return false, fmt.Errorf(ePrefix+"%v", err.Error())
-  }
-
-  err = fh.MakeDirPerm(dirPath, permission)
-
-  if err != nil {
-    return false, fmt.Errorf(ePrefix+"%v", err.Error())
-  }
-
-  return true, nil
-}
-
 // MakeDirPerm - Creates a single directory using the permission codes passed by input
 // parameter 'permission'.
 //
 // This method will fail if the parent directory does not exist. To create all parent
 // directories in the path use method 'FileHelper.MakeDirAllPerm()'.
 //
-// The input parameter 'permission' is type 'FilePermissionConfig'. See method the documentation
-// for method 'FilePermissionConfig.New()' for an explanation of permission codes.
 //
-// An error will be triggered if the 'dirPath' input parameter represents an invalid path
-// or if parent directories in the path do not exist.
+// The input parameter 'permission' is of type 'FilePermissionConfig'.
+// See method the documentation for method 'FilePermissionConfig.New()'
+// for an explanation of permission codes.
+//
+// If you wish to grant total access to a directory, consider setting
+// permission code as follows:
+//     FilePermissionConfig{}.New("drwxrwxrwx")
+//
+// An error will be triggered if the 'dirPath' input parameter represents
+// an invalid path or if parent directories in the path do not exist.
 //
 func (fh FileHelper) MakeDirPerm(dirPath string, permission FilePermissionConfig) error {
 
