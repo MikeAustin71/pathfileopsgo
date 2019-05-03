@@ -2067,7 +2067,9 @@ func (fh FileHelper) GetFileExtension(
   if err2 != nil {
     ext = ""
     isEmpty = true
-    err = fmt.Errorf(ePrefix+"Error returned from fh.GetDotSeparatorIndexesInPathStr(testPathFileNameExt). testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2)
+    err = fmt.Errorf(ePrefix+
+      "Error returned from fh.GetDotSeparatorIndexesInPathStr(testPathFileNameExt).\n" +
+      "testPathFileNameExt='%v'\nError='%v'\n", testPathFileNameExt, err2)
     return ext, isEmpty, err
   }
 
@@ -2090,8 +2092,9 @@ func (fh FileHelper) GetFileExtension(
     ext = ""
     isEmpty = true
     err = fmt.Errorf(ePrefix+
-      "Error returned from fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileNameExt). "+
-      "testPathFileNameExt='%v'  Error='%v'", testPathFileNameExt, err2)
+      "Error returned from fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathFileNameExt).\n"+
+      "testPathFileNameExt='%v'\nError='%v'\n",
+      testPathFileNameExt, err2)
     return ext, isEmpty, err
   }
 
@@ -3823,75 +3826,94 @@ func (fh FileHelper) MakeDirPerm(dirPath string, permission FilePermissionConfig
   return nil
 }
 
-// MoveFile - Copies file from source to destination and, if
-// successful, then deletes the original source file.
+// MoveFile - Copies file from source to destination and, if successful,
+// then deletes the original source file.
 //
-// The copy procedure will first attempt to the the 'Copy By Link' technique.
-// See FileHelper.CopyFileByLink().  If this fails, the method will seamlessly
-// attempt to copy the file the source file to the destination file by means
-// of writing the contents of the source file to a newly created destination
-// file. Reference Method FileHelper.CopyFileByIo().
+// The copy procedure will carried out using the the 'Copy By Io' technique.
+// See FileHelper.CopyFileByIo().
 //
-// If an error is encountered during this procedure it will be by means of the
-// return parameter 'err'.
+// If this copy operation fails, the method will return an error and it
+// will NOT delete the source file.
 //
-// A boolean value is also returned. If 'copyByLink' is 'true', it signals that
-// the move operation was accomplished using the 'CopyFileByLink' technique. If
-// the return parameter 'copyByLink' is 'false', it signals that the 'CopyFileByIo'
-// technique was used.
+// If an error is encountered during this procedure it will be returned by
+// means of the return parameter 'err'.
 //
-func (fh FileHelper) MoveFile(src, dst string) (copyByLink bool, err error) {
+func (fh FileHelper) MoveFile(src, dst string) error {
+
   ePrefix := "FileHelper.MoveFile() "
-  copyByLink = true
 
-  if len(src) == 0 {
-    err = errors.New(ePrefix + "Error: Input parameter 'src' is ZERO length string!")
-    return
+  errCode := 0
+
+  errCode, _, src = fh.isStringEmptyOrBlank(src)
+
+  if errCode == -1 {
+    return errors.New(ePrefix +
+      "Error: Input parameter 'src' is an empty string!")
   }
 
-  if len(dst) == 0 {
-    err = errors.New(ePrefix + "Error: Input parameter 'dst' is a ZERO length string!")
-    return
+  if errCode == -2 {
+    return errors.New(ePrefix +
+      "Error: Input parameter 'src' consists of blank spaces!")
   }
 
-  if !fh.DoesFileExist(src) {
-    err = fmt.Errorf(ePrefix+"Error: Input parameter 'src' file DOES NOT EXIST! src='%v'", src)
-    return
+  errCode, _, dst = fh.isStringEmptyOrBlank(dst)
+
+  if errCode == -1 {
+    return errors.New(ePrefix +
+      "Error: Input parameter 'dst' is an empty string!")
   }
 
-  err2 := fh.CopyFileByIo(src, dst)
-
-  if err2 != nil {
-
-    err2 = fh.CopyFileByLink(src, dst)
-
-    if err2 != nil {
-
-      err = fmt.Errorf(ePrefix+"Error returned from fh.CopyFileByLink(src, dst). Error='%v'",
-        err2.Error())
-    }
-
-    copyByLink = true
-
-    err = nil
-
-    return copyByLink, err
+  if errCode == -2 {
+    return errors.New(ePrefix +
+      "Error: Input parameter 'dst' consists of blank spaces!")
   }
 
-  copyByLink = false
+  _, err := os.Stat(src)
 
-  err2 = fh.DeleteDirFile(src)
-
-  if err2 != nil {
-    err = fmt.Errorf("Successfully copied file from source, '%v', to destination '%v'; "+
-      "however deletion of source file failed! Error: %v", src, dst, err2.Error())
-
-    return
+  if err != nil {
+    return fmt.Errorf(ePrefix+"Error: Input parameter 'src' file DOES NOT EXIST! src='%v'", src)
   }
 
-  err = nil
+  // ============================
+  // Perform the copy operation!
+  // ============================
+  err = fh.CopyFileByIo(src, dst)
 
-  return copyByLink, err
+  if err != nil {
+    // Copy Operation Failed. Return an error
+    // and DO NOT delete the source file!
+    return fmt.Errorf(ePrefix +
+      "Error: Copy operation FAILED!\nSource File='%v'\nDestination File='%v'\nError='%v'\n",
+      src, dst, err.Error())
+  }
+
+  // CopyFileByIo operation was apparently successful.
+  // Now, verify that destination file exists.
+
+  _, err = os.Stat(dst)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix + "Error: After Copy Operation, destination file DOES NOT EXIST!\n" +
+      "Therefore, the copy operation FAILED! Source file was NOT deleted.\n" +
+      "destination file='%v'\n", dst)
+  }
+
+  // Successful copy operation has been verified.
+  // Time to delete the source file.
+  err = os.Remove(src)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix +
+      "Copy operation succeeded, but attempted deletion of source file FAILED!\n" +
+      "Source File='%v'\n", src)
+  }
+
+  // Success, source was copied to destination
+  // AND the source file was deleted.
+
+  // Done and we are out of here!
+  return nil
+
 }
 
 // OpenFile - wrapper for os.OpenFile. This method may be used to open or

@@ -3,7 +3,6 @@ package pathfileops
 import (
   appLib "MikeAustin71/pathfileopsgo/appLibs"
   "errors"
-  "fmt"
   "io"
   "os"
   "testing"
@@ -364,45 +363,236 @@ func TestFileHelper_MakeDir03(t *testing.T) {
 
 func TestFileHelper_MoveFile_01(t *testing.T) {
   fh := FileHelper{}
-  setupFile := fh.AdjustPathSlash("..//logTest//FileMgmnt//TestFile003.txt")
-  srcFile := fh.AdjustPathSlash("..//logTest//FileSrc//TestFile003.txt")
-  destFile := fh.AdjustPathSlash("..//logTest//TestFile004.txt")
+  setupFile := fh.AdjustPathSlash("../logTest/FileMgmnt/TestFile003.txt")
+  srcFile := fh.AdjustPathSlash("../logTest/FileSrc/TestFile003.txt")
+  destFile := fh.AdjustPathSlash("../logTest/scratchTestFileHelper_MoveFile_01.txt")
 
   if fh.DoesFileExist(destFile) {
+
     err := fh.DeleteDirFile(destFile)
 
     if err != nil {
-      t.Error(fmt.Sprintf("Error on DeleteDirFile() deleting destination file, '%v'. Error:", destFile), err)
+      t.Errorf("Error during test setup deleting destination file.\n" +
+        "Destination File='%v'\nError:'%v'\n",
+        destFile, err)
+      return
     }
 
     if fh.DoesFileExist(destFile) {
-      t.Error(fmt.Sprintf("Error - destination file, '%v' STILL EXISTS!", destFile))
+      t.Errorf("Error on test setup: destination file, STILL EXISTS!\n" +
+        "Destination File='%v'", destFile)
+      return
     }
   }
 
   err := fh.CopyFileByIo(setupFile, srcFile)
 
   if err != nil {
-    t.Errorf("Received error copying setup file '%v' to destination file '%v' does NOT Exist. Error='%v'", setupFile, srcFile, err.Error())
+    t.Errorf("Received error copying 'setupFile' to 'srcFile'.\n" +
+      "Test Setup FAILED! 'srcFile' does NOT Exist. \n" +
+      "setupFile='%v'\nsrcFile='%v'\nError='%v'\n",
+      setupFile, srcFile, err.Error())
+    return
   }
 
   if !fh.DoesFileExist(srcFile) {
-    t.Error(fmt.Sprintf("Source File '%v' does NOT EXIST!!", srcFile))
+    t.Errorf("Test Setup FAILED! Source File does NOT EXIST!!\n" +
+      "srcFile='%v'", srcFile)
+    return
   }
 
-  _, err = fh.MoveFile(srcFile, destFile)
+  err = fh.MoveFile(srcFile, destFile)
 
   if err != nil {
-    t.Error(fmt.Sprintf("Error on FileHelper:MoveFile() moving src '%v' to destination '%v' ", srcFile, destFile), err)
+    t.Errorf("Error returend by fh.MoveFile(srcFile, destFile)\n" +
+      "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
+      srcFile, destFile, err.Error())
+    return
   }
 
   if fh.DoesFileExist(srcFile) {
-    t.Error(fmt.Sprintf("FileHelper:MoveFile() FAILED! Source File '%v' still exists!!", srcFile))
+    t.Errorf("FileHelper:MoveFile() FAILED! Source File still exists!!\n" +
+      "Source File='%v'\n", srcFile)
   }
 
   if !fh.DoesFileExist(destFile) {
-    t.Error(fmt.Sprintf("FileHelper:MoveFile() FAILED! Destination File '%v' DOES NOT EXIST!", destFile))
+    t.Errorf("FileHelper:MoveFile() FAILED! Destination File DOES NOT EXIST!\n" +
+      "Destination File='%v'\n", destFile)
+    return
   }
+
+  err = fh.DeleteDirFile(destFile)
+
+  if err !=nil {
+    t.Errorf("Error during test clean-up: Attempted deletion of destination " +
+      "file FAILED!\nDestination File still exists!\nDestination File='%v'",
+      destFile)
+  }
+}
+
+func TestFileHelper_MoveFile_02(t *testing.T) {
+  fh := FileHelper{}
+  srcFile := ""
+  destFile := fh.AdjustPathSlash("../logTest/scratchTestFileHelper_MoveFile_02.txt")
+
+  err := fh.MoveFile(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.MoveFile(srcFile, destFile)\n" +
+      "because srcFile is an empty string. However, NO ERROR WAS RETURNED!\n")
+  }
+}
+
+func TestFileHelper_MoveFile_03(t *testing.T) {
+  fh := FileHelper{}
+  srcFile := "   "
+  destFile := fh.AdjustPathSlash("../logTest/scratchTestFileHelper_MoveFile_02.txt")
+
+  err := fh.MoveFile(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.MoveFile(srcFile, destFile)\n" +
+      "because srcFile consists entirely of blank spaces.\nHowever, NO ERROR WAS RETURNED!\n")
+  }
+}
+
+func TestFileHelper_MoveFile_04(t *testing.T) {
+
+  fh := FileHelper{}
+  srcFile := fh.AdjustPathSlash("../logTest/FileMgmnt/TestFile003.txt")
+  destFile := "    "
+
+  err := fh.MoveFile(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.MoveFile(srcFile, destFile)\n" +
+      "because destFile consists entirely of blank spaces.\nHowever, NO ERROR WAS RETURNED!\n")
+  }
+
+  _, err = os.Stat(srcFile)
+
+  if err != nil {
+    t.Errorf("Error: Expected that source file would NOT be deleted with an error\n" +
+      "return from MoveFile(). However, the source file WAS DELETED!\nSource File='%v'\n",
+      srcFile)
+  }
+
+}
+
+func TestFileHelper_MoveFile_05(t *testing.T) {
+
+  fh := FileHelper{}
+  srcFile := fh.AdjustPathSlash("../logTest/FileMgmnt/TestFile003.txt")
+  destFile := ""
+
+  err := fh.MoveFile(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.MoveFile(srcFile, destFile)\n" +
+      "because 'destFile' is an empty string.\nHowever, NO ERROR WAS RETURNED!\n")
+  }
+
+  _, err = os.Stat(srcFile)
+
+  if err != nil {
+    t.Errorf("Error: Expected that source file would NOT be deleted with an error\n" +
+      "return from MoveFile(). However, the source file WAS DELETED!\nSource File='%v'\n",
+      srcFile)
+  }
+}
+
+func TestFileHelper_MoveFile_06(t *testing.T) {
+
+  fh := FileHelper{}
+  srcFile := fh.AdjustPathSlash("../logTest/FileMgmnt/iDoNotExist.txt")
+  destFile := "../logTest/FileMgmnt/scratchTestFileHelper_MoveFile_06.txt"
+
+  err := fh.MoveFile(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.MoveFile(srcFile, destFile)\n" +
+      "because 'srcFile' DOES NOT EXIST!.\nHowever, NO ERROR WAS RETURNED!\n")
+  }
+}
+
+func TestFileHelper_MoveFile_07(t *testing.T) {
+  fh := FileHelper{}
+  setupDestFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_0_0_test.txt")
+  srcFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_0_3_test.txt")
+  setupSrcFile := fh.AdjustPathSlash("../checkfiles/setuplevel_0_3_test.txt")
+  destFile := fh.AdjustPathSlash("../logTest//scratchTestFileHelper_MoveFile_07.txt")
+
+  if fh.DoesFileExist(destFile) {
+
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error during test setup deleting destination file.\n" +
+        "Destination File='%v'\nError:'%v'\n",
+        destFile, err)
+      return
+    }
+
+    if fh.DoesFileExist(destFile) {
+      t.Errorf("Error on test setup: destination file, STILL EXISTS!\n" +
+        "Destination File='%v'", destFile)
+      return
+    }
+  }
+
+  err := fh.CopyFileByIo(setupDestFile, destFile)
+
+  if err != nil {
+    t.Errorf("Received error copying 'setupDestFile' to 'srcFile'.\n" +
+      "Test Setup FAILED! 'srcFile' does NOT Exist. \n" +
+      "setupDestFile='%v'\nsrcFile='%v'\nError='%v'\n",
+      setupDestFile, srcFile, err.Error())
+    return
+  }
+
+
+  err = fh.CopyFileByIo(srcFile, setupSrcFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.CopyFileByIo(srcFile, setupSrcFile).\n" +
+      "Test Setup for source file FAILED!\n" +
+      "setupSrcFile='%v'\nsrcFile='%v'\nError='%v'\n",
+      srcFile, setupSrcFile, err.Error())
+    return
+  }
+
+  if !fh.DoesFileExist(setupSrcFile) {
+    t.Errorf("Test Setup FAILED! Setup Source File does NOT EXIST!!\n" +
+      "setupSrcFile='%v'", setupSrcFile)
+    return
+  }
+
+  err = fh.MoveFile(setupSrcFile, destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MoveFile(setupSrcFile, destFile)\n" +
+      "setupSrcFile='%v'\ndestFile='%v'\nError='%v'\n",
+      setupSrcFile, destFile, err.Error())
+    return
+  }
+
+  destFileInfo, err := os.Stat(destFile)
+
+  if err != nil {
+    t.Errorf("Error: MoveFile() did NOT create the destFile!\n" +
+      "Destination File='%v'\n", destFile)
+  }
+
+  srcFileInfo, err := os.Stat(srcFile)
+
+  if srcFileInfo.Size() != destFileInfo.Size() {
+    t.Errorf("Error: The destination file size in bytes does not match the\n" +
+      "original source file size in bytes!\nSource File Size='%v', " +
+      "Destination File Size='%v'\n",
+      srcFileInfo.Size(), destFileInfo.Size())
+  }
+
+  _ = os.Remove(destFile)
 }
 
 func TestFileHelper_OpenFile_01(t *testing.T) {

@@ -2444,7 +2444,7 @@ func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err erro
   destPathFileName := dMgr.GetAbsolutePathWithSeparator() + fMgr.fileNameExt
 
   fh := FileHelper{}
-  _, err2 = fh.MoveFile(fMgr.absolutePathFileName, destPathFileName)
+  err2 = fh.MoveFile(fMgr.absolutePathFileName, destPathFileName)
 
   if err2 != nil {
     newFMgr = FileMgr{}
