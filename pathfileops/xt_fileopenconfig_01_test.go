@@ -1216,13 +1216,15 @@ func TestFileOpenConfig_SetFileOpenModes_01(t *testing.T) {
     FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New(FOpenType.TypeNone()," +
+      "FOpenMode.ModeNone()).\nError='%v'\n", err.Error())
   }
 
   err = fOpStatus.SetFileOpenType(FOpenType.TypeWriteOnly())
 
   if err != nil {
-    t.Errorf("Error returned by SetFileOpenType{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by fOpStatus.SetFileOpenType(FOpenType.TypeWriteOnly()).\n" +
+      "Error='%v' \n", err.Error())
   }
 
   err = fOpStatus.SetFileOpenModes(FOpenMode.ModeAppend(), FOpenMode.ModeCreate())

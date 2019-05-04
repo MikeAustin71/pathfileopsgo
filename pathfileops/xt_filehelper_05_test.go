@@ -595,6 +595,324 @@ func TestFileHelper_MoveFile_07(t *testing.T) {
   _ = os.Remove(destFile)
 }
 
+func TestFileHelper_OpenFile_01(t *testing.T) {
+
+  targetFile := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+
+  fh := FileHelper{}
+
+  targetFile = fh.AdjustPathSlash(targetFile)
+
+  fOpCfg, err := FileOpenConfig{}.New(FOpenType.TypeNone(),
+    FOpenMode.ModeNone())
+
+  if err != nil {
+    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+  }
+
+  err = fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly())
+
+  if err != nil {
+    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  err = fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())
+
+  if err != nil {
+    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  fPermCfg, err := FilePermissionConfig{}.New("-r--r--r--")
+
+  if err != nil {
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  fPtr, err := fh.OpenFile(targetFile, fOpCfg, fPermCfg)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.OpenFile(targetFile, fOpCfg, fPermCfg)\n" +
+      "targetFile='%v', Error='%v'\n", targetFile, err.Error())
+    return
+  }
+
+  if fPtr == nil {
+    t.Error("fh.OpenFile(targetFile, fOpCfg, fPermCfg) returned a nil pointer.")
+    return
+  }
+
+  err = fPtr.Close()
+
+  if err != nil {
+    t.Errorf("Error returned by fPtr.Close()\n" +
+      "targetFile='%v', Error='%v'\n", targetFile, err.Error())
+  }
+
+}
+
+func TestFileHelper_OpenFile_02(t *testing.T) {
+
+  targetFile := ""
+
+  fh := FileHelper{}
+
+  fOpCfg, err := FileOpenConfig{}.New(FOpenType.TypeNone(),
+    FOpenMode.ModeNone())
+
+  if err != nil {
+    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+  }
+
+  err = fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly())
+
+  if err != nil {
+    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  err = fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())
+
+  if err != nil {
+    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  fPermCfg, err := FilePermissionConfig{}.New("-r--r--r--")
+
+  if err != nil {
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  fPtr, err := fh.OpenFile(targetFile, fOpCfg, fPermCfg)
+
+  if err == nil {
+    t.Error("Expected an error from return fh.OpenFile(targetFile, fOpCfg, fPermCfg)\n" +
+      "because parameter 'targetFile' is an empty string!\n"+
+      "However, NO ERROR WAS RETURNED!\n")
+
+    if fPtr != nil {
+      _ = fPtr.Close()
+    }
+
+    return
+  }
+
+}
+
+func TestFileHelper_OpenFile_03(t *testing.T) {
+
+  targetFile := "     "
+
+  fh := FileHelper{}
+
+  fOpCfg, err := FileOpenConfig{}.New(FOpenType.TypeNone(),
+    FOpenMode.ModeNone())
+
+  if err != nil {
+    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+  }
+
+  err = fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly())
+
+  if err != nil {
+    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  err = fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())
+
+  if err != nil {
+    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  fPermCfg, err := FilePermissionConfig{}.New("-r--r--r--")
+
+  if err != nil {
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  fPtr, err := fh.OpenFile(targetFile, fOpCfg, fPermCfg)
+
+  if err == nil {
+    t.Error("Expected an error from return fh.OpenFile(targetFile, fOpCfg, fPermCfg)\n" +
+      "because parameter 'targetFile' consists entirely of blank spaces!\n"+
+      "However, NO ERROR WAS RETURNED!\n")
+
+    if fPtr != nil {
+      _ = fPtr.Close()
+    }
+
+    return
+  }
+
+}
+
+func TestFileHelper_OpenFile_04(t *testing.T) {
+
+  targetFile := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+
+  fh := FileHelper{}
+
+  targetFile = fh.AdjustPathSlash(targetFile)
+
+  fOpCfg, err := FileOpenConfig{}.New(FOpenType.TypeNone(),
+    FOpenMode.ModeNone())
+
+  if err != nil {
+    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+  }
+
+  err = fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly())
+
+  if err != nil {
+    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  err = fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())
+
+  if err != nil {
+    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  fPermCfg, err := FilePermissionConfig{}.New("-r--r--r--")
+
+  if err != nil {
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  fOpCfg.isInitialized = false
+
+  fPtr, err := fh.OpenFile(targetFile, fOpCfg, fPermCfg)
+
+  if err == nil {
+    t.Error("Expected an error from return fh.OpenFile(targetFile, fOpCfg, fPermCfg)\n" +
+      "because parameter 'fOpCfg' is INVALID!\n"+
+      "However, NO ERROR WAS RETURNED!\n")
+
+    if fPtr != nil {
+      _ = fPtr.Close()
+    }
+
+    return
+  }
+
+}
+
+func TestFileHelper_OpenFile_05(t *testing.T) {
+
+  targetFile := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+
+  fh := FileHelper{}
+
+  targetFile = fh.AdjustPathSlash(targetFile)
+
+  fOpCfg, err := FileOpenConfig{}.New(FOpenType.TypeNone(),
+    FOpenMode.ModeNone())
+
+  if err != nil {
+    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+  }
+
+  err = fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly())
+
+  if err != nil {
+    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  err = fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())
+
+  if err != nil {
+    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  fPermCfg, err := FilePermissionConfig{}.New("-r--r--r--")
+
+  if err != nil {
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  fPermCfg.isInitialized = false
+
+  fPtr, err := fh.OpenFile(targetFile, fOpCfg, fPermCfg)
+
+  if err == nil {
+    t.Error("Expected an error from return fh.OpenFile(targetFile, fOpCfg, fPermCfg)\n" +
+      "because parameter 'fPermCfg' is INVALID!\n"+
+      "However, NO ERROR WAS RETURNED!\n")
+
+    if fPtr != nil {
+      _ = fPtr.Close()
+    }
+
+    return
+  }
+
+}
+
+func TestFileHelper_OpenFile_06(t *testing.T) {
+
+  targetFile := "../filesfortest/levelfilesfortest/iDoNotExist.txt"
+
+  fh := FileHelper{}
+
+  targetFile = fh.AdjustPathSlash(targetFile)
+
+  fOpCfg, err := FileOpenConfig{}.New(FOpenType.TypeNone(),
+    FOpenMode.ModeNone())
+
+  if err != nil {
+    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+  }
+
+  err = fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly())
+
+  if err != nil {
+    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  err = fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())
+
+  if err != nil {
+    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  fPermCfg, err := FilePermissionConfig{}.New("-r--r--r--")
+
+  if err != nil {
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n" +
+      "Error='%v' \n", err.Error())
+  }
+
+  fPtr, err := fh.OpenFile(targetFile, fOpCfg, fPermCfg)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.OpenFile(targetFile, fOpCfg, fPermCfg)\n" +
+      "because targetFile does NOT exist.\n" +
+      "However, NO ERROR WAS RETURNED!")
+
+    if fPtr != nil {
+      _ = fPtr.Close()
+    }
+
+    return
+  }
+
+}
+
 func TestFileHelper_OpenFileForReading_01(t *testing.T) {
   fh := FileHelper{}
   target := fh.AdjustPathSlash(alogtopTest2Text)

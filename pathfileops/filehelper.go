@@ -3943,14 +3943,35 @@ func (fh FileHelper) OpenFile(
     return filePtr, err
   }
 
+  err2 := fileOpenCfg.IsValid()
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+"Input Parameter 'fileOpenCfg' is INVALID!\n" +
+      "Error='%v'", err2.Error())
+    return filePtr, err
+  }
+
   fOpenCode, err2 := fileOpenCfg.GetCompositeFileOpenCode()
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"%v", err2.Error())
+    err = fmt.Errorf(ePrefix + "%v", err2.Error())
+    return filePtr, err
+  }
+
+  err2 = filePermissionCfg.IsValid()
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+"Input Parameter 'filePermissionCfg' is INVALID!\n" +
+      "Error='%v'\n", err2.Error())
     return filePtr, err
   }
 
   fileMode, err2 := filePermissionCfg.GetCompositePermissionMode()
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix + "%v", err2.Error())
+    return filePtr, err
+  }
 
   filePtr, err2 = os.OpenFile(targetPathFileName, fOpenCode, fileMode)
 
