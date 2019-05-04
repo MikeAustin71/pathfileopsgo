@@ -481,3 +481,4 @@ func TestFileSelectCriterionMode_Value_06(t *testing.T) {
     t.Errorf("Expected 'FileSelectMode.ORSelect()' value = 2. Instead, got %v", i)
   }
 }
+

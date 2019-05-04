@@ -595,7 +595,7 @@ func TestFileHelper_MoveFile_07(t *testing.T) {
   _ = os.Remove(destFile)
 }
 
-func TestFileHelper_OpenFile_01(t *testing.T) {
+func TestFileHelper_OpenFileForReading_01(t *testing.T) {
   fh := FileHelper{}
   target := fh.AdjustPathSlash(alogtopTest2Text)
   expected := "Top level test file # 2."
@@ -620,6 +620,53 @@ func TestFileHelper_OpenFile_01(t *testing.T) {
   }
 
   _ = f.Close()
+}
+
+func TestFileHelper_OpenFileForReading_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  _, err := fh.OpenFileForReading("")
+
+  if err == nil {
+    t.Error("Expected an error from fh.OpenFileForReading(\"\") "+
+      "because the input parameter is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+
+func TestFileHelper_OpenFileForReading_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  _, err := fh.OpenFileForReading("    ")
+
+  if err == nil {
+    t.Error("Expected an error from fh.OpenFileForReading(\"\") "+
+      "because the input parameter consists entirely of blank spaces.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_OpenFileForReading_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetFile := "../filesfortest/levelfilesfortest/iDoNotExist.txt"
+
+  targetFile = fh.AdjustPathSlash(targetFile)
+
+  _, err := fh.OpenFileForReading(targetFile)
+
+  if err == nil {
+    t.Error("Expected an error from fh.OpenFileForReading(targetFile) "+
+      "because the input parameter 'targetFile' does not exist.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
 }
 
 func TestFileHelper_SwapBasePath_01(t *testing.T) {
