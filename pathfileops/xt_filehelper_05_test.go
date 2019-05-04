@@ -896,11 +896,11 @@ func TestFileHelper_OpenFile_06(t *testing.T) {
 
 }
 
-func TestFileHelper_OpenFileForReading_01(t *testing.T) {
+func TestFileHelper_OpenFileReadOnly_01(t *testing.T) {
   fh := FileHelper{}
   target := fh.AdjustPathSlash(alogtopTest2Text)
   expected := "Top level test file # 2."
-  f, err := fh.OpenFileForReading(target)
+  f, err := fh.OpenFileReadOnly(target)
 
   if err != nil {
     t.Errorf("Failed to open file: '%v' , got error - '%v'", target, err.Error())
@@ -923,14 +923,14 @@ func TestFileHelper_OpenFileForReading_01(t *testing.T) {
   _ = f.Close()
 }
 
-func TestFileHelper_OpenFileForReading_02(t *testing.T) {
+func TestFileHelper_OpenFileReadOnly_02(t *testing.T) {
 
   fh := FileHelper{}
 
-  _, err := fh.OpenFileForReading("")
+  _, err := fh.OpenFileReadOnly("")
 
   if err == nil {
-    t.Error("Expected an error from fh.OpenFileForReading(\"\") "+
+    t.Error("Expected an error from fh.OpenFileReadOnly(\"\") "+
       "because the input parameter is an empty string.\n" +
       "However, NO ERROR WAS RETURNED!")
   }
@@ -938,21 +938,21 @@ func TestFileHelper_OpenFileForReading_02(t *testing.T) {
 }
 
 
-func TestFileHelper_OpenFileForReading_03(t *testing.T) {
+func TestFileHelper_OpenFileReadOnly_03(t *testing.T) {
 
   fh := FileHelper{}
 
-  _, err := fh.OpenFileForReading("    ")
+  _, err := fh.OpenFileReadOnly("    ")
 
   if err == nil {
-    t.Error("Expected an error from fh.OpenFileForReading(\"\") "+
+    t.Error("Expected an error from fh.OpenFileReadOnly(\"\") "+
       "because the input parameter consists entirely of blank spaces.\n" +
       "However, NO ERROR WAS RETURNED!")
   }
 
 }
 
-func TestFileHelper_OpenFileForReading_04(t *testing.T) {
+func TestFileHelper_OpenFileReadOnly_04(t *testing.T) {
 
   fh := FileHelper{}
 
@@ -960,12 +960,309 @@ func TestFileHelper_OpenFileForReading_04(t *testing.T) {
 
   targetFile = fh.AdjustPathSlash(targetFile)
 
-  _, err := fh.OpenFileForReading(targetFile)
+  _, err := fh.OpenFileReadOnly(targetFile)
 
   if err == nil {
-    t.Error("Expected an error from fh.OpenFileForReading(targetFile) "+
+    t.Error("Expected an error from fh.OpenFileReadOnly(targetFile) "+
       "because the input parameter 'targetFile' does not exist.\n" +
       "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_OpenFileReadWrite_01(t *testing.T) {
+
+  fh := FileHelper{}
+  targetFile := "../checkfiles/scratchTestFileHelper_OpenFileForWriting_01.txt"
+  targetFile = fh.AdjustPathSlash(targetFile)
+  testString := "How now, brown cow!"
+
+  if fh.DoesFileExist(targetFile) {
+    err := fh.DeleteDirFile(targetFile)
+
+    if err != nil {
+      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n" +
+        "fh.DeleteDirFile(targetFile) returned an error!\n" +
+        "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+      return
+    }
+
+    if fh.DoesFileExist(targetFile) {
+      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n" +
+        "'targetFile' STILL EXISTS!\n" +
+        "targetFile='%v'\n", targetFile)
+      return
+    }
+
+  }
+
+  // truncateFile == false - targetFile does not yet exist!
+  fPtr, err := fh.OpenFileReadWrite(targetFile, false)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.OpenFileReadWrite(targetFile, false)\n" +
+      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+    return
+  }
+
+  if fPtr == nil {
+    t.Errorf("ERROR: File Pointer returned by fh.OpenFileReadWrite(targetFile)\n"  +
+      "is 'nil'!\ntargetFile='%v'", targetFile)
+    return
+  }
+
+  bytesWritten, err := fPtr.WriteString(testString)
+
+  if bytesWritten != len(testString) {
+    t.Errorf("ERROR: Bytes written to 'targetFile' DO NOT EQUAL the lenth\n" +
+      "of 'testString'.\ntargetFile='%v'\nBytesWritten='%v' Length of Test String='%v'\n",
+      targetFile, bytesWritten, len(testString))
+    _ = fPtr.Close()
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  err = fPtr.Sync()
+
+  if err != nil {
+    t.Errorf("Error returned by fPtr.Sync() for 'targetFile'!\n" +
+      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+    _ = fPtr.Close()
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  b := make([]byte, 500)
+
+  bytesRead, err := fPtr.ReadAt(b,0)
+
+  if err != nil {
+    if err != io.EOF {
+      t.Errorf("Non-EOF error returned by fPtr.ReadAt(b,0).\n" +
+        "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+      _ = fPtr.Close()
+      _ = fh.DeleteDirFile(targetFile)
+      return
+    }
+  }
+
+  if bytesRead != bytesWritten {
+    t.Errorf("ERROR: The bytes written to 'targetFile' do NOT EQUAL the bytes\n" +
+      "read from 'targetFile'.\ntargetFile='%v'\nBytes Read='%v'  Bytes Written='%v'\n",
+    targetFile, bytesRead, bytesWritten)
+    _ = fPtr.Close()
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  resultStr := string(b[0:bytesRead])
+
+  if testString != resultStr {
+    t.Errorf("ERROR: Expected read string='%v'.\nInstead, read string='%v'.\n",
+      testString, resultStr)
+  }
+
+  _ = fPtr.Close()
+  _ = fh.DeleteDirFile(targetFile)
+
+}
+
+func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
+
+  fh := FileHelper{}
+  srcFile := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+  targetFile := "../checkfiles/scratchTestFileHelper_OpenFileForWriting_02.txt"
+  targetFile = fh.AdjustPathSlash(targetFile)
+  testString := "How now, brown cow!"
+
+  fInfo, err := os.Stat(srcFile)
+
+  if err != nil {
+    t.Errorf("ERROR: Test Setup Source File DOES NOT EXIST!\n" +
+      "Source File='%v'\n", srcFile)
+  }
+
+  sourceByteSize := fInfo.Size()
+
+  if fh.DoesFileExist(targetFile) {
+    err := fh.DeleteDirFile(targetFile)
+
+    if err != nil {
+      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n" +
+        "fh.DeleteDirFile(targetFile) returned an error!\n" +
+        "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+      return
+    }
+
+    if fh.DoesFileExist(targetFile) {
+      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n" +
+        "'targetFile' STILL EXISTS!\n" +
+        "targetFile='%v'\n", targetFile)
+      return
+    }
+
+  }
+
+  err = fh.CopyFileByIo(srcFile, targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned by test setup op fh.CopyFileByIo(srcFile, targetFile).\n" +
+      "srcFile='%v'\ntargetFile='%v'\nError='%v'\n",
+      srcFile, targetFile, err.Error())
+  }
+
+  if !fh.DoesFileExist(targetFile) {
+    t.Errorf("Test Setup Failed! 'targetFile' does NOT EXIST!\n" +
+      "targetFile='%v'\n", targetFile)
+    return
+  }
+
+  // Open file with truncateFile=true
+  fPtr, err := fh.OpenFileReadWrite(targetFile, true)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.OpenFileReadWrite(targetFile)\n" +
+      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+    return
+  }
+
+  if fPtr == nil {
+    t.Errorf("ERROR: File Pointer returned by fh.OpenFileReadWrite(targetFile)\n"  +
+      "is 'nil'!\ntargetFile='%v'", targetFile)
+    return
+  }
+
+  bytesWritten, err := fPtr.WriteString(testString)
+
+  if bytesWritten != len(testString) {
+    t.Errorf("ERROR: Bytes written to 'targetFile' DO NOT EQUAL the lenth\n" +
+      "of 'testString'.\ntargetFile='%v'\nBytesWritten='%v' Length of Test String='%v'\n",
+      targetFile, bytesWritten, len(testString))
+    _ = fPtr.Close()
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  err = fPtr.Sync()
+
+  if err != nil {
+    t.Errorf("Error returned by fPtr.Sync() for 'targetFile'!\n" +
+      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+    _ = fPtr.Close()
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  b := make([]byte, 500)
+
+  bytesRead, err := fPtr.ReadAt(b,0)
+
+  if err != nil {
+    if err != io.EOF {
+      t.Errorf("Non-EOF error returned by fPtr.ReadAt(b,0).\n" +
+        "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+      _ = fPtr.Close()
+      _ = fh.DeleteDirFile(targetFile)
+      return
+    }
+  }
+
+  err = fPtr.Close()
+
+  if err != nil {
+    t.Errorf("Error returned after Read Operation on fPtr.Close()!\n" +
+      "targetFile='%v'\nError='%v'", targetFile, err.Error())
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  fInfo, err = os.Stat(targetFile)
+
+  if err!=nil {
+    t.Errorf("ERROR: os.Stat(targetFile) shows targetFile DOES NOT EXIST!\n" +
+    "targetFile='%v'\n", targetFile)
+    return
+  }
+
+  targetFileByteSize := fInfo.Size()
+
+  if sourceByteSize <= targetFileByteSize {
+    t.Errorf("ERROR: Orginal Source File Byte Size is less than new " +
+      "'targetFile' Byte Size!\nSource File Byte Size='%v'   " +
+      "Target File Byte Size='%v'\ntargetFile='%v'\n",
+      sourceByteSize, targetFileByteSize, targetFile)
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  if bytesRead != bytesWritten {
+    t.Errorf("ERROR: The bytes written to 'targetFile' do NOT EQUAL the bytes\n" +
+      "read from 'targetFile'.\ntargetFile='%v'\nBytes Read='%v'  Bytes Written='%v'\n",
+    targetFile, bytesRead, bytesWritten)
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  resultStr := string(b[0:bytesRead])
+
+  if testString != resultStr {
+    t.Errorf("ERROR: Expected read string='%v'.\nInstead, read string='%v'.\n",
+      testString, resultStr)
+  }
+
+  _ = fh.DeleteDirFile(targetFile)
+
+}
+
+func TestFileHelper_OpenFileReadWrite_03(t *testing.T) {
+
+  targetFile := ""
+
+  fh := FileHelper{}
+
+  _, err := fh.OpenFileReadWrite(targetFile, false)
+
+  if err == nil {
+    t.Error("ERROR: Expected an error return from fh.OpenFileReadWrite" +
+      "(targetFile, false)\n" +
+      "because 'targetFile' is an empty string.\n" +
+      "However NO ERROR WAS RETURNED!!!\n")
+  }
+
+}
+
+func TestFileHelper_OpenFileReadWrite_04(t *testing.T) {
+
+  targetFile := "  "
+
+  fh := FileHelper{}
+
+  _, err := fh.OpenFileReadWrite(targetFile, false)
+
+  if err == nil {
+    t.Error("ERROR: Expected an error return from fh.OpenFileReadWrite" +
+      "(targetFile, false)\n" +
+      "because the 'targetFile' parameter consists entirely of blank spaces.\n" +
+      "However NO ERROR WAS RETURNED!!!\n")
+  }
+
+}
+
+func TestFileHelper_OpenFileReadWrite_05(t *testing.T) {
+
+  targetFile := "../checkfiles/idontexist1/idontexist2/TestFileHelper_OpenFileReadWrite_05.txt"
+
+  fh := FileHelper{}
+
+  targetFile = fh.AdjustPathSlash(targetFile)
+
+  _, err := fh.OpenFileReadWrite(targetFile, false)
+
+  if err == nil {
+    t.Error("ERROR: Expected an error return from fh.OpenFileReadWrite" +
+      "(targetFile, false)\n" +
+      "because the 'targetFile' parameter includes parent directories which DO NOT EXIST.\n" +
+      "However NO ERROR WAS RETURNED!!!\n")
   }
 
 }

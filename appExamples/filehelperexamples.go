@@ -146,7 +146,7 @@ func ExampleReadTestFile() {
   tstFile := "../testfiles/TestRead.txt"
   tstOutFile := "../testfiles/Output.txt"
   fh := pathFileOps.FileHelper{}
-  f, err := fh.OpenFileForReading(tstFile)
+  f, err := fh.OpenFileReadOnly(tstFile)
 
   if err != nil {
     fmt.Printf("Error Opening file: %v\n", tstFile)

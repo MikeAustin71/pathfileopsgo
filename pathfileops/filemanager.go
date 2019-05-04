@@ -3249,7 +3249,8 @@ func (fMgr *FileMgr) OpenThisFileReadWrite() error {
 
   }
 
-  fileOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(), FOpenMode.ModeNone())
+  fileOpenCfg, err :=
+    FileOpenConfig{}.New(FOpenType.TypeReadWrite(), FOpenMode.ModeNone())
 
   if err != nil {
     return fmt.Errorf(ePrefix+"%v", err.Error())
