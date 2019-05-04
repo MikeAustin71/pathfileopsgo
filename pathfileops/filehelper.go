@@ -3641,9 +3641,16 @@ func (fh FileHelper) MakeAbsolutePath(relPath string) (string, error) {
   return p, err
 }
 
-// MakeDirAll - creates a directory named path, along with any necessary parent directories.
-// The permission bits 'drwxrwxrwx' are used for all directories that MkdirAll creates.
-// If path is already a directory, MkdirAll does nothing and returns nil.
+// MakeDirAll - creates a directory named path, along with any necessary
+// parent directories.
+//
+// The permission bits 'drwxrwxrwx' are used for all directories that the
+// method creates.
+//
+// If path is a directory which already exists, this method does nothing
+// and returns and error value of 'nil'.
+//
+// Note that this method calls FileHelper.MakeDirAllPerm()
 //
 func (fh FileHelper) MakeDirAll(dirPath string) error {
   ePrefix := "FileHelper.MakeDirAll() "
@@ -3662,33 +3669,36 @@ func (fh FileHelper) MakeDirAll(dirPath string) error {
   return nil
 }
 
-// MakeDir - Creates a single directory. The method returns boolean
-// value of false plus error if the operation fails. If successful,
-// the function returns true.
+// MakeDir - Creates a single directory. The method returns an error
+// type. If the operation succeeds, the error value is 'nil'. If the
+// operation fails the error value is populated with an appropriate
+// error message.
 //
 // This method will fail if the parent directory does not exist.
 //
 // The permission bits 'drwxrwxrwx' are used for directory creation.
 // If path is already a directory, this method does nothing and returns
-// the values 'true' and nil.
+// an error value of 'nil'.
 //
-func (fh FileHelper) MakeDir(dirPath string) (bool, error) {
+// Note that this method calls FileHelper.MakeDirPerm().
+//
+func (fh FileHelper) MakeDir(dirPath string) error {
 
   ePrefix := "FileHelper.MakeDir() "
 
   permission, err := FilePermissionConfig{}.New("drwxrwxrwx")
 
   if err != nil {
-    return false, fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"%v", err.Error())
   }
 
   err = fh.MakeDirPerm(dirPath, permission)
 
   if err != nil {
-    return false, fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"%v", err.Error())
   }
 
-  return true, nil
+  return nil
 }
 
 // MakeDirAllPerm - Creates a directory path along with any necessary

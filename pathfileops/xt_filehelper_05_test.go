@@ -285,17 +285,12 @@ func TestFileHelper_MakeDir01(t *testing.T) {
     return
   }
 
-  result, err := fh.MakeDir(dirPath)
+  err = fh.MakeDir(dirPath)
 
   if err != nil {
     t.Errorf("Error returned by fh.MakeDir(dirPath).\n" +
       "dirPath='%v'\nError='%v'\n", dirPath, err.Error())
     return
-  }
-
-  if result == false {
-    t.Errorf("Expected MakeDir result='true'. Instead, result='false'.\n" +
-      "dirPath='%v'\n", dirPath)
   }
 
   _, err = os.Stat(dirPath)
@@ -327,17 +322,11 @@ func TestFileHelper_MakeDir02(t *testing.T) {
 
   fh := FileHelper{}
   dirPath := ""
-  result, err := fh.MakeDir(dirPath)
+ err := fh.MakeDir(dirPath)
 
   if err == nil {
     t.Error("Expected an error return from fh.MakeDir(dirPath) because\n" +
       "'dirPath' is an empty string. However, NO ERROR WAS RETURNED!\n")
-  }
-
-
-  if result == true {
-    t.Error("ERROR: Expected fh.MakeDir(dirPath) result='false' because 'dirPath' " +
-      "is an empty string.\n Instead, result='true'!\n" )
   }
 
 }
@@ -346,19 +335,13 @@ func TestFileHelper_MakeDir03(t *testing.T) {
 
   fh := FileHelper{}
   dirPath := "    "
-  result, err := fh.MakeDir(dirPath)
+
+  err := fh.MakeDir(dirPath)
 
   if err == nil {
     t.Error("Expected an error return from fh.MakeDir(dirPath) because\n" +
       "'dirPath' consists entirely of blank spaces. However, NO ERROR WAS RETURNED!\n")
   }
-
-
-  if result == true {
-    t.Error("ERROR: Expected fh.MakeDir(dirPath) result='false' because 'dirPath' " +
-      "consists entirely of blank spaces.\n Instead, result='true'!\n" )
-  }
-
 }
 
 func TestFileHelper_MoveFile_01(t *testing.T) {
