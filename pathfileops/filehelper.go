@@ -4514,11 +4514,6 @@ func (fh FileHelper) RemovePathSeparatorFromEndOfPathString(pathStr string) stri
   return pathStr
 }
 
-// ReadFileBytes - Read bytes from file into a File Buffer.
-func (fh FileHelper) ReadFileBytes(rFile *os.File, byteBuff []byte) (int, error) {
-  return rFile.Read(byteBuff)
-}
-
 // SearchFileModeMatch - This method determines whether the file mode of the file described by input
 // parameter, 'info', is match for the File Selection Criteria 'fileSelectCriteria.SelectByFileMode'.
 // If the file's FileMode matches the 'fileSelectCriteria.SelectByFileMode' value, the return value,

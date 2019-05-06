@@ -167,7 +167,7 @@ func ExampleReadTestFile() {
   partialString := ""
 
   for doRead == true {
-    n, err := fh.ReadFileBytes(f, buffer)
+    n, err := f.Read(buffer)
 
     nIdx := 0
     s := ""
