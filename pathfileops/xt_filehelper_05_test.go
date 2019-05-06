@@ -898,29 +898,73 @@ func TestFileHelper_OpenFile_06(t *testing.T) {
 
 func TestFileHelper_OpenFileReadOnly_01(t *testing.T) {
   fh := FileHelper{}
-  target := fh.AdjustPathSlash(alogtopTest2Text)
+
+  // alogtopTest2Text  = "../logTest/topTest2.txt"
+  source := fh.AdjustPathSlash(alogtopTest2Text)
+
+  target := "../checkfiles/TestFileHelper_OpenFileReadOnly_01.txt"
+
+  target = fh.AdjustPathSlash(target)
+
   expected := "Top level test file # 2."
+
+  if fh.DoesFileExist(target) {
+
+    err:= fh.DeleteDirFile(target)
+
+    if err != nil {
+      t.Errorf("Test Setup Error: Attempted deletion of preexisting " +
+        "target file FAILED!\ntargetFile='%v'\nError='%v'\n",
+        target, err.Error())
+      return
+    }
+
+    if fh.DoesFileExist(target) {
+      t.Errorf("Test Setup Error: Verification of target file deletion FAILED!\n" +
+        "Target File still exists after attempted deletion!\ntargetFile='%v'\n",
+        target)
+      return
+    }
+  }
+
+  err := fh.CopyFileByIo(source, target)
+
+  if err != nil {
+    t.Errorf("Test Setup Error: Copy of source file to target file FAILED!\n"+
+      "sourceFile='%v'\ntargetFile='%v'\nError='%v'\n",
+      source, target, err.Error())
+    return
+  }
+
   f, err := fh.OpenFileReadOnly(target)
 
   if err != nil {
-    t.Errorf("Failed to open file: '%v' , got error - '%v'", target, err.Error())
+    t.Errorf("Failed to open file: '%v'\nError='%v'",
+      target, err.Error())
+    return
   }
 
-  le := len(expected)
-  bRead := make([]byte, le)
-  _, err2 := io.ReadAtLeast(f, bRead, 10)
+  bytes := make([]byte, 500)
 
-  if err2 != nil {
-    t.Errorf("Error Reading Test File: %v. Error = '%v'", target, err.Error())
+  bytesRead, err := f.Read(bytes)
+
+  if err != nil {
+    t.Errorf("Error returned from f.Read(bytes).\n" +
+      "targetFile='%v'\nError='%v'\n",target, err.Error())
+    _ = f.Close()
+    _ = fh.DeleteDirFile(target)
+    return
   }
 
-  s := string(bRead)
+  s := string(bytes[0:bytesRead])
 
   if expected != s {
-    t.Errorf("Expected to read string: '%v'. Instead got, '%v'", expected, s)
+    t.Errorf("Expected read string='%v'. Instead read string='%v'",
+      expected, s)
   }
 
   _ = f.Close()
+  _ = fh.DeleteDirFile(target)
 }
 
 func TestFileHelper_OpenFileReadOnly_02(t *testing.T) {

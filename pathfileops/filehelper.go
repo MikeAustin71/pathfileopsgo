@@ -4007,12 +4007,43 @@ func (fh FileHelper) OpenFile(
   return filePtr, err
 }
 
-// OpenFileReadOnly - Wrapper function for os.Open() method which opens
-// files on disk. 'Open' opens the named file for reading.
-// If successful, methods on the returned file can be used for reading;
-// the associated file descriptor has mode O_RDONLY. If there is an error,
-// it will be of type *PathError. (See CreateThisFile() above.
+// OpenFileReadOnly - 'Open' opens the named file for reading only.
+//
+// If successful, this method returns a pointer to os.File which can
+// only be used for reading reading content from the subject file. This
+// file pointer is configured for 'Read-Only' operations. You may not
+// write to the subject file using this pointer.
+//
+// If the designated file ('pathFileName') does NOT exist, an error
+// will be triggered.
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameter:
+//
+//  pathFileName        string - A string containing the path and file name
+//                               of the file which will be opened in the
+//                               'Read-Only' mode. If the path or file does
+//                               NOT exist, this method will trigger an error.
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+//  *os.File        - If successful, this method returns an os.File pointer
+//                    to the designated file. This file pointer can be used
+//                    subsequently for reading content from the subject file.
+//                    It may NOT be used for writing content to the file.
+//
+//                    If this method fails, this return value is 'nil'.
+//
+//
+//  error           - If the method completes successfully, this return value
+//                    is 'nil'. If the method fails, the error type returned
+//                    is populated with an appropriate error message.
+//
 func (fh FileHelper) OpenFileReadOnly(fileName string) (filePtr *os.File, err error) {
+
   ePrefix := "FileHelper.OpenFileReadOnly() "
 
   filePtr = nil
@@ -4023,30 +4054,82 @@ func (fh FileHelper) OpenFileReadOnly(fileName string) (filePtr *os.File, err er
   errCode, _, fileName = fh.isStringEmptyOrBlank(fileName)
 
   if errCode == -1 {
-    err = errors.New(ePrefix + "Input parameter 'fileName' is an empty string!")
+    err = errors.New(ePrefix + "Input parameter 'fileName' is an empty string!\n")
     return filePtr, err
   }
 
   if errCode == -2 {
     err = errors.New(ePrefix +
-      "Input parameter 'fileName' consists of all spaces!")
+      "Input parameter 'fileName' consists entirely of blank spaces!\n")
     return filePtr, err
   }
 
-  filePtr, err2 = os.Open(fileName)
+  fileName, err2 = fh.MakeAbsolutePath(fileName)
 
-  if err2 != nil && os.IsNotExist(err2) {
-    err = fmt.Errorf(ePrefix+"Input parameter 'fileName' does NOT exist! "+
-      "fileName='%v' os.Open(fileName) Error='%v' ",
-      fileName, err2.Error())
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix +
+      "Error occurred while converting input parameter file name ('fileName') to absolute path.\n" +
+      "fileName='%v'\nError='%v'\n", fileName, err2.Error())
+
+    return filePtr, err
+  }
+
+
+  if !fh.DoesFileExist(fileName) {
+    err = fmt.Errorf(ePrefix +
+      "ERROR: The input parameter 'fileName' DOES NOT EXIST!\n" +
+      "fileName='%v' ", fileName)
+    return filePtr, err
+  }
+
+  fileOpenCfg, err2 := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
+    FOpenMode.ModeNone())
+
+  if err2 != nil {
+    err =
+      fmt.Errorf(ePrefix +
+        "Error returned by FileOpenConfig{}.New(FOpenType.TypeReadOnly()," +
+        "FOpenMode.ModeNone()).\nError='%v'\n",
+        err2.Error())
+    return filePtr, err
+  }
+
+  fOpenCode, err2 := fileOpenCfg.GetCompositeFileOpenCode()
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix + "Error Creating File Open Code.\nError=%v\n",
+      err2.Error())
+    return filePtr, err
+  }
+
+  fPermCfg, err2:= FilePermissionConfig{}.New("-r--r--r--")
+
+  if err2 != nil {
+    err =
+      fmt.Errorf(ePrefix +
+        "Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n" +
+        "Error='%v' \n", err2.Error())
+    return filePtr, err
+  }
+
+  fileMode, err2 := fPermCfg.GetCompositePermissionMode()
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix + "Error Creating File Mode Code.\nError=%v\n",
+      err2.Error())
+
+    return filePtr, err
+  }
+
+  filePtr, err2 = os.OpenFile(fileName, fOpenCode, fileMode)
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix + "File Open Error: %v\n" +
+      "fileName='%v'", err.Error(), fileName)
     filePtr = nil
     return filePtr, err
   }
 
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error returned by os.Open(fileName). "+
-      "fileName='%v' Error='%v' ", fileName, err2.Error())
-  }
 
   err = nil
 
@@ -4063,6 +4146,51 @@ func (fh FileHelper) OpenFileReadOnly(fileName string) (filePtr *os.File, err er
 // If the file does not exist, this method will attempt to create it.
 //
 // If the file path does not exist, an error will be triggered.
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameter:
+//
+//  pathFileName        string - A string containing the path and file name
+//                               of the file which will be opened in the
+//                               'Read/Write' mode. If the file does NOT
+//                               exist, this method will attempt to create
+//                               it. However, if the path component of
+//                               'pathFileName' does not exist, an error
+//                                will be returned.
+//
+//  truncateFile          bool - If set to 'true' and the target file will
+//                               be truncated to zero bytes in length before
+//                               it is opened.
+//
+//                               If set to 'false', the target file will be
+//                               be opened in the 'Append' mode and any bytes
+//                               written to the file will be appended to the
+//                               end of the file. Under this scenario, the
+//                               original file contents are preserved and newly
+//                               written bytes are added to the end of the file.
+//
+//                               If the file designated by input parameter 'pathFileName'
+//                               does not exist, this parameter ('truncateFile') is
+//                               ignored and the new created file is initialized
+//                               containing zero bytes.
+//
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+//  *os.File        - If successful, this method returns an os.File pointer
+//                    to the file opened for 'Read/Write' operations. This
+//                    file pointer can be used subsequently for writing
+//                    content to, or reading content from, the subject file.
+//
+//                    If this method fails, this return value is 'nil'.
+//
+//
+//  error           - If the method completes successfully, this return value
+//                    is 'nil'. If the method fails, the error type returned
+//                    is populated with an appropriate error message.
 //
 func (fh FileHelper) OpenFileReadWrite(
   pathFileName string,
@@ -4099,31 +4227,18 @@ func (fh FileHelper) OpenFileReadWrite(
 
   var fileOpenCfg FileOpenConfig
 
-  /*
   if !fh.DoesFileExist(pathFileName) {
 
-    fPtr, err = fh.CreateFile(pathFileName)
-
-    if err != nil {
-      return nil, fmt.Errorf(ePrefix +
-        "Error Creating New File: %v\n" +
-        "pathFileName='%v'\n", err.Error(), pathFileName)
-    }
-
-    err = fPtr.Close()
-
-    if err != nil {
-      return nil, fmt.Errorf(ePrefix +
-        "Error Closing newly created file: %v\n" +
-        "pathFileName='%v'\n", err.Error(), pathFileName)
-    }
-
-  }
-  */
-
-  if !fh.DoesFileExist(pathFileName) {
     fileOpenCfg, err = FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
       FOpenMode.ModeCreate(), FOpenMode.ModeAppend())
+
+    if err != nil {
+      return nil,
+        fmt.Errorf(ePrefix +
+          "Error returned by FileOpenConfig{}.New(FOpenType.TypeWriteOnly()," +
+          "FOpenMode.ModeCreate(), FOpenMode.ModeAppend()).\nError='%v'\n",
+          err.Error())
+    }
 
   } else {
 
@@ -4152,9 +4267,7 @@ func (fh FileHelper) OpenFileReadWrite(
             "FOpenMode.ModeAppend()).\nError='%v'\n",
             err.Error())
       }
-
     }
-
   }
 
   fOpenCode, err := fileOpenCfg.GetCompositeFileOpenCode()
@@ -4164,7 +4277,7 @@ func (fh FileHelper) OpenFileReadWrite(
       fmt.Errorf(ePrefix + "%v", err.Error())
   }
 
-  fPermCfg, err := FilePermissionConfig{}.New("-rw-rw-rw-")
+  fPermCfg, err := FilePermissionConfig{}.New("-rwxrwxrwx")
 
   if err != nil {
     return nil,
@@ -4192,6 +4305,172 @@ func (fh FileHelper) OpenFileReadWrite(
   }
 
   return fPtr, nil
+}
+
+// OpenFileWriteOnly - Opens a file for 'Write Only' operations. Input parameter
+// 'pathFileName' specifies the the path and file name which will be opened.
+//
+// If the path component of 'pathFileName' does not exist, an error will be returned.
+//
+// If the designated file does not exist, this method will attempt to create the file.
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameter:
+//
+//  pathFileName        string - A string containing the path and file name
+//                               of the file which will be opened in the
+//                               'Write Only' mode. If the file does NOT
+//                               exist, this method will attempt to create
+//                               it. However, if the path component of
+//                               'pathFileName' does not exist, an error
+//                                will be returned.
+//
+//  truncateFile          bool - If set to 'true' and the target file will
+//                               be truncated to zero bytes in length before
+//                               it is opened.
+//
+//                               If set to 'false', the target file will be
+//                               be opened in the 'Append' mode and any bytes
+//                               written to the file will be appended to the
+//                               end of the file. Under this scenario, the
+//                               original file contents are preserved and newly
+//                               written bytes are added to the end of the file.
+//
+//                               If the file designated by input parameter 'pathFileName'
+//                               does not exist, this parameter ('truncateFile') is
+//                               ignored and the new created file is initialized
+//                               containing zero bytes.
+//
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+//  *os.File        - If successful, this method returns an os.File pointer
+//                    to the file opened for 'Write Only' operations. This
+//                    file pointer can be used for writing content to the
+//                    subject file.
+//
+//                    If this method fails, this return value is 'nil'.
+//
+//
+//  error           - If the method completes successfully, this return value
+//                    is 'nil'. If the method fails, the error type returned
+//                    is populated with an appropriate error message.
+//
+func (fh FileHelper) OpenFileWriteOnly(pathFileName string, truncateFile bool) (*os.File, error) {
+
+  ePrefix := "FileHelper.OpenFileWriteOnly() "
+
+  var fPtr *os.File
+  var err error
+
+  errCode := 0
+
+  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
+
+  if errCode == -1 {
+    return nil,
+      errors.New(ePrefix + "Input parameter 'pathFileName' is an empty string!")
+
+  }
+
+  if errCode == -2 {
+    return nil, errors.New(ePrefix +
+      "Input parameter 'pathFileName' consists of all spaces!")
+  }
+
+  pathFileName, err = fh.MakeAbsolutePath(pathFileName)
+
+  if err != nil {
+    return nil,
+      fmt.Errorf(ePrefix +
+        "Error creating absolute path: %v\n" +
+        "pathFileName='%v'\n", err.Error(), pathFileName)
+  }
+
+  var fileOpenCfg FileOpenConfig
+
+  if !fh.DoesFileExist(pathFileName) {
+
+    fileOpenCfg, err = FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
+      FOpenMode.ModeCreate(), FOpenMode.ModeAppend())
+
+    if err != nil {
+      return nil,
+        fmt.Errorf(ePrefix +
+          "Error returned by FileOpenConfig{}.New(FOpenType.TypeWriteOnly()," +
+          "FOpenMode.ModeCreate(), FOpenMode.ModeAppend()).\nError='%v'\n",
+          err.Error())
+    }
+
+  } else {
+
+    if truncateFile {
+      // truncateFile == true
+      fileOpenCfg, err = FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
+        FOpenMode.ModeTruncate())
+
+      if err != nil {
+        return nil,
+          fmt.Errorf(ePrefix +
+            "Error returned by FileOpenConfig{}.New(FOpenType.TypeWriteOnly()," +
+            "FOpenMode.ModeTruncate()).\nError='%v'\n",
+            err.Error())
+      }
+
+    } else {
+      // truncateFile == false - Set Mode 'Append'
+      fileOpenCfg, err = FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
+        FOpenMode.ModeAppend())
+
+      if err != nil {
+        return nil,
+          fmt.Errorf(ePrefix +
+            "Error returned by FileOpenConfig{}.New(FOpenType.TypeWriteOnly()," +
+            "FOpenMode.ModeAppend()).\nError='%v'\n",
+            err.Error())
+      }
+    }
+  }
+
+  fOpenCode, err := fileOpenCfg.GetCompositeFileOpenCode()
+
+  if err != nil {
+    return nil,
+      fmt.Errorf(ePrefix + "%v", err.Error())
+  }
+
+  fPermCfg, err := FilePermissionConfig{}.New("-rw-rw-rw-")
+
+  if err != nil {
+    return nil,
+      fmt.Errorf(ePrefix +
+        "Error returned by FilePermissionConfig{}.New(\"-rwxrwxrwx\")\n" +
+        "Error='%v' \n", err.Error())
+  }
+
+  fileMode, err := fPermCfg.GetCompositePermissionMode()
+
+  if err != nil {
+    return nil, fmt.Errorf(ePrefix + "%v", err.Error())
+  }
+
+  fPtr, err = os.OpenFile(pathFileName, fOpenCode, fileMode)
+
+  if err != nil {
+    return nil, fmt.Errorf(ePrefix + "File Open Error: %v\n" +
+      "pathFileName='%v'", err.Error(), pathFileName)
+  }
+
+  if fPtr == nil {
+    return nil, fmt.Errorf(ePrefix +
+      "ERROR: Returned file pointer is 'nil'!")
+  }
+
+  return fPtr, nil
+
 }
 
 // RemovePathSeparatorFromEndOfPathString - Remove Trailing path Separator from
