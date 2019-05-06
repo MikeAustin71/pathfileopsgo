@@ -1,9 +1,889 @@
 package pathfileops
 
 import (
-  "strings"
+  "fmt"
   "testing"
+  "time"
 )
+
+
+func TestFileHelper_FindFilesWalkDirectory_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  searchPattern := "*.*"
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = time.Time{}
+  fsc.FilesNewerThan = time.Time{}
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  startPath := "../filesfortest/levelfilesfortest/level_01_dir"
+  dTreeInfo, err := fh.FindFilesWalkDirectory(startPath, fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.FindFilesWalkDirectory(startPath, fsc). "+
+      "startPath='%v' Error='%v' ", startPath, err.Error())
+  }
+
+  numOfDirs := dTreeInfo.Directories.GetNumOfDirs()
+
+  if numOfDirs == 0 {
+    t.Error("Error: Expected found directories to be greater than zero. " +
+      "ZERO DIRECTORIES FOUND!")
+  }
+
+  numOfFiles := dTreeInfo.FoundFiles.GetNumOfFileMgrs()
+
+  if numOfFiles == 0 {
+    t.Error("Error: Expected found files to be greater than zero. " +
+      "ZERO FILES FOUND!")
+  }
+
+}
+
+func TestFileHelper_FindFilesWalkDirectory_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  fsc := FileSelectionCriteria{}
+
+  startPath := "../filesfortest/levelfilesfortest/level_01_dir"
+  dTreeInfo, err := fh.FindFilesWalkDirectory(startPath, fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.FindFilesWalkDirectory(startPath, fsc). "+
+      "startPath='%v' Error='%v' ", startPath, err.Error())
+  }
+
+  numOfDirs := dTreeInfo.Directories.GetNumOfDirs()
+
+  if numOfDirs == 0 {
+    t.Error("Error: Expected found directories to be greater than zero. " +
+      "ZERO DIRECTORIES FOUND!")
+  }
+
+  numOfFiles := dTreeInfo.FoundFiles.GetNumOfFileMgrs()
+
+  if numOfFiles == 0 {
+    t.Error("Error: Expected found files to be greater than zero. " +
+      "ZERO FILES FOUND!")
+  }
+}
+
+func TestFileHelper_FindFilesWalkDirectory_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  searchPattern := "*.*"
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = time.Time{}
+  fsc.FilesNewerThan = time.Time{}
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  startPath := "../filesfortest/iDoNotExist/childDoesNotExist"
+
+  _, err := fh.FindFilesWalkDirectory(startPath, fsc)
+
+  if err == nil {
+    t.Errorf("Error returned by fh.FindFilesWalkDirectory(startPath, fsc). "+
+      "startPath='%v' Error='%v' ", startPath, err.Error())
+  }
+
+}
+
+func TestFileHelper_FindFilesWalkDirectory_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  searchPattern := "*.*"
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = time.Time{}
+  fsc.FilesNewerThan = time.Time{}
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  _, err := fh.FindFilesWalkDirectory("", fsc)
+
+  if err == nil {
+    t.Error("Expected error return from fh.FindFilesWalkDirectory(\"\", fsc) " +
+      "because first input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_FindFilesWalkDirectory_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  searchPattern := "*.*"
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = time.Time{}
+  fsc.FilesNewerThan = time.Time{}
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  _, err := fh.FindFilesWalkDirectory("    ", fsc)
+
+  if err == nil {
+    t.Error("Expected error return from fh.FindFilesWalkDirectory(\"    \", fsc) " +
+      "because first input parameter consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_FindFilesWalkDirectory_06(t *testing.T) {
+
+  fh := FileHelper{}
+
+  searchPattern := "*.*"
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = time.Time{}
+  fsc.FilesNewerThan = time.Time{}
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  startPath := "../testdestdir"
+  dTreeInfo, err := fh.FindFilesWalkDirectory(startPath, fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.FindFilesWalkDirectory(startPath, fsc). "+
+      "startPath='%v' Error='%v' ", startPath, err.Error())
+  }
+
+  numOfDirs := dTreeInfo.Directories.GetNumOfDirs()
+
+  if numOfDirs == 0 {
+    t.Error("Error: Expected found directories to be greater than zero. " +
+      "ZERO DIRECTORIES FOUND!")
+  }
+
+  numOfFiles := dTreeInfo.FoundFiles.GetNumOfFileMgrs()
+
+  if numOfFiles != 0 {
+    t.Errorf("Expected zero found files. Instead, files were found. Error!"+
+      "numOfFiles='%v' ", numOfFiles)
+  }
+
+}
+
+func TestFileHelper_GetAbsPathFromFilePath_01(t *testing.T) {
+
+  _, err := FileHelper{}.GetAbsPathFromFilePath("")
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}." +
+      "GetAbsPathFromFilePath(\"\") because the input parameter is an " +
+      "empty string. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_GetAbsPathFromFilePath_02(t *testing.T) {
+
+  _, err := FileHelper{}.GetAbsPathFromFilePath("    ")
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}." +
+      "GetAbsPathFromFilePath(\"     \") because the input parameter consists " +
+      "entirely of blank spaces. However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetDotSeparatorIndexesInPathStr_01(t *testing.T) {
+  fh := FileHelper{}
+
+  _, err := fh.GetDotSeparatorIndexesInPathStr("")
+
+  if err == nil {
+    t.Error("Expected an error return from fh." +
+      "GetDotSeparatorIndexesInPathStr(\"\") because the input parameter is an " +
+      "empty string. However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetDotSeparatorIndexesInPathStr_02(t *testing.T) {
+  fh := FileHelper{}
+
+  _, err := fh.GetDotSeparatorIndexesInPathStr("   ")
+
+  if err == nil {
+    t.Error("Expected an error return from fh." +
+      "GetDotSeparatorIndexesInPathStr(\"  \") because the input parameter consists " +
+      "entirely of blank spaces. However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetExecutablePathFileName_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  exePathFileName, err := fh.GetExecutablePathFileName()
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetExecutablePathFileName(). "+
+      "Error='%v' ", err.Error())
+  }
+
+  if len(exePathFileName) == 0 {
+    t.Error("Error: The Executable path an file name returned by " +
+      "fh.GetExecutablePathFileName() is a zero length string!")
+  }
+}
+
+func TestFileHelper_GetFileExtension_01(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash(".\\xt_dirmgr_01_test.go")
+
+  expectedExt := ".go"
+
+  result, isEmpty, err := fh.GetFileExtension(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileExt(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+  }
+
+  if isEmpty != false {
+    t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead isEmpty='%v' ", false, isEmpty)
+  }
+
+  if result != expectedExt {
+    t.Errorf("Expected GetFileExt to return result == '.go' for valid file extension Instead result='%v' ", result)
+  }
+
+}
+
+func TestFileHelper_GetFileExtension_02(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("xt_dirmgr_01_test.go")
+
+  expectedExt := ".go"
+
+  result, isEmpty, err := fh.GetFileExtension(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileExt(commonDir). commonDir='%v' Error='%v'",
+      commonDir, err.Error())
+  }
+
+  if isEmpty != false {
+    t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead isEmpty='%v' ",
+      false, isEmpty)
+  }
+
+  if result != expectedExt {
+    t.Errorf("Expected GetFileExt to return file extension == '%v'.  "+
+      "Instead file extension='%v' ", expectedExt, result)
+  }
+
+}
+
+func TestFileHelper_GetFileExtension_03(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("dirmgr_test")
+
+  expectedExt := ""
+
+  result, isEmpty, err := fh.GetFileExtension(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileExt(commonDir). commonDir='%v' Error='%v'",
+      commonDir, err.Error())
+  }
+
+  if true != isEmpty {
+    t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead, isEmpty='%v' ",
+      true, isEmpty)
+  }
+
+  if result != expectedExt {
+    t.Errorf("Expected GetFileExt to return file extension == '%v'. Instead file extension ='%v' ", expectedExt, result)
+  }
+
+}
+
+func TestFileHelper_GetFileExtension_04(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
+
+  expectedExt := ".go"
+
+  result, isEmpty, err := fh.GetFileExtension(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileExt(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+  }
+
+  if false != isEmpty {
+    t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead, isEmpty='%v' ", false, isEmpty)
+  }
+
+  if result != expectedExt {
+    t.Errorf("Expected GetFileExt to return file extension == '%v'. Instead, file extension='%v' ", expectedExt, result)
+  }
+
+}
+
+func TestFileHelper_GetFileExtension_05(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("D:\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
+
+  expectedExt := ".go"
+
+  result, isEmpty, err := fh.GetFileExtension(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileExt(commonDir). commonDir='%v' Error='%v'",
+      commonDir, err.Error())
+  }
+
+  if false != isEmpty {
+    t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead, isEmpty='%v' ",
+      false, isEmpty)
+  }
+
+  if result != expectedExt {
+    t.Errorf("Expected GetFileExt to return result == '%v' for file extension. "+
+      "Instead result='%v' ", expectedExt, result)
+  }
+
+}
+
+func TestFileHelper_GetFileExtension_06(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("D:\\pathfilego\\003_filehelper\\common\\")
+
+  expectedExt := ""
+
+  result, isEmpty, err := fh.GetFileExtension(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileExt(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+  }
+
+  if true != isEmpty {
+    t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead, isEmpty='%v' ", true, isEmpty)
+  }
+
+  if result != expectedExt {
+    t.Errorf("Expected GetFileExt to return result == '%v' for file extension. Instead result='%v' ", expectedExt, result)
+  }
+
+}
+
+func TestFileHelper_GetFileExtension_07(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash(".gitignore")
+
+  expectedExt := ""
+
+  result, isEmpty, err := fh.GetFileExtension(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileExt(commonDir). "+
+      "commonDir='%v' Error='%v'",
+      commonDir, err.Error())
+  }
+
+  if true != isEmpty {
+    t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead, isEmpty='%v' ",
+      true, isEmpty)
+  }
+
+  if result != expectedExt {
+    t.Errorf("Expected GetFileExt to return result == '%v' for file extension. "+
+      "Instead result='%v' ", expectedExt, result)
+  }
+
+}
+
+func TestFileHelper_GetFileExtension_08(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("test.....go")
+
+  expectedExt := ".go"
+
+  result, isEmpty, err := fh.GetFileExtension(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileExt(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+  }
+
+  if false != isEmpty {
+    t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead, isEmpty='%v' ", false, isEmpty)
+  }
+
+  if result != expectedExt {
+    t.Errorf("Expected GetFileExt to return result == '%v' for file extension. Instead result='%v' ", expectedExt, result)
+  }
+
+}
+
+func TestFileHelper_GetFileExtension_09(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("")
+
+  expectedExt := ""
+
+  result, isEmpty, err := fh.GetFileExtension(commonDir)
+
+  if err == nil {
+    t.Errorf("Expected an error to be returned from fh.GetFileExt(commonDir). "+
+      "commonDir='%v' NO Error was returned!", commonDir)
+  }
+
+  if true != isEmpty {
+    t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead, isEmpty='%v' ",
+      true, isEmpty)
+  }
+
+  if result != expectedExt {
+    t.Errorf("Expected GetFileExt to return result == '%v' for file extension. Instead result='%v' ", expectedExt, result)
+  }
+
+}
+
+func TestFileHelper_GetFileExtension_10(t *testing.T) {
+
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash(".\\dirmgr_test")
+
+  result, isEmpty, err := fh.GetFileExtension(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetFileExt(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+  }
+
+  if isEmpty != true {
+    t.Errorf("Expected isEmpty GetFileExt for absent file extension to return 'true'. Instead, isEmpty='%v' ", isEmpty)
+  }
+
+  if result != "" {
+    t.Errorf("Expected GetFileExt to return empty result for absent file extension. Instead file extension='%v' ", result)
+  }
+
+}
+
+func TestFileHelper_GetFileExtension_11(t *testing.T) {
+  fh := FileHelper{}
+
+  result, isEmpty, err := fh.GetFileExtension("   ")
+
+  if err == nil {
+    t.Error("Expected an error to be returned from fh.GetFileExt(\"    \") because " +
+      "the input parameter consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if true != isEmpty {
+    t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead, isEmpty='%v' ",
+      true, isEmpty)
+  }
+
+  if result != "" {
+    t.Errorf("Expected GetFileExt to return and empty string. Instead, result='%v' ",
+      result)
+  }
+}
+
+func TestFileHelper_GetFileInfoFromPath_01(t *testing.T) {
+  fh := FileHelper{}
+
+  _, err := fh.GetFileInfoFromPath("")
+
+  if err == nil {
+    t.Error("Expected error from fh.GetFileInfoFromPath(\"\") " +
+      "because the input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetFileInfoFromPath_02(t *testing.T) {
+  fh := FileHelper{}
+
+  _, err := fh.GetFileInfoFromPath("    ")
+
+  if err == nil {
+    t.Error("Expected error from fh.GetFileInfoFromPath(\"   \") " +
+      "because the input parameter consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetFileInfoFromPath_03(t *testing.T) {
+  fh := FileHelper{}
+
+  rawPath := "../filesfortest/levelfilesfortest/iDoNotExist.txt"
+
+  _, err := fh.GetFileInfoFromPath(rawPath)
+
+  if err == nil {
+    t.Error("Expected error from fh.GetFileInfoFromPath(rawPath) " +
+      "because the input parameter 'rawPath' does NOT exist. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetFileLastModificationDate_01(t *testing.T) {
+
+  fh := FileHelper{}
+  target, err := fh.MakeAbsolutePath(fh.AdjustPathSlash(alogtopTest2Text))
+
+  if err != nil {
+    t.Error("Error from FileHelper:MakeAbsolutePath(): ", err.Error())
+  }
+
+  tStrFmt := "2006-01-02 15:04:05.000000000"
+
+  fileTime, tStr, err := fh.GetFileLastModificationDate(target, tStrFmt)
+
+  if err != nil {
+    t.Error("Error from FileHelper:GetFileLastModificationDate():", err.Error())
+  }
+
+  fInfo, err := fh.GetFileInfoFromPath(target)
+
+  if err != nil {
+    t.Error("Error from FileHelper:GetFileInfoFromPath():", err.Error())
+  }
+
+  actualFileTime := fInfo.ModTime()
+
+  expected := actualFileTime.Format(tStrFmt)
+
+  if tStr != expected {
+    t.Errorf("Expected Time String for file %v == %v, received time string: %v", target, expected, tStr)
+  }
+
+  if !actualFileTime.Equal(fileTime) {
+    t.Error(fmt.Sprintf("Expected Time value %v, instead got:", actualFileTime), fileTime)
+  }
+}
+
+func TestFileHelper_GetFileLastModificationDate_02(t *testing.T) {
+
+  fh := FileHelper{}
+  tStrFmt := "2006-01-02 15:04:05.000000000"
+
+  _, _, err := fh.GetFileLastModificationDate("", tStrFmt)
+
+  if err == nil {
+    t.Error("Expected error return from fh.GetFileLastModificationDate" +
+      "(\"\", tStrFmt) because the first input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetFileLastModificationDate_03(t *testing.T) {
+
+  fh := FileHelper{}
+  tStrFmt := "2006-01-02 15:04:05.000000000"
+
+  _, _, err := fh.GetFileLastModificationDate("   ", tStrFmt)
+
+  if err == nil {
+    t.Error("Expected error return from fh.GetFileLastModificationDate" +
+      "(\"    \", tStrFmt) because the first input parameter consists entirely of " +
+      "blank spaces. However, NO ERROR WAS RETURNED!")
+  }
+}
+
+func TestFileHelper_GetFileLastModificationDate_04(t *testing.T) {
+
+  fh := FileHelper{}
+  target, err := fh.MakeAbsolutePath(fh.AdjustPathSlash(alogtopTest2Text))
+
+  if err != nil {
+    t.Error("Error from FileHelper:MakeAbsolutePath(): ", err.Error())
+  }
+
+  tStrFmt := ""
+
+  fileTime, tStr, err := fh.GetFileLastModificationDate(target, tStrFmt)
+
+  if err != nil {
+    t.Error("Error from FileHelper:GetFileLastModificationDate():", err.Error())
+  }
+
+  fInfo, err := fh.GetFileInfoFromPath(target)
+
+  if err != nil {
+    t.Error("Error from FileHelper:GetFileInfoFromPath():", err.Error())
+  }
+
+  actualFileTime := fInfo.ModTime()
+
+  expected := actualFileTime.Format("2006-01-02 15:04:05.000000000")
+
+  if tStr != expected {
+    t.Errorf("Expected Time String for file %v == %v, received time string: %v", target, expected, tStr)
+  }
+
+  if !actualFileTime.Equal(fileTime) {
+    t.Error(fmt.Sprintf("Expected Time value %v, instead got:", actualFileTime), fileTime)
+  }
+}
+
+func TestFileHelper_GetFileNameWithExt_01(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
+  expectedFNameExt := "xt_dirmgr_01_test.go"
+
+  fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'",
+      commonDir, err.Error())
+  }
+
+  if isEmpty != false {
+    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
+  }
+
+  if expectedFNameExt != fNameExt {
+    t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
+      expectedFNameExt, fNameExt)
+  }
+
+}
+
+func TestFileHelper_GetFileNameWithExt_02(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\dirmgr_test")
+  expectedFNameExt := "dirmgr_test"
+
+  fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
+  }
+
+  if isEmpty != false {
+    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
+  }
+
+  if expectedFNameExt != fNameExt {
+    t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ", expectedFNameExt, fNameExt)
+  }
+
+}
+
+func TestFileHelper_GetFileNameWithExt_03(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("F:\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
+  expectedFNameExt := "xt_dirmgr_01_test.go"
+
+  fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'",
+      commonDir, err.Error())
+  }
+
+  if isEmpty != false {
+    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ",
+      false, isEmpty)
+  }
+
+  if expectedFNameExt != fNameExt {
+    t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ", expectedFNameExt, fNameExt)
+  }
+
+}
+
+func TestFileHelper_GetFileNameWithExt_04(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("F:\\pathfilego\\003_filehelper\\common\\dirmgr_test")
+  expectedFNameExt := "dirmgr_test"
+
+  fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
+  }
+
+  if isEmpty != false {
+    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
+  }
+
+  if expectedFNameExt != fNameExt {
+    t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ", expectedFNameExt, fNameExt)
+  }
+
+}
+
+func TestFileHelper_GetFileNameWithExt_05(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("F:\\pathfilego\\003_filehelper\\common\\")
+  expectedFNameExt := ""
+
+  fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'",
+      commonDir, err.Error())
+  }
+
+  if isEmpty != true {
+    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ",
+      true, isEmpty)
+  }
+
+  if expectedFNameExt != fNameExt {
+    t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
+      expectedFNameExt, fNameExt)
+  }
+
+}
+
+func TestFileHelper_GetFileNameWithExt_06(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("xt_dirmgr_01_test.go")
+  expectedFNameExt := "xt_dirmgr_01_test.go"
+
+  fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'",
+      commonDir, err.Error())
+  }
+
+  if isEmpty != false {
+    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
+  }
+
+  if expectedFNameExt != fNameExt {
+    t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
+      expectedFNameExt, fNameExt)
+  }
+
+}
+
+func TestFileHelper_GetFileNameWithExt_07(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("dirmgr_test")
+  expectedFNameExt := "dirmgr_test"
+
+  fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'",
+      commonDir, err.Error())
+  }
+
+  if isEmpty != false {
+    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
+  }
+
+  if expectedFNameExt != fNameExt {
+    t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
+      expectedFNameExt, fNameExt)
+  }
+
+}
+
+func TestFileHelper_GetFileNameWithExt_08(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash(".gitignore")
+  expectedFNameExt := ".gitignore"
+
+  fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). "+
+      "commonDir='%v'  Error='%v'", commonDir, err.Error())
+  }
+
+  if isEmpty != false {
+    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
+  }
+
+  if expectedFNameExt != fNameExt {
+    t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
+      expectedFNameExt, fNameExt)
+  }
+
+}
+
+func TestFileHelper_GetFileNameWithExt_09(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := ""
+  expectedFNameExt := ""
+
+  fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+
+  if err == nil {
+    t.Errorf("Expected error return from fh.GetFileNameWithExt(commonDir) " +
+      "because 'commonDir' is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if isEmpty != true {
+    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", true, isEmpty)
+  }
+
+  if expectedFNameExt != fNameExt {
+    t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
+      expectedFNameExt, fNameExt)
+  }
+
+}
+
+func TestFileHelper_GetFileNameWithExt_10(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := "   "
+  expectedFNameExt := ""
+
+  fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+
+  if err == nil {
+    t.Errorf("Expected error return from fh.GetFileNameWithExt(commonDir) " +
+      "because 'commonDir' consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if isEmpty != true {
+    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", true, isEmpty)
+  }
+
+  if expectedFNameExt != fNameExt {
+    t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
+      expectedFNameExt, fNameExt)
+  }
+}
 
 func TestFileHelper_GetFileNameWithoutExt_01(t *testing.T) {
   fh := FileHelper{}
@@ -391,631 +1271,6 @@ func TestFileHelper_GetLastPathElement_06(t *testing.T) {
   if expectedLastPathElement != lastPathElement {
     t.Errorf("Error: Expected lastPathElement='%v'. Instead, lastPathElement='%v' ",
       expectedLastPathElement, lastPathElement)
-  }
-
-}
-
-func TestFileHelper_GetPathFromPathFileName_01(t *testing.T) {
-  fh := FileHelper{}
-
-  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
-
-  expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
-
-  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
-  }
-
-  if isEmpty != false {
-    t.Errorf("Expected isEmpty GetPathFromPathFileName for valid file extension to return 'false', instead isEmpty='%v' ", isEmpty)
-  }
-
-  if result != expectedDir {
-    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid pathn/file name, instead got: %v", expectedDir, result)
-  }
-
-}
-
-func TestFileHelper_GetPathFromPathFileName_02(t *testing.T) {
-  fh := FileHelper{}
-
-  commonDir := fh.AdjustPathSlash("..\\..\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
-
-  expectedDir := fh.AdjustPathSlash("..\\..\\pathfilego\\003_filehelper\\common")
-
-  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
-  }
-
-  if isEmpty != false {
-    t.Errorf("Expected isEmpty GetPathFromPathFileName for valid file extension to return 'false', instead isEmpty='%v' ", isEmpty)
-  }
-
-  if result != expectedDir {
-    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file name, instead got: %v", expectedDir, result)
-  }
-
-}
-
-func TestFileHelper_GetPathFromPathFileName_03(t *testing.T) {
-  fh := FileHelper{}
-
-  commonDir := fh.AdjustPathSlash("D:\\go\\work\\src\\MikeAustin71\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
-
-  expectedDir := fh.AdjustPathSlash("D:\\go\\work\\src\\MikeAustin71\\pathfilego\\003_filehelper\\common")
-
-  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
-  }
-
-  if isEmpty != false {
-    t.Errorf("Expected isEmpty GetPathFromPathFileName for valid file extension to return 'false', instead isEmpty='%v' ", isEmpty)
-  }
-
-  if result != expectedDir {
-    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid file name. Instead path='%v'", expectedDir, result)
-  }
-
-}
-
-func TestFileHelper_GetPathFromPathFileName_04(t *testing.T) {
-  fh := FileHelper{}
-
-  commonDir := fh.AdjustPathSlash("D:\\go\\work\\src\\MikeAustin71\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
-
-  expectedDir := fh.AdjustPathSlash("D:\\go\\work\\src\\MikeAustin71\\pathfilego\\003_filehelper\\common")
-
-  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'",
-      commonDir, err.Error())
-  }
-
-  if isEmpty != false {
-    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
-  }
-
-  if result != expectedDir {
-    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file name. "+
-      "Instead path=='%v' ", expectedDir, result)
-  }
-
-}
-
-func TestFileHelper_GetPathFromPathFileName_05(t *testing.T) {
-  fh := FileHelper{}
-
-  commonDir := fh.AdjustPathSlash("xt_dirmgr_01_test.go")
-
-  expectedDir := fh.AdjustPathSlash("")
-
-  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
-
-  if err != nil {
-    t.Errorf("Expected no error returned from fh.GetPathFromPathFileName(commonDir). "+
-      "Instead an error WAS Returned. commonDir='%v' Error='%v'", commonDir, err.Error())
-  }
-
-  if isEmpty != true {
-    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", true, isEmpty)
-  }
-
-  if result != expectedDir {
-    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file name. "+
-      "Instead path=='%v' ", expectedDir, result)
-  }
-
-}
-
-func TestFileHelper_GetPathFromPathFileName_06(t *testing.T) {
-  fh := FileHelper{}
-
-  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\")
-
-  expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
-
-  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). "+
-      "commonDir='%v' Error='%v'", commonDir, err.Error())
-  }
-
-  if isEmpty != false {
-    t.Errorf("Expected isEmpty GetPathFromPathFileName for valid file extension to return "+
-      "'false', instead isEmpty='%v' ", isEmpty)
-  }
-
-  if result != expectedDir {
-    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid pathn/file "+
-      "name, instead got: %v", expectedDir, result)
-  }
-
-}
-
-func TestFileHelper_GetPathFromPathFileName_07(t *testing.T) {
-  fh := FileHelper{}
-
-  commonDir := fh.AdjustPathSlash("./")
-
-  expectedDir := "."
-
-  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). "+
-      "commonDir='%v' Error='%v'", commonDir, err.Error())
-  }
-
-  if false != isEmpty {
-    t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ",
-      false, isEmpty)
-  }
-
-  if result != expectedDir {
-    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid pathn/file "+
-      "name, instead got: %v", expectedDir, result)
-  }
-
-}
-
-func TestFileHelper_GetPathFromPathFileName_08(t *testing.T) {
-  fh := FileHelper{}
-
-  commonDir := fh.AdjustPathSlash(".")
-
-  expectedDir := fh.AdjustPathSlash(".")
-
-  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' "+
-      "Error='%v'", commonDir, err.Error())
-  }
-
-  if false != isEmpty {
-    t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ",
-      false, isEmpty)
-  }
-
-  if result != expectedDir {
-    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid "+
-      "path/file name, instead got: %v", expectedDir, result)
-  }
-
-}
-
-func TestFileHelper_GetPathFromPathFileName_09(t *testing.T) {
-  fh := FileHelper{}
-
-  commonDir := fh.AdjustPathSlash("..")
-
-  expectedDir := fh.AdjustPathSlash("..")
-
-  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'",
-      commonDir, err.Error())
-  }
-
-  if false != isEmpty {
-    t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ",
-      false, isEmpty)
-  }
-
-  if result != expectedDir {
-    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file "+
-      "name, instead got: %v", expectedDir, result)
-  }
-
-}
-
-func TestFileHelper_GetPathFromPathFileName_10(t *testing.T) {
-  fh := FileHelper{}
-
-  commonDir := fh.AdjustPathSlash("")
-
-  expectedDir := fh.AdjustPathSlash("")
-
-  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
-
-  if err == nil {
-    t.Errorf("Expected error to be returned from fh.GetPathFromPathFileName(commonDir). "+
-      "commonDir='%v' No Error Returned!", commonDir)
-  }
-
-  if true != isEmpty {
-    t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ",
-      true, isEmpty)
-  }
-
-  if result != expectedDir {
-    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid pathn/file"+
-      "name, instead got: %v", expectedDir, result)
-  }
-
-}
-
-func TestFileHelper_GetPathFromPathFileName_11(t *testing.T) {
-  fh := FileHelper{}
-
-  commonDir := fh.AdjustPathSlash("../../../")
-
-  expectedDir := fh.AdjustPathSlash("../../..")
-
-  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'",
-      commonDir, err.Error())
-  }
-
-  if false != isEmpty {
-    t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ",
-      false, isEmpty)
-  }
-
-  if result != expectedDir {
-    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file "+
-      "name, instead got: %v", expectedDir, result)
-  }
-
-}
-
-func TestFileHelper_GetPathFromPathFileName_12(t *testing.T) {
-  fh := FileHelper{}
-
-  commonDir := fh.AdjustPathSlash("./xt_dirmgr_01_test.go")
-
-  expectedDir := fh.AdjustPathSlash(".")
-
-  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
-
-  if err != nil {
-    t.Errorf("Expected no error returned from fh.GetPathFromPathFileName(commonDir). "+
-      "Instead an error WAS Returned. commonDir='%v' Error='%v'", commonDir, err.Error())
-  }
-
-  if isEmpty != false {
-    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
-  }
-
-  if result != expectedDir {
-    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file"+
-      "name. Instead path=='%v' ", expectedDir, result)
-  }
-
-}
-
-func TestFileHelper_GetPathFromPathFileName_13(t *testing.T) {
-  fh := FileHelper{}
-
-  result, isEmpty, err := fh.GetPathFromPathFileName("     ")
-
-  if err == nil {
-    t.Error("Expected an error return from fh.GetPathFromPathFileName(\"   \") " +
-      "because the input parameter consists entirely of spaces. " +
-      "However, NO ERROR WAS RETURNED!")
-  }
-
-  if isEmpty == false {
-    t.Error("Expected isEmpty='true', instead isEmpty='false' ")
-  }
-
-  if result != "" {
-    t.Errorf("Expected GetPathFromPathFileName to return path == 'empty string'.  "+
-      "Instead path=='%v' ", result)
-  }
-
-}
-
-func TestFileHelper_GetPathAndFileNameExt_01(t *testing.T) {
-
-  fh := FileHelper{}
-
-  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
-
-  expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
-
-  expectedFileNameExt := "xt_dirmgr_01_test.go"
-
-  pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt(commonDir)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetPathAndFileNameExt(commonDir). commonDir='%v' "+
-      "Error='%v'", commonDir, err.Error())
-  }
-
-  if false != bothAreEmpty {
-    t.Errorf("Expected GetPathAndFileNameExt bothAreEmpty='%v'. Instead, bothAreEmpty='%v' ",
-      false, bothAreEmpty)
-  }
-
-  if pathDir != expectedDir {
-    t.Errorf("Expected GetPathAndFileNameExt to return path == '%v'. "+
-      "Instead, path== '%v' ", expectedDir, pathDir)
-  }
-
-  if fileNameExt != expectedFileNameExt {
-    t.Errorf("Expected GetPathAndFileNameExt to return fileNameExt == '%v'. Instead, "+
-      "fileNameExt == '%v' ", expectedFileNameExt, fileNameExt)
-  }
-
-}
-
-func TestFileHelper_GetPathAndFileNameExt_02(t *testing.T) {
-
-  fh := FileHelper{}
-
-  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\")
-
-  expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
-
-  expectedFileNameExt := ""
-
-  pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt(commonDir)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetPathAndFileNameExt(commonDir). commonDir='%v'  Error='%v'",
-      commonDir, err.Error())
-  }
-
-  if false != bothAreEmpty {
-    t.Errorf("Expected GetPathAndFileNameExt bothAreEmpty='%v'. Instead, bothAreEmpty='%v' ",
-      false, bothAreEmpty)
-  }
-
-  if pathDir != expectedDir {
-    t.Errorf("Expected GetPathAndFileNameExt to return path == '%v'. Instead, path== '%v' ",
-      expectedDir, pathDir)
-  }
-
-  if fileNameExt != expectedFileNameExt {
-    t.Errorf("Expected GetPathAndFileNameExt to return fileNameExt == '%v'. Instead, "+
-      "fileNameExt == '%v' ", expectedFileNameExt, fileNameExt)
-  }
-
-}
-
-func TestFileHelper_GetPathAndFileNameExt_03(t *testing.T) {
-
-  fh := FileHelper{}
-
-  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\dirmgr_test")
-
-  expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
-
-  expectedFileNameExt := "dirmgr_test"
-
-  pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt(commonDir)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetPathAndFileNameExt(commonDir). commonDir='%v'  "+
-      "Error='%v'", commonDir, err.Error())
-  }
-
-  if false != bothAreEmpty {
-    t.Errorf("Expected GetPathAndFileNameExt bothAreEmpty='%v'. Instead, bothAreEmpty='%v' ",
-      false, bothAreEmpty)
-  }
-
-  if pathDir != expectedDir {
-    t.Errorf("Expected GetPathAndFileNameExt to return path == '%v'. Instead, path== '%v' ",
-      expectedDir, pathDir)
-  }
-
-  if fileNameExt != expectedFileNameExt {
-    t.Errorf("Expected GetPathAndFileNameExt to return fileNameExt == '%v'. Instead, "+
-      "fileNameExt == '%v' ", expectedFileNameExt, fileNameExt)
-  }
-
-}
-
-func TestFileHelper_GetPathAndFileNameExt_04(t *testing.T) {
-
-  fh := FileHelper{}
-
-  commonDir := fh.AdjustPathSlash("xt_dirmgr_01_test.go")
-
-  expectedDir := fh.AdjustPathSlash("")
-
-  expectedFileNameExt := "xt_dirmgr_01_test.go"
-
-  pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt(commonDir)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetPathAndFileNameExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
-  }
-
-  if false != bothAreEmpty {
-    t.Errorf("Expected GetPathAndFileNameExt bothAreEmpty='%v'. Instead, bothAreEmpty='%v' ", false, bothAreEmpty)
-  }
-
-  if pathDir != expectedDir {
-    t.Errorf("Expected GetPathAndFileNameExt to return path == '%v'. Instead, path== '%v' ", expectedDir, pathDir)
-  }
-
-  if fileNameExt != expectedFileNameExt {
-    t.Errorf("Expected GetPathAndFileNameExt to return fileNameExt == '%v'. Instead, fileNameExt == '%v' ", expectedFileNameExt, fileNameExt)
-  }
-
-}
-
-func TestFileHelper_GetPathAndFileNameExt_05(t *testing.T) {
-
-  fh := FileHelper{}
-
-  pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt("")
-
-  if err == nil {
-    t.Error("Expected error return from fh.GetPathAndFileNameExt(\"\") because " +
-      "the input parameter is an empty string. " +
-      "However, NO ERROR WAS RETURNED!")
-  }
-
-  if pathDir != "" {
-    t.Errorf("Expected pathDir would be an empty string. Instead, pathDir='%v'",
-      pathDir)
-  }
-
-  if fileNameExt != "" {
-    t.Errorf("Expected fileNameExt would be an empty string. Instead, pathDir='%v'",
-      fileNameExt)
-  }
-
-  if bothAreEmpty == false {
-    t.Error("Expected bothAreEmpty='true'. Instead, bothArEmpty='false'. ")
-  }
-
-}
-
-func TestFileHelper_GetPathAndFileNameExt_06(t *testing.T) {
-
-  fh := FileHelper{}
-
-  pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt("    ")
-
-  if err == nil {
-    t.Error("Expected error return from fh.GetPathAndFileNameExt(\"   \") because " +
-      "the input parameter consists entirely of blank spaces. " +
-      "However, NO ERROR WAS RETURNED!")
-  }
-
-  if pathDir != "" {
-    t.Errorf("Expected pathDir would be an empty string. Instead, pathDir='%v'",
-      pathDir)
-  }
-
-  if fileNameExt != "" {
-    t.Errorf("Expected fileNameExt would be an empty string. Instead, pathDir='%v'",
-      fileNameExt)
-  }
-
-  if bothAreEmpty == false {
-    t.Error("Expected bothAreEmpty='true'. Instead, bothArEmpty='false'. ")
-  }
-
-}
-
-func TestFileHelper_GetPathSeparatorIndexesInPathStr_01(t *testing.T) {
-
-  fh := FileHelper{}
-
-  idxs, err := fh.GetPathSeparatorIndexesInPathStr("")
-
-  if err == nil {
-    t.Error("Expected error return from fh.GetPathSeparatorIndexesInPathStr(\"\") " +
-      "because the input parameter is an empty string. " +
-      "However, NO ERROR WAS RETURNED!")
-  }
-
-  if len(idxs) != 0 {
-    t.Errorf("Expected length of indexes='0'. Instead length of indexes='%v' ",
-      len(idxs))
-  }
-
-}
-
-func TestFileHelper_GetPathSeparatorIndexesInPathStr_02(t *testing.T) {
-
-  fh := FileHelper{}
-
-  idxs, err := fh.GetPathSeparatorIndexesInPathStr("     ")
-
-  if err == nil {
-    t.Error("Expected error return from fh.GetPathSeparatorIndexesInPathStr(\"     \") " +
-      "because the input parameter consists entirely of blank spaces. " +
-      "However, NO ERROR WAS RETURNED!")
-  }
-
-  if len(idxs) != 0 {
-    t.Errorf("Expected length of indexes='0'. Instead length of indexes='%v' ",
-      len(idxs))
-  }
-
-}
-
-// /d/gowork/src/MikeAustin71/pathfileopsgo/pathfileops
-// D:\gowork\src\MikeAustin71\pathfileopsgo\pathfileops
-func TestFileHelper_GetVolumeName_01(t *testing.T) {
-
-  fh := FileHelper{}
-
-  volumeName := fh.GetVolumeName("")
-
-  if volumeName != "" {
-    t.Errorf("Expected an empty string return from fh.GetVolumeName(\"\") because "+
-      "the input parameter is an empty string. Instead, the return value='%v' ", volumeName)
-  }
-}
-
-func TestFileHelper_GetVolumeName_02(t *testing.T) {
-
-  fh := FileHelper{}
-
-  volumeName := fh.GetVolumeName("  ")
-
-  if volumeName != "" {
-    t.Errorf("Expected an empty string return from fh.GetVolumeName(\"\") because "+
-      "the input parameter consists of blank spaces. Instead, the return value='%v' ", volumeName)
-  }
-}
-
-func TestFileHelper_GetVolumeName_03(t *testing.T) {
-
-  fh := FileHelper{}
-
-  testVolStr := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\pathfileops"
-
-  expectedVolName := strings.ToLower("D:")
-
-  volumeName := fh.GetVolumeName(testVolStr)
-
-  if expectedVolName != strings.ToLower(volumeName) {
-    t.Errorf("Expected volumeName='%v'. Instead, volName='%v' ",
-      expectedVolName, strings.ToLower(volumeName))
-  }
-
-}
-
-func TestFileHelper_GetVolumeName_04(t *testing.T) {
-
-  fh := FileHelper{}
-
-  testVolStr := "D:\\"
-
-  expectedVolName := strings.ToLower("D:")
-
-  volumeName := fh.GetVolumeName(testVolStr)
-
-  if expectedVolName != strings.ToLower(volumeName) {
-    t.Errorf("Expected volumeName='%v'. Instead, volName='%v' ",
-      expectedVolName, strings.ToLower(volumeName))
-  }
-
-}
-
-func TestFileHelper_GetVolumeName_05(t *testing.T) {
-
-  fh := FileHelper{}
-
-  testVolStr := "D:"
-
-  expectedVolName := strings.ToLower("D:")
-
-  volumeName := fh.GetVolumeName(testVolStr)
-
-  if expectedVolName != strings.ToLower(volumeName) {
-    t.Errorf("Expected volumeName='%v'. Instead, volName='%v' ",
-      expectedVolName, strings.ToLower(volumeName))
   }
 
 }

@@ -1,9 +1,188 @@
 package pathfileops
 
 import (
+  "fmt"
   "os"
   "testing"
 )
+
+func TestFileHelper_JoinPathsAdjustSeparators_01(t *testing.T) {
+  fh := FileHelper{}
+  path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common")
+  file1 := "xt_dirmgr_01_test.go"
+  expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/xt_dirmgr_01_test.go")
+
+  result1 := fh.JoinPathsAdjustSeparators(path1, file1)
+
+  if result1 != expected1 {
+    t.Error(fmt.Sprintf("Joined path and file name. Expected result '%v', instead got:", expected1), result1)
+  }
+}
+
+func TestFileHelper_JoinPathsAdjustSeparators_02(t *testing.T) {
+  fh := FileHelper{}
+  path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/")
+  file1 := "/xt_dirmgr_01_test.go"
+  expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/xt_dirmgr_01_test.go")
+
+  result1 := fh.JoinPathsAdjustSeparators(path1, file1)
+
+  if result1 != expected1 {
+    t.Error(fmt.Sprintf("Joined path and file name. Expected result '%v', instead got:", expected1), result1)
+  }
+
+}
+
+func TestFileHelper_JoinPathsAdjustSeparators_03(t *testing.T) {
+  fh := FileHelper{}
+  path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common")
+  file1 := "/xt_dirmgr_01_test.go"
+  expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/xt_dirmgr_01_test.go")
+
+  result1 := fh.JoinPathsAdjustSeparators(path1, file1)
+
+  if result1 != expected1 {
+    t.Error(fmt.Sprintf("Joined path and file name. Expected result '%v', instead got:", expected1), result1)
+  }
+
+}
+
+func TestFileHelper_JoinPathsAdjustSeparators_04(t *testing.T) {
+  fh := FileHelper{}
+  path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common")
+  file1 := "xt_dirmgr_01_test.go"
+  expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/xt_dirmgr_01_test.go")
+
+  result1 := fh.JoinPathsAdjustSeparators(path1, file1)
+
+  if result1 != expected1 {
+    t.Error(fmt.Sprintf("Joined path and file name. Expected result '%v', instead got:", expected1), result1)
+  }
+
+}
+
+func TestFileHelper_JoinPathsAdjustSeparators_05(t *testing.T) {
+  fh := FileHelper{}
+  path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common//")
+  file1 := "xt_dirmgr_01_test.go"
+  expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/xt_dirmgr_01_test.go")
+
+  result1 := fh.JoinPathsAdjustSeparators(path1, file1)
+
+  if result1 != expected1 {
+    t.Error(fmt.Sprintf("Joined path and file name. Expected result '%v', instead got:", expected1), result1)
+  }
+
+}
+
+func TestFileHelper_JoinPathsAdjustSeparators_06(t *testing.T) {
+  fh := FileHelper{}
+  path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common//")
+  file1 := "//xt_dirmgr_01_test.go"
+  expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/xt_dirmgr_01_test.go")
+
+  result1 := fh.JoinPathsAdjustSeparators(path1, file1)
+
+  if result1 != expected1 {
+    t.Error(fmt.Sprintf("Joined path and file name. Expected result '%v', instead got:", expected1), result1)
+  }
+
+}
+
+func TestFileHelper_JoinPathsAdjustSeparators_07(t *testing.T) {
+  fh := FileHelper{}
+  path1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/")
+  path12, err := fh.GetAbsPathFromFilePath(path1)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(path1) path1='%v'  Error='%v'", path1, err.Error())
+  }
+
+  file1 := "//xt_dirmgr_01_test.go"
+  expected1 := fh.AdjustPathSlash("../../../pathfilego/003_filehelper/common/xt_dirmgr_01_test.go")
+  expected12, err := fh.GetAbsPathFromFilePath(expected1)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(expected1) expected1='%v'  Error='%v'", expected1, err.Error())
+  }
+
+  result1 := fh.JoinPathsAdjustSeparators(path12, file1)
+
+  if result1 != expected12 {
+    t.Errorf("Joined path and file name. Expected result '%v'. Instead result='%v'",
+      expected12, result1)
+  }
+
+}
+
+func TestFileHelper_JoinPathsAdjustSeparators_08(t *testing.T) {
+  fh := FileHelper{}
+  path1 := ""
+  path2 := ""
+
+  result := fh.JoinPathsAdjustSeparators(path1, path2)
+
+  if result != path1 {
+    t.Errorf("Expected result empty string. Instead result='%v'",
+      result)
+  }
+
+}
+
+func TestFileHelper_JoinPathsAdjustSeparators_09(t *testing.T) {
+  fh := FileHelper{}
+  path1 := "   "
+  path2 := "   "
+
+  result := fh.JoinPathsAdjustSeparators(path1, path2)
+
+  if result != "" {
+    t.Errorf("Expected result empty string. Instead result='%v'",
+      result)
+  }
+
+}
+
+func TestFileHelper_JoinPaths_01(t *testing.T) {
+  fh := FileHelper{}
+  path1 := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir"
+  file1 := "level_3_1_test.txt"
+  expected1 := fh.AdjustPathSlash(
+    "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir/level_3_1_test.txt")
+
+  result1 := fh.JoinPaths(path1, file1)
+
+  if result1 != expected1 {
+    t.Errorf("Joined path and file name. Expected result '%v', instead got: %v", expected1, result1)
+  }
+
+}
+
+func TestFileHelper_JoinPaths_02(t *testing.T) {
+  fh := FileHelper{}
+  path1 := ""
+  path2 := ""
+
+  result1 := fh.JoinPaths(path1, path2)
+
+  if result1 != "" {
+    t.Errorf("Expected result = empty string, instead got result='%v'", result1)
+  }
+
+}
+
+func TestFileHelper_JoinPaths_03(t *testing.T) {
+  fh := FileHelper{}
+  path1 := "   "
+  path2 := "   "
+
+  result1 := fh.JoinPaths(path1, path2)
+
+  if result1 != "" {
+    t.Errorf("Expected result = empty string, instead got result='%v'", result1)
+  }
+
+}
 
 func TestFileHelper_MakeAbsolutePath_01(t *testing.T) {
 
