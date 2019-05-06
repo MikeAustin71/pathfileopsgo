@@ -137,14 +137,41 @@ func (fOpenCfg *FileOpenConfig) Equal(fOpStat2 *FileOpenConfig) bool {
   return true
 }
 
-// New - Creates and returns a fully initialized FileOpenConfig instance.
+// New - Creates and returns a fully initialized FileOpenConfig instance which
+// encapsulates a "File Open" parameter or code.
 //
+// To create a File Open parameter, two components are required:
+//                    1. A FileOpenType
+//                          AND
+//                    2. A FileOpenMode
+//
+//  FileOpenType: In order to open a file, exactly one of the
+//                following File Open Codes MUST be specified:
+//
+//                FileOpenType(0).TypeReadOnly()
+//                FileOpenType(0).TypeWriteOnly()
+//                FileOpenType(0).TypeReadWrite()
+//
+//  FileOpenMode: In addition to a 'FileOpenType', a File Open Mode is also required.
+//                Zero or more of the following File Open Mode codes may optionally
+//                be specified to better control file open behavior.
+//
+//                FileOpenMode(0).ModeAppend()
+//                FileOpenMode(0).ModeCreate()
+//                FileOpenMode(0).ModeExclusive()
+//                FileOpenMode(0).ModeSync()
+//                FileOpenMode(0).ModeTruncate()
+//
+//  The composite file open code is created internally by or'ing together the FileOpenType
+//  and FileOpenMode codes.
+//
+//  Reference CONSTANTS: https://golang.org/pkg/os/
 //
 // ------------------------------------------------------------------------
 //
 // Input Parameters:
 //
-//  fOpenType FileOpenType - The FileOpenType used to open a file.
+//  fOpenType      FileOpenType - The FileOpenType used to open a file.
 //
 //  fOpenModes ... FileOpenMode - Zero or more FileOpenMode instances which will be or'd
 //                                with the input parameter 'fOpenType' in order to generate
@@ -159,7 +186,9 @@ func (fOpenCfg *FileOpenConfig) Equal(fOpStat2 *FileOpenConfig) bool {
 //
 //
 //  FileOpenConfig - If successful, this method will return a new, fully initialized instance
-//                   of FileOpenConfig.
+//                   of FileOpenConfig. The type 'FileOpenConfig' creates and encapsulates the
+//                   file open code required by low-level file open methods.
+//
 //
 //  error          - If this method completes successfully, the returned error
 //                   Type is set equal to 'nil'. If an error condition is encountered,

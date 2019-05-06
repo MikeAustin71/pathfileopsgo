@@ -3930,8 +3930,54 @@ func (fh FileHelper) MoveFile(src, dst string) error {
 // OpenFile - wrapper for os.OpenFile. This method may be used to open or
 // create files depending on the File Open and File Permission parameters.
 //
+// If successful, this method will return a pointer to the os.File object
+// associated with the file designated for opening.
+//
+// The calling routine is responsible for calling "Close()" on this os.File
+// pointer.
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameters:
+//
+//  pathFileName                   string - A string containing the path and file name
+//                                          of the file which will be opened. If a parent
+//                                          path component does NOT exist, this method will
+//                                          trigger an error.
+//
+//  fileOpenCfg            FileOpenConfig - This parameter encapsulates the File Open parameters
+//                                          which will be used to open subject file. For an
+//                                          explanation of File Open parameters, see method
+//                                          FileOpenConfig.New().
+//
+// filePermissionCfg FilePermissionConfig - This parameter encapsulates the File Permission
+//                                          parameters which will be used to open the subject
+//                                          file. For an explanation of File Permission parameters,
+//                                          see method FilePermissionConfig.New().
+//
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+//  *os.File        - If successful, this method returns an os.File pointer
+//                    to the file designated by input parameter 'pathFileName'.
+//                    This file pointer can subsequently be used for reading
+//                    content from the subject file. It may NOT be used for
+//                    writing content to the subject file.
+//
+//                    If this method fails, the *os.File return value is 'nil'.
+//
+//                    Note: The caller is responsible for calling "Close()" on this
+//                    os.File pointer.
+//
+//
+//  error           - If the method completes successfully, this return value
+//                    is 'nil'. If the method fails, the error type returned
+//                    is populated with an appropriate error message.
+//
 func (fh FileHelper) OpenFile(
-  targetPathFileName string,
+  pathFileName string,
   fileOpenCfg FileOpenConfig,
   filePermissionCfg FilePermissionConfig) (filePtr *os.File, err error) {
 
@@ -3940,16 +3986,16 @@ func (fh FileHelper) OpenFile(
   errCode := 0
   ePrefix := "FileHelper.OpenFile() "
 
-  errCode, _, targetPathFileName = fh.isStringEmptyOrBlank(targetPathFileName)
+  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
 
   if errCode == -1 {
-    err = errors.New(ePrefix + "Input parameter 'targetPathFileName' is an empty string!")
+    err = errors.New(ePrefix + "Input parameter 'pathFileName' is an empty string!")
     return filePtr, err
   }
 
   if errCode == -2 {
     err = errors.New(ePrefix +
-      "Input parameter 'targetPathFileName' consists of all spaces!")
+      "Input parameter 'pathFileName' consists of all spaces!")
     return filePtr, err
   }
 
@@ -3983,21 +4029,21 @@ func (fh FileHelper) OpenFile(
     return filePtr, err
   }
 
-  filePtr, err2 = os.OpenFile(targetPathFileName, fOpenCode, fileMode)
+  filePtr, err2 = os.OpenFile(pathFileName, fOpenCode, fileMode)
 
   if err2 != nil {
 
     if os.IsNotExist(err2) {
-      err = fmt.Errorf(ePrefix+"The 'targetPathFileName' DOES NOT EXIST! "+
-        "targetPathFileName='%v' Error='%v' ",
-        targetPathFileName, err2.Error())
+      err = fmt.Errorf(ePrefix+"The 'pathFileName' DOES NOT EXIST! "+
+        "pathFileName='%v' Error='%v' ",
+        pathFileName, err2.Error())
       filePtr = nil
       return filePtr, err
     }
 
     err = fmt.Errorf(ePrefix+
-      "Error returned by os.OpenFile(targetPathFileName, fOpenCode, fileMode) "+
-      "targetpathFileName='%v' Error='%v' ", targetPathFileName, err.Error())
+      "Error returned by os.OpenFile(pathFileName, fOpenCode, fileMode) "+
+      "targetpathFileName='%v' Error='%v' ", pathFileName, err.Error())
 
     return filePtr, err
   }
@@ -4038,6 +4084,9 @@ func (fh FileHelper) OpenFile(
 //                    writing content to the subject file.
 //
 //                    If this method fails, the *os.File return value is 'nil'.
+//
+//                    Note: The caller is responsible for calling "Close()" on this
+//                    os.File pointer.
 //
 //
 //  error           - If the method completes successfully, this return value
@@ -4156,6 +4205,9 @@ func (fh FileHelper) OpenFileReadOnly(pathFileName string) (filePtr *os.File, er
 //
 // If the file path does not exist, an error will be triggered.
 //
+// If the method completes successfully, the caller is responsible for
+// call "Close()" on the returned os.File pointer.
+//
 // ------------------------------------------------------------------------
 //
 // Input Parameter:
@@ -4195,6 +4247,9 @@ func (fh FileHelper) OpenFileReadOnly(pathFileName string) (filePtr *os.File, er
 //                    content to, or reading content from, the subject file.
 //
 //                    If this method fails, this return value is 'nil'.
+//
+//                    Note: The caller is responsible for calling "Close()" on this
+//                    os.File pointer.
 //
 //
 //  error           - If the method completes successfully, this return value
@@ -4324,6 +4379,9 @@ func (fh FileHelper) OpenFileReadWrite(
 //
 // If the designated file does not exist, this method will attempt to create the file.
 //
+// If the method completes successfully, the caller is responsible for calling 'Close()'
+// on the returned os.File pointer.
+//
 // ------------------------------------------------------------------------
 //
 // Input Parameter:
@@ -4363,6 +4421,9 @@ func (fh FileHelper) OpenFileReadWrite(
 //                    subject file.
 //
 //                    If this method fails, this return value is 'nil'.
+//
+//                    Note: The caller is responsible for calling "Close()" on this
+//                    os.File pointer.
 //
 //
 //  error           - If the method completes successfully, this return value
