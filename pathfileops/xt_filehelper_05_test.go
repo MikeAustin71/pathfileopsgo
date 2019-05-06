@@ -74,7 +74,7 @@ func TestFileHelper_MakeDirAll_03(t *testing.T) {
     err = fh.DeleteDirPathAll(baseDirPath)
 
     if err != nil {
-      t.Errorf("Error returned by fh.DeleteDirPathAll(baseDirPath) during test setup.\n" +
+      t.Errorf("Error returned by fh.DeleteDirPathAll(baseDirPath) during test setup.\n"+
         "Attempted deletion of base directory FAILED!\nbaseDirPath='%v'\n",
         baseDirPath)
       return
@@ -83,15 +83,15 @@ func TestFileHelper_MakeDirAll_03(t *testing.T) {
     _, err = os.Stat(baseDirPath)
 
     if err == nil {
-      t.Errorf("ERROR: Attempted deletion of baseDirPath during test setup FAILED!\n" +
+      t.Errorf("ERROR: Attempted deletion of baseDirPath during test setup FAILED!\n"+
         "baseDirPath still exists!\nbaseDirPath='%v'\n", baseDirPath)
     }
   }
 
   err = fh.MakeDirAll(dirPath)
 
-  if err !=nil {
-    t.Errorf("Error returned by fh.MakeDirAll(dirPath).\n" +
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeDirAll(dirPath).\n"+
       "dirPath='%v'\nError='%v'", dirPath, err.Error())
     return
   }
@@ -99,23 +99,23 @@ func TestFileHelper_MakeDirAll_03(t *testing.T) {
   _, err = os.Stat(dirPath)
 
   if err != nil {
-    t.Errorf("Error: fh.MakeDirAll(dirPath) FAILED!\n" +
-      "os.Stat() confirms that dirPath DOES NOT EXIST!\n" +
+    t.Errorf("Error: fh.MakeDirAll(dirPath) FAILED!\n"+
+      "os.Stat() confirms that dirPath DOES NOT EXIST!\n"+
       "dirPath='%v'\n", dirPath)
     return
   }
 
   err = fh.DeleteDirPathAll(baseDirPath)
 
-  if err != nil{
-    t.Errorf("Error returned during clean-up by fh.DeleteDirPathAll(baseDirPath).\n" +
+  if err != nil {
+    t.Errorf("Error returned during clean-up by fh.DeleteDirPathAll(baseDirPath).\n"+
       "baseDirPath='%v'\nError='%v'\n", baseDirPath, err.Error())
   }
 
   _, err = os.Stat(baseDirPath)
 
   if err == nil {
-    t.Errorf("ERROR: baseDirPath still EXISTS! Attempted deletion FAILED!\n" +
+    t.Errorf("ERROR: baseDirPath still EXISTS! Attempted deletion FAILED!\n"+
       "baseDirPath='%v'\n", baseDirPath)
   }
 
@@ -134,8 +134,8 @@ func TestFileHelper_MakeDirAllPerm01(t *testing.T) {
 
     err = fh.DeleteDirPathAll(baseDirPath)
     if err != nil {
-      t.Errorf("Error returned by fh.DeleteDirPathAll(baseDirPath) during test startup.\n" +
-        "This means that the baseDirPath and all subsidiary directories could NOT be deleted!\n" +
+      t.Errorf("Error returned by fh.DeleteDirPathAll(baseDirPath) during test startup.\n"+
+        "This means that the baseDirPath and all subsidiary directories could NOT be deleted!\n"+
         "baseDirPath='%v'\nError='%v'\n", baseDirPath, err.Error())
       return
     }
@@ -143,7 +143,7 @@ func TestFileHelper_MakeDirAllPerm01(t *testing.T) {
     _, err = os.Stat(baseDirPath)
 
     if err == nil {
-      t.Errorf("ERROR: During test startup attempts to delete the test baseDirPath FAILED!\n" +
+      t.Errorf("ERROR: During test startup attempts to delete the test baseDirPath FAILED!\n"+
         "baseDirPath still EXISTS!\nbaseDirPath='%v'\n", baseDirPath)
       return
     }
@@ -152,8 +152,8 @@ func TestFileHelper_MakeDirAllPerm01(t *testing.T) {
 
   permissionCfg, err := FilePermissionConfig{}.New("drwxrwxrwx")
 
-  if err != nil{
-    t.Errorf("Error returned by FilePermissionConfig{}.New(\"drwxrwxrwx\")\n" +
+  if err != nil {
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"drwxrwxrwx\")\n"+
       "Error='%v'\n", err.Error())
   }
 
@@ -162,8 +162,8 @@ func TestFileHelper_MakeDirAllPerm01(t *testing.T) {
   err = fh.MakeDirAllPerm(dirPath, permissionCfg)
 
   if err == nil {
-    t.Errorf("ERROR: Expected an error return from fh.MakeDirAllPerm(dirPath, permissionCfg)\n" +
-      "because 'permissionCfg' is Invalid. However, NO ERROR WAS RETURNED!\n" +
+    t.Errorf("ERROR: Expected an error return from fh.MakeDirAllPerm(dirPath, permissionCfg)\n"+
+      "because 'permissionCfg' is Invalid. However, NO ERROR WAS RETURNED!\n"+
       "dirPath='%v'\n", dirPath)
   }
 
@@ -173,8 +173,8 @@ func TestFileHelper_MakeDirAllPerm01(t *testing.T) {
 
     err = fh.DeleteDirPathAll(baseDirPath)
     if err != nil {
-      t.Errorf("Error returned by fh.DeleteDirPathAll(baseDirPath) during test clean-up.\n" +
-        "This means that the baseDirPath and all subsidiary directories could NOT be deleted!\n" +
+      t.Errorf("Error returned by fh.DeleteDirPathAll(baseDirPath) during test clean-up.\n"+
+        "This means that the baseDirPath and all subsidiary directories could NOT be deleted!\n"+
         "baseDirPath='%v'\nError='%v'\n", baseDirPath, err.Error())
       return
     }
@@ -182,7 +182,7 @@ func TestFileHelper_MakeDirAllPerm01(t *testing.T) {
     _, err = os.Stat(baseDirPath)
 
     if err == nil {
-      t.Errorf("ERROR: During test clean-up attempts to delete the test baseDirPath FAILED!\n" +
+      t.Errorf("ERROR: During test clean-up attempts to delete the test baseDirPath FAILED!\n"+
         "baseDirPath still EXISTS!\nbaseDirPath='%v'\n", baseDirPath)
     }
 
@@ -202,8 +202,8 @@ func TestFileHelper_MakeDirPerm_01(t *testing.T) {
 
     err = fh.DeleteDirPathAll(dirPath)
     if err != nil {
-      t.Errorf("Error returned by fh.DeleteDirPathAll(dirPath) during test startup.\n" +
-        "This means that the dirPath could NOT be deleted!\n" +
+      t.Errorf("Error returned by fh.DeleteDirPathAll(dirPath) during test startup.\n"+
+        "This means that the dirPath could NOT be deleted!\n"+
         "dirPath='%v'\nError='%v'\n", dirPath, err.Error())
       return
     }
@@ -211,7 +211,7 @@ func TestFileHelper_MakeDirPerm_01(t *testing.T) {
     _, err = os.Stat(dirPath)
 
     if err == nil {
-      t.Errorf("ERROR: During test startup attempts to delete the test dirPath FAILED!\n" +
+      t.Errorf("ERROR: During test startup attempts to delete the test dirPath FAILED!\n"+
         "dirPath still EXISTS!\nbaseDirPath='%v'\n", dirPath)
       return
     }
@@ -220,8 +220,8 @@ func TestFileHelper_MakeDirPerm_01(t *testing.T) {
 
   permissionCfg, err := FilePermissionConfig{}.New("drwxrwxrwx")
 
-  if err != nil{
-    t.Errorf("Error returned by FilePermissionConfig{}.New(\"drwxrwxrwx\")\n" +
+  if err != nil {
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"drwxrwxrwx\")\n"+
       "Error='%v'\n", err.Error())
     return
   }
@@ -231,8 +231,8 @@ func TestFileHelper_MakeDirPerm_01(t *testing.T) {
   err = fh.MakeDirPerm(dirPath, permissionCfg)
 
   if err == nil {
-    t.Errorf("ERROR: Expected an error return from fh.MakeDirPerm(dirPath, permissionCfg)\n" +
-      "because 'permissionCfg' is Invalid. However, NO ERROR WAS RETURNED!\n" +
+    t.Errorf("ERROR: Expected an error return from fh.MakeDirPerm(dirPath, permissionCfg)\n"+
+      "because 'permissionCfg' is Invalid. However, NO ERROR WAS RETURNED!\n"+
       "dirPath='%v'\n", dirPath)
   }
 
@@ -242,8 +242,8 @@ func TestFileHelper_MakeDirPerm_01(t *testing.T) {
 
     err = fh.DeleteDirPathAll(dirPath)
     if err != nil {
-      t.Errorf("Error returned by fh.DeleteDirPathAll(dirPath) during test clean-up.\n" +
-        "This means that the dirPath could NOT be deleted!\n" +
+      t.Errorf("Error returned by fh.DeleteDirPathAll(dirPath) during test clean-up.\n"+
+        "This means that the dirPath could NOT be deleted!\n"+
         "dirPath='%v'\nError='%v'\n", dirPath, err.Error())
       return
     }
@@ -251,7 +251,7 @@ func TestFileHelper_MakeDirPerm_01(t *testing.T) {
     _, err = os.Stat(dirPath)
 
     if err == nil {
-      t.Errorf("ERROR: During test clean-up attempts to delete the test dirPath FAILED!\n" +
+      t.Errorf("ERROR: During test clean-up attempts to delete the test dirPath FAILED!\n"+
         "dirPath still EXISTS!\ndirPath='%v'\n", dirPath)
     }
 
@@ -265,12 +265,12 @@ func TestFileHelper_MakeDir01(t *testing.T) {
 
   _, err := os.Stat(dirPath)
 
-  if err == nil  {
+  if err == nil {
 
     err = fh.DeleteDirFile(dirPath)
 
     if err != nil {
-      t.Errorf("Error during test setup. Directory already exists!\n" +
+      t.Errorf("Error during test setup. Directory already exists!\n"+
         "Attempted directory deletion FAILED!\ndirPath='%v'\n", dirPath)
       return
     }
@@ -280,7 +280,7 @@ func TestFileHelper_MakeDir01(t *testing.T) {
   _, err = os.Stat(dirPath)
 
   if err == nil {
-    t.Errorf("ERROR: Setup tests directory still exists!\n" +
+    t.Errorf("ERROR: Setup tests directory still exists!\n"+
       "dirPath='%v'\n", dirPath)
     return
   }
@@ -288,7 +288,7 @@ func TestFileHelper_MakeDir01(t *testing.T) {
   err = fh.MakeDir(dirPath)
 
   if err != nil {
-    t.Errorf("Error returned by fh.MakeDir(dirPath).\n" +
+    t.Errorf("Error returned by fh.MakeDir(dirPath).\n"+
       "dirPath='%v'\nError='%v'\n", dirPath, err.Error())
     return
   }
@@ -296,7 +296,7 @@ func TestFileHelper_MakeDir01(t *testing.T) {
   _, err = os.Stat(dirPath)
 
   if err != nil {
-    t.Errorf("ERROR: MakeDir(dirPath) failed to create test directory.\n" +
+    t.Errorf("ERROR: MakeDir(dirPath) failed to create test directory.\n"+
       "dirPath='%v'\n", dirPath)
     return
   }
@@ -304,7 +304,7 @@ func TestFileHelper_MakeDir01(t *testing.T) {
   err = fh.DeleteDirFile(dirPath)
 
   if err != nil {
-    t.Errorf("Error returned by cleanup fh.DeleteDirFile(dirPath).\n" +
+    t.Errorf("Error returned by cleanup fh.DeleteDirFile(dirPath).\n"+
       "dirPath='%v'\n", dirPath)
     return
   }
@@ -312,7 +312,7 @@ func TestFileHelper_MakeDir01(t *testing.T) {
   _, err = os.Stat(dirPath)
 
   if err == nil {
-    t.Errorf("Error: Clean-up FAILED! Test directory still exists!\n" +
+    t.Errorf("Error: Clean-up FAILED! Test directory still exists!\n"+
       "dirPath='%v'\n", dirPath)
   }
 
@@ -322,7 +322,7 @@ func TestFileHelper_MakeDir02(t *testing.T) {
 
   fh := FileHelper{}
   dirPath := ""
- err := fh.MakeDir(dirPath)
+  err := fh.MakeDir(dirPath)
 
   if err == nil {
     t.Error("Expected an error return from fh.MakeDir(dirPath) because\n" +
@@ -355,14 +355,14 @@ func TestFileHelper_MoveFile_01(t *testing.T) {
     err := fh.DeleteDirFile(destFile)
 
     if err != nil {
-      t.Errorf("Error during test setup deleting destination file.\n" +
+      t.Errorf("Error during test setup deleting destination file.\n"+
         "Destination File='%v'\nError:'%v'\n",
         destFile, err)
       return
     }
 
     if fh.DoesFileExist(destFile) {
-      t.Errorf("Error on test setup: destination file, STILL EXISTS!\n" +
+      t.Errorf("Error on test setup: destination file, STILL EXISTS!\n"+
         "Destination File='%v'", destFile)
       return
     }
@@ -371,15 +371,15 @@ func TestFileHelper_MoveFile_01(t *testing.T) {
   err := fh.CopyFileByIo(setupFile, srcFile)
 
   if err != nil {
-    t.Errorf("Received error copying 'setupFile' to 'srcFile'.\n" +
-      "Test Setup FAILED! 'srcFile' does NOT Exist. \n" +
+    t.Errorf("Received error copying 'setupFile' to 'srcFile'.\n"+
+      "Test Setup FAILED! 'srcFile' does NOT Exist. \n"+
       "setupFile='%v'\nsrcFile='%v'\nError='%v'\n",
       setupFile, srcFile, err.Error())
     return
   }
 
   if !fh.DoesFileExist(srcFile) {
-    t.Errorf("Test Setup FAILED! Source File does NOT EXIST!!\n" +
+    t.Errorf("Test Setup FAILED! Source File does NOT EXIST!!\n"+
       "srcFile='%v'", srcFile)
     return
   }
@@ -387,27 +387,27 @@ func TestFileHelper_MoveFile_01(t *testing.T) {
   err = fh.MoveFile(srcFile, destFile)
 
   if err != nil {
-    t.Errorf("Error returend by fh.MoveFile(srcFile, destFile)\n" +
+    t.Errorf("Error returend by fh.MoveFile(srcFile, destFile)\n"+
       "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
       srcFile, destFile, err.Error())
     return
   }
 
   if fh.DoesFileExist(srcFile) {
-    t.Errorf("FileHelper:MoveFile() FAILED! Source File still exists!!\n" +
+    t.Errorf("FileHelper:MoveFile() FAILED! Source File still exists!!\n"+
       "Source File='%v'\n", srcFile)
   }
 
   if !fh.DoesFileExist(destFile) {
-    t.Errorf("FileHelper:MoveFile() FAILED! Destination File DOES NOT EXIST!\n" +
+    t.Errorf("FileHelper:MoveFile() FAILED! Destination File DOES NOT EXIST!\n"+
       "Destination File='%v'\n", destFile)
     return
   }
 
   err = fh.DeleteDirFile(destFile)
 
-  if err !=nil {
-    t.Errorf("Error during test clean-up: Attempted deletion of destination " +
+  if err != nil {
+    t.Errorf("Error during test clean-up: Attempted deletion of destination "+
       "file FAILED!\nDestination File still exists!\nDestination File='%v'",
       destFile)
   }
@@ -455,7 +455,7 @@ func TestFileHelper_MoveFile_04(t *testing.T) {
   _, err = os.Stat(srcFile)
 
   if err != nil {
-    t.Errorf("Error: Expected that source file would NOT be deleted with an error\n" +
+    t.Errorf("Error: Expected that source file would NOT be deleted with an error\n"+
       "return from MoveFile(). However, the source file WAS DELETED!\nSource File='%v'\n",
       srcFile)
   }
@@ -478,7 +478,7 @@ func TestFileHelper_MoveFile_05(t *testing.T) {
   _, err = os.Stat(srcFile)
 
   if err != nil {
-    t.Errorf("Error: Expected that source file would NOT be deleted with an error\n" +
+    t.Errorf("Error: Expected that source file would NOT be deleted with an error\n"+
       "return from MoveFile(). However, the source file WAS DELETED!\nSource File='%v'\n",
       srcFile)
   }
@@ -510,14 +510,14 @@ func TestFileHelper_MoveFile_07(t *testing.T) {
     err := fh.DeleteDirFile(destFile)
 
     if err != nil {
-      t.Errorf("Error during test setup deleting destination file.\n" +
+      t.Errorf("Error during test setup deleting destination file.\n"+
         "Destination File='%v'\nError:'%v'\n",
         destFile, err)
       return
     }
 
     if fh.DoesFileExist(destFile) {
-      t.Errorf("Error on test setup: destination file, STILL EXISTS!\n" +
+      t.Errorf("Error on test setup: destination file, STILL EXISTS!\n"+
         "Destination File='%v'", destFile)
       return
     }
@@ -526,26 +526,25 @@ func TestFileHelper_MoveFile_07(t *testing.T) {
   err := fh.CopyFileByIo(setupDestFile, destFile)
 
   if err != nil {
-    t.Errorf("Received error copying 'setupDestFile' to 'srcFile'.\n" +
-      "Test Setup FAILED! 'srcFile' does NOT Exist. \n" +
+    t.Errorf("Received error copying 'setupDestFile' to 'srcFile'.\n"+
+      "Test Setup FAILED! 'srcFile' does NOT Exist. \n"+
       "setupDestFile='%v'\nsrcFile='%v'\nError='%v'\n",
       setupDestFile, srcFile, err.Error())
     return
   }
 
-
   err = fh.CopyFileByIo(srcFile, setupSrcFile)
 
   if err != nil {
-    t.Errorf("Error returned from fh.CopyFileByIo(srcFile, setupSrcFile).\n" +
-      "Test Setup for source file FAILED!\n" +
+    t.Errorf("Error returned from fh.CopyFileByIo(srcFile, setupSrcFile).\n"+
+      "Test Setup for source file FAILED!\n"+
       "setupSrcFile='%v'\nsrcFile='%v'\nError='%v'\n",
       srcFile, setupSrcFile, err.Error())
     return
   }
 
   if !fh.DoesFileExist(setupSrcFile) {
-    t.Errorf("Test Setup FAILED! Setup Source File does NOT EXIST!!\n" +
+    t.Errorf("Test Setup FAILED! Setup Source File does NOT EXIST!!\n"+
       "setupSrcFile='%v'", setupSrcFile)
     return
   }
@@ -553,7 +552,7 @@ func TestFileHelper_MoveFile_07(t *testing.T) {
   err = fh.MoveFile(setupSrcFile, destFile)
 
   if err != nil {
-    t.Errorf("Error returned by fh.MoveFile(setupSrcFile, destFile)\n" +
+    t.Errorf("Error returned by fh.MoveFile(setupSrcFile, destFile)\n"+
       "setupSrcFile='%v'\ndestFile='%v'\nError='%v'\n",
       setupSrcFile, destFile, err.Error())
     return
@@ -562,15 +561,15 @@ func TestFileHelper_MoveFile_07(t *testing.T) {
   destFileInfo, err := os.Stat(destFile)
 
   if err != nil {
-    t.Errorf("Error: MoveFile() did NOT create the destFile!\n" +
+    t.Errorf("Error: MoveFile() did NOT create the destFile!\n"+
       "Destination File='%v'\n", destFile)
   }
 
   srcFileInfo, err := os.Stat(srcFile)
 
   if srcFileInfo.Size() != destFileInfo.Size() {
-    t.Errorf("Error: The destination file size in bytes does not match the\n" +
-      "original source file size in bytes!\nSource File Size='%v', " +
+    t.Errorf("Error: The destination file size in bytes does not match the\n"+
+      "original source file size in bytes!\nSource File Size='%v', "+
       "Destination File Size='%v'\n",
       srcFileInfo.Size(), destFileInfo.Size())
   }
@@ -596,28 +595,28 @@ func TestFileHelper_OpenFile_01(t *testing.T) {
   err = fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly())
 
   if err != nil {
-    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n" +
+    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n"+
       "Error='%v' \n", err.Error())
   }
 
   err = fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())
 
   if err != nil {
-    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n" +
+    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n"+
       "Error='%v' \n", err.Error())
   }
 
   fPermCfg, err := FilePermissionConfig{}.New("-r--r--r--")
 
   if err != nil {
-    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n" +
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n"+
       "Error='%v' \n", err.Error())
   }
 
   fPtr, err := fh.OpenFile(targetFile, fOpCfg, fPermCfg)
 
   if err != nil {
-    t.Errorf("Error returned by fh.OpenFile(targetFile, fOpCfg, fPermCfg)\n" +
+    t.Errorf("Error returned by fh.OpenFile(targetFile, fOpCfg, fPermCfg)\n"+
       "targetFile='%v', Error='%v'\n", targetFile, err.Error())
     return
   }
@@ -630,7 +629,7 @@ func TestFileHelper_OpenFile_01(t *testing.T) {
   err = fPtr.Close()
 
   if err != nil {
-    t.Errorf("Error returned by fPtr.Close()\n" +
+    t.Errorf("Error returned by fPtr.Close()\n"+
       "targetFile='%v', Error='%v'\n", targetFile, err.Error())
   }
 
@@ -652,21 +651,21 @@ func TestFileHelper_OpenFile_02(t *testing.T) {
   err = fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly())
 
   if err != nil {
-    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n" +
+    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n"+
       "Error='%v' \n", err.Error())
   }
 
   err = fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())
 
   if err != nil {
-    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n" +
+    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n"+
       "Error='%v' \n", err.Error())
   }
 
   fPermCfg, err := FilePermissionConfig{}.New("-r--r--r--")
 
   if err != nil {
-    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n" +
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n"+
       "Error='%v' \n", err.Error())
   }
 
@@ -674,7 +673,7 @@ func TestFileHelper_OpenFile_02(t *testing.T) {
 
   if err == nil {
     t.Error("Expected an error from return fh.OpenFile(targetFile, fOpCfg, fPermCfg)\n" +
-      "because parameter 'targetFile' is an empty string!\n"+
+      "because parameter 'targetFile' is an empty string!\n" +
       "However, NO ERROR WAS RETURNED!\n")
 
     if fPtr != nil {
@@ -702,21 +701,21 @@ func TestFileHelper_OpenFile_03(t *testing.T) {
   err = fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly())
 
   if err != nil {
-    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n" +
+    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n"+
       "Error='%v' \n", err.Error())
   }
 
   err = fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())
 
   if err != nil {
-    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n" +
+    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n"+
       "Error='%v' \n", err.Error())
   }
 
   fPermCfg, err := FilePermissionConfig{}.New("-r--r--r--")
 
   if err != nil {
-    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n" +
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n"+
       "Error='%v' \n", err.Error())
   }
 
@@ -724,7 +723,7 @@ func TestFileHelper_OpenFile_03(t *testing.T) {
 
   if err == nil {
     t.Error("Expected an error from return fh.OpenFile(targetFile, fOpCfg, fPermCfg)\n" +
-      "because parameter 'targetFile' consists entirely of blank spaces!\n"+
+      "because parameter 'targetFile' consists entirely of blank spaces!\n" +
       "However, NO ERROR WAS RETURNED!\n")
 
     if fPtr != nil {
@@ -754,21 +753,21 @@ func TestFileHelper_OpenFile_04(t *testing.T) {
   err = fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly())
 
   if err != nil {
-    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n" +
+    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n"+
       "Error='%v' \n", err.Error())
   }
 
   err = fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())
 
   if err != nil {
-    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n" +
+    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n"+
       "Error='%v' \n", err.Error())
   }
 
   fPermCfg, err := FilePermissionConfig{}.New("-r--r--r--")
 
   if err != nil {
-    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n" +
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n"+
       "Error='%v' \n", err.Error())
   }
 
@@ -778,7 +777,7 @@ func TestFileHelper_OpenFile_04(t *testing.T) {
 
   if err == nil {
     t.Error("Expected an error from return fh.OpenFile(targetFile, fOpCfg, fPermCfg)\n" +
-      "because parameter 'fOpCfg' is INVALID!\n"+
+      "because parameter 'fOpCfg' is INVALID!\n" +
       "However, NO ERROR WAS RETURNED!\n")
 
     if fPtr != nil {
@@ -808,21 +807,21 @@ func TestFileHelper_OpenFile_05(t *testing.T) {
   err = fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly())
 
   if err != nil {
-    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n" +
+    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n"+
       "Error='%v' \n", err.Error())
   }
 
   err = fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())
 
   if err != nil {
-    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n" +
+    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n"+
       "Error='%v' \n", err.Error())
   }
 
   fPermCfg, err := FilePermissionConfig{}.New("-r--r--r--")
 
   if err != nil {
-    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n" +
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n"+
       "Error='%v' \n", err.Error())
   }
 
@@ -832,7 +831,7 @@ func TestFileHelper_OpenFile_05(t *testing.T) {
 
   if err == nil {
     t.Error("Expected an error from return fh.OpenFile(targetFile, fOpCfg, fPermCfg)\n" +
-      "because parameter 'fPermCfg' is INVALID!\n"+
+      "because parameter 'fPermCfg' is INVALID!\n" +
       "However, NO ERROR WAS RETURNED!\n")
 
     if fPtr != nil {
@@ -862,21 +861,21 @@ func TestFileHelper_OpenFile_06(t *testing.T) {
   err = fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly())
 
   if err != nil {
-    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n" +
+    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n"+
       "Error='%v' \n", err.Error())
   }
 
   err = fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())
 
   if err != nil {
-    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n" +
+    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n"+
       "Error='%v' \n", err.Error())
   }
 
   fPermCfg, err := FilePermissionConfig{}.New("-r--r--r--")
 
   if err != nil {
-    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n" +
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n"+
       "Error='%v' \n", err.Error())
   }
 
@@ -911,17 +910,17 @@ func TestFileHelper_OpenFileReadOnly_01(t *testing.T) {
 
   if fh.DoesFileExist(target) {
 
-    err:= fh.DeleteDirFile(target)
+    err := fh.DeleteDirFile(target)
 
     if err != nil {
-      t.Errorf("Test Setup Error: Attempted deletion of preexisting " +
+      t.Errorf("Test Setup Error: Attempted deletion of preexisting "+
         "target file FAILED!\ntargetFile='%v'\nError='%v'\n",
         target, err.Error())
       return
     }
 
     if fh.DoesFileExist(target) {
-      t.Errorf("Test Setup Error: Verification of target file deletion FAILED!\n" +
+      t.Errorf("Test Setup Error: Verification of target file deletion FAILED!\n"+
         "Target File still exists after attempted deletion!\ntargetFile='%v'\n",
         target)
       return
@@ -950,8 +949,8 @@ func TestFileHelper_OpenFileReadOnly_01(t *testing.T) {
   bytesRead, err := f.Read(bytes)
 
   if err != nil {
-    t.Errorf("Error returned from f.Read(bytes).\n" +
-      "targetFile='%v'\nError='%v'\n",target, err.Error())
+    t.Errorf("Error returned from f.Read(bytes).\n"+
+      "targetFile='%v'\nError='%v'\n", target, err.Error())
     _ = f.Close()
     _ = fh.DeleteDirFile(target)
     return
@@ -975,13 +974,12 @@ func TestFileHelper_OpenFileReadOnly_02(t *testing.T) {
   _, err := fh.OpenFileReadOnly("")
 
   if err == nil {
-    t.Error("Expected an error from fh.OpenFileReadOnly(\"\") "+
+    t.Error("Expected an error from fh.OpenFileReadOnly(\"\") " +
       "because the input parameter is an empty string.\n" +
       "However, NO ERROR WAS RETURNED!")
   }
 
 }
-
 
 func TestFileHelper_OpenFileReadOnly_03(t *testing.T) {
 
@@ -990,7 +988,7 @@ func TestFileHelper_OpenFileReadOnly_03(t *testing.T) {
   _, err := fh.OpenFileReadOnly("    ")
 
   if err == nil {
-    t.Error("Expected an error from fh.OpenFileReadOnly(\"\") "+
+    t.Error("Expected an error from fh.OpenFileReadOnly(\"\") " +
       "because the input parameter consists entirely of blank spaces.\n" +
       "However, NO ERROR WAS RETURNED!")
   }
@@ -1008,7 +1006,7 @@ func TestFileHelper_OpenFileReadOnly_04(t *testing.T) {
   _, err := fh.OpenFileReadOnly(targetFile)
 
   if err == nil {
-    t.Error("Expected an error from fh.OpenFileReadOnly(targetFile) "+
+    t.Error("Expected an error from fh.OpenFileReadOnly(targetFile) " +
       "because the input parameter 'targetFile' does not exist.\n" +
       "However, NO ERROR WAS RETURNED!")
   }
@@ -1028,17 +1026,17 @@ func TestFileHelper_OpenFileReadOnly_05(t *testing.T) {
 
   if fh.DoesFileExist(target) {
 
-    err:= fh.DeleteDirFile(target)
+    err := fh.DeleteDirFile(target)
 
     if err != nil {
-      t.Errorf("Test Setup Error: Attempted deletion of preexisting " +
+      t.Errorf("Test Setup Error: Attempted deletion of preexisting "+
         "target file FAILED!\ntargetFile='%v'\nError='%v'\n",
         target, err.Error())
       return
     }
 
     if fh.DoesFileExist(target) {
-      t.Errorf("Test Setup Error: Verification of target file deletion FAILED!\n" +
+      t.Errorf("Test Setup Error: Verification of target file deletion FAILED!\n"+
         "Target File still exists after attempted deletion!\ntargetFile='%v'\n",
         target)
       return
@@ -1067,14 +1065,14 @@ func TestFileHelper_OpenFileReadOnly_05(t *testing.T) {
   _, err = f.WriteString(testText)
 
   if err == nil {
-    t.Errorf("Expected an error return from f.WriteString(testText) "+
+    t.Errorf("Expected an error return from f.WriteString(testText) " +
       "because\n'f' references a read-only file. However, NO ERROR WAS RETURNED!\n")
   }
 
   err = f.Close()
 
   if err != nil {
-    t.Errorf("Test Clean-up Error: Error return from f.Close().\n" +
+    t.Errorf("Test Clean-up Error: Error return from f.Close().\n"+
       "File Name='%v'\nError='%v'\n",
       target, err.Error())
   }
@@ -1082,7 +1080,7 @@ func TestFileHelper_OpenFileReadOnly_05(t *testing.T) {
   err = fh.DeleteDirFile(target)
 
   if err != nil {
-    t.Errorf("Test Clean-up Error: Error return from fh.DeleteDirFile(target).\n" +
+    t.Errorf("Test Clean-up Error: Error return from fh.DeleteDirFile(target).\n"+
       "target='%v'\nError='%v'", target, err.Error())
   }
 
@@ -1099,15 +1097,15 @@ func TestFileHelper_OpenFileReadWrite_01(t *testing.T) {
     err := fh.DeleteDirFile(targetFile)
 
     if err != nil {
-      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n" +
-        "fh.DeleteDirFile(targetFile) returned an error!\n" +
+      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n"+
+        "fh.DeleteDirFile(targetFile) returned an error!\n"+
         "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
       return
     }
 
     if fh.DoesFileExist(targetFile) {
-      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n" +
-        "'targetFile' STILL EXISTS!\n" +
+      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n"+
+        "'targetFile' STILL EXISTS!\n"+
         "targetFile='%v'\n", targetFile)
       return
     }
@@ -1118,13 +1116,13 @@ func TestFileHelper_OpenFileReadWrite_01(t *testing.T) {
   fPtr, err := fh.OpenFileReadWrite(targetFile, false)
 
   if err != nil {
-    t.Errorf("Error returned by fh.OpenFileReadWrite(targetFile, false)\n" +
+    t.Errorf("Error returned by fh.OpenFileReadWrite(targetFile, false)\n"+
       "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
     return
   }
 
   if fPtr == nil {
-    t.Errorf("ERROR: File Pointer returned by fh.OpenFileReadWrite(targetFile)\n"  +
+    t.Errorf("ERROR: File Pointer returned by fh.OpenFileReadWrite(targetFile)\n"+
       "is 'nil'!\ntargetFile='%v'", targetFile)
     return
   }
@@ -1132,7 +1130,7 @@ func TestFileHelper_OpenFileReadWrite_01(t *testing.T) {
   bytesWritten, err := fPtr.WriteString(testString)
 
   if bytesWritten != len(testString) {
-    t.Errorf("ERROR: Bytes written to 'targetFile' DO NOT EQUAL the lenth\n" +
+    t.Errorf("ERROR: Bytes written to 'targetFile' DO NOT EQUAL the lenth\n"+
       "of 'testString'.\ntargetFile='%v'\nBytesWritten='%v' Length of Test String='%v'\n",
       targetFile, bytesWritten, len(testString))
     _ = fPtr.Close()
@@ -1143,7 +1141,7 @@ func TestFileHelper_OpenFileReadWrite_01(t *testing.T) {
   err = fPtr.Sync()
 
   if err != nil {
-    t.Errorf("Error returned by fPtr.Sync() for 'targetFile'!\n" +
+    t.Errorf("Error returned by fPtr.Sync() for 'targetFile'!\n"+
       "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
     _ = fPtr.Close()
     _ = fh.DeleteDirFile(targetFile)
@@ -1152,11 +1150,11 @@ func TestFileHelper_OpenFileReadWrite_01(t *testing.T) {
 
   b := make([]byte, 500)
 
-  bytesRead, err := fPtr.ReadAt(b,0)
+  bytesRead, err := fPtr.ReadAt(b, 0)
 
   if err != nil {
     if err != io.EOF {
-      t.Errorf("Non-EOF error returned by fPtr.ReadAt(b,0).\n" +
+      t.Errorf("Non-EOF error returned by fPtr.ReadAt(b,0).\n"+
         "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
       _ = fPtr.Close()
       _ = fh.DeleteDirFile(targetFile)
@@ -1165,9 +1163,9 @@ func TestFileHelper_OpenFileReadWrite_01(t *testing.T) {
   }
 
   if bytesRead != bytesWritten {
-    t.Errorf("ERROR: The bytes written to 'targetFile' do NOT EQUAL the bytes\n" +
+    t.Errorf("ERROR: The bytes written to 'targetFile' do NOT EQUAL the bytes\n"+
       "read from 'targetFile'.\ntargetFile='%v'\nBytes Read='%v'  Bytes Written='%v'\n",
-    targetFile, bytesRead, bytesWritten)
+      targetFile, bytesRead, bytesWritten)
     _ = fPtr.Close()
     _ = fh.DeleteDirFile(targetFile)
     return
@@ -1183,15 +1181,14 @@ func TestFileHelper_OpenFileReadWrite_01(t *testing.T) {
   err = fPtr.Close()
 
   if err != nil {
-    t.Errorf("Test Clean-up Error: Error returned from fPtr.Close().\n" +
+    t.Errorf("Test Clean-up Error: Error returned from fPtr.Close().\n"+
       "targetFile='%v'\nError='%v'", targetFile, err.Error())
   }
-
 
   err = fh.DeleteDirFile(targetFile)
 
   if err != nil {
-    t.Errorf("Test Clean-up Error: Error returned from fh.DeleteDirFile(targetFile).\n" +
+    t.Errorf("Test Clean-up Error: Error returned from fh.DeleteDirFile(targetFile).\n"+
       "targetFile='%v'\nError='%v'", targetFile, err.Error())
   }
 
@@ -1209,7 +1206,7 @@ func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
   fInfo, err := os.Stat(srcFile)
 
   if err != nil {
-    t.Errorf("ERROR: Test Setup Source File DOES NOT EXIST!\n" +
+    t.Errorf("ERROR: Test Setup Source File DOES NOT EXIST!\n"+
       "Source File='%v'\n", srcFile)
   }
 
@@ -1219,15 +1216,15 @@ func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
     err := fh.DeleteDirFile(targetFile)
 
     if err != nil {
-      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n" +
-        "fh.DeleteDirFile(targetFile) returned an error!\n" +
+      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n"+
+        "fh.DeleteDirFile(targetFile) returned an error!\n"+
         "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
       return
     }
 
     if fh.DoesFileExist(targetFile) {
-      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n" +
-        "'targetFile' STILL EXISTS!\n" +
+      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n"+
+        "'targetFile' STILL EXISTS!\n"+
         "targetFile='%v'\n", targetFile)
       return
     }
@@ -1237,14 +1234,14 @@ func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
   err = fh.CopyFileByIo(srcFile, targetFile)
 
   if err != nil {
-    t.Errorf("Error returned by test setup op fh.CopyFileByIo(srcFile, targetFile).\n" +
+    t.Errorf("Error returned by test setup op fh.CopyFileByIo(srcFile, targetFile).\n"+
       "srcFile='%v'\ntargetFile='%v'\nError='%v'\n",
       srcFile, targetFile, err.Error())
     return
   }
 
   if !fh.DoesFileExist(targetFile) {
-    t.Errorf("Test Setup Failed! 'targetFile' does NOT EXIST!\n" +
+    t.Errorf("Test Setup Failed! 'targetFile' does NOT EXIST!\n"+
       "targetFile='%v'\n", targetFile)
     return
   }
@@ -1253,13 +1250,13 @@ func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
   fPtr, err := fh.OpenFileReadWrite(targetFile, true)
 
   if err != nil {
-    t.Errorf("Error returned by fh.OpenFileReadWrite(targetFile)\n" +
+    t.Errorf("Error returned by fh.OpenFileReadWrite(targetFile)\n"+
       "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
     return
   }
 
   if fPtr == nil {
-    t.Errorf("ERROR: File Pointer returned by fh.OpenFileReadWrite(targetFile)\n"  +
+    t.Errorf("ERROR: File Pointer returned by fh.OpenFileReadWrite(targetFile)\n"+
       "is 'nil'!\ntargetFile='%v'", targetFile)
     return
   }
@@ -1267,7 +1264,7 @@ func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
   bytesWritten, err := fPtr.WriteString(testString)
 
   if bytesWritten != len(testString) {
-    t.Errorf("ERROR: Bytes written to 'targetFile' DO NOT EQUAL the lenth\n" +
+    t.Errorf("ERROR: Bytes written to 'targetFile' DO NOT EQUAL the lenth\n"+
       "of 'testString'.\ntargetFile='%v'\nBytesWritten='%v' Length of Test String='%v'\n",
       targetFile, bytesWritten, len(testString))
     _ = fPtr.Close()
@@ -1278,7 +1275,7 @@ func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
   err = fPtr.Sync()
 
   if err != nil {
-    t.Errorf("Error returned by fPtr.Sync() for 'targetFile'!\n" +
+    t.Errorf("Error returned by fPtr.Sync() for 'targetFile'!\n"+
       "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
     _ = fPtr.Close()
     _ = fh.DeleteDirFile(targetFile)
@@ -1287,11 +1284,11 @@ func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
 
   b := make([]byte, 500)
 
-  bytesRead, err := fPtr.ReadAt(b,0)
+  bytesRead, err := fPtr.ReadAt(b, 0)
 
   if err != nil {
     if err != io.EOF {
-      t.Errorf("Non-EOF error returned by fPtr.ReadAt(b,0).\n" +
+      t.Errorf("Non-EOF error returned by fPtr.ReadAt(b,0).\n"+
         "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
       _ = fPtr.Close()
       _ = fh.DeleteDirFile(targetFile)
@@ -1302,7 +1299,7 @@ func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
   err = fPtr.Close()
 
   if err != nil {
-    t.Errorf("Error returned after Read Operation on fPtr.Close()!\n" +
+    t.Errorf("Error returned after Read Operation on fPtr.Close()!\n"+
       "targetFile='%v'\nError='%v'", targetFile, err.Error())
     _ = fh.DeleteDirFile(targetFile)
     return
@@ -1310,17 +1307,17 @@ func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
 
   fInfo, err = os.Stat(targetFile)
 
-  if err!=nil {
-    t.Errorf("ERROR: os.Stat(targetFile) shows targetFile DOES NOT EXIST!\n" +
-    "targetFile='%v'\n", targetFile)
+  if err != nil {
+    t.Errorf("ERROR: os.Stat(targetFile) shows targetFile DOES NOT EXIST!\n"+
+      "targetFile='%v'\n", targetFile)
     return
   }
 
   targetFileByteSize := fInfo.Size()
 
   if sourceByteSize <= targetFileByteSize {
-    t.Errorf("ERROR: Orginal Source File Byte Size is less than new " +
-      "'targetFile' Byte Size!\nSource File Byte Size='%v'   " +
+    t.Errorf("ERROR: Orginal Source File Byte Size is less than new "+
+      "'targetFile' Byte Size!\nSource File Byte Size='%v'   "+
       "Target File Byte Size='%v'\ntargetFile='%v'\n",
       sourceByteSize, targetFileByteSize, targetFile)
     _ = fh.DeleteDirFile(targetFile)
@@ -1328,9 +1325,9 @@ func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
   }
 
   if bytesRead != bytesWritten {
-    t.Errorf("ERROR: The bytes written to 'targetFile' do NOT EQUAL the bytes\n" +
+    t.Errorf("ERROR: The bytes written to 'targetFile' do NOT EQUAL the bytes\n"+
       "read from 'targetFile'.\ntargetFile='%v'\nBytes Read='%v'  Bytes Written='%v'\n",
-    targetFile, bytesRead, bytesWritten)
+      targetFile, bytesRead, bytesWritten)
     _ = fh.DeleteDirFile(targetFile)
     return
   }
@@ -1345,7 +1342,7 @@ func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
   err = fh.DeleteDirFile(targetFile)
 
   if err != nil {
-    t.Errorf("Test Clean-up Error: Error returned from fh.DeleteDirFile(targetFile).\n" +
+    t.Errorf("Test Clean-up Error: Error returned from fh.DeleteDirFile(targetFile).\n"+
       "targetFile='%v'\nError='%v'", targetFile, err.Error())
   }
 
@@ -1370,7 +1367,7 @@ func TestFileHelper_OpenFileReadWrite_03(t *testing.T) {
       err = fPtr.Close()
 
       if err != nil {
-        t.Errorf("Test Clean-up Error: Error returned from fPtr.Close().\n" +
+        t.Errorf("Test Clean-up Error: Error returned from fPtr.Close().\n"+
           "targetFile='%v'\nError='%v'", targetFile, err.Error())
       }
 
@@ -1399,7 +1396,7 @@ func TestFileHelper_OpenFileReadWrite_04(t *testing.T) {
       err = fPtr.Close()
 
       if err != nil {
-        t.Errorf("Test Clean-up Error: Error returned from fPtr.Close().\n" +
+        t.Errorf("Test Clean-up Error: Error returned from fPtr.Close().\n"+
           "targetFile='%v'\nError='%v'", targetFile, err.Error())
       }
 
@@ -1428,14 +1425,14 @@ func TestFileHelper_OpenFileReadWrite_05(t *testing.T) {
       err = fPtr.Close()
 
       if err != nil {
-        t.Errorf("Test Clean-up Error: Error returned from fPtr.Close().\n" +
+        t.Errorf("Test Clean-up Error: Error returned from fPtr.Close().\n"+
           "targetFile='%v'\nError='%v'", targetFile, err.Error())
       }
 
       err = fh.DeleteDirFile(targetFile)
 
       if err != nil {
-        t.Errorf("Test Clean-up Error: Error returned from fh.DeleteDirFile(targetFile).\n" +
+        t.Errorf("Test Clean-up Error: Error returned from fh.DeleteDirFile(targetFile).\n"+
           "targetFile='%v'\nError='%v'", targetFile, err.Error())
       }
 
@@ -1455,15 +1452,15 @@ func TestFileHelper_OpenFileWriteOnly_01(t *testing.T) {
     err := fh.DeleteDirFile(targetFile)
 
     if err != nil {
-      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n" +
-        "fh.DeleteDirFile(targetFile) returned an error!\n" +
+      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n"+
+        "fh.DeleteDirFile(targetFile) returned an error!\n"+
         "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
       return
     }
 
     if fh.DoesFileExist(targetFile) {
-      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n" +
-        "'targetFile' STILL EXISTS!\n" +
+      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n"+
+        "'targetFile' STILL EXISTS!\n"+
         "targetFile='%v'\n", targetFile)
       return
     }
@@ -1473,22 +1470,22 @@ func TestFileHelper_OpenFileWriteOnly_01(t *testing.T) {
   err := fh.CopyFileByIo(srcFile, targetFile)
 
   if err != nil {
-    t.Errorf("Error returned by test setup op fh.CopyFileByIo(srcFile, targetFile).\n" +
+    t.Errorf("Error returned by test setup op fh.CopyFileByIo(srcFile, targetFile).\n"+
       "srcFile='%v'\ntargetFile='%v'\nError='%v'\n",
       srcFile, targetFile, err.Error())
     return
   }
 
   if !fh.DoesFileExist(targetFile) {
-    t.Errorf("Test Setup Failed! 'targetFile' does NOT EXIST!\n" +
+    t.Errorf("Test Setup Failed! 'targetFile' does NOT EXIST!\n"+
       "targetFile='%v'\n", targetFile)
     return
   }
 
-  fPtr, err := fh.OpenFileWriteOnly(targetFile,false)
+  fPtr, err := fh.OpenFileWriteOnly(targetFile, false)
 
   if err != nil {
-    t.Errorf("Error returned from fh.OpenFileWriteOnly" +
+    t.Errorf("Error returned from fh.OpenFileWriteOnly"+
       "(targetFile,false).\ntargetFile='%v'\nError='%v'\n",
       targetFile, err.Error())
 
@@ -1499,7 +1496,7 @@ func TestFileHelper_OpenFileWriteOnly_01(t *testing.T) {
     err = fh.DeleteDirFile(targetFile)
 
     if err != nil {
-      t.Error("After OpenFileWriteOnly() an error was returned by " +
+      t.Errorf("After OpenFileWriteOnly() an error was returned by "+
         "fh.DeleteDirFile(targetFile)\ntargetFile='%v'\nError='%v'\n",
         targetFile, err.Error())
     }
@@ -1512,15 +1509,15 @@ func TestFileHelper_OpenFileWriteOnly_01(t *testing.T) {
   _, err = fPtr.Read(bytes)
 
   if err == nil {
-    t.Errorf("Expected an error retun from fPtr.Read(bytes) " +
-      "because\nthe file pointer 'fPtr' was opened as 'Write-Only'!\n" +
+    t.Errorf("Expected an error retun from fPtr.Read(bytes) "+
+      "because\nthe file pointer 'fPtr' was opened as 'Write-Only'!\n"+
       "targetFile='%v'\n", targetFile)
   }
 
   if fPtr != nil {
     err = fPtr.Close()
     if err != nil {
-      t.Errorf("Test Clean-up Error returned by fPtr.Close().\n" +
+      t.Errorf("Test Clean-up Error returned by fPtr.Close().\n"+
         "targetFile='%v'\nError='%v'\n",
         targetFile, err.Error())
     }
@@ -1529,7 +1526,7 @@ func TestFileHelper_OpenFileWriteOnly_01(t *testing.T) {
   err = fh.DeleteDirFile(targetFile)
 
   if err != nil {
-    t.Error("Test Clean-up Error returned by fh.DeleteDirFile(" +
+    t.Errorf("Test Clean-up Error returned by fh.DeleteDirFile("+
       "targetFile)\ntargetFile='%v'\nError='%v'\n",
       targetFile, err.Error())
   }
@@ -1548,15 +1545,15 @@ func TestFileHelper_OpenFileWriteOnly_02(t *testing.T) {
     err := fh.DeleteDirFile(targetFile)
 
     if err != nil {
-      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n" +
-        "fh.DeleteDirFile(targetFile) returned an error!\n" +
+      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n"+
+        "fh.DeleteDirFile(targetFile) returned an error!\n"+
         "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
       return
     }
 
     if fh.DoesFileExist(targetFile) {
-      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n" +
-        "'targetFile' STILL EXISTS!\n" +
+      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n"+
+        "'targetFile' STILL EXISTS!\n"+
         "targetFile='%v'\n", targetFile)
       return
     }
@@ -1566,22 +1563,22 @@ func TestFileHelper_OpenFileWriteOnly_02(t *testing.T) {
   err := fh.CopyFileByIo(srcFile, targetFile)
 
   if err != nil {
-    t.Errorf("Error returned by test setup op fh.CopyFileByIo(srcFile, targetFile).\n" +
+    t.Errorf("Error returned by test setup op fh.CopyFileByIo(srcFile, targetFile).\n"+
       "srcFile='%v'\ntargetFile='%v'\nError='%v'\n",
       srcFile, targetFile, err.Error())
     return
   }
 
   if !fh.DoesFileExist(targetFile) {
-    t.Errorf("Test Setup Failed! 'targetFile' does NOT EXIST!\n" +
+    t.Errorf("Test Setup Failed! 'targetFile' does NOT EXIST!\n"+
       "targetFile='%v'\n", targetFile)
     return
   }
 
-  fPtr, err := fh.OpenFileWriteOnly(targetFile,true)
+  fPtr, err := fh.OpenFileWriteOnly(targetFile, true)
 
   if err != nil {
-    t.Errorf("Error returned from fh.OpenFileWriteOnly" +
+    t.Errorf("Error returned from fh.OpenFileWriteOnly"+
       "(targetFile,false).\ntargetFile='%v'\nError='%v'\n",
       targetFile, err.Error())
 
@@ -1595,7 +1592,7 @@ func TestFileHelper_OpenFileWriteOnly_02(t *testing.T) {
   }
 
   if fPtr == nil {
-    t.Errorf("ERROR: fh.OpenFileWriteOnly(targetFile,true)\n" +
+    t.Errorf("ERROR: fh.OpenFileWriteOnly(targetFile,true)\n"+
       "returned a 'nil' file pointer!\ntargetFile='%v'\n", targetFile)
     _ = fh.DeleteDirFile(targetFile)
     return
@@ -1604,7 +1601,7 @@ func TestFileHelper_OpenFileWriteOnly_02(t *testing.T) {
   bytesWritten, err := fPtr.WriteString(expectedStr)
 
   if err != nil {
-    t.Errorf("Error returned by fPtr.WriteString(expectedStr).\n" +
+    t.Errorf("Error returned by fPtr.WriteString(expectedStr).\n"+
       "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
     _ = fPtr.Close()
     _ = fh.DeleteDirFile(targetFile)
@@ -1619,7 +1616,7 @@ func TestFileHelper_OpenFileWriteOnly_02(t *testing.T) {
   err = fPtr.Close()
 
   if err != nil {
-    t.Errorf("Error returned by fPtr.Close() after writing bytes to file.\n" +
+    t.Errorf("Error returned by fPtr.Close() after writing bytes to file.\n"+
       "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
     _ = fh.DeleteDirFile(targetFile)
     return
@@ -1628,7 +1625,7 @@ func TestFileHelper_OpenFileWriteOnly_02(t *testing.T) {
   fPtr, err = fh.OpenFileReadWrite(targetFile, false)
 
   if err != nil {
-    t.Errorf("Error returned by fh.OpenFileReadWrite(targetFile, false).\n" +
+    t.Errorf("Error returned by fh.OpenFileReadWrite(targetFile, false).\n"+
       "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
     if fPtr != nil {
       _ = fPtr.Close()
@@ -1642,7 +1639,7 @@ func TestFileHelper_OpenFileWriteOnly_02(t *testing.T) {
   bytesRead, err := fPtr.Read(bytes)
 
   if err != nil {
-    t.Errorf("Error returned by fPtr.Read(bytes).\n" +
+    t.Errorf("Error returned by fPtr.Read(bytes).\n"+
       "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
     _ = fPtr.Close()
     _ = fh.DeleteDirFile(targetFile)
@@ -1652,7 +1649,7 @@ func TestFileHelper_OpenFileWriteOnly_02(t *testing.T) {
   err = fPtr.Close()
 
   if err != nil {
-    t.Errorf("Error returned by fPtr.Close() after bytes read operation.\n" +
+    t.Errorf("Error returned by fPtr.Close() after bytes read operation.\n"+
       "targetFile='%v'\nError='%v'", targetFile, err.Error())
     _ = fh.DeleteDirFile(targetFile)
     return
@@ -1668,7 +1665,7 @@ func TestFileHelper_OpenFileWriteOnly_02(t *testing.T) {
   strRead := string(bytes[0:bytesRead])
 
   if expectedStr != strRead {
-    t.Errorf("Expected read string = '%v'\n" +
+    t.Errorf("Expected read string = '%v'\n"+
       "Instead, read string='%v'\n",
       expectedStr, strRead)
   }
@@ -1676,7 +1673,7 @@ func TestFileHelper_OpenFileWriteOnly_02(t *testing.T) {
   err = fh.DeleteDirFile(targetFile)
 
   if err != nil {
-    t.Errorf("Test Clean-up Error: Error returned by fh.DeleteDirFile(targetFile).\n" +
+    t.Errorf("Test Clean-up Error: Error returned by fh.DeleteDirFile(targetFile).\n"+
       "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
   }
 
