@@ -897,10 +897,11 @@ func TestFileHelper_OpenFile_06(t *testing.T) {
 }
 
 func TestFileHelper_OpenFileReadOnly_01(t *testing.T) {
+
   fh := FileHelper{}
 
-  // alogtopTest2Text  = "../logTest/topTest2.txt"
-  source := fh.AdjustPathSlash(alogtopTest2Text)
+  source := "../logTest/topTest2.txt"
+  source = fh.AdjustPathSlash(alogtopTest2Text)
 
   target := "../checkfiles/TestFileHelper_OpenFileReadOnly_01.txt"
 
@@ -1010,6 +1011,79 @@ func TestFileHelper_OpenFileReadOnly_04(t *testing.T) {
     t.Error("Expected an error from fh.OpenFileReadOnly(targetFile) "+
       "because the input parameter 'targetFile' does not exist.\n" +
       "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_OpenFileReadOnly_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  source := "../logTest/topTest2.txt"
+  source = fh.AdjustPathSlash(alogtopTest2Text)
+
+  target := "../checkfiles/TestFileHelper_OpenFileReadOnly_01.txt"
+
+  target = fh.AdjustPathSlash(target)
+
+  if fh.DoesFileExist(target) {
+
+    err:= fh.DeleteDirFile(target)
+
+    if err != nil {
+      t.Errorf("Test Setup Error: Attempted deletion of preexisting " +
+        "target file FAILED!\ntargetFile='%v'\nError='%v'\n",
+        target, err.Error())
+      return
+    }
+
+    if fh.DoesFileExist(target) {
+      t.Errorf("Test Setup Error: Verification of target file deletion FAILED!\n" +
+        "Target File still exists after attempted deletion!\ntargetFile='%v'\n",
+        target)
+      return
+    }
+  }
+
+  err := fh.CopyFileByIo(source, target)
+
+  if err != nil {
+    t.Errorf("Test Setup Error: Copy of source file to target file FAILED!\n"+
+      "sourceFile='%v'\ntargetFile='%v'\nError='%v'\n",
+      source, target, err.Error())
+    return
+  }
+
+  f, err := fh.OpenFileReadOnly(target)
+
+  if err != nil {
+    t.Errorf("Failed to open file: '%v'\nError='%v'",
+      target, err.Error())
+    return
+  }
+
+  testText := "Cannot write text to read-only file!"
+
+  _, err = f.WriteString(testText)
+
+  if err == nil {
+    t.Errorf("Expected an error return from f.WriteString(testText) "+
+      "because\n'f' references a read-only file. However, NO ERROR WAS RETURNED!\n")
+  }
+
+  err = f.Close()
+
+  if err != nil {
+    t.Errorf("Test Clean-up Error: Error return from f.Close().\n" +
+      "File Name='%v'\nError='%v'\n",
+      target, err.Error())
+  }
+
+  err = fh.DeleteDirFile(target)
+
+  if err != nil {
+    t.Errorf("Test Clean-up Error: Error return from fh.DeleteDirFile(target).\n" +
+      "target='%v'\nError='%v'", target, err.Error())
   }
 
 }
