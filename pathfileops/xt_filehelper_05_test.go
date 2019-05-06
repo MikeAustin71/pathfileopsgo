@@ -1608,9 +1608,136 @@ func TestFileHelper_OpenFileWriteOnly_02(t *testing.T) {
     return
   }
 
+  err = fPtr.Close()
+
+  if err != nil {
+    t.Errorf("Error returned by fPtr.Close() after writing bytes to file.\n"+
+      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+
   if bytesWritten != len(expectedStr) {
     t.Errorf("Expected bytes written='%v'. Instead, bytes written='%v'.",
       bytesWritten, len(expectedStr))
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  fPtr, err = fh.OpenFileReadWrite(targetFile, false)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.OpenFileReadWrite(targetFile, false).\n"+
+      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+    if fPtr != nil {
+      _ = fPtr.Close()
+    }
+
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  bytes := make([]byte, 3000)
+  bytesRead, err := fPtr.Read(bytes)
+
+  if err != nil {
+    t.Errorf("Error returned by fPtr.Read(bytes).\n"+
+      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+    _ = fPtr.Close()
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  err = fPtr.Close()
+
+  if err != nil {
+    t.Errorf("Error returned by fPtr.Close() after bytes read operation.\n"+
+      "targetFile='%v'\nError='%v'", targetFile, err.Error())
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  if bytesWritten != bytesRead {
+    t.Errorf("Expected bytes read='%v'. Instead, bytes read='%v'\n",
+      bytesWritten, bytesRead)
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  strRead := string(bytes[0:bytesRead])
+
+  if expectedStr != strRead {
+    t.Errorf("Expected read string = '%v'\n"+
+      "Instead, read string='%v'\n",
+      expectedStr, strRead)
+  }
+
+  err = fh.DeleteDirFile(targetFile)
+
+  if err != nil {
+    t.Errorf("Test Clean-up Error: Error returned by fh.DeleteDirFile(targetFile).\n"+
+      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+  }
+
+  return
+}
+
+func TestFileHelper_OpenFileWriteOnly_03(t *testing.T) {
+  fh := FileHelper{}
+  targetFile := "../checkfiles/TestFileHelper_OpenFileWriteOnly_03.txt"
+  targetFile = fh.AdjustPathSlash(targetFile)
+  expectedStr := "Now is the time for all good men to come to the aid of their country."
+
+  if fh.DoesFileExist(targetFile) {
+    err := fh.DeleteDirFile(targetFile)
+
+    if err != nil {
+      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n"+
+        "fh.DeleteDirFile(targetFile) returned an error!\n"+
+        "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+      return
+    }
+
+    if fh.DoesFileExist(targetFile) {
+      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n"+
+        "'targetFile' STILL EXISTS!\n"+
+        "targetFile='%v'\n", targetFile)
+      return
+    }
+  }
+
+  fPtr, err := fh.OpenFileWriteOnly(targetFile, false)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.OpenFileWriteOnly"+
+      "(targetFile,false).\ntargetFile='%v'\nError='%v'\n",
+      targetFile, err.Error())
+
+    if fPtr != nil {
+      _ = fPtr.Close()
+    }
+
+    _ = fh.DeleteDirFile(targetFile)
+
+    return
+  }
+
+  if fPtr == nil {
+    t.Errorf("ERROR: fh.OpenFileWriteOnly(targetFile,true)\n"+
+      "returned a 'nil' file pointer!\ntargetFile='%v'\n", targetFile)
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  bytesWritten, err := fPtr.WriteString(expectedStr)
+
+  if err != nil {
+    t.Errorf("Error returned by fPtr.WriteString(expectedStr).\n"+
+      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+    _ = fPtr.Close()
+    _ = fh.DeleteDirFile(targetFile)
+    return
   }
 
   err = fPtr.Close()
@@ -1621,6 +1748,148 @@ func TestFileHelper_OpenFileWriteOnly_02(t *testing.T) {
     _ = fh.DeleteDirFile(targetFile)
     return
   }
+
+
+  if bytesWritten != len(expectedStr) {
+    t.Errorf("Expected bytes written='%v'. Instead, bytes written='%v'.",
+      bytesWritten, len(expectedStr))
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+
+  fPtr, err = fh.OpenFileReadWrite(targetFile, false)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.OpenFileReadWrite(targetFile, false).\n"+
+      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+    if fPtr != nil {
+      _ = fPtr.Close()
+    }
+
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  bytes := make([]byte, 3000)
+  bytesRead, err := fPtr.Read(bytes)
+
+  if err != nil {
+    t.Errorf("Error returned by fPtr.Read(bytes).\n"+
+      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+    _ = fPtr.Close()
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  err = fPtr.Close()
+
+  if err != nil {
+    t.Errorf("Error returned by fPtr.Close() after bytes read operation.\n"+
+      "targetFile='%v'\nError='%v'", targetFile, err.Error())
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  if bytesWritten != bytesRead {
+    t.Errorf("Expected bytes read='%v'. Instead, bytes read='%v'\n",
+      bytesWritten, bytesRead)
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  strRead := string(bytes[0:bytesRead])
+
+  if expectedStr != strRead {
+    t.Errorf("Expected read string = '%v'\n"+
+      "Instead, read string='%v'\n",
+      expectedStr, strRead)
+  }
+
+  err = fh.DeleteDirFile(targetFile)
+
+  if err != nil {
+    t.Errorf("Test Clean-up Error: Error returned by fh.DeleteDirFile(targetFile).\n"+
+      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+  }
+
+  return
+}
+
+func TestFileHelper_OpenFileWriteOnly_04(t *testing.T) {
+  fh := FileHelper{}
+  targetFile := "../checkfiles/TestFileHelper_OpenFileWriteOnly_03.txt"
+  targetFile = fh.AdjustPathSlash(targetFile)
+  expectedStr := "The cow jumped over the moon."
+
+  if fh.DoesFileExist(targetFile) {
+    err := fh.DeleteDirFile(targetFile)
+
+    if err != nil {
+      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n"+
+        "fh.DeleteDirFile(targetFile) returned an error!\n"+
+        "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+      return
+    }
+
+    if fh.DoesFileExist(targetFile) {
+      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n"+
+        "'targetFile' STILL EXISTS!\n"+
+        "targetFile='%v'\n", targetFile)
+      return
+    }
+  }
+
+  fPtr, err := fh.OpenFileWriteOnly(targetFile, false)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.OpenFileWriteOnly"+
+      "(targetFile,false).\ntargetFile='%v'\nError='%v'\n",
+      targetFile, err.Error())
+
+    if fPtr != nil {
+      _ = fPtr.Close()
+    }
+
+    _ = fh.DeleteDirFile(targetFile)
+
+    return
+  }
+
+  if fPtr == nil {
+    t.Errorf("ERROR: fh.OpenFileWriteOnly(targetFile,true)\n"+
+      "returned a 'nil' file pointer!\ntargetFile='%v'\n", targetFile)
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  bytesWritten, err := fPtr.WriteString(expectedStr)
+
+  if err != nil {
+    t.Errorf("Error returned by fPtr.WriteString(expectedStr).\n"+
+      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+    _ = fPtr.Close()
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+  err = fPtr.Close()
+
+  if err != nil {
+    t.Errorf("Error returned by fPtr.Close() after writing bytes to file.\n"+
+      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
+
+  if bytesWritten != len(expectedStr) {
+    t.Errorf("Expected bytes written='%v'. Instead, bytes written='%v'.",
+      bytesWritten, len(expectedStr))
+    _ = fh.DeleteDirFile(targetFile)
+    return
+  }
+
 
   fPtr, err = fh.OpenFileReadWrite(targetFile, false)
 
