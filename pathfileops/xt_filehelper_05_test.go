@@ -1180,8 +1180,20 @@ func TestFileHelper_OpenFileReadWrite_01(t *testing.T) {
       testString, resultStr)
   }
 
-  _ = fPtr.Close()
-  _ = fh.DeleteDirFile(targetFile)
+  err = fPtr.Close()
+
+  if err != nil {
+    t.Errorf("Test Clean-up Error: Error returned from fPtr.Close().\n" +
+      "targetFile='%v'\nError='%v'", targetFile, err.Error())
+  }
+
+
+  err = fh.DeleteDirFile(targetFile)
+
+  if err != nil {
+    t.Errorf("Test Clean-up Error: Error returned from fh.DeleteDirFile(targetFile).\n" +
+      "targetFile='%v'\nError='%v'", targetFile, err.Error())
+  }
 
 }
 
@@ -1189,6 +1201,7 @@ func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
 
   fh := FileHelper{}
   srcFile := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+  srcFile = fh.AdjustPathSlash(srcFile)
   targetFile := "../checkfiles/scratchTestFileHelper_OpenFileForWriting_02.txt"
   targetFile = fh.AdjustPathSlash(targetFile)
   testString := "How now, brown cow!"
@@ -1227,6 +1240,7 @@ func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
     t.Errorf("Error returned by test setup op fh.CopyFileByIo(srcFile, targetFile).\n" +
       "srcFile='%v'\ntargetFile='%v'\nError='%v'\n",
       srcFile, targetFile, err.Error())
+    return
   }
 
   if !fh.DoesFileExist(targetFile) {
@@ -1328,7 +1342,12 @@ func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
       testString, resultStr)
   }
 
-  _ = fh.DeleteDirFile(targetFile)
+  err = fh.DeleteDirFile(targetFile)
+
+  if err != nil {
+    t.Errorf("Test Clean-up Error: Error returned from fh.DeleteDirFile(targetFile).\n" +
+      "targetFile='%v'\nError='%v'", targetFile, err.Error())
+  }
 
 }
 
@@ -1338,13 +1357,25 @@ func TestFileHelper_OpenFileReadWrite_03(t *testing.T) {
 
   fh := FileHelper{}
 
-  _, err := fh.OpenFileReadWrite(targetFile, false)
+  fPtr, err := fh.OpenFileReadWrite(targetFile, false)
 
   if err == nil {
     t.Error("ERROR: Expected an error return from fh.OpenFileReadWrite" +
       "(targetFile, false)\n" +
       "because 'targetFile' is an empty string.\n" +
       "However NO ERROR WAS RETURNED!!!\n")
+
+    if fPtr != nil {
+
+      err = fPtr.Close()
+
+      if err != nil {
+        t.Errorf("Test Clean-up Error: Error returned from fPtr.Close().\n" +
+          "targetFile='%v'\nError='%v'", targetFile, err.Error())
+      }
+
+    }
+
   }
 
 }
@@ -1355,15 +1386,25 @@ func TestFileHelper_OpenFileReadWrite_04(t *testing.T) {
 
   fh := FileHelper{}
 
-  _, err := fh.OpenFileReadWrite(targetFile, false)
+  fPtr, err := fh.OpenFileReadWrite(targetFile, false)
 
   if err == nil {
     t.Error("ERROR: Expected an error return from fh.OpenFileReadWrite" +
       "(targetFile, false)\n" +
       "because the 'targetFile' parameter consists entirely of blank spaces.\n" +
       "However NO ERROR WAS RETURNED!!!\n")
-  }
 
+    if fPtr != nil {
+
+      err = fPtr.Close()
+
+      if err != nil {
+        t.Errorf("Test Clean-up Error: Error returned from fPtr.Close().\n" +
+          "targetFile='%v'\nError='%v'", targetFile, err.Error())
+      }
+
+    }
+  }
 }
 
 func TestFileHelper_OpenFileReadWrite_05(t *testing.T) {
@@ -1374,13 +1415,115 @@ func TestFileHelper_OpenFileReadWrite_05(t *testing.T) {
 
   targetFile = fh.AdjustPathSlash(targetFile)
 
-  _, err := fh.OpenFileReadWrite(targetFile, false)
+  fPtr, err := fh.OpenFileReadWrite(targetFile, false)
 
   if err == nil {
     t.Error("ERROR: Expected an error return from fh.OpenFileReadWrite" +
       "(targetFile, false)\n" +
       "because the 'targetFile' parameter includes parent directories which DO NOT EXIST.\n" +
       "However NO ERROR WAS RETURNED!!!\n")
+
+    if fPtr != nil {
+
+      err = fPtr.Close()
+
+      if err != nil {
+        t.Errorf("Test Clean-up Error: Error returned from fPtr.Close().\n" +
+          "targetFile='%v'\nError='%v'", targetFile, err.Error())
+      }
+
+      err = fh.DeleteDirFile(targetFile)
+
+      if err != nil {
+        t.Errorf("Test Clean-up Error: Error returned from fh.DeleteDirFile(targetFile).\n" +
+          "targetFile='%v'\nError='%v'", targetFile, err.Error())
+      }
+
+    }
+
+  }
+}
+
+func TestFileHelper_OpenFileWriteOnly_01(t *testing.T) {
+  fh := FileHelper{}
+  srcFile := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+  srcFile = fh.AdjustPathSlash(srcFile)
+  targetFile := "../checkfiles/TestFileHelper_OpenFileWriteOnly_01.txt"
+  targetFile = fh.AdjustPathSlash(targetFile)
+
+  if fh.DoesFileExist(targetFile) {
+    err := fh.DeleteDirFile(targetFile)
+
+    if err != nil {
+      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n" +
+        "fh.DeleteDirFile(targetFile) returned an error!\n" +
+        "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+      return
+    }
+
+    if fh.DoesFileExist(targetFile) {
+      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n" +
+        "'targetFile' STILL EXISTS!\n" +
+        "targetFile='%v'\n", targetFile)
+      return
+    }
+
+  }
+
+  err := fh.CopyFileByIo(srcFile, targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned by test setup op fh.CopyFileByIo(srcFile, targetFile).\n" +
+      "srcFile='%v'\ntargetFile='%v'\nError='%v'\n",
+      srcFile, targetFile, err.Error())
+    return
+  }
+
+  if !fh.DoesFileExist(targetFile) {
+    t.Errorf("Test Setup Failed! 'targetFile' does NOT EXIST!\n" +
+      "targetFile='%v'\n", targetFile)
+    return
+  }
+
+  fPtr, err := fh.OpenFileWriteOnly(targetFile,false)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.OpenFileWriteOnly" +
+      "(targetFile,false).\ntargetFile='%v'\nError='%v'\n",
+      targetFile, err.Error())
+
+    if fPtr != nil {
+      _ = fPtr.Close()
+    }
+
+    return
+  }
+
+  bytes := make([]byte, 3000)
+
+  _, err = fPtr.Read(bytes)
+
+  if err == nil {
+    t.Errorf("Expected an error retun from fPtr.Read(bytes) " +
+      "because\nthe file pointer 'fPtr' was opened as 'Write-Only'!\n" +
+      "targetFile='%v'\n", targetFile)
+  }
+
+  if fPtr != nil {
+    err = fPtr.Close()
+    if err != nil {
+      t.Errorf("Test Clean-up Error returned by fPtr.Close().\n" +
+        "targetFile='%v'\nError='%v'\n",
+        targetFile, err.Error())
+    }
+  }
+
+  err = fh.DeleteDirFile(targetFile)
+
+  if err != nil {
+    t.Error("Test Clean-up Error returned by fh.DeleteDirFile(" +
+      "targetFile)\ntargetFile='%v'\nError='%v'\n",
+      targetFile, err.Error())
   }
 
 }

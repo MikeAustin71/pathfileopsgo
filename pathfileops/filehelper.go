@@ -4007,12 +4007,13 @@ func (fh FileHelper) OpenFile(
   return filePtr, err
 }
 
-// OpenFileReadOnly - 'Open' opens the named file for reading only.
+// OpenFileReadOnly - Opens the designated path file name for reading
+// only.
 //
-// If successful, this method returns a pointer to os.File which can
-// only be used for reading reading content from the subject file. This
-// file pointer is configured for 'Read-Only' operations. You may not
-// write to the subject file using this pointer.
+// If successful, this method returns a pointer of type *os.File which
+// can only be used for reading reading content from the subject file.
+// This file pointer is configured for 'Read-Only' operations. You may
+// not write to the subject file using this pointer.
 //
 // If the designated file ('pathFileName') does NOT exist, an error
 // will be triggered.
@@ -4031,18 +4032,19 @@ func (fh FileHelper) OpenFile(
 // Return Values:
 //
 //  *os.File        - If successful, this method returns an os.File pointer
-//                    to the designated file. This file pointer can be used
-//                    subsequently for reading content from the subject file.
-//                    It may NOT be used for writing content to the file.
+//                    to the file designated by input parameter 'pathFileName'.
+//                    This file pointer can subsequently be used for reading
+//                    content from the subject file. It may NOT be used for
+//                    writing content to the subject file.
 //
-//                    If this method fails, this return value is 'nil'.
+//                    If this method fails, the *os.File return value is 'nil'.
 //
 //
 //  error           - If the method completes successfully, this return value
 //                    is 'nil'. If the method fails, the error type returned
 //                    is populated with an appropriate error message.
 //
-func (fh FileHelper) OpenFileReadOnly(fileName string) (filePtr *os.File, err error) {
+func (fh FileHelper) OpenFileReadOnly(pathFileName string) (filePtr *os.File, err error) {
 
   ePrefix := "FileHelper.OpenFileReadOnly() "
 
@@ -4051,34 +4053,34 @@ func (fh FileHelper) OpenFileReadOnly(fileName string) (filePtr *os.File, err er
   var err2 error
   errCode := 0
 
-  errCode, _, fileName = fh.isStringEmptyOrBlank(fileName)
+  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
 
   if errCode == -1 {
-    err = errors.New(ePrefix + "Input parameter 'fileName' is an empty string!\n")
+    err = errors.New(ePrefix + "Input parameter 'pathFileName' is an empty string!\n")
     return filePtr, err
   }
 
   if errCode == -2 {
     err = errors.New(ePrefix +
-      "Input parameter 'fileName' consists entirely of blank spaces!\n")
+      "Input parameter 'pathFileName' consists entirely of blank spaces!\n")
     return filePtr, err
   }
 
-  fileName, err2 = fh.MakeAbsolutePath(fileName)
+  pathFileName, err2 = fh.MakeAbsolutePath(pathFileName)
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix +
-      "Error occurred while converting input parameter file name ('fileName') to absolute path.\n" +
-      "fileName='%v'\nError='%v'\n", fileName, err2.Error())
+      "Error occurred while converting input parameter file name ('pathFileName') to absolute path.\n" +
+      "pathFileName='%v'\nError='%v'\n", pathFileName, err2.Error())
 
     return filePtr, err
   }
 
 
-  if !fh.DoesFileExist(fileName) {
+  if !fh.DoesFileExist(pathFileName) {
     err = fmt.Errorf(ePrefix +
-      "ERROR: The input parameter 'fileName' DOES NOT EXIST!\n" +
-      "fileName='%v' ", fileName)
+      "ERROR: The input parameter 'pathFileName' DOES NOT EXIST!\n" +
+      "pathFileName='%v' ", pathFileName)
     return filePtr, err
   }
 
@@ -4121,15 +4123,22 @@ func (fh FileHelper) OpenFileReadOnly(fileName string) (filePtr *os.File, err er
     return filePtr, err
   }
 
-  filePtr, err2 = os.OpenFile(fileName, fOpenCode, fileMode)
+  filePtr, err2 = os.OpenFile(pathFileName, fOpenCode, fileMode)
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix + "File Open Error: %v\n" +
-      "fileName='%v'", err.Error(), fileName)
+      "pathFileName='%v'", err.Error(), pathFileName)
     filePtr = nil
     return filePtr, err
   }
 
+
+  if filePtr == nil {
+    err = fmt.Errorf(ePrefix +
+      "ERROR: os.OpenFile() returned a 'nil' file pointer!")
+
+    return filePtr, err
+  }
 
   err = nil
 
@@ -4301,14 +4310,15 @@ func (fh FileHelper) OpenFileReadWrite(
 
   if fPtr == nil {
     return nil, fmt.Errorf(ePrefix +
-      "ERROR: Returned file pointer is 'nil'!")
+      "ERROR: os.OpenFile() returned a 'nil' file pointer!")
   }
 
   return fPtr, nil
 }
 
-// OpenFileWriteOnly - Opens a file for 'Write Only' operations. Input parameter
-// 'pathFileName' specifies the the path and file name which will be opened.
+// OpenFileWriteOnly - Opens a file for 'Write-Only' operations. Input parameter
+// 'pathFileName' specifies the the path and file name of the file which will be
+// opened.
 //
 // If the path component of 'pathFileName' does not exist, an error will be returned.
 //
@@ -4339,8 +4349,8 @@ func (fh FileHelper) OpenFileReadWrite(
 //
 //                               If the file designated by input parameter 'pathFileName'
 //                               does not exist, this parameter ('truncateFile') is
-//                               ignored and the new created file is initialized
-//                               containing zero bytes.
+//                               ignored and the newly created file is initialized
+//                               with zero bytes of content.
 //
 //
 // ------------------------------------------------------------------------
@@ -4359,7 +4369,9 @@ func (fh FileHelper) OpenFileReadWrite(
 //                    is 'nil'. If the method fails, the error type returned
 //                    is populated with an appropriate error message.
 //
-func (fh FileHelper) OpenFileWriteOnly(pathFileName string, truncateFile bool) (*os.File, error) {
+func (fh FileHelper) OpenFileWriteOnly(
+  pathFileName string,
+  truncateFile bool) (*os.File, error) {
 
   ePrefix := "FileHelper.OpenFileWriteOnly() "
 
@@ -4393,6 +4405,7 @@ func (fh FileHelper) OpenFileWriteOnly(pathFileName string, truncateFile bool) (
   var fileOpenCfg FileOpenConfig
 
   if !fh.DoesFileExist(pathFileName) {
+    // The pathFileName DOES NOT EXIST!
 
     fileOpenCfg, err = FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
       FOpenMode.ModeCreate(), FOpenMode.ModeAppend())
@@ -4406,9 +4419,10 @@ func (fh FileHelper) OpenFileWriteOnly(pathFileName string, truncateFile bool) (
     }
 
   } else {
+    // The pathFileName DOES EXIST!
 
     if truncateFile {
-      // truncateFile == true
+      // truncateFile == true; Set Mode 'Truncate'
       fileOpenCfg, err = FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
         FOpenMode.ModeTruncate())
 
@@ -4421,7 +4435,7 @@ func (fh FileHelper) OpenFileWriteOnly(pathFileName string, truncateFile bool) (
       }
 
     } else {
-      // truncateFile == false - Set Mode 'Append'
+      // truncateFile == false; Set Mode 'Append'
       fileOpenCfg, err = FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
         FOpenMode.ModeAppend())
 
@@ -4439,10 +4453,11 @@ func (fh FileHelper) OpenFileWriteOnly(pathFileName string, truncateFile bool) (
 
   if err != nil {
     return nil,
-      fmt.Errorf(ePrefix + "%v", err.Error())
+      fmt.Errorf(ePrefix +
+        "Error creating File Open Code.\nError=%v\n", err.Error())
   }
 
-  fPermCfg, err := FilePermissionConfig{}.New("-rw-rw-rw-")
+  fPermCfg, err := FilePermissionConfig{}.New("--wx-wx-wx")
 
   if err != nil {
     return nil,
@@ -4454,23 +4469,24 @@ func (fh FileHelper) OpenFileWriteOnly(pathFileName string, truncateFile bool) (
   fileMode, err := fPermCfg.GetCompositePermissionMode()
 
   if err != nil {
-    return nil, fmt.Errorf(ePrefix + "%v", err.Error())
+    return nil, fmt.Errorf(ePrefix +
+      "Error creating file mode code.\nError=%v\n", err.Error())
   }
 
   fPtr, err = os.OpenFile(pathFileName, fOpenCode, fileMode)
 
   if err != nil {
-    return nil, fmt.Errorf(ePrefix + "File Open Error: %v\n" +
+    return nil, fmt.Errorf(ePrefix +
+      "Error returned from os.OpenFile().\nError='%v'\n" +
       "pathFileName='%v'", err.Error(), pathFileName)
   }
 
   if fPtr == nil {
     return nil, fmt.Errorf(ePrefix +
-      "ERROR: Returned file pointer is 'nil'!")
+      "ERROR: File pointer returned from os.OpenFile() is 'nil'!")
   }
 
   return fPtr, nil
-
 }
 
 // RemovePathSeparatorFromEndOfPathString - Remove Trailing path Separator from
