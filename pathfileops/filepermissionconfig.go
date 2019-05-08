@@ -496,6 +496,7 @@ func (fPerm *FilePermissionConfig) IsValid() error {
 //   -rwxr-----    0740       Owner can read, write, & execute. Group can only read;
 //                               others have no permissions
 //
+//  Note: drwxrwxrwx - identifies permissions for directory
 //
 // ------------------------------------------------------------------------
 //
@@ -569,6 +570,9 @@ func (fPerm FilePermissionConfig) New(modeStr string) (FilePermissionConfig, err
 //        r-xr-xr-x            File - read & execute
 //        rw-rw-rw-            File - read & write
 //        rwxr-----            File - Owner can read, write, & execute. Group can only read;
+//
+//
+//  Note: drwxrwxrwx - identifies permissions for directory
 //
 // ------------------------------------------------------------------------
 //
@@ -729,6 +733,9 @@ func (fPerm FilePermissionConfig) NewByOctalDigits(
 //        r-xr-xr-x            File - read & execute
 //        rw-rw-rw-            File - read & write
 //        rwxr-----            File - Owner can read, write, & execute. Group can only read;
+//
+//
+//  Note: drwxrwxrwx - identifies permissions for directory
 //
 // ------------------------------------------------------------------------
 //

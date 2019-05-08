@@ -3927,7 +3927,285 @@ func (fh FileHelper) MoveFile(src, dst string) error {
 
 }
 
-// OpenFile - wrapper for os.OpenFile. This method may be used to open or
+// OpenDirectory - Returns os.File pointer to the directory designated by
+// input parameter, 'directoryPath'. Essentially, this method opens a directory
+// as a file.
+//
+// The input parameter 'createDir' determines the action taken if 'directoryPath'
+// does not exist. If 'createDir' is set to 'true' and 'directoryPath' does not
+// currently exist, the method will attempt to create 'directoryPath'. Directories
+// created by this method have an Open Type of 'Read-Write' and a Permission code
+// of 'drwxrwxrwx'.
+//
+// Alternatively, if 'createDir' is set to 'false' and 'directoryPath' does NOT exist,
+// an error will be returned.
+//
+// If the method is successful, an os.File pointer is returned for the designated directory.
+//
+//
+// Remember that the caller is responsible for calling 'Close()' on the returned os.File
+// pointer.
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameters:
+//
+//  directoryPath                  string - A string containing the path name of the directory
+//                                          which will be opened.
+//
+//  createDir                        bool - Determines what action will be taken if 'directoryPath'
+//                                          does NOT exist. If 'createDir' is set to 'true' and
+//                                          'directoryPath' does NOT exist, this method will attempt
+//                                          to create 'directoryPath'. Alternatively, if 'createDir'
+//                                          is set to false and 'directoryPath' does NOT exist, the
+//                                          method will terminate and an error will be returned.
+//
+//                                          Directories created by this method have an Open Type of
+//                                          'Read-Write' and a Permission code of 'drwxrwxrwx'
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+//  *os.File        - If successful, this method returns an os.File pointer
+//                    to the directory designated by input parameter 'directoryPath'.
+//
+//                    If this method fails, the *os.File return value is 'nil'.
+//
+//                    Note: The caller is responsible for calling "Close()" on this
+//                    os.File pointer.
+//
+//
+//  error           - If the method completes successfully, the error return value
+//                    is 'nil'. If the method fails, the error type returned is
+//                    populated with an appropriate error message.
+//
+func (fh FileHelper) OpenDirectory(directoryPath string, createDir bool) (*os.File, error) {
+
+  ePrefix := "FileHelper.OpenDirectory()"
+
+  fileOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
+    FOpenMode.ModeNone())
+
+  if err != nil {
+    return nil,
+      fmt.Errorf(ePrefix +
+        "Error returned by FileOpenConfig{}.New(FOpenType.TypeReadWrite()," +
+        "FOpenMode.ModeNone()).\nError='%v'\n",
+        err.Error())
+  }
+
+  fPermCfg, err:= FilePermissionConfig{}.New("drwxrwxrwx")
+
+  if err != nil {
+    return nil,
+      fmt.Errorf(ePrefix +
+        "Error returned by FilePermissionConfig{}.New(\"drwxrwxrwx\")\n" +
+        "Error='%v' \n", err.Error())
+  }
+
+  filePtr, err := fh.OpenDirectoryPerm(directoryPath, createDir, fileOpenCfg, fPermCfg)
+
+  if err != nil {
+    return nil,
+      fmt.Errorf(ePrefix + "%v", err.Error())
+  }
+
+  return filePtr, nil
+}
+
+// OpenDirectoryPerm - Opens a directory with permissions. This method will
+// open a directory designated by input parameter, 'directoryPath'. The directory
+// is opened as a file and the associated os.File pointer is returned (*os.File).
+//
+// The input parameter 'createDir' determines the action taken if 'directoryPath'
+// does not exist. If 'createDir' is set to 'true' and 'directoryPath' does not
+// currently exist, this method will attempt to create 'directoryPath'. Directories
+// created by this method have an Open Type of 'Read-Write' and a Permission code
+// of 'drwxrwxrwx'.
+//
+// Alternatively, if 'createDir' is set to 'false' and 'directoryPath' does NOT exist,
+// an error will be returned.
+//
+// The file open modes and file permissions used to open the directory are specified
+// by the caller through input parameters, 'fileOpenCfg' and 'filePermissionCfg'.
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameters:
+//
+//
+//  directoryPath                  string - A string containing the path name of the directory
+//                                          which will be opened.
+//
+//
+//  createDir                        bool - Determines what action will be taken if 'directoryPath'
+//                                          does NOT exist. If 'createDir' is set to 'true' and
+//                                          'directoryPath' does NOT exist, this method will attempt
+//                                          to create 'directoryPath'. Alternatively, if 'createDir'
+//                                          is set to false and 'directoryPath' does NOT exist, this
+//                                          method will terminate and an error will be returned.
+//
+//                                          Directories created by this method have an Open Type of
+//                                          'Read-Write' and a Permission code of 'drwxrwxrwx'
+//
+//
+//  fileOpenCfg            FileOpenConfig - This parameter encapsulates the File Open parameters
+//                                          which will be used to open subject file. For an
+//                                          explanation of File Open parameters, see method
+//                                          FileOpenConfig.New().
+//
+//
+// filePermissionCfg FilePermissionConfig - This parameter encapsulates the File Permission
+//                                          parameters which will be used to open the subject
+//                                          file. For an explanation of File Permission parameters,
+//                                          see method FilePermissionConfig.New().
+//
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+//  *os.File        - If successful, this method returns an os.File pointer
+//                    to the directory designated by input parameter 'directoryPath'.
+//
+//                    If this method fails, the *os.File return value is 'nil'.
+//
+//                    Note: The caller is responsible for calling "Close()" on this
+//                    os.File pointer.
+//
+//
+//  error           - If the method completes successfully, the error return value
+//                    is 'nil'. If the method fails, the error type returned is
+//                    populated with an appropriate error message.
+//
+func (fh FileHelper) OpenDirectoryPerm(
+  directoryPath string,
+  createDir bool,
+  fileOpenCfg FileOpenConfig,
+  filePermissionCfg FilePermissionConfig) (*os.File, error) {
+
+
+  ePrefix := "FileHelper.OpenDirectory()"
+  var err error
+  errCode := 0
+
+  errCode, _, directoryPath = fh.isStringEmptyOrBlank(directoryPath)
+
+  if errCode == -1 {
+    return nil,
+      errors.New(ePrefix + "Input parameter 'directoryPath' is an empty string!")
+
+  }
+
+  if errCode == -2 {
+    return nil,
+      errors.New(ePrefix +
+        "Input parameter 'directoryPath' consists of all spaces!")
+  }
+
+  directoryPath, err = fh.MakeAbsolutePath(directoryPath)
+
+  if err != nil {
+    return nil,
+      fmt.Errorf(ePrefix + "Error returned by fh.MakeAbsolutePath(directoryPath).\n" +
+        "directoryPath='%v'\nError='%v'", directoryPath, err.Error())
+  }
+
+
+  err = fileOpenCfg.IsValid()
+
+  if err != nil {
+    return nil,
+      fmt.Errorf(ePrefix +
+        "Input parameter 'fileOpenCfg' is INVALID!" +
+        "\nError='%v'\n", err.Error())
+  }
+
+  err = filePermissionCfg.IsValid()
+
+  if err != nil {
+    return nil,
+      fmt.Errorf(ePrefix +
+        "Input parameter 'filePermissionCfg' is INVALID!" +
+        "Error='%v' \n", err.Error())
+  }
+
+  fInfo, err := os.Stat(directoryPath)
+
+  if err != nil {
+    // This error is NOT signaling that the path does not exist.
+    if !os.IsNotExist(err) && !createDir {
+      return nil,
+        fmt.Errorf(ePrefix + "Non-Path error returned by os.Stat(directoryPath).\n" +
+          "directoryPath='%v'\nError='%v'\n", directoryPath, err.Error())
+    }
+
+    // The error signaled that the path does not exist. So, create the directory path
+    err = fh.MakeDirAll(directoryPath)
+
+    if err != nil {
+      return nil,
+        fmt.Errorf(ePrefix + "ERROR: Attmpted creation of 'directoryPath' FAILED!\n" +
+          "directoryPath='%v'\nError='%v'\n", directoryPath, err.Error())
+    }
+
+    // Verify that the directory exists and get
+    // the associated file info object.
+    fInfo, err = os.Stat(directoryPath)
+
+    if err != nil {
+      return nil,
+        fmt.Errorf(ePrefix + "Error occurred verifying existance of newly created 'directoryPath'!\n"+
+          "Error returned by os.Stat(directoryPath)\ndirectoryPath='%v'\nError='%v'\n",
+          directoryPath, err.Error())
+    }
+
+  }
+
+  if !fInfo.IsDir() {
+    return nil,
+      fmt.Errorf(ePrefix + "ERROR: Input Paramter 'directoryPath' is NOT a directory!\n" +
+        "directoryPath='%v'", directoryPath)
+
+  }
+
+  fOpenCode, err := fileOpenCfg.GetCompositeFileOpenCode()
+
+  if err != nil {
+    return nil,
+      fmt.Errorf(ePrefix + "Error Creating Directory\\File Open Code.\nError=%v\n",
+        err.Error())
+  }
+
+  fileMode, err := filePermissionCfg.GetCompositePermissionMode()
+
+  if err != nil {
+    return nil,
+      fmt.Errorf(ePrefix + "Error Creating File Mode Code.\nError=%v\n",
+        err.Error())
+  }
+
+  filePtr, err := os.OpenFile(directoryPath, fOpenCode, fileMode)
+
+  if err != nil {
+    return nil,
+      fmt.Errorf(ePrefix + "File Open Error: %v\n" +
+        "directoryPath='%v'", err.Error(), directoryPath)
+  }
+
+
+  if filePtr == nil {
+    return nil, errors.New(ePrefix +
+      "ERROR: os.OpenFile() returned a 'nil' file pointer!")
+  }
+
+  return filePtr, nil
+
+ }
+
+
+  // OpenFile - wrapper for os.OpenFile. This method may be used to open or
 // create files depending on the File Open and File Permission parameters.
 //
 // If successful, this method will return a pointer to the os.File object
@@ -4045,6 +4323,12 @@ func (fh FileHelper) OpenFile(
       "Error returned by os.OpenFile(pathFileName, fOpenCode, fileMode) "+
       "targetpathFileName='%v' Error='%v' ", pathFileName, err.Error())
 
+    return filePtr, err
+  }
+
+  if filePtr == nil {
+    err = errors.New(ePrefix +
+      "ERROR: os.OpenFile() returned a 'nil' file pointer!")
     return filePtr, err
   }
 
