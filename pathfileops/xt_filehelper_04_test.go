@@ -658,6 +658,20 @@ func TestFileHelper_IsAbsolutePath_02(t *testing.T) {
 
 }
 
+func TestFileHelper_IsAbsolutePath_03(t *testing.T) {
+
+  fh := FileHelper{}
+  absPathDir := ""
+
+  result := fh.IsAbsolutePath(absPathDir)
+
+  if result == true {
+    t.Error("Expected a return value of 'false' from fh.IsAbsolutePath(absPathDir) because\n" +
+      "'absPathDir' is an empty string. However, the returned value was 'true'. ERROR!\n")
+  }
+
+}
+
 func TestFileHelper_IsPathFileString_01(t *testing.T) {
 
   fh := FileHelper{}

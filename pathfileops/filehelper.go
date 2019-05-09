@@ -3099,9 +3099,7 @@ func (fh FileHelper) IsAbsolutePath(pathStr string) bool {
 
   // Adjust the path separators for the current operating
   // system.
-  correctDelimPathStr := fh.AdjustPathSlash(pathStr)
-
-  correctDelimPathStr = strings.ToLower(correctDelimPathStr)
+  correctDelimPathStr := strings.ToLower(fh.AdjustPathSlash(pathStr))
 
   absPath, err := fh.MakeAbsolutePath(pathStr)
 
@@ -3115,7 +3113,6 @@ func (fh FileHelper) IsAbsolutePath(pathStr string) bool {
     return true
   }
 
-  //return path.IsAbs(pathStr)
   return false
 }
 
