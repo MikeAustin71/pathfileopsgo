@@ -1238,14 +1238,14 @@ func TestFileHelper_IsPathString_04(t *testing.T) {
 
   fh := FileHelper{}
 
-  pathFile := fh.AdjustPathSlash("")
+  pathFile := ""
 
   _, _, _, err := fh.IsPathString(pathFile)
 
   if err == nil {
     t.Errorf("Expected an error return from fh.IsPathString(pathFile) " +
       "because 'pathFile' is an empty string. " +
-      "However, NO ERROR WAS RETURNE!")
+      "However, NO ERROR WAS RETURNED!")
   }
 
 }
@@ -1254,14 +1254,33 @@ func TestFileHelper_IsPathString_05(t *testing.T) {
 
   fh := FileHelper{}
 
-  pathFile := fh.AdjustPathSlash("      ")
+  pathFile := "      "
 
   _, _, _, err := fh.IsPathString(pathFile)
 
   if err == nil {
     t.Errorf("Expected an error return from fh.IsPathString(pathFile) " +
       "because 'pathFile' consists entirely of blank spaces. " +
-      "However, NO ERROR WAS RETURNE!")
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_IsPathString_06(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/" +
+    "level_02_dir/level_03_dir")
+
+  pathFile = "." + pathFile
+
+  _, _, _, err := fh.IsPathString(pathFile)
+
+  if err == nil {
+    t.Errorf("Expected an error return from fh.IsPathString(pathFile) " +
+      "because 'pathFile' includes the text '...' . " +
+      "However, NO ERROR WAS RETURNED!")
   }
 
 }

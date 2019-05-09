@@ -3505,10 +3505,9 @@ func (fh FileHelper) IsPathString(
   pathStr string) (isPathStr bool, cannotDetermine bool, testPathStr string, err error) {
 
   ePrefix := "FileHelper.IsPathString() "
-
+  testPathStr = ""
   isPathStr = false
   cannotDetermine = false
-  testPathStr = fh.AdjustPathSlash(pathStr)
   err = nil
 
   errCode := 0
@@ -3534,6 +3533,8 @@ func (fh FileHelper) IsPathString(
     err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING! pathStr='%v'", pathStr)
     return isPathStr, cannotDetermine, testPathStr, err
   }
+
+  testPathStr = fh.AdjustPathSlash(pathStr)
 
   pathFileType, _, err2 := fh.IsPathFileString(testPathStr)
 
