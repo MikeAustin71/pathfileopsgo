@@ -523,6 +523,57 @@ func TestFileHelper_CreateFile_04(t *testing.T) {
 
 }
 
+func TestFileHelper_CreateFile_05(t *testing.T) {
+
+  testFilePath := "../checkfiles/TestFileHelper_CreateFile_05/dirX1/dirX2/scratchTestFileHelper_CreateFile_05.txt"
+
+  fh := FileHelper{}
+
+  testFilePath = fh.AdjustPathSlash(testFilePath)
+
+  _, err := fh.CreateFile(testFilePath)
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}.CreateFile(testFilePath) " +
+      "because parent directories for testFilePath do NOT exist. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_CreateFile_06(t *testing.T) {
+
+  testFilePath := "../checkfiles/scratchTestFileHelper_CreateFile_05.txt"
+
+  fh := FileHelper{}
+
+  testFilePath = fh.AdjustPathSlash(testFilePath)
+
+  fPtr, err := fh.CreateFile(testFilePath)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.CreateFile(testFilePath).\n" +
+      "testFilePath='%v'\nError='%v'\n", testFilePath, err.Error())
+
+  }
+
+  if fPtr != nil {
+    err = fPtr.Close()
+    if err != nil {
+      t.Errorf("Test Clean-Up Error returned by fPtr.Close().\nError='%v'\n",
+        err.Error())
+    }
+  }
+
+  err = fh.DeleteDirFile(testFilePath)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirFile(testFilePath).\n" +
+      "testFilePath='%v'\nError='%v'\n",testFilePath, err.Error())
+  }
+
+}
+
 func TestFileHelper_DeleteDirFile_01(t *testing.T) {
 
   err := FileHelper{}.DeleteDirFile("")
