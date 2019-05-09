@@ -153,12 +153,15 @@ func (fh FileHelper) AreSameFile(pathFile1, pathFile2 string) (bool, error) {
       "Error: Both Path File Strings are EMPTY and INVALID!")
   }
 
-  correctedPathFile1 := fh.AdjustPathSlash(pathFile1)
+  correctedPathFile1 := strings.ToLower(fh.AdjustPathSlash(pathFile1))
 
-  correctedPathFile2 := fh.AdjustPathSlash(pathFile2)
+  correctedPathFile2 := strings.ToLower(fh.AdjustPathSlash(pathFile2))
 
-  if correctedPathFile1 != pathFile1 &&
-    correctedPathFile2 != pathFile2 {
+  lcPathFile1 := strings.ToLower(pathFile1)
+  lcPathFile2 := strings.ToLower(pathFile2)
+
+  if correctedPathFile1 != lcPathFile1 &&
+    correctedPathFile2 != lcPathFile2 {
 
     return false, fmt.Errorf(ePrefix+
       "Error: Both input parameters 'pathFile1' and 'pathFile2' contain INVALID "+
@@ -166,14 +169,14 @@ func (fh FileHelper) AreSameFile(pathFile1, pathFile2 string) (bool, error) {
       pathFile1, pathFile2)
   }
 
-  if correctedPathFile1 != pathFile1 {
+  if correctedPathFile1 != lcPathFile1 {
 
     return false, fmt.Errorf(ePrefix+
       "Error: Input parameter 'pathFile1' contains INVALID "+
       "path separators.\npathFile1='%v'\n", pathFile1)
   }
 
-  if correctedPathFile2 != pathFile2 {
+  if correctedPathFile2 != lcPathFile2 {
 
     return false, fmt.Errorf(ePrefix+
       "Error: Input parameter 'pathFile2' contains INVALID "+
@@ -275,11 +278,15 @@ func (fh FileHelper) ChangeWorkingDir(dirPath string) error {
 
 // CleanDirStr - Cleans and formats a directory string.
 //
-// Example:
-// dirName = '../dir1/dir2/fileName.ext' returns "../dir1/dir2"
-// dirName = 'fileName.ext' returns "" isEmpty = true
-// dirName = '../dir1/dir2/' returns '../dir1/dir2'
-// dirName = '../dir1/dir2/filename.ext' returns '../dir1/dir2'
+//   Examples:
+//
+//     dirName = '../dir1/dir2/fileName.ext' returns "../dir1/dir2"
+//
+//     dirName = 'fileName.ext' returns "" isEmpty = true
+//
+//     dirName = '../dir1/dir2/' returns '../dir1/dir2'
+//
+//     dirName = '../dir1/dir2/filename.ext' returns '../dir1/dir2'
 //
 func (fh FileHelper) CleanDirStr(dirNameStr string) (dirName string, isEmpty bool, err error) {
 

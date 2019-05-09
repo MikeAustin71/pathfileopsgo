@@ -287,7 +287,7 @@ func TestFileHelper_AreSameFile_06(t *testing.T) {
   _, err := fh.AreSameFile(correctedFile1, correctedFile2)
 
   if err == nil {
-    t.Error("Expected an err return from fh.AreSameFile(correctedFile1, correctedFile2) " +
+    t.Error("Expected an error return from fh.AreSameFile(correctedFile1, correctedFile2) " +
       "because correctedFile1 is an empty string.\n" +
       "However, NO ERROR WAS RETURNED!\n")
   }
@@ -308,8 +308,103 @@ func TestFileHelper_AreSameFile_07(t *testing.T) {
   _, err := fh.AreSameFile(correctedFile1, correctedFile2)
 
   if err == nil {
-    t.Error("Expected an err return from fh.AreSameFile(correctedFile1, correctedFile2) " +
+    t.Error("Expected an error return from fh.AreSameFile(correctedFile1, correctedFile2) " +
       "because correctedFile2 is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+}
+
+func TestFileHelper_AreSameFile_08(t *testing.T) {
+
+  correctedFile2 := ""
+
+  correctedFile1 := ""
+
+  fh := FileHelper{}
+
+  _, err := fh.AreSameFile(correctedFile1, correctedFile2)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.AreSameFile(correctedFile1, correctedFile2) " +
+      "because both correctedFile1 and correctedFile2 are empty strings.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+}
+
+func TestFileHelper_AreSameFile_09(t *testing.T) {
+  fh := FileHelper{}
+
+  rawFile1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
+    "\\level_04_dir\\level_4_2_test.txt"
+
+
+  rawFile2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
+    "\\level_04_dir\\level_4_3_test.txt"
+
+  if os.PathSeparator == '\\' {
+    rawFile1 = strings.ReplaceAll(rawFile1, "\\", "/")
+    rawFile2 = strings.ReplaceAll(rawFile2, "\\", "/")
+  }
+
+  _, err := fh.AreSameFile(rawFile1, rawFile2)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.AreSameFile(rawFile1, rawFile2) " +
+      "because both rawFile1 and rawFile2 use incorrect path separators.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+}
+
+func TestFileHelper_AreSameFile_10(t *testing.T) {
+  fh := FileHelper{}
+
+  rawFile1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
+    "\\level_04_dir\\level_4_2_test.txt"
+
+
+  rawFile2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
+    "\\level_04_dir\\level_4_3_test.txt"
+
+  if os.PathSeparator == '\\' {
+    rawFile1 = strings.ReplaceAll(rawFile1, "\\", "/")
+  }
+
+  rawFile2 = fh.AdjustPathSlash(rawFile2)
+
+
+  _, err := fh.AreSameFile(rawFile1, rawFile2)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.AreSameFile(rawFile1, rawFile2) " +
+      "because rawFile1 uses incorrect path separators.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+}
+
+func TestFileHelper_AreSameFile_11(t *testing.T) {
+  fh := FileHelper{}
+
+  rawFile1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
+    "\\level_04_dir\\level_4_2_test.txt"
+
+  rawFile1 = fh.AdjustPathSlash(rawFile1)
+
+  rawFile2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
+    "\\level_04_dir\\level_4_3_test.txt"
+
+  if os.PathSeparator == '\\' {
+    rawFile2 = strings.ReplaceAll(rawFile2, "\\", "/")
+  }
+
+  _, err := fh.AreSameFile(rawFile1, rawFile2)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.AreSameFile(rawFile1, rawFile2) " +
+      "because rawFile2 uses incorrect path separators.\n" +
       "However, NO ERROR WAS RETURNED!\n")
   }
 
