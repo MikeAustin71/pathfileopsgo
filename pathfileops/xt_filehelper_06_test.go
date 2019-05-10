@@ -4,6 +4,7 @@ import (
   "errors"
   "io"
   "os"
+  "strings"
   "testing"
   "time"
 )
@@ -1060,6 +1061,126 @@ func TestFileHelper_OpenFileWriteOnly_04(t *testing.T) {
   }
 
   return
+}
+
+func TestFileHelper_RemovePathSeparatorFromEndOfPathString_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathStr := ""
+
+  newPathStr := fh.RemovePathSeparatorFromEndOfPathString(pathStr)
+
+  if newPathStr != "" {
+    t.Errorf("Expected result from fh.RemovePathSeparatorFromEndOfPathString(pathStr) to\n" +
+      "equal an empty string because 'pathStr' is an empty string.\n" +
+      "However, a valid string was returned! ERROR!\nresult='%v'", newPathStr)
+  }
+}
+
+func TestFileHelper_RemovePathSeparatorFromEndOfPathString_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathStr := "      "
+
+  newPathStr := fh.RemovePathSeparatorFromEndOfPathString(pathStr)
+
+  if newPathStr != "" {
+    t.Errorf("Expected result from fh.RemovePathSeparatorFromEndOfPathString(pathStr) to\n" +
+      "equal an empty string because 'pathStr' consists entirely of blank spaces.\n" +
+      "However, a valid string was returned! ERROR!\nresult='%v'", newPathStr)
+  }
+}
+
+func TestFileHelper_RemovePathSeparatorFromEndOfPathString_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathStrBase := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir/" +
+    "level_04_dir"
+
+  pathStr := pathStrBase + "/"
+
+  pathStr = fh.AdjustPathSlash(pathStr)
+
+  pathStrBase = fh.AdjustPathSlash(pathStrBase)
+
+  newPathStr := fh.RemovePathSeparatorFromEndOfPathString(pathStr)
+
+  if pathStrBase != newPathStr  {
+    t.Errorf("Expected result from fh.RemovePathSeparatorFromEndOfPathString(pathStr) to\n" +
+      "equal\npathStrBase='%v'.\n" +
+      "Instead,\nnewPathStr='%v'", pathStrBase, newPathStr)
+  }
+}
+
+func TestFileHelper_RemovePathSeparatorFromEndOfPathString_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathStrBase := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir/" +
+    "level_04_dir"
+
+  pathStr := pathStrBase
+
+  pathStr = fh.AdjustPathSlash(pathStr)
+
+  pathStrBase = fh.AdjustPathSlash(pathStrBase)
+
+  newPathStr := fh.RemovePathSeparatorFromEndOfPathString(pathStr)
+
+  if pathStrBase != newPathStr  {
+    t.Errorf("Expected result from fh.RemovePathSeparatorFromEndOfPathString(pathStr) to\n" +
+      "equal\npathStrBase='%v'.\n" +
+      "Instead,\nnewPathStr='%v'", pathStrBase, newPathStr)
+  }
+}
+
+func TestFileHelper_RemovePathSeparatorFromEndOfPathString_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathStrBase := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir\\" +
+    "level_04_dir"
+
+  pathStr := pathStrBase + "\\"
+
+  if os.PathSeparator == '\\' {
+    pathStr = strings.ReplaceAll(pathStr,"\\", "/")
+    pathStrBase = strings.ReplaceAll(pathStrBase,"\\", "/")
+  }
+
+  newPathStr := fh.RemovePathSeparatorFromEndOfPathString(pathStr)
+
+  if pathStrBase != newPathStr  {
+    t.Errorf("Expected result from fh.RemovePathSeparatorFromEndOfPathString(pathStr) to\n" +
+      "equal\npathStrBase='%v'.\n" +
+      "Instead,\nnewPathStr='%v'", pathStrBase, newPathStr)
+  }
+}
+
+func TestFileHelper_RemovePathSeparatorFromEndOfPathString_06(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathStrBase := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir\\" +
+    "level_04_dir"
+
+  pathStr := pathStrBase
+
+  if os.PathSeparator == '\\' {
+    pathStr = strings.ReplaceAll(pathStr,"\\", "/")
+    pathStrBase = strings.ReplaceAll(pathStrBase,"\\", "/")
+  }
+
+  newPathStr := fh.RemovePathSeparatorFromEndOfPathString(pathStr)
+
+  if pathStrBase != newPathStr  {
+    t.Errorf("Expected result from fh.RemovePathSeparatorFromEndOfPathString(pathStr) to\n" +
+      "equal\npathStrBase='%v'.\n" +
+      "Instead,\nnewPathStr='%v'", pathStrBase, newPathStr)
+  }
 }
 
 func TestFileHelper_SwapBasePath_01(t *testing.T) {

@@ -4899,8 +4899,17 @@ func (fh FileHelper) OpenFileWriteOnly(
 
 // RemovePathSeparatorFromEndOfPathString - Remove Trailing path Separator from
 // a path string - if said trailing path Separator exists.
+//
 func (fh FileHelper) RemovePathSeparatorFromEndOfPathString(pathStr string) string {
-  lPathStr := len(pathStr)
+  errCode := 0
+  lPathStr := 0
+
+  errCode, lPathStr, pathStr = fh.isStringEmptyOrBlank(pathStr)
+
+  if errCode < 0 {
+    return ""
+
+  }
 
   if lPathStr == 0 {
     return ""
@@ -4911,10 +4920,6 @@ func (fh FileHelper) RemovePathSeparatorFromEndOfPathString(pathStr string) stri
   if lastChar == os.PathSeparator ||
     lastChar == '\\' ||
     lastChar == '/' {
-
-    if lPathStr < 2 {
-      return ""
-    }
 
     return pathStr[0 : lPathStr-1]
   }
