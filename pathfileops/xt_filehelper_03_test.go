@@ -647,6 +647,83 @@ func TestFileHelper_GetFileLastModificationDate_04(t *testing.T) {
   }
 }
 
+func TestFileHelper_GetFileMode_01(t *testing.T) {
+
+  pathFileName := ""
+
+  fh := FileHelper{}
+
+  _, err := fh.GetFileMode(pathFileName)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.GetFileMode(pathFileName) because\n" +
+      "parameter 'pathFileName' is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_GetFileMode_02(t *testing.T) {
+
+  pathFileName := "       "
+
+  fh := FileHelper{}
+
+  _, err := fh.GetFileMode(pathFileName)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.GetFileMode(pathFileName) because\n" +
+      "parameter 'pathFileName' consists entirely of blank spaces.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_GetFileMode_03(t *testing.T) {
+
+  pathFileName := "../createFilesTest/iDoNOTExist.txt"
+
+  fh := FileHelper{}
+
+  pathFileName = fh.AdjustPathSlash(pathFileName)
+
+  _, err := fh.GetFileMode(pathFileName)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.GetFileMode(pathFileName) because\n" +
+      "parameter 'pathFileName' does NOT exist.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_GetFileMode_04(t *testing.T) {
+
+  pathFileName := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+
+  fh := FileHelper{}
+
+  pathFileName = fh.AdjustPathSlash(pathFileName)
+
+  filePermission, err := fh.GetFileMode(pathFileName)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetFileMode(pathFileName)\n" +
+      "pathFileName='%v'\nError='%v'", pathFileName, err.Error())
+  }
+
+  err = filePermission.IsValid()
+
+  if err != nil {
+    t.Errorf("Error returned by filePermission.IsValid().\n" +
+      "There is something wrong with FilePermissionCfg object retunred by\n" +
+      "fh.GetFileMode(pathFileName).\npathFileName='%v'\nError='%v'",
+      pathFileName, err.Error())
+  }
+
+  return
+}
+
 func TestFileHelper_GetFileNameWithExt_01(t *testing.T) {
   fh := FileHelper{}
 
