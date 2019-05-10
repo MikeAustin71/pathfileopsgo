@@ -4262,7 +4262,7 @@ func (fh FileHelper) OpenDirectory(
  }
 
 
-  // OpenFile - wrapper for os.OpenFile. This method may be used to open or
+// OpenFile - wrapper for os.OpenFile. This method may be used to open or
 // create files depending on the File Open and File Permission parameters.
 //
 // If successful, this method will return a pointer to the os.File object
@@ -4466,11 +4466,13 @@ func (fh FileHelper) OpenFileReadOnly(pathFileName string) (filePtr *os.File, er
     return filePtr, err
   }
 
+  _, err2 = os.Stat(pathFileName)
 
-  if !fh.DoesFileExist(pathFileName) {
+  if err2 != nil {
     err = fmt.Errorf(ePrefix +
       "ERROR: The input parameter 'pathFileName' DOES NOT EXIST!\n" +
-      "pathFileName='%v' ", pathFileName)
+      "Error returned from os.Stat(pathFileName).\n" +
+      "pathFileName='%v'\nError='%v'", pathFileName, err2.Error())
     return filePtr, err
   }
 
@@ -4632,7 +4634,9 @@ func (fh FileHelper) OpenFileReadWrite(
 
   var fileOpenCfg FileOpenConfig
 
-  if !fh.DoesFileExist(pathFileName) {
+  _, err = os.Stat(pathFileName)
+
+  if err != nil {
 
     fileOpenCfg, err = FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
       FOpenMode.ModeCreate(), FOpenMode.ModeAppend())
@@ -4806,7 +4810,9 @@ func (fh FileHelper) OpenFileWriteOnly(
 
   var fileOpenCfg FileOpenConfig
 
-  if !fh.DoesFileExist(pathFileName) {
+  _, err = os.Stat(pathFileName)
+
+  if err != nil {
     // The pathFileName DOES NOT EXIST!
 
     fileOpenCfg, err = FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
