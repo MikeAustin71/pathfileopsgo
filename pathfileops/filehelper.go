@@ -4039,7 +4039,25 @@ func (fh FileHelper) MoveFile(src, dst string) error {
       "Error: Input parameter 'dst' consists of blank spaces!")
   }
 
-  _, err := os.Stat(src)
+  var err error
+
+  src, err = fh.MakeAbsolutePath(src)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix +
+      "Error returned by fh.MakeAbsolutePath(src).\nsrc='%v'\nError='%v'\n",
+      src, err.Error())
+  }
+
+  dst, err = fh.MakeAbsolutePath(dst)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix +
+      "Error returned by fh.MakeAbsolutePath(dst).\ndst='%v'\nError='%v'\n",
+      dst, err.Error())
+  }
+
+  _, err = os.Stat(src)
 
   if err != nil {
     return fmt.Errorf(ePrefix+"Error: Input parameter 'src' file DOES NOT EXIST! src='%v'", src)
@@ -4078,6 +4096,13 @@ func (fh FileHelper) MoveFile(src, dst string) error {
     return fmt.Errorf(ePrefix +
       "Copy operation succeeded, but attempted deletion of source file FAILED!\n" +
       "Source File='%v'\n", src)
+  }
+
+  _, err = os.Stat(src)
+
+  if err == nil {
+    return fmt.Errorf("Verification Error: File 'src' still exists!\n" +
+      "src='%v'", src)
   }
 
   // Success, source was copied to destination
