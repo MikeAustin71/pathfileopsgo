@@ -37,11 +37,69 @@ func main() {
 */
 
 func main() {
-  source := "D:\\T08\\testWriteFile801294.txt"
+  //source := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+  source := "D:\\T11\\level01"
 
-  destination := "D:\\T99\\Level2\\testWriteFile801294.txt"
+  mainTest57GetFileMode(source)
 
-  mainTest56CopyFileLink(source, destination)
+  fPermission, err := pf.FilePermissionConfig{}.New("drwxrwxrwx")
+
+  if err != nil {
+    fmt.Printf("main()\n" + err.Error() + "\n")
+    return
+  }
+
+  mainTest58ChangeFileMode(source, fPermission)
+  mainTest57GetFileMode(source)
+
+}
+
+func mainTest58ChangeFileMode(pathFileName string, filePermission pf.FilePermissionConfig) {
+
+  fh := pf.FileHelper{}
+
+  fmt.Println("********* mainTest58ChangeFileMode *********")
+  fmt.Println()
+
+  err := fh.ChangeFileMode(pathFileName, filePermission)
+
+  changeModeText, err := filePermission.GetPermissionTextCode()
+
+  if err != nil {
+    fmt.Printf("mainTest58ChangeFileMode\nError='" + err.Error() + "'\n")
+    return
+  }
+
+  changeModeValue := filePermission.GetPermissionFileModeValueText()
+
+  fmt.Println("     pathFileName: ", pathFileName)
+  fmt.Println()
+  fmt.Println(" Change Mode Text: ", changeModeText)
+  fmt.Println("Change Mode Value: ", changeModeValue)
+
+
+}
+
+func mainTest57GetFileMode(pathFileName string) {
+  fh := pf.FileHelper{}
+
+  fPermCfg, err := fh.GetFileMode(pathFileName)
+
+  fmt.Println("********* mainTest57GetFileMode *********")
+  fmt.Println()
+  if err != nil {
+    fmt.Printf("mainTest57GetFileMode\nError='" + err.Error() + "'\n")
+    return
+  }
+  fmt.Println("*************** SUCCESS! ****************")
+
+  permCodeText, err := fPermCfg.GetPermissionTextCode()
+  permCodeValue := fPermCfg.GetPermissionFileModeValueText()
+
+  fmt.Println(" Path File Name: ", pathFileName)
+  fmt.Println()
+  fmt.Println(" File Mode Text: ", permCodeText)
+  fmt.Println("File Mode Value: ", permCodeValue)
 
 }
 

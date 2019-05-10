@@ -28,7 +28,7 @@ func TestCleanDir(t *testing.T) {
 
 }
 
-func TestChangeDir(t *testing.T) {
+func TestDirMgr_ChangeWorkingDir_01(t *testing.T) {
   var err error
   var startDir, checkDir, targetDir string
   fh := FileHelper{}

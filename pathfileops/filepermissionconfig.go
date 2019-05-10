@@ -296,8 +296,13 @@ func (fPerm *FilePermissionConfig) GetPermissionComponents() (
   return osMode, permissionBits, err
 }
 
-// GetPermissionFileModeValueText - Returns the Permission File Mode value
-// as text.
+// GetPermissionFileModeValueText - Returns the Permission File Mode numeric
+// value as text. The text presents the octal value of the File Mode.
+//
+//  Example2:
+//        -rw-rw-rw- = returned value 0666
+//        drwxrwxrwx = returned value 020000000777
+//
 func (fPerm *FilePermissionConfig) GetPermissionFileModeValueText() string {
 
   sb := strings.Builder{}

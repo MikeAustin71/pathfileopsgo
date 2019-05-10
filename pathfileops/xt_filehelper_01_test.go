@@ -410,6 +410,271 @@ func TestFileHelper_AreSameFile_11(t *testing.T) {
 
 }
 
+func TestFileHelper_ChangeFileMode_01(t *testing.T) {
+
+  pathFileName := ""
+
+  filePermission, err := FilePermissionConfig{}.New("-rwxrwxrwx")
+
+  if err != nil {
+    t.Errorf("Error return from FilePermissionConfig{}.New(\"-rwxrwxrwx\").\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  fh := FileHelper{}
+
+  err = fh.ChangeFileMode(pathFileName, filePermission)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.ChangeFileMode(pathFileName, filePermission)\n" +
+      "because 'pathFileName' is an empty string. However, NO ERROR WAS RETURNED!\n")
+  }
+
+}
+
+func TestFileHelper_ChangeFileMode_02(t *testing.T) {
+
+  pathFileName := "    "
+
+  filePermission, err := FilePermissionConfig{}.New("-rwxrwxrwx")
+
+  if err != nil {
+    t.Errorf("Error return from FilePermissionConfig{}.New(\"-rwxrwxrwx\").\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  fh := FileHelper{}
+
+  err = fh.ChangeFileMode(pathFileName, filePermission)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.ChangeFileMode(pathFileName, filePermission)\n" +
+      "because 'pathFileName' consists entirely of empty spaces.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+}
+
+func TestFileHelper_ChangeFileMode_04(t *testing.T) {
+
+  pathFileName := "../createFilesTest/iDoNOTExist.txt"
+
+  filePermission, err := FilePermissionConfig{}.New("-rwxrwxrwx")
+
+  if err != nil {
+    t.Errorf("Error return from FilePermissionConfig{}.New(\"-rwxrwxrwx\").\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  fh := FileHelper{}
+
+  err = fh.ChangeFileMode(pathFileName, filePermission)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.ChangeFileMode(pathFileName, filePermission)\n" +
+      "because 'pathFileName' does NOT exist.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+}
+
+func TestFileHelper_ChangeFileMode_05(t *testing.T) {
+
+  basePath := "../createFilesTest/TestFileHelper_ChangeFileMode_05"
+  actualPath := basePath + "/level01"
+
+  originalSrc := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+  pathFileName := actualPath + "/" +"level_0_3_test.txt"
+
+  fh := FileHelper{}
+  var err error
+
+  if fh.DoesFileExist(basePath) {
+    err = fh.DeleteDirPathAll(basePath)
+
+    if err != nil {
+      t.Errorf("Test Setup Error: Could not delete 'basePath'!\n" +
+        "basePath='%v'\nError='%v'\n", basePath, err.Error())
+      return
+    }
+  }
+
+  err = fh.MakeDirAll(actualPath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(actualPath).\n" +
+      "actualPath='%v'\nError='%v'\n", actualPath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(originalSrc, pathFileName)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(originalSrc, pathFileName)." +
+      "originalSrc='%v'\npathFileName='%v'\nError='%v'\n",
+      originalSrc, pathFileName, err.Error())
+    return
+  }
+
+  filePermission, err := FilePermissionConfig{}.New("-rwxrwxrwx")
+
+  if err != nil {
+    t.Errorf("Error return from FilePermissionConfig{}.New(\"-rwxrwxrwx\").\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  filePermission.isInitialized = false
+
+  err = fh.ChangeFileMode(pathFileName, filePermission)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.ChangeFileMode(pathFileName, filePermission)\n" +
+      "because 'filePermission' is INVALID.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+  err = fh.DeleteDirPathAll(basePath)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error: Could not delete 'basePath'!\n" +
+      "basePath='%v'\nError='%v'\n", basePath, err.Error())
+    return
+  }
+
+}
+
+func TestFileHelper_ChangeFileMode_06(t *testing.T) {
+
+  basePath := "../createFilesTest/TestFileHelper_ChangeFileMode_06"
+  actualPath := basePath + "/level01"
+
+  originalSrc := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+  pathFileName := actualPath + "/" +"level_0_3_test.txt"
+
+  fh := FileHelper{}
+  var err error
+
+  if fh.DoesFileExist(basePath) {
+    err = fh.DeleteDirPathAll(basePath)
+
+    if err != nil {
+      t.Errorf("Test Setup Error: Could not delete 'basePath'!\n" +
+        "basePath='%v'\nError='%v'\n", basePath, err.Error())
+      return
+    }
+  }
+
+  err = fh.MakeDirAll(actualPath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(actualPath).\n" +
+      "actualPath='%v'\nError='%v'\n", actualPath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(originalSrc, pathFileName)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(originalSrc, pathFileName)." +
+      "originalSrc='%v'\npathFileName='%v'\nError='%v'\n",
+      originalSrc, pathFileName, err.Error())
+    return
+  }
+
+  originalPermission, err := fh.GetFileMode(pathFileName)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.GetFileMode(pathFileName).\n" +
+      "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
+    return
+  }
+
+  filePermission, err := FilePermissionConfig{}.New("-r--r--r--")
+
+  if err != nil {
+    t.Errorf("Error return from FilePermissionConfig{}.New(\"-r--r--r--\").\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  err = fh.ChangeFileMode(pathFileName, filePermission)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.ChangeFileMode(pathFileName, filePermission)\n" +
+      "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
+
+    _ = fh.DeleteDirPathAll(basePath)
+
+    return
+  }
+
+  newPermission, err := fh.GetFileMode(pathFileName)
+
+  if err != nil {
+    t.Errorf("Test Verification Error returned by fh.GetFileMode(pathFileName).\n" +
+      "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
+
+    _ = fh.DeleteDirPathAll(basePath)
+
+    return
+  }
+
+  originalPermissionText, err := originalPermission.GetPermissionTextCode()
+
+  if err != nil {
+    t.Errorf("Test Verification Error returned by originalPermission.GetPermissionTextCode().\n" +
+      "Error='%v'\n", err.Error())
+
+    _ = fh.DeleteDirPathAll(basePath)
+
+    return
+  }
+
+  originalPermissionValue := originalPermission.GetPermissionFileModeValueText()
+
+  newPermissionText, err := newPermission.GetPermissionTextCode()
+
+  if err != nil {
+    t.Errorf("Test Verification Error returned by newPermission.GetPermissionTextCode().\n" +
+      "Error='%v'\n", err.Error())
+
+    _ = fh.DeleteDirPathAll(basePath)
+
+    return
+  }
+
+  newPermissionValue := newPermission.GetPermissionFileModeValueText()
+
+  if originalPermission.Equal(&newPermission) {
+    t.Errorf("Error: Expected new File Mode to be different from old File Mode.\n" +
+      "Instead, they are equal!\nOrigional Permission Text='%v' Orginal Permission Value='%v'\n" +
+      "New Permission Text='%v' New Permission Value='%v'",
+      originalPermissionText, originalPermissionValue, newPermissionText, newPermissionValue)
+  }
+
+  if originalPermissionText == newPermissionText {
+    t.Errorf("Error: Expected new File Mode text value to be different from old File " +
+      "Mode text value.\nInstead, they are the same!\n" +
+      "originalPermissionText='%v' newPermissionText='%v'",
+      originalPermissionText, newPermissionText)
+  }
+
+  if originalPermissionValue == newPermissionValue {
+    t.Errorf("Error: Expected new File Mode numerical value to be different from old File " +
+      "Mode numerical value.\nInstead, they are the same!\n" +
+      "originalPermissionText='%v' newPermissionText='%v'",
+      originalPermissionValue, newPermissionValue)
+  }
+
+  err = fh.DeleteDirPathAll(basePath)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error: Could not delete 'basePath'!\n" +
+      "basePath='%v'\nError='%v'\n", basePath, err.Error())
+    return
+  }
+
+}
+
+
 func TestFileHelper_ChangeWorkingDir_01(t *testing.T) {
 
   fh := FileHelper{}

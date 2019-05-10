@@ -248,6 +248,77 @@ func (fh FileHelper) AreSameFile(pathFile1, pathFile2 string) (bool, error) {
   return false, nil
 }
 
+
+// ChangeFileMode changes the file mode of an existing file designated by input
+// parameter 'pathFileName'. The os.FileMode value to which the mode will be changed
+// is extracted from input parameter 'filePermission'.
+//
+// If the file does Not exist, an error is triggered.
+//
+// If the method succeeds and the file's mode is changed, an error value of 'nil' is
+// returned.
+//
+func (fh FileHelper) ChangeFileMode(pathFileName string, filePermission FilePermissionConfig) error {
+  ePrefix := "FileHelper.ChangeFileMode() "
+  errCode := 0
+  var err error
+
+  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
+
+  if errCode == -1 {
+    return errors.New(ePrefix + "Error: Input parameter 'dirPath' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return errors.New(ePrefix + "Error: Input parameter 'dirPath' consists of blank spaces!")
+  }
+
+  err = filePermission.IsValid()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix +
+      "ERROR: Input parameter 'filePermission' is INVALID!\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  pathFileName, err = fh.MakeAbsolutePath(pathFileName)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix +
+      "Error returned by fh.MakeAbsolutePath(pathFileName).\n" +
+      "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
+  }
+
+  newOsFileMode, err := filePermission.GetPermissionBits()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix +
+      "Error returned by filePermission.GetPermissionBits().\nError='%v'\n",
+      err.Error())
+  }
+
+  _, err = os.Stat(pathFileName)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix +
+      "ERROR: 'pathFileName' does NOT exist! os.Stat(pathFileName)\n" +
+      "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
+  }
+
+  err = os.Chmod(pathFileName, newOsFileMode)
+
+  if err!= nil {
+    changeModeTxt, _ := filePermission.GetPermissionTextCode()
+    changeModeValue := filePermission.GetPermissionFileModeValueText()
+    return fmt.Errorf(ePrefix +
+      "Error returned by os.Chmod(pathFileName, newOsFileMode).\n" +
+      "pathFileName='%v'\nnewOsFileMode Text='%v'\nnewOsFileModeValue='%v'\nError='%v'",
+      pathFileName, changeModeTxt, changeModeValue, err.Error())
+  }
+
+  return nil
+}
+
 // ChangeWorkingDir - Changes the current working directory to the
 // named directory passed in input parameter, 'dirPath'. If there
 // is an error, it will be of type *PathError.
@@ -1290,9 +1361,17 @@ func (fh FileHelper) DoesFileExist(pathFileName string) bool {
     return false
   }
 
-  _, err2 := os.Stat(pathFileName)
+  var err error
 
-  if err2 != nil {
+  pathFileName, err = fh.MakeAbsolutePath(pathFileName)
+
+  if err != nil {
+    return false
+  }
+
+  _, err = os.Stat(pathFileName)
+
+  if err != nil {
     return false
   }
 
@@ -2269,6 +2348,60 @@ func (fh FileHelper) GetFileLastModificationDate(
   }
 
   return fInfo.ModTime(), fInfo.ModTime().Format(fmtStr), nil
+}
+
+// GetFileMode - Returns the mode (os.FileMode) for the file designated by
+// input parameter 'pathFileName'. If the file does not exist, an error
+// is triggered.
+//
+// The 'os.FileMode' is returned via type 'FilePermissionCfg' which includes
+// methods necessary to interpret the 'os.FileMode'.
+//
+func (fh FileHelper) GetFileMode(pathFileName string) (FilePermissionConfig, error) {
+
+  ePrefix := "FileHelper.GetFileMode() "
+  errCode := 0
+  var err error
+
+  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
+
+  if errCode == -1 {
+    return FilePermissionConfig{},
+      errors.New(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return FilePermissionConfig{},
+      errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
+  }
+
+  pathFileName, err = fh.MakeAbsolutePath(pathFileName)
+
+  if err != nil {
+    return FilePermissionConfig{},
+      fmt.Errorf(ePrefix + "Error returned by fh.MakeAbsolutePath(pathFileName).\n" +
+        "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
+  }
+
+  fInfo, err := os.Stat(pathFileName)
+
+  if err != nil {
+    return FilePermissionConfig{},
+      fmt.Errorf(ePrefix +
+        "ERROR: 'pathFileName' does NOT exist. Error returned by os.Stat(pathFileName).\n" +
+        "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
+  }
+
+  fPermCfg, err := FilePermissionConfig{}.NewByFileMode(fInfo.Mode())
+
+  if err != nil {
+    return FilePermissionConfig{},
+      fmt.Errorf(ePrefix +
+        "Error returned by FilePermissionConfig{}.NewByFileMode(fInfo.Mode()).\n" +
+        "fInfo.Mode()='%v'\nError='%v'\n", fInfo.Mode(), err.Error())
+  }
+
+  return fPermCfg, nil
 }
 
 // GetFileNameWithExt - This method expects to receive a valid directory path and file
