@@ -1216,10 +1216,10 @@ func (fh FileHelper) DeleteDirFile(pathFile string) error {
 //      contains files.
 //   2. Call DeleteDirPathAll("D:\\T08\\x294_1")
 //   3. Upon return from method DeleteDirPathAll():
-//      a. Paths
-//          D:\T08\x294_1\x394_1\x494_1 and any files in the 'x494_1' directory are deleted
-//          D:\T08\x294_1\x394_1\ and any files in the 'x394_1' directory are deleted
-//          D:\T08\x294_1\ and any files in the 'x294_1' directory are deleted
+//      a. Deletion Results:
+//          Directory D:\T08\x294_1\x394_1\x494_1 and any files in the 'x494_1' directory are deleted
+//          Directory D:\T08\x294_1\x394_1\ and any files in the 'x394_1' directory are deleted
+//          Directory D:\T08\x294_1\ and any files in the 'x294_1' directory are deleted
 //
 //      b. The Parent Path 'D:\T08' and any files in that parent path 'D:\T08'
 //         directory are unaffected and continue to exist.
@@ -1227,6 +1227,8 @@ func (fh FileHelper) DeleteDirFile(pathFile string) error {
 func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
 
   ePrefix := "FileHelper.DeleteDirPathAll() "
+
+  var err error
 
   errCode := 0
 
@@ -1240,9 +1242,16 @@ func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
     return errors.New(ePrefix + "Error: Input parameter 'pathDir' consists of blank spaces!")
   }
 
+  pathDir, err = fh.MakeAbsolutePath(pathDir)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix + "Error from fh.MakeAbsolutePath(pathDir).\n" +
+      "pathDir='%v'\nError='%v'\n", pathDir, err.Error())
+  }
+
   // If the path does NOT exist,
   // Do nothing an return.
-  _, err := os.Stat(pathDir)
+  _, err = os.Stat(pathDir)
 
   if err != nil {
     // Doesn't exist. Nothing to do.
@@ -3755,6 +3764,13 @@ func (fh FileHelper) MakeDirAllPerm(dirPath string, permission FilePermissionCon
       "Error='%v' ", err2.Error())
   }
 
+  dirPath, err2 = fh.MakeAbsolutePath(dirPath)
+
+  if err2 != nil {
+    return fmt.Errorf(ePrefix + "Error returned by fh.MakeAbsolutePath(dirPath).\n" +
+      "dirPath='%v'\nError='%v'\n", dirPath, err2.Error())
+  }
+
   err2 = os.MkdirAll(dirPath, dirPermCode)
 
   if err2 != nil {
@@ -3821,6 +3837,13 @@ func (fh FileHelper) MakeDirPerm(dirPath string, permission FilePermissionConfig
   if err2 != nil {
     return fmt.Errorf(ePrefix+"INVALID Permission Code "+
       "Error='%v' ", err2.Error())
+  }
+
+  dirPath, err2 = fh.MakeAbsolutePath(dirPath)
+
+  if err2 != nil {
+    return fmt.Errorf(ePrefix + "Error returned by fh.MakeAbsolutePath(dirPath).\n" +
+      "dirPath='%v'\nError='%v'\n", dirPath, err2.Error())
   }
 
   err2 = os.Mkdir(dirPath, dirPermCode)

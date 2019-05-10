@@ -678,7 +678,7 @@ func TestFileHelper_MoveFile_07(t *testing.T) {
   setupDestFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_0_0_test.txt")
   srcFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_0_3_test.txt")
   setupSrcFile := fh.AdjustPathSlash("../checkfiles/setuplevel_0_3_test.txt")
-  destFile := fh.AdjustPathSlash("../logTest//scratchTestFileHelper_MoveFile_07.txt")
+  destFile := fh.AdjustPathSlash("../logTest/scratchTestFileHelper_MoveFile_07.txt")
 
   if fh.DoesFileExist(destFile) {
 
@@ -750,6 +750,54 @@ func TestFileHelper_MoveFile_07(t *testing.T) {
   }
 
   _ = os.Remove(destFile)
+}
+
+func TestFileHelper_MoveFile_08(t *testing.T) {
+  fh := FileHelper{}
+
+  newSrcBaseDir := "../TestFileHelper_MoveFile_08_Source"
+
+  newSrcDir :=  newSrcBaseDir + "/dir1"
+
+  newSrcBaseDir = fh.AdjustPathSlash(newSrcBaseDir)
+  newSrcDir = fh.AdjustPathSlash(newSrcDir)
+
+  err := fh.MakeDirAll(newSrcDir)
+
+  if err != nil {
+    t.Errorf("Test Setup ERROR returned by fh.MakeDirAll(newSrcDir).\n" +
+      "newSrcDir='%v'\nError='%v'\n", newSrcDir, err.Error())
+    return
+  }
+
+  newBaseTargDir := "../TestFileHelper_MoveFile_08Dest"
+  newTargDir := newBaseTargDir +  "/dirX1"
+
+  newBaseTargDir = fh.AdjustPathSlash(newBaseTargDir)
+  newTargDir = fh.AdjustPathSlash(newTargDir)
+
+  err = fh.MoveFile(newSrcDir, newTargDir)
+
+  if err == nil {
+    t.Errorf("Expected an error return from fh.MoveFile(newSrcDir, newTargDir) because\n" +
+      "both parameter, 'newSrcDir' and 'newTargDir' are directories.\n" +
+      "However, NO ERROR WAS RETURNED.")
+  }
+
+  err = fh.DeleteDirPathAll(newSrcBaseDir)
+
+  if err != nil {
+    t.Errorf("Test File Clean-Up ERROR: fh.DeleteDirPathAll(newSrcBaseDir).\n" +
+    "newSrcBaseDir='%v'\nError='%v'\n", newSrcBaseDir, err.Error())
+  }
+
+  err = fh.DeleteDirPathAll(newBaseTargDir)
+
+  if err != nil {
+    t.Errorf("Test File Clean-Up ERROR: fh.DeleteDirPathAll(newBaseTargDir).\n" +
+    "newBaseTargDir='%v'\nError='%v'\n", newBaseTargDir, err.Error())
+  }
+
 }
 
 func TestFileHelper_OpenDirectory_01(t *testing.T) {
@@ -835,33 +883,31 @@ func TestFileHelper_OpenDirectory_03(t *testing.T) {
     _ = fPtr.Close()
   }
 
+  err = fh.DeleteDirPathAll(basePath)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(basePath).\n" +
+      "basePath='%v'\nError='%v'", basePath, err.Error())
+  }
+
 }
 
 func TestFileHelper_OpenDirectory_04(t *testing.T) {
 
   fh := FileHelper{}
 
-  basePath := "./createFilesTest/TestFileHelper_OpenDirectoryPerm_04"
-  basePath = fh.AdjustPathSlash(basePath)
-  directoryPath := "../createFilesTest/TestFileHelper_OpenDirectoryPerm_04/x03"
+  basePath := "../createFilesTest/TestFileHelper_OpenDirectory_04"
+  directoryPath := basePath + "/x03"
 
+  basePath = fh.AdjustPathSlash(basePath)
   directoryPath = fh.AdjustPathSlash(directoryPath)
 
-  if fh.DoesFileExist(basePath) {
+  err := fh.DeleteDirPathAll(basePath)
 
-    err := fh.DeleteDirPathAll(basePath)
-
-    if err != nil {
-      t.Errorf("Test Setup ERROR: fh.DeleteDirPathAll(basePath) failed!\n" +
-        "Returned Error='%v'\n", err.Error())
-      return
-    }
-
-    if fh.DoesFileExist(basePath) {
-      t.Errorf("Test Setup ERROR: 'basePath' still exists. Attempted deletion FAILED!\n" +
-      "basePath='%v'", basePath)
-      return
-    }
+  if err != nil {
+    t.Errorf("Test Setup ERROR: fh.DeleteDirPathAll(basePath) failed!\n" +
+      "Returned Error='%v'\n", err.Error())
+    return
   }
 
   fPtr, err := fh.OpenDirectory(directoryPath, true)
@@ -875,25 +921,7 @@ func TestFileHelper_OpenDirectory_04(t *testing.T) {
     t.Error("Expected valid file pointer to be returned by fh.OpenDirectory(...).\n" +
       "However, the file pointer is nil!")
 
-    _ = fh.DeleteDirPathAll(basePath)
-
-    return
-  }
-
-  if !fh.DoesFileExist(directoryPath) {
-    t.Errorf("ERROR: Target path 'directoryPath' does not exist after call to fh.OpenDirectory(...).\n" +
-      "directoryPath='%v'\n", directoryPath)
-
-    if fPtr != nil {
-      _ = fPtr.Close()
-    }
-
-    _ = fh.DeleteDirPathAll(basePath)
-
-    return
-  }
-
-  if fPtr != nil {
+  } else {
 
     err = fPtr.Close()
 
@@ -908,7 +936,7 @@ func TestFileHelper_OpenDirectory_04(t *testing.T) {
 
   if err != nil {
     t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(basePath).\n" +
-      "Error='%v'\n", err.Error())
+      "basePath='%v'\nError='%v'\n", basePath, err.Error())
   }
 }
 
@@ -916,30 +944,21 @@ func TestFileHelper_OpenDirectory_05(t *testing.T) {
 
   fh := FileHelper{}
 
-  basePath := "./createFilesTest/TestFileHelper_OpenDirectoryPerm_05"
-  basePath = fh.AdjustPathSlash(basePath)
-  directoryPath := "../createFilesTest/TestFileHelper_OpenDirectoryPerm_05/x03"
+  basePath := "../createFilesTest/TestFileHelper_OpenDirectory_05"
+  directoryPath := basePath + "/x03"
 
+  basePath = fh.AdjustPathSlash(basePath)
   directoryPath = fh.AdjustPathSlash(directoryPath)
 
-  if fh.DoesFileExist(basePath) {
+  err := fh.DeleteDirPathAll(basePath)
 
-    err := fh.DeleteDirPathAll(basePath)
-
-    if err != nil {
-      t.Errorf("Test Setup ERROR: fh.DeleteDirPathAll(basePath) failed!\n" +
-        "Returned Error='%v'\n", err.Error())
-      return
-    }
-
-    if fh.DoesFileExist(basePath) {
-      t.Errorf("Test Setup ERROR: 'basePath' still exists. Attempted deletion FAILED!\n" +
-      "basePath='%v'", basePath)
-      return
-    }
+  if err != nil {
+    t.Errorf("Test Setup ERROR: fh.DeleteDirPathAll(basePath) failed!\n" +
+      "Returned Error='%v'\n", err.Error())
+    return
   }
 
-  err := fh.MakeDirAll(directoryPath)
+  err = fh.MakeDirAll(directoryPath)
 
   if err != nil {
     t.Errorf("Test Setup Error returned by fh.MakeDirAll(directoryPath)\n" +
@@ -947,11 +966,6 @@ func TestFileHelper_OpenDirectory_05(t *testing.T) {
     return
   }
 
-  if !fh.DoesFileExist(directoryPath) {
-    t.Errorf("Test Setup ERROR: Target directory path DOES NOT EXIST! Setup Failed!\n" +
-      "directoryPath='%v'", directoryPath)
-    return
-  }
 
   fPtr, err := fh.OpenDirectory(directoryPath, false)
 
@@ -961,13 +975,12 @@ func TestFileHelper_OpenDirectory_05(t *testing.T) {
   }
 
   if fPtr == nil {
+
     t.Error("Expected valid file pointer to be returned by fh.OpenDirectory(...).\n" +
       "However, the file pointer is nil!")
-    _ = fh.DeleteDirPathAll(basePath)
-    return
-  }
 
-  if fPtr != nil {
+
+  } else {
 
     err = fPtr.Close()
 
@@ -982,7 +995,7 @@ func TestFileHelper_OpenDirectory_05(t *testing.T) {
 
   if err != nil {
     t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(basePath).\n" +
-      "Error='%v'\n", err.Error())
+      "basePath='%v'\nError='%v'\n", basePath, err.Error())
   }
 }
 

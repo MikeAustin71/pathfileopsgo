@@ -635,6 +635,156 @@ func TestFileHelper_DeleteDirPathAll_03(t *testing.T) {
 
 }
 
+func TestFileHelper_DeleteDirPathAll_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  basePath := "../createFilesTest/TestFileHelper_DeleteDirPathAll_04"
+  basePath = fh.AdjustPathSlash(basePath)
+
+  targetPath := "../createFilesTest/TestFileHelper_DeleteDirPathAll_04/dirx01"
+
+  targetPath = fh.AdjustPathSlash(targetPath)
+
+  err := os.RemoveAll(targetPath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error: os.RemoveAll(targetPath) FAILED!\n" +
+      "targetPath='%v'\nError='%v'\n",
+      targetPath, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(targetPath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error: fh.MakeDirAll(targetPath) FAILED!\n" +
+      "targetPath='%v'\nError='%v'\n",
+      targetPath, err.Error())
+
+    return
+  }
+
+  err = fh.DeleteDirPathAll(basePath)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirPathAll(basePath).\n" +
+      "basePath='%v'\nError='%v'\n", basePath, err.Error())
+  }
+
+}
+
+func TestFileHelper_DeleteDirPathAll_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  basePath := "../createFilesTest/TestFileHelper_DeleteDirPathAll_04"
+  basePath = fh.AdjustPathSlash(basePath)
+
+  targetPath := "../createFilesTest/TestFileHelper_DeleteDirPathAll_04/dirx01"
+  sourcePath := "../filesfortest/levelfilesfortest"
+
+  testFile := "../createFilesTest/TestFileHelper_DeleteDirPathAll_04/dirx01/level_0_3_test.txt"
+  testFile = fh.AdjustPathSlash(testFile)
+
+  srcAry := make([]string, 0, 50)
+  destAry := make([]string, 0, 50)
+
+  srcAry = append(srcAry,
+    fh.AdjustPathSlash(sourcePath + "/" + "level_0_0_test.txt"))
+
+  destAry = append(destAry,
+    fh.AdjustPathSlash( targetPath + "/" + "level_0_0_test.txt"))
+
+  srcAry = append(srcAry,
+    fh.AdjustPathSlash(sourcePath + "/" + "level_0_1_test.txt"))
+
+  destAry = append(destAry,
+    fh.AdjustPathSlash( targetPath + "/" + "level_0_1_test.txt"))
+
+  srcAry = append(srcAry,
+    fh.AdjustPathSlash(sourcePath + "/" + "level_0_2_test.txt"))
+
+  destAry = append(destAry,
+    fh.AdjustPathSlash( targetPath + "/" + "level_0_2_test.txt"))
+
+  srcAry = append(srcAry,
+    fh.AdjustPathSlash(sourcePath + "/" + "level_0_3_test.txt"))
+
+  destAry = append(destAry,
+    fh.AdjustPathSlash( targetPath + "/" + "level_0_3_test.txt"))
+
+  srcAry = append(srcAry,
+    fh.AdjustPathSlash(sourcePath + "/" + "level_0_4_test.txt"))
+
+  destAry = append(destAry,
+    fh.AdjustPathSlash( targetPath + "/" + "level_0_4_test.txt"))
+
+  targetPath = fh.AdjustPathSlash(targetPath)
+
+
+  targetPath = fh.AdjustPathSlash(targetPath)
+
+  err := os.RemoveAll(basePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error: os.RemoveAll(basePath) FAILED!\n" +
+      "basePath='%v'\nError='%v'\n",
+      basePath, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(targetPath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error: fh.MakeDirAll(targetPath) FAILED!\n" +
+      "targetPath='%v'\nError='%v'\n",
+      targetPath, err.Error())
+
+    return
+  }
+
+
+  for i:=0; i < len(srcAry); i++ {
+
+    err := fh.CopyFileByIo(srcAry[i],destAry[i])
+
+    if err != nil {
+      t.Errorf("Error returned by fh.CopyFileByIo(srcAry[%v],destAry[%v]). \n" +
+        "srcAry='%v'\ndestAry='%v'\nError='%v'", i, i, srcAry[i], destAry[i], err.Error())
+
+      err = os.RemoveAll(basePath)
+
+      t.Errorf("Secondary Clean-Up Error returned by os.RemoveAll(basePath).\n" +
+        "basePath='%v'\nError='%v'\n", basePath, err.Error())
+
+      return
+    }
+
+  }
+
+  if !fh.DoesFileExist(testFile) {
+    t.Errorf("Test Setup FAILED! Test Files DO NOT EXIST!\n" +
+      "testfile='%v'", testFile)
+
+    err = os.RemoveAll(basePath)
+
+    t.Errorf("Secondary Clean-Up Error returned by os.RemoveAll(basePath).\n" +
+      "basePath='%v'\nError='%v'\n", basePath, err.Error())
+
+    return
+
+  }
+
+  err = fh.DeleteDirPathAll(basePath)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirPathAll(basePath).\n" +
+      "basePath='%v'\nError='%v'\n", basePath, err.Error())
+  }
+
+}
+
 func TestFileHelper_DoesFileExist_01(t *testing.T) {
 
   fh := FileHelper{}
