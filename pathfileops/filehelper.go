@@ -15,12 +15,15 @@ import (
 /*
     'filehelper.go' - Contains type 'FileHelper' and related data structures.
 
+     The 'FileHelper' type provides methods used in managing files and
+     directories.
+
     The Source Repository for this source code file is :
       https://github.com/MikeAustin71/pathfilego.git
 
-    'FileHelper' is a dependency of 'DirMgr' and 'FileMgr'.  'DirMgr' and 'FileMgr'
-    are located in source file 'filemanager.go' found in this same
-    directory: '003_filehelper/common/filemanager.go'
+    'FileHelper' is a dependency of 'DirMgr' and 'FileMgr'. 'FileMgr'
+    is located in source file 'filemanager.go'. 'DirMgr' is located
+    in 'dirmanager.go'.
 
 
 */
