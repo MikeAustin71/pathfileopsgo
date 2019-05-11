@@ -21,10 +21,10 @@ func TestFileMgr_SetFileInfo_01(t *testing.T) {
 
   absPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
 
-  info, err := fh.GetFileInfoFromPath(absPathFileNameExt)
+  info, err := fh.GetFileInfo(absPathFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+    t.Errorf("Error returned from fh.GetFileInfo(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
   }
 
   fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt)
@@ -96,10 +96,10 @@ func TestFileMgr_SetFileInfo_03(t *testing.T) {
 
   absPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
 
-  info, err := fh.GetFileInfoFromPath(absPath)
+  info, err := fh.GetFileInfo(absPath)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+    t.Errorf("Error returned from fh.GetFileInfo(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
   }
 
   fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt)
@@ -136,10 +136,10 @@ func TestFileMgr_SetFileInfo_04(t *testing.T) {
 
   absAlternatePathFileNameExt := absPath + string(os.PathSeparator) + alternativeFileNameExt
 
-  info, err := fh.GetFileInfoFromPath(absAlternatePathFileNameExt)
+  info, err := fh.GetFileInfo(absAlternatePathFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+    t.Errorf("Error returned from fh.GetFileInfo(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
   }
 
   fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt)

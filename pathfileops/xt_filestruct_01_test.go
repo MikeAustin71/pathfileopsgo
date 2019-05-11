@@ -92,10 +92,10 @@ func TestFileInfoPlus_NewFromFileInfo_01(t *testing.T) {
   absPathFileName, _ := fh.AddPathSeparatorToEndOfPathStr(absBaseDirPath)
   absPathFileName = absPathFileName + baseFileName
 
-  fInfo, err := fh.GetFileInfoFromPath(absPathFileName)
+  fInfo, err := fh.GetFileInfo(absPathFileName)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileName). absPathFileName='%v' Error='%v'", absPathFileName, err.Error())
+    t.Errorf("Error returned from fh.GetFileInfo(absPathFileName). absPathFileName='%v' Error='%v'", absPathFileName, err.Error())
   }
 
   fip := FileInfoPlus{}.NewFromFileInfo(fInfo)
@@ -150,10 +150,10 @@ func TestFileInfoPlus_Equal_01(t *testing.T) {
 
   absPathFileName = absPathFileName + baseFileName
 
-  fInfo, err := fh.GetFileInfoFromPath(absPathFileName)
+  fInfo, err := fh.GetFileInfo(absPathFileName)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileName). "+
+    t.Errorf("Error returned from fh.GetFileInfo(absPathFileName). "+
       "absPathFileName='%v' Error='%v'",
       absPathFileName, err.Error())
     return
@@ -190,10 +190,10 @@ func TestFileInfoPlus_Equal_02(t *testing.T) {
   absPathFileName, _ := fh.AddPathSeparatorToEndOfPathStr(absBaseDirPath)
   absPathFileName = absPathFileName + baseFileName
 
-  fInfo, err := fh.GetFileInfoFromPath(absPathFileName)
+  fInfo, err := fh.GetFileInfo(absPathFileName)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileName). "+
+    t.Errorf("Error returned from fh.GetFileInfo(absPathFileName). "+
       "absPathFileName='%v' Error='%v'", absPathFileName, err.Error())
   }
 

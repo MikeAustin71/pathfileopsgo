@@ -392,10 +392,10 @@ func mainTest47() {
 
   absPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
 
-  info, err := fh.GetFileInfoFromPath(absPathFileNameExt)
+  info, err := fh.GetFileInfo(absPathFileNameExt)
 
   if err != nil {
-    fmt.Printf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). "+
+    fmt.Printf("Error returned from fh.GetFileInfo(absPathFileNameExt). "+
       "absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
     return
   }
@@ -435,10 +435,10 @@ func mainTest46() {
 
   absPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
 
-  info, err := fh.GetFileInfoFromPath(absPathFileNameExt)
+  info, err := fh.GetFileInfo(absPathFileNameExt)
 
   if err != nil {
-    fmt.Printf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). "+
+    fmt.Printf("Error returned from fh.GetFileInfo(absPathFileNameExt). "+
       "absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
     return
   }
@@ -472,10 +472,10 @@ func mainTest45() {
 
   absPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
 
-  info, err := fh.GetFileInfoFromPath(absPathFileNameExt)
+  info, err := fh.GetFileInfo(absPathFileNameExt)
 
   if err != nil {
-    fmt.Printf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). "+
+    fmt.Printf("Error returned from fh.GetFileInfo(absPathFileNameExt). "+
       "absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
     return
   }

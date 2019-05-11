@@ -1369,6 +1369,7 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
   fsc.FileNamePatterns = []string{searchPattern}
   fsc.FilesOlderThan = filesOlderThan
   fsc.FilesNewerThan = filesNewerThan
+  fsc.IsFileModeSearchEngaged = true
   fsc.SelectByFileMode = 0666
   fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
 
@@ -1497,6 +1498,7 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
   fsc.FileNamePatterns = []string{searchPattern1, searchPattern2}
   fsc.FilesOlderThan = filesOlderThan
   fsc.FilesNewerThan = filesNewerThan
+  fsc.IsFileModeSearchEngaged = true
   fsc.SelectByFileMode = 0666
   fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
 
@@ -1963,7 +1965,7 @@ func DirMgr02SetupDirWalkTests() error {
   deleteCriteria.FileNamePatterns = make([]string, 0, 0)
   deleteCriteria.FilesNewerThan = time.Time{}
   deleteCriteria.FilesOlderThan = time.Time{}
-  deleteCriteria.SelectByFileMode = 0
+  deleteCriteria.IsFileModeSearchEngaged = false
 
   dirTree0Info, err := destDirMgr0.FindWalkDirFiles(deleteCriteria)
 

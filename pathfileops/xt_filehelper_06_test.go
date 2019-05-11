@@ -1183,6 +1183,124 @@ func TestFileHelper_RemovePathSeparatorFromEndOfPathString_06(t *testing.T) {
   }
 }
 
+func TestFileHelper_SearchFileModeMatch_01(t *testing.T) {
+
+  targetFile := "../filesfortest/levelfilesfortest/level_01_dir/level_1_3_test.txt"
+
+  fh := FileHelper{}
+
+  fInfo, err := fh.GetFileInfo(targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetFileInfo(targetFile).\n" +
+      "targetFile='%v'\nError='%v'", targetFile, err.Error())
+    return
+  }
+
+  fPerm, err := FilePermissionConfig{}.New("-r--r--r--")
+
+  if err != nil {
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\").\n" +
+      "Error='%v'", err.Error())
+    return
+  }
+
+  fileSelection := FileSelectionCriteria{}
+  fileSelection.IsFileModeSearchEngaged = true
+  fileSelection.SelectByFileMode, err = fPerm.GetPermissionBits()
+
+  if err != nil {
+    t.Errorf("Error returned by fPerm.GetPermissionBits().\n" +
+      "Error='%v'", err.Error())
+    return
+  }
+
+  isFileModeSet, isFileModeMatch, err := fh.SearchFileModeMatch(fInfo, fileSelection)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.SearchFileModeMatch(fInfo, fileSelection).\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  if isFileModeSet == false {
+    t.Error("Expected isFileModeSet=='true'. Instead, it is 'false'!")
+  }
+
+  if isFileModeMatch == true {
+    t.Error("Expected isFileModeMatch=='false'. Instead, it is 'true'!")
+  }
+
+}
+
+func TestFileHelper_SearchFileModeMatch_02(t *testing.T) {
+
+  targetFile := "../filesfortest/levelfilesfortest/level_01_dir/level_1_3_test.txt"
+
+  fh := FileHelper{}
+
+  fInfo, err := fh.GetFileInfo(targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetFileInfo(targetFile).\n" +
+      "targetFile='%v'\nError='%v'", targetFile, err.Error())
+    return
+  }
+
+  fileSelection := FileSelectionCriteria{}
+
+  fileSelection.IsFileModeSearchEngaged = true
+  fileSelection.SelectByFileMode = fInfo.Mode()
+
+  if err != nil {
+    t.Errorf("Error returned by fPerm.GetPermissionBits().\n" +
+      "Error='%v'", err.Error())
+    return
+  }
+
+  isFileModeSet, isFileModeMatch, err := fh.SearchFileModeMatch(fInfo, fileSelection)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.SearchFileModeMatch(fInfo, fileSelection).\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  if isFileModeSet == false {
+    t.Error("Expected isFileModeSet=='true'. Instead, it is 'false'!")
+  }
+
+  if isFileModeMatch == false {
+    t.Error("Expected isFileModeMatch=='true'. Instead, it is 'false'!")
+  }
+
+}
+
+func TestFileHelper_SearchFileModeMatch_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  fileSelection := FileSelectionCriteria{}
+
+  fileSelection.IsFileModeSearchEngaged = false
+
+  var fInfo os.FileInfo
+
+  isFileModeSet, isFileModeMatch, err := fh.SearchFileModeMatch(fInfo, fileSelection)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.SearchFileModeMatch(fInfo, fileSelection).\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  if isFileModeSet == true {
+    t.Error("Expected isFileModeSet=='false'. Instead, it is 'true'!")
+  }
+
+  if isFileModeMatch == true {
+    t.Error("Expected isFileModeMatch=='false'. Instead, it is 'true'!")
+  }
+
+}
+
 func TestFileHelper_SwapBasePath_01(t *testing.T) {
 
   targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"

@@ -1517,7 +1517,12 @@ func (fh *FileHelper) FilterFileName(
   isFileModeSearchSet, isFileModeSearchMatch, err2 := fh.SearchFileModeMatch(info, fileSelectionCriteria)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error returned from dMgr.searchFileModeMatch(info, fileSelectionCriteria) fileSelectionCriteria.SelectByFileMode='%v' info.Name()='%v' Error='%v'", fileSelectionCriteria.SelectByFileMode, info.Name(), err.Error())
+    err = fmt.Errorf(ePrefix+
+      "Error returned from dMgr.searchFileModeMatch(info, fileSelectionCriteria).\n" +
+      "fileSelectionCriteria.IsFileModeSearchEngaged='%v' fileSelectionCriteria.SelectByFileMode='%v'\n" +
+      "info.Name()='%v' Error='%v'\n",
+      fileSelectionCriteria.IsFileModeSearchEngaged,fileSelectionCriteria.SelectByFileMode,
+      info.Name(), err.Error())
     isMatchedFile = false
     return
   }
@@ -2249,7 +2254,7 @@ func (fh FileHelper) GetFileExtension(
   return ext, isEmpty, err
 }
 
-// GetFileInfoFromPath - Wrapper function for os.Stat(). This method
+// GetFileInfo - Wrapper function for os.Stat(). This method
 // can be used to return FileInfo data on a specific file. If the file
 // does NOT exist, an error will be triggered.
 //
@@ -2264,9 +2269,9 @@ func (fh FileHelper) GetFileExtension(
 //    Sys()     interface{}  // underlying data source (can return nil)
 //  }
 //
-func (fh FileHelper) GetFileInfoFromPath(pathFileName string) (os.FileInfo, error) {
+func (fh FileHelper) GetFileInfo(pathFileName string) (os.FileInfo, error) {
 
-  ePrefix := "FileHelper.GetFileInfoFromPath() "
+  ePrefix := "FileHelper.GetFileInfo() "
   errCode := 0
 
   errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
@@ -2279,6 +2284,16 @@ func (fh FileHelper) GetFileInfoFromPath(pathFileName string) (os.FileInfo, erro
   if errCode == -2 {
     return nil,
       errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
+  }
+
+  var err error
+
+  pathFileName, err = fh.MakeAbsolutePath(pathFileName)
+
+  if err != nil {
+    return nil, fmt.Errorf(ePrefix +
+      "Error returned by fh.MakeAbsolutePath(pathFileName).\n" +
+      "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
   }
 
   fileInfo, err := os.Stat(pathFileName)
@@ -2338,12 +2353,12 @@ func (fh FileHelper) GetFileLastModificationDate(
     fmtStr = fmtDateTimeNanoSecondStr
   }
 
-  fInfo, err := fh.GetFileInfoFromPath(pathFileName)
+  fInfo, err := fh.GetFileInfo(pathFileName)
 
   if err != nil {
     return zeroTime, "",
       errors.New(fmt.Sprintf(ePrefix+
-        "Error Getting FileInfo on %v Error on GetFileInfoFromPath(): %v",
+        "Error Getting FileInfo on %v Error on GetFileInfo(): %v",
         pathFileName, err.Error()))
   }
 
@@ -4938,9 +4953,11 @@ func (fh FileHelper) RemovePathSeparatorFromEndOfPathString(pathStr string) stri
 // Note: Input parameter 'info' is of type os.FileInfo.  You can substitute a type 'FileInfoPlus' object
 // for the 'info' parameter because 'FileInfoPlus' implements the 'os.FileInfo' interface.
 //
-func (fh *FileHelper) SearchFileModeMatch(info os.FileInfo, fileSelectCriteria FileSelectionCriteria) (isFileModeSet, isFileModeMatch bool, err error) {
+func (fh *FileHelper) SearchFileModeMatch(
+  info os.FileInfo,
+  fileSelectCriteria FileSelectionCriteria) (isFileModeSet, isFileModeMatch bool, err error) {
 
-  if fileSelectCriteria.SelectByFileMode == 0 {
+  if fileSelectCriteria.IsFileModeSearchEngaged == false {
     isFileModeSet = false
     isFileModeMatch = false
     err = nil

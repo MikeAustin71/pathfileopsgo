@@ -51,8 +51,14 @@ type FileSelectionCriteria struct {
   // FilesNewerThan - // Used to select files with a modification greater than this date time
   FilesNewerThan time.Time
 
-  // SelectByFileMode - Used to select files with equivalent os.FileMode values
+  // SelectByFileMode - Used to select files with equivalent os.FileMode values.
+  // To select by File Mode, two steps are required.
+  // (1) Set 'IsFileModeSearchEngaged' == true
+  // (2) Set 'SelectByFileMode == to the target file mode
+  //
   // Note: os.FileMode is an uint32 type.
+  IsFileModeSearchEngaged bool
+
   SelectByFileMode os.FileMode
 
   // SelectCriterionMode - Can be one of three values:

@@ -512,10 +512,10 @@ func TestFileHelper_GetFileExtension_11(t *testing.T) {
 func TestFileHelper_GetFileInfoFromPath_01(t *testing.T) {
   fh := FileHelper{}
 
-  _, err := fh.GetFileInfoFromPath("")
+  _, err := fh.GetFileInfo("")
 
   if err == nil {
-    t.Error("Expected error from fh.GetFileInfoFromPath(\"\") " +
+    t.Error("Expected error from fh.GetFileInfo(\"\") " +
       "because the input parameter is an empty string. " +
       "However, NO ERROR WAS RETURNED!")
   }
@@ -524,10 +524,10 @@ func TestFileHelper_GetFileInfoFromPath_01(t *testing.T) {
 func TestFileHelper_GetFileInfoFromPath_02(t *testing.T) {
   fh := FileHelper{}
 
-  _, err := fh.GetFileInfoFromPath("    ")
+  _, err := fh.GetFileInfo("    ")
 
   if err == nil {
-    t.Error("Expected error from fh.GetFileInfoFromPath(\"   \") " +
+    t.Error("Expected error from fh.GetFileInfo(\"   \") " +
       "because the input parameter consists entirely of blank spaces. " +
       "However, NO ERROR WAS RETURNED!")
   }
@@ -538,10 +538,10 @@ func TestFileHelper_GetFileInfoFromPath_03(t *testing.T) {
 
   rawPath := "../filesfortest/levelfilesfortest/iDoNotExist.txt"
 
-  _, err := fh.GetFileInfoFromPath(rawPath)
+  _, err := fh.GetFileInfo(rawPath)
 
   if err == nil {
-    t.Error("Expected error from fh.GetFileInfoFromPath(rawPath) " +
+    t.Error("Expected error from fh.GetFileInfo(rawPath) " +
       "because the input parameter 'rawPath' does NOT exist. " +
       "However, NO ERROR WAS RETURNED!")
   }
@@ -564,10 +564,10 @@ func TestFileHelper_GetFileLastModificationDate_01(t *testing.T) {
     t.Error("Error from FileHelper:GetFileLastModificationDate():", err.Error())
   }
 
-  fInfo, err := fh.GetFileInfoFromPath(target)
+  fInfo, err := fh.GetFileInfo(target)
 
   if err != nil {
-    t.Error("Error from FileHelper:GetFileInfoFromPath():", err.Error())
+    t.Error("Error from FileHelper:GetFileInfo():", err.Error())
   }
 
   actualFileTime := fInfo.ModTime()
@@ -628,10 +628,10 @@ func TestFileHelper_GetFileLastModificationDate_04(t *testing.T) {
     t.Error("Error from FileHelper:GetFileLastModificationDate():", err.Error())
   }
 
-  fInfo, err := fh.GetFileInfoFromPath(target)
+  fInfo, err := fh.GetFileInfo(target)
 
   if err != nil {
-    t.Error("Error from FileHelper:GetFileInfoFromPath():", err.Error())
+    t.Error("Error from FileHelper:GetFileInfo():", err.Error())
   }
 
   actualFileTime := fInfo.ModTime()
