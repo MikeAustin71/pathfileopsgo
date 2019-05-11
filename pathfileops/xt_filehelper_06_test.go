@@ -1466,8 +1466,32 @@ func TestFileHelper_SwapBasePath_06(t *testing.T) {
   }
 }
 
-
 func TestFileHelper_SwapBasePath_07(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  targetPath = fh.AdjustPathSlash(targetPath)
+
+  oldBasePath := "../filesforTest/levelfilesfortest"
+  oldBasePath = fh.AdjustPathSlash(oldBasePath)
+
+  newBasePath := ""
+
+  _, err := fh.SwapBasePath(
+    oldBasePath,
+    newBasePath,
+    targetPath)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.SwapBasePath(oldBasePath,newBasePath,targetPath)\n" +
+      "because parameter 'newBasePath' is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!!")
+  }
+}
+
+
+func TestFileHelper_SwapBasePath_08(t *testing.T) {
 
   fh := FileHelper{}
 
@@ -1494,7 +1518,7 @@ func TestFileHelper_SwapBasePath_07(t *testing.T) {
 }
 
 
-func TestFileHelper_SwapBasePath_08(t *testing.T) {
+func TestFileHelper_SwapBasePath_09(t *testing.T) {
 
   fh := FileHelper{}
 
@@ -1519,7 +1543,7 @@ func TestFileHelper_SwapBasePath_08(t *testing.T) {
 
 }
 
-func TestFileHelper_SwapBasePath_09(t *testing.T) {
+func TestFileHelper_SwapBasePath_10(t *testing.T) {
 
   fh := FileHelper{}
 
@@ -1542,6 +1566,33 @@ func TestFileHelper_SwapBasePath_09(t *testing.T) {
       "because parameter 'oldBasePath' is longer than 'targetBasePath.\n" +
       "However, NO ERROR WAS RETURNED!!")
   }
+}
+
+
+func TestFileHelper_SwapBasePath_11(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  targetPath = fh.AdjustPathSlash(targetPath)
+
+  oldBasePath := "/levelfilesfortest"
+  oldBasePath = fh.AdjustPathSlash(oldBasePath)
+
+  newBasePath := "../dirmgrtests"
+  newBasePath = fh.AdjustPathSlash(newBasePath)
+
+  _, err := fh.SwapBasePath(
+    oldBasePath,
+    newBasePath,
+    targetPath)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.SwapBasePath(oldBasePath,newBasePath,targetPath)\n" +
+      "because 'oldBasePath' does NOT begin at beginning of 'targetBasePath.\n" +
+      "However, NO ERROR WAS RETURNED!!")
+  }
+
 }
 
 

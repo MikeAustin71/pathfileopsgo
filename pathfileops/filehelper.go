@@ -5191,21 +5191,6 @@ func (fh FileHelper) SwapBasePath(
   return newBasePath + targetPath[oldBaseLen:], nil
 }
 
-// WriteBytes - Wrapper for os.File.Write(). Writes an array of bytes
-// to an open file pointed to by 'fPtr' (*os.File)
-func (fh FileHelper) WriteBytes(b []byte, fPtr *os.File) (int, error) {
-
-  return fPtr.Write(b)
-
-}
-
-// WriteFileStr - Wrapper for *os.File.WriteString. Writes a string
-// to an open file pointed to by 'fPtr' (*os.File).
-func (fh FileHelper) WriteFileStr(str string, fPtr *os.File) (int, error) {
-
-  return fPtr.WriteString(str)
-
-}
 
 /*
   FileHelper private methods

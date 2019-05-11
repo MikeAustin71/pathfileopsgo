@@ -180,7 +180,7 @@ func ExampleReadTestFile() {
       if !isPartialString {
         strCnt++
 
-        _, err = fh.WriteFileStr(fmt.Sprintf("%07d- %s\n", strCnt, s), fOut)
+        _, err = fOut.WriteString(fmt.Sprintf("%07d- %s\n", strCnt, s))
 
         if err != nil {
           _ = f.Close()
@@ -191,7 +191,7 @@ func ExampleReadTestFile() {
 
       } else {
         partialString = s
-        _, err = fh.WriteFileStr(fmt.Sprintf("******* Partial String %07d- %s **********\n", strCnt, s), fOut)
+        _, err = fOut.WriteString(fmt.Sprintf("******* Partial String %07d- %s **********\n", strCnt, s))
 
         if err != nil {
           _ = f.Close()
