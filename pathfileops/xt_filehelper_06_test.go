@@ -1303,15 +1303,21 @@ func TestFileHelper_SearchFileModeMatch_03(t *testing.T) {
 
 func TestFileHelper_SwapBasePath_01(t *testing.T) {
 
+  fh := FileHelper{}
+
   targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  targetPath = fh.AdjustPathSlash(targetPath)
 
   oldBasePath := "../filesfortest/levelfilesfortest"
+  oldBasePath = fh.AdjustPathSlash(oldBasePath)
 
   newBasePath := "../dirmgrtests"
+  newBasePath = fh.AdjustPathSlash(newBasePath)
 
   expectedTargetPath := "../dirmgrtests/level_0_0_test.txt"
+  expectedTargetPath = fh.AdjustPathSlash(expectedTargetPath)
 
-  newPath, err := FileHelper{}.SwapBasePath(
+  newPath, err := fh.SwapBasePath(
     oldBasePath,
     newBasePath,
     targetPath)
@@ -1330,15 +1336,21 @@ func TestFileHelper_SwapBasePath_01(t *testing.T) {
 
 func TestFileHelper_SwapBasePath_02(t *testing.T) {
 
+  fh := FileHelper{}
+
   targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  targetPath = fh.AdjustPathSlash(targetPath)
 
   oldBasePath := "../filesforTest/levelfilesfortest"
+  oldBasePath = fh.AdjustPathSlash(oldBasePath)
 
   newBasePath := "../dirmgrtests"
+  newBasePath = fh.AdjustPathSlash(newBasePath)
 
   expectedTargetPath := "../dirmgrtests/level_0_0_test.txt"
+  expectedTargetPath = fh.AdjustPathSlash(expectedTargetPath)
 
-  newPath, err := FileHelper{}.SwapBasePath(
+  newPath, err := fh.SwapBasePath(
     oldBasePath,
     newBasePath,
     targetPath)
@@ -1357,13 +1369,18 @@ func TestFileHelper_SwapBasePath_02(t *testing.T) {
 
 func TestFileHelper_SwapBasePath_03(t *testing.T) {
 
+  fh := FileHelper{}
+
   targetPath := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+  targetPath = fh.AdjustPathSlash(targetPath)
 
   oldBasePath := "../filesforTest/levelfilesfortest"
+  oldBasePath = fh.AdjustPathSlash(oldBasePath)
 
   newBasePath := "../dirmgrtests"
+  newBasePath = fh.AdjustPathSlash(newBasePath)
 
-  _, err := FileHelper{}.SwapBasePath(
+  _, err := fh.SwapBasePath(
     oldBasePath,
     newBasePath,
     targetPath)
@@ -1374,6 +1391,159 @@ func TestFileHelper_SwapBasePath_03(t *testing.T) {
   }
 
 }
+
+func TestFileHelper_SwapBasePath_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  targetPath = fh.AdjustPathSlash(targetPath)
+
+  oldBasePath := ""
+
+  newBasePath := "../dirmgrtests"
+  newBasePath = fh.AdjustPathSlash(newBasePath)
+
+  _, err := fh.SwapBasePath(
+    oldBasePath,
+    newBasePath,
+    targetPath)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.SwapBasePath(oldBasePath,newBasePath,targetPath)\n" +
+    "because parameter 'oldBasePath' is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!!")
+  }
+
+}
+
+func TestFileHelper_SwapBasePath_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  targetPath = fh.AdjustPathSlash(targetPath)
+
+  oldBasePath := "   "
+
+  newBasePath := "../dirmgrtests"
+  newBasePath = fh.AdjustPathSlash(newBasePath)
+
+  _, err := fh.SwapBasePath(
+    oldBasePath,
+    newBasePath,
+    targetPath)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.SwapBasePath(oldBasePath,newBasePath,targetPath)\n" +
+    "because parameter 'oldBasePath' consists entirely of blank spaces.\n" +
+      "However, NO ERROR WAS RETURNED!!")
+  }
+
+}
+
+func TestFileHelper_SwapBasePath_06(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  targetPath = fh.AdjustPathSlash(targetPath)
+
+  oldBasePath := "../filesforTest/levelfilesfortest"
+  oldBasePath = fh.AdjustPathSlash(oldBasePath)
+
+  newBasePath := "     "
+
+  _, err := fh.SwapBasePath(
+    oldBasePath,
+    newBasePath,
+    targetPath)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.SwapBasePath(oldBasePath,newBasePath,targetPath)\n" +
+      "because parameter 'newBasePath' consists entirely of blank spaces.\n" +
+      "However, NO ERROR WAS RETURNED!!")
+  }
+}
+
+
+func TestFileHelper_SwapBasePath_07(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetPath := "     "
+
+  oldBasePath := "../filesforTest/levelfilesfortest"
+  oldBasePath = fh.AdjustPathSlash(oldBasePath)
+
+  newBasePath := "../dirmgrtests"
+  newBasePath = fh.AdjustPathSlash(newBasePath)
+
+
+  _, err := fh.SwapBasePath(
+    oldBasePath,
+    newBasePath,
+    targetPath)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.SwapBasePath(oldBasePath,newBasePath,targetPath)\n" +
+      "because parameter 'targetPath' consists entirely of blank spaces.\n" +
+      "However, NO ERROR WAS RETURNED!!")
+  }
+
+}
+
+
+func TestFileHelper_SwapBasePath_08(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetPath := ""
+
+  oldBasePath := "../filesforTest/levelfilesfortest"
+  oldBasePath = fh.AdjustPathSlash(oldBasePath)
+
+  newBasePath := "../dirmgrtests"
+  newBasePath = fh.AdjustPathSlash(newBasePath)
+
+  _, err := fh.SwapBasePath(
+    oldBasePath,
+    newBasePath,
+    targetPath)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.SwapBasePath(oldBasePath,newBasePath,targetPath)\n" +
+      "because parameter 'targetPath' is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!!")
+  }
+
+}
+
+func TestFileHelper_SwapBasePath_09(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  targetPath = fh.AdjustPathSlash(targetPath)
+
+  oldBasePath := "../filesforTest/levelfilesfortest/dir01/dir02/dir03/dir05/dir06"
+  oldBasePath = fh.AdjustPathSlash(oldBasePath)
+
+  newBasePath := "../dirmgrtests"
+  newBasePath = fh.AdjustPathSlash(newBasePath)
+
+  _, err := fh.SwapBasePath(
+    oldBasePath,
+    newBasePath,
+    targetPath)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.SwapBasePath(oldBasePath,newBasePath,targetPath)\n" +
+      "because parameter 'oldBasePath' is longer than 'targetBasePath.\n" +
+      "However, NO ERROR WAS RETURNED!!")
+  }
+}
+
 
 func createALogTestBottomDir() error {
   fh := FileHelper{}

@@ -4926,10 +4926,6 @@ func (fh FileHelper) RemovePathSeparatorFromEndOfPathString(pathStr string) stri
 
   }
 
-  if lPathStr == 0 {
-    return ""
-  }
-
   lastChar := rune(pathStr[lPathStr-1])
 
   if lastChar == os.PathSeparator ||
@@ -5108,33 +5104,13 @@ func (fh *FileHelper) SearchFilePatternMatch(info os.FileInfo, fileSelectCriteri
   return
 }
 
-// SetCurrentWorkingDir - Similar to FileHelper.ChangeWorkingDir().
-// However, this method receives a file pointer of type *os.File.
-// The input parameter, 'fPtr' must point to a directory. If an
-// error is returned, it will be of type *PathError.
-func (fh FileHelper) SetCurrentWorkingDir(fPtr *os.File) error {
-
-  err := fPtr.Chdir()
-
-  if err != nil {
-    ePrefix := "FileHelper.SetCurrentWorkingDir() "
-
-    return fmt.Errorf(ePrefix+
-      "Error returned by fPtr.Chdir(). Error='%v' ", err.Error())
-  }
-
-  return nil
-}
-
-// SwapBasePath - Searches the 'targetPath' string for
-// the existence of 'oldBasePath'. If 'oldBasePath' is
-// found, it is replaced with 'newBasePath'.
+// SwapBasePath - Searches the 'targetPath' string for the existence of
+// 'oldBasePath'. If 'oldBasePath' is found, it is replaced with 'newBasePath'.
 //
-// If 'oldBasePath' is not found in 'targetPath' an
-// error is returned.
+// If 'oldBasePath' is not found in 'targetPath' an error is returned.
 //
-// Likewise, if 'oldBasePath' is not located at the beginning
-// of 'targetPath', an error will be returned.
+// Likewise, if 'oldBasePath' is not located at the beginning of 'targetPath',
+// an error will be returned.
 //
 func (fh FileHelper) SwapBasePath(
   oldBasePath,
@@ -5143,7 +5119,54 @@ func (fh FileHelper) SwapBasePath(
 
   ePrefix := "FileHelper.SwapBasePath() "
 
-  oldBaseLen := len(oldBasePath)
+  errCode := 0
+  oldBaseLen := 0
+
+  errCode, oldBaseLen, oldBasePath = fh.isStringEmptyOrBlank(oldBasePath)
+
+  if errCode == -1 {
+    return "",
+      errors.New(ePrefix + "Input parameter 'oldBasePath' is an empty string!")
+
+  }
+
+  if errCode == -2 {
+    return "", errors.New(ePrefix +
+      "Input parameter 'oldBasePath' consists of all spaces!")
+  }
+
+  errCode, _, newBasePath = fh.isStringEmptyOrBlank(newBasePath)
+
+  if errCode == -1 {
+    return "",
+      errors.New(ePrefix + "Input parameter 'newBasePath' is an empty string!")
+
+  }
+
+  if errCode == -2 {
+    return "", errors.New(ePrefix +
+      "Input parameter 'newBasePath' consists of all spaces!")
+  }
+
+  targetPathLen := 0
+  errCode, targetPathLen, targetPath = fh.isStringEmptyOrBlank(targetPath)
+
+  if errCode == -1 {
+    return "",
+      errors.New(ePrefix + "Input parameter 'targetPath' is an empty string!")
+
+  }
+
+  if errCode == -2 {
+    return "", errors.New(ePrefix +
+      "Input parameter 'targetPath' consists of all spaces!")
+  }
+
+  if oldBaseLen > targetPathLen {
+    return "", errors.New(ePrefix +
+      "Length of input parameter 'oldBasePath' is greater than length of \n" +
+      "input parameter 'targetPath'.\n")
+  }
 
   idx := strings.Index(
     strings.ToLower(targetPath),
