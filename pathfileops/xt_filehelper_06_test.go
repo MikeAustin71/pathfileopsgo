@@ -1063,6 +1063,36 @@ func TestFileHelper_OpenFileWriteOnly_04(t *testing.T) {
   return
 }
 
+func TestFileHelper_OpenFileWriteOnly_05(t *testing.T) {
+  fh := FileHelper{}
+  targetFile := ""
+
+  _, err := fh.OpenFileWriteOnly(targetFile, false)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.OpenFileWriteOnly(targetFile, false)\n" +
+      "because parameter 'targetFile' is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  return
+}
+
+func TestFileHelper_OpenFileWriteOnly_06(t *testing.T) {
+  fh := FileHelper{}
+  targetFile := "     "
+
+  _, err := fh.OpenFileWriteOnly(targetFile, false)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.OpenFileWriteOnly(targetFile, false)\n" +
+      "because parameter 'targetFile' consists entirely of blank spaces.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  return
+}
+
 func TestFileHelper_RemovePathSeparatorFromEndOfPathString_01(t *testing.T) {
 
   fh := FileHelper{}

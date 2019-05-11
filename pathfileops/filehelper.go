@@ -3797,10 +3797,10 @@ func (fh FileHelper) MakeAbsolutePath(relPath string) (string, error) {
   p, err := fp.Abs(testRelPath)
 
   if err != nil {
-    return "Invalid p!", fmt.Errorf(ePrefix+"Error returned from  fp.Abs(testRelPath). testRelPath='%v'  Error='%v'", testRelPath, err.Error())
+    return "", fmt.Errorf(ePrefix+"Error returned from  fp.Abs(testRelPath). testRelPath='%v'  Error='%v'", testRelPath, err.Error())
   }
 
-  return p, err
+  return p, nil
 }
 
 // MakeDirAll - creates a directory named path, along with any necessary
