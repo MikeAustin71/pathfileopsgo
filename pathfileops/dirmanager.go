@@ -6,7 +6,6 @@ import (
   "os"
   fp "path/filepath"
   "strings"
-  "time"
 )
 
 /*
@@ -111,9 +110,12 @@ func (dMgr *DirMgr) CopyOut() DirMgr {
 // directory tree.
 //
 // Example:
-// Run DeleteAll on Directory: "../pathfilego/003_filehelper/testdestdir/destdir"
-// All files and all subdirectories will be deleted.
-// Only the parent path will remain: "../pathfilego/003_filehelper/testdestdir"
+//
+//    Run DeleteAll on Directory: "../pathfilego/003_filehelper/testdestdir/destdir"
+//
+//    All files and all subdirectories will be deleted.
+//
+//    Only the parent path will remain: "../pathfilego/003_filehelper/testdestdir"
 //
 func (dMgr *DirMgr) DeleteAll() error {
   ePrefix := "DirMgr.DeleteAll() "
@@ -125,7 +127,9 @@ func (dMgr *DirMgr) DeleteAll() error {
     return err
   }
 
-  if dMgr.doesAbsolutePathExist {
+  _, err = os.Stat(dMgr.absolutePath)
+
+  if err == nil {
 
     err = os.RemoveAll(dMgr.absolutePath)
 
@@ -134,34 +138,12 @@ func (dMgr *DirMgr) DeleteAll() error {
         "returned error. dMgr.absolutePath='%v' Error='%v' ", dMgr.absolutePath, err.Error())
     }
 
-    dMgr.DoesDirMgrPathExist()
-    dMgr.DoesDirMgrAbsolutePathExist()
+    _ = dMgr.DoesDirMgrPathExist()
+    _ = dMgr.DoesDirMgrAbsolutePathExist()
 
-    return nil
-
-  } else if dMgr.doesPathExist {
-
-    time.Sleep(time.Millisecond * 500)
-
-    err = os.RemoveAll(dMgr.path)
-
-    if err != nil {
-      return fmt.Errorf(ePrefix+"Error returned by "+
-        "os.RemoveAll(dMgr.absolutePath) returned error. "+
-        "dMgr.path='%v' Error='%v' ", dMgr.path, err.Error())
-    }
-
-    dMgr.doesAbsolutePathExist = false
-    dMgr.doesPathExist = false
-
-    return nil
-
-  } else {
-    dMgr.doesAbsolutePathExist = false
-    dMgr.doesPathExist = false
-    return nil
   }
 
+  return nil
 }
 
 // DeleteFilesInDir - Receives a string defining a pattern to use
@@ -2383,8 +2365,8 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
 
   dMgr.isPathPopulated = true
 
-  dMgr.DoesDirMgrAbsolutePathExist()
-  dMgr.DoesDirMgrPathExist()
+  _ = dMgr.DoesDirMgrAbsolutePathExist()
+  _ = dMgr.DoesDirMgrPathExist()
 
   return nil
 }
@@ -2741,7 +2723,7 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
   dMgr.isPathPopulated = true
   dMgr.DoesDirMgrPathExist()
 
-  if dMgr.path == fp.VolumeName(dMgr.path) {
+  if strings.ToLower(dMgr.path) == strings.ToLower(fp.VolumeName(dMgr.path)) {
 
     dMgr.absolutePath = dMgr.path
 
@@ -2761,6 +2743,18 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
   }
 
   dMgr.absolutePath = fh.AdjustPathSlash(dMgr.absolutePath)
+
+  info, err2 := os.Stat(dMgr.absolutePath)
+
+  if err2 == nil && !info.IsDir() {
+    dMgr.Empty()
+    err = fmt.Errorf(ePrefix+
+      "- The Directory Manager absolute path exists and IS NOT A DIRECTORY!.\n" +
+      "dMgr.absolutePath='%v' Error='%v'",
+      dMgr.absolutePath, err2.Error())
+    isEmpty = true
+    return
+  }
 
   dMgr.isAbsolutePathPopulated = true
   dMgr.DoesDirMgrAbsolutePathExist()
