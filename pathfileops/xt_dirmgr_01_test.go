@@ -288,13 +288,37 @@ func TestDirMgr_DeleteAll_01(t *testing.T) {
   }
 
   if dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected absolutePath to be deleted. Instead, it Exists! dMgr.absolutePath='%v'", dMgr.absolutePath)
+    t.Errorf("Expected absolutePath to be deleted. Instead, it Exists!\n"+
+      "dMgr.absolutePath='%v'\n",dMgr.absolutePath)
   }
 
   if fh.DoesFileExist(origDir) {
-    t.Errorf("Expected origDir to be deleted. Instead, it Exists! origDir='%v'", origDir)
+    t.Errorf("Expected origDir to be deleted. Instead, it Exists!\n" +
+      "origDir='%v'\n", origDir)
   }
 
+}
+
+func TestDirMgr_DeleteAll_02(t *testing.T) {
+
+  testDir := "../checkfiles/TestDirMgr_DeleteAll_02"
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  dMgr.isInitialized = false
+
+  err = dMgr.DeleteAll()
+
+  if err == nil {
+    t.Error("Expected dMgr.DeleteAll() to return an error because\n" +
+      "'dMgr' is invalid. However, NO ERROR WAS RETURNED!")
+  }
 }
 
 /*

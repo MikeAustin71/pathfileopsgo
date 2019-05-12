@@ -118,32 +118,34 @@ func (dMgr *DirMgr) CopyOut() DirMgr {
 //    Only the parent path will remain: "../pathfilego/003_filehelper/testdestdir"
 //
 func (dMgr *DirMgr) DeleteAll() error {
-  ePrefix := "DirMgr.DeleteAll() "
-  var err error
 
-  err = dMgr.IsDirMgrValid(ePrefix)
+  ePrefix := "DirMgr.DeleteAll() "
+
+  err := dMgr.IsDirMgrValid(ePrefix)
 
   if err != nil {
     return err
   }
 
-  _, err = os.Stat(dMgr.absolutePath)
+  err = nil
 
-  if err == nil {
+  _, err2 := os.Stat(dMgr.absolutePath)
 
-    err = os.RemoveAll(dMgr.absolutePath)
+  if err2 == nil {
 
-    if err != nil {
-      return fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(dMgr.absolutePath) "+
+    err2 = os.RemoveAll(dMgr.absolutePath)
+
+    if err2 != nil {
+      err = fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(dMgr.absolutePath) "+
         "returned error. dMgr.absolutePath='%v' Error='%v' ", dMgr.absolutePath, err.Error())
     }
 
-    _ = dMgr.DoesDirMgrPathExist()
-    _ = dMgr.DoesDirMgrAbsolutePathExist()
-
   }
 
-  return nil
+  _ = dMgr.DoesDirMgrPathExist()
+  _ = dMgr.DoesDirMgrAbsolutePathExist()
+
+  return err
 }
 
 // DeleteFilesInDir - Receives a string defining a pattern to use
@@ -2663,6 +2665,7 @@ func (dMgr DirMgr) NewFromFileInfo(pathStr string, info os.FileInfo) (DirMgr, er
 //                                    Dir path:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
 //
 func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
+
   ePrefix := "DirMgr.SetDirMgr() "
 
   dMgr.Empty()
@@ -2671,24 +2674,21 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
 
   err = nil
   isEmpty = true
+  errCode := 0
 
-  if len(pathStr) == 0 {
-    isEmpty = true
-    err = errors.New(ePrefix +
-      "Error: Input parameter 'pathStr' is a Zero length string!")
-    return
+  errCode, _, pathStr = fh.isStringEmptyOrBlank(pathStr)
+
+  if errCode == -1 {
+    return true,
+      errors.New(ePrefix + "Error: Input parameter 'pathStr' is an empty string!")
   }
 
-  trimmedPathStr := strings.TrimLeft(strings.TrimRight(pathStr, " "), " ")
-
-  if len(trimmedPathStr) == 0 {
-    err = errors.New(ePrefix +
-      "Error: Trimmed Input Parameter 'pathStr' is a Zero length string!")
-    isEmpty = true
-    return
+  if errCode == -2 {
+    return true,
+      errors.New(ePrefix + "Error: Input parameter 'pathStr' consists of blank spaces!")
   }
 
-  adjustedTrimmedPathStr := fh.AdjustPathSlash(trimmedPathStr)
+  adjustedTrimmedPathStr := fh.AdjustPathSlash(pathStr)
 
   finalPathStr, isEmptyPath, err2 := fh.GetPathFromPathFileName(adjustedTrimmedPathStr)
 
