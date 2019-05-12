@@ -1,7 +1,6 @@
 package pathfileops
 
 import (
-  appLib "MikeAustin71/pathfileopsgo/appLibs"
   "fmt"
   "os"
   "strings"
@@ -1696,9 +1695,9 @@ func DirMgr02TestCreateCheckFiles99DirFiles() (string, error) {
         newFile4, err.Error())
   }
 
-  du := appLib.DateTimeUtility{}
-
-  _, err = fp4.WriteString(du.GetDateTimeYMDAbbrvDowNano(time.Now()))
+  t := time.Now()
+  fmtT := t.Format("2006-01-02 Mon 15:04:05.000000000 -0700 MST")
+  _, err = fp4.WriteString(fmtT)
 
   if err != nil {
     _ = fp1.Close()

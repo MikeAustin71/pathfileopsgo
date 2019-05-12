@@ -1,7 +1,6 @@
 package pathfileops
 
 import (
-  appLib "MikeAustin71/pathfileopsgo/appLibs"
   "fmt"
   "os"
   "testing"
@@ -10,7 +9,6 @@ import (
 
 const (
   logDir = "../logTest"
-  // appDir    = "../../003_filehelper/app"
   commonDir = "../pathfileops"
 )
 
@@ -1257,9 +1255,9 @@ func DirMgr01TestCreateCheckFiles03DirFiles() (string, error) {
     return "", fmt.Errorf(ePrefix+"Error returned from os.Create(newFile4). newFile4='%v' Error='%v' ", newFile4, err.Error())
   }
 
-  du := appLib.DateTimeUtility{}
-
-  _, err = fp4.WriteString(du.GetDateTimeYMDAbbrvDowNano(time.Now()))
+  t := time.Now()
+  fmtT := t.Format("2006-01-02 Mon 15:04:05.000000000 -0700 MST")
+  _, err = fp4.WriteString(fmtT)
 
   if err != nil {
     _ = fp1.Close()
