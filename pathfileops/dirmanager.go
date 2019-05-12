@@ -148,16 +148,22 @@ func (dMgr *DirMgr) DeleteAll() error {
   return err
 }
 
-// DeleteFilesInDir - Receives a string defining a pattern to use
+// DeleteFilesByNamePattern - Receives a string defining a pattern to use
 // in searching file names for all files in the directory identified
-// by the current DirMgr instance. If a file name matches the pattern
-// specified by input parameter, 'fileSearchPattern', it will be deleted.
+// by the current DirMgr instance.
+//
+// *                        BE CAREFUL!!                         *
+// If a file name matches the pattern specified by input parameter,
+// 'fileSearchPattern', it will be deleted.
 //
 // Only files in the directory identified by the current DirMgr instance
-// will be subject to deletion. Files in sub-directories will not be
-// deleted.
+// will be subject to deletion. Files in sub-directories or parent directories
+// will NOT be deleted or altered in any way.
 //
 // If the 'fileSearchPattern' is improperly formatted, an error will be returned.
+//
+// If the directory path identified by the current DirMgr instance does NOT
+// exist, an error will be returned.
 //
 // ------------------------------------------------------------------------
 //
@@ -174,13 +180,45 @@ func (dMgr *DirMgr) DeleteAll() error {
 //
 func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) error {
 
-  ePrefix := "DirMgr.DeleteFilesInDir() "
+  ePrefix := "DirMgr.DeleteFilesByNamePattern() "
 
   err := dMgr.IsDirMgrValid(ePrefix)
 
   if err != nil {
     return err
   }
+
+  fInfo, err := os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix +
+      "ERROR: The directory path specified by the current DirMgr instance\n" +
+      "DOES NOT EXIST!\nDirectory Path='%v'\n", dMgr.absolutePath)
+  }
+
+  if !fInfo.IsDir() {
+    return fmt.Errorf(ePrefix +
+      "ERROR: The directory path specified by the current DirMgr instance\n" +
+      "is NOT recognized as a directory by the operating system.\n" +
+      "Directory Path='%v'\n", dMgr.absolutePath)
+  }
+
+  fh := FileHelper{}
+
+  errCode := 0
+
+  errCode, _, fileSearchPattern = fh.isStringEmptyOrBlank(fileSearchPattern)
+
+  if errCode == -1 {
+    return errors.New(ePrefix +
+      "Error: Input parameter 'fileSearchPattern' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return errors.New(ePrefix +
+      "Error: Input parameter 'fileSearchPattern' consists of blank spaces!")
+  }
+
 
   dir, err := os.Open(dMgr.absolutePath)
 
@@ -200,8 +238,6 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) error {
       "dMgr.absolutePath='%v' Error='%v' ",
       dMgr.absolutePath, err.Error())
   }
-
-  fh := FileHelper{}
 
   for _, nameFInfo := range nameFileInfos {
 
@@ -1423,14 +1459,14 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 //
 // Example 'filePatterns'
 //
-// *.*              will match all files in directory.
-// *.html    				will match  anyfilename.html
-// a*								will match  appleJack.txt
-// j????row.txt     will match  j1x34row.txt
-// data[0-9]*				will match 	data123.csv
+//    *.*              will match all files in directory.
+//    *.html    				will match  anyfilename.html
+//    a*								will match  appleJack.txt
+//    j????row.txt     will match  j1x34row.txt
+//    data[0-9]*				will match 	data123.csv
 //
-// Reference For Matching Details:
-//  https://golang.org/pkg/path/filepath/#Match
+//    Reference For Matching Details:
+//     https://golang.org/pkg/path/filepath/#Match
 //
 func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCollection, error) {
 
@@ -1441,6 +1477,8 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
   if err != nil {
     return FileMgrCollection{}, err
   }
+
+
 
   dir, err := os.Open(dMgr.absolutePath)
 
