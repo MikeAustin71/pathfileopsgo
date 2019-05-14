@@ -636,7 +636,7 @@ func TestFileHelper_GetFileLastModificationDate_04(t *testing.T) {
 
   actualFileTime := fInfo.ModTime()
 
-  expected := actualFileTime.Format("2006-01-02 15:04:05.000000000")
+  expected := actualFileTime.Format("2006-01-02 15:04:05.000000000 -0700 MST")
 
   if tStr != expected {
     t.Errorf("Expected Time String for file %v == %v, received time string: %v", target, expected, tStr)

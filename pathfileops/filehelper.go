@@ -322,6 +322,83 @@ func (fh FileHelper) ChangeFileMode(pathFileName string, filePermission FilePerm
   return nil
 }
 
+// ChangeFileTimes - is a wrapper for os.Chtimes(). This method will set new access and
+// modification times for a designated file.
+//
+// If the path and file name do not exist, this method will return an error.
+//
+// If successful, the access and modification times for the target file will be changed to
+// to those specified by input parameters, 'newAccessTime' and 'newModTime'.
+//
+func (fh FileHelper) ChangeFileTimes(pathFileName string, newAccessTime, newModTime time.Time) error {
+
+  ePrefix := "FileHelper.ChangeFileTimes() "
+  var err error
+  errCode := 0
+
+  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
+
+  if errCode == -1 {
+    return errors.New(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
+  }
+
+  tDefault := time.Time{}
+
+  if newAccessTime == tDefault {
+
+    return fmt.Errorf(ePrefix +
+      "Error: Input parameter 'newAccessTime' is INVALID!\nnewAccessTime='%v'",
+      newAccessTime)
+
+  }
+
+  if newModTime == tDefault {
+    return fmt.Errorf(ePrefix +
+      "Error: Input parameter 'newModTime' is INVALID!\nnewModTime='%v'",
+      newModTime)
+  }
+
+  pathFileName, err = fh.MakeAbsolutePath(pathFileName)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix +
+      "Error returned by fh.MakeAbsolutePath(pathFileName).\n" +
+      "pathFileName='%v'\nError='%v'\n",
+      pathFileName, err.Error())
+  }
+
+  fInfo, err := os.Stat(pathFileName)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix +
+      "ERROR: 'pathFileName' does NOT exist!\nError='%v'\n", err.Error())
+  }
+
+  if fInfo.IsDir() {
+    return fmt.Errorf(ePrefix +
+      "ERROR: 'pathFileName' is a directory path and NOT a file!\n" +
+      "pathFileName='%v'\n", pathFileName)
+  }
+
+  err = os.Chtimes(pathFileName,newAccessTime, newModTime)
+
+  if err != nil {
+
+    return fmt.Errorf(ePrefix +
+      "ERROR returned by os.Chtimes(pathFileName,newAccessTime, newModTime)\n" +
+      "newAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
+      newAccessTime.Format("2006-01-02 15:04:05.000000000 -0700 MST"),
+      newModTime.Format("2006-01-02 15:04:05.000000000 -0700 MST"),
+      err.Error())
+  }
+
+  return nil
+}
+
 // ChangeWorkingDir - Changes the current working directory to the
 // named directory passed in input parameter, 'dirPath'. If there
 // is an error, it will be of type *PathError.
@@ -2331,7 +2408,7 @@ func (fh FileHelper) GetFileLastModificationDate(
   customTimeFmt string) (time.Time, string, error) {
 
   ePrefix := "FileHelper.GetFileLastModificationDate() "
-  const fmtDateTimeNanoSecondStr = "2006-01-02 15:04:05.000000000"
+  const fmtDateTimeNanoSecondStr = "2006-01-02 15:04:05.000000000 -0700 MST"
   var zeroTime time.Time
 
   errCode := 0
@@ -2356,13 +2433,25 @@ func (fh FileHelper) GetFileLastModificationDate(
     fmtStr = fmtDateTimeNanoSecondStr
   }
 
+  var err error
+
+  pathFileName, err = fh.MakeAbsolutePath(pathFileName)
+
+  if err != nil {
+    return zeroTime, "",
+      fmt.Errorf(ePrefix+
+        "Error retrned by fh.MakeAbsolutePath(pathFileName)\n" +
+        "pathFileName='%v'\nError='%v'\n",
+        pathFileName, err.Error())
+  }
+
   fInfo, err := fh.GetFileInfo(pathFileName)
 
   if err != nil {
     return zeroTime, "",
-      errors.New(fmt.Sprintf(ePrefix+
-        "Error Getting FileInfo on %v Error on GetFileInfo(): %v",
-        pathFileName, err.Error()))
+      fmt.Errorf(ePrefix+
+        "Error Getting FileInfo on %v Error on GetFileInfo(): %v\n",
+        pathFileName, err.Error())
   }
 
   return fInfo.ModTime(), fInfo.ModTime().Format(fmtStr), nil

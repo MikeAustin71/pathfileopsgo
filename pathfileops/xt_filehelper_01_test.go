@@ -5,6 +5,7 @@ import (
   "os"
   "strings"
   "testing"
+  "time"
 )
 
 const (
@@ -674,6 +675,279 @@ func TestFileHelper_ChangeFileMode_06(t *testing.T) {
 
 }
 
+func TestFileHelper_ChangeFileTimes_01(t *testing.T) {
+  originalSrc := "../filesfortest/oldfilesfortest/006870_ReadingFiles.htm"
+
+  dest := "../checkfiles/TestFileHelper_ChangeFileTimes_01"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(dest)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(dest).\n" +
+      "dest='%v'\nError='%v'\n", dest, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(dest)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(dest).\n" +
+      "dest='%v'\nError='%v'\n",
+      dest, err.Error())
+    return
+  }
+
+  destFile := dest + "/006870_ReadingFiles.htm"
+
+  err = fh.CopyFileByIo(originalSrc, destFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(originalSrc, destFile).\n" +
+      "originalSrc='%v'\ndestFile='%v'\nError='%v'\n",
+      originalSrc, destFile, err.Error())
+
+    _ = fh.DeleteDirPathAll(dest)
+    return
+  }
+
+  dateFormat := "2006-01-02 15:04:05.000000000 -0700 MST"
+
+  originalModTime, _, err :=
+    fh.GetFileLastModificationDate(destFile,dateFormat)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by #1 fh.GetFileLastModificationDate(destFile,dateFormat).\n" +
+      "\ndestFile='%v'\nError='%v'\n",
+      destFile, err.Error())
+  }
+
+  newAccessTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+  newModTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+
+  err = fh.ChangeFileTimes(destFile, newAccessTime, newModTime)
+
+  actualModTime, _, err :=
+    fh.GetFileLastModificationDate(destFile,"2006-01-02 15:04:05.000000000 -0700 MST")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by #2 fh.GetFileLastModificationDate(...).\n" +
+      "\ndestFile='%v'\nError='%v'\n",
+      destFile, err.Error())
+  }
+
+  err = fh.DeleteDirPathAll(dest)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(dest)\n" +
+      "dest='%v'\nError='%v'\n", dest, err.Error())
+  }
+
+  if originalModTime.Year() == actualModTime.Year() {
+    t.Errorf("Error Original Mod Time Year == Actual Mod Time Year!\n" +
+      "Original Mod Time Year='%v'\nActual Mod Time Year='%v'\n",
+      originalModTime.Year(), actualModTime.Year())
+  }
+
+  dateFormat2 := "2006-01-02 15:04:05"
+
+  newModStr := newModTime.Format(dateFormat2)
+  actualModStr := actualModTime.Format(dateFormat2)
+
+  if newModStr != actualModStr {
+    t.Errorf("ERROR: Expected actual modified time='%v'.\n" +
+      "Instead, actual modified time='%v'.\n",newModStr, actualModStr)
+  }
+
+}
+
+func TestFileHelper_ChangeFileTimes_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  newAccessTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+  newModTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+  testFile := ""
+  err := fh.ChangeFileTimes(testFile,newAccessTime, newModTime)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.ChangeFileTimes(testFile, " +
+      "newAccessTime, newModTime)\nbecause 'testFile' is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_ChangeFileTimes_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  newAccessTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+  newModTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+  testFile := "      "
+  err := fh.ChangeFileTimes(testFile,newAccessTime, newModTime)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.ChangeFileTimes(testFile, " +
+      "newAccessTime, newModTime)\nbecause 'testFile' consists entirely of blank spaces.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_ChangeFileTimes_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testFile := "../checkfiles/iDoNotExist.txt"
+  newAccessTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+  newModTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+
+  err := fh.ChangeFileTimes(testFile,newAccessTime, newModTime)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.ChangeFileTimes(testFile, " +
+      "newAccessTime, newModTime)\nbecause 'testFile' does NOT exist.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_ChangeFileTimes_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testFile := "../checkfiles"
+  newAccessTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+  newModTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+
+  err := fh.ChangeFileTimes(testFile,newAccessTime, newModTime)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.ChangeFileTimes(testFile, " +
+      "newAccessTime, newModTime)\nbecause 'testFile' is NOT a file - it is a directory.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileHelper_ChangeFileTimes_06(t *testing.T) {
+
+  fh := FileHelper{}
+
+  originalSrc := "../filesfortest/oldfilesfortest/006870_ReadingFiles.htm"
+
+  dest := "../checkfiles/TestFileHelper_ChangeFileTimes_06"
+
+
+  err := fh.DeleteDirPathAll(dest)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(dest).\n" +
+      "dest='%v'\nError='%v'\n", dest, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(dest)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(dest).\n" +
+      "dest='%v'\nError='%v'\n",
+      dest, err.Error())
+    return
+  }
+
+  testFile := dest + "/006870_ReadingFiles.htm"
+
+  err = fh.CopyFileByIo(originalSrc, testFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(originalSrc, destFile).\n" +
+      "originalSrc='%v'\ntestFile='%v'\nError='%v'\n",
+      originalSrc, testFile, err.Error())
+
+    _ = fh.DeleteDirPathAll(dest)
+    return
+  }
+
+  newAccessTime := time.Time{}
+  newModTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+
+  err = fh.ChangeFileTimes(testFile,newAccessTime, newModTime)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.ChangeFileTimes(testFile, " +
+      "newAccessTime, newModTime)\nbecause 'newAccessTime' is ZERO.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  err = fh.DeleteDirPathAll(dest)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(dest)\n" +
+      "dest='%v'\nError='%v'\n", dest, err.Error())
+  }
+
+}
+
+func TestFileHelper_ChangeFileTimes_07(t *testing.T) {
+
+  fh := FileHelper{}
+
+  originalSrc := "../filesfortest/oldfilesfortest/006870_ReadingFiles.htm"
+
+  dest := "../checkfiles/TestFileHelper_ChangeFileTimes_06"
+
+  err := fh.DeleteDirPathAll(dest)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(dest).\n" +
+      "dest='%v'\nError='%v'\n", dest, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(dest)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(dest).\n" +
+      "dest='%v'\nError='%v'\n",
+      dest, err.Error())
+    return
+  }
+
+  testFile := dest + "/006870_ReadingFiles.htm"
+
+  err = fh.CopyFileByIo(originalSrc, testFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(originalSrc, destFile).\n" +
+      "originalSrc='%v'\ntestFile='%v'\nError='%v'\n",
+      originalSrc, testFile, err.Error())
+
+    _ = fh.DeleteDirPathAll(dest)
+    return
+  }
+
+  newAccessTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+  newModTime := time.Time{}
+
+  err = fh.ChangeFileTimes(testFile,newAccessTime, newModTime)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.ChangeFileTimes(testFile, " +
+      "newAccessTime, newModTime)\nbecause 'newModTime' is ZERO.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  err = fh.DeleteDirPathAll(dest)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(dest)\n" +
+      "dest='%v'\nError='%v'\n", dest, err.Error())
+  }
+
+}
 
 func TestFileHelper_ChangeWorkingDir_01(t *testing.T) {
 

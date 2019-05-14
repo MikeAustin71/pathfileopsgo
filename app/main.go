@@ -7,6 +7,7 @@ import (
   "os"
   "strconv"
   "strings"
+  "time"
 )
 
 /*
@@ -37,20 +38,50 @@ func main() {
 */
 
 func main() {
-  //source := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
-  source := "D:\\T11\\level01"
 
-  mainTest57GetFileMode(source)
+  newAccessTime := time.Date(2006,2,25,10,30,30,120, time.Local)
+  newModTime := time.Date(2006,2,25,10,30,30,120, time.Local)
 
-  fPermission, err := pf.FilePermissionConfig{}.New("drwxrwxrwx")
+  pathFileName := "D:\\T98\\xcopyHelp.txt"
+
+
+  fInfo, err := os.Stat(pathFileName)
 
   if err != nil {
-    fmt.Printf("main()\n" + err.Error() + "\n")
+    fmt.Printf("Error returned by #1 os.Stat(pathFileName).\n" +
+      "Error='%v'\n", err.Error())
     return
   }
 
-  mainTest58ChangeFileMode(source, fPermission)
-  mainTest57GetFileMode(source)
+  originalModTime := fInfo.ModTime()
+
+  // Old Date Modified = 4/26/2019 12:49 PM
+
+  fh := pf.FileHelper{}
+
+  err = fh.ChangeFileTimes(pathFileName,newAccessTime, newModTime)
+
+  if err != nil {
+    fmt.Printf("Error returned by fh.ChangeFileTimes(pathFileName,newAccessTime, newModTime)\n" +
+      "Error='%v'", err.Error())
+    return
+  }
+
+  fInfo, err = os.Stat(pathFileName)
+
+  if err != nil {
+    fmt.Printf("Error returned by os.Stat(pathFileName).\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  modTime := fInfo.ModTime()
+
+  modTimeStr := modTime.Format("2006-01-02 15:04:05.000000000 -0700 MST")
+
+  fmt.Println("Original Mod Time: ",originalModTime.Format("2006-01-02 15:04:05.000000000 -0700 MST"))
+  fmt.Println("     New Mod Time: ", newModTime.Format("2006-01-02 15:04:05.000000000 -0700 MST"))
+  fmt.Println(" Current Mod Time: ", modTimeStr)
 
 }
 
