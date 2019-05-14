@@ -170,22 +170,13 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
     return errs
   }
 
-  fInfo, err := os.Stat(dMgr.absolutePath)
+  _, err = os.Stat(dMgr.absolutePath)
 
   if err != nil {
     err2 = fmt.Errorf(ePrefix +
       "ERROR: The directory path specified by the current DirMgr instance\n" +
       "DOES NOT EXIST!\nDirectory Path='%v'\nError='%v'", dMgr.absolutePath, err.Error())
 
-    errs = append(errs, err2)
-    return errs
-  }
-
-  if !fInfo.IsDir() {
-    err2 = fmt.Errorf(ePrefix +
-      "ERROR: The directory path specified by the current DirMgr instance\n" +
-      "is NOT recognized as a directory by the operating system.\n" +
-      "Directory Path='%v'\n", dMgr.absolutePath)
     errs = append(errs, err2)
     return errs
   }
@@ -235,7 +226,6 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
 
         errs = append(errs, err2)
       }
-
     }
   }
 
