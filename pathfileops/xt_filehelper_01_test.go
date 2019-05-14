@@ -728,8 +728,14 @@ func TestFileHelper_ChangeFileTimes_01(t *testing.T) {
 
   err = fh.ChangeFileTimes(destFile, newAccessTime, newModTime)
 
+  if err != nil {
+    t.Errorf("Error returned by fh.ChangeFileTimes(destFile, newAccessTime, newModTime).\n" +
+      "destFile='%v'\nnewAccessTime='%v'\newModTime='%v'\nError='%v'\n",
+      destFile,newAccessTime.Format(dateFormat), newModTime.Format(dateFormat), err.Error())
+  }
+
   actualModTime, _, err :=
-    fh.GetFileLastModificationDate(destFile,"2006-01-02 15:04:05.000000000 -0700 MST")
+    fh.GetFileLastModificationDate(destFile,dateFormat)
 
   if err != nil {
     t.Errorf("Test Setup Error returned by #2 fh.GetFileLastModificationDate(...).\n" +

@@ -173,9 +173,16 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
   _, err = os.Stat(dMgr.absolutePath)
 
   if err != nil {
-    err2 = fmt.Errorf(ePrefix +
-      "ERROR: The directory path specified by the current DirMgr instance\n" +
-      "DOES NOT EXIST!\nDirectory Path='%v'\nError='%v'", dMgr.absolutePath, err.Error())
+
+      if os.IsNotExist(err) {
+        err2 =
+          fmt.Errorf(ePrefix +
+            "ERROR: Directory DOES NOT EXIST!\n" +
+            "DirMgr Directory='%v'\n",dMgr.absolutePath)
+      } else {
+        err2 = fmt.Errorf(ePrefix + "Error returned by os.Stat(dMgr.absolutePath).\n" +
+          "dMgr.absolutePath='%v'\nError='%v'\n", dMgr.absolutePath, err.Error())
+      }
 
     errs = append(errs, err2)
     return errs
@@ -289,23 +296,19 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
     return errs
   }
 
-  fInfo, err := os.Stat(dMgr.absolutePath)
+  _, err = os.Stat(dMgr.absolutePath)
 
   if err != nil {
-     err2 = fmt.Errorf(ePrefix +
-      "ERROR: The directory path specified by the current DirMgr instance\n" +
-      "DOES NOT EXIST!\nDirectory Path='%v'\nError='%v'\n",
-      dMgr.absolutePath,err.Error())
 
-    errs = append(errs,err2)
-    return errs
-  }
-
-  if !fInfo.IsDir() {
-    err2 = fmt.Errorf(ePrefix +
-      "ERROR: The directory path specified by the current DirMgr instance\n" +
-      "is NOT recognized as a directory by the operating system.\n" +
-      "Directory Path='%v'\n", dMgr.absolutePath)
+    if os.IsNotExist(err) {
+      err2 =
+        fmt.Errorf(ePrefix +
+          "ERROR: Directory DOES NOT EXIST!\n" +
+          "DirMgr Directory='%v'\n",dMgr.absolutePath)
+    } else {
+      err2 = fmt.Errorf(ePrefix + "Error returned by os.Stat(dMgr.absolutePath).\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n", dMgr.absolutePath, err.Error())
+    }
 
     errs = append(errs,err2)
     return errs
@@ -336,6 +339,7 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
   dir, err := os.Open(dMgr.absolutePath)
 
   if err != nil {
+
     err2 = fmt.Errorf(ePrefix+
       "Error return by os.Open(dMgr.absolutePath). "+
       "dMgr.absolutePath='%v' Error='%v' ",
@@ -582,6 +586,20 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(
 
   if err != nil {
     return deleteFilesInfo, err
+  }
+
+  _, err = os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+    if os.IsNotExist(err) {
+      return deleteFilesInfo,
+        fmt.Errorf(ePrefix + "ERROR: Directory DOES NOT EXIST!\n" +
+          "DirMgr Directory='%v'\n",dMgr.absolutePath)
+    }
+
+    return deleteFilesInfo,
+      fmt.Errorf(ePrefix + "Error returned by os.Stat(dMgr.absolutePath).\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n", dMgr.absolutePath, err.Error())
   }
 
   if dMgr.doesAbsolutePathExist {
