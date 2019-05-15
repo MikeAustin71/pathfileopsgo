@@ -492,7 +492,8 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 //                                    file selection criterion is considered to be 'Inactive'
 //                                    or 'Not Set'.
 //
-// 		 SelectByFileMode os.FileMode - os.FileMode is a uint32 value. This file selection criterion
+//      SelectByFileMode os.FileMode -
+//                                    os.FileMode is a uint32 value. This file selection criterion
 //                                    allows for the selection of files by File Mode. File modes
 //                                    are compared to the value	of 'SelectByFileMode'. If the File
 //                                    Mode for a given file is equal to the value of 'SelectByFileMode',
@@ -503,7 +504,7 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 //                                    this file selection criterion is considered 'Inactive' or
 //                                    'Not Set'.
 //
-//	   SelectCriterionMode	FileSelectCriterionMode -
+//      SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
 //                                    criteria above are applied in determining a 'match' for file
 //                                    selection purposes. 'SelectCriterionMode' may be set to one of
@@ -550,7 +551,7 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 //
 // ------------------------------------------------------------------------
 //
-// Return Value:
+// Return Values:
 //
 //  DirectoryDeleteFileInfo -
 //
@@ -602,20 +603,7 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(
         "dMgr.absolutePath='%v'\nError='%v'\n", dMgr.absolutePath, err.Error())
   }
 
-  if dMgr.doesAbsolutePathExist {
-
-    deleteFilesInfo.StartPath = dMgr.absolutePath
-
-  } else if dMgr.DoesDirMgrPathExist() {
-
-    deleteFilesInfo.StartPath = dMgr.path
-
-  } else {
-
-    return deleteFilesInfo,
-      fmt.Errorf(ePrefix+"path and absolutePath - PATH DOES NOT EXIST! "+
-        "dMgr.absolutePath='%v' dMgr.path='%v'", dMgr.absolutePath, dMgr.path)
-  }
+  deleteFilesInfo.StartPath = dMgr.absolutePath
 
   deleteFilesInfo.DeleteFileSelectCriteria = deleteFileSelectionCriteria
 
@@ -764,7 +752,7 @@ func (dMgr *DirMgr) Equal(dmgr2 *DirMgr) bool {
 // are converted to lower case before making the comparision.
 func (dMgr *DirMgr) EqualAbsPaths(dMgr2 *DirMgr) bool {
 
-  if dMgr.isInitialized != dMgr2.isInitialized {
+  if !dMgr.isInitialized || !dMgr2.isInitialized {
     return false
   }
 

@@ -1440,6 +1440,108 @@ func TestDirMgr_EqualAbsPaths_03(t *testing.T) {
 
 }
 
+func TestDirMgr_EqualAbsPaths_04(t *testing.T) {
+
+  dirPath := "../checkfiles"
+
+  dMgr1, err := DirMgr{}.New(dirPath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr1 = DirMgr{}.New(dirPath)\n" +
+      "dirPath='%v'\nError='%v'\n", dirPath, err.Error() )
+    return
+  }
+
+  dMgr2, err := DirMgr{}.New(dirPath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr2 = DirMgr{}.New(dirPath)\n" +
+      "dirPath='%v'\nError='%v'\n", dirPath, err.Error() )
+    return
+  }
+
+  dMgr1.isInitialized = false
+
+  if dMgr1.EqualAbsPaths(&dMgr2) {
+    t.Error("ERROR: Expected the return from dMgr1.EqualAbsPaths(&dMgr2) to be 'false'\n" +
+      "because dMgr1 is not initialized. However, the return value was 'true' !")
+  }
+
+}
+
+func TestDirMgr_EqualAbsPaths_05(t *testing.T) {
+
+  dirPath := "../checkfiles"
+
+  dMgr1, err := DirMgr{}.New(dirPath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr1 = DirMgr{}.New(dirPath)\n" +
+      "dirPath='%v'\nError='%v'\n", dirPath, err.Error() )
+    return
+  }
+
+  dMgr2, err := DirMgr{}.New(dirPath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr2 = DirMgr{}.New(dirPath)\n" +
+      "dirPath='%v'\nError='%v'\n", dirPath, err.Error() )
+    return
+  }
+
+  dMgr2.isInitialized = false
+
+  if dMgr1.EqualAbsPaths(&dMgr2) {
+    t.Error("ERROR: Expected the return from dMgr1.EqualAbsPaths(&dMgr2) to be 'false'\n" +
+      "because dMgr2 is NOT initialized. However, the return value was 'true' !")
+  }
+
+}
+
+func TestDirMgr_EqualAbsPaths_06(t *testing.T) {
+
+  dirPath := "../checkfiles"
+
+  dMgr1, err := DirMgr{}.New(dirPath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr1 = DirMgr{}.New(dirPath)\n" +
+      "dirPath='%v'\nError='%v'\n", dirPath, err.Error() )
+    return
+  }
+
+  dMgr2 := DirMgr{}
+
+
+  if dMgr1.EqualAbsPaths(&dMgr2) {
+    t.Error("ERROR: Expected the return from dMgr1.EqualAbsPaths(&dMgr2) to be 'false'\n" +
+      "because dMgr2 has NOT been initialized. However, the return value was 'true' !")
+  }
+
+}
+
+func TestDirMgr_EqualAbsPaths_07(t *testing.T) {
+
+  dirPath := "../checkfiles"
+
+  dMgr1 := DirMgr{}
+
+  dMgr2, err := DirMgr{}.New(dirPath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr2 = DirMgr{}.New(dirPath)\n" +
+      "dirPath='%v'\nError='%v'\n", dirPath, err.Error() )
+    return
+  }
+
+  if dMgr1.EqualAbsPaths(&dMgr2) {
+    t.Error("ERROR: Expected the return from dMgr1.EqualAbsPaths(&dMgr2) to be 'false'\n" +
+      "because dMgr1 is NOT initialized. However, the return value was 'true' !")
+  }
+
+}
+
+
 func TestDirMgr_EqualPaths_01(t *testing.T) {
   fh := FileHelper{}
 

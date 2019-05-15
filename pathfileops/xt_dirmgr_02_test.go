@@ -1813,6 +1813,91 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
 
 }
 
+func TestDirMgr_DeleteWalkDirFiles_09(t *testing.T) {
+  testDir := "../checkfiles/iDoNotExist"
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir)\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  searchPattern1 := "*.txt"
+  searchPattern2 := "*.htm"
+  filesOlderThan := time.Time{}
+  filesNewerThan := time.Time{}
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern1, searchPattern2}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.IsFileModeSearchEngaged = true
+  fsc.SelectByFileMode = 0666
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  _, err = dMgr.DeleteWalkDirFiles(fsc)
+
+  if err == nil {
+    t.Error("Expected an error return from dMgr.DeleteWalkDirFiles(fsc)\n" +
+      "because 'dMgr' does NOT exist!\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestDirMgr_DeleteWalkDirFiles_10(t *testing.T) {
+  origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
+
+  if err != nil {
+    t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
+      "Error='%v'", err.Error())
+    return
+  }
+
+  fh := FileHelper{}
+
+  if !fh.DoesFileExist(origDir) {
+    t.Errorf("Error: The target directory does NOT Exist! origDir='%v'",
+      origDir)
+  }
+
+  dMgr, err := DirMgr{}.New(origDir)
+
+  searchPattern1 := "*.txt"
+  searchPattern2 := "*.htm"
+  filesOlderThan := time.Time{}
+  filesNewerThan := time.Time{}
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern1, searchPattern2}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.IsFileModeSearchEngaged = true
+  fsc.SelectByFileMode = 0666
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  dMgr.isInitialized = false
+  _, err = dMgr.DeleteWalkDirFiles(fsc)
+
+  if err == nil {
+    t.Error("Expected an error return from dMgr.DeleteWalkDirFiles(fsc)\n" +
+      "because 'dMgr' is INVALID!\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  err = fh.DeleteDirPathAll(origDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(origDir).\n" +
+      "origDir='%v'\nError='%v'\n", origDir, err.Error())
+  }
+
+}
+
 /*
   ************************************************************************************
                             Test and Setup Methods
