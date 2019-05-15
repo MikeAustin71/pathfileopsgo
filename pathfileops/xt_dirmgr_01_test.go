@@ -1117,6 +1117,90 @@ func TestDirMgr_DeleteFilesByNamePattern_06(t *testing.T) {
   return
 }
 
+func TestDirMgr_DoesDirMgrAbsolutePathExist_01(t *testing.T) {
+
+  dMgr, err := DirMgr{}.New("../checkfiles")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returnd by DirMgr{}.New(\"../checkfiles\")\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  dMgr.absolutePath = " "
+
+  result := dMgr.DoesDirMgrAbsolutePathExist()
+
+  if result == true {
+    t.Error("Expected a value of 'false' to be returned from dMgr.DoesDirMgrAbsolutePathExist()\n" +
+      "because dMgr.absolutePath consists entirely of blank spaces.\n" +
+      "However, a value of 'true' was returned instead!\n")
+  }
+
+}
+
+func TestDirMgr_DoesDirMgrAbsolutePathExist_02(t *testing.T) {
+
+  dMgr, err := DirMgr{}.New("../checkfiles")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returnd by DirMgr{}.New(\"../checkfiles\")\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  result := dMgr.DoesDirMgrAbsolutePathExist()
+
+  if result == false {
+    t.Error("Expected a value of 'true' to be returned from dMgr.DoesDirMgrAbsolutePathExist()\n" +
+      "because dMgr.absolutePath actually exists.\n" +
+      "However, a value of 'false' was returned instead!")
+  }
+
+}
+
+func TestDirMgr_DoesDirMgrPathExist_01(t *testing.T) {
+
+  dMgr, err := DirMgr{}.New("../checkfiles")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returnd by DirMgr{}.New(\"../checkfiles\")\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  dMgr.path = " "
+
+  result := dMgr.DoesDirMgrPathExist()
+
+  if result == true {
+    t.Error("Expected a value of 'false' to be returned from dMgr.DoesDirMgrPathExist()\n" +
+      "because dMgr.path consists entirely of blank spaces.\n" +
+      "However, a value of 'true' was returned instead!\n")
+  }
+
+}
+
+func TestDirMgr_DoesDirMgrPathExist_02(t *testing.T) {
+
+  dMgr, err := DirMgr{}.New("../checkfiles")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returnd by DirMgr{}.New(\"../checkfiles\")\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  result := dMgr.DoesDirMgrPathExist()
+
+  if result == false {
+    t.Error("Expected a value of 'true' to be returned from dMgr.DoesDirMgrPathExist()\n" +
+      "because dMgr.path actually exists.\n" +
+      "However, a value of 'false' was returned instead!")
+  }
+
+}
+
 func TestDirMgr_Equal_01(t *testing.T) {
 
   fh := FileHelper{}

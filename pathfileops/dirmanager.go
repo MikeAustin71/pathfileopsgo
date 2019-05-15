@@ -643,9 +643,7 @@ func (dMgr *DirMgr) DoesDirectoryExist() (doesPathExist, doesAbsolutePathExist b
 //
 func (dMgr *DirMgr) DoesDirMgrAbsolutePathExist() bool {
 
-  testPath := dMgr.absolutePath
-
-  errCode, _ , testPath :=FileHelper{}.isStringEmptyOrBlank(testPath)
+  errCode, _ , _ :=FileHelper{}.isStringEmptyOrBlank(dMgr.absolutePath)
 
   if errCode < 0 {
     dMgr.doesAbsolutePathExist = false
@@ -673,9 +671,7 @@ func (dMgr *DirMgr) DoesDirMgrAbsolutePathExist() bool {
 //
 func (dMgr *DirMgr) DoesDirMgrPathExist() bool {
 
-  testPath := dMgr.path
-
-  errCode, _ , testPath :=FileHelper{}.isStringEmptyOrBlank(testPath)
+  errCode, _ , _ :=FileHelper{}.isStringEmptyOrBlank(dMgr.path)
 
   if errCode < 0 {
     dMgr.doesPathExist = false
