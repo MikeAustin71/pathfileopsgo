@@ -941,6 +941,8 @@ func TestDirMgr_SubstituteBaseDir_01(t *testing.T) {
     t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath). expectedPath='%v'  Error='%v'", expectedPath, err.Error())
   }
 
+  expectedAbsPath = strings.ToLower(expectedAbsPath)
+
   dMgrOrig, err := DirMgr{}.New(rawOrigPath)
 
   if err != nil {
@@ -967,10 +969,10 @@ func TestDirMgr_SubstituteBaseDir_01(t *testing.T) {
       err.Error())
   }
 
-  if expectedPath != dMgrResult.path {
+  if expectedAbsPath != dMgrResult.path {
     t.Errorf("Expected final substituted path = '%v'.  Instead substituted "+
       "path = '%v' ",
-      expectedPath, dMgrResult.path)
+      expectedAbsPath, dMgrResult.path)
   }
 
   if expectedAbsPath != dMgrResult.absolutePath {
@@ -999,6 +1001,8 @@ func TestDirMgr_SubstituteBaseDir_02(t *testing.T) {
     t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath). expectedPath='%v'  Error='%v'", expectedPath, err.Error())
   }
 
+  expectedAbsPath = strings.ToLower(expectedAbsPath)
+
   dMgrOrig, err := DirMgr{}.New(rawOrigPath)
 
   if err != nil {
@@ -1023,12 +1027,14 @@ func TestDirMgr_SubstituteBaseDir_02(t *testing.T) {
     t.Errorf("Error returned by dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute).  Error='%v'", err.Error())
   }
 
-  if expectedPath != dMgrResult.path {
-    t.Errorf("Expected final substituted path = '%v'.  Instead substituted path = '%v' ", expectedPath, dMgrResult.path)
+  if expectedAbsPath != dMgrResult.path {
+    t.Errorf("Expected final substituted path = '%v'.  Instead substituted path = '%v' ",
+      expectedAbsPath, dMgrResult.path)
   }
 
   if expectedAbsPath != dMgrResult.absolutePath {
-    t.Errorf("Expected final substituted absolute path = '%v'.  Instead substituted absolute path = '%v' ", expectedAbsPath, dMgrResult.absolutePath)
+    t.Errorf("Expected final substituted absolute path = '%v'.  Instead substituted absolute path = '%v' ",
+      expectedAbsPath, dMgrResult.absolutePath)
   }
 
 }

@@ -335,7 +335,6 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
     return errs
   }
 
-
   dir, err := os.Open(dMgr.absolutePath)
 
   if err != nil {
@@ -644,9 +643,13 @@ func (dMgr *DirMgr) DoesDirectoryExist() (doesPathExist, doesAbsolutePathExist b
 //
 func (dMgr *DirMgr) DoesDirMgrAbsolutePathExist() bool {
 
-  if dMgr.absolutePath == "" {
+  testPath := dMgr.absolutePath
+
+  errCode, _ , testPath :=FileHelper{}.isStringEmptyOrBlank(testPath)
+
+  if errCode < 0 {
     dMgr.doesAbsolutePathExist = false
-    return false
+    return dMgr.doesAbsolutePathExist
   }
 
   info, err := os.Stat(dMgr.absolutePath)
@@ -659,7 +662,6 @@ func (dMgr *DirMgr) DoesDirMgrAbsolutePathExist() bool {
   }
 
   return dMgr.doesAbsolutePathExist
-
 }
 
 // DoesDirMgrPathExist - Performs two operations.
@@ -671,9 +673,13 @@ func (dMgr *DirMgr) DoesDirMgrAbsolutePathExist() bool {
 //
 func (dMgr *DirMgr) DoesDirMgrPathExist() bool {
 
-  if dMgr.path == "" {
-    dMgr.isPathPopulated = false
-    return false
+  testPath := dMgr.path
+
+  errCode, _ , testPath :=FileHelper{}.isStringEmptyOrBlank(testPath)
+
+  if errCode < 0 {
+    dMgr.doesPathExist = false
+    return dMgr.doesPathExist
   }
 
   info, err := os.Stat(dMgr.path)
@@ -750,7 +756,12 @@ func (dMgr *DirMgr) Equal(dmgr2 *DirMgr) bool {
 // If the two absolute paths are NOT equal, the method returns 'false'.
 // The comparison is NOT case sensitive. In other words, both paths
 // are converted to lower case before making the comparision.
+//
+// If either the current DirMgr ('dMgr') or the input parameter
+// 'dMgr2' are uninitialized, a value of 'false' is returned.
+//
 func (dMgr *DirMgr) EqualAbsPaths(dMgr2 *DirMgr) bool {
+
 
   if !dMgr.isInitialized || !dMgr2.isInitialized {
     return false
@@ -773,10 +784,14 @@ func (dMgr *DirMgr) EqualAbsPaths(dMgr2 *DirMgr) bool {
 // If the compared paths are equal, the method returns 'true'.
 // If the paths are NOT equal, the method returns 'false'.
 // The comparisons are NOT case sensitive. In other words, all paths
-// are converted to lower case before making the comparisions.
+// are converted to lower case before making the comparisons.
+//
+// If either the current DirMgr ('dMgr') or the input parameter
+// 'dMgr2' are uninitialized, a value of 'false' is returned.
+//
 func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 
-  if dMgr.isInitialized != dMgr2.isInitialized {
+  if !dMgr.isInitialized || !dMgr2.isInitialized {
     return false
   }
 
@@ -2452,11 +2467,15 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
     return fmt.Errorf(ePrefix + "Error: DirMgr is NOT Initialized.")
   }
 
+  dMgr.isAbsolutePathPopulated = false
+
   if dMgr.absolutePath == "" {
     return fmt.Errorf(ePrefix + "Error: DirMgr.absolutePath is EMPTY!.")
   }
 
   dMgr.isAbsolutePathPopulated = true
+
+  dMgr.isPathPopulated = false
 
   if dMgr.path == "" {
     return fmt.Errorf(ePrefix + "Error: DirMgr.absolutePath is EMPTY!.")
@@ -2674,11 +2693,6 @@ func (dMgr DirMgr) New(pathStr string) (DirMgr, error) {
 
   ePrefix := "DirMgr.NewFromPathFileNameExtStr() "
 
-  if len(pathStr) == 0 {
-    return DirMgr{}, errors.New(ePrefix +
-      "Error: Input parameter 'pathStr' is Zero Length!")
-  }
-
   newDirMgr := DirMgr{}
 
   _, err := newDirMgr.SetDirMgr(pathStr)
@@ -2699,12 +2713,6 @@ func (dMgr DirMgr) NewFromFileInfo(pathStr string, info os.FileInfo) (DirMgr, er
 
   ePrefix := "DirMgr) NewFromFileInfo() "
 
-  if len(pathStr) == 0 {
-    return DirMgr{},
-      errors.New(ePrefix +
-        "Error: Input parameter 'pathStr' is Zero Length!")
-  }
-
   newDirMgr := DirMgr{}
 
   err := newDirMgr.SetDirMgrWithFileInfo(pathStr, info)
@@ -2717,7 +2725,8 @@ func (dMgr DirMgr) NewFromFileInfo(pathStr string, info os.FileInfo) (DirMgr, er
   return newDirMgr, nil
 }
 
-// SetDirMgr - Sets the DirMgr fields and path strings for the current DirMgr object.
+// SetDirMgr - Sets the DirMgr fields and path strings for the current DirMgr
+// instance.
 //
 // ------------------------------------------------------------------------
 //
@@ -2776,13 +2785,15 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
   errCode, _, pathStr = fh.isStringEmptyOrBlank(pathStr)
 
   if errCode == -1 {
-    return true,
-      errors.New(ePrefix + "Error: Input parameter 'pathStr' is an empty string!")
+    isEmpty = true
+    err = errors.New(ePrefix + "Error: Input parameter 'pathStr' is an empty string!")
+    return isEmpty, err
   }
 
   if errCode == -2 {
-    return true,
-      errors.New(ePrefix + "Error: Input parameter 'pathStr' consists of blank spaces!")
+    isEmpty = true
+    err = errors.New(ePrefix + "Error: Input parameter 'pathStr' consists of blank spaces!")
+    return isEmpty, err
   }
 
   adjustedTrimmedPathStr := fh.AdjustPathSlash(pathStr)
@@ -2794,7 +2805,7 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
       "Error: INVALID PATH. fh.GetPathFromPathFileName(pathStr) "+
       "pathStr='%v'  Error='%v'", pathStr, err2.Error())
     isEmpty = isEmptyPath
-    return
+    return isEmpty, err
   }
 
   if isEmptyPath {
@@ -2802,7 +2813,7 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
     err = fmt.Errorf(ePrefix+
       "Error: INVALID PATH. 'pathStr' generated an Empty path! pathStr='%v' ",
       pathStr)
-    return
+    return isEmpty, err
   }
 
   if len(finalPathStr) == 0 {
@@ -2810,7 +2821,7 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
       "Error: path returned from fh.GetPathFromPathFileName(pathStr) is EMPTY! "+
       "pathStr='%v'", pathStr)
     isEmpty = true
-    return
+    return isEmpty, err
   }
 
   dMgr.originalPath = adjustedTrimmedPathStr
@@ -2822,7 +2833,7 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
 
   if strings.ToLower(dMgr.path) == strings.ToLower(fp.VolumeName(dMgr.path)) {
 
-    dMgr.absolutePath = dMgr.path
+    dMgr.absolutePath = fh.AdjustPathSlash(dMgr.path)
 
   } else {
 
@@ -2834,23 +2845,38 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
         "- fh.MakeAbsolutePath(dMgr.path) returned error. dMgr.path='%v' Error='%v'",
         dMgr.path, err2.Error())
       isEmpty = true
-      return
+      return isEmpty, err
     }
 
   }
 
-  dMgr.absolutePath = fh.AdjustPathSlash(dMgr.absolutePath)
-
   info, err2 := os.Stat(dMgr.absolutePath)
 
-  if err2 == nil && !info.IsDir() {
-    dMgr.Empty()
-    err = fmt.Errorf(ePrefix+
-      "- The Directory Manager absolute path exists and IS NOT A DIRECTORY!.\n" +
-      "dMgr.absolutePath='%v' Error='%v'",
-      dMgr.absolutePath, err2.Error())
-    isEmpty = true
-    return
+  if err2 == nil {
+    if !info.IsDir() {
+      dMgr.Empty()
+      err = fmt.Errorf(ePrefix+
+        "- The Directory Manager absolute path exists and IS NOT A DIRECTORY!.\n" +
+        "dMgr.absolutePath='%v' Error='%v'",
+        dMgr.absolutePath, err2.Error())
+      isEmpty = true
+      return
+    }
+  } else {
+    // err2 != nil
+
+    if !os.IsNotExist(err2) {
+      // The error returned by os.Stat(dMgr.absolutePath) is NOT
+      // a standard PATH DOES NOT EXIST error.
+      dMgr.Empty()
+      err = fmt.Errorf(ePrefix+
+        "Non-Path Error triggered on Directory Manager absoltue path.\n" +
+        "os.Stat(dMgr.absolutePath) error.\n" +
+        "dMgr.absolutePath='%v' Error='%v'",
+        dMgr.absolutePath, err2.Error())
+      isEmpty = true
+      return isEmpty, err
+    }
   }
 
   dMgr.isAbsolutePathPopulated = true
@@ -2921,10 +2947,6 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
 func (dMgr *DirMgr) SetDirMgrWithFileInfo(pathStr string, info os.FileInfo) error {
   ePrefix := "DirMgr.SetDirMgrWithFileInfo() "
 
-  if len(pathStr) == 0 {
-    return errors.New(ePrefix + "Error: Input parameter 'pathStr' is Zero Length!")
-  }
-
   _, err := dMgr.SetDirMgr(pathStr)
 
   if err != nil {
@@ -2939,9 +2961,11 @@ func (dMgr *DirMgr) SetDirMgrWithFileInfo(pathStr string, info os.FileInfo) erro
   return nil
 }
 
-// SubstituteBaseDir - Substitute baseDir segment of the current DirMgr with a new
+
+// SubstituteBaseDir - Substitute 'baseDir' segment of the current DirMgr with a new
 // parent directory identified by input parameter 'substituteBaseDir'. This is useful
 // in copying files to new directory trees.
+//
 func (dMgr *DirMgr) SubstituteBaseDir(
   baseDir DirMgr,
   substituteBaseDir DirMgr) (newDMgr DirMgr, err error) {
@@ -2951,15 +2975,87 @@ func (dMgr *DirMgr) SubstituteBaseDir(
   newDMgr = DirMgr{}
   err = nil
 
-  if !baseDir.isInitialized {
-    err = errors.New(ePrefix + "Error: baseDir DirMgr is NOT Initialized!")
-    return
+  err2 := baseDir.IsDirMgrValid("")
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix + "Error: Input parameter 'baseDir' is INVALID!")
+    return newDMgr, err
   }
 
-  if !substituteBaseDir.isInitialized {
-    err = errors.New(ePrefix + "Error: substituteBaseDir DirMgr is NOT Initialized!")
-    return
+  err2 = substituteBaseDir.IsDirMgrValid("")
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix + "Error: Input parameter 'substituteBaseDir' is INVALID!")
+    return newDMgr, err
   }
+
+  err2 = dMgr.IsDirMgrValid("")
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix + "Error: The current DirMgr object is INVALID!")
+    return newDMgr, err
+  }
+
+  thisDirAbsPath := strings.ToLower(dMgr.absolutePath)
+
+  oldBaseAbsPath := strings.ToLower(baseDir.absolutePath)
+
+  newBaseAbsPath := strings.ToLower(substituteBaseDir.absolutePath)
+
+  idx := strings.Index(thisDirAbsPath, oldBaseAbsPath)
+
+  if idx < 0 {
+    err = fmt.Errorf(ePrefix + "The base directory was NOT found in the current DirMgr path!\n" +
+      "DirMgr Path='%v'\nbaseDir Path='%v'\n",
+      thisDirAbsPath, oldBaseAbsPath)
+
+    return newDMgr, err
+  }
+
+  if idx != 0 {
+    err = fmt.Errorf(ePrefix + "The base directory was NOT found at the beginning of the current DirMgr path!\n" +
+      "DirMgr Path='%v'\nbaseDir Path='%v'\n",
+      thisDirAbsPath, oldBaseAbsPath)
+
+    return newDMgr, err
+  }
+
+  oldBaseLen := len(oldBaseAbsPath)
+
+  newAbsPath := newBaseAbsPath + thisDirAbsPath[oldBaseLen:]
+
+  isEmpty := false
+
+  isEmpty, err = newDMgr.SetDirMgr(newAbsPath)
+
+  if err != nil {
+    newDMgr.Empty()
+    return newDMgr, err
+  }
+
+  if isEmpty {
+    newDMgr.Empty()
+    err = fmt.Errorf(ePrefix + "ERROR: New generated Directory Path Is Invalid!\n" +
+      "newAbsPath='%v'\n", newAbsPath)
+    return newDMgr, err
+  }
+
+  err = nil
+  return newDMgr, err
+}
+
+// SubstituteBaseDir - Substitute baseDir segment of the current DirMgr with a new
+// parent directory identified by input parameter 'substituteBaseDir'. This is useful
+// in copying files to new directory trees.
+/*
+func (dMgr *DirMgr) SubstituteBaseDir(
+  baseDir DirMgr,
+  substituteBaseDir DirMgr) (newDMgr DirMgr, err error) {
+
+  ePrefix := "DirMgr.SubstituteBaseDir() "
+
+  newDMgr = DirMgr{}
+  err = nil
 
   err2 := baseDir.IsDirMgrValid("")
 
@@ -3023,6 +3119,7 @@ func (dMgr *DirMgr) SubstituteBaseDir(
   err = nil
   return
 }
+*/
 
 // executeFileOpsOnFoundFiles - This function is designed to work in conjunction
 // with a walk directory function like FindWalkDirFiles. It will process
