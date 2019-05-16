@@ -1805,7 +1805,7 @@ func TestDirMgr_ExecuteDirectoryFileOps_01(t *testing.T) {
 
   fileOps := make([]FileOperationCode, 1, 5)
 
-  fileOps[0] = FileOperationCode(0).CopySourceToDestinationByIo()
+  fileOps[0] = FileOpCode.CopySourceToDestinationByIo()
 
   errStrs := sourceDir.ExecuteDirectoryFileOps(fileSelect, fileOps, targetDir)
 
@@ -1845,7 +1845,87 @@ func TestDirMgr_ExecuteDirectoryFileOps_01(t *testing.T) {
       "Instead, number of found files='%v' ", 5, numOfFiles)
   }
 
-  _ = targetDir.DeleteAll()
+  err = targetDir.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Clean-Up error returend by err = targetDir.DeleteAll().\n"+
+      "targetDir='%v'\nError='%v'\n", targetDir.GetAbsolutePath(), err.Error())
+  }
+
+}
+
+func TestDirMgr_ExecuteDirectoryFileOps_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath("+
+      "\"../dirmgrtests/levelfilesfortest \") "+
+      "Error='%v' ", err.Error())
+  }
+
+  sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath("+
+      "\"..../filesfortest/levelfilesfortest \") "+
+      "Error='%v' ", err.Error())
+  }
+
+  targetDir, err := DirMgr{}.New(targetDirStr)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
+      "targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
+  }
+
+  sourceDir, err := DirMgr{}.New(sourceDirStr)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
+      "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
+  }
+
+  if targetDir.DoesDirMgrAbsolutePathExist() {
+
+    err = targetDir.DeleteAll()
+
+    if err != nil {
+      t.Errorf("Error returned by targetDir.DeleteAll() "+
+        "targetDir='%v' Error='%v' ",
+        targetDir.GetAbsolutePath(), err.Error())
+    }
+  }
+
+  // Target Directory does NOT Exist
+
+  fileSelect := FileSelectionCriteria{}
+
+  fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
+
+  fileOps := make([]FileOperationCode, 1, 5)
+
+  fileOps[0] = FileOpCode.CopySourceToDestinationByIo()
+
+  sourceDir.isInitialized = false
+
+  errStrs := sourceDir.ExecuteDirectoryFileOps(fileSelect, fileOps, targetDir)
+
+  if len(errStrs) == 0 {
+    t.Error("Expected an error from sourceDir.ExecuteDirectoryFileOps(fileSelect, " +
+      "fileOps, targetDir)\nbecause 'sourceDir' is INVALID.\n" +
+      "Instead, NO ERROR WAS RETURNED!!!\n")
+
+  }
+
+  err = targetDir.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Clean-Up error returend by err = targetDir.DeleteAll().\n"+
+      "targetDir='%v'\nError='%v'\n", targetDir.GetAbsolutePath(), err.Error())
+  }
 
 }
 
@@ -1943,10 +2023,6 @@ func TestDirMgr_ExecuteDirectoryTreeOps_01(t *testing.T) {
   }
 
   _ = targetDir.DeleteAll()
-
-}
-
-func TestDirMgr_ExecuteDirectoryFileOps_02(t *testing.T) {
 
 }
 
