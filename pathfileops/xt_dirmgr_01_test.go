@@ -1701,6 +1701,67 @@ func TestDirMgr_EqualPaths_03(t *testing.T) {
 
 }
 
+func TestDirMgr_EqualPaths_04(t *testing.T) {
+
+  dirPath1 := "../checkfiles/checkfiles02"
+
+  dMgr1, err := DirMgr{}.New(dirPath1)
+
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.New(dirPath1).\n" +
+      "dirPath1='%v'\nError='%v'", dirPath1, err.Error())
+  }
+
+
+  dMgr2, err := DirMgr{}.New(dirPath1)
+
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.New(dirPath1).\n" +
+      "dirPath1='%v'\nError='%v'", dirPath1, err.Error())
+  }
+
+  dMgr1.isInitialized = false
+
+  result := dMgr1.EqualPaths(&dMgr2)
+
+  if result == true {
+    t.Error("Expected dMgr1.EqualPaths(&dMgr2) to return 'false' \n" +
+      "because dMgr1.isInitialized = 'false'.\n"+
+      "Instead, result='true'.\n")
+  }
+
+}
+
+func TestDirMgr_EqualPaths_05(t *testing.T) {
+
+  dirPath1 := "../checkfiles/checkfiles02"
+  dirPath2 := "../createFilesTest/Level01"
+  dMgr1, err := DirMgr{}.New(dirPath1)
+
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.New(dirPath1).\n" +
+      "dirPath1='%v'\nError='%v'", dirPath1, err.Error())
+  }
+
+  dMgr2, err := DirMgr{}.New(dirPath2)
+
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.New(dirPath2).\n" +
+      "dirPath2='%v'\nError='%v'", dirPath2, err.Error())
+  }
+
+  dMgr1.absolutePath = dMgr2.absolutePath
+
+  result := dMgr1.EqualPaths(&dMgr2)
+
+  if result == true {
+    t.Error("Expected dMgr1.EqualPaths(&dMgr2) to return 'false' \n" +
+      "because 'dMgr1.Path' is different from 'dMgr2.Path'.\n"+
+      "Instead, result='true'.\n")
+  }
+
+}
+
 func TestDirMgr_ExecuteDirectoryFileOps_01(t *testing.T) {
 
   fh := FileHelper{}
