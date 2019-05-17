@@ -808,33 +808,32 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
   return true
 }
 
-// ExecuteDirectoryFileOps - Performs a a file operation
-// on specified 'selected' files in the current directory
-// ONLY. This function does NOT perform operations on the
-// Directory Tree.
+// ExecuteDirectoryFileOps - Performs a a file operation on specified 'selected' files
+// in the current directory ONLY. This function does NOT perform operations on the
+// sub directories (a.k.a. the directory tree).
 //
-// To perform file operations on the entire Directory Tree,
-// see Function 'ExecuteDirectoryTreeOps()', above.
+// To perform file operations on the entire Directory Tree, see Function 'ExecuteDirectoryTreeOps()',
+// above.
 //
-// The types of File Operations performed are generally
-// classified as 'file copy' and 'file deletion' operations.
-// The precise file operation applied is defined by the
-// the type, 'FileOperationCode' which provides a series of
-// constants used to identify the specific file operation
-// applied. Input parameter, 'fileOps' is an array of type
-// 'FileOperationCode' elements. Multiple file operations can
-// be applied to a single file. For instance, a 'copy source
-// to destination' operation can be followed by a 'delete
-// source file' operation.
+// The types of File Operations performed are generally classified as 'file copy' and
+// 'file deletion' operations. The precise file operation applied is defined by the type,
+// 'FileOperationCode' which provides a series of constants used to identify the specific file
+// operation applied.
 //
-// The 'selected' files are identified by input parameter
-// 'fileSelectCriteria' of type 'FileSelectionCriteria'.
-// This file selection criteria is compared against all files
-// in the directory (NOT the Directory Tree) identified by
-// the current 'DirMgr' instance. When a match is found,
-// that file is treated as a 'selected' file and designated
+// Input parameter, 'fileOps' is an array of type 'FileOperationCode' elements. Multiple file
+// operations can be applied to a single file. For instance, a 'copy source to destination'
+// operation can be followed by a 'delete source file' operation.
+//
+// The 'selected' files are identified by input parameter 'fileSelectCriteria' of type
+// 'FileSelectionCriteria'. This file selection criteria is compared against all files
+// in the directory (NOT the Directory Tree) identified by the current 'DirMgr' instance.
+// When a match is found, that file is treated as a 'selected' source file and designated
 // file operations are performed on that file.
 //
+// The results or final output from file operations utilizes the final input parameter,
+// 'targetBaseDir' of type DirMgr. File operations are applied to selected source files
+// and generated output is created in the 'targetBaseDir'.  For example 'copy' or 'move'
+// file operations will transfer source files to 'targetBaseDir'.
 // ------------------------------------------------------------------------
 //
 // IMPORTANT:
@@ -917,7 +916,7 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //                                       this file selection criterion is considered 'Inactive' or
 //                                       'Not Set'.
 //
-//	SelectCriterionMode	FileSelectCriterionMode -
+//	      SelectCriterionMode	FileSelectCriterionMode -
 //                                       This parameter selects the manner in which the file selection
 //                                       criteria above are applied in determining a 'match' for file
 //                                       selection purposes. 'SelectCriterionMode' may be set to one of
@@ -1044,6 +1043,10 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //            Creates the Destination File
 //
 //
+// ------------------------------------------------------------------------
+//
+// Input parameters (continued)
+//
 //  targetBaseDir - The file selection criteria, 'fileSelectCriteria', and
 //                  the File Operations, 'fileOps' are applied to files in
 //                  the target base directory. This input parameter is of
@@ -1052,78 +1055,94 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //
 // ------------------------------------------------------------------------
 //
-// Return Values:
+// Return Value:
 //
-//    [] string - This function will return an array of strings containing error messages
+//    [] error - This function will return an array of errors containing error messages
 //                generated during the performance of specified File Operations on the
-//                designated directory tree. If the string array returned is empty or has
+//                designated directory. If the error array returned is empty or has
 //                a zero length, it signals that no errors were encountered and all operations
 //                completed successfully.
 //
 func (dMgr *DirMgr) ExecuteDirectoryFileOps(
   fileSelectCriteria FileSelectionCriteria,
   fileOps []FileOperationCode,
-  targetBaseDir DirMgr) []string {
+  targetBaseDir DirMgr) (errs []error) {
+
+  errs = make([]error, 0, 500)
 
   ePrefix := "DirMgr.ExecuteDirectoryFileOps() "
-  errStrs := make([]string, 0, 50)
-  var errStr string
 
   err := dMgr.IsDirMgrValid(ePrefix)
 
   if err != nil {
-    errStr = fmt.Sprintf("%v ", err.Error())
-    errStrs = append(errStrs, errStr)
-    return errStrs
+    err2 := fmt.Errorf("%v ", err.Error())
+    errs = append(errs, err2)
+    return errs
   }
 
   err = targetBaseDir.IsDirMgrValid("")
 
   if err != nil {
 
-    errStr = fmt.Sprintf(ePrefix+
+    err2 := fmt.Errorf(ePrefix+
       "Input parameter 'targetBaseDir' is INVALID!. Error='%v' ",
       err.Error())
 
-    errStrs = append(errStrs, errStr)
+    errs = append(errs, err2)
 
-    return errStrs
+    return errs
   }
 
   if len(fileOps) == 0 {
 
-    errStr = ePrefix +
-      "Error: The input parameter 'fileOps' is a ZERO LENGTH ARRAY!"
+    err2 := errors.New(ePrefix +
+      "Error: The input parameter 'fileOps' is a ZERO LENGTH ARRAY!")
 
-    errStrs = append(errStrs, errStr)
+    errs = append(errs, err2)
 
-    return errStrs
+    return errs
+  }
+
+  _, err = os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+    var err2 error
+
+    if os.IsNotExist(err) {
+      err2 = fmt.Errorf(ePrefix + "ERROR: Source Directory does NOT EXIST!\n" +
+        "Source Directory='%v'\n", dMgr.absolutePath)
+    } else {
+      err2 = fmt.Errorf(ePrefix + "Source Directory returned a non-path error from os.Stat().\n" +
+        "Source Directory='%v'", dMgr.absolutePath)
+    }
+
+    errs = append(errs, err2)
+    return errs
   }
 
   dir, err := os.Open(dMgr.absolutePath)
 
   if err != nil {
-    errStr = fmt.Sprintf(ePrefix+
+    err2 := fmt.Errorf(ePrefix+
       "Error return by os.Open(dMgr.absolutePath). "+
       "dMgr.absolutePath='%v' Error='%v' ",
       dMgr.absolutePath, err.Error())
 
-    errStrs = append(errStrs, errStr)
-    return errStrs
+    errs = append(errs, err2)
+    return errs
   }
 
   nameFileInfos, err := dir.Readdir(-1)
 
   if err != nil {
     _ = dir.Close()
-    errStr = fmt.Sprintf(ePrefix+
+    err2 := fmt.Errorf(ePrefix+
       "Error returned by dir.Readdirnames(-1). "+
       "dMgr.absolutePath='%v' Error='%v' ",
       dMgr.absolutePath, err.Error())
 
-    errStrs = append(errStrs, errStr)
-    return errStrs
-
+    errs = append(errs, err2)
+    return errs
   }
 
   fh := FileHelper{}
@@ -1144,13 +1163,13 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 
       _ = dir.Close()
 
-      errStr = fmt.Sprintf(ePrefix+
-        "Error returned by fh.FilterFileName(nameFInfo, fileSelectCriteria). "+
-        "directorySearched='%v'  fileName='%v' Error='%v' ",
+      err2 := fmt.Errorf(ePrefix +
+        "Error returned by fh.FilterFileName(nameFInfo, fileSelectCriteria).\n"+
+        "directorySearched='%v'\nfileName='%v'\nError='%v'\n",
         dMgr.absolutePath, nameFInfo.Name(), err.Error())
 
-      errStrs = append(errStrs, errStr)
-      return errStrs
+      errs = append(errs, err2)
+      return errs
     }
 
     if !isMatch {
@@ -1173,13 +1192,13 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 
       _ = dir.Close()
 
-      errStr = fmt.Sprintf(ePrefix+
-        "Error returned by FileOps{}.NewByDirStrsAndFileNameExtStrs() "+
-        "sourcePath='%v' srcFileNameExt='%v' destDir='%v' Error='%v' ",
+      err2 := fmt.Errorf(ePrefix+
+        "Error returned by FileOps{}.NewByDirStrsAndFileNameExtStrs()\n"+
+        "sourcePath='%v'\nsrcFileNameExt='%v'\ndestDir='%v'\nError='%v'\n",
         dMgr.GetAbsolutePath(), srcFileNameExt, targetBaseDir.GetAbsolutePath(),
         err.Error())
-      errStrs = append(errStrs, errStr)
-      return errStrs
+      errs = append(errs, err2)
+      return errs
     }
 
     maxOps := len(fileOps)
@@ -1189,14 +1208,14 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
       err = fileOp.ExecuteFileOperation(fileOps[i])
 
       if err != nil {
-        errStr = fmt.Sprintf(ePrefix+
-          "Error returned by fileOp.ExecuteFileOperation(fileOps[i]). "+
-          "i='%v' FileOps='%v' Error='%v' ",
+        err2 := fmt.Errorf(ePrefix+
+          "Error returned by fileOp.ExecuteFileOperation(fileOps[%v]). "+
+          "FileOps='%v'\nError='%v'\n\n",
           i, fileOps[i].String(), err.Error())
 
         // Store the error and continue processing
         // file operations.
-        errStrs = append(errStrs, errStr)
+        errs = append(errs, err2)
       }
     }
 
@@ -1206,7 +1225,7 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 
   _ = dir.Close()
 
-  return errStrs
+  return errs
 }
 
 // ExecuteDirectoryTreeOps - Performs File Operations on specified 'selected'
