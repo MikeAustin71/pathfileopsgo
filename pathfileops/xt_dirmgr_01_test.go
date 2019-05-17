@@ -2534,8 +2534,6 @@ func TestDirMgr_ExecuteDirectoryTreeOps_05(t *testing.T) {
 
   fileOps := make([]FileOperationCode, 0, 5)
 
-  sourceDir.isInitialized = false
-
   errArray := sourceDir.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDir)
 
   if len(errArray) == 0 {
@@ -2552,6 +2550,539 @@ func TestDirMgr_ExecuteDirectoryTreeOps_05(t *testing.T) {
   }
 
 
+}
+
+func TestDirMgr_FindFilesByNamePattern_01(t *testing.T) {
+
+  testDir := "../checkfiles/TestDirMgr_FindFilesByNamePattern_01"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir2).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  srcFiles := make([]string, 0, 50)
+
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_3_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_4_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_3_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_4_test.txt")
+  // 10 src Files
+
+  // 3 sub dir src files
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006860_sample.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006870_ReadingFiles.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006890_WritingFiles.htm")
+
+  destFile := ""
+  oldBase := ""
+  newBase := ""
+
+  for i := 0; i < len(srcFiles); i++ {
+
+    if i < 5 {
+      oldBase = "../filesfortest/levelfilesfortest"
+      newBase = testDir
+    } else if i < 10 {
+      oldBase = "../filesfortest/levelfilesfortest/level_01_dir"
+      newBase = testDir
+    } else {
+
+      oldBase = "../filesfortest/htmlFilesForTest"
+      newBase = testDir
+    }
+
+    destFile, err = fh.SwapBasePath(oldBase, newBase, srcFiles[i])
+
+    if err != nil {
+      t.Errorf("Test File Set Up Error Stage #3 SwapBasePath(oldBase, newBase, srcFiles[%v])\n"+
+        "oldBase='%v'\nnewBase='%v'\nError='%v'\n",
+        i, oldBase, newBase, err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
+      return
+    }
+
+    err = fh.CopyFileByIo(srcFiles[i], destFile)
+
+    if err != nil {
+      t.Errorf("Test Setup Error returned by fh.CopyFileByIo(srcFiles[%v], destFile)\n"+
+        "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
+        i, srcFiles[i], destFile, err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
+      return
+    }
+
+  }
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  fMgrCollection, err := dMgr.FindFilesByNamePattern("*.htm")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr.FindFilesByNamePattern(\"*.htm\").\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 3 {
+    t.Errorf("Test Setup Error: Expected to find 3-htm files in 'testDir'.\n"+
+      "Instead, %v-htm files were found.", fMgrCollection.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(testDir)\ntestDir='%v'\n"+
+      "Error='%v'\n", testDir, err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_FindFilesByNamePattern_02(t *testing.T) {
+
+  testDir := "../checkfiles/TestDirMgr_FindFilesByNamePattern_02"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir2).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  srcFiles := make([]string, 0, 50)
+
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_3_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_4_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_3_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_4_test.txt")
+  // 10 src Files
+
+  // 3 sub dir src files
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006860_sample.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006870_ReadingFiles.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006890_WritingFiles.htm")
+
+  destFile := ""
+  oldBase := ""
+  newBase := ""
+
+  for i := 0; i < len(srcFiles); i++ {
+
+    if i < 5 {
+      oldBase = "../filesfortest/levelfilesfortest"
+      newBase = testDir
+    } else if i < 10 {
+      oldBase = "../filesfortest/levelfilesfortest/level_01_dir"
+      newBase = testDir
+    } else {
+
+      oldBase = "../filesfortest/htmlFilesForTest"
+      newBase = testDir
+    }
+
+    destFile, err = fh.SwapBasePath(oldBase, newBase, srcFiles[i])
+
+    if err != nil {
+      t.Errorf("Test File Set Up Error Stage #3 SwapBasePath(oldBase, newBase, srcFiles[%v])\n"+
+        "oldBase='%v'\nnewBase='%v'\nError='%v'\n",
+        i, oldBase, newBase, err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
+      return
+    }
+
+    err = fh.CopyFileByIo(srcFiles[i], destFile)
+
+    if err != nil {
+      t.Errorf("Test Setup Error returned by fh.CopyFileByIo(srcFiles[%v], destFile)\n"+
+        "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
+        i, srcFiles[i], destFile, err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
+      return
+    }
+
+  }
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  fMgrCollection, err := dMgr.FindFilesByNamePattern("*.txt")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr.FindFilesByNamePattern(\"*.txt\").\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 10 {
+    t.Errorf("Test Setup Error: Expected to find 10-txt files in 'testDir'.\n"+
+      "Instead, %v-htm files were found.", fMgrCollection.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(testDir)\ntestDir='%v'\n"+
+      "Error='%v'\n", testDir, err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_FindFilesByNamePattern_03(t *testing.T) {
+
+  testDir := "../checkfiles/TestDirMgr_FindFilesByNamePattern_03"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir2).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  srcFiles := make([]string, 0, 50)
+
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_3_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_4_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_3_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_4_test.txt")
+  // 10 src Files
+
+  // 3 sub dir src files
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006860_sample.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006870_ReadingFiles.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006890_WritingFiles.htm")
+
+  destFile := ""
+  oldBase := ""
+  newBase := ""
+
+  for i := 0; i < len(srcFiles); i++ {
+
+    if i < 5 {
+      oldBase = "../filesfortest/levelfilesfortest"
+      newBase = testDir
+    } else if i < 10 {
+      oldBase = "../filesfortest/levelfilesfortest/level_01_dir"
+      newBase = testDir
+    } else {
+
+      oldBase = "../filesfortest/htmlFilesForTest"
+      newBase = testDir
+    }
+
+    destFile, err = fh.SwapBasePath(oldBase, newBase, srcFiles[i])
+
+    if err != nil {
+      t.Errorf("Test File Set Up Error Stage #3 SwapBasePath(oldBase, newBase, srcFiles[%v])\n"+
+        "oldBase='%v'\nnewBase='%v'\nError='%v'\n",
+        i, oldBase, newBase, err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
+      return
+    }
+
+    err = fh.CopyFileByIo(srcFiles[i], destFile)
+
+    if err != nil {
+      t.Errorf("Test Setup Error returned by fh.CopyFileByIo(srcFiles[%v], destFile)\n"+
+        "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
+        i, srcFiles[i], destFile, err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
+      return
+    }
+
+  }
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  dMgr.isInitialized = false
+
+  _, err = dMgr.FindFilesByNamePattern("*.txt")
+
+  if err == nil {
+    t.Error("Expected an error return from dMgr.FindFilesByNamePattern(\"*.txt\")\n" +
+      "because 'dMgr' is INVALID.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  dMgr.isInitialized = true
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(testDir)\ntestDir='%v'\n"+
+      "Error='%v'\n", testDir, err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_FindFilesByNamePattern_04(t *testing.T) {
+
+  testDir := "../checkfiles/TestDirMgr_FindFilesByNamePattern_04"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir2).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  srcFiles := make([]string, 0, 50)
+
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_3_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_4_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_3_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_4_test.txt")
+  // 10 src Files
+
+  // 3 sub dir src files
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006860_sample.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006870_ReadingFiles.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006890_WritingFiles.htm")
+
+  destFile := ""
+  oldBase := ""
+  newBase := ""
+
+  for i := 0; i < len(srcFiles); i++ {
+
+    if i < 5 {
+      oldBase = "../filesfortest/levelfilesfortest"
+      newBase = testDir
+    } else if i < 10 {
+      oldBase = "../filesfortest/levelfilesfortest/level_01_dir"
+      newBase = testDir
+    } else {
+
+      oldBase = "../filesfortest/htmlFilesForTest"
+      newBase = testDir
+    }
+
+    destFile, err = fh.SwapBasePath(oldBase, newBase, srcFiles[i])
+
+    if err != nil {
+      t.Errorf("Test File Set Up Error Stage #3 SwapBasePath(oldBase, newBase, srcFiles[%v])\n"+
+        "oldBase='%v'\nnewBase='%v'\nError='%v'\n",
+        i, oldBase, newBase, err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
+      return
+    }
+
+    err = fh.CopyFileByIo(srcFiles[i], destFile)
+
+    if err != nil {
+      t.Errorf("Test Setup Error returned by fh.CopyFileByIo(srcFiles[%v], destFile)\n"+
+        "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
+        i, srcFiles[i], destFile, err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
+      return
+    }
+
+  }
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  _, err = dMgr.FindFilesByNamePattern("")
+
+  if err == nil {
+    t.Error("Expected an error return from dMgr.FindFilesByNamePattern(\"\")\n" +
+      "because the input parameter is an EMPTY STRING.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(testDir)\ntestDir='%v'\n"+
+      "Error='%v'\n", testDir, err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_FindFilesByNamePattern_05(t *testing.T) {
+
+  testDir := "../checkfiles/TestDirMgr_FindFilesByNamePattern_05"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  _, err = dMgr.FindFilesByNamePattern("*.*")
+
+  if err == nil {
+    t.Error("Expected an error return from dMgr.FindFilesByNamePattern(\"*.*\")\n" +
+      "because the 'dMgr' path DOES NOT EXIST.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(testDir)\ntestDir='%v'\n"+
+      "Error='%v'\n", testDir, err.Error())
+  }
+
+  return
 }
 
 func TestDirMgr_GetAbsolutePathElements(t *testing.T) {

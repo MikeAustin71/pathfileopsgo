@@ -1112,8 +1112,9 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
       err2 = fmt.Errorf(ePrefix + "ERROR: Source Directory does NOT EXIST!\n" +
         "Source Directory='%v'\n", dMgr.absolutePath)
     } else {
-      err2 = fmt.Errorf(ePrefix + "Source Directory returned a non-path error from os.Stat().\n" +
-        "Source Directory='%v'", dMgr.absolutePath)
+      err2 = fmt.Errorf(ePrefix +
+        "Source Directory returned a non-path error from os.Stat().\n" +
+        "Source Directory='%v'\nError='%v'\n", dMgr.absolutePath, err.Error())
     }
 
     errs = append(errs, err2)
@@ -1535,7 +1536,7 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
     } else {
       err2 = fmt.Errorf(ePrefix +
         "DirMgr Source Directory returned a non-path error from os.Stat().\n" +
-        "Source Directory='%v'", dMgr.absolutePath)
+        "Source Directory='%v'\nError='%v'", dMgr.absolutePath, err.Error())
     }
 
     errs = append(errs, err2)
@@ -1571,7 +1572,8 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 // Again, the file search will always be limited to the directory identified by the
 // current DirMgr instance. No sub-directories will be searched.
 //
-// If the 'fileSearchPattern' is improperly formatted, an error will be returned.
+// If the 'fileSearchPattern' is an empty string or improperly formatted, an error
+// will be returned.
 //
 // ------------------------------------------------------------------------
 //
@@ -1596,7 +1598,32 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
     return FileMgrCollection{}, err
   }
 
+  errCode := 0
 
+  errCode, _, fileSearchPattern = FileHelper{}.isStringEmptyOrBlank(fileSearchPattern)
+
+  if errCode < 0 {
+    return FileMgrCollection{},
+      errors.New(ePrefix + "Input parameter 'fileSearchPattern' is INVALID!\n" +
+        "'fileSearchPattern' is an EMPTY STRING!\n")
+  }
+
+  _, err = os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+
+    if os.IsNotExist(err) {
+      return FileMgrCollection{},
+      fmt.Errorf(ePrefix + "DirMgr path does NOT Exist!\n" +
+        "DirMgr='%v'\n", dMgr.absolutePath)
+    }
+
+    return FileMgrCollection{},
+      fmt.Errorf(ePrefix +
+        "DirMgr path returned a non-path error from os.Stat().\n" +
+        "DirMgr='%v'\nError='%v'\n", dMgr.absolutePath, err.Error())
+
+  }
 
   dir, err := os.Open(dMgr.absolutePath)
 
