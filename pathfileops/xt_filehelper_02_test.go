@@ -1135,11 +1135,11 @@ func TestFileHelper_FindFilesInPath_02(t *testing.T) {
 
   fileOps[0] = FileOperationCode(0).CopySourceToDestinationByIo()
 
-  errStrs := sourceDir.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDir)
+  errArray := sourceDir.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDir)
 
-  if len(errStrs) > 0 {
-    for i := 0; i < len(errStrs); i++ {
-      t.Errorf("sourceDir.ExecuteDirectoryTreeOps-Error: %v", errStrs[i])
+  if len(errArray) > 0 {
+    for i := 0; i < len(errArray); i++ {
+      t.Errorf("sourceDir.ExecuteDirectoryTreeOps-Error: %v", errArray[i])
     }
   }
 

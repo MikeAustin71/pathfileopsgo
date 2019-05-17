@@ -9,14 +9,14 @@ type DirTreeOp struct {
   FileSelectCriteria FileSelectionCriteria
   SourceBaseDir      DirMgr
   TargetBaseDir      DirMgr
-  ErrReturns         []string
+  ErrReturns         []error
 }
 
 // New - Creates, initializes and returns a new
 // DirTreeOp instance.
 func (dTreeOp DirTreeOp) New() DirTreeOp {
   newDTreeOp := DirTreeOp{}
-  newDTreeOp.ErrReturns = make([]string, 0, 100)
+  newDTreeOp.ErrReturns = make([]error, 0, 100)
   return newDTreeOp
 }
 

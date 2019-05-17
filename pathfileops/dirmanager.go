@@ -1230,9 +1230,11 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 
 // ExecuteDirectoryTreeOps - Performs File Operations on specified 'selected'
 // files in the directory tree identified by the current 'DirMgr' instance.
+// The 'DirMgr' path therefore serves as the parent directory for file operations
+// performed on the directory tree.
 //
 // If you wish to perform File Operations ONLY on the current directory and
-// NOT THE ENTIRE DIRECTORY TREE, see Function "ExecuteDirectoryFileOps(), below.
+// NOT THE ENTIRE DIRECTORY TREE, see Function "ExecuteDirectoryFileOps(), above.
 //
 // The types of File Operations performed are generally classified as 'file copy'
 // and 'file deletion' operations. The precise file operation applied is defined
@@ -1330,7 +1332,7 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 //                                       this file selection criterion is considered 'Inactive' or
 //                                       'Not Set'.
 //
-//  SelectCriterionMode FileSelectCriterionMode -
+//        SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
 //                                    criteria above are applied in determining a 'match' for file
 //                                    selection purposes. 'SelectCriterionMode' may be set to one of
@@ -1459,7 +1461,10 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 //    FileOperationCode(0).CreateDestinationFile()
 //      Creates the Destination File
 //
-// ---------------------------------------------------------------------------
+// ------------------------------------------------------------------------
+//
+// Input parameters (continued)
+//
 //
 // targetBaseDir -  The file selection criteria, 'fileSelectCriteria', and
 //                  the File Operations, 'fileOps' are applied to files in
@@ -1470,7 +1475,7 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 //
 // Return Values:
 //
-//  []string - This function will return an array of strings containing error messages
+//  []error - This function will return an array of strings containing error messages
 //             generated during the performance of specified File Operations on the
 //             designated directory tree. If the string array returned is empty or has
 //             a zero length, it signals that no errors were encountered and all operations
@@ -1479,41 +1484,63 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
   fileSelectCriteria FileSelectionCriteria,
   fileOps []FileOperationCode,
-  targetBaseDir DirMgr) []string {
+  targetBaseDir DirMgr) (errs []error) {
 
   ePrefix := "DirMgr.ExecuteDirectoryTreeOps() "
 
-  err := dMgr.IsDirMgrValid(ePrefix)
   dirOp := DirTreeOp{}.New()
   dirOp.CallingFunc = ePrefix
+  errs = make([]error, 0, 300)
+
+
+  err := dMgr.IsDirMgrValid(ePrefix)
 
   if err != nil {
-    errStr := fmt.Sprintf("%v ", err.Error())
-    dirOp.ErrReturns = append(dirOp.ErrReturns, errStr)
-    return dirOp.ErrReturns
+    err2 := fmt.Errorf("%v ", err.Error())
+    errs = append(errs, err2)
+    return errs
   }
 
   err = targetBaseDir.IsDirMgrValid("")
 
   if err != nil {
 
-    errStr := fmt.Sprintf(ePrefix+
+    err2 := fmt.Errorf(ePrefix+
       "Input parameter 'targetBaseDir' is INVALID!. Error='%v' ",
       err.Error())
 
-    dirOp.ErrReturns = append(dirOp.ErrReturns, errStr)
+    errs = append(errs, err2)
 
-    return dirOp.ErrReturns
+    return errs
   }
 
   if len(fileOps) == 0 {
 
-    errStr := ePrefix +
-      "Error: The input parameter 'fileOps' is a ZERO LENGTH ARRAY!"
+    err2 := errors.New(ePrefix +
+      "Error: The input parameter 'fileOps' is a ZERO LENGTH ARRAY!\n")
 
-    dirOp.ErrReturns = append(dirOp.ErrReturns, errStr)
+    errs = append(errs, err2)
 
-    return dirOp.ErrReturns
+    return errs
+  }
+
+  _, err = os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+    var err2 error
+
+    if os.IsNotExist(err) {
+      err2 = fmt.Errorf(ePrefix + "DirMgr Source Directory does NOT Exist!\n" +
+        "Source Directory='%v'\n", dMgr.absolutePath)
+    } else {
+      err2 = fmt.Errorf(ePrefix +
+        "DirMgr Source Directory returned a non-path error from os.Stat().\n" +
+        "Source Directory='%v'", dMgr.absolutePath)
+    }
+
+    errs = append(errs, err2)
+    return errs
+
   }
 
   dirOp.FileOps = append(dirOp.FileOps, fileOps...)
@@ -1524,9 +1551,11 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
   err = fp.Walk(dMgr.GetAbsolutePath(), dMgr.executeFileOpsOnFoundFiles(&dirOp))
 
   if err != nil {
-    errStr := ePrefix +
-      fmt.Sprintf("Error returned by fp.Walk(). Error='%v' ", err.Error())
-    dirOp.ErrReturns = append(dirOp.ErrReturns, errStr)
+    err2 := fmt.Errorf(ePrefix +
+      "Error returned by fp.Walk(). Error='%v' ", err.Error())
+    errs = append(errs, dirOp.ErrReturns ...)
+    errs = append(errs, err2)
+    return errs
   }
 
   return dirOp.ErrReturns
@@ -3154,7 +3183,7 @@ func (dMgr *DirMgr) executeFileOpsOnFoundFiles(dirOp *DirTreeOp) func(string, os
       err2 = fmt.Errorf(ePrefix+
         "Error returned from directory walk function. "+
         "pathFile= '%v' Error='%v'", pathFile, erIn.Error())
-      dirOp.ErrReturns = append(dirOp.ErrReturns, err2.Error())
+      dirOp.ErrReturns = append(dirOp.ErrReturns, err2)
       return nil
     }
 
@@ -3175,7 +3204,7 @@ func (dMgr *DirMgr) executeFileOpsOnFoundFiles(dirOp *DirTreeOp) func(string, os
         "pathFile='%v' info.Name()='%v' Error='%v' ",
         pathFile, info.Name(), err.Error())
 
-      dirOp.ErrReturns = append(dirOp.ErrReturns, err2.Error())
+      dirOp.ErrReturns = append(dirOp.ErrReturns, err2)
       return nil
     }
 
@@ -3200,7 +3229,7 @@ func (dMgr *DirMgr) executeFileOpsOnFoundFiles(dirOp *DirTreeOp) func(string, os
         pathFile,
         err.Error())
 
-      dirOp.ErrReturns = append(dirOp.ErrReturns, err2.Error())
+      dirOp.ErrReturns = append(dirOp.ErrReturns, err2)
       return nil
 
     }
@@ -3214,7 +3243,7 @@ func (dMgr *DirMgr) executeFileOpsOnFoundFiles(dirOp *DirTreeOp) func(string, os
         "pathFile='%v' srcFileNameExt='%v' destDir='%v' Error='%v' ",
         pathFile, srcFileNameExt, destDir, err.Error())
 
-      dirOp.ErrReturns = append(dirOp.ErrReturns, err2.Error())
+      dirOp.ErrReturns = append(dirOp.ErrReturns, err2)
       return nil
     }
 
@@ -3230,7 +3259,7 @@ func (dMgr *DirMgr) executeFileOpsOnFoundFiles(dirOp *DirTreeOp) func(string, os
           "i='%v' FileOps='%v' Error='%v' ",
           i, dirOp.FileOps[i].String(), err.Error())
 
-        dirOp.ErrReturns = append(dirOp.ErrReturns, err2.Error())
+        dirOp.ErrReturns = append(dirOp.ErrReturns, err2)
 
       }
     }
