@@ -2,1039 +2,2208 @@
 package pathfileops
 
 import (
-  fp "path/filepath"
+  "fmt"
+  "os"
   "strings"
   "testing"
+  "time"
 )
 
-func TestDirMgr_MakeDir_01(t *testing.T) {
+func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
+
+  err := dirMgr02SetupDirWalkTests()
+
+  if err != nil {
+    t.Errorf("Error return from dirMgr02SetupDirWalkTests(). "+
+      "Error='%v' ", err.Error())
+    return
+  }
 
   fh := FileHelper{}
 
-  origDir := fh.AdjustPathSlash("../checkfiles/checkfiles99/checkfiles999")
+  baseDirPath := fh.AdjustPathSlash("../dirwalktests/dir01")
 
-  dMgr, err := DirMgr{}.New(origDir)
+  dir, err := fh.MakeAbsolutePath(baseDirPath)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v'  Error='%v'", origDir, err.Error())
+    t.Errorf("fh.MakeAbsolutePath(baseDirPath) baseDirPath='%v' Error='%v'",
+      baseDirPath, err.Error())
+    return
   }
 
-  if dMgr.doesAbsolutePathExist {
+  searchPattern := ""
+  filesOlderThan := time.Time{}
+  filesNewerThan := time.Time{}
 
-    err = dMgr.DeleteAll()
+  dMgr, err := DirMgr{}.New(dir)
 
-    if err != nil {
-      t.Errorf("%v", err.Error())
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(dir). dir='%v' Error='%v'",
+      dir, err.Error())
+  }
+
+  if !dMgr.doesAbsolutePathExist {
+    t.Errorf("Expected target directory to exist. I does NOT exist. "+
+      "dMgr.path='%v' dMgr.AbolutePath='%v'", dMgr.path, dMgr.absolutePath)
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  dirTreeInfo, err := dMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned from dMgr.FindWalkDirFiles(searchPattern, "+
+      "filesOlderThan, filesNewerThan). dir='%v' Error='%v'",
+      dir, err.Error())
+  }
+
+  if dirTreeInfo.FoundFiles.GetNumOfFileMgrs() != 6 {
+    t.Errorf("Expected to find 6-files in directory tree. Instead, found %v files.",
+      dirTreeInfo.FoundFiles.GetNumOfFileMgrs())
+  }
+
+  foundnewTestFile3 := false
+  foundOldReadingFile := false
+
+  for i := 0; i < dirTreeInfo.FoundFiles.GetNumOfFileMgrs(); i++ {
+    if dirTreeInfo.FoundFiles.fileMgrs[i].fileNameExt == "newerFileForTest_03.txt" {
+      foundnewTestFile3 = true
+    }
+
+    if dirTreeInfo.FoundFiles.fileMgrs[i].fileNameExt == "006870_ReadingFiles.htm" {
+      foundOldReadingFile = true
+    }
+  }
+
+  if !foundnewTestFile3 {
+    t.Error("Expected FoundFiles would include newerFileForTest_03.txt. It did NOT!")
+  }
+
+  if !foundOldReadingFile {
+    t.Error("Expected FoundFiles would include 006870_ReadingFiles.htm. It did NOT!")
+  }
+
+  if dirTreeInfo.Directories.GetNumOfDirs() != 3 {
+    t.Errorf("Expected the number of directories found would equal 3. It did NOT! "+
+      "Number of directories= '%v'", dirTreeInfo.Directories.GetNumOfDirs())
+  }
+
+  dir3 := fh.AdjustPathSlash("/dirwalktests/dir01/dir02/dir03")
+
+  foundDir3 := false
+
+  for j := 0; j < dirTreeInfo.Directories.GetNumOfDirs(); j++ {
+    if strings.Contains(dirTreeInfo.Directories.dirMgrs[j].path, dir3) {
+      foundDir3 = true
+    }
+  }
+
+  if !foundDir3 {
+    t.Errorf("Expected to find Directory %v in dirTreeInfo.dirMgrs. "+
+      "This directory was NOT found!", dir3)
+  }
+
+}
+
+func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
+
+  err := dirMgr02SetupDirWalkTests()
+
+  if err != nil {
+    t.Errorf("Error returned by dirMgr02SetupDirWalkTests(). "+
+      "Error='%v' ", err.Error())
+    return
+  }
+
+  fh := FileHelper{}
+  dir := fh.AdjustPathSlash("../dirwalktests/dir01")
+
+  searchPattern := "*Files.htm"
+  filesOlderThan := time.Time{}
+  filesNewerThan := time.Time{}
+
+  dMgr, err := DirMgr{}.New(dir)
+
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(dir). dir='%v' Error='%v'",
+      dir, err.Error())
+  }
+
+  if !dMgr.doesAbsolutePathExist {
+    t.Errorf("Expected target directory to exist. I does NOT exist. "+
+      "dMgr.path='%v' dMgr.AbolutePath='%v'", dMgr.path, dMgr.absolutePath)
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  dWalker, err := dMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned from dMgr.FindWalkDirFiles(searchPattern, "+
+      "filesOlderThan, filesNewerThan). dir='%v' Error='%v'", dir, err.Error())
+  }
+
+  if dWalker.FoundFiles.GetNumOfFileMgrs() != 2 {
+    t.Errorf("Expected to find 2-files in directory tree. Instead, "+
+      "found %v files.", dWalker.FoundFiles.GetNumOfFileMgrs())
+  }
+
+  foundWritingFiles := false
+  foundOldReadingFile := false
+
+  for i := 0; i < dWalker.FoundFiles.GetNumOfFileMgrs(); i++ {
+    if dWalker.FoundFiles.fileMgrs[i].fileNameExt == "006890_WritingFiles.htm" {
+      foundWritingFiles = true
+    }
+
+    if dWalker.FoundFiles.fileMgrs[i].fileNameExt == "006870_ReadingFiles.htm" {
+      foundOldReadingFile = true
+    }
+  }
+
+  if !foundWritingFiles {
+    t.Error("Expected FoundFiles would include 006890_WritingFiles.htm. " +
+      "It did NOT!")
+  }
+
+  if !foundOldReadingFile {
+    t.Error("Expected FoundFiles would include 006870_ReadingFiles.htm. " +
+      "It did NOT!")
+  }
+
+  if dWalker.Directories.GetNumOfDirs() != 3 {
+    t.Errorf("Expected the number of directories found would equal 3. "+
+      "It did NOT! Number of directories= '%v'",
+      dWalker.Directories.GetNumOfDirs())
+  }
+
+  dir3 := fh.AdjustPathSlash("/dirwalktests/dir01/dir02/dir03")
+
+  foundDir3 := false
+
+  for j := 0; j < dWalker.Directories.GetNumOfDirs(); j++ {
+    if strings.Contains(dWalker.Directories.dirMgrs[j].path, dir3) {
+      foundDir3 = true
+    }
+  }
+
+  if !foundDir3 {
+    t.Errorf("Expected to find Directory %v in dWalker.dirMgrs. "+
+      "This directory was NOT found!", dir3)
+  }
+
+}
+
+/*
+func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
+
+  err := dirMgr02SetupDirWalkTests()
+
+  if err != nil {
+    t.Errorf("Error returned by dirMgr02SetupDirWalkTests(). "+
+      "Error='%v' ", err.Error())
+    return
+  }
+
+  fh := FileHelper{}
+  dir := fh.AdjustPathSlash("../dirwalktests/dir01")
+  fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
+  fOlderThanStr := "2017-12-01 19:54:30.000000000 -0600 CST"
+
+  searchPattern := ""
+  filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
+
+  if err != nil {
+    t.Errorf("Failed to parse FilesOlderThan time value. "+
+      "fmtstr='%v' fOlderThanStr='%v'  Error='%v'",
+      fmtstr, fOlderThanStr, err.Error())
+  }
+
+  filesNewerThan := time.Time{}
+  filesNewerThan.AddDate(0, 1, 0)
+
+  dMgr, err := DirMgr{}.New(dir)
+
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(dir). "+
+      "dir='%v' Error='%v'", dir, err.Error())
+  }
+
+  if !dMgr.doesAbsolutePathExist {
+    t.Errorf("Expected target directory to exist. I does NOT exist. "+
+      "dMgr.path='%v' dMgr.AbolutePath='%v'", dMgr.path, dMgr.absolutePath)
+  }
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  dWalker, err := dMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned from dMgr.FindWalkDirFiles(searchPattern, "+
+      "filesOlderThan, filesNewerThan). dir='%v' Error='%v'", dir, err.Error())
+  }
+
+  if dWalker.FoundFiles.GetNumOfFileMgrs() != 3 {
+    t.Errorf("Expected to find 3-files in directory tree. Instead, "+
+      "found %v files.", dWalker.FoundFiles.GetNumOfFileMgrs())
+  }
+
+  foundOldWritingFiles := false
+  foundOldReadingFile := false
+  foundOldTestHtmFile := false
+
+  for i := 0; i < dWalker.FoundFiles.GetNumOfFileMgrs(); i++ {
+    if dWalker.FoundFiles.fileMgrs[i].fileNameExt == "006890_WritingFiles.htm" {
+      foundOldWritingFiles = true
+    }
+
+    if dWalker.FoundFiles.fileMgrs[i].fileNameExt == "006870_ReadingFiles.htm" {
+      foundOldReadingFile = true
+    }
+
+    if dWalker.FoundFiles.fileMgrs[i].fileNameExt == "test.htm" {
+      foundOldTestHtmFile = true
     }
 
   }
 
-  if dMgr.doesAbsolutePathExist {
-    t.Errorf("Error: Attempted to delete dMgr.absolutePath='%v'. Deletion Attempt FAILED. This directory still exists.", dMgr.absolutePath)
+  if !foundOldWritingFiles {
+    t.Error("Expected FoundFiles would include 006890_WritingFiles.htm. " +
+      "It did NOT!")
   }
 
-  err = dMgr.MakeDir()
+  if !foundOldReadingFile {
+    t.Error("Expected FoundFiles would include 006870_ReadingFiles.htm. " +
+      "It did NOT!")
+  }
+
+  if !foundOldTestHtmFile {
+    t.Error("Expected FoundFiles would include test.htm. " +
+      "It did NOT!")
+  }
+
+  if dWalker.Directories.GetNumOfDirs() != 3 {
+    t.Errorf("Expected the number of directories found would equal 3. "+
+      "It did NOT! Number of directories= '%v'",
+      dWalker.Directories.GetNumOfDirs())
+  }
+
+  dir3 := fh.AdjustPathSlash("/dirwalktests/dir01/dir02/dir03")
+
+  foundDir3 := false
+
+  for j := 0; j < dWalker.Directories.GetNumOfDirs(); j++ {
+    if strings.Contains(dWalker.Directories.dirMgrs[j].path, dir3) {
+      foundDir3 = true
+    }
+  }
+
+  if !foundDir3 {
+    t.Errorf("Expected to find Directory %v in dWalker.dirMgrs. "+
+      "This directory was NOT found!", dir3)
+  }
+
+}
+
+*/
+
+/*
+func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
+
+  err := dirMgr02SetupDirWalkTests()
 
   if err != nil {
-    t.Errorf("%v", err.Error())
+    t.Errorf("Error returned by dirMgr02SetupDirWalkTests(). "+
+      "Error='%v' ", err.Error())
+    return
+  }
+
+  fh := FileHelper{}
+  dir := fh.AdjustPathSlash("../dirwalktests/dir01")
+  fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
+  fNewerThanStr := "2017-12-01 19:54:30.000000000 -0600 CST"
+
+  searchPattern := ""
+  filesOlderThan := time.Time{}
+
+  filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
+
+  if err != nil {
+    t.Errorf("Failed to parse FilesNewerThan time value. fmtstr='%v' "+
+      "fNewerThanStr='%v'  Error='%v'", fmtstr, fNewerThanStr, err.Error())
+  }
+
+  dMgr, err := DirMgr{}.New(dir)
+
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(dir). dir='%v' Error='%v'",
+      dir, err.Error())
   }
 
   if !dMgr.doesAbsolutePathExist {
-    t.Errorf("Error: Attempted to create dMgr.absolutePath='%v'. Creation Attempt FAILED. This directory does NOT exist.", dMgr.absolutePath)
+    t.Errorf("Expected target directory to exist. I does NOT exist. "+
+      "dMgr.path='%v' dMgr.AbolutePath='%v'", dMgr.path, dMgr.absolutePath)
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  dWalker, err := dMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned from dMgr.FindWalkDirFiles(searchPattern, "+
+      "filesOlderThan, filesNewerThan). dir='%v' Error='%v'", dir, err.Error())
+  }
+
+  if dWalker.FoundFiles.GetNumOfFileMgrs() != 3 {
+    t.Errorf("Expected to find 3-files in directory tree. Instead, "+
+      "found %v files.", dWalker.FoundFiles.GetNumOfFileMgrs())
+  }
+
+  foundNewerFile1 := false
+  foundNewerFile2 := false
+  foundNewerFile3 := false
+
+  for i := 0; i < dWalker.FoundFiles.GetNumOfFileMgrs(); i++ {
+    if dWalker.FoundFiles.fileMgrs[i].fileNameExt == "newerFileForTest_01.txt" {
+      foundNewerFile1 = true
+    }
+
+    if dWalker.FoundFiles.fileMgrs[i].fileNameExt == "newerFileForTest_02.txt" {
+      foundNewerFile2 = true
+    }
+
+    if dWalker.FoundFiles.fileMgrs[i].fileNameExt == "newerFileForTest_03.txt" {
+      foundNewerFile3 = true
+    }
+
+  }
+
+  if !foundNewerFile1 {
+    t.Error("Expected FoundFiles would include newerFileForTest_01.txt. File was NOT found!")
+  }
+
+  if !foundNewerFile2 {
+    t.Error("Expected FoundFiles would include newerFileForTest_02.txt. File was NOT found!")
+  }
+
+  if !foundNewerFile3 {
+    t.Error("Expected FoundFiles would include newerFileForTest_03.txt. File was NOT found!")
+  }
+
+  if dWalker.Directories.GetNumOfDirs() != 3 {
+    t.Errorf("Expected the number of directories found would equal 3. It did NOT! "+
+      "Number of directories= '%v'", dWalker.Directories.GetNumOfDirs())
+  }
+
+  dir3 := fh.AdjustPathSlash("/dirwalktests/dir01/dir02/dir03")
+
+  foundDir3 := false
+
+  for j := 0; j < dWalker.Directories.GetNumOfDirs(); j++ {
+    if strings.Contains(dWalker.Directories.dirMgrs[j].path, dir3) {
+      foundDir3 = true
+    }
+  }
+
+  if !foundDir3 {
+    t.Errorf("Expected to find Directory %v in dWalker.dirMgrs. This directory was NOT found!",
+      dir3)
   }
 
 }
+*/
 
-func TestDirMgr_New_01(t *testing.T) {
+func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
+
+  origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
+
+  if err != nil {
+    t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
+      "Error='%v'", err.Error())
+    return
+  }
+
   fh := FileHelper{}
-  origDir := fh.AdjustPathSlash("../testfiles/testfiles2")
-  expectedPath := fh.AdjustPathSlash("../testfiles/testfiles2")
-  expectedAbsDir, err := fh.MakeAbsolutePath(origDir)
 
-  if err != nil {
-    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
-  }
-
-  expectedPathDoesExist := fh.DoesFileExist(origDir)
-
-  expectedAbsPathDoesExist := fh.DoesFileExist(origDir)
-
-  expectedVolumeName := fp.VolumeName(expectedAbsDir)
-  var expectedVolumeIsPopulated bool
-
-  if expectedVolumeName != "" {
-    expectedVolumeIsPopulated = true
-  } else {
-    expectedVolumeIsPopulated = false
-  }
-
-  expectedParentPath := strings.TrimSuffix(expectedAbsDir, fh.AdjustPathSlash("/testfiles2"))
-  expectedIsParentPathPopulated := false
-
-  if expectedParentPath != "" {
-    expectedIsParentPathPopulated = true
-  }
-
-  expectedRelativePath := "testfiles2"
-
-  dMgr, err := DirMgr{}.New(origDir)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
-  }
-
-  if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'", true, dMgr.isInitialized)
-  }
-
-  if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'", true, dMgr.isPathPopulated)
-  }
-
-  if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
-  }
-
-  if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.", expectedPathDoesExist, dMgr.doesPathExist)
-  }
-
-  if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.", true, dMgr.isAbsolutePathPopulated)
-  }
-
-  if expectedAbsDir != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'", expectedAbsDir, dMgr.absolutePath)
-  }
-
-  if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.", expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
-  }
-
-  if true != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.", true, dMgr.isAbsolutePathDifferentFromPath)
-  }
-
-  if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.", expectedVolumeName, dMgr.volumeName)
-  }
-
-  if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.", expectedVolumeIsPopulated, dMgr.isVolumePopulated)
-  }
-
-  if expectedParentPath != dMgr.parentPath {
-    t.Errorf("Expected parentPath=='%v'. Instead, parentPath=='%v'.", expectedParentPath, dMgr.parentPath)
-  }
-
-  if expectedIsParentPathPopulated != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.", expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
-  }
-
-  if expectedRelativePath != dMgr.relativePath {
-    t.Errorf("Expected relativePath=='%v'. Instead, relativePath=='%v'.", expectedRelativePath, dMgr.relativePath)
-  }
-
-  if true != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.", true, dMgr.isRelativePathPopulated)
-  }
-
-}
-
-func TestDirMgr_New_02(t *testing.T) {
-  fh := FileHelper{}
-  origDir := fh.AdjustPathSlash("./")
-  expectedPath := fh.AdjustPathSlash(".")
-  expectedAbsDir, err := fh.MakeAbsolutePath(origDir)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
-  }
-
-  expectedPathDoesExist := fh.DoesFileExist(origDir)
-
-  expectedAbsPathDoesExist := fh.DoesFileExist(origDir)
-
-  expectedVolumeName := fp.VolumeName(expectedAbsDir)
-  var expectedVolumeIsPopulated bool
-
-  if expectedVolumeName != "" {
-    expectedVolumeIsPopulated = true
-  } else {
-    expectedVolumeIsPopulated = false
+  if !fh.DoesFileExist(origDir) {
+    t.Errorf("Error: The target directory does NOT Exist! origDir='%v'", origDir)
   }
 
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' "+
+      "Error='%v'", origDir, err.Error())
   }
 
-  if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'", true, dMgr.isInitialized)
+  searchPattern := ""
+  fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
+  fOlderThanStr := "2016-12-01 19:54:30.000000000 -0600 CST"
+  filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
+
+  if err != nil {
+    t.Errorf("Error returned from time.Parse(fmtstr,fOlderThanStr). "+
+      "fmtstr='%v' fOlderThanStr='%v' Error='%v'", fmtstr, fOlderThanStr, err.Error())
   }
 
-  if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'", true, dMgr.isPathPopulated)
+  fNewerThanStr := "2017-12-01 19:54:30.000000000 -0600 CST"
+  filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
+
+  if err != nil {
+    t.Errorf("Error returned from time.Parse(fmtstr,fNewerThanStr). "+
+      "fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
   }
 
-  if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.SelectCriterionMode = FileSelectMode.ORSelect()
+
+  dInfo, err := dMgr.FindWalkDirFiles(fsc)
+
+  if dInfo.FoundFiles.GetNumOfFileMgrs() != 6 {
+    t.Errorf("Expected to find 6-files deleted. Instead, %v-files were deleted.",
+      dInfo.FoundFiles.GetNumOfFileMgrs())
   }
 
-  if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.", expectedPathDoesExist, dMgr.doesPathExist)
+  oldFile1 := "test.htm"
+  oldFile2 := "006890_WritingFiles.htm"
+  oldFile3 := "006870_ReadingFiles.htm"
+  newFile1 := "newerFileForTest_01.txt"
+  newFile2 := "newerFileForTest_02.txt"
+  newFile3 := "newerFileForTest_03.txt"
+
+  oldFile1Found := false
+  oldFile2Found := false
+  oldFile3Found := false
+
+  newFile1Found := false
+  newFile2Found := false
+  newFile3Found := false
+
+  for i := 0; i < dInfo.FoundFiles.GetNumOfFileMgrs(); i++ {
+
+    if strings.Contains(dInfo.FoundFiles.fileMgrs[i].fileNameExt, oldFile1) {
+      oldFile1Found = true
+    }
+
+    if strings.Contains(dInfo.FoundFiles.fileMgrs[i].fileNameExt, oldFile2) {
+      oldFile2Found = true
+    }
+
+    if strings.Contains(dInfo.FoundFiles.fileMgrs[i].fileNameExt, oldFile3) {
+      oldFile3Found = true
+    }
+
+    if strings.Contains(dInfo.FoundFiles.fileMgrs[i].fileNameExt, newFile1) {
+      newFile1Found = true
+    }
+
+    if strings.Contains(dInfo.FoundFiles.fileMgrs[i].fileNameExt, newFile2) {
+      newFile2Found = true
+    }
+
+    if strings.Contains(dInfo.FoundFiles.fileMgrs[i].fileNameExt, newFile3) {
+      newFile3Found = true
+    }
+
   }
 
-  if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.", true, dMgr.isAbsolutePathPopulated)
+  if oldFile1Found == false {
+    t.Errorf("Expected to find oldFile1='%v'. The file was NOT found!", oldFile1)
   }
 
-  if expectedAbsDir != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'", expectedAbsDir, dMgr.absolutePath)
+  if oldFile2Found == false {
+    t.Errorf("Expected to find oldFile2='%v'. The file was NOT found!", oldFile2)
   }
 
-  if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.", expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
+  if oldFile3Found == false {
+    t.Errorf("Expected find oldFile3='%v'. The file was NOT found!", oldFile3)
   }
 
-  if true != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.", true, dMgr.isAbsolutePathDifferentFromPath)
+  if newFile1Found == false {
+    t.Errorf("Expected to find newFile1='%v'. The file was NOT found!", newFile1)
   }
 
-  if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.", expectedVolumeName, dMgr.volumeName)
+  if newFile2Found == false {
+    t.Errorf("Expected to find newFile2='%v'. The file was NOT found!", newFile2)
   }
 
-  if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.", expectedVolumeIsPopulated, dMgr.isVolumePopulated)
+  if newFile3Found == false {
+    t.Errorf("Expected to find newFile3='%v'. The file was NOT found!", newFile3)
   }
 
-  if true != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.", true, dMgr.isParentPathPopulated)
+  if len(dInfo.ErrReturns) != 0 {
+    t.Errorf("Expected zero Error Returns. "+
+      "Instead number of Error Returns='%v'", len(dInfo.ErrReturns))
   }
 
-  if true != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.", true, dMgr.isRelativePathPopulated)
+  if dInfo.Directories.GetNumOfDirs() != 3 {
+    t.Errorf("Expected 3-directories to be found. Instead, number of "+
+      "directories found='%v'", dInfo.Directories.GetNumOfDirs())
+  }
+
+  dir3 := fh.AdjustPathSlash("/dirwalkdeletetests/dirdelete01/dirdelete02/dirdelete03")
+
+  foundDir3 := false
+
+  for j := 0; j < dInfo.Directories.GetNumOfDirs(); j++ {
+    if strings.Contains(dInfo.Directories.dirMgrs[j].path, dir3) {
+      foundDir3 = true
+    }
+  }
+
+  if !foundDir3 {
+    t.Errorf("Expected to find Directory %v in dInfo.dirMgrs. "+
+      "This directory was NOT found!", dir3)
   }
 
 }
 
-func TestDirMgr_New_03(t *testing.T) {
-  fh := FileHelper{}
-  origDir := fh.AdjustPathSlash("../")
-  expectedPath := fh.AdjustPathSlash("..")
-  expectedAbsDir, err := fh.MakeAbsolutePath(origDir)
+func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
+
+  origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
+      "Error='%v'", err.Error())
+    return
+
   }
 
-  expectedPathDoesExist := fh.DoesFileExist(origDir)
+  fh := FileHelper{}
 
-  expectedAbsPathDoesExist := fh.DoesFileExist(origDir)
-
-  expectedVolumeName := fp.VolumeName(expectedAbsDir)
-  var expectedVolumeIsPopulated bool
-
-  if expectedVolumeName != "" {
-    expectedVolumeIsPopulated = true
-  } else {
-    expectedVolumeIsPopulated = false
+  if !fh.DoesFileExist(origDir) {
+    t.Errorf("Error: The target directory does NOT Exist! origDir='%v'", origDir)
   }
 
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'",
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'",
       origDir, err.Error())
   }
 
-  if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
-      true, dMgr.isInitialized)
+  searchPattern1 := "*.txt"
+  searchPattern2 := "*.htm"
+
+  filesOlderThan := time.Time{}
+  filesNewerThan := time.Time{}
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern1, searchPattern2}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.SelectCriterionMode = FileSelectMode.ORSelect()
+
+  dInfo, err := dMgr.FindWalkDirFiles(fsc)
+
+  if dInfo.FoundFiles.GetNumOfFileMgrs() != 6 {
+    t.Errorf("Expected to find 6-files deleted. Instead, %v-files were deleted.",
+      dInfo.FoundFiles.GetNumOfFileMgrs())
   }
 
-  if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
-      true, dMgr.isPathPopulated)
+  oldFile1 := "test.htm"
+  oldFile2 := "006890_WritingFiles.htm"
+  oldFile3 := "006870_ReadingFiles.htm"
+  newFile1 := "newerFileForTest_01.txt"
+  newFile2 := "newerFileForTest_02.txt"
+  newFile3 := "newerFileForTest_03.txt"
+
+  oldFile1Found := false
+  oldFile2Found := false
+  oldFile3Found := false
+
+  newFile1Found := false
+  newFile2Found := false
+  newFile3Found := false
+
+  for i := 0; i < dInfo.FoundFiles.GetNumOfFileMgrs(); i++ {
+
+    if strings.Contains(dInfo.FoundFiles.fileMgrs[i].fileNameExt, oldFile1) {
+      oldFile1Found = true
+    }
+
+    if strings.Contains(dInfo.FoundFiles.fileMgrs[i].fileNameExt, oldFile2) {
+      oldFile2Found = true
+    }
+
+    if strings.Contains(dInfo.FoundFiles.fileMgrs[i].fileNameExt, oldFile3) {
+      oldFile3Found = true
+    }
+
+    if strings.Contains(dInfo.FoundFiles.fileMgrs[i].fileNameExt, newFile1) {
+      newFile1Found = true
+    }
+
+    if strings.Contains(dInfo.FoundFiles.fileMgrs[i].fileNameExt, newFile2) {
+      newFile2Found = true
+    }
+
+    if strings.Contains(dInfo.FoundFiles.fileMgrs[i].fileNameExt, newFile3) {
+      newFile3Found = true
+    }
+
   }
 
-  if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
+  if oldFile1Found == false {
+    t.Errorf("Expected to find oldFile1='%v'. The file was NOT found!", oldFile1)
   }
 
-  if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.",
-      expectedPathDoesExist, dMgr.doesPathExist)
+  if oldFile2Found == false {
+    t.Errorf("Expected to find oldFile2='%v'. The file was NOT found!", oldFile2)
   }
 
-  if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
-      true, dMgr.isAbsolutePathPopulated)
+  if oldFile3Found == false {
+    t.Errorf("Expected find oldFile3='%v'. The file was NOT found!", oldFile3)
   }
 
-  if expectedAbsDir != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
-      expectedAbsDir, dMgr.absolutePath)
+  if newFile1Found == false {
+    t.Errorf("Expected to find newFile1='%v'. The file was NOT found!", newFile1)
   }
 
-  if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
-      expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
+  if newFile2Found == false {
+    t.Errorf("Expected to find newFile2='%v'. The file was NOT found!", newFile2)
   }
 
-  if true != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.",
-      true, dMgr.isAbsolutePathDifferentFromPath)
+  if newFile3Found == false {
+    t.Errorf("Expected to find newFile3='%v'. The file was NOT found!", newFile3)
   }
 
-  if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.",
-      expectedVolumeName, dMgr.volumeName)
+  if len(dInfo.ErrReturns) != 0 {
+    t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'",
+      len(dInfo.ErrReturns))
   }
 
-  if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.",
-      expectedVolumeIsPopulated, dMgr.isVolumePopulated)
+  if dInfo.Directories.GetNumOfDirs() != 3 {
+    t.Errorf("Expected 3-directories to be found. Instead, number of "+
+      "directories found='%v'", dInfo.Directories.GetNumOfDirs())
   }
 
-  if true != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
-      true, dMgr.isParentPathPopulated)
+  dir3 := fh.AdjustPathSlash("/dirwalkdeletetests/dirdelete01/dirdelete02/dirdelete03")
+
+  foundDir3 := false
+
+  for j := 0; j < dInfo.Directories.GetNumOfDirs(); j++ {
+    if strings.Contains(dInfo.Directories.dirMgrs[j].path, dir3) {
+      foundDir3 = true
+    }
   }
 
-  if true != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-      true, dMgr.isRelativePathPopulated)
+  if !foundDir3 {
+    t.Errorf("Expected to find Directory %v in dInfo.dirMgrs. "+
+      "This directory was NOT found!", dir3)
   }
 
 }
 
-func TestDirMgr_New_04(t *testing.T) {
+func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
+
+  origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
+
+  if err != nil {
+    t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
+      "Error='%v'", err.Error())
+    return
+  }
+
   fh := FileHelper{}
-  xDir, err := fh.GetCurrentDir()
 
-  if err != nil {
-    t.Errorf("Error returned from fh.GetCurrentDir(). Error='%v'", err.Error())
-  }
-
-  volName := fp.VolumeName(xDir)
-
-  origDir := fh.AdjustPathSlash(volName)
-  expectedPath := fh.AdjustPathSlash(origDir)
-  expectedAbsDir := origDir
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
-  }
-
-  expectedPathDoesExist := fh.DoesFileExist(origDir)
-
-  expectedAbsPathDoesExist := fh.DoesFileExist(origDir)
-
-  expectedVolumeName := fp.VolumeName(expectedAbsDir)
-  var expectedVolumeIsPopulated bool
-
-  if expectedVolumeName != "" {
-    expectedVolumeIsPopulated = true
-  } else {
-    expectedVolumeIsPopulated = false
+  if !fh.DoesFileExist(origDir) {
+    t.Errorf("Error: The target directory does NOT Exist! origDir='%v'", origDir)
   }
 
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'",
+      origDir, err.Error())
   }
 
-  if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
-      true, dMgr.isInitialized)
+  searchPattern := ""
+  filesOlderThan := time.Time{}
+  filesNewerThan := time.Time{}
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
+
+  if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
+    t.Errorf("Expected to find 6-files deleted. Instead, %v-files were deleted.",
+      dInfo.DeletedFiles.GetNumOfFileMgrs())
   }
 
-  if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
-      true, dMgr.isPathPopulated)
+  oldFile1 := "test.htm"
+  oldFile2 := "006890_WritingFiles.htm"
+  oldFile3 := "006870_ReadingFiles.htm"
+  newFile1 := "newerFileForTest_01.txt"
+  newFile2 := "newerFileForTest_02.txt"
+  newFile3 := "newerFileForTest_03.txt"
+
+  oldFile1Found := false
+  oldFile2Found := false
+  oldFile3Found := false
+
+  newFile1Found := false
+  newFile2Found := false
+  newFile3Found := false
+
+  for i := 0; i < dInfo.DeletedFiles.GetNumOfFileMgrs(); i++ {
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile1) {
+      oldFile1Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile2) {
+      oldFile2Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile3) {
+      oldFile3Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, newFile1) {
+      newFile1Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, newFile2) {
+      newFile2Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, newFile3) {
+      newFile3Found = true
+    }
+
   }
 
-  if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
+  if oldFile1Found == false {
+    t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!", oldFile1)
   }
 
-  if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.", expectedPathDoesExist, dMgr.doesPathExist)
+  if oldFile2Found == false {
+    t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!", oldFile2)
   }
 
-  if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
-      true, dMgr.isAbsolutePathPopulated)
+  if oldFile3Found == false {
+    t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!", oldFile3)
   }
 
-  if expectedAbsDir != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
-      expectedAbsDir, dMgr.absolutePath)
+  if newFile1Found == false {
+    t.Errorf("Expected deletion of newFile1='%v'. The file was NOT deleted!", newFile1)
   }
 
-  if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
-      expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
+  if newFile2Found == false {
+    t.Errorf("Expected deletion of newFile2='%v'. The file was NOT deleted!", newFile2)
   }
 
-  if false != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.",
-      false, dMgr.isAbsolutePathDifferentFromPath)
+  if newFile3Found == false {
+    t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!",
+      newFile3)
   }
 
-  if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.", expectedVolumeName, dMgr.volumeName)
+  if len(dInfo.ErrReturns) != 0 {
+    t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'",
+      len(dInfo.ErrReturns))
   }
 
-  if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.", expectedVolumeIsPopulated, dMgr.isVolumePopulated)
-  }
-
-  if false != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
-      false, dMgr.isParentPathPopulated)
-  }
-
-  if false != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-      false, dMgr.isRelativePathPopulated)
+  if dInfo.Directories.GetNumOfDirs() != 3 {
+    t.Errorf("Expected 3-directories to be found. Instead, number of directories found='%v'",
+      dInfo.Directories.GetNumOfDirs())
   }
 
 }
 
-func TestDirMgr_New_05(t *testing.T) {
+func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
+
+  origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
+
+  if err != nil {
+    t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
+      "Error='%v'", err.Error())
+    return
+  }
+
   fh := FileHelper{}
-  origDir, err := fh.GetCurrentDir()
 
-  if err != nil {
-    t.Errorf("Error returned from fh.GetCurrentDir(). Error='%v'", err.Error())
-  }
-
-  expectedPath := fh.AdjustPathSlash(origDir)
-  expectedAbsDir, err := fh.MakeAbsolutePath(origDir)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
-  }
-
-  expectedPathDoesExist := fh.DoesFileExist(origDir)
-
-  expectedAbsPathDoesExist := fh.DoesFileExist(origDir)
-
-  expectedVolumeName := fp.VolumeName(expectedAbsDir)
-  var expectedVolumeIsPopulated bool
-
-  if expectedVolumeName != "" {
-    expectedVolumeIsPopulated = true
-  } else {
-    expectedVolumeIsPopulated = false
+  if !fh.DoesFileExist(origDir) {
+    t.Errorf("Error: The target directory does NOT Exist! origDir='%v'",
+      origDir)
   }
 
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'",
+      origDir, err.Error())
   }
 
-  if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
-      true, dMgr.isInitialized)
+  searchPattern := "*.htm"
+  filesOlderThan := time.Time{}
+  filesNewerThan := time.Time{}
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
+
+  if dInfo.DeletedFiles.GetNumOfFileMgrs() != 3 {
+    t.Errorf("Expected to find 3-files deleted. Instead, %v-files were deleted.",
+      dInfo.DeletedFiles.GetNumOfFileMgrs())
   }
 
-  if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
-      true, dMgr.isPathPopulated)
+  oldFile1 := "test.htm"
+  oldFile2 := "006890_WritingFiles.htm"
+  oldFile3 := "006870_ReadingFiles.htm"
+
+  oldFile1Found := false
+  oldFile2Found := false
+  oldFile3Found := false
+
+  for i := 0; i < dInfo.DeletedFiles.GetNumOfFileMgrs(); i++ {
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile1) {
+      oldFile1Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile2) {
+      oldFile2Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile3) {
+      oldFile3Found = true
+    }
+
   }
 
-  if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
+  if oldFile1Found == false {
+    t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!",
+      oldFile1)
   }
 
-  if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.", expectedPathDoesExist, dMgr.doesPathExist)
+  if oldFile2Found == false {
+    t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!",
+      oldFile2)
   }
 
-  if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
-      true, dMgr.isAbsolutePathPopulated)
+  if oldFile3Found == false {
+    t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!",
+      oldFile3)
   }
 
-  if expectedAbsDir != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'", expectedAbsDir, dMgr.absolutePath)
+  if len(dInfo.ErrReturns) != 0 {
+    t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'",
+      len(dInfo.ErrReturns))
   }
 
-  if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.", expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
-  }
-
-  if false != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.",
-      false, dMgr.isAbsolutePathDifferentFromPath)
-  }
-
-  if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.", expectedVolumeName, dMgr.volumeName)
-  }
-
-  if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.", expectedVolumeIsPopulated, dMgr.isVolumePopulated)
-  }
-
-  if true != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
-      true, dMgr.isParentPathPopulated)
-  }
-
-  if true != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-      true, dMgr.isRelativePathPopulated)
+  if dInfo.Directories.GetNumOfDirs() != 3 {
+    t.Errorf("Expected 3-directories to be found. Instead, number of "+
+      "directories found='%v'", dInfo.Directories.GetNumOfDirs())
   }
 
 }
 
-func TestDirMgr_New_06(t *testing.T) {
+func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
+
+  origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
+
+  if err != nil {
+    t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
+      "Error='%v'", err.Error())
+    return
+
+  }
+
   fh := FileHelper{}
-  origDir := fh.AdjustPathSlash("../testfiles/testfiles2/test2007.txt")
-  expectedPath := fh.AdjustPathSlash("../testfiles/testfiles2")
-  expectedAbsDir, err := fh.MakeAbsolutePath(expectedPath)
 
-  expectedPathDoesExist := fh.DoesFileExist(expectedPath)
-
-  expectedAbsPathDoesExist := fh.DoesFileExist(expectedAbsDir)
-
-  expectedVolumeName := fp.VolumeName(expectedAbsDir)
-  var expectedVolumeIsPopulated bool
-
-  if expectedVolumeName != "" {
-    expectedVolumeIsPopulated = true
-  } else {
-    expectedVolumeIsPopulated = false
+  if !fh.DoesFileExist(origDir) {
+    t.Errorf("Test Setup Error: The target directory does NOT Exist! origDir='%v'",
+      origDir)
   }
 
-  expectedParentPath := strings.TrimSuffix(expectedAbsDir, fh.AdjustPathSlash("/testfiles2"))
-  expectedIsParentPathPopulated := false
+  oldFile1 := "test.htm"
+  oldFile2 := "006890_WritingFiles.htm"
+  oldFile3 := "006870_ReadingFiles.htm"
 
-  if expectedParentPath != "" {
-    expectedIsParentPathPopulated = true
+  oldFiles := make([]string, 3, 10)
+
+  oldFiles[0] = origDir + string(os.PathSeparator) + oldFile1
+  oldFiles[1] = origDir + string(os.PathSeparator) + oldFile2
+  oldFiles[2] = origDir + string(os.PathSeparator) + oldFile3
+
+  newAccessTime := time.Date(2017,2,25,10,30,30,1250, time.Local)
+  newModTime := time.Date(2017,2,25,10,30,30,1250, time.Local)
+  dateFmtStr := "2006-01-02 15:04:05.000000000 -0700 MST"
+
+  err = fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime)
+
+  if err != nil {
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime).\n" +
+      "oldFiles[0]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
+      oldFiles[0], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+    return
   }
 
-  expectedRelativePath := "testfiles2"
+  newAccessTime = time.Date(2017,11,30,10,30,30,1250, time.Local)
+  newModTime = time.Date(2017,11,30,10,30,30,1250, time.Local)
+
+  err = fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime)
+
+  if err != nil {
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime).\n" +
+      "oldFiles[1]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
+      oldFiles[1], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+    return
+  }
+
+  newAccessTime = time.Date(2017,12,1,18,30,30,1250, time.Local)
+  newModTime = time.Date(2017,12,1,18,30,30,1250, time.Local)
+
+  err = fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime)
+
+  if err != nil {
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime).\n" +
+      "oldFiles[2]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
+      oldFiles[2], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+    return
+  }
 
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'",
+      origDir, err.Error())
   }
 
-  if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
-      true, dMgr.isInitialized)
+  searchPattern := ""
+  fOlderThanStr := "2017-12-01 19:54:30.000000000 -0600 CST"
+
+  filesOlderThan, err := time.Parse(dateFmtStr, fOlderThanStr)
+
+  if err != nil {
+    t.Errorf("Error returned from time.Parse(dateFmtStr, fOlderThanStr). "+
+      "fOlderThanStr='%v' Error='%v'", fOlderThanStr, err.Error())
   }
 
-  if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
-      true, dMgr.isPathPopulated)
+  filesNewerThan := time.Time{}
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
+
+  if dInfo.DeletedFiles.GetNumOfFileMgrs() != 3 {
+    t.Errorf("Expected to find 3-files deleted. Instead, "+
+      "%v-files were deleted.", dInfo.DeletedFiles.GetNumOfFileMgrs())
+
   }
 
-  if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
+  oldFile1Found := false
+  oldFile2Found := false
+  oldFile3Found := false
+
+  for i := 0; i < dInfo.DeletedFiles.GetNumOfFileMgrs(); i++ {
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile1) {
+      oldFile1Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile2) {
+      oldFile2Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile3) {
+      oldFile3Found = true
+    }
+
   }
 
-  if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.", expectedPathDoesExist, dMgr.doesPathExist)
+  if oldFile1Found == false {
+    t.Errorf("Expected deletion of oldFile1='%v'. "+
+      "The file was NOT deleted!", oldFile1)
   }
 
-  if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
-      true, dMgr.isAbsolutePathPopulated)
+  if oldFile2Found == false {
+    t.Errorf("Expected deletion of oldFile2='%v'. "+
+      "The file was NOT deleted!", oldFile2)
   }
 
-  if expectedAbsDir != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
-      expectedAbsDir, dMgr.absolutePath)
+  if oldFile3Found == false {
+    t.Errorf("Expected deletion of oldFile3='%v'. "+
+      "The file was NOT deleted!", oldFile3)
   }
 
-  if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
-      expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
+  if len(dInfo.ErrReturns) != 0 {
+    t.Errorf("Expected zero Error Returns. Instead number of "+
+      "Error Returns='%v'", len(dInfo.ErrReturns))
   }
 
-  if true != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.",
-      true, dMgr.isAbsolutePathDifferentFromPath)
+  if dInfo.Directories.GetNumOfDirs() != 3 {
+    t.Errorf("Expected 3-directories to be found. Instead, number "+
+      "of directories found='%v'", dInfo.Directories.GetNumOfDirs())
   }
 
-  if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.",
-      expectedVolumeName, dMgr.volumeName)
-  }
+  err = fh.DeleteDirPathAll(origDir)
 
-  if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.",
-      expectedVolumeIsPopulated, dMgr.isVolumePopulated)
-  }
-
-  if expectedParentPath != dMgr.parentPath {
-    t.Errorf("Expected parentPath=='%v'. Instead, parentPath=='%v'.",
-      expectedParentPath, dMgr.parentPath)
-  }
-
-  if expectedIsParentPathPopulated != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
-      expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
-  }
-
-  if expectedRelativePath != dMgr.relativePath {
-    t.Errorf("Expected relativePath=='%v'. Instead, relativePath=='%v'.",
-      expectedRelativePath, dMgr.relativePath)
-  }
-
-  if true != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-      true, dMgr.isRelativePathPopulated)
+  if err != nil {
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(origDir).\n" +
+      "origDir='%v'\nError='%v'\n", origDir, err.Error())
   }
 
 }
 
-func TestDirMgr_New_07(t *testing.T) {
-  fh := FileHelper{}
-  origDir := fh.AdjustPathSlash("../testfiles/testfiles2/")
-  expectedPath := fh.AdjustPathSlash("../testfiles/testfiles2")
-  expectedAbsDir, err := fh.MakeAbsolutePath(expectedPath)
+func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
+  origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
+      "Error='%v'", err.Error())
+    return
   }
 
-  expectedPathDoesExist := fh.DoesFileExist(expectedPath)
+  fh := FileHelper{}
 
-  expectedAbsPathDoesExist := fh.DoesFileExist(expectedAbsDir)
-
-  expectedVolumeName := fp.VolumeName(expectedAbsDir)
-  var expectedVolumeIsPopulated bool
-
-  if expectedVolumeName != "" {
-    expectedVolumeIsPopulated = true
-  } else {
-    expectedVolumeIsPopulated = false
+  if !fh.DoesFileExist(origDir) {
+    t.Errorf("Error: The target directory does NOT Exist! origDir='%v'",
+      origDir)
   }
 
-  expectedParentPath := strings.TrimSuffix(expectedAbsDir, fh.AdjustPathSlash("/testfiles2"))
-  expectedIsParentPathPopulated := false
+  oldFile1 := "test.htm"
+  oldFile2 := "006890_WritingFiles.htm"
+  oldFile3 := "006870_ReadingFiles.htm"
 
-  if expectedParentPath != "" {
-    expectedIsParentPathPopulated = true
+  oldFiles := make([]string, 3, 10)
+
+  oldFiles[0] = origDir + string(os.PathSeparator) + oldFile1
+  oldFiles[1] = origDir + string(os.PathSeparator) + oldFile2
+  oldFiles[2] = origDir + string(os.PathSeparator) + oldFile3
+
+  newAccessTime := time.Date(2017,2,25,10,30,30,1250, time.Local)
+  newModTime := time.Date(2017,2,25,10,30,30,1250, time.Local)
+  dateFmtStr := "2006-01-02 15:04:05.000000000 -0700 MST"
+
+  err = fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime)
+
+  if err != nil {
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime).\n" +
+      "oldFiles[0]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
+      oldFiles[0], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+    return
   }
 
-  expectedRelativePath := "testfiles2"
+  newAccessTime = time.Date(2017,11,30,10,30,30,1250, time.Local)
+  newModTime = time.Date(2017,11,30,10,30,30,1250, time.Local)
+
+  err = fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime)
+
+  if err != nil {
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime).\n" +
+      "oldFiles[1]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
+      oldFiles[1], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+    return
+  }
+
+  newAccessTime = time.Date(2017,12,1,18,30,30,1250, time.Local)
+  newModTime = time.Date(2017,12,1,18,30,30,1250, time.Local)
+
+  err = fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime)
+
+  if err != nil {
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime).\n" +
+      "oldFiles[2]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
+      oldFiles[2], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+    return
+  }
+
 
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' "+
+      "Error='%v'", origDir, err.Error())
   }
 
-  if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
-      true, dMgr.isInitialized)
+
+  fOlderThanStr := "2017-01-30 00:00:00.000000000 -0600 CST"
+
+  searchPattern := "*.htm"
+  filesOlderThan, err := time.Parse(dateFmtStr, fOlderThanStr)
+
+  if err != nil {
+    t.Errorf("Error returned from time.Parse(fmtstr, fOlderThanStr). "+
+      "fOlderThanStr='%v' Error='%v'", fOlderThanStr, err.Error())
   }
 
-  if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
-      true, dMgr.isPathPopulated)
+  filesNewerThan := time.Time{}
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
+
+  if dInfo.DeletedFiles.GetNumOfFileMgrs() != 0 {
+    t.Errorf("Expected to find 0-files deleted. Instead, %v-files were deleted.",
+      dInfo.DeletedFiles.GetNumOfFileMgrs())
   }
 
-  if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
+  if len(dInfo.ErrReturns) != 0 {
+    t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'",
+      len(dInfo.ErrReturns))
   }
 
-  if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.",
-      expectedPathDoesExist, dMgr.doesPathExist)
+  if dInfo.Directories.GetNumOfDirs() != 3 {
+    t.Errorf("Expected 3-directories to be found. Instead, number of directories "+
+      "found='%v'", dInfo.Directories.GetNumOfDirs())
   }
 
-  if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
-      true, dMgr.isAbsolutePathPopulated)
-  }
+  err = fh.DeleteDirPathAll(origDir)
 
-  if expectedAbsDir != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
-      expectedAbsDir, dMgr.absolutePath)
-  }
-
-  if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
-      expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
-  }
-
-  if true != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, "+
-      "isAbsolutePathDifferentFromPath=='%v'.",
-      true, dMgr.isAbsolutePathDifferentFromPath)
-  }
-
-  if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.",
-      expectedVolumeName, dMgr.volumeName)
-  }
-
-  if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.",
-      expectedVolumeIsPopulated, dMgr.isVolumePopulated)
-  }
-
-  if expectedParentPath != dMgr.parentPath {
-    t.Errorf("Expected parentPath=='%v'. Instead, parentPath=='%v'.",
-      expectedParentPath, dMgr.parentPath)
-  }
-
-  if expectedIsParentPathPopulated != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
-      expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
-  }
-
-  if expectedRelativePath != dMgr.relativePath {
-    t.Errorf("Expected relativePath=='%v'. Instead, relativePath=='%v'.",
-      expectedRelativePath, dMgr.relativePath)
-  }
-
-  if true != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-      true, dMgr.isRelativePathPopulated)
+  if err != nil {
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(origDir).\n" +
+      "origDir='%v'\nError='%v'\n", origDir, err.Error())
   }
 
 }
 
-func TestDirMgr_New_08(t *testing.T) {
-  fh := FileHelper{}
-  rawDir := "D:/"
-  expectedPath := fh.AdjustPathSlash("D:")
-  expectedAbsDir := expectedPath
-
-  expectedPathDoesExist := fh.DoesFileExist(expectedPath)
-
-  expectedAbsPathDoesExist := fh.DoesFileExist(expectedAbsDir)
-
-  expectedVolumeName := fp.VolumeName(expectedAbsDir)
-  var expectedVolumeIsPopulated bool
-
-  if expectedVolumeName != "" {
-    expectedVolumeIsPopulated = true
-  } else {
-    expectedVolumeIsPopulated = false
-  }
-
-  expectedParentPath := ""
-
-  expectedRelativePath := ""
-
-  dMgr, err := DirMgr{}.New(rawDir)
+func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
+  origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawDir). rawDir=='%v' Error='%v'", rawDir, err.Error())
+    t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
+      "Error='%v'", err.Error())
+    return
   }
 
-  if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
-      true, dMgr.isInitialized)
+  fh := FileHelper{}
+
+  if !fh.DoesFileExist(origDir) {
+    t.Errorf("Error: The target directory does NOT Exist! origDir='%v'",
+      origDir)
   }
 
-  if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
-      true, dMgr.isPathPopulated)
+  oldFile1 := "test.htm"
+  oldFile2 := "006890_WritingFiles.htm"
+  oldFile3 := "006870_ReadingFiles.htm"
+
+  oldFiles := make([]string, 3, 10)
+
+  oldFiles[0] = origDir + string(os.PathSeparator) + oldFile1
+  oldFiles[1] = origDir + string(os.PathSeparator) + oldFile2
+  oldFiles[2] = origDir + string(os.PathSeparator) + oldFile3
+
+  newAccessTime := time.Date(2016,2,25,10,30,30,1250, time.Local)
+  newModTime := time.Date(2016,2,25,10,30,30,1250, time.Local)
+  dateFmtStr := "2006-01-02 15:04:05.000000000 -0700 MST"
+
+  err = fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime)
+
+  if err != nil {
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime).\n" +
+      "oldFiles[0]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
+      oldFiles[0], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+    return
   }
 
-  if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.",
-      expectedPath, dMgr.path)
+  newAccessTime = time.Date(2017,11,30,10,30,30,1250, time.Local)
+  newModTime = time.Date(2017,11,30,10,30,30,1250, time.Local)
+
+  err = fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime)
+
+  if err != nil {
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime).\n" +
+      "oldFiles[1]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
+      oldFiles[1], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+    return
   }
 
-  if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.",
-      expectedPathDoesExist, dMgr.doesPathExist)
+  newAccessTime = time.Date(2017,12,1,18,30,30,1250, time.Local)
+  newModTime = time.Date(2017,12,1,18,30,30,1250, time.Local)
+
+  err = fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime)
+
+  if err != nil {
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime).\n" +
+      "oldFiles[2]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
+      oldFiles[2], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+    return
   }
 
-  if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
-      true, dMgr.isAbsolutePathPopulated)
+
+  newFile1 := "newerFileForTest_01.txt"
+  newFile2 := "newerFileForTest_02.txt"
+  newFile3 := "newerFileForTest_03.txt"
+
+  newFiles := make([]string, 3, 10)
+
+  newFiles[0] = origDir + string(os.PathSeparator) + newFile1
+  newFiles[1] = origDir + string(os.PathSeparator) + newFile2
+  newFiles[2] = origDir + string(os.PathSeparator) + newFile3
+
+  newAccessTime = time.Date(2018,1,25,10,30,30,1250, time.Local)
+  newModTime = time.Date(2018,1,25,10,30,30,1250, time.Local)
+  dateFmtStr = "2006-01-02 15:04:05.000000000 -0700 MST"
+
+  err = fh.ChangeFileTimes(newFiles[0],newAccessTime, newModTime)
+
+  if err != nil {
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(newFiles[0],newAccessTime, newModTime).\n" +
+      "newFiles[0]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
+      newFiles[0], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+    return
   }
 
-  if expectedAbsDir != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
-      expectedAbsDir, dMgr.absolutePath)
+  newAccessTime = time.Date(2017,12,30,10,30,30,1250, time.Local)
+  newModTime = time.Date(2017,12,30,10,30,30,1250, time.Local)
+
+  err = fh.ChangeFileTimes(newFiles[1],newAccessTime, newModTime)
+
+  if err != nil {
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(newFiles[1],newAccessTime, newModTime).\n" +
+      "oldFiles[1]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
+      newFiles[1], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+    return
   }
 
-  if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
-      expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
+  newAccessTime = time.Date(2017,12,1,19,54,31,1250, time.Local)
+  newModTime = time.Date(2017,12,1,19,54,31,1250, time.Local)
+
+  err = fh.ChangeFileTimes(newFiles[2],newAccessTime, newModTime)
+
+  if err != nil {
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(newFiles[2],newAccessTime, newModTime).\n" +
+      "newFiles[2]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
+      newFiles[2], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+    return
   }
 
-  if false != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. "+
-      "Instead, isAbsolutePathDifferentFromPath=='%v'.",
-      false, dMgr.isAbsolutePathDifferentFromPath)
+  dMgr, err := DirMgr{}.New(origDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'",
+      origDir, err.Error())
   }
 
-  if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.",
-      expectedVolumeName, dMgr.volumeName)
+  searchPattern := ""
+
+  fNewerThanStr := "2017-12-01 19:54:30.000000000 -0600 CST"
+
+  filesOlderThan := time.Time{}
+
+  filesNewerThan, err := time.Parse(dateFmtStr, fNewerThanStr)
+
+  if err != nil {
+    t.Errorf("Error returned from time.Parse(fmtstr, fNewerThanStr). "+
+      "fNewerThanStr='%v' Error='%v'", fNewerThanStr, err.Error())
   }
 
-  if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.",
-      expectedVolumeIsPopulated, dMgr.isVolumePopulated)
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
+
+  if dInfo.DeletedFiles.GetNumOfFileMgrs() != 3 {
+    t.Errorf("Expected to find 3-files deleted. Instead, %v-files "+
+      "were deleted.", dInfo.DeletedFiles.GetNumOfFileMgrs())
+
   }
 
-  if expectedParentPath != dMgr.parentPath {
-    t.Errorf("Expected parentPath=='%v'. Instead, parentPath=='%v'.",
-      expectedParentPath, dMgr.parentPath)
+  newFile1Found := false
+  newFile2Found := false
+  newFile3Found := false
+
+  for i := 0; i < dInfo.DeletedFiles.GetNumOfFileMgrs(); i++ {
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, newFile1) {
+      newFile1Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, newFile2) {
+      newFile2Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, newFile3) {
+      newFile3Found = true
+    }
+
   }
 
-  if false != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
-      false, dMgr.isParentPathPopulated)
+  if newFile1Found == false {
+    t.Errorf("Expected deletion of newFile1='%v'. The file was NOT deleted!",
+      newFile1)
   }
 
-  if expectedRelativePath != dMgr.relativePath {
-    t.Errorf("Expected relativePath=='%v'. Instead, relativePath=='%v'.",
-      expectedRelativePath, dMgr.relativePath)
+  if newFile2Found == false {
+    t.Errorf("Expected deletion of newFile2='%v'. The file was NOT deleted!",
+      newFile2)
   }
 
-  if false != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-      false, dMgr.isRelativePathPopulated)
+  if newFile3Found == false {
+    t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!",
+      newFile3)
+  }
+
+  if len(dInfo.ErrReturns) != 0 {
+    t.Errorf("Expected zero Error Returns. Instead number of "+
+      "Error Returns='%v'", len(dInfo.ErrReturns))
+  }
+
+  if dInfo.Directories.GetNumOfDirs() != 3 {
+    t.Errorf("Expected 3-directories to be found. Instead, number of "+
+      "directories found='%v'", dInfo.Directories.GetNumOfDirs())
+  }
+
+  err = fh.DeleteDirPathAll(origDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(origDir).\n" +
+      "origDir='%v'\nError='%v'\n", origDir, err.Error())
   }
 
 }
 
-func TestDirMgr_New_09(t *testing.T) {
+func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
+
+  // origDir = D:\gowork\src\MikeAustin71\pathfileopsgo\dirwalkdeletetests\dirdelete01
+  origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
+
+  if err != nil {
+    t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
+      "Error='%v'", err.Error())
+    return
+  }
+
   fh := FileHelper{}
-  rawPath := "../filesfortest/newfilesfortest"
-  expectedPath := fh.AdjustPathSlash(rawPath)
-  expectedAbsPath, err := fh.MakeAbsolutePath(expectedPath)
+
+  if !fh.DoesFileExist(origDir) {
+    t.Errorf("Error: The target directory does NOT Exist! origDir='%v'",
+      origDir)
+    return
+  }
+
+  dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(expectedPath). expectedPath=='%v'  Error='%v'", expectedPath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' "+
+      "Error='%v'", origDir, err.Error())
   }
 
-  expectedPathDoesExist := fh.DoesFileExist(expectedPath)
+  searchPattern := ""
+  fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
+  fNewerThanStr := "2016-07-01 00:00:00.000000000 -0500 CDT"
+  filesOlderThan := time.Now()
+  filesOlderThan.AddDate(0, 1, 0)
 
-  expectedAbsPathDoesExist := fh.DoesFileExist(expectedAbsPath)
-
-  expectedVolumeName := fp.VolumeName(expectedAbsPath)
-  var expectedVolumeIsPopulated bool
-
-  if expectedVolumeName != "" {
-    expectedVolumeIsPopulated = true
-  } else {
-    expectedVolumeIsPopulated = false
-  }
-
-  expectedParentPath := strings.TrimSuffix(expectedAbsPath, fh.AdjustPathSlash("/newfilesfortest"))
-  expectedIsParentPathPopulated := false
-
-  if expectedParentPath != "" {
-    expectedIsParentPathPopulated = true
-  }
-
-  expectedRelativePath := "newfilesfortest"
-
-  dMgr, err := DirMgr{}.New(rawPath)
+  filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawPath). rawPath=='%v' Error='%v'",
-      rawPath, err.Error())
+    t.Errorf("Error returned from time.Parse(fmtstr, fNewerThanStr). "+
+      "fNewerThanStr='%v' Error='%v'", fNewerThanStr, err.Error())
   }
 
-  if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
-      true, dMgr.isInitialized)
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
+
+  if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
+    t.Errorf("Expected to find 6-files deleted. Instead, %v-files "+
+      "were deleted.", dInfo.DeletedFiles.GetNumOfFileMgrs())
   }
 
-  if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
-      true, dMgr.isPathPopulated)
+  oldFile1 := "test.htm"
+  oldFile2 := "006890_WritingFiles.htm"
+  oldFile3 := "006870_ReadingFiles.htm"
+  newFile1 := "newerFileForTest_01.txt"
+  newFile2 := "newerFileForTest_02.txt"
+  newFile3 := "newerFileForTest_03.txt"
+
+  oldFile1Found := false
+  oldFile2Found := false
+  oldFile3Found := false
+
+  newFile1Found := false
+  newFile2Found := false
+  newFile3Found := false
+
+  for i := 0; i < dInfo.DeletedFiles.GetNumOfFileMgrs(); i++ {
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile1) {
+      oldFile1Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile2) {
+      oldFile2Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile3) {
+      oldFile3Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, newFile1) {
+      newFile1Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, newFile2) {
+      newFile2Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, newFile3) {
+      newFile3Found = true
+    }
+
   }
 
-  if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
+  if oldFile1Found == false {
+    t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!", oldFile1)
   }
 
-  if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.",
-      expectedPathDoesExist, dMgr.doesPathExist)
+  if oldFile2Found == false {
+    t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!", oldFile2)
   }
 
-  if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
-      true, dMgr.isAbsolutePathPopulated)
+  if oldFile3Found == false {
+    t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!", oldFile3)
   }
 
-  if expectedAbsPath != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
-      expectedAbsPath, dMgr.absolutePath)
+  if newFile1Found == false {
+    t.Errorf("Expected deletion of newFile1='%v'. The file was NOT deleted!", newFile1)
   }
 
-  if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
-      expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
+  if newFile2Found == false {
+    t.Errorf("Expected deletion of newFile2='%v'. The file was NOT deleted!", newFile2)
   }
 
-  if true != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. "+
-      "Instead, isAbsolutePathDifferentFromPath=='%v'.",
-      true, dMgr.isAbsolutePathDifferentFromPath)
+  if newFile3Found == false {
+    t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!", newFile3)
   }
 
-  if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.",
-      expectedVolumeName, dMgr.volumeName)
+  if len(dInfo.ErrReturns) != 0 {
+    t.Errorf("Expected zero Error Returns. Instead number of Error Returns='%v'",
+      len(dInfo.ErrReturns))
   }
 
-  if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.",
-      expectedVolumeIsPopulated, dMgr.isVolumePopulated)
+  if dInfo.Directories.GetNumOfDirs() != 3 {
+    t.Errorf("Expected 3-directories to be found. Instead, number of "+
+      "directories found='%v'", dInfo.Directories.GetNumOfDirs())
+
   }
 
-  if expectedParentPath != dMgr.parentPath {
-    t.Errorf("Expected parentPath=='%v'. Instead, parentPath=='%v'.",
-      expectedParentPath, dMgr.parentPath)
-  }
+  err = fh.DeleteDirPathAll(origDir)
 
-  if expectedIsParentPathPopulated != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
-      expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
-  }
-
-  if expectedRelativePath != dMgr.relativePath {
-    t.Errorf("Expected relativePath=='%v'. Instead, relativePath=='%v'.",
-      expectedRelativePath, dMgr.relativePath)
-  }
-
-  if true != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-      true, dMgr.isRelativePathPopulated)
+  if err != nil {
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(origDir).\n" +
+      "origDir='%v'\nError='%v'\n", origDir, err.Error())
   }
 
 }
 
-func TestDirMgr_SubstituteBaseDir_01(t *testing.T) {
+func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
+  origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
+
+  if err != nil {
+    t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
+      "Error='%v'", err.Error())
+    return
+  }
 
   fh := FileHelper{}
 
-  rawOrigPath := fh.AdjustPathSlash("../dirwalktests/dir01/dir02/dir03")
+  if !fh.DoesFileExist(origDir) {
+    t.Errorf("Error: The target directory does NOT Exist! origDir='%v'",
+      origDir)
+  }
 
-  rawBasePath := fh.AdjustPathSlash("../dirwalktests/dir01")
-
-  substitutePath := fh.AdjustPathSlash("../checkfiles")
-
-  expectedPath := fh.AdjustPathSlash("../checkfiles/dir02/dir03")
-
-  expectedAbsPath, err := fh.GetAbsPathFromFilePath(expectedPath)
+  dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath). expectedPath='%v'  Error='%v'", expectedPath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' "+
+      "Error='%v'", origDir, err.Error())
   }
 
-  expectedAbsPath = strings.ToLower(expectedAbsPath)
+  searchPattern := ""
+  filesOlderThan := time.Time{}
+  filesNewerThan := time.Time{}
 
-  dMgrOrig, err := DirMgr{}.New(rawOrigPath)
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.IsFileModeSearchEngaged = true
+  fsc.SelectByFileMode = 0666
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
+
+  if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
+    t.Errorf("Expected to find 6-files deleted. Instead, "+
+      "%v-files were deleted.", dInfo.DeletedFiles.GetNumOfFileMgrs())
+  }
+
+  oldFile1 := "test.htm"
+  oldFile2 := "006890_WritingFiles.htm"
+  oldFile3 := "006870_ReadingFiles.htm"
+  newFile1 := "newerFileForTest_01.txt"
+  newFile2 := "newerFileForTest_02.txt"
+  newFile3 := "newerFileForTest_03.txt"
+
+  oldFile1Found := false
+  oldFile2Found := false
+  oldFile3Found := false
+
+  newFile1Found := false
+  newFile2Found := false
+  newFile3Found := false
+
+  for i := 0; i < dInfo.DeletedFiles.GetNumOfFileMgrs(); i++ {
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile1) {
+      oldFile1Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile2) {
+      oldFile2Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile3) {
+      oldFile3Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, newFile1) {
+      newFile1Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, newFile2) {
+      newFile2Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, newFile3) {
+      newFile3Found = true
+    }
+
+  }
+
+  if oldFile1Found == false {
+    t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!",
+      oldFile1)
+  }
+
+  if oldFile2Found == false {
+    t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!",
+      oldFile2)
+  }
+
+  if oldFile3Found == false {
+    t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!",
+      oldFile3)
+  }
+
+  if newFile1Found == false {
+    t.Errorf("Expected deletion of newFile1='%v'. The file was NOT deleted!",
+      newFile1)
+  }
+
+  if newFile2Found == false {
+    t.Errorf("Expected deletion of newFile2='%v'. The file was NOT deleted!",
+      newFile2)
+  }
+
+  if newFile3Found == false {
+    t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!",
+      newFile3)
+  }
+
+  if len(dInfo.ErrReturns) != 0 {
+    t.Errorf("Expected zero Error Returns. Instead number of Error "+
+      "Returns='%v'", len(dInfo.ErrReturns))
+  }
+
+  if dInfo.Directories.GetNumOfDirs() != 3 {
+    t.Errorf("Expected 3-directories to be found. Instead, number of "+
+      "directories found='%v'", dInfo.Directories.GetNumOfDirs())
+  }
+
+  err = fh.DeleteDirPathAll(origDir)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawOrigPath). rawOrigPath='%v'  Error='%v'", rawOrigPath, err.Error())
-  }
-
-  dMgrBase, err := DirMgr{}.New(rawBasePath)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawBasePath). rawBasePath='%v'  Error='%v'", rawBasePath, err.Error())
-  }
-
-  dMgrSubstitute, err := DirMgr{}.New(substitutePath)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(substitutePath). substitutePath='%v'  Error='%v'", substitutePath, err.Error())
-  }
-
-  dMgrResult, err := dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute)
-
-  if err != nil {
-    t.Errorf("Error returned by dMgrOrig.SubstituteBaseDir(dMgrBase, "+
-      "dMgrSubstitute).  Error='%v'",
-      err.Error())
-  }
-
-  if expectedAbsPath != dMgrResult.path {
-    t.Errorf("Expected final substituted path = '%v'.  Instead substituted "+
-      "path = '%v' ",
-      expectedAbsPath, dMgrResult.path)
-  }
-
-  if expectedAbsPath != dMgrResult.absolutePath {
-    t.Errorf("Expected final substituted absolute path = '%v'.  Instead "+
-      "substituted absolute path = '%v' ",
-      expectedAbsPath, dMgrResult.absolutePath)
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(origDir).\n" +
+      "origDir='%v'\nError='%v'\n", origDir, err.Error())
   }
 
 }
 
-func TestDirMgr_SubstituteBaseDir_02(t *testing.T) {
+func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
+  origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
+
+  if err != nil {
+    t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
+      "Error='%v'", err.Error())
+    return
+  }
 
   fh := FileHelper{}
 
-  rawOrigPath := fh.AdjustPathSlash("../dirwalktests/dir01/dir02/dir03/")
+  if !fh.DoesFileExist(origDir) {
+    t.Errorf("Error: The target directory does NOT Exist! origDir='%v'",
+      origDir)
+  }
 
-  rawBasePath := fh.AdjustPathSlash("../dirwalktests/dir01/")
-
-  substitutePath := fh.AdjustPathSlash("../checkfiles/")
-
-  expectedPath := fh.AdjustPathSlash("../checkfiles/dir02/dir03")
-
-  expectedAbsPath, err := fh.GetAbsPathFromFilePath(expectedPath)
+  dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath). expectedPath='%v'  Error='%v'", expectedPath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' "+
+      "Error='%v'", origDir, err.Error())
   }
 
-  expectedAbsPath = strings.ToLower(expectedAbsPath)
+  searchPattern1 := "*.txt"
+  searchPattern2 := "*.htm"
+  filesOlderThan := time.Time{}
+  filesNewerThan := time.Time{}
 
-  dMgrOrig, err := DirMgr{}.New(rawOrigPath)
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern1, searchPattern2}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.IsFileModeSearchEngaged = true
+  fsc.SelectByFileMode = 0666
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
+
+  if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
+    t.Errorf("Expected to find 6-files deleted. Instead, %v-files "+
+      "were deleted.", dInfo.DeletedFiles.GetNumOfFileMgrs())
+  }
+
+  oldFile1 := "test.htm"
+  oldFile2 := "006890_WritingFiles.htm"
+  oldFile3 := "006870_ReadingFiles.htm"
+  newFile1 := "newerFileForTest_01.txt"
+  newFile2 := "newerFileForTest_02.txt"
+  newFile3 := "newerFileForTest_03.txt"
+
+  oldFile1Found := false
+  oldFile2Found := false
+  oldFile3Found := false
+
+  newFile1Found := false
+  newFile2Found := false
+  newFile3Found := false
+
+  for i := 0; i < dInfo.DeletedFiles.GetNumOfFileMgrs(); i++ {
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile1) {
+      oldFile1Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile2) {
+      oldFile2Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, oldFile3) {
+      oldFile3Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, newFile1) {
+      newFile1Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, newFile2) {
+      newFile2Found = true
+    }
+
+    if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, newFile3) {
+      newFile3Found = true
+    }
+
+  }
+
+  if oldFile1Found == false {
+    t.Errorf("Expected deletion of oldFile1='%v'. The file was NOT deleted!",
+      oldFile1)
+  }
+
+  if oldFile2Found == false {
+    t.Errorf("Expected deletion of oldFile2='%v'. The file was NOT deleted!",
+      oldFile2)
+  }
+
+  if oldFile3Found == false {
+    t.Errorf("Expected deletion of oldFile3='%v'. The file was NOT deleted!",
+      oldFile3)
+  }
+
+  if newFile1Found == false {
+    t.Errorf("Expected deletion of newFile1='%v'. The file was NOT deleted!",
+      newFile1)
+  }
+
+  if newFile2Found == false {
+    t.Errorf("Expected deletion of newFile2='%v'. The file was NOT deleted!",
+      newFile2)
+  }
+
+  if newFile3Found == false {
+    t.Errorf("Expected deletion of newFile3='%v'. The file was NOT deleted!",
+      newFile3)
+  }
+
+  if len(dInfo.ErrReturns) != 0 {
+    t.Errorf("Expected zero Error Returns. Instead number of "+
+      "Error Returns='%v'", len(dInfo.ErrReturns))
+  }
+
+  if dInfo.Directories.GetNumOfDirs() != 3 {
+    t.Errorf("Expected 3-directories to be found. Instead, number of "+
+      "directories found='%v'", dInfo.Directories.GetNumOfDirs())
+  }
+
+  err = fh.DeleteDirPathAll(origDir)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawOrigPath). rawOrigPath='%v'  Error='%v'", rawOrigPath, err.Error())
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(origDir).\n" +
+      "origDir='%v'\nError='%v'\n", origDir, err.Error())
   }
 
-  dMgrBase, err := DirMgr{}.New(rawBasePath)
+}
+
+func TestDirMgr_DeleteWalkDirFiles_09(t *testing.T) {
+  testDir := "../checkfiles/iDoNotExist"
+
+  dMgr, err := DirMgr{}.New(testDir)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawBasePath). rawBasePath='%v'  Error='%v'", rawBasePath, err.Error())
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir)\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
   }
 
-  dMgrSubstitute, err := DirMgr{}.New(substitutePath)
+  searchPattern1 := "*.txt"
+  searchPattern2 := "*.htm"
+  filesOlderThan := time.Time{}
+  filesNewerThan := time.Time{}
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern1, searchPattern2}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.IsFileModeSearchEngaged = true
+  fsc.SelectByFileMode = 0666
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  _, err = dMgr.DeleteWalkDirFiles(fsc)
+
+  if err == nil {
+    t.Error("Expected an error return from dMgr.DeleteWalkDirFiles(fsc)\n" +
+      "because 'dMgr' does NOT exist!\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestDirMgr_DeleteWalkDirFiles_10(t *testing.T) {
+  origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(substitutePath). substitutePath='%v'  Error='%v'", substitutePath, err.Error())
+    t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
+      "Error='%v'", err.Error())
+    return
   }
 
-  dMgrResult, err := dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute)
+  fh := FileHelper{}
+
+  if !fh.DoesFileExist(origDir) {
+    t.Errorf("Error: The target directory does NOT Exist! origDir='%v'",
+      origDir)
+  }
+
+  dMgr, err := DirMgr{}.New(origDir)
+
+  searchPattern1 := "*.txt"
+  searchPattern2 := "*.htm"
+  filesOlderThan := time.Time{}
+  filesNewerThan := time.Time{}
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern1, searchPattern2}
+  fsc.FilesOlderThan = filesOlderThan
+  fsc.FilesNewerThan = filesNewerThan
+  fsc.IsFileModeSearchEngaged = true
+  fsc.SelectByFileMode = 0666
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  dMgr.isInitialized = false
+  _, err = dMgr.DeleteWalkDirFiles(fsc)
+
+  if err == nil {
+    t.Error("Expected an error return from dMgr.DeleteWalkDirFiles(fsc)\n" +
+      "because 'dMgr' is INVALID!\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  err = fh.DeleteDirPathAll(origDir)
 
   if err != nil {
-    t.Errorf("Error returned by dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute).  Error='%v'", err.Error())
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(origDir).\n" +
+      "origDir='%v'\nError='%v'\n", origDir, err.Error())
   }
 
-  if expectedAbsPath != dMgrResult.path {
-    t.Errorf("Expected final substituted path = '%v'.  Instead substituted path = '%v' ",
-      expectedAbsPath, dMgrResult.path)
+}
+
+/*
+  ************************************************************************************
+                            Test and Setup Methods
+  ************************************************************************************
+*/
+
+func dirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
+
+  ePrefix := "xt_dirmgr_02_test.go Func: dirMgr02TestSetupFileWalkDeleteFiles() "
+
+  fh := FileHelper{}
+
+  origDir, err := fh.MakeAbsolutePath("../dirwalkdeletetests/dirdelete01")
+
+  if err != nil {
+    return "",
+      fmt.Errorf(ePrefix +
+        "Error returned by fh.MakeAbsolutePath(\"../dirwalkdeletetests/dirdelete01\").\n"+
+        "Error='%v'\n", err.Error())
   }
 
-  if expectedAbsPath != dMgrResult.absolutePath {
-    t.Errorf("Expected final substituted absolute path = '%v'.  Instead substituted absolute path = '%v' ",
-      expectedAbsPath, dMgrResult.absolutePath)
+  err = fh.DeleteDirPathAll(origDir)
+
+  if err != nil {
+    return "", fmt.Errorf(ePrefix+
+      "Test Setup Error returned by fh.DeleteDirPathAll(origDir).\n"+
+      "origDir='%v'\nError='%v'\n", origDir, err.Error())
   }
 
+
+  origFullDir := origDir + string(os.PathSeparator) + "dirdelete02" +
+    string(os.PathSeparator) + "dirdelete03"
+
+  // origDir does NOT exist!
+
+  err = fh.MakeDirAll(origFullDir)
+
+  if err != nil {
+    return "",
+      fmt.Errorf(ePrefix+
+        "Error returned from fh.MakeDirAll(origFullDir).\n"+
+        "origDir='%v'\nError='%v'", origFullDir, err.Error())
+  }
+
+
+  dirOldFilesForTest, err := fh.MakeAbsolutePath("../filesfortest/oldfilesfortest")
+
+  if err != nil {
+    return "", fmt.Errorf(ePrefix+
+      "Error returned by fh.MakeAbsolutePath(\"../filesfortest/oldfilesfortest\").\n"+
+      "Error='%v'\n", err.Error())
+  }
+
+  // Copy Old Files
+
+  if !fh.DoesFileExist(dirOldFilesForTest) {
+    return "", fmt.Errorf(ePrefix+"Error: Old Files Directory does NOT exist!\n"+
+      "dirOldFilesForTest='%v'", dirOldFilesForTest)
+
+  }
+
+  oldFiles := make([]string, 3, 10)
+
+  oldFiles[0] = "test.htm"
+  oldFiles[1] = "006890_WritingFiles.htm"
+  oldFiles[2] = "006870_ReadingFiles.htm"
+
+  for i:=0; i < 3 ; i++ {
+
+    srcFile := dirOldFilesForTest + string(os.PathSeparator) + oldFiles[i]
+    destFile := origDir + string(os.PathSeparator) + oldFiles[i]
+
+    err = fh.CopyFileByIo(srcFile, destFile)
+
+    if err != nil {
+      return "", fmt.Errorf(ePrefix+
+        "Error while Copying Source File to  Destination File: fh.CopyFileByIo(srcFile, destFile)\n" +
+        "srcFile='%v', destFile='%v'\nError:'%v'",
+        srcFile, destFile, err)
+    }
+
+  }
+
+  // Copy NewFromPathFileNameExtStr Files
+  newFiles := make([]string, 3, 10)
+
+  newFiles[0] = "newerFileForTest_01.txt"
+  newFiles[1] = "newerFileForTest_02.txt"
+  newFiles[2] = "newerFileForTest_03.txt"
+
+  dirNewFilesForTest, err := fh.MakeAbsolutePath("../filesfortest/newfilesfortest")
+
+  if err != nil {
+    return "",
+      fmt.Errorf(ePrefix+"Error return from fh.MakeAbsolutePath(dirNewFilesForTest)\n"+
+        "dirNewFilesForTest='%v'\nError='%v' ", dirNewFilesForTest, err.Error())
+  }
+
+  for i:=0; i < 3; i++ {
+
+    srcFile := dirNewFilesForTest + string(os.PathSeparator) + newFiles[i]
+    destFile := origDir + string(os.PathSeparator) + newFiles[i]
+
+    err = fh.CopyFileByIo(srcFile, destFile)
+
+    if err != nil {
+      return "",
+        fmt.Errorf(ePrefix+
+          "Error while Copying Source File to  Destination File\n" +
+          "fh.CopyFileByIo(srcFile, destFile)\n"  +
+          "srcFile='%v'\ndestFile='%v'\nError:'%v'",
+          srcFile, destFile, err)
+    }
+
+  }
+
+  return origDir, nil
+}
+
+// Set up Directory Tree, ../dirwalktests for tests!
+func dirMgr02SetupDirWalkTests() error {
+
+  ePrefix := "xt_dirmgr02.dirMgr02SetupDirWalkTests() "
+
+  fh := FileHelper{}
+
+  var err error
+
+  _ = fh.DeleteDirPathAll("../dirwalktests")
+
+  dest3, err := fh.MakeAbsolutePath("../dirwalktests/dir01/dir02/dir03")
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Error returned by fh.MakeAbsolutePath(\"../dirwalktests/dir01/dir02/dir03\"). "+
+      "Error='%v' ", err.Error())
+  }
+
+  destDirMgr3, err := DirMgr{}.New(dest3)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"Error from DirMgr{}.NewFromPathFileNameExtStr(dest3) "+
+      "dest3='%v' Error='%v' ", dest3, err.Error())
+  }
+
+  dest1, err := fh.MakeAbsolutePath("../dirwalktests/dir01")
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Error returned by fh.MakeAbsolutePath(\"../dirwalktests/dir01\"). "+
+      "Error='%v' ", err.Error())
+  }
+
+  destDirMgr1, err := DirMgr{}.New(dest1)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"Error from DirMgr{}.NewFromPathFileNameExtStr(dest1) "+
+      "dest1='%v' Error='%v' ", dest1, err.Error())
+  }
+
+  dest0, err := fh.MakeAbsolutePath("../dirwalktests")
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Error returned by fh.MakeAbsolutePath(\"../dirwalktests\"). "+
+      "Error='%v' ", err.Error())
+  }
+
+  destDirMgr0, err := DirMgr{}.New(dest0)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"Error from DirMgr{}.NewFromPathFileNameExtStr(dest1) "+
+      "dest1='%v' Error='%v' ", dest0, err.Error())
+  }
+
+  // If the directory tree ../dirwalktests/dir01/dir02/dir03
+  // does not exist, create it.
+  if !destDirMgr3.DoesDirMgrAbsolutePathExist() {
+
+    err = destDirMgr3.MakeDir()
+
+    if err != nil {
+      return fmt.Errorf(ePrefix+"Error returned by destDirMgr.MakeDir(). "+
+        "destDir='%v' Error='%v' ", destDirMgr3.absolutePath, err.Error())
+    }
+
+  }
+
+  // Delete all files in the ../dirwalktests
+  deleteCriteria := FileSelectionCriteria{}
+  deleteCriteria.FileNamePatterns = make([]string, 0, 0)
+  deleteCriteria.FilesNewerThan = time.Time{}
+  deleteCriteria.FilesOlderThan = time.Time{}
+  deleteCriteria.IsFileModeSearchEngaged = false
+
+  dirTree0Info, err := destDirMgr0.FindWalkDirFiles(deleteCriteria)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"Error return from destDirMgr0.FindWalkDirFiles(deleteCriteria). "+
+      "Error='%v' ", err.Error())
+  }
+
+  // If directory tree ../dirwalktests contains files,
+  // delete them.
+  if dirTree0Info.FoundFiles.GetNumOfFileMgrs() > 0 {
+
+    _, err = destDirMgr0.DeleteWalkDirFiles(deleteCriteria)
+
+    if err != nil {
+      return fmt.Errorf(ePrefix+"Error returned by destDirMgr0.DeleteWalkDirFiles(deleteCriteria). "+
+        "Error='%v'", err.Error())
+    }
+
+  }
+
+  dirNewFilesForTest, err := fh.MakeAbsolutePath("../filesfortest/newfilesfortest")
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Error returned by fh.MakeAbsolutePath(\"../filesfortest/newfilesfortest\"). "+
+      "Error= '%v' ", err.Error())
+  }
+
+  srcNewFilesForTest, err := DirMgr{}.New(dirNewFilesForTest)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Error returned by DirMgr{}.NewFromPathFileNameExtStr(dirNewFilesForTest). "+
+      "dirNewFilesForTest='%v' Error='%v' ", dirNewFilesForTest, err.Error())
+  }
+
+  if !srcNewFilesForTest.DoesDirMgrPathExist() {
+    return fmt.Errorf(ePrefix+"FATAL ERROR: Directory %v DOES NOT EXIST", dirNewFilesForTest)
+  }
+
+  dirOldFilesForTest, err := fh.MakeAbsolutePath("../filesfortest/oldfilesfortest")
+
+  srcOldFilesForTest, err := DirMgr{}.New(dirOldFilesForTest)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Error returned by DirMgr{}.NewFromPathFileNameExtStr(dirOldFilesForTest). "+
+      "dirOldFilesForTest='%v' Error='%v' ", dirOldFilesForTest, err.Error())
+  }
+
+  if !srcOldFilesForTest.DoesDirMgrPathExist() {
+    return fmt.Errorf(ePrefix+"FATAL ERROR: Directory %v DOES NOT EXIST", dirOldFilesForTest)
+  }
+
+  filesToCopySrc := make([]string, 6, 10)
+  filesToCopyDest := make([]string, 6, 10)
+
+  filesToCopySrc[0] = srcNewFilesForTest.GetAbsolutePathWithSeparator() +
+    "newerFileForTest_01.txt"
+
+  filesToCopyDest[0] = destDirMgr1.GetAbsolutePathWithSeparator() +
+    "newerFileForTest_01.txt"
+
+  filesToCopySrc[1] = srcNewFilesForTest.GetAbsolutePathWithSeparator() +
+    "newerFileForTest_02.txt"
+
+  filesToCopyDest[1] = destDirMgr1.GetAbsolutePathWithSeparator() +
+    "newerFileForTest_02.txt"
+
+  filesToCopySrc[2] = srcNewFilesForTest.GetAbsolutePathWithSeparator() +
+    "newerFileForTest_03.txt"
+
+  filesToCopyDest[2] = destDirMgr1.GetAbsolutePathWithSeparator() +
+    "newerFileForTest_03.txt"
+
+  filesToCopySrc[3] = srcOldFilesForTest.GetAbsolutePathWithSeparator() +
+    "test.htm"
+
+  filesToCopyDest[3] = destDirMgr1.GetAbsolutePathWithSeparator() +
+    "test.htm"
+
+  filesToCopySrc[4] = srcOldFilesForTest.GetAbsolutePathWithSeparator() +
+    "006890_WritingFiles.htm"
+
+  filesToCopyDest[4] = destDirMgr1.GetAbsolutePathWithSeparator() +
+    "006890_WritingFiles.htm"
+
+  filesToCopySrc[5] = srcOldFilesForTest.GetAbsolutePathWithSeparator() +
+    "006870_ReadingFiles.htm"
+
+  filesToCopyDest[5] = destDirMgr1.GetAbsolutePathWithSeparator() +
+    "006870_ReadingFiles.htm"
+
+  for i := 0; i < len(filesToCopySrc); i++ {
+
+    if !fh.DoesFileExist(filesToCopySrc[i]) {
+      return fmt.Errorf(ePrefix+
+        "FATAL ERROR: Source File %v DOES NOT EXIST!!!", filesToCopySrc[i])
+    }
+
+    err = fh.CopyFileByLinkByIo(filesToCopySrc[i], filesToCopyDest[i])
+
+    if err != nil {
+      return fmt.Errorf(ePrefix+
+        "Error returned by fh.CopyFileByLinkByIo(filesToCopySrc[i], filesToCopyDest[i]). \n"+
+        "filesToCopySrc[i]='%v' filesToCopyDest[i]='%v' Error='%v' ",
+        filesToCopySrc[i], filesToCopyDest[i], err.Error())
+    }
+
+  }
+
+  return nil
 }

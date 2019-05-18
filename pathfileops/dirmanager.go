@@ -440,6 +440,7 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 //      		FileNamePatterns         []string
 //      		FilesOlderThan           time.Time
 //      		FilesNewerThan           time.Time
+//          IsFileModeSearchEngaged  bool
 //      		SelectByFileMode         os.FileMode
 //      		SelectCriterionMode      FileSelectCriterionMode // Default is AND Criterion Together
 //      }
@@ -491,6 +492,11 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 //                                    file selection criterion is considered to be 'Inactive'
 //                                    or 'Not Set'.
 //
+//      IsFileModeSearchEngaged bool - If set to 'true', the select by file mode search operation
+//                                     is engaged and active. Files will be selected based on the
+//                                     value of os.FileMode ('SelectByFileMode'). If set to 'false'
+//                                     the select by file mode operation is inactive and NOT set.
+//
 //      SelectByFileMode os.FileMode -
 //                                    os.FileMode is a uint32 value. This file selection criterion
 //                                    allows for the selection of files by File Mode. File modes
@@ -499,7 +505,7 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 //                                    that file is considered to be a 'match' for this file selection
 //                                    criterion.
 //
-//                                    If the value of 'SelectByFileMode' is set equal to zero, then
+//                                    If the value of 'IsFileModeSearchEngaged' is set to 'false', then
 //                                    this file selection criterion is considered 'Inactive' or
 //                                    'Not Set'.
 //
@@ -541,6 +547,7 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 //              FileNamePatterns   = ZERO Length Array
 //              filesOlderThan     = time.Time{}
 //              filesNewerThan     = time.Time{}
+//              IsFileModeSearchEngaged = false
 //              SelectByFileMode   = 0
 //
 //              In this example, all of the selection criterion are
@@ -856,7 +863,9 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //           FileNamePatterns    []string     // An array of strings containing File Name Patterns
 //           FilesOlderThan      time.Time    // Match files with older modification date times
 //           FilesNewerThan      time.Time    // Match files with newer modification date times
-//           SelectByFileMode    os.FileMode  // Match file mode. Zero if inactive
+//           IsFileModeSearchEngaged bool     // If set to 'false' the SelectByFileMode search operation
+//                                            //   is inactive.
+//           SelectByFileMode    os.FileMode  // Match file mode.
 //           SelectCriterionMode FileSelectCriterionMode // Specifies 'AND' or 'OR' selection mode
 //        }
 //
@@ -905,16 +914,22 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //                                       file selection criterion is considered to be 'Inactive'
 //                                       or 'Not Set'.
 //
-//        SelectByFileMode os.FileMode - os.FileMode is an uint32 value. This file selection criterion
-//                                       allows for the selection of files by File Mode. File Modes
-//                                       are compared to the value	of 'SelectByFileMode'. If the File
-//                                       Mode for a given file is equal to the value of 'SelectByFileMode',
-//                                       that file is considered to be a 'match' for this file selection
-//                                       criterion.
+//      IsFileModeSearchEngaged bool - If set to 'true', the select by file mode search operation
+//                                     is engaged and active. Files will be selected based on the
+//                                     value of os.FileMode ('SelectByFileMode'). If set to 'false'
+//                                     the select by file mode operation is inactive and NOT set.
 //
-//                                       If the value of 'SelectByFileMode' is set equal to zero, then
-//                                       this file selection criterion is considered 'Inactive' or
-//                                       'Not Set'.
+//      SelectByFileMode os.FileMode -
+//                                    os.FileMode is a uint32 value. This file selection criterion
+//                                    allows for the selection of files by File Mode. File modes
+//                                    are compared to the value	of 'SelectByFileMode'. If the File
+//                                    Mode for a given file is equal to the value of 'SelectByFileMode',
+//                                    that file is considered to be a 'match' for this file selection
+//                                    criterion.
+//
+//                                    If the value of 'IsFileModeSearchEngaged' is set to 'false', then
+//                                    this file selection criterion is considered 'Inactive' or
+//                                    'Not Set'.
 //
 //	      SelectCriterionMode	FileSelectCriterionMode -
 //                                       This parameter selects the manner in which the file selection
@@ -956,6 +971,7 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //             FileNamePatterns  = ZERO Length Array
 //             filesOlderThan    = time.Time{}
 //             filesNewerThan    = time.Time{}
+//             IsFileModeSearchEngaged = false
 //             SelectByFileMode  = uint32(0)
 //
 //             In this example, all of the selection criterion are
@@ -1273,7 +1289,10 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 //          FileNamePatterns     []string	    // An array of strings containing File Name Patterns
 //          FilesOlderThan       time.Time    // Match files with older modification date times
 //          FilesNewerThan       time.Time    // Match files with newer modification date times
-//          SelectByFileMode     os.FileMode  // Match file mode. Zero if inactive
+//          IsFileModeSearchEngaged bool      // If set to 'false' the 'SelectByFileMode' operation
+//                                            //   is inactive an NOT set.
+//          SelectByFileMode     os.FileMode  // Match file mode. Inactive if 'IsFileModeSearchEngaged'
+//                                            //   is set to 'false'.
 //          SelectCriterionMode  FileSelectCriterionMode // Specifies 'AND' or 'OR' selection mode
 //        }
 //
@@ -1321,19 +1340,24 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 //                                      the default value for type time.Time{}, then this
 //                                      file selection criterion is considered to be 'Inactive'
 //                                      or 'Not Set'.
+//      IsFileModeSearchEngaged bool - If set to 'true', the select by file mode search operation
+//                                     is engaged and active. Files will be selected based on the
+//                                     value of os.FileMode ('SelectByFileMode'). If set to 'false'
+//                                     the select by file mode operation is inactive and NOT set.
 //
-//        SelectByFileMode os.FileMode - os.FileMode is an uint32 value. This file selection criterion
-//                                       allows for the selection of files by File Mode. File Modes
-//                                       are compared to the value	of 'SelectByFileMode'. If the File
-//                                       Mode for a given file is equal to the value of 'SelectByFileMode',
-//                                       that file is considered to be a 'match' for this file selection
-//                                       criterion.
+//      SelectByFileMode os.FileMode -
+//                                    os.FileMode is a uint32 value. This file selection criterion
+//                                    allows for the selection of files by File Mode. File modes
+//                                    are compared to the value	of 'SelectByFileMode'. If the File
+//                                    Mode for a given file is equal to the value of 'SelectByFileMode',
+//                                    that file is considered to be a 'match' for this file selection
+//                                    criterion.
 //
-//                                       If the value of 'SelectByFileMode' is set equal to zero, then
-//                                       this file selection criterion is considered 'Inactive' or
-//                                       'Not Set'.
+//                                    If the value of 'IsFileModeSearchEngaged' is set to 'false', then
+//                                    this file selection criterion is considered 'Inactive' or
+//                                    'Not Set'.
 //
-//        SelectCriterionMode FileSelectCriterionMode -
+//      SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
 //                                    criteria above are applied in determining a 'match' for file
 //                                    selection purposes. 'SelectCriterionMode' may be set to one of
@@ -1372,6 +1396,7 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 //           FileNamePatterns  = ZERO Length Array
 //           filesOlderThan    = time.Time{}
 //           filesNewerThan    = time.Time{}
+//           IsFileModeSearchEngaged = false
 //           SelectByFileMode  = uint32(0)
 //
 //           In this example, all of the selection criterion are
@@ -1577,16 +1602,37 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 //
 // ------------------------------------------------------------------------
 //
-// Example 'filePatterns'
+// Input parameter
 //
-//    *.*              will match all files in directory.
-//    *.html    				will match  anyfilename.html
-//    a*								will match  appleJack.txt
-//    j????row.txt     will match  j1x34row.txt
-//    data[0-9]*				will match 	data123.csv
 //
-//    Reference For Matching Details:
-//     https://golang.org/pkg/path/filepath/#Match
+//  fileSearchPattern  string -  The fileSearchPattern is string containing
+//                               parameters used to select target files in
+//                               directory identified by the 'DirMgr' type.
+//
+//                               Example 'fileSearchPattern' strings
+//
+//                               *.*             will match all files in directory.
+//                               *.html          will match  anyfilename.html
+//                               a*              will match  appleJack.txt
+//                               j????row.txt    will match  j1x34row.txt
+//                               data[0-9]*      will match 	data123.csv
+//
+//                               Reference For File Pattern Matching Details:
+//                                 https://golang.org/pkg/path/filepath/#Match
+//
+//
+// ---------------------------------------------------------------------------
+//
+// Return Values:
+//
+//  FileMgrCollection - If this method completes successfully without error, the
+//                      returned FileMgrCollection type will contain an array of
+//                      FileMgr types identifying each of the files matched by
+//                      input parameter, 'fileSearchPattern'.
+//
+//  error - If this method completes successfully, this return value will be set
+//          to 'nil'. Otherwise, a valid error message will be encapsulated in
+//          the returned type 'error'.
 //
 func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCollection, error) {
 
@@ -1728,7 +1774,9 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
 //     FileNamePatterns    []string// An array of strings containing File Name Patterns
 //     FilesOlderThan      time.Time// Match files with older modification date times
 //     FilesNewerThan      time.Time// Match files with newer modification date times
-//     SelectByFileMode    os.FileMode// Match file mode. Zero if inactive
+//     IsFileModeSearchEngaged bool     // If set to 'false', the select by file mode
+//                                      //   operation is inactive and NOT set.
+//     SelectByFileMode    os.FileMode  // Match file mode.
 //     SelectCriterionModeFileSelectCriterionMode // Specifies 'AND' or 'OR' selection mode
 //    }
 //
@@ -1778,18 +1826,24 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
 //                                    file selection criterion is considered to be 'Inactive'
 //                                    or 'Not Set'.
 //
-// 		 SelectByFileMode os.FileMode - os.FileMode is an uint32 value. This file selection criterion
-//                                    allows for the selection of files by File Mode. File Modes
+//      IsFileModeSearchEngaged bool - If set to 'true', the select by file mode search operation
+//                                     is engaged and active. Files will be selected based on the
+//                                     value of os.FileMode ('SelectByFileMode'). If set to 'false'
+//                                     the select by file mode operation is inactive and NOT set.
+//
+//      SelectByFileMode os.FileMode -
+//                                    os.FileMode is a uint32 value. This file selection criterion
+//                                    allows for the selection of files by File Mode. File modes
 //                                    are compared to the value	of 'SelectByFileMode'. If the File
 //                                    Mode for a given file is equal to the value of 'SelectByFileMode',
 //                                    that file is considered to be a 'match' for this file selection
 //                                    criterion.
 //
-//                                    If the value of 'SelectByFileMode' is set equal to zero, then
+//                                    If the value of 'IsFileModeSearchEngaged' is set to 'false', then
 //                                    this file selection criterion is considered 'Inactive' or
 //                                    'Not Set'.
 //
-//	SelectCriterionMode	FileSelectCriterionMode -
+//     SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
 //                                    criteria above are applied in determining a 'match' for file
 //                                    selection purposes. 'SelectCriterionMode' may be set to one of
@@ -1828,12 +1882,27 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
 //        FileNamePatterns   = ZERO Length Array
 //        filesOlderThan     = time.Time{}
 //        filesNewerThan     = time.Time{}
+//        IsFileModeSearchEngaged = false
 //        SelectByFileMode   = uint32(0)
 //
 //        In this example, all of the selection criterion are
 //        'Inactive' and therefore all of the files encountered
 //        in the target directory will be selected and returned
 //        as 'Found Files'.
+//
+//
+// ---------------------------------------------------------------------------
+//
+// Return Values:
+//
+//  FileMgrCollection - If this method completes successfully without error, the
+//                      returned FileMgrCollection type will contain an array of
+//                      FileMgr types identifying each of the files matched by
+//                      input parameter, 'fileSelectCriteria'.
+//
+//  error - If this method completes successfully, this return value will be set
+//          to 'nil'. Otherwise, a valid error message will be encapsulated in
+//          the returned type 'error'.
 //
 func (dMgr *DirMgr) FindFilesBySelectCriteria(
   fileSelectCriteria FileSelectionCriteria) (FileMgrCollection, error) {
@@ -1844,6 +1913,23 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 
   if err != nil {
     return FileMgrCollection{}, err
+  }
+
+  _, err = os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+
+    if os.IsNotExist(err) {
+      return FileMgrCollection{},
+        fmt.Errorf(ePrefix + "DirMgr path does NOT Exist!\n" +
+          "DirMgr='%v'\n", dMgr.absolutePath)
+    }
+
+    return FileMgrCollection{},
+      fmt.Errorf(ePrefix +
+        "DirMgr path returned a non-path error from os.Stat().\n" +
+        "DirMgr='%v'\nError='%v'\n", dMgr.absolutePath, err.Error())
+
   }
 
   dir, err := os.Open(dMgr.absolutePath)
@@ -1949,7 +2035,10 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 //      FileNamePatterns     []string     // An array of strings containing File Name Patterns
 //      FilesOlderThan       time.Time    // Match files with older modification date times
 //      FilesNewerThan       time.Time    // Match files with newer modification date times
-//      SelectByFileMode     os.FileMode  // Match file mode. Zero if inactive
+//      IsFileModeSearchEngaged bool      // If set to 'false', the select by file mode search
+//                                        //   operation is inactive and NOT engaged.
+//      SelectByFileMode     os.FileMode  // Match file mode. If 'IsFileModeSearchEngaged' is 'false',
+//                                        //   'SelectByFileMode' is NOT active and NOT applied.
 //      SelectCriterionMode  FileSelectCriterionMode // Specifies 'AND' or 'OR' selection mode
 //    }
 //
@@ -1999,14 +2088,20 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 //                                    file selection criterion is considered to be 'Inactive'
 //                                    or 'Not Set'.
 //
-//    SelectByFileMode os.FileMode  - os.FileMode is an uint32 value. This file selection criterion
-//                                    allows for the selection of files by File Mode. File Modes
+//      IsFileModeSearchEngaged bool - If set to 'true', the select by file mode search operation
+//                                     is engaged and active. Files will be selected based on the
+//                                     value of os.FileMode ('SelectByFileMode'). If set to 'false'
+//                                     the select by file mode operation is inactive and NOT set.
+//
+//      SelectByFileMode os.FileMode -
+//                                    os.FileMode is a uint32 value. This file selection criterion
+//                                    allows for the selection of files by File Mode. File modes
 //                                    are compared to the value	of 'SelectByFileMode'. If the File
 //                                    Mode for a given file is equal to the value of 'SelectByFileMode',
 //                                    that file is considered to be a 'match' for this file selection
 //                                    criterion.
 //
-//                                    If the value of 'SelectByFileMode' is set equal to zero, then
+//                                    If the value of 'IsFileModeSearchEngaged' is set to 'false', then
 //                                    this file selection criterion is considered 'Inactive' or
 //                                    'Not Set'.
 //
@@ -2049,6 +2144,7 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 //            FileNamePatterns   = ZERO Length Array
 //            filesOlderThan     = time.Time{}
 //            filesNewerThan     = time.Time{}
+//            IsFileModeSearchEngaged = false
 //            SelectByFileMode   = uint32(0)
 //
 //            In this example, all of the selection criterion are
