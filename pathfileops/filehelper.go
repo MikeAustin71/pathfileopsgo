@@ -1824,9 +1824,7 @@ func (fh FileHelper) FindFilesInPath(pathName, fileSearchPattern string) ([]stri
 //         FileNamePatterns     []string    // An array of strings containing File Name Patterns
 //         FilesOlderThan       time.Time   // Match files with older modification date times
 //         FilesNewerThan       time.Time   // Match files with newer modification date times
-//         IsFileModeSearchEngaged bool     // If set to 'false', the select by file mode operation
-//                                          //   is NOT engaged and inactive.
-//         SelectByFileMode     os.FileMode // Match file mode. Zero if inactive
+//         SelectByFileMode     FilePermissionConfig // Match file mode (os.FileMode).
 //         SelectCriterionMode  FileSelectCriterionMode // Specifies 'AND' or 'OR' selection mode
 //       }
 //
@@ -1874,22 +1872,17 @@ func (fh FileHelper) FindFilesInPath(pathName, fileSearchPattern string) ([]stri
 //                                   file selection criterion is considered to be 'Inactive'
 //                                   or 'Not Set'.
 //
-//      IsFileModeSearchEngaged bool - If set to 'true', the select by file mode search operation
-//                                     is engaged and active. Files will be selected based on the
-//                                     value of os.FileMode ('SelectByFileMode'). If set to 'false'
-//                                     the select by file mode operation is inactive and NOT set.
+//      SelectByFileMode  FilePermissionConfig -
+//                                   Type FilePermissionConfig encapsulates an os.FileMode. The file
+//                                   selection criterion allows for the selection of files by File Mode.
+//                                   File modes are compared to the value	of 'SelectByFileMode'. If the
+//                                   File Mode for a given file is equal to the value of 'SelectByFileMode',
+//                                   that file is considered to be a 'match' for this file selection
+//                                   criterion. Examples for setting SelectByFileMode are shown as follows:
 //
-//      SelectByFileMode os.FileMode -
-//                                    os.FileMode is a uint32 value. This file selection criterion
-//                                    allows for the selection of files by File Mode. File modes
-//                                    are compared to the value	of 'SelectByFileMode'. If the File
-//                                    Mode for a given file is equal to the value of 'SelectByFileMode',
-//                                    that file is considered to be a 'match' for this file selection
-//                                    criterion.
-//
-//                                    If the value of 'IsFileModeSearchEngaged' is set to 'false', then
-//                                    this file selection criterion is considered 'Inactive' or
-//                                    'Not Set'.
+//                                        fsc := FileSelectionCriteria{}
+//                                          err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                          err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
 //
 //      SelectCriterionMode FileSelectCriterionMode -
 //                                   This parameter selects the manner in which the file selection
@@ -1936,8 +1929,6 @@ func (fh FileHelper) FindFilesInPath(pathName, fileSearchPattern string) ([]stri
 //        FileNamePatterns  = ZERO Length Array
 //        filesOlderThan    = time.Time{}
 //        filesNewerThan    = time.Time{}
-//        IsFileModeSearchEngaged = false
-//        SelectByFileMode  = uint32(0)
 //
 //     In this example, all of the selection criterion are
 //     'Inactive' and therefore all of the files encountered
@@ -5054,11 +5045,12 @@ func (fh FileHelper) RemovePathSeparatorFromEndOfPathString(pathStr string) stri
 // If the file's FileMode matches the 'fileSelectCriteria.SelectByFileMode' value, the return value,
 // 'isFileModeMatch' is set to 'true'.
 //
-// If 'fileSelectCriteria.IsFileModeSearchEngaged' is set to 'false', the return value 'isFileModeSet'
-// set to 'false' signaling the File Mode File Selection Criterion is NOT active.
+// If 'fileSelectCriteria.SelectByFileMode' is NOT initialized to a valid File Mode value, the
+// return value 'isFileModeSet' is set to 'false' signaling the File Mode File Selection Criterion
+// is NOT active.
 //
-// Note: Input parameter 'info' is of type os.FileInfo.  You can substitute a type 'FileInfoPlus' object
-// for the 'info' parameter because 'FileInfoPlus' implements the 'os.FileInfo' interface.
+// Note: Input parameter 'info' is of type os.FileInfo.  You can substitute a type 'FileInfoPlus'
+// object for the 'info' parameter because 'FileInfoPlus' implements the 'os.FileInfo' interface.
 //
 func (fh *FileHelper) SearchFileModeMatch(
   info os.FileInfo,
