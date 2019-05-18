@@ -53,14 +53,16 @@ type FileSelectionCriteria struct {
   FilesNewerThan time.Time
 
   // SelectByFileMode - Used to select files with equivalent os.FileMode values.
-  // To select by File Mode, two steps are required.
-  // (1) Set 'IsFileModeSearchEngaged' == true
-  // (2) Set 'SelectByFileMode == to the target file mode
+  // To select by File Mode, set the FilePermissionCfg type to the desired value
+  //  Examples:
+  //    fsc := FileSelectionCriteria{}
+  //
+  //    err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+  //    err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
   //
   // Note: os.FileMode is an uint32 type.
-  IsFileModeSearchEngaged bool
+  SelectByFileMode FilePermissionConfig
 
-  SelectByFileMode os.FileMode
 
   // SelectCriterionMode - Can be one of three values:
   //

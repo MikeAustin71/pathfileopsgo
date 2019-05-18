@@ -400,10 +400,10 @@ func TestFilePermissionConfig_GetPermissionBits_01(t *testing.T) {
       "Error='%v' ", err.Error())
   }
 
-  fMode, err := fpCfg.GetPermissionBits()
+  fMode, err := fpCfg.GetFileMode()
 
   if err != nil {
-    t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+    t.Errorf("Error returned by fpCfg.GetFileMode(). "+
       "Error='%v' ", err.Error())
   }
 
@@ -444,10 +444,10 @@ func TestFilePermissionConfig_GetPermissionBits_02(t *testing.T) {
       "Error='%v' ", err.Error())
   }
 
-  fMode, err := fpCfg.GetPermissionBits()
+  fMode, err := fpCfg.GetFileMode()
 
   if err != nil {
-    t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+    t.Errorf("Error returned by fpCfg.GetFileMode(). "+
       "Error='%v' ", err.Error())
   }
 
@@ -488,10 +488,10 @@ func TestFilePermissionConfig_GetPermissionBits_03(t *testing.T) {
       "Error='%v' ", err.Error())
   }
 
-  fMode, err := fpCfg.GetPermissionBits()
+  fMode, err := fpCfg.GetFileMode()
 
   if err != nil {
-    t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+    t.Errorf("Error returned by fpCfg.GetFileMode(). "+
       "Error='%v' ", err.Error())
   }
 
@@ -532,10 +532,10 @@ func TestFilePermissionConfig_GetPermissionBits_04(t *testing.T) {
       "Error='%v' ", err.Error())
   }
 
-  fMode, err := fpCfg.GetPermissionBits()
+  fMode, err := fpCfg.GetFileMode()
 
   if err != nil {
-    t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+    t.Errorf("Error returned by fpCfg.GetFileMode(). "+
       "Error='%v' ", err.Error())
   }
 
@@ -576,7 +576,7 @@ func TestFilePermissionConfig_GetPermissionBits_05(t *testing.T) {
       "Error='%v' ", err.Error())
   }
 
-  fMode, err := fpCfg.GetPermissionBits()
+  fMode, err := fpCfg.GetFileMode()
 
   fh := FileHelper{}
   intFMode := fh.ConvertDecimalToOctal(int(fMode))
@@ -615,10 +615,10 @@ func TestFilePermissionConfig_GetPermissionBits_06(t *testing.T) {
       "Error='%v' ", err.Error())
   }
 
-  fMode, err := fpCfg.GetPermissionBits()
+  fMode, err := fpCfg.GetFileMode()
 
   if err != nil {
-    t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+    t.Errorf("Error returned by fpCfg.GetFileMode(). "+
       "Error='%v' ", err.Error())
   }
 
@@ -659,10 +659,10 @@ func TestFilePermissionConfig_GetPermissionBits_07(t *testing.T) {
       "Error='%v' ", err.Error())
   }
 
-  fMode, err := fpCfg.GetPermissionBits()
+  fMode, err := fpCfg.GetFileMode()
 
   if err != nil {
-    t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+    t.Errorf("Error returned by fpCfg.GetFileMode(). "+
       "Error='%v' ", err.Error())
   }
 
@@ -703,10 +703,10 @@ func TestFilePermissionConfig_GetPermissionBits_08(t *testing.T) {
       "Error='%v' ", err.Error())
   }
 
-  fMode, err := fpCfg.GetPermissionBits()
+  fMode, err := fpCfg.GetFileMode()
 
   if err != nil {
-    t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+    t.Errorf("Error returned by fpCfg.GetFileMode(). "+
       "Error='%v' ", err.Error())
   }
 
@@ -747,10 +747,10 @@ func TestFilePermissionConfig_GetPermissionBits_09(t *testing.T) {
       "Error='%v' ", err.Error())
   }
 
-  fMode, err := fpCfg.GetPermissionBits()
+  fMode, err := fpCfg.GetFileMode()
 
   if err != nil {
-    t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+    t.Errorf("Error returned by fpCfg.GetFileMode(). "+
       "Error='%v' ", err.Error())
   }
 
@@ -791,10 +791,10 @@ func TestFilePermissionConfig_GetPermissionBits_10(t *testing.T) {
       "Error='%v' ", err.Error())
   }
 
-  fMode, err := fpCfg.GetPermissionBits()
+  fMode, err := fpCfg.GetFileMode()
 
   if err != nil {
-    t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+    t.Errorf("Error returned by fpCfg.GetFileMode(). "+
       "Error='%v' ", err.Error())
   }
 
@@ -835,10 +835,10 @@ func TestFilePermissionConfig_GetPermissionBits_11(t *testing.T) {
       "Error='%v' ", err.Error())
   }
 
-  fMode, err := fpCfg.GetPermissionBits()
+  fMode, err := fpCfg.GetFileMode()
 
   if err != nil {
-    t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+    t.Errorf("Error returned by fpCfg.GetFileMode(). "+
       "Error='%v' ", err.Error())
   }
 
@@ -879,10 +879,10 @@ func TestFilePermissionConfig_GetPermissionBits_12(t *testing.T) {
       "Error='%v' ", err.Error())
   }
 
-  fMode, err := fpCfg.GetPermissionBits()
+  fMode, err := fpCfg.GetFileMode()
 
   if err != nil {
-    t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+    t.Errorf("Error returned by fpCfg.GetFileMode(). "+
       "Error='%v' ", err.Error())
   }
 
@@ -923,10 +923,10 @@ func TestFilePermissionConfig_GetPermissionBits_13(t *testing.T) {
       "Error='%v' ", err.Error())
   }
 
-  fMode, err := fpCfg.GetPermissionBits()
+  fMode, err := fpCfg.GetFileMode()
 
   if err != nil {
-    t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+    t.Errorf("Error returned by fpCfg.GetFileMode(). "+
       "Error='%v' ", err.Error())
   }
 
@@ -968,10 +968,10 @@ func TestFilePermissionConfig_GetPermissionBits_14(t *testing.T) {
       "Error='%v' ", err.Error())
   }
 
-  fMode, err := fpCfg.GetPermissionBits()
+  fMode, err := fpCfg.GetFileMode()
 
   if err != nil {
-    t.Errorf("Error returned by fpCfg.GetPermissionBits(). "+
+    t.Errorf("Error returned by fpCfg.GetFileMode(). "+
       "Error='%v' ", err.Error())
   }
 
@@ -1001,10 +1001,10 @@ func TestFilePermissionConfig_GetPermissionBits_15(t *testing.T) {
 
   fpCfg := FilePermissionConfig{}
 
-  _, err := fpCfg.GetPermissionBits()
+  _, err := fpCfg.GetFileMode()
 
   if err == nil {
-    t.Error("Expected an error return from fpCfg.GetPermissionBits() " +
+    t.Error("Expected an error return from fpCfg.GetFileMode() " +
       "because fpCfg was not initialized. NO ERROR WAS RETURNED!")
   }
 

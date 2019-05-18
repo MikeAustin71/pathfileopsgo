@@ -1323,7 +1323,9 @@ func TestFileHelper_FilterFileName_02(t *testing.T) {
   fModTime, err := time.Parse(fmtstr, fModTimeStr)
 
   if err != nil {
-    t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
+    t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr).\n" +
+      "fmtstr='%v'  fModTimeStr='%v'\nError='%v'\n",
+      fmtstr, fModTimeStr, err.Error())
   }
 
   fia.SetModTime(fModTime)
@@ -1355,7 +1357,9 @@ func TestFileHelper_FilterFileName_02(t *testing.T) {
   isFound, err := fh.FilterFileName(fia, fsc)
 
   if !isFound {
-    t.Errorf("File was NOT found. File should have been found. fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
+    t.Errorf("File was NOT found. File should have been found.\n" +
+      "fia.Name()='%v fia.ModTime()='%v'\n",
+      fia.Name(), fia.ModTime().Format(fmtstr))
   }
 
 }
@@ -1371,7 +1375,8 @@ func TestFileHelper_FilterFileName_03(t *testing.T) {
   fModTime, err := time.Parse(fmtstr, fModTimeStr)
 
   if err != nil {
-    t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
+    t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr).\n" +
+      "fmtstr='%v' fModTimeStr='%v'\nError='%v'", fmtstr, fModTimeStr, err.Error())
   }
 
   fia.SetModTime(fModTime)
@@ -1417,7 +1422,9 @@ func TestFileHelper_FilterFileName_04(t *testing.T) {
   fModTime, err := time.Parse(fmtstr, fModTimeStr)
 
   if err != nil {
-    t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
+    t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr).\n" +
+      "fmtstr='%v' fModTimeStr='%v'\nError='%v'\n",
+      fmtstr, fModTimeStr, err.Error())
   }
 
   fia.SetModTime(fModTime)
@@ -1560,7 +1567,9 @@ func TestFileHelper_FilterFileName_07(t *testing.T) {
   fModTime, err := time.Parse(fmtstr, fModTimeStr)
 
   if err != nil {
-    t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
+    t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr).\n" +
+      "fmtstr='%v' fModTimeStr='%v'\nError='%v'\n",
+      fmtstr, fModTimeStr, err.Error())
   }
 
   fia.SetModTime(fModTime)

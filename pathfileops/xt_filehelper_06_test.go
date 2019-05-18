@@ -1227,21 +1227,13 @@ func TestFileHelper_SearchFileModeMatch_01(t *testing.T) {
     return
   }
 
-  fPerm, err := FilePermissionConfig{}.New("-r--r--r--")
-
-  if err != nil {
-    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\").\n" +
-      "Error='%v'", err.Error())
-    return
-  }
-
   fileSelection := FileSelectionCriteria{}
-  fileSelection.IsFileModeSearchEngaged = true
-  fileSelection.SelectByFileMode, err = fPerm.GetPermissionBits()
+
+  err = fileSelection.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetPermissionBits().\n" +
-      "Error='%v'", err.Error())
+    t.Errorf("Error returned by fileSelection.SelectByFileMode.SetFileModeByTextCode" +
+      "(\"-r--r--r--\").\nError='%v'\n", err.Error())
     return
   }
 
@@ -1278,12 +1270,11 @@ func TestFileHelper_SearchFileModeMatch_02(t *testing.T) {
 
   fileSelection := FileSelectionCriteria{}
 
-  fileSelection.IsFileModeSearchEngaged = true
-  fileSelection.SelectByFileMode = fInfo.Mode()
+  err = fileSelection.SelectByFileMode.SetByFileMode(fInfo.Mode())
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetPermissionBits().\n" +
-      "Error='%v'", err.Error())
+    t.Errorf("Error returned by fileSelection.SelectByFileMode.SetByFileMode"+
+      "(fInfo.Mode()).\nError='%v'\n", err.Error())
     return
   }
 
@@ -1309,8 +1300,6 @@ func TestFileHelper_SearchFileModeMatch_03(t *testing.T) {
   fh := FileHelper{}
 
   fileSelection := FileSelectionCriteria{}
-
-  fileSelection.IsFileModeSearchEngaged = false
 
   var fInfo os.FileInfo
 

@@ -1575,8 +1575,14 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
   fsc.FileNamePatterns = []string{searchPattern}
   fsc.FilesOlderThan = filesOlderThan
   fsc.FilesNewerThan = filesNewerThan
-  fsc.IsFileModeSearchEngaged = true
-  fsc.SelectByFileMode = 0666
+
+  err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+
+  if err != nil {
+    t.Errorf("Error from fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))\n" +
+      "Error='%v'\n", err.Error())
+  }
+
   fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
 
   dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
@@ -1711,8 +1717,14 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
   fsc.FileNamePatterns = []string{searchPattern1, searchPattern2}
   fsc.FilesOlderThan = filesOlderThan
   fsc.FilesNewerThan = filesNewerThan
-  fsc.IsFileModeSearchEngaged = true
-  fsc.SelectByFileMode = 0666
+
+  err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+
+  if err != nil {
+    t.Errorf("Error returne by fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666)).\n" +
+      "Error='%v'\n", err.Error())
+  }
+
   fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
 
   dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
@@ -1835,8 +1847,14 @@ func TestDirMgr_DeleteWalkDirFiles_09(t *testing.T) {
   fsc.FileNamePatterns = []string{searchPattern1, searchPattern2}
   fsc.FilesOlderThan = filesOlderThan
   fsc.FilesNewerThan = filesNewerThan
-  fsc.IsFileModeSearchEngaged = true
-  fsc.SelectByFileMode = 0666
+
+  err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+
+  if err != nil {
+    t.Errorf("Error returned by fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666)).\n" +
+      "Error='%v'\n", err.Error())
+  }
+
   fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
 
   _, err = dMgr.DeleteWalkDirFiles(fsc)
@@ -1877,8 +1895,14 @@ func TestDirMgr_DeleteWalkDirFiles_10(t *testing.T) {
   fsc.FileNamePatterns = []string{searchPattern1, searchPattern2}
   fsc.FilesOlderThan = filesOlderThan
   fsc.FilesNewerThan = filesNewerThan
-  fsc.IsFileModeSearchEngaged = true
-  fsc.SelectByFileMode = 0666
+
+  err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+
+  if err != nil {
+    t.Errorf("Error returned by fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666)).\n" +
+      "Error='%v'\n", err.Error())
+  }
+
   fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
 
   dMgr.isInitialized = false
@@ -2086,13 +2110,12 @@ func dirMgr02SetupDirWalkTests() error {
     }
 
   }
-
+  
   // Delete all files in the ../dirwalktests
   deleteCriteria := FileSelectionCriteria{}
   deleteCriteria.FileNamePatterns = make([]string, 0, 0)
   deleteCriteria.FilesNewerThan = time.Time{}
   deleteCriteria.FilesOlderThan = time.Time{}
-  deleteCriteria.IsFileModeSearchEngaged = false
 
   dirTree0Info, err := destDirMgr0.FindWalkDirFiles(deleteCriteria)
 

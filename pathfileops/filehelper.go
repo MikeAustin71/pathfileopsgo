@@ -292,11 +292,11 @@ func (fh FileHelper) ChangeFileMode(pathFileName string, filePermission FilePerm
       "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
   }
 
-  newOsFileMode, err := filePermission.GetPermissionBits()
+  newOsFileMode, err := filePermission.GetFileMode()
 
   if err != nil {
     return fmt.Errorf(ePrefix +
-      "Error returned by filePermission.GetPermissionBits().\nError='%v'\n",
+      "Error returned by filePermission.GetFileMode().\nError='%v'\n",
       err.Error())
   }
 
@@ -1573,7 +1573,9 @@ func (fh *FileHelper) FilterFileName(
   isPatternSet, isPatternMatch, err2 := fh.SearchFilePatternMatch(info, fileSelectionCriteria)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error returned from fh.SearchFilePatternMatch(info, fileSelectionCriteria) info.Name()='%v' Error='%v'", info.Name(), err.Error())
+    err = fmt.Errorf(ePrefix+
+      "Error returned from fh.SearchFilePatternMatch(info, fileSelectionCriteria).\n" +
+      "info.Name()='%v'\nError='%v'\n", info.Name(), err.Error())
     isMatchedFile = false
     return
   }
@@ -1581,7 +1583,10 @@ func (fh *FileHelper) FilterFileName(
   isFileOlderThanSet, isFileOlderThanMatch, err2 := fh.SearchFileOlderThan(info, fileSelectionCriteria)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error returned from dMgr.searchFileOlderThan(info, fileSelectionCriteria) fileSelectionCriteria.FilesOlderThan='%v' info.Name()='%v' Error='%v'", fileSelectionCriteria.FilesOlderThan, info.Name(), err.Error())
+    err = fmt.Errorf(ePrefix +
+      "Error returned from dMgr.searchFileOlderThan(info, fileSelectionCriteria)\n" +
+      "fileSelectionCriteria.FilesOlderThan='%v' info.Name()='%v'\nError='%v'\n",
+      fileSelectionCriteria.FilesOlderThan, info.Name(), err.Error())
     isMatchedFile = false
     return
   }
@@ -1589,19 +1594,25 @@ func (fh *FileHelper) FilterFileName(
   isFileNewerThanSet, isFileNewerThanMatch, err2 := fh.SearchFileNewerThan(info, fileSelectionCriteria)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error returned from dMgr.searchFileNewerThan(info, fileSelectionCriteria) fileSelectionCriteria.FilesNewerThan='%v' info.Name()='%v' Error='%v'", fileSelectionCriteria.FilesNewerThan, info.Name(), err.Error())
+    err = fmt.Errorf(ePrefix +
+      "Error returned from dMgr.searchFileNewerThan(info, fileSelectionCriteria).\n" +
+      "fileSelectionCriteria.FilesNewerThan='%v' info.Name()='%v'\nError='%v'\n",
+      fileSelectionCriteria.FilesNewerThan, info.Name(), err.Error())
     isMatchedFile = false
     return
   }
 
   isFileModeSearchSet, isFileModeSearchMatch, err2 := fh.SearchFileModeMatch(info, fileSelectionCriteria)
 
+
+
   if err2 != nil {
+    fileModeTxt := fileSelectionCriteria.SelectByFileMode.GetPermissionFileModeValueText()
     err = fmt.Errorf(ePrefix+
       "Error returned from dMgr.searchFileModeMatch(info, fileSelectionCriteria).\n" +
-      "fileSelectionCriteria.IsFileModeSearchEngaged='%v' fileSelectionCriteria.SelectByFileMode='%v'\n" +
+      "fileSelectionCriteria.SelectByFileMode='%v'\n" +
       "info.Name()='%v' Error='%v'\n",
-      fileSelectionCriteria.IsFileModeSearchEngaged,fileSelectionCriteria.SelectByFileMode,
+      fileModeTxt,
       info.Name(), err.Error())
     isMatchedFile = false
     return
@@ -5053,25 +5064,35 @@ func (fh *FileHelper) SearchFileModeMatch(
   info os.FileInfo,
   fileSelectCriteria FileSelectionCriteria) (isFileModeSet, isFileModeMatch bool, err error) {
 
-  if fileSelectCriteria.IsFileModeSearchEngaged == false {
+  if fileSelectCriteria.SelectByFileMode.isInitialized == false {
     isFileModeSet = false
     isFileModeMatch = false
     err = nil
-    return
+    return isFileModeSet, isFileModeMatch, err
   }
 
-  if fileSelectCriteria.SelectByFileMode == info.Mode() {
+  selectFileMode, err2 := fileSelectCriteria.SelectByFileMode.GetFileMode()
+
+  if err2 != nil {
+    ePrefix := "FileHelper.SearchFileModeMatch() "
+
+    err = fmt.Errorf(ePrefix + "SelectByFileMode is INVALID!\n" +
+      "Error='%v'\n", err2.Error())
+    return isFileModeSet, isFileModeMatch, err
+  }
+
+  if selectFileMode == info.Mode() {
     isFileModeSet = true
     isFileModeMatch = true
     err = nil
-    return
+    return isFileModeSet, isFileModeMatch, err
 
   }
 
   isFileModeSet = true
   isFileModeMatch = false
   err = nil
-  return
+  return isFileModeSet, isFileModeMatch, err
 }
 
 // SearchFileNewerThan - This method is called to determine whether the file described by the

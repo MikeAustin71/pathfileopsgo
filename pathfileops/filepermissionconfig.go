@@ -196,7 +196,7 @@ func (fPerm *FilePermissionConfig) GetIsRegular() (bool, error) {
   return fPerm.fileMode.IsRegular(), nil
 }
 
-// GetPermissionBits - Return a FileMode containing only the least significant 9-bits of
+// GetFileMode - Returns a FileMode containing only the least significant 9-bits of
 // the encapsulated FileMode representing the unix permission bits.
 //
 // If this value is converted to a permissions string, the actual string returned will
@@ -211,9 +211,9 @@ func (fPerm *FilePermissionConfig) GetIsRegular() (bool, error) {
 // FilePermissionConfig.GetPermissionTextCode() documented below.
 //
 //
-func (fPerm *FilePermissionConfig) GetPermissionBits() (os.FileMode, error) {
+func (fPerm *FilePermissionConfig) GetFileMode() (os.FileMode, error) {
 
-  ePrefix := "FilePermissionConfig.GetPermissionBits() "
+  ePrefix := "FilePermissionConfig.GetFileMode() "
 
   err := fPerm.IsValid()
 
@@ -248,7 +248,7 @@ func (fPerm *FilePermissionConfig) GetPermissionBits() (os.FileMode, error) {
 //                                string the first character of which is always a hyphen ("-").
 //                                Disregard this first character, only the last 9-characters of
 //                                the string are valid permission descriptors. For more information
-//                                see method FilePermissionConfig.GetPermissionBits()
+//                                see method FilePermissionConfig.GetFileMode()
 //
 //                                To create a full and complete permission code, permissionBits must
 //                                be or'd with a valid Entry Type, os mode value.
@@ -284,7 +284,7 @@ func (fPerm *FilePermissionConfig) GetPermissionComponents() (
     return osMode, permissionBits, err
   }
 
-  permissionBits, err2 = fPerm.GetPermissionBits()
+  permissionBits, err2 = fPerm.GetFileMode()
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+"%v", err2.Error())
@@ -616,7 +616,7 @@ func (fPerm FilePermissionConfig) NewByFileMode(fMode os.FileMode) (FilePermissi
 
   fPerm2 := FilePermissionConfig{}
 
-  err := fPerm2.SetFileModeByFileMode(fMode)
+  err := fPerm2.SetByFileMode(fMode)
 
   if err != nil {
 
@@ -811,14 +811,14 @@ func (fPerm *FilePermissionConfig) SetFileModeByComponents(
   return nil
 }
 
-// SetFileModeByFileMode - Sets the permission codes for this FilePermissionConfig
+// SetByFileMode - Sets the permission codes for this FilePermissionConfig
 // instance using an input parameter of type 'os.FileMode'. If the value does not
 // include a valid os mode constant, and error will be returned.
 //
 // If successful, this method will assign the os.FileMode input value to the internal
 // data field, 'FilePermissionConfig.fileMode'.
 //
-func (fPerm *FilePermissionConfig) SetFileModeByFileMode(fMode os.FileMode) error {
+func (fPerm *FilePermissionConfig) SetByFileMode(fMode os.FileMode) error {
 
   tFMode := fMode
 
@@ -829,7 +829,7 @@ func (fPerm *FilePermissionConfig) SetFileModeByFileMode(fMode os.FileMode) erro
   _, ok := mOsPermissionCodeToString[entryType]
 
   if !ok {
-    ePrefix := "FilePermissionConfig.SetFileModeByFileMode() "
+    ePrefix := "FilePermissionConfig.SetByFileMode() "
     return fmt.Errorf(ePrefix + "Error: Input parameter 'fMode' contains an invalid " +
       "'EntryType' otherwise known as an os mode constant.")
   }
