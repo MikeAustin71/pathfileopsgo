@@ -540,6 +540,170 @@ func TestDirMgr_FindFilesByNamePattern_05(t *testing.T) {
   return
 }
 
+func TestDirMgr_FindFilesBySelectCriteria_01(t *testing.T) {
+
+  testDir := "../checkfiles/FindFilesBySelectCriteria_01"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir2).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  srcFiles := make([]string, 0, 50)
+
+  // 4 txt src Files
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_3_test.txt")
+
+  // 3 htm src files
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006860_sample.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006870_ReadingFiles.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006890_WritingFiles.htm")
+
+  // 3 js src files
+  srcFiles = append(srcFiles, "../filesfortest/jsFilesForTest/index.js")
+  srcFiles = append(srcFiles, "../filesfortest/jsFilesForTest/paths.js")
+  srcFiles = append(srcFiles, "../filesfortest/jsFilesForTest/todoInput.js")
+
+  // 3 md src files
+  srcFiles = append(srcFiles, "../filesfortest/mdFilesForTest/CODE_OF_CONDUCT.md")
+  srcFiles = append(srcFiles, "../filesfortest/mdFilesForTest/CONTRIBUTION.md")
+  srcFiles = append(srcFiles, "../filesfortest/mdFilesForTest/DNCArticle.md")
+
+
+  destFile := ""
+  oldBase := ""
+  newBase := ""
+
+  for i := 0; i < len(srcFiles); i++ {
+
+    if i < 4 {
+      oldBase = "../filesfortest/levelfilesfortest"
+      newBase = testDir
+    } else if i < 7 {
+      oldBase = "../filesfortest/htmlFilesForTest"
+      newBase = testDir
+    } else if i < 10 {
+
+      oldBase = "../filesfortest/jsFilesForTest"
+      newBase = testDir
+    } else {
+      oldBase = "../filesfortest/mdFilesForTest"
+      newBase = testDir
+    }
+
+    destFile, err = fh.SwapBasePath(oldBase, newBase, srcFiles[i])
+
+    if err != nil {
+      t.Errorf("Test File Set Up Error Stage #3 SwapBasePath(oldBase, newBase, srcFiles[%v])\n"+
+        "oldBase='%v'\nnewBase='%v'\nError='%v'\n",
+        i, oldBase, newBase, err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
+      return
+    }
+
+    err = fh.CopyFileByIo(srcFiles[i], destFile)
+
+    if err != nil {
+      t.Errorf("Test Setup Error returned by fh.CopyFileByIo(srcFiles[%v], destFile)\n"+
+        "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
+        i, srcFiles[i], destFile, err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
+      return
+    }
+
+  }
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+  searchPattern1 := "*.htm"
+  searchPattern2 := "*.md"
+  fsc.FileNamePatterns = []string{searchPattern1, searchPattern2}
+
+  fMgrCollection, err := dMgr.FindFilesBySelectCriteria(fsc)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr.FindFilesBySelectCriteria(fsc).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 6 {
+    t.Errorf("Test Setup Error: Expected to find 10-htm and md files in 'testDir'.\n"+
+      "Instead, %v-files were found.", fMgrCollection.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  for i := 0;  i < fMgrCollection.GetNumOfFileMgrs(); i++ {
+
+    fmgr, err := fMgrCollection.GetFileMgrAtIndex(i)
+
+    if err != nil {
+      t.Errorf("Error returned by fMgrCollection.GetFileMgrAtIndex(%v)\n" +
+        "Error='%v'\n", i, err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
+      return
+    }
+
+    ext := fmgr.GetFileExt()
+
+    if ext != ".htm" && ext !=".md" {
+      t.Errorf("Error: Wrong file returned by search. Expected returned\n"+
+        "to have a file extension of 'htm' or 'md'. Instead, this file had an\n" +
+        "extension of '%v'.\nFileName='%v'",
+        ext, fmgr.GetAbsolutePath())
+    }
+
+  }
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(testDir)\ntestDir='%v'\n"+
+      "Error='%v'\n", testDir, err.Error())
+  }
+
+  return
+}
+
 func TestDirMgr_GetAbsolutePathElements(t *testing.T) {
 
   testDir := "D:\\Adir\\Bdir\\Cdir\\Ddir\\Edir"
