@@ -39,6 +39,57 @@ func main() {
 
 func main() {
 
+  mainTest59GetSubDirs()
+}
+
+func mainTest59GetSubDirs() {
+  testDir := "D:\\T04"
+
+  dMgr, err := pf.DirMgr{}.New(testDir)
+
+  if err != nil {
+    fmt.Printf("Error returned by pf.DirMgr{}.New(testDir).\n" +
+      "testDir='%v'\nError='%v'\n", err.Error())
+    return
+  }
+
+  dirs, errs := dMgr.GetDirectoryTree()
+
+  if len(errs) > 0 {
+    fmt.Printf("Errors returned by dMgr.GetDirectoryTree().\n" +
+      "testDir='%v'\nErrors:\n\n", testDir)
+
+    for i:=0; i < len(errs); i++ {
+      fmt.Printf("%v\n\n", errs[i].Error())
+    }
+
+    fmt.Printf("\n\n")
+
+    return
+  }
+
+  fmt.Println("              mainTest59GetSubDirs                        ")
+  fmt.Println("****************** Success!!!! ***************************")
+  fmt.Println("Directory Listing:")
+  fmt.Println()
+  for k:=0; k < dirs.GetNumOfDirs(); k++ {
+
+    dmgr, err := dirs.GetDirMgrAtIndex(k)
+
+    if err != nil {
+      fmt.Printf("\n\nError returned by dirs.GetDirMgrAtIndex(%v)\nError='%v'\n\n",
+        k, err.Error())
+      return
+    }
+
+    fmt.Printf("%v\n\n", dmgr.GetAbsolutePath())
+  }
+
+  return
+}
+
+func mainTest58ModTime() {
+
   newAccessTime := time.Date(2006,2,25,10,30,30,120, time.Local)
   newModTime := time.Date(2006,2,25,10,30,30,120, time.Local)
 
@@ -84,6 +135,8 @@ func main() {
   fmt.Println(" Current Mod Time: ", modTimeStr)
 
 }
+
+
 
 func mainTest58ChangeFileMode(pathFileName string, filePermission pf.FilePermissionConfig) {
 

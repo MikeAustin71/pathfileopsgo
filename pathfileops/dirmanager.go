@@ -53,6 +53,17 @@ type DirMgr struct {
   actualDirFileInfo               FileInfoPlus
 }
 
+// CopyDirectoryTree - Copies all selected files in the directory tree to
+// a specified target directory tree.
+//
+func (dMgr *DirMgr) CopyDirectoryTree(
+  targetDir DirMgr,
+  fileSelectCriteria FileSelectionCriteria) (errs []error) {
+  errs = make([]error, 0, 100)
+
+  return errs
+}
+
 // CopyFilesToDirectory - Copies files from the directory identified by
 // by DirMgr to a target directory. The files to be copied are selected
 // according to file selection criteria specified by input parameter,
@@ -2590,6 +2601,139 @@ func (dMgr *DirMgr) GetAbsolutePathWithSeparator() string {
   return dMgr.absolutePath
 }
 
+
+// GetDirectoryTree - Returns a DirMgrCollection containing all
+// the sub-directories in the path of the parent directory identified
+// by the current DirMgr instance.
+//
+// The returned DirMgrCollection will always contain the parent directory
+// at the top of the array (index=0). Therefore, if no errors are encountered,
+// the returned DirMgrCollection will always consist of at least one directory.
+// If sub-directories are found, then the returned DirMgrCollection will
+// contain more than one directory.
+//
+func (dMgr *DirMgr) GetDirectoryTree() (dirMgrs DirMgrCollection, errs []error) {
+
+  ePrefix := "DirMgr.GetDirectoryTree() "
+
+  dirMgrs = DirMgrCollection{}
+
+  errs = make([]error, 0, 100)
+
+  var err, err2, err3 error
+
+  err = dMgr.IsDirMgrValid(ePrefix)
+
+  if err != nil {
+    errs = append(errs, err)
+    return dirMgrs, errs
+  }
+
+  _, err = os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+
+    if os.IsNotExist(err) {
+      err2 = fmt.Errorf(ePrefix +
+        "ERROR: DirMgr path DOES NOT EXIST!\nDirMgr Path='%v'\n",
+        dMgr.absolutePath)
+
+    } else {
+      err2 = fmt.Errorf(ePrefix +
+        "Non-Path ERROR returned by os.Stat(DirMgr.absolutePath)\n" +
+        "DirMgr.absolutePath='%v'\nError='%v'\n",
+        dMgr.absolutePath, err.Error())
+    }
+
+    errs = append(errs, err2)
+    return dirMgrs, errs
+  }
+
+  dirMgrs.AddDirMgr(dMgr.CopyOut())
+
+  fh := FileHelper{}
+
+  maxLen := dirMgrs.GetNumOfDirs()
+
+  var dir *os.File
+  var nameFileInfos []os.FileInfo
+
+  for i := 0; i < maxLen; i++ {
+
+    dir, err = os.Open(dirMgrs.dirMgrs[i].absolutePath)
+
+    if err != nil {
+      err2 = fmt.Errorf(ePrefix+
+        "Error return by os.Open(dirMgrs.dirMgrs[%v].absolutePath). "+
+        "dMgr.absolutePath='%v'\nError='%v'\n",
+        i, dirMgrs.dirMgrs[i].absolutePath, err.Error())
+      errs = append(errs, err2)
+
+      continue
+    }
+
+    err3 = nil
+
+    for err3 != io.EOF {
+
+      nameFileInfos, err3 = dir.Readdir(1000)
+
+      if err3 != nil && err3 != io.EOF {
+
+        err2 = fmt.Errorf("\n" + ePrefix+
+          "Error returned by dir.Readdirnames(-1). "+
+          "dMgr.absolutePath='%v' Error='%v' ",
+          dMgr.absolutePath, err.Error())
+
+        errs = append(errs, err2)
+
+        break
+      }
+
+      for _, nameFInfo := range nameFileInfos {
+
+        if nameFInfo.IsDir() {
+
+          newDirPathFileName :=
+            fh.JoinPathsAdjustSeparators(dirMgrs.dirMgrs[i].absolutePath, nameFInfo.Name())
+
+          err = dirMgrs.AddDirMgrByPathNameStr(newDirPathFileName)
+
+          if err != nil {
+
+            err2 =
+              fmt.Errorf("\n" + ePrefix+
+                "Error returned by dirMgrs.AddDirMgrByPathNameStr(newDirPathFileName). "+
+                "dir='%v' Error='%v' ",
+                newDirPathFileName, err.Error())
+
+            errs = append(errs, err2)
+            continue
+          }
+
+          maxLen = dirMgrs.GetNumOfDirs()
+        }
+      }
+    }
+
+    if dir != nil {
+
+      err = dir.Close()
+
+      if err != nil {
+
+        err2 = fmt.Errorf("\n" + ePrefix+
+          "Error returned by dir.Close().\n"+
+          "dir='%v'\nError='%v'\n",
+          dMgr.absolutePath, err.Error())
+        errs = append(errs, err2)
+      }
+    }
+  }
+
+  return dirMgrs, errs
+}
+
 // GetDirectoryName - Returns a string containing the name
 // of the directory without out the parent path.
 //
@@ -2789,98 +2933,6 @@ func (dMgr *DirMgr) GetPathWithSeparator() string {
 //
 func (dMgr *DirMgr) GetRelativePath() string {
   return dMgr.relativePath
-}
-
-// GetThisDirectoryTree - Returns a DirMgrCollection containing all
-// the directories in the path of the parent directory identified by
-// the current DirMgr instance.
-//
-// The returned DirMgrCollection will always contain the parent directory
-// and will therefore always consist of at least one directory. If
-// sub-directories are found, then the returned DirMgrCollection will
-// contain more than one directory.
-//
-func (dMgr *DirMgr) GetThisDirectoryTree() (DirMgrCollection, error) {
-
-  ePrefix := "DirMgr.GetThisDirectoryTree() "
-
-  dMgrs := DirMgrCollection{}
-
-  err := dMgr.IsDirMgrValid(ePrefix)
-
-  if err != nil {
-    return dMgrs, err
-  }
-
-  dMgrs.AddDirMgr(dMgr.CopyOut())
-
-  fh := FileHelper{}
-
-  maxLen := 1
-
-  for i := 0; i < maxLen; i++ {
-
-    dir, err := os.Open(dMgrs.dirMgrs[i].absolutePath)
-
-    if err != nil {
-      return DirMgrCollection{},
-        fmt.Errorf(ePrefix+
-          "Error return by os.Open(dMgrs.dirMgrs[i].absolutePath). "+
-          "dMgr.absolutePath='%v' Error='%v' ",
-          dMgrs.dirMgrs[i].absolutePath, err.Error())
-    }
-
-    nameFileInfos, err := dir.Readdir(-1)
-
-    if err != nil {
-      _ = dir.Close()
-      return DirMgrCollection{},
-        fmt.Errorf(ePrefix+
-          "Error returned by dir.Readdirnames(-1). "+
-          "dMgr.absolutePath='%v' Error='%v' ",
-          dMgr.absolutePath, err.Error())
-    }
-
-    for _, nameFInfo := range nameFileInfos {
-
-      if nameFInfo.IsDir() {
-
-        newDirPathFileName :=
-          fh.JoinPathsAdjustSeparators(dMgrs.dirMgrs[i].absolutePath, nameFInfo.Name())
-
-        fmt.Println("Next Dir: ", newDirPathFileName)
-
-        // err = dMgrs.AddFileInfo(newDirPathFileName, nameFInfo)
-        err = dMgrs.AddDirMgrByPathNameStr(newDirPathFileName)
-
-        if err != nil {
-          return DirMgrCollection{},
-            fmt.Errorf(ePrefix+
-              "Error returned by dMgrs.AddDirMgrByPathNameStr(newDirPathFileName). "+
-              "dir='%v' Error='%v' ",
-              newDirPathFileName, err.Error())
-        }
-
-        fmt.Println("dMgrs Length", dMgrs.GetNumOfDirs())
-
-        maxLen++
-
-      }
-    }
-
-    err = dir.Close()
-
-    if err != nil {
-      return DirMgrCollection{},
-        fmt.Errorf(ePrefix+
-          "Error returned by dir.Close(). "+
-          "dir='%v' Error='%v' ",
-          dMgr.absolutePath, err.Error())
-    }
-
-  }
-
-  return dMgrs, nil
 }
 
 // GetVolumeName - Returns a string containing the volume name
