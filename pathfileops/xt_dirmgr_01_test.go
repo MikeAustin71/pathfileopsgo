@@ -302,8 +302,13 @@ func TestDirMgr_CopyFilesToDirectory_01(t *testing.T) {
   if len(errs) > 0 {
     for i:=0; i < len(errs); i++ {
       t.Errorf("Error returned from srcDMgr.CopyFilesToDirectory(targetDMgr, fsc)\n" +
-        "targetDir='%v'\nError='%v'\n\n", targetDMgr.GetAbsolutePath(), errs[0].Error())
+        "targetDir='%v'\nError='%v'\n\n", targetDMgr.GetAbsolutePath(), errs[i].Error())
     }
+
+    _ = fh.DeleteDirPathAll(targetDir)
+
+    return
+
   }
   // 5 txt src Files
   /*
