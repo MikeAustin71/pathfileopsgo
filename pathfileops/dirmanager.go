@@ -269,7 +269,7 @@ func (dMgr *DirMgr) CopyFilesToDirectory(
     _ = dir.Close()
     err2 = fmt.Errorf(ePrefix+
         "Error returned by dir.Readdirnames(-1). "+
-        "dMgr.absolutePath='%v' Error='%v' ",
+        "dMgr.absolutePath='%v' Error='%v'\n",
         dMgr.absolutePath, err.Error())
 
     errs = append(errs, err2)
@@ -300,9 +300,9 @@ func (dMgr *DirMgr) CopyFilesToDirectory(
       _ = dir.Close()
 
       err2 =
-        fmt.Errorf(ePrefix+
+        fmt.Errorf("\n" + ePrefix+
           "Error returned by fh.FilterFileName(nameFInfo, fileSelectCriteria). "+
-          "directorySearched='%v'  fileName='%v' Error='%v' ",
+          "directorySearched='%v'\nfileName='%v'\nError='%v'\n",
           dMgr.absolutePath, nameFInfo.Name(), err.Error())
 
       errs = append(errs, err2)

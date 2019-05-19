@@ -4183,6 +4183,7 @@ func (fh FileHelper) MoveFile(src, dst string) error {
 
   // ============================
   // Perform the copy operation!
+  // Use Copy By IO Procedure
   // ============================
   err = fh.CopyFileByIo(src, dst)
 
