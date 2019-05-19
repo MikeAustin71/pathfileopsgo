@@ -230,6 +230,287 @@ func TestDirMgr_MoveFilesToDirectory_01(t *testing.T) {
   return
 }
 
+func TestDirMgr_MoveFilesToDirectory_02(t *testing.T) {
+
+  baseDir := "../checkfiles/TestDirMgr_MoveFilesToDirectory_02"
+
+  srcDir := baseDir +  "/source"
+
+  targetDir := baseDir + "/target"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(baseDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(baseDir).\n"+
+      "baseDir='%v'\nError='%v'\n", baseDir, err.Error())
+    return
+  }
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n" +
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
+    return
+  }
+
+  srcDirMgr, err := DirMgr{}.New(srcDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir).\n" +
+      "srcDir='%v'\nError='%v'\n", srcDir, err.Error())
+    return
+  }
+
+
+  origSrcDir := "../filesfortest/levelfilesfortest"
+
+  origSrcDMgr, err := DirMgr{}.New(origSrcDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(origSrcDir).\n" +
+      "origSrcDir='%v'\nError='%v'\n", origSrcDir, err.Error())
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  errs := origSrcDMgr.CopyFilesToDirectory(srcDirMgr, fsc)
+
+  if len(errs) > 0 {
+    for i:=0; i < len(errs); i++ {
+      t.Errorf("Test Setup Error returned from origSrcDMgr." +
+        "CopyFilesToDirectory(srcDirMgr, fsc)\n" +
+        "srcDirMgr='%v'\nError='%v'\n\n",
+        targetDMgr.GetAbsolutePath(), errs[i].Error())
+    }
+
+    _ = fh.DeleteDirPathAll(baseDir)
+
+    return
+  }
+
+
+  fsc = FileSelectionCriteria{}
+
+  fMgrCollection, err := srcDirMgr.FindFilesBySelectCriteria(fsc)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by srcDirMgr.FindFilesBySelectCriteria(fsc).\n"+
+      "srcDirMgr='%v'\nError='%v'\n", srcDirMgr.GetAbsolutePath(), err.Error())
+
+    _ = fh.DeleteDirPathAll(baseDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 5 {
+    t.Errorf("Test Setup Error: Expected to find 5-files in 'sourceDir'.\n"+
+      "Instead, %v-files were found.\nSource Dir='%v'\n" ,
+      fMgrCollection.GetNumOfFileMgrs(), srcDirMgr.GetAbsolutePath())
+
+    _ = fh.DeleteDirPathAll(baseDir)
+
+    return
+  }
+
+  srcDirMgr.isInitialized = false
+
+  errs = srcDirMgr.MoveFilesToDirectory(targetDMgr, fsc)
+
+  if len(errs) == 0 {
+      t.Error("Expected an error return from srcDirMgr.MoveFilesToDirectory(targetDMgr, fsc)\n" +
+        "because srcDirMgr is INVALID!\n" +
+        "However, NO ERROR WAS RETURNED!!!")
+  }
+
+  err = fh.DeleteDirPathAll(baseDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(baseDir)\baseDir='%v'\n"+
+      "Error='%v'\n", baseDir, err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_MoveFilesToDirectory_03(t *testing.T) {
+
+  baseDir := "../checkfiles/TestDirMgr_MoveFilesToDirectory_03"
+
+  srcDir := baseDir +  "/source"
+
+  targetDir := baseDir + "/target"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(baseDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(baseDir).\n"+
+      "baseDir='%v'\nError='%v'\n", baseDir, err.Error())
+    return
+  }
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n" +
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
+    return
+  }
+
+  srcDirMgr, err := DirMgr{}.New(srcDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir).\n" +
+      "srcDir='%v'\nError='%v'\n", srcDir, err.Error())
+    return
+  }
+
+
+  origSrcDir := "../filesfortest/levelfilesfortest"
+
+  origSrcDMgr, err := DirMgr{}.New(origSrcDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(origSrcDir).\n" +
+      "origSrcDir='%v'\nError='%v'\n", origSrcDir, err.Error())
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  errs := origSrcDMgr.CopyFilesToDirectory(srcDirMgr, fsc)
+
+  if len(errs) > 0 {
+    for i:=0; i < len(errs); i++ {
+      t.Errorf("Test Setup Error returned from origSrcDMgr." +
+        "CopyFilesToDirectory(srcDirMgr, fsc)\n" +
+        "srcDirMgr='%v'\nError='%v'\n\n",
+        targetDMgr.GetAbsolutePath(), errs[i].Error())
+    }
+
+    _ = fh.DeleteDirPathAll(baseDir)
+
+    return
+  }
+
+  fsc = FileSelectionCriteria{}
+
+  fMgrCollection, err := srcDirMgr.FindFilesBySelectCriteria(fsc)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by srcDirMgr.FindFilesBySelectCriteria(fsc).\n"+
+      "srcDirMgr='%v'\nError='%v'\n", srcDirMgr.GetAbsolutePath(), err.Error())
+
+    _ = fh.DeleteDirPathAll(baseDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 5 {
+    t.Errorf("Test Setup Error: Expected to find 5-files in 'sourceDir'.\n"+
+      "Instead, %v-files were found.\nSource Dir='%v'\n" ,
+      fMgrCollection.GetNumOfFileMgrs(), srcDirMgr.GetAbsolutePath())
+
+    _ = fh.DeleteDirPathAll(baseDir)
+
+    return
+  }
+
+  targetDMgr.isInitialized = false
+
+  errs = srcDirMgr.MoveFilesToDirectory(targetDMgr, fsc)
+
+  if len(errs) == 0 {
+      t.Error("Expected an error return from srcDirMgr.MoveFilesToDirectory(targetDMgr, fsc)\n" +
+        "because targetDMgr is INVALID!\n" +
+        "However, NO ERROR WAS RETURNED!!!")
+  }
+
+  err = fh.DeleteDirPathAll(baseDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(baseDir)\baseDir='%v'\n"+
+      "Error='%v'\n", baseDir, err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_MoveFilesToDirectory_04(t *testing.T) {
+
+  srcDir := "../checkfiles/MoveFilesToDirectory_04"
+
+  targetDir := "../checkfiles/TestDirMgr_MoveFilesToDirectory_04"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(srcDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(srcDir).\n"+
+      "srcDir='%v'\nError='%v'\n", srcDir, err.Error())
+    return
+  }
+
+  err = fh.DeleteDirPathAll(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDir).\n"+
+      "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
+    return
+  }
+
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n" +
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
+    return
+  }
+
+  srcDirMgr, err := DirMgr{}.New(srcDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir).\n" +
+      "srcDir='%v'\nError='%v'\n", srcDir, err.Error())
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  errs := srcDirMgr.MoveFilesToDirectory(targetDMgr, fsc)
+
+  if len(errs) == 0 {
+      t.Error("Expected an error return from srcDirMgr.MoveFilesToDirectory(targetDMgr, fsc)\n" +
+        "because srcDirMgr is DOES NOT EXIST!\n" +
+        "However, NO ERROR WAS RETURNED!!!")
+  }
+
+  err = fh.DeleteDirPathAll(srcDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(srcDir).\n"+
+      "srcDir='%v'\nError='%v'\n", srcDir, err.Error())
+  }
+
+  err = fh.DeleteDirPathAll(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(targetDir).\n"+
+      "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
+  }
+
+  return
+}
+
 func TestDirMgr_New_01(t *testing.T) {
   fh := FileHelper{}
   origDir := fh.AdjustPathSlash("../testfiles/testfiles2")
