@@ -1101,22 +1101,27 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
   return err
 }
 
-// CopyFileByIo - Copies file from source path and file name
-// to destination path and file name.
+// CopyFileByIo - Copies file from source path and file name to destination
+// path and file name.
 //
 // Reference:
 // https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 //
-// Note: Unlike the method CopyFileByLink above, this method
-// does NOT rely on the creation of symbolic links. Instead,
-// a new destination file is created and the contents of the source
-// file are written to the new destination file using "io.Copy()".
+// Note: Unlike the method CopyFileByLink above, this method does
+// NOT rely on the creation of symbolic links. Instead, a new destination
+// file is created and the contents of the source file are written to
+// the new destination file using "io.Copy()".
 //
 // "io.Copy()" is the only method used to copy the designated source
 // file. If this method fails, an error is returned.
 //
 // If source file is equivalent to the destination file, no action will
 // be taken and no error will be returned.
+//
+// If the destination file does not exist, this method will create.
+// However, it will NOT create the destination directory. If the
+// destination directory does NOT exist, this method will abort
+// the copy operation and return an error.
 //
 func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   ePrefix := "FileHelper.CopyFileByIo() "
