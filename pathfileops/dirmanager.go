@@ -538,12 +538,11 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 // the files processed will be selected and DELETED.
 //
 //      Example:
-//              FileNamePatterns   = ZERO Length Array
-//              filesOlderThan     = time.Time{}
-//              filesNewerThan     = time.Time{}
+//              fsc := FileSelectCriterionMode{}
 //
-//              In this example, all of the selection criterion are
-//              'Inactive' and therefore all of the files encountered
+//              In this example, 'fsc' is NOT initialized. Therefore,
+//              all of the selection criterion are 'Inactive'. Consequently,
+//              all of the files encountered during the search operation
 //              will be SELECTED FOR DELETION!
 //
 //
@@ -969,14 +968,13 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //
 //       Example:
 //
-//             FileNamePatterns  = ZERO Length Array
-//             filesOlderThan    = time.Time{}
-//             filesNewerThan    = time.Time{}
+//             fsc := FileSelectCriterionMode{}
 //
-//             In this example, all of the selection criterion are
-//             'Inactive' and therefore all of the files encountered
-//             in the target directory will be selected and returned
-//             as 'Found Files'.
+//             In this example, 'fsc' is NOT initialized. Therefore,
+//             all of the selection criterion are 'Inactive'. Consequently,
+//             all of the files encountered in the target directory during
+//             the search operation will be selected and returned as
+//             'Found Files'.
 //
 //
 //  fileOps []FileOperationCode - An array of file operations to be performed
@@ -1402,14 +1400,13 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 // 'Found Files'.
 //
 //      Example:
-//           FileNamePatterns  = ZERO Length Array
-//           filesOlderThan    = time.Time{}
-//           filesNewerThan    = time.Time{}
+//           fsc := FileSelectCriterionMode{}
 //
-//           In this example, all of the selection criterion are
-//           'Inactive' and therefore all of the files encountered
-//           in the target directory will be selected and returned
-//           as 'Found Files'.
+//           In this example, 'fsc' is NOT initialized. Therefore,
+//           all of the selection criterion are 'Inactive'. Consequently,
+//           all of the files encountered in the target directory during
+//           the search operaiton will be selected and returned as
+//           'Found Files'.
 //
 // ---------------------------------------------------------------------------
 //
@@ -1879,14 +1876,13 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
 // 'Found Files'.
 //
 //      Example:
-//        FileNamePatterns   = ZERO Length Array
-//        filesOlderThan     = time.Time{}
-//        filesNewerThan     = time.Time{}
+//        fsc := FileSelectCriterionMode{}
 //
-//        In this example, all of the selection criterion are
-//        'Inactive' and therefore all of the files encountered
-//        in the target directory will be selected and returned
-//        as 'Found Files'.
+//        In this example, 'fsc' is NOT initialized. Therefore,
+//        all of the selection criterion are 'Inactive'. Consequently,
+//        all of the files encountered in the target directory during
+//        the search operation will be selected and returned as
+//        'Found Files'.
 //
 //
 // ---------------------------------------------------------------------------
@@ -2145,9 +2141,7 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 // 'Found Files'.
 //
 //       Example:
-//            FileNamePatterns   = ZERO Length Array
-//            filesOlderThan     = time.Time{}
-//            filesNewerThan     = time.Time{}
+//            fsc := FileSelectionCriteria{} // fsc is NOT initialized
 //
 //            In this example, all of the selection criterion are
 //            'Inactive' and therefore all of the files encountered

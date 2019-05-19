@@ -5098,7 +5098,9 @@ func (fh *FileHelper) SearchFileModeMatch(
 // Note: Input parameter 'info' is of type os.FileInfo.  You can substitute a type 'FileInfoPlus' object
 // for the 'info' parameter because 'FileInfoPlus' implements the 'os.FileInfo' interface.
 //
-func (fh *FileHelper) SearchFileNewerThan(info os.FileInfo, fileSelectCriteria FileSelectionCriteria) (isFileNewerThanSet, isFileNewerThanMatch bool, err error) {
+func (fh *FileHelper) SearchFileNewerThan(
+  info os.FileInfo,
+  fileSelectCriteria FileSelectionCriteria) (isFileNewerThanSet, isFileNewerThanMatch bool, err error) {
 
   isFileNewerThanSet = false
   isFileNewerThanMatch = false
@@ -5137,7 +5139,9 @@ func (fh *FileHelper) SearchFileNewerThan(info os.FileInfo, fileSelectCriteria F
 // Note: Input parameter 'info' is of type os.FileInfo.  You can substitute a type 'FileInfoPlus' object
 // for the 'info' parameter because 'FileInfoPlus' implements the 'os.FileInfo' interface.
 //
-func (fh *FileHelper) SearchFileOlderThan(info os.FileInfo, fileSelectCriteria FileSelectionCriteria) (isFileOlderThanSet, isFileOlderThanMatch bool, err error) {
+func (fh *FileHelper) SearchFileOlderThan(
+  info os.FileInfo,
+  fileSelectCriteria FileSelectionCriteria) (isFileOlderThanSet, isFileOlderThanMatch bool, err error) {
 
   if fileSelectCriteria.FilesOlderThan.IsZero() {
     isFileOlderThanSet = false
@@ -5173,7 +5177,9 @@ func (fh *FileHelper) SearchFileOlderThan(info os.FileInfo, fileSelectCriteria F
 // Note: Input parameter 'info' is of type os.FileInfo.  You can substitute a type 'FileInfoPlus' object
 // for the 'info' parameter because 'FileInfoPlus' implements the 'os.FileInfo' interface.
 //
-func (fh *FileHelper) SearchFilePatternMatch(info os.FileInfo, fileSelectCriteria FileSelectionCriteria) (isPatternSet, isPatternMatch bool, err error) {
+func (fh *FileHelper) SearchFilePatternMatch(
+  info os.FileInfo,
+  fileSelectCriteria FileSelectionCriteria) (isPatternSet, isPatternMatch bool, err error) {
 
   ePrefix := "DirMgr.SearchFilePatternMatch()"
 

@@ -557,7 +557,7 @@ func TestDirMgr_FindFilesBySelectCriteria_01(t *testing.T) {
   err = fh.MakeDirAll(testDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir2).\n"+
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir).\n"+
       "testDir='%v'\nError='%v'\n", testDir, err.Error())
     return
   }
@@ -661,7 +661,7 @@ func TestDirMgr_FindFilesBySelectCriteria_01(t *testing.T) {
   }
 
   if fMgrCollection.GetNumOfFileMgrs() != 6 {
-    t.Errorf("Test Setup Error: Expected to find 10-htm and md files in 'testDir'.\n"+
+    t.Errorf("Test Setup Error: Expected to find 6-htm and md files in 'testDir'.\n"+
       "Instead, %v-files were found.", fMgrCollection.GetNumOfFileMgrs())
 
     _ = fh.DeleteDirPathAll(testDir)
@@ -691,6 +691,246 @@ func TestDirMgr_FindFilesBySelectCriteria_01(t *testing.T) {
         ext, fmgr.GetAbsolutePath())
     }
 
+  }
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(testDir)\ntestDir='%v'\n"+
+      "Error='%v'\n", testDir, err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_FindFilesBySelectCriteria_02(t *testing.T) {
+
+  testDir := "../checkfiles/FindFilesBySelectCriteria_02"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  srcFiles := make([]string, 0, 50)
+
+  // 4 txt src Files
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_3_test.txt")
+
+  // 3 htm src files
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006860_sample.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006870_ReadingFiles.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006890_WritingFiles.htm")
+
+  // 3 js src files
+  srcFiles = append(srcFiles, "../filesfortest/jsFilesForTest/index.js")
+  srcFiles = append(srcFiles, "../filesfortest/jsFilesForTest/paths.js")
+  srcFiles = append(srcFiles, "../filesfortest/jsFilesForTest/todoInput.js")
+
+  // 3 md src files
+  srcFiles = append(srcFiles, "../filesfortest/mdFilesForTest/CODE_OF_CONDUCT.md")
+  srcFiles = append(srcFiles, "../filesfortest/mdFilesForTest/CONTRIBUTION.md")
+  srcFiles = append(srcFiles, "../filesfortest/mdFilesForTest/DNCArticle.md")
+
+  // Total of 13-files
+
+  destFile := ""
+  oldBase := ""
+  newBase := ""
+
+  for i := 0; i < len(srcFiles); i++ {
+
+    if i < 4 {
+      oldBase = "../filesfortest/levelfilesfortest"
+      newBase = testDir
+    } else if i < 7 {
+      oldBase = "../filesfortest/htmlFilesForTest"
+      newBase = testDir
+    } else if i < 10 {
+
+      oldBase = "../filesfortest/jsFilesForTest"
+      newBase = testDir
+    } else {
+      oldBase = "../filesfortest/mdFilesForTest"
+      newBase = testDir
+    }
+
+    destFile, err = fh.SwapBasePath(oldBase, newBase, srcFiles[i])
+
+    if err != nil {
+      t.Errorf("Test File Set Up Error Stage #3 SwapBasePath(oldBase, newBase, srcFiles[%v])\n"+
+        "oldBase='%v'\nnewBase='%v'\nError='%v'\n",
+        i, oldBase, newBase, err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
+      return
+    }
+
+    err = fh.CopyFileByIo(srcFiles[i], destFile)
+
+    if err != nil {
+      t.Errorf("Test Setup Error returned by fh.CopyFileByIo(srcFiles[%v], destFile)\n"+
+        "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
+        i, srcFiles[i], destFile, err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
+      return
+    }
+
+  }
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  fMgrCollection, err := dMgr.FindFilesBySelectCriteria(fsc)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr.FindFilesBySelectCriteria(fsc).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 13 {
+    t.Errorf("Test Setup Error: Expected to find 13-files in 'testDir'.\n"+
+      "Instead, %v-files were found.", fMgrCollection.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(testDir)\ntestDir='%v'\n"+
+      "Error='%v'\n", testDir, err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_FindFilesBySelectCriteria_03(t *testing.T) {
+
+  testDir := "../checkfiles/FindFilesBySelectCriteria_03/iDoNotExist"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  _, err = dMgr.FindFilesBySelectCriteria(fsc)
+
+  if err == nil {
+    t.Error("Expected an error from dMgr.FindFilesBySelectCriteria(fsc)\n"+
+      "because 'dMgr' does NOT EXIST! However, NO ERROR WAS RETURNED!")
+
+  }
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(testDir)\ntestDir='%v'\n"+
+      "Error='%v'\n", testDir, err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_FindFilesBySelectCriteria_04(t *testing.T) {
+
+  testDir := "../checkfiles/FindFilesBySelectCriteria_04"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  dMgr.isInitialized = false
+
+  _, err = dMgr.FindFilesBySelectCriteria(fsc)
+
+  if err == nil {
+    t.Error("Expected an error from dMgr.FindFilesBySelectCriteria(fsc)\n"+
+      "because 'dMgr' is INVALID! However, NO ERROR WAS RETURNED!")
   }
 
   err = fh.DeleteDirPathAll(testDir)
