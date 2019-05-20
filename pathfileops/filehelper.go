@@ -5469,7 +5469,7 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
     if erIn != nil {
       ex2 := fmt.Errorf(ePrefix+"Error returned from directory walk function. "+
         "pathFile= '%v' Error='%v'", pathFile, erIn.Error())
-      dInfo.ErrReturns = append(dInfo.ErrReturns, ex2.Error())
+      dInfo.ErrReturns = append(dInfo.ErrReturns, ex2)
       return nil
     }
 
@@ -5483,7 +5483,7 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
 
         er2 := fmt.Errorf(ePrefix+"Error returned by DirMgr{}.NewFromPathFileNameExtStr(pathFile). "+
           "pathFile='%v' Error='%v'", pathFile, err.Error())
-        dInfo.ErrReturns = append(dInfo.ErrReturns, er2.Error())
+        dInfo.ErrReturns = append(dInfo.ErrReturns, er2)
         return nil
       }
 
@@ -5500,7 +5500,7 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
     if err != nil {
 
       er2 := fmt.Errorf(ePrefix+"Error returned from dMgr.FilterFileName(info, dInfo.FileSelectCriteria) pathFile='%v' info.Name()='%v' Error='%v' ", pathFile, info.Name(), err.Error())
-      dInfo.ErrReturns = append(dInfo.ErrReturns, er2.Error())
+      dInfo.ErrReturns = append(dInfo.ErrReturns, er2)
       return nil
     }
 
@@ -5513,7 +5513,7 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
           "Error returned by FileMgr{}.NewFromPathFileNameExtStr(pathFile) "+
           "pathFile='%v' Error='%v' ", pathFile, err2.Error())
 
-        dInfo.ErrReturns = append(dInfo.ErrReturns, err.Error())
+        dInfo.ErrReturns = append(dInfo.ErrReturns, err)
 
         return nil
       }
@@ -5525,7 +5525,7 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
           "pathFile='%v' info.Name()='%v' Error='%v' ",
           pathFile, info.Name(), err.Error())
 
-        dInfo.ErrReturns = append(dInfo.ErrReturns, er2.Error())
+        dInfo.ErrReturns = append(dInfo.ErrReturns, er2)
 
         return nil
       }

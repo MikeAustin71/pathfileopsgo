@@ -39,7 +39,52 @@ func main() {
 
 func main() {
 
-  mainTest59GetSubDirs()
+  mainTest60CopyDirTree()
+}
+
+func mainTest60CopyDirTree() {
+  srcDir := "D:\\T03\\WebSite_15"
+
+  targetDir := "D:\\T04\\WebSite_15"
+
+  srcDMgr, err := pf.DirMgr{}.New(srcDir)
+
+  if err != nil {
+    fmt.Printf("Error returned by pf.DirMgr{}.New(srcDir).\n" +
+      "srcDir='%v'\nError='%v'\n", srcDir, err.Error())
+    return
+  }
+  
+  targetDMgr, err := pf.DirMgr{}.New(targetDir)
+
+  if err != nil {
+    fmt.Printf("Error returned by pf.DirMgr{}.New(targetDir).\n" +
+      "srcDir='%v'\nError='%v'\n", targetDir, err.Error())
+    return
+  }
+
+  fsc := pf.FileSelectionCriteria{}
+
+  errs := srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)
+
+  if len(errs) > 0 {
+    fmt.Printf("Errors returned by dMgr.CopyDirectoryTree().\n" +
+      "srcDir='%v'\nErrors:\n\n", srcDir)
+
+    for i:=0; i < len(errs); i++ {
+      fmt.Printf("%v\n\n", errs[i].Error())
+    }
+
+    fmt.Printf("\n\n")
+
+    return
+  }
+
+  fmt.Println("              mainTest60CopyDirTree                     ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+
 }
 
 func mainTest59GetSubDirs() {
@@ -49,7 +94,7 @@ func mainTest59GetSubDirs() {
 
   if err != nil {
     fmt.Printf("Error returned by pf.DirMgr{}.New(testDir).\n" +
-      "testDir='%v'\nError='%v'\n", err.Error())
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
     return
   }
 

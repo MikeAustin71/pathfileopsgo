@@ -404,7 +404,7 @@ type DirectoryTreeInfo struct {
   StartPath          string
   Directories        DirMgrCollection
   FoundFiles         FileMgrCollection
-  ErrReturns         []string
+  ErrReturns         []error
   FileSelectCriteria FileSelectionCriteria
 }
 

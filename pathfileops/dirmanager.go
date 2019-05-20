@@ -2822,21 +2822,28 @@ func (dMgr *DirMgr) FindWalkDirFiles(
     return findFilesInfo, err
   }
 
-  if dMgr.doesAbsolutePathExist {
+  _, err = os.Stat(dMgr.absolutePath)
 
-    findFilesInfo.StartPath = dMgr.absolutePath
+  if err != nil {
 
-  } else if dMgr.DoesPathExist() {
+    if os.IsNotExist(err) {
 
-    findFilesInfo.StartPath = dMgr.path
+      return findFilesInfo,
+        fmt.Errorf(ePrefix+
+          "path and absolutePath - PATH DOES NOT EXIST!\n"+
+          "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
 
-  } else {
+    }
 
     return findFilesInfo,
-      fmt.Errorf(ePrefix+
-        "path and absolutePath - PATH DOES NOT EXIST! "+
-        "dMgr.absolutePath='%v' dMgr.path='%v'", dMgr.absolutePath, dMgr.path)
+      fmt.Errorf(ePrefix +
+        "Non-Path Error returned by os.Stat(dMgr.absolutePath)\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n",
+        dMgr.absolutePath, err.Error())
+
   }
+
+  findFilesInfo.StartPath = dMgr.absolutePath
 
   findFilesInfo.FileSelectCriteria = fileSelectCriteria
 
@@ -2846,8 +2853,8 @@ func (dMgr *DirMgr) FindWalkDirFiles(
 
   if err != nil {
     return findFilesInfo, fmt.Errorf(ePrefix+
-      "Error returned by FileHelper.FindFilesWalkDirectory(&dWalkInfo). "+
-      "dWalkInfo.StartPath='%v' Error='%v' ", findFilesInfo.StartPath, err.Error())
+      "Error returned by FileHelper.FindFilesWalkDirectory(&dWalkInfo).\n"+
+      "dWalkInfo.StartPath='%v'\nError='%v'\n", findFilesInfo.StartPath, err.Error())
   }
 
   return findFilesInfo, nil
