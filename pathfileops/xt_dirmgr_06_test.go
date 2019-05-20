@@ -130,11 +130,11 @@ func TestDirMgr_MoveFilesToDirectory_01(t *testing.T) {
     return
   }
 
-  errs = srcDirMgr.MoveFilesToDirectory(targetDMgr, fsc)
+  errs = srcDirMgr.MoveDirectoryFiles(targetDMgr, fsc)
 
   if len(errs) > 0 {
     for i:=0; i < len(errs); i++ {
-      t.Errorf("Error returned from srcDirMgr.MoveFilesToDirectory(targetDMgr, fsc)\n" +
+      t.Errorf("Error returned from srcDirMgr.MoveDirectoryFiles(targetDMgr, fsc)\n" +
         "targetDir='%v'\nError='%v'\n\n", targetDMgr.GetAbsolutePath(), errs[0].Error())
     }
 
@@ -318,10 +318,10 @@ func TestDirMgr_MoveFilesToDirectory_02(t *testing.T) {
 
   srcDirMgr.isInitialized = false
 
-  errs = srcDirMgr.MoveFilesToDirectory(targetDMgr, fsc)
+  errs = srcDirMgr.MoveDirectoryFiles(targetDMgr, fsc)
 
   if len(errs) == 0 {
-      t.Error("Expected an error return from srcDirMgr.MoveFilesToDirectory(targetDMgr, fsc)\n" +
+      t.Error("Expected an error return from srcDirMgr.MoveDirectoryFiles(targetDMgr, fsc)\n" +
         "because srcDirMgr is INVALID!\n" +
         "However, NO ERROR WAS RETURNED!!!")
   }
@@ -424,10 +424,10 @@ func TestDirMgr_MoveFilesToDirectory_03(t *testing.T) {
 
   targetDMgr.isInitialized = false
 
-  errs = srcDirMgr.MoveFilesToDirectory(targetDMgr, fsc)
+  errs = srcDirMgr.MoveDirectoryFiles(targetDMgr, fsc)
 
   if len(errs) == 0 {
-      t.Error("Expected an error return from srcDirMgr.MoveFilesToDirectory(targetDMgr, fsc)\n" +
+      t.Error("Expected an error return from srcDirMgr.MoveDirectoryFiles(targetDMgr, fsc)\n" +
         "because targetDMgr is INVALID!\n" +
         "However, NO ERROR WAS RETURNED!!!")
   }
@@ -486,10 +486,10 @@ func TestDirMgr_MoveFilesToDirectory_04(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := srcDirMgr.MoveFilesToDirectory(targetDMgr, fsc)
+  errs := srcDirMgr.MoveDirectoryFiles(targetDMgr, fsc)
 
   if len(errs) == 0 {
-      t.Error("Expected an error return from srcDirMgr.MoveFilesToDirectory(targetDMgr, fsc)\n" +
+      t.Error("Expected an error return from srcDirMgr.MoveDirectoryFiles(targetDMgr, fsc)\n" +
         "because srcDirMgr is DOES NOT EXIST!\n" +
         "However, NO ERROR WAS RETURNED!!!")
   }

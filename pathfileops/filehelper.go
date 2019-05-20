@@ -4125,6 +4125,10 @@ func (fh FileHelper) MakeDirPerm(dirPath string, permission FilePermissionConfig
 // The copy procedure will carried out using the the 'Copy By Io' technique.
 // See FileHelper.CopyFileByIo().
 //
+// The 'move' operation will create the destination file, but it will NOT
+// create the destination directory. If the destination directory does NOT
+// exist, an error will be returned.
+//
 // If this copy operation fails, the method will return an error and it
 // will NOT delete the source file.
 //

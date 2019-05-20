@@ -3483,7 +3483,7 @@ func (dMgr *DirMgr) MakeDir() error {
 }
 
 
-// MoveFilesToDirectory - Moves files from the source directory identified
+// MoveDirectoryFiles - Moves files from the source directory identified
 // by DirMgr to a target directory. The 'move' operation is accomplished
 // in three steps. First, the files to be copied are selected according
 // to file selection criteria specified by input parameter,'fileSelectCriteria'.
@@ -3643,14 +3643,14 @@ func (dMgr *DirMgr) MakeDir() error {
 //                      If errors are encountered they are stored in the error
 //                      array and returned to the caller.
 //
-func (dMgr *DirMgr) MoveFilesToDirectory(
+func (dMgr *DirMgr) MoveDirectoryFiles(
   targetDir DirMgr,
   fileSelectCriteria FileSelectionCriteria) (errs []error) {
 
 
   errs = make([]error, 0, 300)
 
-  ePrefix := "DirMgr.MoveFilesToDirectory() "
+  ePrefix := "DirMgr.MoveDirectoryFiles() "
   var err, err2, err3 error
 
   err = dMgr.IsDirMgrValid(ePrefix)
