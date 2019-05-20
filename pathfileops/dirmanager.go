@@ -605,8 +605,6 @@ func (dMgr *DirMgr) CopyDirectory(
 
       if err != nil {
 
-        _ = dir.Close()
-
         err2 =
           fmt.Errorf("\n" + ePrefix+
             "Error returned by fh.FilterFileName(nameFInfo, fileSelectCriteria). "+
@@ -615,7 +613,7 @@ func (dMgr *DirMgr) CopyDirectory(
 
         errs = append(errs, err2)
 
-        return errs
+        continue
       }
 
       if !isMatch {
@@ -623,13 +621,10 @@ func (dMgr *DirMgr) CopyDirectory(
         continue
 
       } else {
+
         // We have a match
-        src = dMgr.absolutePath +
-          osPathSeparatorStr + nameFInfo.Name()
 
-        target = targetDir.absolutePath +
-          osPathSeparatorStr + nameFInfo.Name()
-
+        // Create Directory if needed
         if !targetDir.DoesDirMgrAbsolutePathExist() {
 
           err = targetDir.MakeDir()
@@ -642,9 +637,15 @@ func (dMgr *DirMgr) CopyDirectory(
 
             errs = append(errs, err2)
 
-            return errs
+            break
           }
         }
+
+        src = dMgr.absolutePath +
+          osPathSeparatorStr + nameFInfo.Name()
+
+        target = targetDir.absolutePath +
+          osPathSeparatorStr + nameFInfo.Name()
 
         err = fh.CopyFileByIo(src, target)
 
@@ -655,7 +656,6 @@ func (dMgr *DirMgr) CopyDirectory(
             src, target, err.Error())
 
           errs = append(errs, err2)
-
         }
       }
     }
@@ -3412,6 +3412,12 @@ func (dMgr *DirMgr) MakeDirWithPermission(fPermCfg FilePermissionConfig) error {
     return err
   }
 
+  if dMgr.doesAbsolutePathExist {
+    // No need to create directory, it already
+    // exists.
+    return nil
+  }
+
   err = fPermCfg.IsValid()
 
   if err != nil {
@@ -3422,15 +3428,6 @@ func (dMgr *DirMgr) MakeDirWithPermission(fPermCfg FilePermissionConfig) error {
 
   if err != nil {
     return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
-
-  dMgr.DoesDirMgrPathExist()
-  dMgr.DoesDirMgrAbsolutePathExist()
-
-  if dMgr.doesAbsolutePathExist {
-    // No need to create directory, it already
-    // exists.
-    return nil
   }
 
   err = os.MkdirAll(dMgr.absolutePath, modePerm)
@@ -3447,7 +3444,6 @@ func (dMgr *DirMgr) MakeDirWithPermission(fPermCfg FilePermissionConfig) error {
 
   // No errors - directory created.
   return nil
-
 }
 
 // MakeDir - If the directory path identified by the current DirMgr
@@ -3496,10 +3492,15 @@ func (dMgr *DirMgr) MakeDir() error {
 // reference:
 //   https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 //
+// If the target directory does not previously exist, this method will attempt
+// to create the target directory, provided, that files are selected for movement
+// to that directory. If no files match the file selection criteria, the target
+// directory will NOT be created.
+//
 // NOTE: This method ONLY moves files from the current directory identified
 // by 'DirMgr'. It does NOT move files from subdirectories.
 //
-// This method is optimized to support the copy of large numbers of files.
+// This method is optimized to support the movement of large numbers of files.
 //
 // ------------------------------------------------------------------------------
 //
@@ -3647,7 +3648,6 @@ func (dMgr *DirMgr) MoveDirectoryFiles(
   targetDir DirMgr,
   fileSelectCriteria FileSelectionCriteria) (errs []error) {
 
-
   errs = make([]error, 0, 300)
 
   ePrefix := "DirMgr.MoveDirectoryFiles() "
@@ -3683,15 +3683,6 @@ func (dMgr *DirMgr) MoveDirectoryFiles(
 
     errs = append(errs, err2)
 
-    return errs
-  }
-
-  err = targetDir.MakeDir()
-
-  if err != nil {
-    err2 = fmt.Errorf("Error returned by targetDir.MakeDir()\n" +
-      "Error='%v'\n", err.Error())
-    errs = append(errs, err2)
     return errs
   }
 
@@ -3746,8 +3737,6 @@ func (dMgr *DirMgr) MoveDirectoryFiles(
 
       if err != nil {
 
-        _ = dir.Close()
-
         err2 =
           fmt.Errorf("\n" + ePrefix+
             "Error returned by fh.FilterFileName(nameFInfo, fileSelectCriteria). "+
@@ -3756,7 +3745,7 @@ func (dMgr *DirMgr) MoveDirectoryFiles(
 
         errs = append(errs, err2)
 
-        return errs
+        continue
       }
 
       if !isMatch {
@@ -3765,6 +3754,24 @@ func (dMgr *DirMgr) MoveDirectoryFiles(
 
       } else {
         // We have a match
+
+        // Create Directory if needed
+        if !targetDir.DoesDirMgrAbsolutePathExist() {
+
+          err = targetDir.MakeDir()
+
+          if err != nil {
+            err2 = fmt.Errorf("\n" + ePrefix +
+              "Error creating target directory!\n" +
+              "Target Directory='%v'\nError='%v'\n",
+              targetDir.absolutePath, err.Error())
+
+            errs = append(errs, err2)
+
+            break
+          }
+        }
+
         src = dMgr.absolutePath +
           osPathSeparatorStr + nameFInfo.Name()
 
