@@ -55,11 +55,18 @@ type DirMgr struct {
 
 // CopyDirectoryTree - Copies all selected files in the directory tree to
 // a specified target directory tree. If the target directory tree does not
-// exist, this method will attempt to create it.
+// exist, this method will attempt to create it. See the details of target
+// directory tree creation under input parameter 'copyEmptyDirectories'.
 //
 // If input parameter 'copyEmptyDirectories' is set to 'true', the entire
-// directory tree will be created and may contain empty directories.
+// directory tree will be created and may contain empty directories. If
+// set to false, target directory tree elements will only be created if
+// files meet the selection criteria and are subsequently copied to those
+// target directory tree paths.
 //
+// Files eligible for copy to the target directory tree are selected on the
+// basis of file selection criteria specified by input parameter,
+// 'fileSelectCriteria'.
 //
 // ------------------------------------------------------------------------------
 //
@@ -332,7 +339,7 @@ func (dMgr *DirMgr) CopyDirectoryTree(
 
     }
 
-    errs2 = dMgrSub.CopyFilesToDirectory(newTargetDir, fileSelectCriteria)
+    errs2 = dMgrSub.CopyDirectory(newTargetDir, fileSelectCriteria)
 
     if len(errs2) > 0 {
       err2 = fmt.Errorf("\n" + ePrefix +
@@ -347,7 +354,7 @@ func (dMgr *DirMgr) CopyDirectoryTree(
   return errs
 }
 
-// CopyFilesToDirectory - Copies files from the directory identified by
+// CopyDirectory - Copies files from the directory identified by
 // by DirMgr to a target directory. The files to be copied are selected
 // according to file selection criteria specified by input parameter,
 // 'fileSelectCriteria'.
@@ -505,13 +512,13 @@ func (dMgr *DirMgr) CopyDirectoryTree(
 //                      If errors are encountered they are stored in the error
 //                      array and returned to the caller.
 //
-func (dMgr *DirMgr) CopyFilesToDirectory(
+func (dMgr *DirMgr) CopyDirectory(
   targetDir DirMgr,
   fileSelectCriteria FileSelectionCriteria) (errs []error) {
 
   errs = make([]error, 0, 300)
 
-  ePrefix := "DirMgr.CopyFilesToDirectory() "
+  ePrefix := "DirMgr.CopyDirectory() "
   var err, err2, err3 error
 
   err = dMgr.IsDirMgrValid(ePrefix)

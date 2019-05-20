@@ -91,12 +91,12 @@ func TestDirMgr_MoveFilesToDirectory_01(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := origSrcDMgr.CopyFilesToDirectory(srcDirMgr, fsc)
+  errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
 
   if len(errs) > 0 {
     for i:=0; i < len(errs); i++ {
       t.Errorf("Test Setup Error returned from origSrcDMgr." +
-        "CopyFilesToDirectory(srcDirMgr, fsc)\n" +
+        "CopyDirectory(srcDirMgr, fsc)\n" +
         "srcDirMgr='%v'\nError='%v'\n\n",
         targetDMgr.GetAbsolutePath(), errs[i].Error())
     }
@@ -277,12 +277,12 @@ func TestDirMgr_MoveFilesToDirectory_02(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := origSrcDMgr.CopyFilesToDirectory(srcDirMgr, fsc)
+  errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
 
   if len(errs) > 0 {
     for i:=0; i < len(errs); i++ {
       t.Errorf("Test Setup Error returned from origSrcDMgr." +
-        "CopyFilesToDirectory(srcDirMgr, fsc)\n" +
+        "CopyDirectory(srcDirMgr, fsc)\n" +
         "srcDirMgr='%v'\nError='%v'\n\n",
         targetDMgr.GetAbsolutePath(), errs[i].Error())
     }
@@ -384,12 +384,12 @@ func TestDirMgr_MoveFilesToDirectory_03(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := origSrcDMgr.CopyFilesToDirectory(srcDirMgr, fsc)
+  errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
 
   if len(errs) > 0 {
     for i:=0; i < len(errs); i++ {
       t.Errorf("Test Setup Error returned from origSrcDMgr." +
-        "CopyFilesToDirectory(srcDirMgr, fsc)\n" +
+        "CopyDirectory(srcDirMgr, fsc)\n" +
         "srcDirMgr='%v'\nError='%v'\n\n",
         targetDMgr.GetAbsolutePath(), errs[i].Error())
     }
