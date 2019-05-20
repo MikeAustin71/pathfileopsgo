@@ -423,7 +423,7 @@ func TestDirMgr_CopyDirectory_05(t *testing.T) {
      "../filesfortest/levelfilesfortest/level_0_4_test.txt"
   */
 
-  if targetDMgr.DoesDirMgrAbsolutePathExist() {
+  if targetDMgr.DoesAbsolutePathExist() {
     t.Errorf("Error: Expected that target directory would not exist because\n" +
       "none of the source files matched the search criteria.\n" +
       "However, the target directory DOES EXIST!!!")
@@ -1474,7 +1474,7 @@ func TestDirMgr_DeleteFilesByNamePattern_06(t *testing.T) {
   return
 }
 
-func TestDirMgr_DoesDirMgrAbsolutePathExist_01(t *testing.T) {
+func TestDirMgr_DoesAbsolutePathExist_01(t *testing.T) {
 
   dMgr, err := DirMgr{}.New("../checkfiles")
 
@@ -1486,17 +1486,17 @@ func TestDirMgr_DoesDirMgrAbsolutePathExist_01(t *testing.T) {
 
   dMgr.absolutePath = " "
 
-  result := dMgr.DoesDirMgrAbsolutePathExist()
+  result := dMgr.DoesAbsolutePathExist()
 
   if result == true {
-    t.Error("Expected a value of 'false' to be returned from dMgr.DoesDirMgrAbsolutePathExist()\n" +
+    t.Error("Expected a value of 'false' to be returned from dMgr.DoesAbsolutePathExist()\n" +
       "because dMgr.absolutePath consists entirely of blank spaces.\n" +
       "However, a value of 'true' was returned instead!\n")
   }
 
 }
 
-func TestDirMgr_DoesDirMgrAbsolutePathExist_02(t *testing.T) {
+func TestDirMgr_DoesAbsolutePathExist_02(t *testing.T) {
 
   dMgr, err := DirMgr{}.New("../checkfiles")
 
@@ -1506,17 +1506,17 @@ func TestDirMgr_DoesDirMgrAbsolutePathExist_02(t *testing.T) {
     return
   }
 
-  result := dMgr.DoesDirMgrAbsolutePathExist()
+  result := dMgr.DoesAbsolutePathExist()
 
   if result == false {
-    t.Error("Expected a value of 'true' to be returned from dMgr.DoesDirMgrAbsolutePathExist()\n" +
+    t.Error("Expected a value of 'true' to be returned from dMgr.DoesAbsolutePathExist()\n" +
       "because dMgr.absolutePath actually exists.\n" +
       "However, a value of 'false' was returned instead!")
   }
 
 }
 
-func TestDirMgr_DoesDirMgrPathExist_01(t *testing.T) {
+func TestDirMgr_DoesPathExist_01(t *testing.T) {
 
   dMgr, err := DirMgr{}.New("../checkfiles")
 
@@ -1528,17 +1528,17 @@ func TestDirMgr_DoesDirMgrPathExist_01(t *testing.T) {
 
   dMgr.path = " "
 
-  result := dMgr.DoesDirMgrPathExist()
+  result := dMgr.DoesPathExist()
 
   if result == true {
-    t.Error("Expected a value of 'false' to be returned from dMgr.DoesDirMgrPathExist()\n" +
+    t.Error("Expected a value of 'false' to be returned from dMgr.DoesPathExist()\n" +
       "because dMgr.path consists entirely of blank spaces.\n" +
       "However, a value of 'true' was returned instead!\n")
   }
 
 }
 
-func TestDirMgr_DoesDirMgrPathExist_02(t *testing.T) {
+func TestDirMgr_DoesPathExist_02(t *testing.T) {
 
   dMgr, err := DirMgr{}.New("../checkfiles")
 
@@ -1548,10 +1548,10 @@ func TestDirMgr_DoesDirMgrPathExist_02(t *testing.T) {
     return
   }
 
-  result := dMgr.DoesDirMgrPathExist()
+  result := dMgr.DoesPathExist()
 
   if result == false {
-    t.Error("Expected a value of 'true' to be returned from dMgr.DoesDirMgrPathExist()\n" +
+    t.Error("Expected a value of 'true' to be returned from dMgr.DoesPathExist()\n" +
       "because dMgr.path actually exists.\n" +
       "However, a value of 'false' was returned instead!")
   }

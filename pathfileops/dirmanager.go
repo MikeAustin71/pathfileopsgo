@@ -625,7 +625,7 @@ func (dMgr *DirMgr) CopyDirectory(
         // We have a match
 
         // Create Directory if needed
-        if !targetDir.DoesDirMgrAbsolutePathExist() {
+        if !targetDir.DoesAbsolutePathExist() {
 
           err = targetDir.MakeDir()
 
@@ -765,8 +765,8 @@ func (dMgr *DirMgr) DeleteAll() error {
 
   }
 
-  _ = dMgr.DoesDirMgrPathExist()
-  _ = dMgr.DoesDirMgrAbsolutePathExist()
+  _ = dMgr.DoesPathExist()
+  _ = dMgr.DoesAbsolutePathExist()
 
   return err
 }
@@ -1258,14 +1258,14 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(
 //
 func (dMgr *DirMgr) DoesDirectoryExist() (doesPathExist, doesAbsolutePathExist bool) {
 
-  doesPathExist = dMgr.DoesDirMgrPathExist()
+  doesPathExist = dMgr.DoesPathExist()
 
-  doesAbsolutePathExist = dMgr.DoesDirMgrAbsolutePathExist()
+  doesAbsolutePathExist = dMgr.DoesAbsolutePathExist()
 
   return
 }
 
-// DoesDirMgrAbsolutePathExist - Performs two operations.
+// DoesAbsolutePathExist - Performs two operations.
 // First the method determine whether the directory
 // path indicated by the DirMgr.absolutePath field
 // actually does exist on disk and returns a 'true'
@@ -1273,7 +1273,7 @@ func (dMgr *DirMgr) DoesDirectoryExist() (doesPathExist, doesAbsolutePathExist b
 // it also updates the DirMgr field
 // 'DirMgr.doesAbsolutePathExist'.
 //
-func (dMgr *DirMgr) DoesDirMgrAbsolutePathExist() bool {
+func (dMgr *DirMgr) DoesAbsolutePathExist() bool {
 
   errCode, _ , _ :=FileHelper{}.isStringEmptyOrBlank(dMgr.absolutePath)
 
@@ -1294,14 +1294,14 @@ func (dMgr *DirMgr) DoesDirMgrAbsolutePathExist() bool {
   return dMgr.doesAbsolutePathExist
 }
 
-// DoesDirMgrPathExist - Performs two operations.
+// DoesPathExist - Performs two operations.
 // First the method determine whether the directory
 // path indicated by the DirMgr.path field actually
 // does exist on disk and returns a 'true' or 'false'
 // boolean value accordingly. In addition it also
 // updates the DirMgr field DirMgr.doesPathExist field.
 //
-func (dMgr *DirMgr) DoesDirMgrPathExist() bool {
+func (dMgr *DirMgr) DoesPathExist() bool {
 
   errCode, _ , _ :=FileHelper{}.isStringEmptyOrBlank(dMgr.path)
 
@@ -2826,7 +2826,7 @@ func (dMgr *DirMgr) FindWalkDirFiles(
 
     findFilesInfo.StartPath = dMgr.absolutePath
 
-  } else if dMgr.DoesDirMgrPathExist() {
+  } else if dMgr.DoesPathExist() {
 
     findFilesInfo.StartPath = dMgr.path
 
@@ -3321,8 +3321,8 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
 
   dMgr.isPathPopulated = true
 
-  _ = dMgr.DoesDirMgrAbsolutePathExist()
-  _ = dMgr.DoesDirMgrPathExist()
+  _ = dMgr.DoesAbsolutePathExist()
+  _ = dMgr.DoesPathExist()
 
   return nil
 }
@@ -3439,8 +3439,8 @@ func (dMgr *DirMgr) MakeDirWithPermission(fPermCfg FilePermissionConfig) error {
       dMgr.absolutePath, modePerm.String(), err.Error())
   }
 
-  dMgr.DoesDirMgrPathExist()
-  dMgr.DoesDirMgrAbsolutePathExist()
+  dMgr.DoesPathExist()
+  dMgr.DoesAbsolutePathExist()
 
   // No errors - directory created.
   return nil
@@ -3479,7 +3479,7 @@ func (dMgr *DirMgr) MakeDir() error {
 }
 
 
-// MoveDirectoryFiles - Moves files from the source directory identified
+// MoveDirectory - Moves files from the source directory identified
 // by DirMgr to a target directory. The 'move' operation is accomplished
 // in three steps. First, the files to be copied are selected according
 // to file selection criteria specified by input parameter,'fileSelectCriteria'.
@@ -3644,13 +3644,13 @@ func (dMgr *DirMgr) MakeDir() error {
 //                      If errors are encountered they are stored in the error
 //                      array and returned to the caller.
 //
-func (dMgr *DirMgr) MoveDirectoryFiles(
+func (dMgr *DirMgr) MoveDirectory(
   targetDir DirMgr,
   fileSelectCriteria FileSelectionCriteria) (errs []error) {
 
   errs = make([]error, 0, 300)
 
-  ePrefix := "DirMgr.MoveDirectoryFiles() "
+  ePrefix := "DirMgr.MoveDirectory() "
   var err, err2, err3 error
 
   err = dMgr.IsDirMgrValid(ePrefix)
@@ -3756,7 +3756,7 @@ func (dMgr *DirMgr) MoveDirectoryFiles(
         // We have a match
 
         // Create Directory if needed
-        if !targetDir.DoesDirMgrAbsolutePathExist() {
+        if !targetDir.DoesAbsolutePathExist() {
 
           err = targetDir.MakeDir()
 
@@ -3993,7 +3993,7 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
   dMgr.path = finalPathStr
 
   dMgr.isPathPopulated = true
-  dMgr.DoesDirMgrPathExist()
+  dMgr.DoesPathExist()
 
   if strings.ToLower(dMgr.path) == strings.ToLower(fp.VolumeName(dMgr.path)) {
 
@@ -4044,7 +4044,7 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
   }
 
   dMgr.isAbsolutePathPopulated = true
-  dMgr.DoesDirMgrAbsolutePathExist()
+  dMgr.DoesAbsolutePathExist()
 
   strAry := strings.Split(dMgr.absolutePath, string(os.PathSeparator))
   lStr := len(strAry)

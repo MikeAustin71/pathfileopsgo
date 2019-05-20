@@ -1303,7 +1303,7 @@ func (fMgr *FileMgr) CreateDir() error {
     return err
   }
 
-  doesDirExist := fMgr.dMgr.DoesDirMgrAbsolutePathExist()
+  doesDirExist := fMgr.dMgr.DoesAbsolutePathExist()
 
   if !doesDirExist {
     // Directory path does NOT exist. Create it!
@@ -1342,7 +1342,7 @@ func (fMgr *FileMgr) CreateDirAndFile() error {
     return err
   }
 
-  if !fMgr.dMgr.DoesDirMgrAbsolutePathExist() {
+  if !fMgr.dMgr.DoesAbsolutePathExist() {
 
     err = fMgr.dMgr.MakeDir()
 
@@ -1387,7 +1387,7 @@ func (fMgr *FileMgr) CreateThisFile() error {
     return err
   }
 
-  if !fMgr.dMgr.DoesDirMgrAbsolutePathExist() {
+  if !fMgr.dMgr.DoesAbsolutePathExist() {
 
     return fmt.Errorf(ePrefix+
       "Error: Directory Path DOES NOT EXIST! "+
@@ -2236,7 +2236,7 @@ func (fMgr *FileMgr) IsFileMgrValid(errorPrefixStr string) error {
     fMgr.actualFileInfo = FileInfoPlus{}.NewFromPathFileInfo(fMgr.absolutePathFileName, info)
   }
 
-  fMgr.dMgr.DoesDirMgrPathExist()
+  fMgr.dMgr.DoesPathExist()
 
   return nil
 }
@@ -2937,7 +2937,7 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
       "%v\n", err.Error())
   }
 
-  if !fMgr.dMgr.DoesDirMgrAbsolutePathExist() {
+  if !fMgr.dMgr.DoesAbsolutePathExist() {
 
     err = fMgr.dMgr.MakeDir()
 

@@ -596,7 +596,7 @@ func TestDirMgr_ExecuteDirectoryFileOps_01(t *testing.T) {
       "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
   }
 
-  if targetDir.DoesDirMgrAbsolutePathExist() {
+  if targetDir.DoesAbsolutePathExist() {
 
     err = targetDir.DeleteAll()
 
@@ -698,7 +698,7 @@ func TestDirMgr_ExecuteDirectoryFileOps_02(t *testing.T) {
       "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
   }
 
-  if targetDir.DoesDirMgrAbsolutePathExist() {
+  if targetDir.DoesAbsolutePathExist() {
 
     err = targetDir.DeleteAll()
 
@@ -773,7 +773,7 @@ func TestDirMgr_ExecuteDirectoryFileOps_03(t *testing.T) {
       "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
   }
 
-  if targetDir.DoesDirMgrAbsolutePathExist() {
+  if targetDir.DoesAbsolutePathExist() {
 
     err = targetDir.DeleteAll()
 
@@ -852,7 +852,7 @@ func TestDirMgr_ExecuteDirectoryFileOps_04(t *testing.T) {
       "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
   }
 
-  if targetDir.DoesDirMgrAbsolutePathExist() {
+  if targetDir.DoesAbsolutePathExist() {
 
     err = targetDir.DeleteAll()
 
@@ -925,7 +925,7 @@ func TestDirMgr_ExecuteDirectoryFileOps_05(t *testing.T) {
       "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
   }
 
-  if targetDir.DoesDirMgrAbsolutePathExist() {
+  if targetDir.DoesAbsolutePathExist() {
 
     err = targetDir.DeleteAll()
 
@@ -996,7 +996,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_01(t *testing.T) {
       "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
   }
 
-  if targetDir.DoesDirMgrAbsolutePathExist() {
+  if targetDir.DoesAbsolutePathExist() {
 
     err = targetDir.DeleteAll()
 
@@ -1098,7 +1098,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_02(t *testing.T) {
       "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
   }
 
-  if targetDir.DoesDirMgrAbsolutePathExist() {
+  if targetDir.DoesAbsolutePathExist() {
 
     err = targetDir.DeleteAll()
 
@@ -1173,7 +1173,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_03(t *testing.T) {
       "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
   }
 
-  if targetDir.DoesDirMgrAbsolutePathExist() {
+  if targetDir.DoesAbsolutePathExist() {
 
     err = targetDir.DeleteAll()
 
@@ -1252,7 +1252,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_04(t *testing.T) {
       "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
   }
 
-  if targetDir.DoesDirMgrAbsolutePathExist() {
+  if targetDir.DoesAbsolutePathExist() {
 
     err = targetDir.DeleteAll()
 
@@ -1325,7 +1325,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_05(t *testing.T) {
       "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
   }
 
-  if targetDir.DoesDirMgrAbsolutePathExist() {
+  if targetDir.DoesAbsolutePathExist() {
 
     err = targetDir.DeleteAll()
 

@@ -1038,7 +1038,7 @@ func TestFileHelper_FindFilesInPath_01(t *testing.T) {
       "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
   }
 
-  if targetDir.DoesDirMgrAbsolutePathExist() {
+  if targetDir.DoesAbsolutePathExist() {
 
     err = targetDir.DeleteAll()
 
@@ -1114,7 +1114,7 @@ func TestFileHelper_FindFilesInPath_02(t *testing.T) {
       "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
   }
 
-  if targetDir.DoesDirMgrAbsolutePathExist() {
+  if targetDir.DoesAbsolutePathExist() {
 
     err = targetDir.DeleteAll()
 

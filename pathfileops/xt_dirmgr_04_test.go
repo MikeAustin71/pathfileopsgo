@@ -2100,7 +2100,7 @@ func dirMgr02SetupDirWalkTests() error {
 
   // If the directory tree ../dirwalktests/dir01/dir02/dir03
   // does not exist, create it.
-  if !destDirMgr3.DoesDirMgrAbsolutePathExist() {
+  if !destDirMgr3.DoesAbsolutePathExist() {
 
     err = destDirMgr3.MakeDir()
 
@@ -2153,7 +2153,7 @@ func dirMgr02SetupDirWalkTests() error {
       "dirNewFilesForTest='%v' Error='%v' ", dirNewFilesForTest, err.Error())
   }
 
-  if !srcNewFilesForTest.DoesDirMgrPathExist() {
+  if !srcNewFilesForTest.DoesPathExist() {
     return fmt.Errorf(ePrefix+"FATAL ERROR: Directory %v DOES NOT EXIST", dirNewFilesForTest)
   }
 
@@ -2167,7 +2167,7 @@ func dirMgr02SetupDirWalkTests() error {
       "dirOldFilesForTest='%v' Error='%v' ", dirOldFilesForTest, err.Error())
   }
 
-  if !srcOldFilesForTest.DoesDirMgrPathExist() {
+  if !srcOldFilesForTest.DoesPathExist() {
     return fmt.Errorf(ePrefix+"FATAL ERROR: Directory %v DOES NOT EXIST", dirOldFilesForTest)
   }
 

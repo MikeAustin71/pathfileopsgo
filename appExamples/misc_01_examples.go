@@ -762,7 +762,7 @@ func TestCopyDirectoryTree() {
     return
   }
 
-  if !dMgr.DoesDirMgrAbsolutePathExist() {
+  if !dMgr.DoesAbsolutePathExist() {
     fmt.Printf("Expected target directory to exist. I does NOT exist. "+
       "dMgr.path='%v' dMgr.AbolutePath='%v'\n",
       dMgr.GetPath(), dMgr.GetAbsolutePath())
@@ -1196,14 +1196,14 @@ func DeleteDir02() error {
     return fmt.Errorf(ePrefix+"Error returned from DirMgr{}.NewFromPathFileNameExtStr(dirToDelete). dirToDelete='%v' Error='%v'", origDir, err.Error())
   }
 
-  if dMgr.DoesDirMgrAbsolutePathExist() {
+  if dMgr.DoesAbsolutePathExist() {
     return fmt.Errorf("Directory origDir still exists. dMgr.doesAbsolutePathExist='%v' "+
-      "origDir='%v' ", dMgr.DoesDirMgrAbsolutePathExist(), origDir)
+      "origDir='%v' ", dMgr.DoesAbsolutePathExist(), origDir)
   }
 
-  if dMgr.DoesDirMgrPathExist() {
+  if dMgr.DoesPathExist() {
     return fmt.Errorf("Directory origDir still exists. dMgr.doesPathExist='%v' origDir='%v' ",
-      dMgr.DoesDirMgrPathExist(), origDir)
+      dMgr.DoesPathExist(), origDir)
   }
 
   fmt.Println("Successfully Deleted Directory")
