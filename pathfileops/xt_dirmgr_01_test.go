@@ -531,6 +531,196 @@ func TestDirMgr_CopyDirectoryTree_01(t *testing.T) {
   return
 }
 
+func TestDirMgr_CopyDirectoryTree_02(t *testing.T) {
+  srcDir := "../filesfortest/levelfilesfortest"
+
+  srcDMgr, err := DirMgr{}.New(srcDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(srcDir).\n"+
+      "srcDir='%v'\nError='%v'", srcDir, err.Error())
+  }
+
+  targetDir := "../dirmgrtests/levelfilesfortest"
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(targetDir).\n"+
+      "targetDir='%v'\nError='%v'", targetDir, err.Error())
+  }
+
+  fh := FileHelper{}
+
+  fsc := FileSelectionCriteria{}
+
+  srcDMgr.isInitialized = false
+
+  errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
+
+  if len(errs) == 0 {
+    t.Error("Expected an error from srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)\n" +
+      "because 'srcDMgr' is INVALID!\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  err = fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath())
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath()\n" +
+      "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_CopyDirectoryTree_03(t *testing.T) {
+  srcDir := "../filesfortest/levelfilesfortest"
+
+  srcDMgr, err := DirMgr{}.New(srcDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(srcDir).\n"+
+      "srcDir='%v'\nError='%v'", srcDir, err.Error())
+  }
+
+  targetDir := "../dirmgrtests/levelfilesfortest"
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(targetDir).\n"+
+      "targetDir='%v'\nError='%v'", targetDir, err.Error())
+  }
+
+  fh := FileHelper{}
+
+  fsc := FileSelectionCriteria{}
+
+  targetDMgr.isInitialized = false
+
+  errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
+
+  if len(errs) == 0 {
+    t.Error("Expected an error from srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)\n" +
+      "because 'targetDMgr' is INVALID!\n" +
+      "However, NO ERROR WAS RETURNED!\n\n")
+  }
+
+  targetDMgr.isInitialized = true
+
+  err = fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath())
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath()\n" +
+      "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_CopyDirectoryTree_04(t *testing.T) {
+  srcDir := "../filesfortest/iDoNotExist"
+
+  srcDMgr, err := DirMgr{}.New(srcDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(srcDir).\n"+
+      "srcDir='%v'\nError='%v'", srcDir, err.Error())
+  }
+
+  targetDir := "../dirmgrtests/levelfilesfortest"
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(targetDir).\n"+
+      "targetDir='%v'\nError='%v'", targetDir, err.Error())
+  }
+
+  fh := FileHelper{}
+
+  fsc := FileSelectionCriteria{}
+
+  targetDMgr.isInitialized = false
+
+  errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
+
+  if len(errs) == 0 {
+    t.Error("Expected an error from srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)\n" +
+      "because 'srcDMgr' DOES NOT EXIST!\n" +
+      "However, NO ERROR WAS RETURNED!!!!\n")
+  }
+
+  targetDMgr.isInitialized = true
+
+  err = fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath())
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath()\n" +
+      "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_CopyDirectoryTree_05(t *testing.T) {
+
+  srcDir := "../filesfortest/levelfilesfortest"
+
+  srcDMgr, err := DirMgr{}.New(srcDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(srcDir).\n"+
+      "srcDir='%v'\nError='%v'", srcDir, err.Error())
+  }
+
+  targetDir := "../dirmgrtests/levelfilesfortest"
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(targetDir).\n"+
+      "targetDir='%v'\nError='%v'", targetDir, err.Error())
+  }
+
+  fh := FileHelper{}
+
+  fsc := FileSelectionCriteria{}
+  fsc.FileNamePatterns = []string{"*.htm"}
+
+  errs := srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)
+
+  if len(errs) > 0 {
+    t.Errorf("Errors returned by srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)\n" +
+      "targetDMgr='%v'\nErrors:\n",  targetDMgr.GetAbsolutePath())
+
+    for i := 0; i < len(errs); i++ {
+      t.Errorf("'%v'\n\n", errs[i].Error())
+    }
+
+    _ = fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath())
+
+    return
+  }
+
+  if targetDMgr.DoesAbsolutePathExist() {
+    t.Error("ERROR: The target directory DOES EXIST!!\n" +
+      "The target directory should NOT have been created because none of the files\n" +
+      "is the source directory matched the file selection criteria.\n" +
+      "However, the target directory DOES EXIST! ERROR!!!!\n")
+  }
+
+  err = fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath())
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath()\n" +
+      "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
+  }
+
+  return
+}
+
 func TestDirMgr_CopyIn_01(t *testing.T) {
 
   fh := FileHelper{}
