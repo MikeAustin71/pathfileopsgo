@@ -583,11 +583,13 @@ func (dMgr *DirMgr) CopyDirectory(
     if err3 != nil && err3 != io.EOF {
       _ = dir.Close()
       err2 = fmt.Errorf(ePrefix+
-        "Error returned by dir.Readdirnames(-1). "+
+        "Error returned by dir.Readdirnames(1000). "+
         "dMgr.absolutePath='%v'\nError='%v'\n\n",
         dMgr.absolutePath, err.Error())
 
       errs = append(errs, err2)
+
+      return errs
     }
 
     for _, nameFInfo := range nameFileInfos {
@@ -880,6 +882,133 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
       dMgr.absolutePath, err.Error())
     errs = append(errs, err2)
     return errs
+  }
+
+  return errs
+}
+
+// DeleteAllSubDirectories - The directory identified by the current
+// DirMgr instance is treated as the parent directory. This method
+// will then proceed to delete all directories and files which are
+// are subsidiary to this parent directory. Essentially, all sub-
+// directories which are subordinate to the the DirMgr directory will
+// be deleted along with their constituent files.
+//
+//
+//  Example:
+//   Parent Directory:
+//    DirMgr = d:\parentdirectory
+//    files    d:\parentdirectory\file1.txt
+//             d:\parentdirectory\file2.txt
+//
+//   Sub-Directories:
+//             d:\parentdirectory\dir01
+//             d:\parentdirectory\dir02
+//             d:\parentdirectory\dir03
+//
+//  After Executing DirMgr.DeleteAllSubDirectories() all sub-directories and
+//  any files they contain will be deleted. The only directory which remains
+//  is the parent directory and any files contained within the parent directory.
+//
+//    DirMgr = d:\parentdirectory
+//    files    d:\parentdirectory\file1.txt
+//             d:\parentdirectory\file2.txt
+//
+func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
+
+  errs = make([]error, 0, 300)
+
+  ePrefix := "DirMgr.CopyDirectory() "
+  var err, err2, err3 error
+
+  err = dMgr.IsDirMgrValid(ePrefix)
+
+  if err != nil {
+    errs = append(errs, err)
+    return errs
+  }
+
+  _, err = os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+
+    if os.IsNotExist(err) {
+      err2 = fmt.Errorf(ePrefix + "The current DirMgr path DOES NOT EXIST!\n" +
+        "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
+    } else {
+      err2 = fmt.Errorf(ePrefix + "Non-Path error returned by os.Stat(dMgr.absolutePath)\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n",dMgr.absolutePath, err.Error())
+    }
+
+    errs = append(errs, err2)
+
+    return errs
+  }
+
+  dir, err := os.Open(dMgr.absolutePath)
+
+  if err != nil {
+
+    err2 = fmt.Errorf(ePrefix+
+      "Error return by os.Open(dMgr.absolutePath). "+
+      "dMgr.absolutePath='%v' Error='%v' ",
+      dMgr.absolutePath, err.Error())
+
+    errs = append(errs, err2)
+
+    return errs
+  }
+
+  fh := FileHelper{}
+
+  var nameFileInfos []os.FileInfo
+  err3 = nil
+
+  for err3 != io.EOF {
+
+    nameFileInfos, err3 = dir.Readdir(1000)
+
+    if err3 != nil && err3 != io.EOF {
+      _ = dir.Close()
+      err2 = fmt.Errorf(ePrefix+
+        "Error returned by dir.Readdirnames(1000). "+
+        "dMgr.absolutePath='%v'\nError='%v'\n\n",
+        dMgr.absolutePath, err.Error())
+
+      errs = append(errs, err2)
+    }
+
+    for _, nameFInfo := range nameFileInfos {
+
+      if nameFInfo.IsDir() {
+
+        subDir := fh.JoinPathsAdjustSeparators(
+                  dMgr.absolutePath, nameFInfo.Name())
+
+        err = os.RemoveAll(subDir)
+
+        if err != nil {
+          err2 = fmt.Errorf(ePrefix +
+            "Error returned by os.RemoveAll(subDir)\n" +
+            "subDir='%v'\nError='%v'\n", subDir, err.Error())
+
+          errs = append(errs, err2)
+
+          continue
+        }
+      }
+    }
+  }
+
+  err = dir.Close()
+
+  if err != nil {
+    err2 = fmt.Errorf(ePrefix +
+      "Error returned by dir.Close(). "+
+      "dir='%v' Error='%v' ",
+      dMgr.absolutePath, err.Error())
+
+    errs = append(errs, err2)
   }
 
   return errs
@@ -3457,6 +3586,11 @@ func (dMgr *DirMgr) MakeDirWithPermission(fPermCfg FilePermissionConfig) error {
 // object does not exist, this method will create that directory path.
 // The permission specification used to create the directory is
 // 'drwxrwxrwx' which is equivalent to octal value, '020000000777'
+//
+// MakeDir creates a directory named path, along with any necessary
+// parent directories.
+//
+// If the directory creation fails, an error is returned.
 //
 func (dMgr *DirMgr) MakeDir() error {
 

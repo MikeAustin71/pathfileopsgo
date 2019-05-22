@@ -39,7 +39,41 @@ func main() {
 
 func main() {
 
-  mainTest60CopyDirTree()
+  mainTest61DeleteSubDirs()
+}
+
+func mainTest61DeleteSubDirs() {
+
+  targetDir := "D:\\T04\\WebSite_15"
+
+  dMgr, err := pf.DirMgr{}.New(targetDir)
+
+  if err != nil {
+    fmt.Printf("Error returned by pf.DirMgr{}.New(targetDir).\n" +
+      "srcDir='%v'\nError='%v'\n", targetDir, err.Error())
+    return
+  }
+
+  errs := dMgr.DeleteAllSubDirectories()
+
+  if len(errs) > 0 {
+    fmt.Printf("Errors returned by dMgr.DeleteAllSubDirectories().\n" +
+      "targetDir='%v'\nErrors:\n\n", targetDir)
+
+    for i:=0; i < len(errs); i++ {
+      fmt.Printf("%v\n\n", errs[i].Error())
+    }
+
+    fmt.Printf("\n\n")
+
+    return
+  }
+
+  fmt.Println("              mainTest61DeleteSubDirs                   ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+
 }
 
 func mainTest60CopyDirTree() {

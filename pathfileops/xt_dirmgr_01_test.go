@@ -1258,6 +1258,191 @@ func TestDirMgr_DeleteAllFilesInDir_03(t *testing.T) {
   return
 }
 
+func TestDirMgr_DeleteAllSubDirectories_01(t *testing.T) {
+  testDir := "../dirmgrtests/TestDirMgr_DeleteAllSubDirectories_01"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+  }
+
+  setupDir := "../filesfortest/levelfilesfortest"
+
+  setupDMgr, err := DirMgr{}.New(setupDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(setupDir).\n" +
+      "setupDir='%v'\nError='%v'",setupDir, err.Error())
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  errs := setupDMgr.CopyDirectoryTree(testDMgr,true, fsc)
+
+  if len(errs) > 0 {
+    t.Errorf("Errors returned by setupDMgr.CopyDirectoryTree(testDMgr,true, fsc)\n" +
+      "testDMgr='%v'\nErrors:'\n\n", testDMgr.GetAbsolutePath())
+
+    for i:=0; i < len(errs); i++ {
+      t.Errorf("%v\n\n", errs[i].Error())
+    }
+
+    _ = testDMgr.DeleteAll()
+
+    return
+  }
+
+  setupDInfo, err := setupDMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by setupDMgr.FindWalkDirFiles(fsc).\n" +
+      "setupDMgr='%v'\nError='%v'\n", setupDMgr.GetAbsolutePath(), err.Error())
+
+    _ = testDMgr.DeleteAll()
+
+    return
+
+  }
+
+  testDInfo, err := testDMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by testDMgr.FindWalkDirFiles(fsc).\n" +
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+
+    _ = testDMgr.DeleteAll()
+
+    return
+
+  }
+
+  if testDInfo.Directories.GetNumOfDirs() != setupDInfo.Directories.GetNumOfDirs() {
+    t.Errorf("Expected the number of directories in 'testDir' to = %v.\n" +
+      "Intead, the number of directories in 'testDir' = %v.\n" +
+      "testDir='%v'.\n", testDInfo.Directories.GetNumOfDirs(), setupDInfo.Directories.GetNumOfDirs(),
+      testDMgr.GetAbsolutePath())
+
+    _ = testDMgr.DeleteAll()
+
+    return
+  }
+
+  errs = testDMgr.DeleteAllSubDirectories()
+
+  if len(errs) > 0 {
+    t.Errorf("Errors returned by testDMgr.DeleteAllSubDirectories()\n" +
+      "testDMgr='%v'\nErrors:'\n\n", testDMgr.GetAbsolutePath())
+
+    for i:=0; i < len(errs); i++ {
+      t.Errorf("%v\n\n", errs[i].Error())
+    }
+
+    _ = testDMgr.DeleteAll()
+
+    return
+  }
+
+
+  testDInfo, err = testDMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by 2nd run of testDMgr.FindWalkDirFiles(fsc).\n" +
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+
+    _ = testDMgr.DeleteAll()
+
+    return
+
+  }
+
+  if testDInfo.Directories.GetNumOfDirs() != 1 {
+    t.Errorf("After deletion of sub-directories it was expected that\n" +
+      "the number of directories in 'testDir' would equal '1'.\n" +
+      "Instead, the number of directories in 'testDir' equals '%v'.\n" +
+      "testDir='%v'\n", testDInfo.Directories.GetNumOfDirs(), testDMgr.GetAbsolutePath())
+  }
+
+  err = testDMgr.DeleteAll()
+
+  if err != nil {
+
+  t.Errorf("Test Clean-Up Error returned by testDMgr.DeleteAll()\n" +
+    "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_DeleteAllSubDirectories_02(t *testing.T) {
+
+  testDir := "../dirmgrtests/TestDirMgr_DeleteAllSubDirectories_02"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir).\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = testDMgr.MakeDir()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by testDMgr.MakeDir().\n" +
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+
+    _ = testDMgr.DeleteAll()
+
+    return
+  }
+
+  testDMgr.isInitialized = false
+
+  errs := testDMgr.DeleteAllSubDirectories()
+
+
+  if len(errs) == 0 {
+
+    t.Error("Expected an error return from testDMgr.DeleteAllSubDirectories()\n" +
+      "because 'testDMgr' is INVALID!\nHowever, NO ERROR WAS RETURNED!\n")
+  }
+
+  testDMgr.isInitialized = true
+
+  _ = testDMgr.DeleteAll()
+
+  return
+
+}
+
+func TestDirMgr_DeleteAllSubDirectories_03(t *testing.T) {
+
+  testDir := "../dirmgrtests/TestDirMgr_DeleteAllSubDirectories_03"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir).\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  errs := testDMgr.DeleteAllSubDirectories()
+
+
+  if len(errs) == 0 {
+
+    t.Error("Expected an error return from testDMgr.DeleteAllSubDirectories()\n" +
+      "because 'testDMgr' DOES NOT EXIST!\nHowever, NO ERROR WAS RETURNED!\n")
+  }
+
+  _ = testDMgr.DeleteAll()
+
+  return
+}
+
 func TestDirMgr_DeleteFilesByNamePattern_01(t *testing.T) {
 
   testDir := "../checkfiles/TestDirMgr_DeleteFilesByNamePattern_01"
