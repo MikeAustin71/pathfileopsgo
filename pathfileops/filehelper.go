@@ -5350,7 +5350,6 @@ func (fh FileHelper) SwapBasePath(
 //              3. 'testStr'     = ""
 //                 return string = ""
 //
-//
 func (fh FileHelper) isStringEmptyOrBlank(testStr string) (errCode int, strLen int, newStr string) {
 
   errCode = 0

@@ -3,20 +3,21 @@ package pathfileops
 import (
   "errors"
   "fmt"
+  "io"
   "os"
 )
 
 
 /*
-	This source code file contains type 'DirMgrCollection' .
+  This source code file contains type 'DirMgrCollection' .
 
-	The Source Repository for this source code file is :
-		https://github.com/MikeAustin71/pathfileopsgo.git
+  The Source Repository for this source code file is :
+    https://github.com/MikeAustin71/pathfileopsgo.git
 
-	Dependencies:
-	-------------
+  Dependencies:
+  -------------
 
-	Type 'DirMgrCollection'depend on types, 'FileHelper',
+  Type 'DirMgrCollection'depend on types, 'FileHelper',
   'FileMgr' and 'DirMgr' which are contained in source
   code files, 'filehelper.go', 'filemanager.go' and
   'dirmanager.go' located in this directory.
@@ -400,11 +401,16 @@ func (dMgrs DirMgrCollection) New() DirMgrCollection {
 //
 // As a 'Pop' method, the original Directory Manager ('DirMgr')
 // object is deleted from the Directory Manager Collection
-// ('DirMgrCollection') array.
+// ('DirMgrCollection') array. The 'DirMgr' object deleted is
+// located at the index specified by input parameter, 'idx'.
 //
 // Therefore at the completion of this method, the Directory
 // Manager Collection array has a length which is one less
 // than the starting array length.
+//
+// If this method is called on an empty Director Manager Collection
+// (i.e. length of array dMgrs.dirMgrs = 0), an io.EOF error is
+// returned.
 //
 func (dMgrs *DirMgrCollection) PopDirMgrAtIndex(idx int) (DirMgr, error) {
 
@@ -424,9 +430,7 @@ func (dMgrs *DirMgrCollection) PopDirMgrAtIndex(idx int) (DirMgr, error) {
   arrayLen := len(dMgrs.dirMgrs)
 
   if arrayLen == 0 {
-    return DirMgr{},
-      errors.New(ePrefix +
-        "Error: The Directory Manager Collection, 'DirMgrCollection', is EMPTY!")
+    return DirMgr{}, io.EOF
   }
 
   if idx >= arrayLen {
@@ -455,16 +459,18 @@ func (dMgrs *DirMgrCollection) PopDirMgrAtIndex(idx int) (DirMgr, error) {
 // PopFirstDirMgr  - Returns a deep copy of the first Directory Manager
 // ('DirMgr') object in the Directory Manager Collection array. As a
 // 'Pop' method, the original Directory Manager ('DirMgr') object is
-// deleted from the Directory Manager Collection ('DirMgrCollection')
-// array.
+// deleted from the top of the Directory Manager Collection ('DirMgrCollection')
+// array (dMgrs.dirMgrs array index = 0).
+//
+// If this method is called on an empty Director Manager Collection
+// (i.e. length of array dMgrs.dirMgrs = 0), an io.EOF error is
+// returned.
 //
 // Therefore at the completion of this method, the Directory Manager
 // Collection array has a length which is one less than the starting
 // array length.
 //
 func (dMgrs *DirMgrCollection) PopFirstDirMgr() (DirMgr, error) {
-
-  ePrefix := "DirMgrCollection.PopFirstDirMgr() "
 
   if dMgrs.dirMgrs == nil {
     dMgrs.dirMgrs = make([]DirMgr, 0, 100)
@@ -474,8 +480,7 @@ func (dMgrs *DirMgrCollection) PopFirstDirMgr() (DirMgr, error) {
 
   if arrayLen == 0 {
     return DirMgr{},
-      errors.New(ePrefix +
-        "Error: The Directory Manger Collection is EMPTY!")
+      io.EOF
   }
 
   dMgr := dMgrs.dirMgrs[0].CopyOut()
@@ -494,16 +499,18 @@ func (dMgrs *DirMgrCollection) PopFirstDirMgr() (DirMgr, error) {
 // PopLastDirMgr - Returns a deep copy of the last Directory Manager
 // ('DirMgr') object in the Directory Manager Collection array. As a
 // 'Pop' method, the original Directory Manager ('DirMgr') object is
-// deleted from the Directory Manager Collection ('DirMgrCollection')
-// array.
+// deleted from the last array position of the Directory Manager
+// Collection ('DirMgrCollection') array (dMgrs.dirMgrs[length-1]).
+//
+// If this method is called on an empty Director Manager Collection
+// (i.e. length of array dMgrs.dirMgrs = 0), an io.EOF error is
+// returned.
 //
 // Therefore at the completion of this method, the Directory Manager
 // Collection array has a length which is one less than the starting
 // array length.
 //
 func (dMgrs *DirMgrCollection) PopLastDirMgr() (DirMgr, error) {
-
-  ePrefix := "DirMgrCollection.PopLastDirMgr() "
 
   if dMgrs.dirMgrs == nil {
     dMgrs.dirMgrs = make([]DirMgr, 0, 100)
@@ -512,9 +519,7 @@ func (dMgrs *DirMgrCollection) PopLastDirMgr() (DirMgr, error) {
   arrayLen := len(dMgrs.dirMgrs)
 
   if arrayLen == 0 {
-    return DirMgr{},
-      errors.New(ePrefix +
-        "Error: The Directory Manager Collection, 'DirMgrCollection' is EMPTY!")
+    return DirMgr{}, io.EOF
   }
 
   dmgr := dMgrs.dirMgrs[arrayLen-1].CopyOut()
@@ -551,10 +556,17 @@ func (dMgrs *DirMgrCollection) PeekDirMgrAtIndex(idx int) (DirMgr, error) {
 
   arrayLen := len(dMgrs.dirMgrs)
 
+  /*
   if arrayLen == 0 {
     return DirMgr{},
       errors.New(ePrefix +
         "Error: The Directory Manager Collection, 'DirMgrCollection' is EMPTY!")
+  }
+  */
+
+  if arrayLen == 0 {
+    return DirMgr{}, io.EOF
+
   }
 
   if idx < 0 {

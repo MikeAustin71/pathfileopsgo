@@ -638,7 +638,7 @@ func (dMgr *DirMgr) CopyDirectory(
               targetDir.absolutePath, err.Error())
 
             errs = append(errs, err2)
-
+            err3 = io.EOF
             break
           }
         }
@@ -663,15 +663,18 @@ func (dMgr *DirMgr) CopyDirectory(
     }
   }
 
-  err = dir.Close()
+  if dir != nil {
+    err = dir.Close()
 
-  if err != nil {
-    err2 = fmt.Errorf(ePrefix +
+    if err != nil {
+      err2 = fmt.Errorf(ePrefix +
         "Error returned by dir.Close(). "+
         "dir='%v' Error='%v' ",
         dMgr.absolutePath, err.Error())
 
-    errs = append(errs, err2)
+      errs = append(errs, err2)
+    }
+
   }
 
   return errs
@@ -728,6 +731,36 @@ func (dMgr *DirMgr) CopyOut() DirMgr {
   dOut.actualDirFileInfo = dMgr.actualDirFileInfo.CopyOut()
 
   return dOut
+}
+
+// CopySubDirectoryTree - Treating the directory identified by the current 'DirMgr'
+// instance as the parent directory, this method copies all sub-directories and the
+// files contained in those sub-directories to the target directory specified by
+// input parameter, 'targetDir'. Essentially, the entire directory tree with the
+// sole exception of the top level parent directory is copied to target directory.
+//
+// The files copied must match the selection criteria specified by input parameter
+// 'fileSelectCriteria'.
+//
+// If the target directory does not exist, and valid matching files are identified for
+// that directory, this method will attempt to create the target directory. Conversely,
+// if no files matching the file selection criteria are found, that corresponding target
+// directory will NOT be created.
+//
+func (dMgr *DirMgr) CopySubDirectoryTree(
+  targetDir DirMgr,
+  copyEmptyDirectories bool,
+  fileSelectCriteria FileSelectionCriteria) (errs []error) {
+
+  ePrefix := "DirMgr.CopySubDirectoryTree() "
+
+  return dMgr.copyDirectoryTree(
+    targetDir,
+    copyEmptyDirectories,
+    true,
+    ePrefix ,
+    fileSelectCriteria )
+
 }
 
 // DeleteAll - BE CAREFUL!!! - This method will remove the directory identified by
@@ -3134,8 +3167,8 @@ func (dMgr *DirMgr) GetDirectoryTree() (dirMgrs DirMgrCollection, errs []error) 
       if err3 != nil && err3 != io.EOF {
 
         err2 = fmt.Errorf("\n" + ePrefix+
-          "Error returned by dir.Readdirnames(-1). "+
-          "dMgr.absolutePath='%v' Error='%v' ",
+          "Error returned by dir.Readdirnames(-1).\n"+
+          "dMgr.absolutePath='%v'\nError='%v'\n",
           dMgr.absolutePath, err.Error())
 
         errs = append(errs, err2)
@@ -4425,6 +4458,270 @@ func (dMgr *DirMgr) SubstituteBaseDir(
   return
 }
 */
+
+func (dMgr *DirMgr) copyDirectoryTree(
+  targetDir DirMgr,
+  copyEmptyDirectories bool,
+  skipTopLevelDirectory bool,
+  errorPrefixLabel string,
+  fileSelectCriteria FileSelectionCriteria) ( errs []error ){
+
+  ePrefix := "DirMgr.copyDirectoryTree() "
+
+  errs = make([]error, 0, 300)
+
+  fh := FileHelper{}
+
+  errCode := 0
+
+  errCode, _, errorPrefixLabel = fh.isStringEmptyOrBlank(errorPrefixLabel)
+
+  if errCode >= 0 {
+    ePrefix = errorPrefixLabel + " "
+  }
+
+  var err, err2, err3 error
+
+  err = dMgr.IsDirMgrValid(ePrefix)
+
+  if err != nil {
+    errs = append(errs, err)
+    return errs
+  }
+
+  err = targetDir.IsDirMgrValid(ePrefix)
+
+  if err != nil {
+    err2 = fmt.Errorf("Input parameter 'targetDir' is INVALID!\n" +
+      "Error='%v'\n", err.Error())
+    errs = append(errs, err2)
+    return errs
+  }
+
+  _, err = os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+
+    if os.IsNotExist(err) {
+      err2 = fmt.Errorf(ePrefix + "The current DirMgr path DOES NOT EXIST!\n" +
+        "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
+    } else {
+      err2 = fmt.Errorf(ePrefix + "Non-Path error returned by os.Stat(dMgr.absolutePath)\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n",
+        dMgr.absolutePath, err.Error())
+    }
+
+    errs = append(errs, err2)
+
+    return errs
+  }
+
+  baseDirLen := len(dMgr.absolutePath)
+  osPathSepStr := string(os.PathSeparator)
+  var nameFileInfos []os.FileInfo
+  dirs := DirMgrCollection{}
+  var dir *os.File
+  var nextTargetDMgr DirMgr
+  var isMatch, isTopLevelDir bool
+  var srcFile, targetFile string
+  nextDir := dMgr.CopyOut()
+
+  for nextDir.isInitialized {
+
+    dir, err = os.Open(nextDir.absolutePath)
+
+    if err != nil {
+
+      err2 = fmt.Errorf(ePrefix+
+        "Error return by os.Open(dMgr.absolutePath). "+
+        "dMgr.absolutePath='%v' Error='%v' ",
+        dMgr.absolutePath, err.Error())
+
+      errs = append(errs, err2)
+
+      nextDir, _ = dirs.PopFirstDirMgr()
+
+      continue
+    }
+
+    nextTargetDMgr, err = DirMgr{}.New(
+      targetDir.GetAbsolutePath() +
+        nextDir.absolutePath[baseDirLen:])
+
+    if err != nil {
+
+      err2 = fmt.Errorf(ePrefix+
+        "Error return by os.Open(dMgr.absolutePath). "+
+        "dMgr.absolutePath='%v' Error='%v' ",
+        dMgr.absolutePath, err.Error())
+
+      errs = append(errs, err2)
+
+      nextDir, _ = dirs.PopFirstDirMgr()
+
+      continue
+    }
+
+    if baseDirLen == len(nextDir.GetAbsolutePath()) {
+      isTopLevelDir = true
+    } else {
+      isTopLevelDir = false
+    }
+
+
+    if isTopLevelDir &&
+      !skipTopLevelDirectory &&
+       copyEmptyDirectories {
+
+      err = nextTargetDMgr.MakeDir()
+
+    } else if !isTopLevelDir && copyEmptyDirectories {
+
+      err = nextTargetDMgr.MakeDir()
+
+    } else {
+      err = nil
+    }
+
+    if err != nil {
+      err2 = fmt.Errorf("\n" + ePrefix +
+        "Error creating target directory!\n" +
+        "Target Directory='%v'\nError='%v'\n",
+        nextTargetDMgr.absolutePath, err.Error())
+
+      errs = append(errs, err2)
+      nextDir, _ = dirs.PopFirstDirMgr()
+      continue
+    }
+
+    err3 = nil
+
+    for err3 != io.EOF {
+
+      nameFileInfos, err3 = dir.Readdir(1000)
+
+      if err3 != nil && err3 != io.EOF {
+
+        err2 = fmt.Errorf("\n" + ePrefix+
+          "Error returned by dir.Readdirnames(-1). "+
+          "dMgr.absolutePath='%v'\nError='%v'\n",
+          dMgr.absolutePath, err.Error())
+
+        errs = append(errs, err2)
+
+        break
+      }
+
+      for _, nameFInfo := range nameFileInfos {
+
+        if nameFInfo.IsDir() {
+
+          err = dirs.AddDirMgrByPathNameStr(nextDir.absolutePath + osPathSepStr + nameFInfo.Name())
+
+          if err != nil {
+
+            err2 =
+              fmt.Errorf("\n" + ePrefix+
+                "Error returned by dirs.AddDirMgrByPathNameStr(newDirPathFileName).\n"+
+                "newDirPathFileName='%v'\nError='%v'\n",
+                nextDir.absolutePath + osPathSepStr + nameFInfo.Name(), err.Error())
+
+            errs = append(errs, err2)
+            continue
+          }
+
+        } else if isTopLevelDir && skipTopLevelDirectory {
+          // Do NOT process files for top level directory
+          // when parameter skipTopLevelDirectory = 'true'
+
+          continue
+
+        } else {
+          // This is a file which is eligible for processing
+
+
+            // This is not a directory. It is a file.
+            // Determine if it matches the find file criteria.
+            isMatch, err =
+              fh.FilterFileName(nameFInfo, fileSelectCriteria)
+
+            if err != nil {
+
+              err2 =
+                fmt.Errorf("\n" + ePrefix+
+                  "Error returned by fh.FilterFileName(nameFInfo, fileSelectCriteria). "+
+                  "directorySearched='%v'\nfileName='%v'\nError='%v'\n",
+                  dMgr.absolutePath, nameFInfo.Name(), err.Error())
+
+              errs = append(errs, err2)
+
+              continue
+            }
+
+            if !isMatch {
+
+              continue
+
+            } else {
+
+              // We have a match
+
+              // Create Directory if needed
+              if !nextTargetDMgr.DoesAbsolutePathExist() {
+
+                err = nextTargetDMgr.MakeDir()
+
+                if err != nil {
+                  err2 = fmt.Errorf("\n" + ePrefix +
+                    "Error creating targetFile directory!\n" +
+                    "Target Directory='%v'\nError='%v'\n",
+                    nextTargetDMgr.absolutePath, err.Error())
+
+                  errs = append(errs, err2)
+                  err3 = io.EOF
+                  break
+                }
+              }
+
+              srcFile = nextDir.absolutePath +
+                osPathSepStr + nameFInfo.Name()
+
+              targetFile = nextTargetDMgr.absolutePath +
+                osPathSepStr + nameFInfo.Name()
+
+              err = fh.CopyFileByIo(srcFile, targetFile)
+
+              if err != nil {
+                err2 = fmt.Errorf("\n" + ePrefix +
+                  "ERROR: fh.CopyFileByIo(srcFile, targetFile)\n" +
+                  "srcFile='%v'\ntargetFile='%v'\nError='%v'\n\n",
+                  srcFile, targetFile, err.Error())
+
+                errs = append(errs, err2)
+              }
+            }
+        }
+      }
+    }
+
+    if dir != nil {
+      err = dir.Close()
+
+      if err != nil {
+        err2 = fmt.Errorf(ePrefix+
+          "Error returned by dir.Close(). "+
+          "dir='%v' Error='%v' ",
+          dMgr.absolutePath, err.Error())
+
+        errs = append(errs, err2)
+      }
+    }
+
+    nextDir, err = dirs.PopFirstDirMgr()
+  }
+
+  return errs
+}
 
 // executeFileOpsOnFoundFiles - This function is designed to work in conjunction
 // with a walk directory function like FindWalkDirFiles. It will process
