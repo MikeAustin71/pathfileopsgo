@@ -471,7 +471,7 @@ func (dMgr *DirMgr) CopyDirectory(
     for _, nameFInfo := range nameFileInfos {
 
       if nameFInfo.IsDir() {
-
+        // We don't care about sub-directories
         continue
 
       }
@@ -3537,6 +3537,10 @@ func (dMgr *DirMgr) MakeDir() error {
 // by the input parameter, 'targetDir'. Finally, after verifying the copy,
 // the files are deleted from the source directory (DirMgr).
 //
+// If, at the conclusion of the 'move' operation, there are no files or
+// sub-directories remaining in the source directory (DirMgr), the source
+// directory will be delete.
+//
 // The selected files are copied using Copy IO operation. For information
 // on the Copy IO procedure see FileHelper{}.CopyFileByIo() method and
 // reference:
@@ -3554,7 +3558,10 @@ func (dMgr *DirMgr) MakeDir() error {
 //
 // ------------------------------------------------------------------------------
 //
-// IMPORTANT!!!! This method will delete files in the current DirMgr path!
+// IMPORTANT!!!!
+// This method will delete files in the current DirMgr path!  If all files have
+// been moved out of the directory and there are no sub-Directories remaining,
+// the DirMgr directory will likewise be deleted.
 //
 // ------------------------------------------------------------------------------
 //
@@ -3756,6 +3763,8 @@ func (dMgr *DirMgr) MoveDirectory(
   var src, target string
   var isMatch bool
   var nameFileInfos []os.FileInfo
+  numOfSubDirectories := 0
+  numOfSrcFiles := 0
   err3 = nil
 
   for err3 != io.EOF {
@@ -3775,10 +3784,12 @@ func (dMgr *DirMgr) MoveDirectory(
     for _, nameFInfo := range nameFileInfos {
 
       if nameFInfo.IsDir() {
-
+        numOfSubDirectories++
         continue
 
       }
+
+      numOfSrcFiles++
 
       // This is not a directory. It is a file.
       // Determine if it matches the find file criteria.
@@ -3839,6 +3850,8 @@ func (dMgr *DirMgr) MoveDirectory(
           errs = append(errs, err2)
 
         }
+
+        numOfSrcFiles--
       }
     }
   }
@@ -3854,8 +3867,14 @@ func (dMgr *DirMgr) MoveDirectory(
     errs = append(errs, err2)
   }
 
-  return errs
+  // If all the source files have been moved and
+  // there are no sub-directories, DELETE the
+  // directory (dMgr).
+  if numOfSrcFiles == 0 && numOfSubDirectories == 0 {
+    _ = dMgr.DeleteAll()
+  }
 
+  return errs
 }
 
 // NewFromPathFileNameExtStr - Returns a new DirMgr object and populates the
