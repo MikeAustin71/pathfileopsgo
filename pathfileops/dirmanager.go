@@ -220,138 +220,14 @@ func (dMgr *DirMgr) CopyDirectoryTree(
   copyEmptyDirectories bool,
   fileSelectCriteria FileSelectionCriteria) (errs []error) {
 
-  errs = make([]error, 0, 300)
-
   ePrefix := "DirMgr.CopyDirectoryTree() "
 
-  var err, err2 error
-
-  err = dMgr.IsDirMgrValid(ePrefix)
-
-  if err != nil {
-    errs = append(errs, err)
-    return errs
-  }
-
-  err = targetDir.IsDirMgrValid(ePrefix)
-
-  if err != nil {
-    err2 = fmt.Errorf("Input parameter 'targetDir' is INVALID!\n" +
-      "Error='%v'\n", err.Error())
-    errs = append(errs, err2)
-    return errs
-  }
-
-  _, err = os.Stat(dMgr.absolutePath)
-
-  if err != nil {
-
-    if os.IsNotExist(err) {
-      err2 = fmt.Errorf(ePrefix + "The current DirMgr path DOES NOT EXIST!\n" +
-        "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
-    } else {
-      err2 = fmt.Errorf(ePrefix + "Non-Path error returned by os.Stat(dMgr.absolutePath)\n" +
-        "dMgr.absolutePath='%v'\nError='%v'\n",dMgr.absolutePath, err.Error())
-    }
-
-    errs = append(errs, err2)
-
-    return errs
-  }
-
-  dirs, errs2 := dMgr.GetDirectoryTree()
-
-  if len(errs2) > 0 {
-    err2 = fmt.Errorf("\n" + ePrefix +
-      "Error return from dMgr.GetDirectoryTree().\ndMgr.absolutePath='%v'\n\n",
-      dMgr.absolutePath)
-
-    errs = append(errs, err2)
-
-    errs = append(errs, errs2 ...)
-
-    return errs
-  }
-
-  var dMgrSub *DirMgr
-  var newTargetDir DirMgr
-
-  basePath := dMgr.absolutePath
-
-  targetBasePath := targetDir.absolutePath
-
-  var sourcePath, targetPath string
-
-  fh := FileHelper{}
-
-  for i:=0; i < dirs.GetNumOfDirs(); i++ {
-
-    dMgrSub, err = dirs.GetDirMgrAtIndex(i)
-
-    if err != nil {
-      err2 = fmt.Errorf("\n" + ePrefix +
-        "Error extracting dMgr from collection at index='%v'.\n" +
-        "Error='%v'\n\n", i, err.Error())
-      errs = append(errs, err2)
-      continue
-    }
-
-    sourcePath = dMgrSub.GetAbsolutePath()
-
-    targetPath, err = fh.SwapBasePath(
-      basePath, targetBasePath, sourcePath )
-
-    if err != nil {
-      err2 = fmt.Errorf("\n" + ePrefix +
-        "Error swaping base path!\n" +
-        "sourcePath='%v'\nError='%v'\n\n",
-        sourcePath, err.Error())
-
-      errs = append(errs, err2)
-      continue
-    }
-
-    newTargetDir, err = DirMgr{}.New(targetPath)
-
-    if err != nil {
-      err2 = fmt.Errorf("\n" + ePrefix +
-        "Error creating target DirMgr!\n" +
-        "targetPath='%v'\nError='%v'\n\n",
-        targetPath, err.Error())
-
-      errs = append(errs, err2)
-      continue
-    }
-
-    if copyEmptyDirectories && !newTargetDir.doesAbsolutePathExist{
-
-      err = newTargetDir.MakeDir()
-
-      if err != nil {
-        err2 = fmt.Errorf("\n" + ePrefix +
-          "Error creating target DirMgr!\n" +
-          "targetPath='%v'\nError='%v'\n\n",
-          targetPath, err.Error())
-
-        errs = append(errs, err2)
-        continue
-      }
-
-    }
-
-    errs2 = dMgrSub.CopyDirectory(newTargetDir, fileSelectCriteria)
-
-    if len(errs2) > 0 {
-      err2 = fmt.Errorf("\n" + ePrefix +
-        "sourcePath='%v'\ntargetPath='%v'\n\n",
-        sourcePath, targetPath)
-
-      errs = append(errs, err2)
-      errs = append(errs, errs2 ...)
-    }
-  }
-
-  return errs
+  return dMgr.copyDirectoryTree(
+    targetDir,
+    copyEmptyDirectories,
+    false,
+    ePrefix ,
+    fileSelectCriteria )
 }
 
 // CopyDirectory - Copies files from the directory identified by

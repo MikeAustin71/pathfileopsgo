@@ -39,7 +39,7 @@ func main() {
 
 func main() {
 
-  mainTest62CopySubDirs()
+  mainTest60CopyDirTree()
 }
 
 func mainTest62CopySubDirs() {
@@ -145,7 +145,7 @@ func mainTest60CopyDirTree() {
 
   fsc := pf.FileSelectionCriteria{}
 
-  errs := srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)
+  errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) > 0 {
     fmt.Printf("Errors returned by dMgr.CopyDirectoryTree().\n" +
