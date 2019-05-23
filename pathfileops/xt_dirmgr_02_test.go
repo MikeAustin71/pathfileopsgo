@@ -1,1363 +1,1117 @@
 package pathfileops
 
-import (
-  "testing"
-)
+import "testing"
 
-func TestDirMgr_Equal_01(t *testing.T) {
+func TestDirMgr_DeleteAll_01(t *testing.T) {
 
   fh := FileHelper{}
-
-  origDir := fh.AdjustPathSlash("../testfiles/testfiles1")
-
-  dMgr, err := DirMgr{}.New(origDir)
+  // Set up target directories and files for deletion!
+  origDir, err := dirMgr01TestCreateCheckFiles03DirFiles()
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
-  }
-
-  origDir2 := fh.AdjustPathSlash("../xxxxfiles/xxxfiles2")
-
-  dMgr2, err := DirMgr{}.New(origDir2)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir2). origDir2=='%v'  Error='%v'", origDir2, err.Error())
-  }
-
-  if dMgr2.path != origDir2 {
-    t.Errorf("Expected original dMgr2.path='%v'. Instead, dMgr2.path='%v'", origDir2, dMgr2.path)
-  }
-
-  dMgr2 = dMgr.CopyOut()
-
-  if dMgr2.isInitialized != dMgr.isInitialized {
-    t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.isInitialized, dMgr2.isInitialized)
-  }
-
-  if dMgr2.isInitialized != dMgr.isInitialized {
-    t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.isInitialized, dMgr2.isInitialized)
-  }
-
-  if dMgr2.originalPath != dMgr.originalPath {
-    t.Errorf("After CopyOut(), expected dMgr2.originalPath='%v'.  Instead, dMgr2.originalPath='%v'.", dMgr.originalPath, dMgr2.originalPath)
-  }
-
-  if dMgr2.path != dMgr.path {
-    t.Errorf("After CopyOut(), expected dMgr2.path='%v'.  Instead, dMgr2.path='%v'.", dMgr.path, dMgr2.path)
-  }
-
-  if dMgr2.isPathPopulated != dMgr.isPathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isPathPopulated='%v'.  Instead, dMgr2.isPathPopulated='%v'.", dMgr.isPathPopulated, dMgr2.isPathPopulated)
-  }
-
-  if dMgr2.doesPathExist != dMgr.doesPathExist {
-    t.Errorf("After CopyOut(), expected dMgr2.doesPathExist='%v'.  Instead, dMgr2.doesPathExist='%v'.", dMgr.doesPathExist, dMgr2.doesPathExist)
-  }
-
-  if dMgr2.parentPath != dMgr.parentPath {
-    t.Errorf("After CopyOut(), expected dMgr2.parentPath='%v'.  Instead, dMgr2.parentPath='%v'.", dMgr.parentPath, dMgr2.parentPath)
-  }
-
-  if dMgr2.isParentPathPopulated != dMgr.isParentPathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isParentPathPopulated='%v'.  Instead, dMgr2.isParentPathPopulated='%v'.", dMgr.isParentPathPopulated, dMgr2.isParentPathPopulated)
-  }
-
-  if dMgr2.relativePath != dMgr.relativePath {
-    t.Errorf("After CopyOut(), expected dMgr2.relativePath='%v'.  Instead, dMgr2.relativePath='%v'.", dMgr.relativePath, dMgr2.relativePath)
-  }
-
-  if dMgr2.isRelativePathPopulated != dMgr.isRelativePathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isRelativePathPopulated='%v'.  Instead, dMgr2.isRelativePathPopulated='%v'.", dMgr.isRelativePathPopulated, dMgr2.isRelativePathPopulated)
-  }
-
-  if dMgr2.absolutePath != dMgr.absolutePath {
-    t.Errorf("After CopyOut(), expected dMgr2.absolutePath='%v'.  Instead, dMgr2.absolutePath='%v'.", dMgr.absolutePath, dMgr2.absolutePath)
-  }
-
-  if dMgr2.isAbsolutePathPopulated != dMgr.isAbsolutePathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathPopulated='%v'.  Instead, dMgr2.isAbsolutePathPopulated='%v'.", dMgr.isAbsolutePathPopulated, dMgr2.isAbsolutePathPopulated)
-  }
-
-  if dMgr2.doesAbsolutePathExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("After CopyOut(), expected dMgr2.doesAbsolutePathExist='%v'.  Instead, dMgr2.doesAbsolutePathExist='%v'.", dMgr.doesAbsolutePathExist, dMgr2.doesAbsolutePathExist)
-  }
-
-  if dMgr2.isAbsolutePathDifferentFromPath != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathDifferentFromPath='%v'.  Instead, dMgr2.isAbsolutePathDifferentFromPath='%v'.", dMgr.isAbsolutePathDifferentFromPath, dMgr2.isAbsolutePathDifferentFromPath)
-  }
-
-  if dMgr2.volumeName != dMgr.volumeName {
-    t.Errorf("After CopyOut(), expected dMgr2.volumeName='%v'.  Instead, dMgr2.volumeName='%v'.", dMgr.volumeName, dMgr2.volumeName)
-  }
-
-  if dMgr2.isVolumePopulated != dMgr.isVolumePopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isVolumePopulated='%v'.  Instead, dMgr2.isVolumePopulated='%v'.", dMgr.isVolumePopulated, dMgr2.isVolumePopulated)
-  }
-
-  if !dMgr2.Equal(&dMgr) {
-    t.Error("After CopyOut(), expected dMgr2 to EQUAL dMgr. It did NOT!")
-  }
-
-  if !dMgr.Equal(&dMgr2) {
-    t.Error("After CopyOut(), expected dMgr2 to EQUAL dMgr. It did NOT!")
-  }
-
-}
-
-func TestDirMgr_Equal_02(t *testing.T) {
-
-  fh := FileHelper{}
-
-  origDir := fh.AdjustPathSlash("../testfiles/testfiles1")
-
-  dMgr, err := DirMgr{}.New(origDir)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
-  }
-
-  origDir2 := fh.AdjustPathSlash("../xxxxfiles/xxxfiles2")
-
-  dMgr2, err := DirMgr{}.New(origDir2)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir2). origDir2=='%v'  Error='%v'", origDir2, err.Error())
-  }
-
-  if dMgr2.path != origDir2 {
-    t.Errorf("Expected original dMgr2.path='%v'. Instead, dMgr2.path='%v'", origDir2, dMgr2.path)
-  }
-
-  dMgr2 = dMgr.CopyOut()
-
-  // dMgr2 and dMgr are no longer EQUAL
-  dMgr2.absolutePath = dMgr2.absolutePath + "x"
-
-  if dMgr2.isInitialized != dMgr.isInitialized {
-    t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.isInitialized, dMgr2.isInitialized)
-  }
-
-  if dMgr2.isInitialized != dMgr.isInitialized {
-    t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.  Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.isInitialized, dMgr2.isInitialized)
-  }
-
-  if dMgr2.originalPath != dMgr.originalPath {
-    t.Errorf("After CopyOut(), expected dMgr2.originalPath='%v'.  Instead, dMgr2.originalPath='%v'.", dMgr.originalPath, dMgr2.originalPath)
-  }
-
-  if dMgr2.path != dMgr.path {
-    t.Errorf("After CopyOut(), expected dMgr2.path='%v'.  Instead, dMgr2.path='%v'.", dMgr.path, dMgr2.path)
-  }
-
-  if dMgr2.isPathPopulated != dMgr.isPathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isPathPopulated='%v'.  Instead, dMgr2.isPathPopulated='%v'.", dMgr.isPathPopulated, dMgr2.isPathPopulated)
-  }
-
-  if dMgr2.doesPathExist != dMgr.doesPathExist {
-    t.Errorf("After CopyOut(), expected dMgr2.doesPathExist='%v'.  Instead, dMgr2.doesPathExist='%v'.", dMgr.doesPathExist, dMgr2.doesPathExist)
-  }
-
-  if dMgr2.parentPath != dMgr.parentPath {
-    t.Errorf("After CopyOut(), expected dMgr2.parentPath='%v'.  Instead, dMgr2.parentPath='%v'.", dMgr.parentPath, dMgr2.parentPath)
-  }
-
-  if dMgr2.isParentPathPopulated != dMgr.isParentPathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isParentPathPopulated='%v'.  Instead, dMgr2.isParentPathPopulated='%v'.", dMgr.isParentPathPopulated, dMgr2.isParentPathPopulated)
-  }
-
-  if dMgr2.relativePath != dMgr.relativePath {
-    t.Errorf("After CopyOut(), expected dMgr2.relativePath='%v'.  Instead, dMgr2.relativePath='%v'.", dMgr.relativePath, dMgr2.relativePath)
-  }
-
-  if dMgr2.isRelativePathPopulated != dMgr.isRelativePathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isRelativePathPopulated='%v'.  Instead, dMgr2.isRelativePathPopulated='%v'.", dMgr.isRelativePathPopulated, dMgr2.isRelativePathPopulated)
-  }
-
-  if dMgr2.absolutePath == dMgr.absolutePath {
-    t.Error("After modification, expected dMgr2.absolutePath to be different from dMgr.absolutePath. ERROR= They ARE EQUAL!")
-  }
-
-  if dMgr2.isAbsolutePathPopulated != dMgr.isAbsolutePathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathPopulated='%v'.  Instead, dMgr2.isAbsolutePathPopulated='%v'.", dMgr.isAbsolutePathPopulated, dMgr2.isAbsolutePathPopulated)
-  }
-
-  if dMgr2.doesAbsolutePathExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("After CopyOut(), expected dMgr2.doesAbsolutePathExist='%v'.  Instead, dMgr2.doesAbsolutePathExist='%v'.", dMgr.doesAbsolutePathExist, dMgr2.doesAbsolutePathExist)
-  }
-
-  if dMgr2.isAbsolutePathDifferentFromPath != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathDifferentFromPath='%v'.  Instead, dMgr2.isAbsolutePathDifferentFromPath='%v'.", dMgr.isAbsolutePathDifferentFromPath, dMgr2.isAbsolutePathDifferentFromPath)
-  }
-
-  if dMgr2.volumeName != dMgr.volumeName {
-    t.Errorf("After CopyOut(), expected dMgr2.volumeName='%v'.  Instead, dMgr2.volumeName='%v'.", dMgr.volumeName, dMgr2.volumeName)
-  }
-
-  if dMgr2.isVolumePopulated != dMgr.isVolumePopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isVolumePopulated='%v'.  Instead, dMgr2.isVolumePopulated='%v'.", dMgr.isVolumePopulated, dMgr2.isVolumePopulated)
-  }
-
-  if dMgr2.Equal(&dMgr) {
-    t.Error("After modification, expected dMgr2 to NOT EQUAL to dMgr. Wrong- dMgr2 == dMgr!")
-  }
-
-  if dMgr.Equal(&dMgr2) {
-    t.Error("After modification, expected dMgr to NOT EQUAL to dMgr2. Wrong- dMgr == dMgr2!")
-  }
-
-}
-
-func TestDirMgr_EqualAbsPaths_01(t *testing.T) {
-  fh := FileHelper{}
-
-  origDir := "../testfiles/testfiles2"
-
-  origDir, err := fh.MakeAbsolutePath(origDir)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath(origDir). "+
-      "origDir='%v' Error='%v' ", origDir, err.Error())
+    t.Errorf("Error returned by dirMgr01TestCreateCheckFiles03DirFiles(). Error='%v'", err.Error())
   }
 
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v'  Error='%v'", origDir, err.Error())
   }
 
-  origDir2 := "../testfiles/testfiles2"
-
-  origDir2, err = fh.MakeAbsolutePath(origDir2)
+  err = dMgr.DeleteAll()
 
   if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath(origDir2). "+
-      "origDir2='%v' Error='%v' ", origDir2, err.Error())
+    t.Errorf("Error returned by dMgr.DeleteAll(). dMgr.path='%v'  dMgr.absolutePath='%v'  Error='%v'", dMgr.path, dMgr.absolutePath, err.Error())
   }
 
-  dMgr2, err := DirMgr{}.New(origDir2)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir2). "+
-      "origDir2=='%v'  Error='%v'", origDir2, err.Error())
+  if dMgr.doesAbsolutePathExist {
+    t.Errorf("Expected absolutePath to be deleted. Instead, it Exists!\n"+
+      "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
   }
 
-  if !dMgr.EqualAbsPaths(&dMgr2) {
-    t.Error("Expected two paths to be EQUAL. Error: They were NOT!")
+  if fh.DoesFileExist(origDir) {
+    t.Errorf("Expected origDir to be deleted. Instead, it Exists!\n"+
+      "origDir='%v'\n", origDir)
   }
 
 }
 
-func TestDirMgr_EqualAbsPaths_02(t *testing.T) {
-  fh := FileHelper{}
+func TestDirMgr_DeleteAll_02(t *testing.T) {
 
-  origDir := "../testfiles/testfiles2"
+  testDir := "../checkfiles/TestDirMgr_DeleteAll_02"
 
-  origDir, err := fh.MakeAbsolutePath(origDir)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath(origDir). "+
-      "origDir='%v' Error='%v' ", origDir, err.Error())
-  }
-
-  dMgr, err := DirMgr{}.New(origDir)
+  dMgr, err := DirMgr{}.New(testDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
-  }
-
-  origDir2 := "../testfiles/testfilesx"
-
-  origDir2, err = fh.MakeAbsolutePath(origDir2)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath(origDir2). "+
-      "origDir2='%v' Error='%v' ", origDir2, err.Error())
-  }
-
-  dMgr2, err := DirMgr{}.New(origDir2)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir2). "+
-      "origDir2=='%v'  Error='%v'", origDir2, err.Error())
-  }
-
-  if dMgr.EqualAbsPaths(&dMgr2) {
-    t.Error("Expected two paths to be NOT EQUAL. Error: They were EQUAL!")
-  }
-
-}
-
-func TestDirMgr_EqualAbsPaths_03(t *testing.T) {
-  fh := FileHelper{}
-
-  origDir := "../TESTfiles/TESTfiles2"
-
-  origDir, err := fh.MakeAbsolutePath(origDir)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath(origDir). "+
-      "origDir='%v' Error='%v' ", origDir, err.Error())
-  }
-
-  dMgr, err := DirMgr{}.New(origDir)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
-  }
-
-  origDir2 := "../testfiles/testfiles2"
-
-  origDir2, err = fh.MakeAbsolutePath(origDir2)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath(origDir2). "+
-      "origDir2='%v' Error='%v' ", origDir2, err.Error())
-  }
-
-  dMgr2, err := DirMgr{}.New(origDir2)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir2). "+
-      "origDir2=='%v'  Error='%v'", origDir2, err.Error())
-  }
-
-  if !dMgr.EqualAbsPaths(&dMgr2) {
-    t.Error("Expected two paths to be EQUAL. Error: They were NOT!")
-  }
-
-}
-
-func TestDirMgr_EqualAbsPaths_04(t *testing.T) {
-
-  dirPath := "../checkfiles"
-
-  dMgr1, err := DirMgr{}.New(dirPath)
-
-  if err != nil {
-    t.Errorf("Test Setup Error returned by dMgr1 = DirMgr{}.New(dirPath)\n"+
-      "dirPath='%v'\nError='%v'\n", dirPath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
     return
   }
 
-  dMgr2, err := DirMgr{}.New(dirPath)
+  dMgr.isInitialized = false
+
+  err = dMgr.DeleteAll()
+
+  if err == nil {
+    t.Error("Expected dMgr.DeleteAll() to return an error because\n" +
+      "'dMgr' is invalid. However, NO ERROR WAS RETURNED!")
+  }
+
+  _ = FileHelper{}.DeleteDirPathAll(testDir)
+
+}
+
+func TestDirMgr_DeleteAllFilesInDir_01(t *testing.T) {
+
+  testDir := "../checkfiles/DeleteAllFilesInDir_01"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(testDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by dMgr2 = DirMgr{}.New(dirPath)\n"+
-      "dirPath='%v'\nError='%v'\n", dirPath, err.Error())
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
     return
   }
 
-  dMgr1.isInitialized = false
-
-  if dMgr1.EqualAbsPaths(&dMgr2) {
-    t.Error("ERROR: Expected the return from dMgr1.EqualAbsPaths(&dMgr2) to be 'false'\n" +
-      "because dMgr1 is not initialized. However, the return value was 'true' !")
-  }
-
-}
-
-func TestDirMgr_EqualAbsPaths_05(t *testing.T) {
-
-  dirPath := "../checkfiles"
-
-  dMgr1, err := DirMgr{}.New(dirPath)
+  dMgr, err := DirMgr{}.New(testDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by dMgr1 = DirMgr{}.New(dirPath)\n"+
-      "dirPath='%v'\nError='%v'\n", dirPath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
     return
   }
 
-  dMgr2, err := DirMgr{}.New(dirPath)
+  dMgr.isInitialized = false
 
-  if err != nil {
-    t.Errorf("Test Setup Error returned by dMgr2 = DirMgr{}.New(dirPath)\n"+
-      "dirPath='%v'\nError='%v'\n", dirPath, err.Error())
-    return
-  }
+  errs := dMgr.DeleteAllFilesInDir()
 
-  dMgr2.isInitialized = false
-
-  if dMgr1.EqualAbsPaths(&dMgr2) {
-    t.Error("ERROR: Expected the return from dMgr1.EqualAbsPaths(&dMgr2) to be 'false'\n" +
-      "because dMgr2 is NOT initialized. However, the return value was 'true' !")
-  }
-
-}
-
-func TestDirMgr_EqualAbsPaths_06(t *testing.T) {
-
-  dirPath := "../checkfiles"
-
-  dMgr1, err := DirMgr{}.New(dirPath)
-
-  if err != nil {
-    t.Errorf("Test Setup Error returned by dMgr1 = DirMgr{}.New(dirPath)\n"+
-      "dirPath='%v'\nError='%v'\n", dirPath, err.Error())
-    return
-  }
-
-  dMgr2 := DirMgr{}
-
-  if dMgr1.EqualAbsPaths(&dMgr2) {
-    t.Error("ERROR: Expected the return from dMgr1.EqualAbsPaths(&dMgr2) to be 'false'\n" +
-      "because dMgr2 has NOT been initialized. However, the return value was 'true' !")
-  }
-
-}
-
-func TestDirMgr_EqualAbsPaths_07(t *testing.T) {
-
-  dirPath := "../checkfiles"
-
-  dMgr1 := DirMgr{}
-
-  dMgr2, err := DirMgr{}.New(dirPath)
-
-  if err != nil {
-    t.Errorf("Test Setup Error returned by dMgr2 = DirMgr{}.New(dirPath)\n"+
-      "dirPath='%v'\nError='%v'\n", dirPath, err.Error())
-    return
-  }
-
-  if dMgr1.EqualAbsPaths(&dMgr2) {
-    t.Error("ERROR: Expected the return from dMgr1.EqualAbsPaths(&dMgr2) to be 'false'\n" +
-      "because dMgr1 is NOT initialized. However, the return value was 'true' !")
-  }
-
-}
-
-func TestDirMgr_EqualPaths_01(t *testing.T) {
-  fh := FileHelper{}
-
-  origDir := fh.AdjustPathSlash("../testfiles/testfiles1")
-
-  dMgr, err := DirMgr{}.New(origDir)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
-  }
-
-  origDir2 := fh.AdjustPathSlash("../testfiles/testfiles1")
-
-  dMgr2, err := DirMgr{}.New(origDir2)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir2). origDir2=='%v'  Error='%v'", origDir2, err.Error())
-  }
-
-  if !dMgr.EqualPaths(&dMgr2) {
-    t.Error("Expected two paths to be EQUAL. Error: They were NOT!")
-  }
-
-}
-
-func TestDirMgr_EqualPaths_02(t *testing.T) {
-  fh := FileHelper{}
-
-  origDir := fh.AdjustPathSlash("../testfiles/testfiles1")
-
-  dMgr, err := DirMgr{}.New(origDir)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
-  }
-
-  origDir2 := fh.AdjustPathSlash("../testfiles/testfiles2")
-
-  dMgr2, err := DirMgr{}.New(origDir2)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir2). origDir2=='%v'  Error='%v'", origDir2, err.Error())
-  }
-
-  if dMgr.EqualPaths(&dMgr2) {
-    t.Error("Expected two paths to be NOT EQUAL. Error: They were EQUAL!")
-  }
-
-}
-
-func TestDirMgr_EqualPaths_03(t *testing.T) {
-  fh := FileHelper{}
-
-  origDir := fh.AdjustPathSlash("../Testfiles/Testfiles2")
-
-  dMgr, err := DirMgr{}.New(origDir)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
-  }
-
-  origDir2 := fh.AdjustPathSlash("../testfiles/testfiles2")
-
-  dMgr2, err := DirMgr{}.New(origDir2)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir2). origDir2=='%v'  Error='%v'", origDir2, err.Error())
-  }
-
-  if !dMgr.EqualPaths(&dMgr2) {
-    t.Error("Expected two paths to be EQUAL. Error: They were NOT!")
-  }
-
-}
-
-func TestDirMgr_EqualPaths_04(t *testing.T) {
-
-  dirPath1 := "../checkfiles/checkfiles02"
-
-  dMgr1, err := DirMgr{}.New(dirPath1)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.New(dirPath1).\n"+
-      "dirPath1='%v'\nError='%v'", dirPath1, err.Error())
-  }
-
-  dMgr2, err := DirMgr{}.New(dirPath1)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.New(dirPath1).\n"+
-      "dirPath1='%v'\nError='%v'", dirPath1, err.Error())
-  }
-
-  dMgr1.isInitialized = false
-
-  result := dMgr1.EqualPaths(&dMgr2)
-
-  if result == true {
-    t.Error("Expected dMgr1.EqualPaths(&dMgr2) to return 'false' \n" +
-      "because dMgr1.isInitialized = 'false'.\n" +
-      "Instead, result='true'.\n")
-  }
-
-}
-
-func TestDirMgr_EqualPaths_05(t *testing.T) {
-
-  dirPath1 := "../checkfiles/checkfiles02"
-  dirPath2 := "../createFilesTest/Level01"
-  dMgr1, err := DirMgr{}.New(dirPath1)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.New(dirPath1).\n"+
-      "dirPath1='%v'\nError='%v'", dirPath1, err.Error())
-  }
-
-  dMgr2, err := DirMgr{}.New(dirPath2)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.New(dirPath2).\n"+
-      "dirPath2='%v'\nError='%v'", dirPath2, err.Error())
-  }
-
-  dMgr1.absolutePath = dMgr2.absolutePath
-
-  result := dMgr1.EqualPaths(&dMgr2)
-
-  if result == true {
-    t.Error("Expected dMgr1.EqualPaths(&dMgr2) to return 'false' \n" +
-      "because 'dMgr1.Path' is different from 'dMgr2.Path'.\n" +
-      "Instead, result='true'.\n")
-  }
-
-}
-
-func TestDirMgr_ExecuteDirectoryFileOps_01(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"../dirmgrtests/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
-  }
-
-  sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"..../filesfortest/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
-  }
-
-  targetDir, err := DirMgr{}.New(targetDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
-      "targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
-  }
-
-  sourceDir, err := DirMgr{}.New(sourceDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
-      "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
-  }
-
-  if targetDir.DoesAbsolutePathExist() {
-
-    err = targetDir.DeleteAll()
-
-    if err != nil {
-      t.Errorf("Error returned by targetDir.DeleteAll() "+
-        "targetDir='%v' Error='%v' ",
-        targetDir.GetAbsolutePath(), err.Error())
-    }
-  }
-
-  // Target Directory does NOT Exist
-
-  fileSelect := FileSelectionCriteria{}
-
-  fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
-
-  fileOps := make([]FileOperationCode, 1, 5)
-
-  fileOps[0] = FileOpCode.CopySourceToDestinationByIo()
-
-  errArray := sourceDir.ExecuteDirectoryFileOps(fileSelect, fileOps, targetDir)
-
-  if len(errArray) > 0 {
-    for i := 0; i < len(errArray); i++ {
-      t.Errorf("sourceDir.ExecuteDirectoryFileOps-Error: %v", errArray[i].Error())
-    }
-  }
-
-  dTreeInfo, err := targetDir.FindWalkDirFiles(fileSelect)
-
-  if err != nil {
-    t.Errorf("Error returned by targetDir.FindWalkDirFiles(fileSelect) "+
-      "targetDir='%v' Error='%v' ",
-      targetDir.GetAbsolutePath(), err.Error())
-  }
-
-  lenErrs := len(dTreeInfo.ErrReturns)
-
-  if lenErrs > 0 {
-    for i := 0; i < len(dTreeInfo.ErrReturns); i++ {
-      t.Errorf("targetDir.FindWalkDirFiles-Errors: %v", dTreeInfo.ErrReturns[i])
-    }
-  }
-
-  lenDirs := dTreeInfo.Directories.GetNumOfDirs()
-
-  if lenDirs != 1 {
-    t.Errorf("Error: Expected number of directories found='%v'. "+
-      "Instead, number of directories found='%v' ", 1, lenDirs)
-  }
-
-  numOfFiles := dTreeInfo.FoundFiles.GetNumOfFileMgrs()
-
-  if numOfFiles != 5 {
-    t.Errorf("Error: Expected number of found files='%v'. "+
-      "Instead, number of found files='%v' ", 5, numOfFiles)
-  }
-
-  err = targetDir.DeleteAll()
-
-  if err != nil {
-    t.Errorf("Test Clean-Up error returned by err = targetDir.DeleteAll().\n"+
-      "targetDir='%v'\nError='%v'\n", targetDir.GetAbsolutePath(), err.Error())
-  }
-
-}
-
-func TestDirMgr_ExecuteDirectoryFileOps_02(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"../dirmgrtests/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
-  }
-
-  sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"..../filesfortest/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
-  }
-
-  targetDir, err := DirMgr{}.New(targetDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
-      "targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
-  }
-
-  sourceDir, err := DirMgr{}.New(sourceDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
-      "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
-  }
-
-  if targetDir.DoesAbsolutePathExist() {
-
-    err = targetDir.DeleteAll()
-
-    if err != nil {
-      t.Errorf("Error returned by targetDir.DeleteAll() "+
-        "targetDir='%v' Error='%v' ",
-        targetDir.GetAbsolutePath(), err.Error())
-    }
-  }
-
-  // Target Directory does NOT Exist
-
-  fileSelect := FileSelectionCriteria{}
-
-  fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
-
-  fileOps := make([]FileOperationCode, 1, 5)
-
-  fileOps[0] = FileOpCode.CopySourceToDestinationByIo()
-
-  sourceDir.isInitialized = false
-
-  errArray := sourceDir.ExecuteDirectoryFileOps(fileSelect, fileOps, targetDir)
-
-  if len(errArray) == 0 {
-    t.Error("Expected an error from sourceDir.ExecuteDirectoryFileOps(fileSelect, " +
-      "fileOps, targetDir)\nbecause 'sourceDir' is INVALID.\n" +
-      "Instead, NO ERROR WAS RETURNED!!!\n")
-
-  }
-
-  err = targetDir.DeleteAll()
-
-  if err != nil {
-    t.Errorf("Test Clean-Up error returned by err = targetDir.DeleteAll().\n"+
-      "targetDir='%v'\nError='%v'\n", targetDir.GetAbsolutePath(), err.Error())
-  }
-
-}
-
-func TestDirMgr_ExecuteDirectoryFileOps_03(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"../dirmgrtests/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
-  }
-
-  sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"..../filesfortest/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
-  }
-
-  targetDir, err := DirMgr{}.New(targetDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
-      "targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
-  }
-
-  sourceDir, err := DirMgr{}.New(sourceDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
-      "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
-  }
-
-  if targetDir.DoesAbsolutePathExist() {
-
-    err = targetDir.DeleteAll()
-
-    if err != nil {
-      t.Errorf("Error returned by targetDir.DeleteAll() "+
-        "targetDir='%v' Error='%v' ",
-        targetDir.GetAbsolutePath(), err.Error())
-    }
-  }
-
-  // Target Directory does NOT Exist
-
-  fileSelect := FileSelectionCriteria{}
-
-  fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
-
-  fileOps := make([]FileOperationCode, 1, 5)
-
-  fileOps[0] = FileOpCode.CopySourceToDestinationByIo()
-
-  targetDir.isInitialized = false
-
-  errArray := sourceDir.ExecuteDirectoryFileOps(fileSelect, fileOps, targetDir)
-
-  if len(errArray) == 0 {
-    t.Error("Expected an error from sourceDir.ExecuteDirectoryFileOps(fileSelect, " +
-      "fileOps, targetDir)\nbecause 'sourceDir' is INVALID.\n" +
-      "Instead, NO ERROR WAS RETURNED!!!\n")
-
-  }
-
-  targetDir.isInitialized = true
-
-  err = targetDir.DeleteAll()
-
-  if err != nil {
-    t.Errorf("Test Clean-Up error returned by err = targetDir.DeleteAll().\n"+
-      "targetDir='%v'\nError='%v'\n", targetDir.GetAbsolutePath(), err.Error())
-  }
-
-}
-
-func TestDirMgr_ExecuteDirectoryFileOps_04(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"../dirmgrtests/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
-  }
-
-  rawSrcPath := "../filesfortest/iDoNotExist/TestDirMgr_ExecuteDirectoryFileOps_04"
-
-  sourceDirStr, err := fh.MakeAbsolutePath(rawSrcPath)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "rawSrcPath)\n"+
-      "rawSrcPath='%v'\nError='%v'\n", rawSrcPath, err.Error())
-  }
-
-  targetDir, err := DirMgr{}.New(targetDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
-      "targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
-  }
-
-  sourceDir, err := DirMgr{}.New(sourceDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
-      "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
-  }
-
-  if targetDir.DoesAbsolutePathExist() {
-
-    err = targetDir.DeleteAll()
-
-    if err != nil {
-      t.Errorf("Error returned by targetDir.DeleteAll() "+
-        "targetDir='%v' Error='%v' ",
-        targetDir.GetAbsolutePath(), err.Error())
-    }
-  }
-
-  // Target Directory does NOT Exist
-
-  fileSelect := FileSelectionCriteria{}
-
-  fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
-
-  fileOps := make([]FileOperationCode, 1, 5)
-
-  fileOps[0] = FileOpCode.CopySourceToDestinationByIo()
-
-  errArray := sourceDir.ExecuteDirectoryFileOps(fileSelect, fileOps, targetDir)
-
-  if len(errArray) == 0 {
-    t.Error("Expected an error from sourceDir.ExecuteDirectoryFileOps(fileSelect, " +
-      "fileOps, targetDir)\nbecause 'sourceDir' does NOT EXIST.\n" +
-      "However, NO ERROR WAS RETURNED!!!\n")
-
-  }
-
-  err = targetDir.DeleteAll()
-
-  if err != nil {
-    t.Errorf("Test Clean-Up error returned by err = targetDir.DeleteAll().\n"+
-      "targetDir='%v'\nError='%v'\n", targetDir.GetAbsolutePath(), err.Error())
-  }
-
-}
-
-func TestDirMgr_ExecuteDirectoryFileOps_05(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"../dirmgrtests/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
-  }
-
-  sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"..../filesfortest/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
-  }
-
-  targetDir, err := DirMgr{}.New(targetDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
-      "targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
-  }
-
-  sourceDir, err := DirMgr{}.New(sourceDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
-      "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
-  }
-
-  if targetDir.DoesAbsolutePathExist() {
-
-    err = targetDir.DeleteAll()
-
-    if err != nil {
-      t.Errorf("Error returned by targetDir.DeleteAll() "+
-        "targetDir='%v' Error='%v' ",
-        targetDir.GetAbsolutePath(), err.Error())
-    }
-  }
-
-  // Target Directory does NOT Exist
-
-  fileSelect := FileSelectionCriteria{}
-
-  fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
-
-  fileOps := make([]FileOperationCode, 0, 5)
-
-  errArray := sourceDir.ExecuteDirectoryFileOps(fileSelect, fileOps, targetDir)
-
-  if len(errArray) == 0 {
-    t.Error("Expected an error from sourceDir.ExecuteDirectoryFileOps(fileSelect, " +
-      "fileOps, targetDir)\nbecause 'fileOps' is a zero length array.\n" +
-      "Instead, NO ERROR WAS RETURNED!!!\n")
-
-  }
-
-  err = targetDir.DeleteAll()
-
-  if err != nil {
-    t.Errorf("Test Clean-Up error return3d by err = targetDir.DeleteAll().\n"+
-      "targetDir='%v'\nError='%v'\n", targetDir.GetAbsolutePath(), err.Error())
-  }
-
-}
-
-func TestDirMgr_ExecuteDirectoryTreeOps_01(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"../dirmgrtests/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
-  }
-
-  sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"..../filesfortest/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
-  }
-
-  targetDir, err := DirMgr{}.New(targetDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
-      "targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
-  }
-
-  sourceDir, err := DirMgr{}.New(sourceDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
-      "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
-  }
-
-  if targetDir.DoesAbsolutePathExist() {
-
-    err = targetDir.DeleteAll()
-
-    if err != nil {
-      t.Errorf("Error returned by targetDir.DeleteAll() "+
-        "targetDir='%v' Error='%v' ",
-        targetDir.GetAbsolutePath(), err.Error())
-    }
-  }
-
-  // Target Directory does NOT Exist
-
-  fileSelect := FileSelectionCriteria{}
-
-  fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
-
-  fileOps := make([]FileOperationCode, 1, 5)
-
-  fileOps[0] = FileOpCode.CopySourceToDestinationByIo()
-
-  errArray := sourceDir.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDir)
-
-  if len(errArray) > 0 {
-    for i := 0; i < len(errArray); i++ {
-      t.Errorf("sourceDir.ExecuteDirectoryTreeOps-Error: %v", errArray[i])
-    }
-  }
-
-  dTreeInfo, err := targetDir.FindWalkDirFiles(fileSelect)
-
-  if err != nil {
-    t.Errorf("Error returned by targetDir.FindWalkDirFiles(fileSelect) "+
-      "targetDir='%v' Error='%v' ",
-      targetDir.GetAbsolutePath(), err.Error())
-  }
-
-  lenErrs := len(dTreeInfo.ErrReturns)
-
-  if lenErrs > 0 {
-    for i := 0; i < len(dTreeInfo.ErrReturns); i++ {
-      t.Errorf("targetDir.FindWalkDirFiles-Errors: %v", dTreeInfo.ErrReturns[i])
-    }
-  }
-
-  lenDirs := dTreeInfo.Directories.GetNumOfDirs()
-
-  if lenDirs != 5 {
-    t.Errorf("Error: Expected number of directories found='%v'. "+
-      "Instead, number of directories found='%v' ", 5, lenDirs)
-  }
-
-  numOfFiles := dTreeInfo.FoundFiles.GetNumOfFileMgrs()
-
-  if numOfFiles != 25 {
-    t.Errorf("Error: Expected number of found files='%v'. "+
-      "Instead, number of found files='%v' ", 25, numOfFiles)
-  }
-
-  err = targetDir.DeleteAll()
-
-  if err != nil {
-    t.Errorf("Test Clean-Up Error returned by targetDir.DeleteAll().\n" +
-      "Error='%v'\n", err.Error())
-  }
-
-}
-
-func TestDirMgr_ExecuteDirectoryTreeOps_02(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"../dirmgrtests/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
-  }
-
-  sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"..../filesfortest/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
-  }
-
-  targetDir, err := DirMgr{}.New(targetDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
-      "targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
-  }
-
-  sourceDir, err := DirMgr{}.New(sourceDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
-      "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
-  }
-
-  if targetDir.DoesAbsolutePathExist() {
-
-    err = targetDir.DeleteAll()
-
-    if err != nil {
-      t.Errorf("Error returned by targetDir.DeleteAll() "+
-        "targetDir='%v' Error='%v' ",
-        targetDir.GetAbsolutePath(), err.Error())
-    }
-  }
-
-  // Target Directory does NOT Exist
-
-  fileSelect := FileSelectionCriteria{}
-
-  fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
-
-  fileOps := make([]FileOperationCode, 1, 5)
-
-  fileOps[0] = FileOpCode.CopySourceToDestinationByIo()
-
-  sourceDir.isInitialized = false
-
-  errArray := sourceDir.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDir)
-
-  if len(errArray) == 0 {
-    t.Error("Expected an error from sourceDir.ExecuteDirectoryTreeOps(fileSelect, " +
-      "fileOps, targetDir)\nbecause 'sourceDir' is INVALID.\n" +
+  if len(errs) == 0 {
+    t.Error("Expected an error return from dMgr.DeleteAllFilesInDir()\n" +
+      "because 'dMgr' is INVALID!\n" +
       "However, NO ERROR WAS RETURNED!")
   }
 
-  err = targetDir.DeleteAll()
+  err = fh.DeleteDirPathAll(testDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by targetDir.DeleteAll().\n" +
-      "Error='%v'\n", err.Error())
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(testDir)\ntestDir='%v'\n"+
+      "Error='%v'\n", testDir, err.Error())
   }
 
-
+  return
 }
 
-func TestDirMgr_ExecuteDirectoryTreeOps_03(t *testing.T) {
+func TestDirMgr_DeleteAllFilesInDir_02(t *testing.T) {
+
+  testDir := "../checkfiles/iDoNotExist"
 
   fh := FileHelper{}
 
-  targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
+  err := fh.DeleteDirPathAll(testDir)
 
   if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"../dirmgrtests/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
   }
 
-  sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
+  dMgr, err := DirMgr{}.New(testDir)
 
   if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"..../filesfortest/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
   }
 
-  targetDir, err := DirMgr{}.New(targetDirStr)
+  errs := dMgr.DeleteAllFilesInDir()
 
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
-      "targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
-  }
-
-  sourceDir, err := DirMgr{}.New(sourceDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
-      "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
-  }
-
-  if targetDir.DoesAbsolutePathExist() {
-
-    err = targetDir.DeleteAll()
-
-    if err != nil {
-      t.Errorf("Error returned by targetDir.DeleteAll() "+
-        "targetDir='%v' Error='%v' ",
-        targetDir.GetAbsolutePath(), err.Error())
-    }
-  }
-
-  // Target Directory does NOT Exist
-
-  fileSelect := FileSelectionCriteria{}
-
-  fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
-
-  fileOps := make([]FileOperationCode, 1, 5)
-
-  fileOps[0] = FileOpCode.CopySourceToDestinationByIo()
-
-  targetDir.isInitialized = false
-
-  errArray := sourceDir.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDir)
-
-  if len(errArray) == 0 {
-    t.Error("Expected an error from sourceDir.ExecuteDirectoryTreeOps(fileSelect, " +
-      "fileOps, targetDir)\nbecause 'targetDir' is INVALID.\n" +
+  if len(errs) == 0 {
+    t.Error("Expected an error return from dMgr.DeleteAllFilesInDir()\n" +
+      "because 'dMgr' path does NOT exist!\n" +
       "However, NO ERROR WAS RETURNED!")
   }
 
-  targetDir.isInitialized = true
-
-  err = targetDir.DeleteAll()
+  err = fh.DeleteDirPathAll(testDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by targetDir.DeleteAll().\n" +
-      "Error='%v'\n", err.Error())
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(testDir)\ntestDir='%v'\n"+
+      "Error='%v'\n", testDir, err.Error())
   }
 
-
+  return
 }
 
-func TestDirMgr_ExecuteDirectoryTreeOps_04(t *testing.T) {
+func TestDirMgr_DeleteAllFilesInDir_03(t *testing.T) {
+
+  testDir := "../checkfiles/TestDirMgr_DeleteFilesByNamePattern_03"
+  testDir2 := testDir + "/dir2"
 
   fh := FileHelper{}
 
-  targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
+  err := fh.DeleteDirPathAll(testDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath("+
-      "\"../dirmgrtests/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
     return
   }
 
-  sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/iDoNotExist")
+  err = fh.MakeDirAll(testDir2)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath("+
-      "\"..../filesfortest/iDoNotExist\") "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir2).\n"+
+      "testDir2='%v'\nError='%v'\n", testDir2, err.Error())
     return
   }
 
-  targetDir, err := DirMgr{}.New(targetDirStr)
+  srcFiles := make([]string, 0, 50)
 
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
-      "targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
-  }
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_3_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_4_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_3_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_4_test.txt")
+  // 10 src Files
 
-  sourceDir, err := DirMgr{}.New(sourceDirStr)
+  // 3 sub dir src files
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006860_sample.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006870_ReadingFiles.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006890_WritingFiles.htm")
 
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
-      "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
-  }
+  destFile := ""
+  oldBase := ""
+  newBase := ""
 
-  if targetDir.DoesAbsolutePathExist() {
+  for i := 0; i < len(srcFiles); i++ {
 
-    err = targetDir.DeleteAll()
+    if i < 5 {
+      oldBase = "../filesfortest/levelfilesfortest"
+      newBase = testDir
+    } else if i < 10 {
+      oldBase = "../filesfortest/levelfilesfortest/level_01_dir"
+      newBase = testDir
+    } else {
+
+      oldBase = "../filesfortest/htmlFilesForTest"
+      newBase = testDir2
+    }
+
+    destFile, err = fh.SwapBasePath(oldBase, newBase, srcFiles[i])
 
     if err != nil {
-      t.Errorf("Test Setup Error returned by targetDir.DeleteAll() "+
-        "targetDir='%v' Error='%v' ",
-        targetDir.GetAbsolutePath(), err.Error())
+      t.Errorf("Test File Set Up Error Stage #3 SwapBasePath(oldBase, newBase, srcFiles[%v])\n"+
+        "oldBase='%v'\nnewBase='%v'\nError='%v'\n",
+        i, oldBase, newBase, err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
       return
     }
+
+    err = fh.CopyFileByIo(srcFiles[i], destFile)
+
+    if err != nil {
+      t.Errorf("Test Setup Error returned by fh.CopyFileByIo(srcFiles[%v], destFile)\n"+
+        "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
+        i, srcFiles[i], destFile, err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
+      return
+    }
+
   }
 
-  // Target Directory does NOT Exist
+  dMgr, err := DirMgr{}.New(testDir)
 
-  fileSelect := FileSelectionCriteria{}
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
 
-  fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
+    _ = fh.DeleteDirPathAll(testDir)
 
-  fileOps := make([]FileOperationCode, 1, 5)
+    return
+  }
 
-  fileOps[0] = FileOpCode.CopySourceToDestinationByIo()
+  dMgrSub, err := DirMgr{}.New(testDir2)
 
-  errArray := sourceDir.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDir)
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir2).\n"+
+      "testDir2='%v'\nError='%v'\n", testDir2, err.Error())
 
-  if len(errArray) == 0 {
-    t.Error("Expected an error from sourceDir.ExecuteDirectoryTreeOps(fileSelect, " +
-      "fileOps, targetDir)\nbecause 'sourceDir' DOES NOT EXIST.\n" +
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  fMgrCollection, err := dMgr.FindFilesByNamePattern("*.*")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr.FindFilesByNamePattern(\"*.htm\").\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 10 {
+    t.Errorf("Test Setup Error: Expected to find 10-files in 'testDir'.\n"+
+      "Instead, %v-files were found.", fMgrCollection.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  errArray := dMgr.DeleteAllFilesInDir()
+
+  if len(errArray) > 0 {
+
+    if len(errArray) == 1 {
+      t.Errorf("Error returned by dMgr.DeleteAllFilesInDir().\n"+
+        "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    } else {
+      t.Errorf("Errors returned by dMgr.DeleteAllFilesInDir().\n"+
+        "testDir='%v'\n\n", testDir)
+
+      for i := 0; i < len(errArray); i++ {
+        if i == len(errArray)-1 {
+          t.Errorf("%v\n\n", errArray[i].Error())
+        } else {
+          t.Errorf("%v\n", errArray[i].Error())
+        }
+      }
+    }
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  fMgrCollection, err = dMgr.FindFilesByNamePattern("*.*")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by #2 dMgr.FindFilesByNamePattern(\"*.*\").\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 0 {
+    t.Errorf("Error: Expected to find 0-files in 'testDir'.\n"+
+      "Instead, %v-files were found.", fMgrCollection.GetNumOfFileMgrs())
+
+  }
+
+  fMgrCollection, err = dMgrSub.FindFilesByNamePattern("*.*")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgrSub.FindFilesByNamePattern(\"*.*\").\n"+
+      "testDir2='%v'\nError='%v'\n", testDir2, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 3 {
+    t.Errorf("Error: Expected to find 3-files in 'testDir2'.\n"+
+      "Instead, %v-files were found.\ntestDir2='%v'\n",
+      fMgrCollection.GetNumOfFileMgrs(), testDir2)
+
+  }
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(testDir)\ntestDir='%v'\n"+
+      "Error='%v'\n", testDir, err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_DeleteAllSubDirectories_01(t *testing.T) {
+  testDir := "../dirmgrtests/TestDirMgr_DeleteAllSubDirectories_01"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+  }
+
+  setupDir := "../filesfortest/levelfilesfortest"
+
+  setupDMgr, err := DirMgr{}.New(setupDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(setupDir).\n" +
+      "setupDir='%v'\nError='%v'",setupDir, err.Error())
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  errs := setupDMgr.CopyDirectoryTree(testDMgr,true, fsc)
+
+  if len(errs) > 0 {
+    t.Errorf("Errors returned by setupDMgr.CopyDirectoryTree(testDMgr,true, fsc)\n" +
+      "testDMgr='%v'\nErrors:'\n\n", testDMgr.GetAbsolutePath())
+
+    for i:=0; i < len(errs); i++ {
+      t.Errorf("%v\n\n", errs[i].Error())
+    }
+
+    _ = testDMgr.DeleteAll()
+
+    return
+  }
+
+  setupDInfo, err := setupDMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by setupDMgr.FindWalkDirFiles(fsc).\n" +
+      "setupDMgr='%v'\nError='%v'\n", setupDMgr.GetAbsolutePath(), err.Error())
+
+    _ = testDMgr.DeleteAll()
+
+    return
+
+  }
+
+  testDInfo, err := testDMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by testDMgr.FindWalkDirFiles(fsc).\n" +
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+
+    _ = testDMgr.DeleteAll()
+
+    return
+
+  }
+
+  if testDInfo.Directories.GetNumOfDirs() != setupDInfo.Directories.GetNumOfDirs() {
+    t.Errorf("Expected the number of directories in 'testDir' to = %v.\n" +
+      "Intead, the number of directories in 'testDir' = %v.\n" +
+      "testDir='%v'.\n", testDInfo.Directories.GetNumOfDirs(), setupDInfo.Directories.GetNumOfDirs(),
+      testDMgr.GetAbsolutePath())
+
+    _ = testDMgr.DeleteAll()
+
+    return
+  }
+
+  errs = testDMgr.DeleteAllSubDirectories()
+
+  if len(errs) > 0 {
+    t.Errorf("Errors returned by testDMgr.DeleteAllSubDirectories()\n" +
+      "testDMgr='%v'\nErrors:'\n\n", testDMgr.GetAbsolutePath())
+
+    for i:=0; i < len(errs); i++ {
+      t.Errorf("%v\n\n", errs[i].Error())
+    }
+
+    _ = testDMgr.DeleteAll()
+
+    return
+  }
+
+
+  testDInfo, err = testDMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by 2nd run of testDMgr.FindWalkDirFiles(fsc).\n" +
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+
+    _ = testDMgr.DeleteAll()
+
+    return
+
+  }
+
+  if testDInfo.Directories.GetNumOfDirs() != 1 {
+    t.Errorf("After deletion of sub-directories it was expected that\n" +
+      "the number of directories in 'testDir' would equal '1'.\n" +
+      "Instead, the number of directories in 'testDir' equals '%v'.\n" +
+      "testDir='%v'\n", testDInfo.Directories.GetNumOfDirs(), testDMgr.GetAbsolutePath())
+  }
+
+  err = testDMgr.DeleteAll()
+
+  if err != nil {
+
+    t.Errorf("Test Clean-Up Error returned by testDMgr.DeleteAll()\n" +
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_DeleteAllSubDirectories_02(t *testing.T) {
+
+  testDir := "../dirmgrtests/TestDirMgr_DeleteAllSubDirectories_02"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir).\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = testDMgr.MakeDir()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by testDMgr.MakeDir().\n" +
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+
+    _ = testDMgr.DeleteAll()
+
+    return
+  }
+
+  testDMgr.isInitialized = false
+
+  errs := testDMgr.DeleteAllSubDirectories()
+
+
+  if len(errs) == 0 {
+
+    t.Error("Expected an error return from testDMgr.DeleteAllSubDirectories()\n" +
+      "because 'testDMgr' is INVALID!\nHowever, NO ERROR WAS RETURNED!\n")
+  }
+
+  testDMgr.isInitialized = true
+
+  _ = testDMgr.DeleteAll()
+
+  return
+
+}
+
+func TestDirMgr_DeleteAllSubDirectories_03(t *testing.T) {
+
+  testDir := "../dirmgrtests/TestDirMgr_DeleteAllSubDirectories_03"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir).\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  errs := testDMgr.DeleteAllSubDirectories()
+
+
+  if len(errs) == 0 {
+
+    t.Error("Expected an error return from testDMgr.DeleteAllSubDirectories()\n" +
+      "because 'testDMgr' DOES NOT EXIST!\nHowever, NO ERROR WAS RETURNED!\n")
+  }
+
+  _ = testDMgr.DeleteAll()
+
+  return
+}
+
+func TestDirMgr_DeleteFilesByNamePattern_01(t *testing.T) {
+
+  testDir := "../checkfiles/TestDirMgr_DeleteFilesByNamePattern_01"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  srcFiles := make([]string, 0, 50)
+
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_3_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_4_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006860_sample.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006870_ReadingFiles.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006890_WritingFiles.htm")
+
+  destFiles := make([]string, 0, 50)
+  destFiles = append(destFiles, testDir+"/level_0_0_test.txt")
+  destFiles = append(destFiles, testDir+"/level_0_1_test.txt")
+  destFiles = append(destFiles, testDir+"/level_0_2_test.txt")
+  destFiles = append(destFiles, testDir+"/level_0_3_test.txt")
+  destFiles = append(destFiles, testDir+"/level_0_4_test.txt")
+  destFiles = append(destFiles, testDir+"/006860_sample.htm")
+  destFiles = append(destFiles, testDir+"/006870_ReadingFiles.htm")
+  destFiles = append(destFiles, testDir+"/006890_WritingFiles.htm")
+
+  for i := 0; i < len(srcFiles); i++ {
+
+    err = fh.CopyFileByIo(srcFiles[i], destFiles[i])
+
+    if err != nil {
+      t.Errorf("Test Setup Error returned by fh.CopyFileByIo(srcFiles[%v], destFiles[%v])\n"+
+        "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
+        i, i, srcFiles[i], destFiles[i], err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
+      return
+    }
+
+  }
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  fMgrCollection, err := dMgr.FindFilesByNamePattern("*.htm")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr.FindFilesByNamePattern(\"*.htm\").\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 3 {
+    t.Errorf("Test Setup Error: Expected to find 3-html files in 'testDir'.\n"+
+      "Instead, %v-html files were found.", fMgrCollection.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  errArray := dMgr.DeleteFilesByNamePattern("*.htm")
+
+  if len(errArray) > 0 {
+    if len(errArray) == 1 {
+      t.Errorf("Error returned by dMgr.DeleteFilesByNamePattern(\"*.htm\").\n"+
+        "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    } else {
+      t.Errorf("Errors returned by dMgr.DeleteFilesByNamePattern(\"*.htm\").\n"+
+        "testDir='%v'\n\n", testDir)
+
+      for i := 0; i < len(errArray); i++ {
+        if i == len(errArray)-1 {
+          t.Errorf("%v\n\n", errArray[i].Error())
+        } else {
+          t.Errorf("%v\n", errArray[i].Error())
+        }
+      }
+    }
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  fMgrCollection, err = dMgr.FindFilesByNamePattern("*.htm")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr.FindFilesByNamePattern(\"*.htm\").\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 0 {
+    t.Errorf("Error: Expected to find 0-html files in 'testDir'.\n"+
+      "Instead, %v-html files were found.", fMgrCollection.GetNumOfFileMgrs())
+
+  }
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(testDir)\ntestDir='%v'\n"+
+      "Error='%v'\n", testDir, err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_DeleteFilesByNamePattern_02(t *testing.T) {
+
+  testDir := "../checkfiles/TestDirMgr_DeleteFilesByNamePattern_02"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  errs := dMgr.DeleteFilesByNamePattern("")
+
+  if len(errs) == 0 {
+    t.Error("Expected an error return from dMgr.DeleteFilesByNamePattern(\"\")\n" +
+      "because the file search parameter is an empty string.\n" +
       "However, NO ERROR WAS RETURNED!")
   }
 
-  err = targetDir.DeleteAll()
+  _ = fh.DeleteDirPathAll(testDir)
+
+}
+
+func TestDirMgr_DeleteFilesByNamePattern_03(t *testing.T) {
+
+  testDir := "../checkfiles/TestDirMgr_DeleteFilesByNamePattern_02"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(testDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by targetDir.DeleteAll().\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  errs := dMgr.DeleteFilesByNamePattern("     ")
+
+  if len(errs) == 0 {
+    t.Error("Expected an error return from dMgr.DeleteFilesByNamePattern(\"     \")\n" +
+      "because the file search parameter consists entirely of blank spaces.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  _ = fh.DeleteDirPathAll(testDir)
+
+}
+
+func TestDirMgr_DeleteFilesByNamePattern_04(t *testing.T) {
+
+  testDir := "../checkfiles/TestDirMgr_DeleteFilesByNamePattern_02"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  dMgr.isInitialized = false
+
+  errs := dMgr.DeleteFilesByNamePattern("*.*")
+
+  if len(errs) == 0 {
+    t.Error("Expected an error return from dMgr.DeleteFilesByNamePattern(\"*.*\")\n" +
+      "because the Directory Manager instance (dMgr) is INVALID.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  _ = fh.DeleteDirPathAll(testDir)
+
+}
+
+func TestDirMgr_DeleteFilesByNamePattern_05(t *testing.T) {
+
+  testDir := "../checkfiles/TestDirMgr_DeleteFilesByNamePattern_05"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  errs := dMgr.DeleteFilesByNamePattern("*.*")
+
+  if len(errs) == 0 {
+    t.Error("Expected an error return from dMgr.DeleteFilesByNamePattern(\"*.*\")\n" +
+      "because the Directory Manager instance (dMgr) is DOES NOT EXIST.\n" +
+      "However, NO ERROR WAS RETURNED!!!!")
+  }
+
+  _ = fh.DeleteDirPathAll(testDir)
+
+}
+
+func TestDirMgr_DeleteFilesByNamePattern_06(t *testing.T) {
+
+  baseTestDir := "../checkfiles/TestDirMgr_DeleteFilesByNamePattern_01"
+
+  testDir := baseTestDir + "/xDir01"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(baseTestDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(baseTestDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  srcFiles := make([]string, 0, 50)
+
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_3_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_4_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006860_sample.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006870_ReadingFiles.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006890_WritingFiles.htm")
+  // For Sub-Directory files
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_3_test.txt")
+
+  destFiles := make([]string, 0, 50)
+  destFiles = append(destFiles, baseTestDir+"/level_0_0_test.txt")
+  destFiles = append(destFiles, baseTestDir+"/level_0_1_test.txt")
+  destFiles = append(destFiles, baseTestDir+"/level_0_2_test.txt")
+  destFiles = append(destFiles, baseTestDir+"/level_0_3_test.txt")
+  destFiles = append(destFiles, baseTestDir+"/level_0_4_test.txt")
+  destFiles = append(destFiles, baseTestDir+"/006860_sample.htm")
+  destFiles = append(destFiles, baseTestDir+"/006870_ReadingFiles.htm")
+  destFiles = append(destFiles, baseTestDir+"/006890_WritingFiles.htm")
+  // Sub Directory files
+  destFiles = append(destFiles, testDir+"/level_1_0_test.txt")
+  destFiles = append(destFiles, testDir+"/level_1_1_test.txt")
+  destFiles = append(destFiles, testDir+"/level_1_2_test.txt")
+  destFiles = append(destFiles, testDir+"/level_1_3_test.txt")
+
+  for i := 0; i < len(srcFiles); i++ {
+
+    err = fh.CopyFileByIo(srcFiles[i], destFiles[i])
+
+    if err != nil {
+      t.Errorf("Test Setup Error returned by fh.CopyFileByIo(srcFiles[%v], destFiles[%v])\n"+
+        "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
+        i, i, srcFiles[i], destFiles[i], err.Error())
+
+      _ = fh.DeleteDirPathAll(baseTestDir)
+
+      return
+    }
+
+  }
+
+  dMgr, err := DirMgr{}.New(baseTestDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(baseTestDir).\n"+
+      "baseTestDir='%v'\nError='%v'\n", baseTestDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+
+    return
+  }
+
+  dMgr2Sub, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+
+    return
+  }
+
+  fMgrCollection, err := dMgr.FindFilesByNamePattern("*.htm")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr.FindFilesByNamePattern(\"*.htm\").\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 3 {
+    t.Errorf("Test Setup Error: Expected to find 3-html files in 'testDir'.\n"+
+      "Instead, %v-html files were found.", fMgrCollection.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+
+    return
+  }
+
+  errArray := dMgr.DeleteFilesByNamePattern("*.htm")
+
+  if len(errArray) > 0 {
+    if len(errArray) == 1 {
+      t.Errorf("Error returned by dMgr.DeleteFilesByNamePattern(\"*.htm\").\n"+
+        "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    } else {
+      t.Errorf("Errors returned by dMgr.DeleteFilesByNamePattern(\"*.htm\").\n"+
+        "testDir='%v'\n\n", testDir)
+
+      for i := 0; i < len(errArray); i++ {
+        if i == len(errArray)-1 {
+          t.Errorf("%v\n\n", errArray[i].Error())
+        } else {
+          t.Errorf("%v\n", errArray[i].Error())
+        }
+      }
+
+    }
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+
+    return
+  }
+
+  fMgrCollection, err = dMgr.FindFilesByNamePattern("*.htm")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr.FindFilesByNamePattern(\"*.htm\").\n"+
+      "baseTestDir='%v'\nError='%v'\n", baseTestDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 0 {
+    t.Errorf("Error: Expected to find 0-html files in 'testDir'.\n"+
+      "Instead, %v-html files were found.", fMgrCollection.GetNumOfFileMgrs())
+
+  }
+
+  fMgrCollection, err = dMgr2Sub.FindFilesByNamePattern("*.txt")
+
+  if err != nil {
+    t.Errorf("Error returned by dMgr2Sub.FindFilesByNamePattern(\"*.txt\").\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 4 {
+    t.Errorf("Error expected 4-txt files in the sub-directory. However, the number of\n"+
+      "found txt file='%v'", fMgrCollection.GetNumOfFileMgrs())
+  }
+
+  err = fh.DeleteDirPathAll(baseTestDir)
+
+  if err != nil {
+    t.Errorf("Test File Clean-Up error returned by fh.DeleteDirPathAll(baseTestDir).\n"+
+      "baseTestDir='%v'\nError='%v'\n", baseTestDir, err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_DoesAbsolutePathExist_01(t *testing.T) {
+
+  dMgr, err := DirMgr{}.New("../checkfiles")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returnd by DirMgr{}.New(\"../checkfiles\")\n"+
       "Error='%v'\n", err.Error())
+    return
+  }
+
+  dMgr.absolutePath = " "
+
+  result := dMgr.DoesAbsolutePathExist()
+
+  if result == true {
+    t.Error("Expected a value of 'false' to be returned from dMgr.DoesAbsolutePathExist()\n" +
+      "because dMgr.absolutePath consists entirely of blank spaces.\n" +
+      "However, a value of 'true' was returned instead!\n")
   }
 
 }
 
-func TestDirMgr_ExecuteDirectoryTreeOps_05(t *testing.T) {
+func TestDirMgr_DoesAbsolutePathExist_02(t *testing.T) {
 
-  fh := FileHelper{}
-
-  targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
+  dMgr, err := DirMgr{}.New("../checkfiles")
 
   if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"../dirmgrtests/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
-  }
-
-  sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
-
-  if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath("+
-      "\"..../filesfortest/levelfilesfortest \") "+
-      "Error='%v' ", err.Error())
-  }
-
-  targetDir, err := DirMgr{}.New(targetDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
-      "targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
-  }
-
-  sourceDir, err := DirMgr{}.New(sourceDirStr)
-
-  if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
-      "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
-  }
-
-  if targetDir.DoesAbsolutePathExist() {
-
-    err = targetDir.DeleteAll()
-
-    if err != nil {
-      t.Errorf("Error returned by targetDir.DeleteAll() "+
-        "targetDir='%v' Error='%v' ",
-        targetDir.GetAbsolutePath(), err.Error())
-    }
-  }
-
-  // Target Directory does NOT Exist
-
-  fileSelect := FileSelectionCriteria{}
-
-  fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
-
-  fileOps := make([]FileOperationCode, 0, 5)
-
-  errArray := sourceDir.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDir)
-
-  if len(errArray) == 0 {
-    t.Error("Expected an error from sourceDir.ExecuteDirectoryTreeOps(fileSelect, " +
-      "fileOps, targetDir)\nbecause 'fileOps' is a zero length array.\n" +
-      "However, NO ERROR WAS RETURNED!")
-  }
-
-  err = targetDir.DeleteAll()
-
-  if err != nil {
-    t.Errorf("Test Clean-Up Error returned by targetDir.DeleteAll().\n" +
+    t.Errorf("Test Setup Error returnd by DirMgr{}.New(\"../checkfiles\")\n"+
       "Error='%v'\n", err.Error())
+    return
   }
 
+  result := dMgr.DoesAbsolutePathExist()
+
+  if result == false {
+    t.Error("Expected a value of 'true' to be returned from dMgr.DoesAbsolutePathExist()\n" +
+      "because dMgr.absolutePath actually exists.\n" +
+      "However, a value of 'false' was returned instead!")
+  }
+
+}
+
+func TestDirMgr_DoesPathExist_01(t *testing.T) {
+
+  dMgr, err := DirMgr{}.New("../checkfiles")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returnd by DirMgr{}.New(\"../checkfiles\")\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  dMgr.path = " "
+
+  result := dMgr.DoesPathExist()
+
+  if result == true {
+    t.Error("Expected a value of 'false' to be returned from dMgr.DoesPathExist()\n" +
+      "because dMgr.path consists entirely of blank spaces.\n" +
+      "However, a value of 'true' was returned instead!\n")
+  }
+
+}
+
+func TestDirMgr_DoesPathExist_02(t *testing.T) {
+
+  dMgr, err := DirMgr{}.New("../checkfiles")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returnd by DirMgr{}.New(\"../checkfiles\")\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  result := dMgr.DoesPathExist()
+
+  if result == false {
+    t.Error("Expected a value of 'true' to be returned from dMgr.DoesPathExist()\n" +
+      "because dMgr.path actually exists.\n" +
+      "However, a value of 'false' was returned instead!")
+  }
 
 }
