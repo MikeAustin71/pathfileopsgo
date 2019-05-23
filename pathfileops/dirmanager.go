@@ -72,7 +72,7 @@ type DirMgr struct {
 //
 // Input Parameters:
 //
-//  targetDir         DirMgr - An instance of 'DirMgr' initialized with the directory
+//  targetDMgr        DirMgr - An instance of 'DirMgr' initialized with the directory
 //                             path of the target directory to which selected files
 //                             will be copied. If the target directory does not exist,
 //                             this method will attempt to create it.
@@ -216,14 +216,14 @@ type DirMgr struct {
 //                      array and returned to the caller.
 //
 func (dMgr *DirMgr) CopyDirectoryTree(
-  targetDir DirMgr,
+  targetDMgr DirMgr,
   copyEmptyDirectories bool,
   fileSelectCriteria FileSelectionCriteria) (errs []error) {
 
   ePrefix := "DirMgr.CopyDirectoryTree() "
 
   return dMgr.copyDirectoryTree(
-    targetDir,
+    targetDMgr,
     copyEmptyDirectories,
     false,
     ePrefix ,
@@ -255,7 +255,7 @@ func (dMgr *DirMgr) CopyDirectoryTree(
 //
 // Input Parameters:
 //
-//  targetDir    DirMgr - An instance of 'DirMgr' initialized with the directory
+//  targetDMgr   DirMgr - An instance of 'DirMgr' initialized with the directory
 //                        path of the target directory to which selected files
 //                        will be copied. If the target directory does not exist,
 //                        this method will attempt to create it.
@@ -389,7 +389,7 @@ func (dMgr *DirMgr) CopyDirectoryTree(
 //                      array and returned to the caller.
 //
 func (dMgr *DirMgr) CopyDirectory(
-  targetDir DirMgr,
+  targetDMgr DirMgr,
   fileSelectCriteria FileSelectionCriteria) (errs []error) {
 
   errs = make([]error, 0, 300)
@@ -404,10 +404,10 @@ func (dMgr *DirMgr) CopyDirectory(
     return errs
   }
 
-  err = targetDir.IsDirMgrValid(ePrefix)
+  err = targetDMgr.IsDirMgrValid(ePrefix)
 
   if err != nil {
-    err2 = fmt.Errorf("Input parameter 'targetDir' is INVALID!\n" +
+    err2 = fmt.Errorf("Input parameter 'targetDMgr' is INVALID!\n" +
       "Error='%v'\n", err.Error())
     errs = append(errs, err2)
     return errs
@@ -503,15 +503,15 @@ func (dMgr *DirMgr) CopyDirectory(
         // We have a match
 
         // Create Directory if needed
-        if !targetDir.DoesAbsolutePathExist() {
+        if !targetDMgr.DoesAbsolutePathExist() {
 
-          err = targetDir.MakeDir()
+          err = targetDMgr.MakeDir()
 
           if err != nil {
             err2 = fmt.Errorf("\n" + ePrefix +
               "Error creating target directory!\n" +
               "Target Directory='%v'\nError='%v'\n",
-              targetDir.absolutePath, err.Error())
+              targetDMgr.absolutePath, err.Error())
 
             errs = append(errs, err2)
             err3 = io.EOF
@@ -522,7 +522,7 @@ func (dMgr *DirMgr) CopyDirectory(
         src = dMgr.absolutePath +
           osPathSeparatorStr + nameFInfo.Name()
 
-        target = targetDir.absolutePath +
+        target = targetDMgr.absolutePath +
           osPathSeparatorStr + nameFInfo.Name()
 
         err = fh.CopyFileByIo(src, target)
@@ -3567,7 +3567,7 @@ func (dMgr *DirMgr) MakeDir() error {
 //
 // Input Parameters:
 //
-//  targetDir    DirMgr - An instance of 'DirMgr' initialized with the directory
+//  targetDMgr   DirMgr - An instance of 'DirMgr' initialized with the directory
 //                        path of the target directory to which selected files
 //                        will be moved. If the target directory does not exist,
 //                        this method will attempt to create it.
@@ -3702,7 +3702,7 @@ func (dMgr *DirMgr) MakeDir() error {
 //                      array and returned to the caller.
 //
 func (dMgr *DirMgr) MoveDirectory(
-  targetDir DirMgr,
+  targetDMgr DirMgr,
   fileSelectCriteria FileSelectionCriteria) (errs []error) {
 
   errs = make([]error, 0, 300)
@@ -3717,10 +3717,10 @@ func (dMgr *DirMgr) MoveDirectory(
     return errs
   }
 
-  err = targetDir.IsDirMgrValid(ePrefix)
+  err = targetDMgr.IsDirMgrValid(ePrefix)
 
   if err != nil {
-    err2 = fmt.Errorf("Input parameter 'targetDir' is INVALID!\n" +
+    err2 = fmt.Errorf("Input parameter 'targetDMgr' is INVALID!\n" +
       "Error='%v'\n", err.Error())
     errs = append(errs, err2)
     return errs
@@ -3817,15 +3817,15 @@ func (dMgr *DirMgr) MoveDirectory(
         // We have a match
 
         // Create Directory if needed
-        if !targetDir.DoesAbsolutePathExist() {
+        if !targetDMgr.DoesAbsolutePathExist() {
 
-          err = targetDir.MakeDir()
+          err = targetDMgr.MakeDir()
 
           if err != nil {
             err2 = fmt.Errorf("\n" + ePrefix +
               "Error creating target directory!\n" +
               "Target Directory='%v'\nError='%v'\n",
-              targetDir.absolutePath, err.Error())
+              targetDMgr.absolutePath, err.Error())
 
             errs = append(errs, err2)
 
@@ -3836,7 +3836,7 @@ func (dMgr *DirMgr) MoveDirectory(
         src = dMgr.absolutePath +
           osPathSeparatorStr + nameFInfo.Name()
 
-        target = targetDir.absolutePath +
+        target = targetDMgr.absolutePath +
           osPathSeparatorStr + nameFInfo.Name()
 
         err = fh.MoveFile(src, target)
@@ -3872,6 +3872,221 @@ func (dMgr *DirMgr) MoveDirectory(
   // directory (dMgr).
   if numOfSrcFiles == 0 && numOfSubDirectories == 0 {
     _ = dMgr.DeleteAll()
+  }
+
+  return errs
+}
+
+// MoveDirectoryTree - Moves all sub-directories and files plus files in
+// the parent DirMgr directory to a target directory tree specified by
+// input parameter 'targetDMgr'. If successful, the parent directory
+// DirMgr will be deleted along with the entire sub-directory tree.
+//
+// --------------------------------------------------------------------
+//
+// !!!! BE CAREFUL !!!! This method will delete the entire directory
+// tree identified by DirMgr!
+//
+// --------------------------------------------------------------------
+//
+// Input Parameters:
+//
+//  targetDMgr   DirMgr - An instance of 'DirMgr' initialized with the directory
+//                        path of the target directory to which all source files
+//                        will be moved. If the target directory does not exist,
+//                        this method will attempt to create it.
+//
+//
+// ---------------------------------------------------------------------------
+//
+// Return Value:
+//
+//  errs     []error  - An array of errors is returned. If the method completes
+//                      successfully with no errors, a ZERO-length array is
+//                      is returned.
+//
+//                      If errors are encountered they are stored in the error
+//                      array and returned to the caller.
+func (dMgr *DirMgr) MoveDirectoryTree(targetDMgr DirMgr) (errs []error) {
+
+  ePrefix := "DirMgr.MoveDirectoryTree() "
+  errs = make([]error, 0, 300)
+  var err, err2 error
+
+  err = dMgr.IsDirMgrValid(ePrefix)
+
+  if err != nil {
+    errs = append(errs, err)
+    return errs
+  }
+
+  err = targetDMgr.IsDirMgrValid("targetDMgr ")
+
+  if err != nil {
+    err2 = fmt.Errorf(ePrefix + "Input parameter targetDMgr is INVALID!\n" +
+      "Error='%v'", err.Error())
+
+    errs = append(errs, err2)
+    return errs
+  }
+
+  _, err = os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+
+    if os.IsNotExist(err) {
+      err2 = fmt.Errorf(ePrefix + "The current DirMgr path DOES NOT EXIST!\n" +
+        "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
+    } else {
+      err2 = fmt.Errorf(ePrefix + "Non-Path error returned by os.Stat(dMgr.absolutePath)\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n",dMgr.absolutePath, err.Error())
+    }
+
+    errs = append(errs, err2)
+
+    return errs
+  }
+
+  fsc := FileSelectionCriteria{}
+  errs2 := dMgr.copyDirectoryTree(
+            targetDMgr,
+            true,
+            false,
+            ePrefix,
+            fsc)
+
+  if len(errs2) > 0 {
+    err2 = fmt.Errorf("Errors occurred while copying directory tree to target directory.\n"+
+      "Source Directory='%v'\nTarget Directory='%v'\nErrors Follow:\n\n",
+      dMgr.GetAbsolutePath(), targetDMgr.GetAbsolutePath())
+    errs = append(errs, err2)
+    errs = append(errs, errs2 ...)
+    return errs
+  }
+
+  // The entire directory tree was copied.
+  // Now delete the current directory tree
+  // to complete the move operation.
+
+  err = dMgr.DeleteAll()
+
+  if err != nil {
+    err2 = fmt.Errorf(ePrefix + "Files were copied successfuly to target directory.\n" +
+      "However, errors occurred while deleting the source directory tree.\n" +
+      "Source Directory (DirMgr)='%v'\nError='%v'\n",
+      dMgr.GetAbsolutePath(), err.Error())
+
+    errs = append(errs, err2)
+  }
+
+  return errs
+}
+
+// MoveSubDirectoryTree - Moves all sub-directories and their constituent
+// files from the source or parent directory 'DirMgr' to a target directory
+// tree specified by input parameter 'targetDMgr'. If successful, all
+// sub-directories and files in the source directory tree will be deleted.
+// The source or parent directory identified by 'DirMgr' and the files
+// within 'DirMgr' will NOT be deleted.
+//
+// --------------------------------------------------------------------
+//
+// !!!! BE CAREFUL !!!! This method will delete the entire directory
+// sub-directory tree. The source or parent directory 'DirMgr' and its
+// files will NOT be deleted.
+//
+// --------------------------------------------------------------------
+//
+// Input Parameters:
+//
+//  targetDMgr   DirMgr - An instance of 'DirMgr' initialized with the directory
+//                        path of the target directory to which all source files
+//                        will be moved. If the target directory does not exist,
+//                        this method will attempt to create it.
+//
+//
+// ---------------------------------------------------------------------------
+//
+// Return Value:
+//
+//  errs     []error  - An array of errors is returned. If the method completes
+//                      successfully with no errors, a ZERO-length array is
+//                      is returned.
+//
+//                      If errors are encountered they are stored in the error
+//                      array and returned to the caller.
+//
+func (dMgr *DirMgr) MoveSubDirectoryTree(targetDMgr DirMgr) (errs []error) {
+
+  ePrefix := "DirMgr.MoveDirectoryTree() "
+  errs = make([]error, 0, 300)
+  var err, err2 error
+
+  err = dMgr.IsDirMgrValid(ePrefix)
+
+  if err != nil {
+    errs = append(errs, err)
+    return errs
+  }
+
+  err = targetDMgr.IsDirMgrValid("targetDMgr ")
+
+  if err != nil {
+    err2 = fmt.Errorf(ePrefix + "Input parameter targetDMgr is INVALID!\n" +
+      "Error='%v'", err.Error())
+
+    errs = append(errs, err2)
+    return errs
+  }
+
+  _, err = os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+
+    if os.IsNotExist(err) {
+      err2 = fmt.Errorf(ePrefix + "The current DirMgr path DOES NOT EXIST!\n" +
+        "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
+    } else {
+      err2 = fmt.Errorf(ePrefix + "Non-Path error returned by os.Stat(dMgr.absolutePath)\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n",dMgr.absolutePath, err.Error())
+    }
+
+    errs = append(errs, err2)
+
+    return errs
+  }
+
+  fsc := FileSelectionCriteria{}
+  errs2 := dMgr.copyDirectoryTree(
+    targetDMgr,
+    true,
+    false,
+    ePrefix,
+    fsc)
+
+  if len(errs2) > 0 {
+    err2 = fmt.Errorf("Errors occurred while copying directory tree to target directory.\n"+
+      "Source Directory='%v'\nTarget Directory='%v'\nErrors Follow:\n\n",
+      dMgr.GetAbsolutePath(), targetDMgr.GetAbsolutePath())
+    errs = append(errs, err2)
+    errs = append(errs, errs2 ...)
+    return errs
+  }
+
+  // The entire directory tree was copied.
+  // Now delete the current directory tree
+  // to complete the move operation.
+
+  errs2 = dMgr.DeleteAllSubDirectories()
+
+  if len(errs2) > 0 {
+    err2 = fmt.Errorf(ePrefix + "Files were copied successfuly to target directory.\n" +
+      "However, errors occurred while deleting the sub-directory tree.\n" +
+      "Source Directory (DirMgr)='%v'\nErrors Follow:\n\n",
+      dMgr.GetAbsolutePath())
+
+    errs = append(errs, err2)
+    errs = append(errs, errs2 ...)
   }
 
   return errs
