@@ -358,6 +358,29 @@ func TestDirMgr_GetNumberOfAbsPathElements_03(t *testing.T) {
 
 }
 
+func TestDirMgr_GetOriginalPath_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testDir := fh.AdjustPathSlash("../filesfortest/levelfilesfortest")
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir).\n" +
+      "testDir='%v'\nError='%v'\n",testDir, err.Error())
+    return
+  }
+
+  originalPath := testDMgr.GetOriginalPath()
+
+  if testDir != originalPath {
+    t.Errorf("Expected Original Path='%v'.\nInstead, Original Path='%v'.\n",
+      testDir, originalPath)
+  }
+
+}
+
 func TestDirMgr_GetParentDirMgr_01(t *testing.T) {
   fh := FileHelper{}
 
