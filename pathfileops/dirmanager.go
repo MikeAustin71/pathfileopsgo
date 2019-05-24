@@ -3885,7 +3885,8 @@ func (dMgr *DirMgr) MoveDirectory(
 // --------------------------------------------------------------------
 //
 // !!!! BE CAREFUL !!!! This method will delete the entire directory
-// tree identified by DirMgr!
+// tree identified by DirMgr along with ALL the files in the DirMgr
+// directory tree!
 //
 // --------------------------------------------------------------------
 //
@@ -3991,9 +3992,9 @@ func (dMgr *DirMgr) MoveDirectoryTree(targetDMgr DirMgr) (errs []error) {
 //
 // --------------------------------------------------------------------
 //
-// !!!! BE CAREFUL !!!! This method will delete the entire directory
-// sub-directory tree. The source or parent directory 'DirMgr' and its
-// files will NOT be deleted.
+// !!!! BE CAREFUL !!!! This method will delete the entire sub-directory
+// tree. The source or parent directory 'DirMgr' and its constituent files
+// will NOT be deleted.
 //
 // --------------------------------------------------------------------
 //
@@ -4018,7 +4019,7 @@ func (dMgr *DirMgr) MoveDirectoryTree(targetDMgr DirMgr) (errs []error) {
 //
 func (dMgr *DirMgr) MoveSubDirectoryTree(targetDMgr DirMgr) (errs []error) {
 
-  ePrefix := "DirMgr.MoveDirectoryTree() "
+  ePrefix := "DirMgr.MoveSubDirectoryTree() "
   errs = make([]error, 0, 300)
   var err, err2 error
 
@@ -4060,7 +4061,7 @@ func (dMgr *DirMgr) MoveSubDirectoryTree(targetDMgr DirMgr) (errs []error) {
   errs2 := dMgr.copyDirectoryTree(
     targetDMgr,
     true,
-    false,
+    true,
     ePrefix,
     fsc)
 
