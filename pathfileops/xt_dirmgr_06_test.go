@@ -1,6 +1,9 @@
 package pathfileops
 
-import "testing"
+import (
+  "os"
+  "testing"
+)
 
 func TestDirMgr_GetAbsolutePath_01(t *testing.T) {
 
@@ -455,6 +458,83 @@ func TestDirMgr_GetParentDirMgr_02(t *testing.T) {
       hasParent)
   }
 
+}
+
+func TestDirMgr_GetParentPath_01(t *testing.T) {
+
+  testDirParent := "../filesfortest"
+
+  testDir := testDirParent + "/htmlFilesForTest"
+
+  var err error
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir).\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+  }
+
+  fh := FileHelper{}
+
+  testDirParent, err = fh.MakeAbsolutePath(testDirParent)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(testDirParent).\n" +
+      "testDirParent='%v'\nError='%v'\n", testDirParent, err.Error())
+  }
+
+  actualParent := testDMgr.GetParentPath()
+
+  if testDirParent != actualParent {
+    t.Errorf("ERROR: Expected parent directory='%v'.\nInstead, parent directory='%v'\n",
+      testDirParent, actualParent)
+  }
+
+}
+
+func TestDirMgr_GetPath_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  sourceDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+
+  dMgr, err := DirMgr{}.New(sourceDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+  }
+
+  dirPath := dMgr.GetPath()
+
+  if sourceDir != dirPath {
+    t.Errorf("ERROR: Expected dMgr.GetPath()='%v'.\nInstead, dMgr.GetPath()='%v'.\n",
+      sourceDir, dirPath)
+  }
+}
+
+func TestDirMgr_GetPathWithSeparator_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  sourceDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+
+  dMgr, err := DirMgr{}.New(sourceDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+  }
+
+  sourceDir = sourceDir + string(os.PathSeparator)
+
+  dirPath := dMgr.GetPathWithSeparator()
+
+  if sourceDir != dirPath {
+    t.Errorf("ERROR: Expected dMgr.GetPath()='%v'.\nInstead, dMgr.GetPath()='%v'.\n",
+      sourceDir, dirPath)
+  }
 }
 
 func TestDirMgr_GetDirPermissionTextCodes_01(t *testing.T) {

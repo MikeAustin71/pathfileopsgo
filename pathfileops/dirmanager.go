@@ -3236,6 +3236,13 @@ func (dMgr *DirMgr) GetParentDirMgr() (dirMgr DirMgr, hasParent bool, err error)
   hasParent = true
   err = nil
 
+  err = dMgr.IsDirMgrValid(ePrefix)
+
+  if err != nil {
+    hasParent = false
+    return dirMgr, hasParent, err
+  }
+
   if len(dMgr.parentPath) == 0 {
 
     return dMgr.CopyOut(), false, nil
@@ -3248,7 +3255,7 @@ func (dMgr *DirMgr) GetParentDirMgr() (dirMgr DirMgr, hasParent bool, err error)
 
   if err2 != nil {
 
-    err = fmt.Errorf(ePrefix+"%v", err.Error())
+    err = fmt.Errorf(ePrefix+"%v", err2.Error())
     hasParent = true
     dirMgr = DirMgr{}
     return dirMgr, hasParent, err
