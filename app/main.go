@@ -1242,13 +1242,15 @@ func mainTest30() {
     return
   }
 
-  permissionText, err := dMgr.GetDirPermissionTextCodes()
+  fPerm, err := dMgr.GetDirPermissionCodes()
 
   if err != nil {
-    fmt.Printf("Error returned by dMgr.GetDirPermissionTextCodes(). "+
+    fmt.Printf("Error returned by dMgr.GetDirPermissionCodes(). "+
       "Error='%v' \n", err.Error())
     return
   }
+
+  permissionText, _ := fPerm.GetPermissionTextCode()
 
   fmt.Println("  Directory: ", dMgr.GetAbsolutePath())
   fmt.Println("Permissions: ", permissionText)

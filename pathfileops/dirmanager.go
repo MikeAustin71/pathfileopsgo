@@ -3134,52 +3134,60 @@ func (dMgr *DirMgr) GetFileInfoPlus() (FileInfoPlus, error) {
     return FileInfoPlus{}, err2
   }
 
-  dMgr.doesAbsolutePathExist = true
   dMgr.actualDirFileInfo = FileInfoPlus{}.NewFromPathFileInfo(dMgr.absolutePath, info)
 
   return dMgr.actualDirFileInfo.CopyOut(), nil
 }
 
-// GetDirPermissionTextCodes -  - If the current directory exists on disk,
-// this method will return the Directory Permission Codes, otherwise known
-// as the unix permission bits, in the form of a 10-character string.
+// GetDirPermissionCodes - If the current directory exists on disk,
+// this method will return the Directory Permission Codes encapsulated
+// in a type 'FilePermissionConfig'.
 //
-// If the current Directory does NOT exist, this method will return an error.
+// If the current Directory does NOT exist, this method will return an
+// error.
 //
-func (dMgr *DirMgr) GetDirPermissionTextCodes() (string, error) {
+func (dMgr *DirMgr) GetDirPermissionCodes() (FilePermissionConfig, error) {
 
-  ePrefix := "GetDirPermissionTextCodes() "
+  ePrefix := "GetDirPermissionCodes() "
 
-  if !dMgr.doesAbsolutePathExist {
-    return "",
-      errors.New(ePrefix +
-        "The current directory does NOT exist. Therefore, permission codes " +
-        "do NOT exist.")
+  var err, err2 error
+
+  err = dMgr.IsDirMgrValid(ePrefix)
+
+  if err != nil {
+    return FilePermissionConfig{}, err
   }
 
-  if !dMgr.actualDirFileInfo.IsFInfoInitialized {
-    return "",
-      errors.New(ePrefix +
-        "The FileInfo data for this Directory has NOT been initialized.")
+  var fInfo os.FileInfo
+
+  fInfo, err = os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+
+    if os.IsNotExist(err) {
+      err2 = fmt.Errorf(ePrefix + "The current DirMgr path DOES NOT EXIST!\n" +
+        "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
+    } else {
+      err2 = fmt.Errorf(ePrefix + "Non-Path error returned by os.Stat(dMgr.absolutePath)\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n",dMgr.absolutePath, err.Error())
+    }
+
+    return FilePermissionConfig{}, err2
   }
+
+  dMgr.actualDirFileInfo = FileInfoPlus{}.NewFromPathFileInfo(dMgr.absolutePath, fInfo)
+
 
   fPerm, err := FilePermissionConfig{}.NewByFileMode(dMgr.actualDirFileInfo.Mode())
 
   if err != nil {
-    return "",
+    return FilePermissionConfig{},
       fmt.Errorf(ePrefix+
-        "%v", err.Error())
+        "Error creating File Permission Configuration\nError='%v'\n",
+        err.Error())
   }
 
-  permissionText, err := fPerm.GetPermissionTextCode()
-
-  if err != nil {
-    return "",
-      fmt.Errorf(ePrefix+
-        "%v", err.Error())
-  }
-
-  return permissionText, nil
+  return fPerm, nil
 }
 
 // GetNumberOfAbsPathElements - Returns the number of elements

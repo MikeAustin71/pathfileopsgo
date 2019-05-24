@@ -297,6 +297,67 @@ func TestDirMgr_GetFileInfoPlus_03(t *testing.T) {
   }
 }
 
+
+func TestDirMgr_GetNumberOfAbsPathElements_01(t *testing.T) {
+
+  origBaseAbsPath := "D:\\dir01\\dir02\\dir03\\dir04"
+
+  dMgr, err := DirMgr{}.New(origBaseAbsPath)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(origBaseAbsPath). " +
+      "Error='%v' ", err.Error())
+  }
+
+  numOfElements := dMgr.GetNumberOfAbsPathElements()
+
+  if 5 != numOfElements {
+    t.Errorf("Expected Number Of directory elements='%v'. Instead, " +
+      "number of elements='%v' ", 5, numOfElements)
+  }
+
+}
+
+func TestDirMgr_GetNumberOfAbsPathElements_02(t *testing.T) {
+
+  origBaseAbsPath := "D:\\"
+
+  dMgr, err := DirMgr{}.New(origBaseAbsPath)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(origBaseAbsPath). " +
+      "Error='%v' ", err.Error())
+  }
+
+  numOfElements := dMgr.GetNumberOfAbsPathElements()
+
+  if 1 != numOfElements {
+    t.Errorf("Expected Number Of directory elements='%v'. Instead, " +
+      "number of elements='%v' ", 1, numOfElements)
+  }
+
+}
+
+func TestDirMgr_GetNumberOfAbsPathElements_03(t *testing.T) {
+
+  origBaseAbsPath := "D:\\test01"
+
+  dMgr, err := DirMgr{}.New(origBaseAbsPath)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(origBaseAbsPath). " +
+      "Error='%v' ", err.Error())
+  }
+
+  numOfElements := dMgr.GetNumberOfAbsPathElements()
+
+  if 2 != numOfElements {
+    t.Errorf("Expected Number Of directory elements='%v'. Instead, " +
+      "number of elements='%v' ", 2, numOfElements)
+  }
+
+}
+
 func TestDirMgr_GetParentDirMgr_01(t *testing.T) {
   fh := FileHelper{}
 
@@ -373,62 +434,97 @@ func TestDirMgr_GetParentDirMgr_02(t *testing.T) {
 
 }
 
-func TestDirMgr_GetNumberOfAbsPathElements_01(t *testing.T) {
+func TestDirMgr_GetDirPermissionTextCodes_01(t *testing.T) {
 
-  origBaseAbsPath := "D:\\dir01\\dir02\\dir03\\dir04"
+  sourceDir := "../filesfortest/htmlFilesForTest"
 
-  dMgr, err := DirMgr{}.New(origBaseAbsPath)
+  fh := FileHelper{}
+
+  expectedPerm, err := fh.GetFileMode(sourceDir)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(origBaseAbsPath). " +
-      "Error='%v' ", err.Error())
+    t.Errorf("Test Setup Error returned by fh.GetFileMode(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n",
+      sourceDir, err.Error())
+    return
   }
 
-  numOfElements := dMgr.GetNumberOfAbsPathElements()
+  expectedPermText, err := expectedPerm.GetPermissionTextCode()
 
-  if 5 != numOfElements {
-    t.Errorf("Expected Number Of directory elements='%v'. Instead, " +
-      "number of elements='%v' ", 5, numOfElements)
+  if err != nil {
+    t.Errorf("Test Setup Error returned by expectedPerm.GetPermissionTextCode().\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  sourceDMgr, err := DirMgr{}.New(sourceDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
+  }
+
+  fPerm, err := sourceDMgr.GetDirPermissionCodes()
+
+  if err != nil {
+    t.Errorf("Error returned by sourceDMgr.GetDirPermissionCodes().\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  permissionCodes, err := fPerm.GetPermissionTextCode()
+
+  if err != nil {
+    t.Errorf("Error returned by fPerm.GetPermissionTextCode().\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  if expectedPermText != permissionCodes {
+    t.Errorf("ERROR: Expected PermissionCodes='%v'\n" +
+      "Instead, permissionCodes='%v'\n",expectedPermText, permissionCodes)
   }
 
 }
 
-func TestDirMgr_GetNumberOfAbsPathElements_02(t *testing.T) {
+func TestDirMgr_GetDirPermissionTextCodes_02(t *testing.T) {
 
-  origBaseAbsPath := "D:\\"
+  sourceDir := "../filesfortest/htmlFilesForTest"
 
-  dMgr, err := DirMgr{}.New(origBaseAbsPath)
+  sourceDMgr, err := DirMgr{}.New(sourceDir)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(origBaseAbsPath). " +
-      "Error='%v' ", err.Error())
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
   }
 
-  numOfElements := dMgr.GetNumberOfAbsPathElements()
+  sourceDMgr.isInitialized = false
 
-  if 1 != numOfElements {
-    t.Errorf("Expected Number Of directory elements='%v'. Instead, " +
-      "number of elements='%v' ", 1, numOfElements)
+  _, err = sourceDMgr.GetDirPermissionCodes()
+
+  if err == nil {
+    t.Error("Expected an error return from sourceDMgr.GetDirPermissionCodes()\n" +
+      "because 'sourceDMgr' is INVALID!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
   }
-
 }
 
-func TestDirMgr_GetNumberOfAbsPathElements_03(t *testing.T) {
+func TestDirMgr_GetDirPermissionTextCodes_03(t *testing.T) {
 
-  origBaseAbsPath := "D:\\test01"
+  sourceDir := "../filesfortest/iDoNotExist"
 
-  dMgr, err := DirMgr{}.New(origBaseAbsPath)
+  sourceDMgr, err := DirMgr{}.New(sourceDir)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(origBaseAbsPath). " +
-      "Error='%v' ", err.Error())
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
   }
 
-  numOfElements := dMgr.GetNumberOfAbsPathElements()
+  _, err = sourceDMgr.GetDirPermissionCodes()
 
-  if 2 != numOfElements {
-    t.Errorf("Expected Number Of directory elements='%v'. Instead, " +
-      "number of elements='%v' ", 2, numOfElements)
+  if err == nil {
+    t.Error("Expected an error return from sourceDMgr.GetDirPermissionCodes()\n" +
+      "because 'sourceDMgr' DOES NOT EXIST!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
   }
-
 }
