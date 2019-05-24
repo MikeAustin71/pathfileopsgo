@@ -3969,12 +3969,12 @@ func (dMgr *DirMgr) MoveDirectoryTree(targetDMgr DirMgr) (errs []error) {
   // Now delete the current directory tree
   // to complete the move operation.
 
-  err = dMgr.DeleteAll()
+  err = os.RemoveAll(dMgr.GetAbsolutePath())
 
   if err != nil {
     err2 = fmt.Errorf(ePrefix + "Files were copied successfuly to target directory.\n" +
-      "However, errors occurred while deleting the source directory tree.\n" +
-      "Source Directory (DirMgr)='%v'\nError='%v'\n",
+      "However, errors occurred while deleting the source directory tree. os.RemoveAll(dMgr.GetAbsolutePath())\n" +
+      "dMgr.GetAbsolutePath() (DirMgr)='%v'\nError='%v'\n",
       dMgr.GetAbsolutePath(), err.Error())
 
     errs = append(errs, err2)
