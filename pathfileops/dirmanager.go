@@ -3111,28 +3111,27 @@ func (dMgr *DirMgr) GetFileInfoPlus() (FileInfoPlus, error) {
 
   ePrefix := "DirMgr.GetFileInfoPlus() "
 
-  err := dMgr.IsDirMgrValid(ePrefix)
+  var err, err2 error
+
+  err = dMgr.IsDirMgrValid(ePrefix)
 
   if err != nil {
     return FileInfoPlus{}, err
-  }
-
-  if dMgr.absolutePath == "" {
-
-    dMgr.doesAbsolutePathExist = false
-
-    return FileInfoPlus{},
-      errors.New(ePrefix + "Directory DOES NOT EXIST! FileInfoPlus is NOT available.")
   }
 
   info, err := os.Stat(dMgr.absolutePath)
 
   if err != nil {
 
-    return FileInfoPlus{},
-      fmt.Errorf(ePrefix+
-        "Error returned by os.Stat(dMgr.absolutePath). Error='%v'",
-        err.Error())
+    if os.IsNotExist(err) {
+      err2 = fmt.Errorf(ePrefix + "The current DirMgr path DOES NOT EXIST!\n" +
+        "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
+    } else {
+      err2 = fmt.Errorf(ePrefix + "Non-Path error returned by os.Stat(dMgr.absolutePath)\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n",dMgr.absolutePath, err.Error())
+    }
+
+    return FileInfoPlus{}, err2
   }
 
   dMgr.doesAbsolutePathExist = true

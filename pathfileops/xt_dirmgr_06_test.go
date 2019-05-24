@@ -2,7 +2,30 @@ package pathfileops
 
 import "testing"
 
-func TestDirMgr_GetAbsolutePathElements(t *testing.T) {
+func TestDirMgr_GetAbsolutePath_01(t *testing.T) {
+
+  sourceDir := "../filesfortest/levelfilesfortest"
+
+  sourceDMgr, err := DirMgr{}.New(sourceDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
+  }
+
+  sourceDMgr.isInitialized = false
+
+  absPath := sourceDMgr.GetAbsolutePath()
+
+  if absPath != "" {
+    t.Errorf("ERROR: Expected an empty string to be returned by sourceDMgr.GetAbsolutePath()\n" +
+      "because sourceDMgr is INVALID!\nInstead, the returned string='%v'\n", absPath)
+  }
+
+}
+
+func TestDirMgr_GetAbsolutePathElements_01(t *testing.T) {
 
   testDir := "D:\\Adir\\Bdir\\Cdir\\Ddir\\Edir"
 
@@ -48,6 +71,58 @@ func TestDirMgr_GetAbsolutePathElements(t *testing.T) {
   if "Edir" != elementsArray[5] {
     t.Errorf("Error. Expected elementsArray[4]=\"Edir\". Instead, "+
       "elementsArray[4]=\"%v\"", elementsArray[4])
+  }
+
+}
+
+func TestDirMgr_GetAbsolutePathElements_02(t *testing.T) {
+
+  sourceDir := "../filesfortest/levelfilesfortest"
+
+  sourceDMgr, err := DirMgr{}.New(sourceDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
+  }
+
+  sourceDMgr.absolutePath = ""
+
+  pathElements := sourceDMgr.GetAbsolutePathElements()
+
+  if len(pathElements)!=0 {
+    t.Errorf("ERROR: Expected an empty array to be returned by " +
+      "sourceDMgr.GetAbsolutePathElements()\n" +
+      "because sourceDMgr.absolutePath is an empty string!\n" +
+      "Instead, this method returned pathElements='%v'\n",
+      pathElements)
+  }
+
+}
+
+func TestDirMgr_GetAbsolutePathWithSeparator_01(t *testing.T) {
+
+  sourceDir := "../filesfortest/levelfilesfortest"
+
+  sourceDMgr, err := DirMgr{}.New(sourceDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
+  }
+
+  sourceDMgr.absolutePath = ""
+
+  absPathWithSep := sourceDMgr.GetAbsolutePathWithSeparator()
+
+  if len(absPathWithSep)!=0 {
+    t.Errorf("ERROR: Expected an empty string to be returned by " +
+      "sourceDMgr.GetAbsolutePathWithSeparator()\n" +
+      "because sourceDMgr.absolutePath is an empty string!\nInstead, the method returned "+
+      "absPathWithSep='%v'\n",
+      absPathWithSep)
   }
 
 }
@@ -155,6 +230,70 @@ func TestDirMgr_GetDirectoryTree_03(t *testing.T) {
   if len(errs) == 0 {
     t.Error("Expected errors to be returned by dMgr.GetDirectoryTree()\n" +
       "because 'dMgr' path DOES NOT EXIST!\nHowever, NO ERROR WAS RETURNED!!!!\n")
+  }
+}
+
+func TestDirMgr_GetFileInfoPlus_01(t *testing.T) {
+
+  sourceDir := "../filesfortest/htmlFilesForTest"
+
+  sourceDMgr, err := DirMgr{}.New(sourceDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
+  }
+
+  fInfoPlus, err := sourceDMgr.GetFileInfoPlus()
+
+  dirName := fInfoPlus.Name()
+
+  if "htmlFilesForTest" != dirName {
+    t.Errorf("Error: Expected dirName='htmlFilesForTest'.\n" +
+      "Instead, dirName='%v'\n", dirName)
+  }
+}
+
+func TestDirMgr_GetFileInfoPlus_02(t *testing.T) {
+
+  sourceDir := "../filesfortest/htmlFilesForTest"
+
+  sourceDMgr, err := DirMgr{}.New(sourceDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
+  }
+
+  sourceDMgr.isInitialized = false
+
+  _, err = sourceDMgr.GetFileInfoPlus()
+
+  if err == nil {
+    t.Error("ERROR: Expected an error return from sourceDMgr.GetFileInfoPlus()\n" +
+      "because sourceDMgr is INVALID!\nHowever, NO ERROR WAS RETURNED!!!!\n")
+  }
+}
+
+func TestDirMgr_GetFileInfoPlus_03(t *testing.T) {
+
+  sourceDir := "../filesfortest/iDoNotExist"
+
+  sourceDMgr, err := DirMgr{}.New(sourceDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
+  }
+
+  _, err = sourceDMgr.GetFileInfoPlus()
+
+  if err == nil {
+    t.Error("ERROR: Expected an error return from sourceDMgr.GetFileInfoPlus()\n" +
+      "because sourceDMgr DOES NOT EXIST!\nHowever, NO ERROR WAS RETURNED!!!!\n")
   }
 }
 

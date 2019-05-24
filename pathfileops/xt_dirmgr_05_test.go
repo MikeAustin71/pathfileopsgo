@@ -715,6 +715,53 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
     t.Errorf("Expected to find Directory %v in dInfo.dirMgrs. "+
       "This directory was NOT found!", dir3)
   }
+}
+
+func TestDirMgr_FindWalkDirFiles_07(t *testing.T) {
+
+  sourceDir := "../filesfortest/levelfilesfortest"
+
+  sourceDMgr, err := DirMgr{}.New(sourceDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  sourceDMgr.isInitialized = false
+
+  _, err = sourceDMgr.FindWalkDirFiles(fsc)
+
+  if err == nil {
+    t.Error("Expected an error return from sourceDMgr.FindWalkDirFiles(fsc)\n" +
+      "because sourceDMgr is INVALID!\nHowever, NO ERROR WAS RETURNED!!!\n")
+  }
+
+}
+
+func TestDirMgr_FindWalkDirFiles_08(t *testing.T) {
+
+  sourceDir := "../filesfortest/iDoNotExist"
+
+  sourceDMgr, err := DirMgr{}.New(sourceDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  _, err = sourceDMgr.FindWalkDirFiles(fsc)
+
+  if err == nil {
+    t.Error("Expected an error return from sourceDMgr.FindWalkDirFiles(fsc)\n" +
+      "because sourceDMgr directory DOES NOT EXIST!\nHowever, NO ERROR WAS RETURNED!!!\n")
+  }
 
 }
 
