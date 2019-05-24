@@ -41,8 +41,6 @@ type DirMgr struct {
   doesPathExist                   bool
   parentPath                      string // Stored with no trailing path separator
   isParentPathPopulated           bool
-  relativePath                    string // Stored with no preceding path separator
-  isRelativePathPopulated         bool
   absolutePath                    string
   isAbsolutePathPopulated         bool
   doesAbsolutePathExist           bool
@@ -570,8 +568,6 @@ func (dMgr *DirMgr) CopyIn(dmgrIn *DirMgr) {
   dMgr.doesPathExist = dmgrIn.doesPathExist
   dMgr.parentPath = dmgrIn.parentPath
   dMgr.isParentPathPopulated = dmgrIn.isParentPathPopulated
-  dMgr.relativePath = dmgrIn.relativePath
-  dMgr.isRelativePathPopulated = dmgrIn.isRelativePathPopulated
   dMgr.absolutePath = dmgrIn.absolutePath
   dMgr.isAbsolutePathPopulated = dmgrIn.isAbsolutePathPopulated
   dMgr.doesAbsolutePathExist = dmgrIn.doesAbsolutePathExist
@@ -595,8 +591,6 @@ func (dMgr *DirMgr) CopyOut() DirMgr {
   dOut.doesPathExist = dMgr.doesPathExist
   dOut.parentPath = dMgr.parentPath
   dOut.isParentPathPopulated = dMgr.isParentPathPopulated
-  dOut.relativePath = dMgr.relativePath
-  dOut.isRelativePathPopulated = dMgr.isRelativePathPopulated
   dOut.absolutePath = dMgr.absolutePath
   dOut.isAbsolutePathPopulated = dMgr.isAbsolutePathPopulated
   dOut.doesAbsolutePathExist = dMgr.doesAbsolutePathExist
@@ -1372,8 +1366,6 @@ func (dMgr *DirMgr) Empty() {
   dMgr.doesPathExist = false
   dMgr.parentPath = ""
   dMgr.isParentPathPopulated = false
-  dMgr.relativePath = ""
-  dMgr.isRelativePathPopulated = false
   dMgr.absolutePath = ""
   dMgr.isAbsolutePathPopulated = false
   dMgr.doesAbsolutePathExist = false
@@ -1396,8 +1388,6 @@ func (dMgr *DirMgr) Equal(dmgr2 *DirMgr) bool {
     dMgr.doesPathExist != dmgr2.doesPathExist ||
     dMgr.parentPath != dmgr2.parentPath ||
     dMgr.isParentPathPopulated != dmgr2.isParentPathPopulated ||
-    dMgr.relativePath != dmgr2.relativePath ||
-    dMgr.isRelativePathPopulated != dmgr2.isRelativePathPopulated ||
     dMgr.absolutePath != dmgr2.absolutePath ||
     dMgr.isAbsolutePathPopulated != dmgr2.isAbsolutePathPopulated ||
     dMgr.doesAbsolutePathExist != dmgr2.doesAbsolutePathExist ||
@@ -3301,16 +3291,6 @@ func (dMgr *DirMgr) GetPathWithSeparator() string {
   return dMgr.path
 }
 
-// GetRelativePath - Returns a string containing the relative path
-// for this Directory Manager instance. The relative path is derived
-// through comparison to the current Directory Managers parent
-// directory. Therefore, the relative path of the current Directory
-// Manger is relative to its parent.
-//
-func (dMgr *DirMgr) GetRelativePath() string {
-  return dMgr.relativePath
-}
-
 // GetVolumeName - Returns a string containing the volume name
 // of the directory identified by the current Directory Manager
 // instance.
@@ -3423,21 +3403,6 @@ func (dMgr *DirMgr) IsPathPopulated() bool {
   }
 
   return dMgr.isPathPopulated
-}
-
-// IsRelativePathPopulated - Returns a boolean value indicating
-// whether the Relative Path for this Directory Manager
-// instance is populated.
-//
-func (dMgr *DirMgr) IsRelativePathPopulated() bool {
-
-  if len(dMgr.relativePath) == 0 {
-    dMgr.isRelativePathPopulated = false
-  } else {
-    dMgr.isRelativePathPopulated = true
-  }
-
-  return dMgr.isRelativePathPopulated
 }
 
 // IsVolumeNamePopulated - Returns a boolean value indicating
@@ -4350,23 +4315,13 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
   idxStr := strAry[lStr-1]
 
   idx := strings.Index(dMgr.absolutePath, idxStr)
+
   dMgr.parentPath = fh.RemovePathSeparatorFromEndOfPathString(dMgr.absolutePath[0:idx])
 
   dMgr.isParentPathPopulated = true
 
-  if dMgr.isAbsolutePathPopulated && dMgr.isParentPathPopulated {
-
-    dMgr.relativePath, err2 = fp.Rel(dMgr.parentPath, dMgr.absolutePath)
-
-    if err2 != nil {
-      dMgr.relativePath = ""
-      dMgr.isParentPathPopulated = false
-    } else {
-      dMgr.isParentPathPopulated = true
-      dMgr.isRelativePathPopulated = true
-
-    }
-
+  if dMgr.parentPath == "" {
+    dMgr.isParentPathPopulated = false
   }
 
   if idxStr != "" {

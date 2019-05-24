@@ -62,14 +62,6 @@ func TestDirMgr_Equal_01(t *testing.T) {
     t.Errorf("After CopyOut(), expected dMgr2.isParentPathPopulated='%v'.  Instead, dMgr2.isParentPathPopulated='%v'.", dMgr.isParentPathPopulated, dMgr2.isParentPathPopulated)
   }
 
-  if dMgr2.relativePath != dMgr.relativePath {
-    t.Errorf("After CopyOut(), expected dMgr2.relativePath='%v'.  Instead, dMgr2.relativePath='%v'.", dMgr.relativePath, dMgr2.relativePath)
-  }
-
-  if dMgr2.isRelativePathPopulated != dMgr.isRelativePathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isRelativePathPopulated='%v'.  Instead, dMgr2.isRelativePathPopulated='%v'.", dMgr.isRelativePathPopulated, dMgr2.isRelativePathPopulated)
-  }
-
   if dMgr2.absolutePath != dMgr.absolutePath {
     t.Errorf("After CopyOut(), expected dMgr2.absolutePath='%v'.  Instead, dMgr2.absolutePath='%v'.", dMgr.absolutePath, dMgr2.absolutePath)
   }
@@ -163,14 +155,6 @@ func TestDirMgr_Equal_02(t *testing.T) {
 
   if dMgr2.isParentPathPopulated != dMgr.isParentPathPopulated {
     t.Errorf("After CopyOut(), expected dMgr2.isParentPathPopulated='%v'.  Instead, dMgr2.isParentPathPopulated='%v'.", dMgr.isParentPathPopulated, dMgr2.isParentPathPopulated)
-  }
-
-  if dMgr2.relativePath != dMgr.relativePath {
-    t.Errorf("After CopyOut(), expected dMgr2.relativePath='%v'.  Instead, dMgr2.relativePath='%v'.", dMgr.relativePath, dMgr2.relativePath)
-  }
-
-  if dMgr2.isRelativePathPopulated != dMgr.isRelativePathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isRelativePathPopulated='%v'.  Instead, dMgr2.isRelativePathPopulated='%v'.", dMgr.isRelativePathPopulated, dMgr2.isRelativePathPopulated)
   }
 
   if dMgr2.absolutePath == dMgr.absolutePath {

@@ -36,8 +36,6 @@ func TestDirMgr_New_01(t *testing.T) {
     expectedIsParentPathPopulated = true
   }
 
-  expectedRelativePath := "testfiles2"
-
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
@@ -90,14 +88,6 @@ func TestDirMgr_New_01(t *testing.T) {
 
   if expectedIsParentPathPopulated != dMgr.isParentPathPopulated {
     t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.", expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
-  }
-
-  if expectedRelativePath != dMgr.relativePath {
-    t.Errorf("Expected relativePath=='%v'. Instead, relativePath=='%v'.", expectedRelativePath, dMgr.relativePath)
-  }
-
-  if true != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.", true, dMgr.isRelativePathPopulated)
   }
 
 }
@@ -173,10 +163,6 @@ func TestDirMgr_New_02(t *testing.T) {
 
   if true != dMgr.isParentPathPopulated {
     t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.", true, dMgr.isParentPathPopulated)
-  }
-
-  if true != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.", true, dMgr.isRelativePathPopulated)
   }
 
 }
@@ -265,11 +251,6 @@ func TestDirMgr_New_03(t *testing.T) {
       true, dMgr.isParentPathPopulated)
   }
 
-  if true != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-      true, dMgr.isRelativePathPopulated)
-  }
-
 }
 
 func TestDirMgr_New_04(t *testing.T) {
@@ -356,15 +337,10 @@ func TestDirMgr_New_04(t *testing.T) {
   }
 
   if false != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
-      false, dMgr.isParentPathPopulated)
+    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.\n" +
+      "Parent Path='%v'\n",
+      false, dMgr.isParentPathPopulated, dMgr.parentPath)
   }
-
-  if false != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-      false, dMgr.isRelativePathPopulated)
-  }
-
 }
 
 func TestDirMgr_New_05(t *testing.T) {
@@ -449,12 +425,6 @@ func TestDirMgr_New_05(t *testing.T) {
     t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
       true, dMgr.isParentPathPopulated)
   }
-
-  if true != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-      true, dMgr.isRelativePathPopulated)
-  }
-
 }
 
 func TestDirMgr_New_06(t *testing.T) {
@@ -482,8 +452,6 @@ func TestDirMgr_New_06(t *testing.T) {
   if expectedParentPath != "" {
     expectedIsParentPathPopulated = true
   }
-
-  expectedRelativePath := "testfiles2"
 
   dMgr, err := DirMgr{}.New(origDir)
 
@@ -548,17 +516,6 @@ func TestDirMgr_New_06(t *testing.T) {
     t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
       expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
   }
-
-  if expectedRelativePath != dMgr.relativePath {
-    t.Errorf("Expected relativePath=='%v'. Instead, relativePath=='%v'.",
-      expectedRelativePath, dMgr.relativePath)
-  }
-
-  if true != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-      true, dMgr.isRelativePathPopulated)
-  }
-
 }
 
 func TestDirMgr_New_07(t *testing.T) {
@@ -590,8 +547,6 @@ func TestDirMgr_New_07(t *testing.T) {
   if expectedParentPath != "" {
     expectedIsParentPathPopulated = true
   }
-
-  expectedRelativePath := "testfiles2"
 
   dMgr, err := DirMgr{}.New(origDir)
 
@@ -658,17 +613,6 @@ func TestDirMgr_New_07(t *testing.T) {
     t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
       expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
   }
-
-  if expectedRelativePath != dMgr.relativePath {
-    t.Errorf("Expected relativePath=='%v'. Instead, relativePath=='%v'.",
-      expectedRelativePath, dMgr.relativePath)
-  }
-
-  if true != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-      true, dMgr.isRelativePathPopulated)
-  }
-
 }
 
 func TestDirMgr_New_08(t *testing.T) {
@@ -691,8 +635,6 @@ func TestDirMgr_New_08(t *testing.T) {
   }
 
   expectedParentPath := ""
-
-  expectedRelativePath := ""
 
   dMgr, err := DirMgr{}.New(rawDir)
 
@@ -757,20 +699,10 @@ func TestDirMgr_New_08(t *testing.T) {
   }
 
   if false != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
-      false, dMgr.isParentPathPopulated)
+    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.\n" +
+      "Parent Path='%v'",
+      false, dMgr.isParentPathPopulated, dMgr.parentPath)
   }
-
-  if expectedRelativePath != dMgr.relativePath {
-    t.Errorf("Expected relativePath=='%v'. Instead, relativePath=='%v'.",
-      expectedRelativePath, dMgr.relativePath)
-  }
-
-  if false != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-      false, dMgr.isRelativePathPopulated)
-  }
-
 }
 
 func TestDirMgr_New_09(t *testing.T) {
@@ -802,8 +734,6 @@ func TestDirMgr_New_09(t *testing.T) {
   if expectedParentPath != "" {
     expectedIsParentPathPopulated = true
   }
-
-  expectedRelativePath := "newfilesfortest"
 
   dMgr, err := DirMgr{}.New(rawPath)
 
@@ -871,17 +801,6 @@ func TestDirMgr_New_09(t *testing.T) {
     t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
       expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
   }
-
-  if expectedRelativePath != dMgr.relativePath {
-    t.Errorf("Expected relativePath=='%v'. Instead, relativePath=='%v'.",
-      expectedRelativePath, dMgr.relativePath)
-  }
-
-  if true != dMgr.isRelativePathPopulated {
-    t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-      true, dMgr.isRelativePathPopulated)
-  }
-
 }
 
 func TestDirMgr_SubstituteBaseDir_01(t *testing.T) {

@@ -236,6 +236,101 @@ func TestDirMgr_GetDirectoryTree_03(t *testing.T) {
   }
 }
 
+func TestDirMgr_GetDirPermissionTextCodes_01(t *testing.T) {
+
+  sourceDir := "../filesfortest/htmlFilesForTest"
+
+  fh := FileHelper{}
+
+  expectedPerm, err := fh.GetFileMode(sourceDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.GetFileMode(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n",
+      sourceDir, err.Error())
+    return
+  }
+
+  expectedPermText, err := expectedPerm.GetPermissionTextCode()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by expectedPerm.GetPermissionTextCode().\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  sourceDMgr, err := DirMgr{}.New(sourceDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
+  }
+
+  fPerm, err := sourceDMgr.GetDirPermissionCodes()
+
+  if err != nil {
+    t.Errorf("Error returned by sourceDMgr.GetDirPermissionCodes().\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  permissionCodes, err := fPerm.GetPermissionTextCode()
+
+  if err != nil {
+    t.Errorf("Error returned by fPerm.GetPermissionTextCode().\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  if expectedPermText != permissionCodes {
+    t.Errorf("ERROR: Expected PermissionCodes='%v'\n" +
+      "Instead, permissionCodes='%v'\n",expectedPermText, permissionCodes)
+  }
+
+}
+
+func TestDirMgr_GetDirPermissionTextCodes_02(t *testing.T) {
+
+  sourceDir := "../filesfortest/htmlFilesForTest"
+
+  sourceDMgr, err := DirMgr{}.New(sourceDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
+  }
+
+  sourceDMgr.isInitialized = false
+
+  _, err = sourceDMgr.GetDirPermissionCodes()
+
+  if err == nil {
+    t.Error("Expected an error return from sourceDMgr.GetDirPermissionCodes()\n" +
+      "because 'sourceDMgr' is INVALID!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+}
+
+func TestDirMgr_GetDirPermissionTextCodes_03(t *testing.T) {
+
+  sourceDir := "../filesfortest/iDoNotExist"
+
+  sourceDMgr, err := DirMgr{}.New(sourceDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
+  }
+
+  _, err = sourceDMgr.GetDirPermissionCodes()
+
+  if err == nil {
+    t.Error("Expected an error return from sourceDMgr.GetDirPermissionCodes()\n" +
+      "because 'sourceDMgr' DOES NOT EXIST!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+}
+
 func TestDirMgr_GetFileInfoPlus_01(t *testing.T) {
 
   sourceDir := "../filesfortest/htmlFilesForTest"
@@ -537,97 +632,3 @@ func TestDirMgr_GetPathWithSeparator_01(t *testing.T) {
   }
 }
 
-func TestDirMgr_GetDirPermissionTextCodes_01(t *testing.T) {
-
-  sourceDir := "../filesfortest/htmlFilesForTest"
-
-  fh := FileHelper{}
-
-  expectedPerm, err := fh.GetFileMode(sourceDir)
-
-  if err != nil {
-    t.Errorf("Test Setup Error returned by fh.GetFileMode(sourceDir).\n" +
-      "sourceDir='%v'\nError='%v'\n",
-      sourceDir, err.Error())
-    return
-  }
-
-  expectedPermText, err := expectedPerm.GetPermissionTextCode()
-
-  if err != nil {
-    t.Errorf("Test Setup Error returned by expectedPerm.GetPermissionTextCode().\n" +
-      "Error='%v'\n", err.Error())
-  }
-
-  sourceDMgr, err := DirMgr{}.New(sourceDir)
-
-  if err != nil {
-    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
-      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
-    return
-  }
-
-  fPerm, err := sourceDMgr.GetDirPermissionCodes()
-
-  if err != nil {
-    t.Errorf("Error returned by sourceDMgr.GetDirPermissionCodes().\n" +
-      "Error='%v'\n", err.Error())
-  }
-
-  permissionCodes, err := fPerm.GetPermissionTextCode()
-
-  if err != nil {
-    t.Errorf("Error returned by fPerm.GetPermissionTextCode().\n" +
-      "Error='%v'\n", err.Error())
-  }
-
-  if expectedPermText != permissionCodes {
-    t.Errorf("ERROR: Expected PermissionCodes='%v'\n" +
-      "Instead, permissionCodes='%v'\n",expectedPermText, permissionCodes)
-  }
-
-}
-
-func TestDirMgr_GetDirPermissionTextCodes_02(t *testing.T) {
-
-  sourceDir := "../filesfortest/htmlFilesForTest"
-
-  sourceDMgr, err := DirMgr{}.New(sourceDir)
-
-  if err != nil {
-    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
-      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
-    return
-  }
-
-  sourceDMgr.isInitialized = false
-
-  _, err = sourceDMgr.GetDirPermissionCodes()
-
-  if err == nil {
-    t.Error("Expected an error return from sourceDMgr.GetDirPermissionCodes()\n" +
-      "because 'sourceDMgr' is INVALID!\n" +
-      "However, NO ERROR WAS RETURNED!!!\n")
-  }
-}
-
-func TestDirMgr_GetDirPermissionTextCodes_03(t *testing.T) {
-
-  sourceDir := "../filesfortest/iDoNotExist"
-
-  sourceDMgr, err := DirMgr{}.New(sourceDir)
-
-  if err != nil {
-    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
-      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
-    return
-  }
-
-  _, err = sourceDMgr.GetDirPermissionCodes()
-
-  if err == nil {
-    t.Error("Expected an error return from sourceDMgr.GetDirPermissionCodes()\n" +
-      "because 'sourceDMgr' DOES NOT EXIST!\n" +
-      "However, NO ERROR WAS RETURNED!!!\n")
-  }
-}
