@@ -759,13 +759,14 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
 
     nameFileInfos, err3 = dir.Readdir(1000)
 
-    if  err3 != nil && err3 != io.EOF {
+    if err3 != nil && err3 != io.EOF {
 
       _ = dir.Close()
       err2 = fmt.Errorf(ePrefix+
         "Error returned by dir.Readdirnames(-1).\n"+
         "dMgr.absolutePath='%v'\nError='%v'\n",
-        dMgr.absolutePath, err.Error())
+        dMgr.absolutePath, err3.Error())
+
       errs = append(errs, err2)
       return errs
     }
@@ -937,6 +938,36 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
   return errs
 }
 
+// DeleteDirectoryTreeFiles - Deletes files in the directory tree. The parent
+// directory for this tree is the directory specified by the current 'DirMgr'
+// instance.
+//
+func (dMgr *DirMgr) DeleteDirectoryTreeFiles(
+  deleteFileSelectionCriteria FileSelectionCriteria ) (numOfSubDirectories,
+                                                       numOfRemainingFiles,
+                                                       numOfDeletedFiles int,
+                                                       errs []error) {
+  ePrefix := "DirMgr.DeleteDirectoryTreeFiles() "
+
+  numOfSubDirectories = 0
+  numOfRemainingFiles = 0
+  numOfDeletedFiles = 0
+  errs = make([]error, 0, 300)
+
+  numOfSubDirectories,
+  numOfRemainingFiles,
+  numOfDeletedFiles,
+  errs = dMgr.deleteDirectoryTreeFiles(
+    true,
+    ePrefix,
+    deleteFileSelectionCriteria)
+
+  return numOfSubDirectories,
+         numOfRemainingFiles,
+         numOfDeletedFiles,
+         errs
+}
+
 // DeleteFilesByNamePattern - Receives a string defining a pattern to use
 // in searching file names for all files in the directory identified
 // by the current DirMgr instance.
@@ -973,7 +1004,7 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 
   errs = make([]error, 0, 300)
 
-  var err2, err error
+  var err2, err, err3 error
 
   err = dMgr.IsDirMgrValid(ePrefix)
 
@@ -1033,53 +1064,66 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
     return errs
   }
 
-  nameFileInfos, err := dir.Readdir(-1)
+  err3 = nil
+  var nameFileInfos []os.FileInfo
+  osPathSepStr := string(os.PathSeparator)
+  var isMatch bool
 
-  if err != nil {
-    _ = dir.Close()
-    err2 = fmt.Errorf(ePrefix+
-      "Error returned by dir.Readdirnames(-1). "+
-      "dMgr.absolutePath='%v' Error='%v' ",
-      dMgr.absolutePath, err.Error())
-    errs = append(errs,err2)
-    return errs
-  }
+  for err3 != io.EOF {
 
-  for _, nameFInfo := range nameFileInfos {
+    nameFileInfos, err3 = dir.Readdir(1000)
 
-    if nameFInfo.IsDir() {
-      continue
+    if err3 != nil && err3 != io.EOF {
 
-    } else {
+      _ = dir.Close()
+      err2 = fmt.Errorf(ePrefix+
+        "Error returned by dir.Readdirnames(-1). "+
+        "dMgr.absolutePath='%v' Error='%v' ",
+        dMgr.absolutePath, err3.Error())
 
-      fName := nameFInfo.Name()
+      errs = append(errs,err2)
+      return errs
+    }
 
-      isMatch, err := fp.Match(fileSearchPattern, fName)
+    for _, nameFInfo := range nameFileInfos {
 
-      if err != nil {
-        err2 = fmt.Errorf(ePrefix+
-          "Error returned by fp.Match(fileSearchPattern, fileName). "+
-          "directorySearched='%v' fileSearchPattern='%v' fileName='%v' Error='%v' ",
-          dMgr.absolutePath, fileSearchPattern, fName, err.Error())
-        errs = append(errs,err2)
+      if nameFInfo.IsDir() {
+
         continue
-      }
 
-      if !isMatch {
-        continue
       } else {
 
-        fullName := fh.JoinPathsAdjustSeparators(dMgr.absolutePath, fName)
-
-        err = os.Remove(fullName)
+        isMatch, err = fp.Match(fileSearchPattern, nameFInfo.Name())
 
         if err != nil {
+
           err2 = fmt.Errorf(ePrefix+
-            "Error returned by os.Remove(fullName).\n"+
-            "dMgr.absolutePath='%v'\nfullName='%v'\nError='%v'\n\n",
-            dMgr.absolutePath,fullName, err.Error())
+            "Error returned by fp.Match(fileSearchPattern, fileName).\n"+
+            "directorySearched='%v'\nfileSearchPattern='%v' fileName='%v'\nError='%v'\n",
+            dMgr.absolutePath, fileSearchPattern, nameFInfo.Name(), err.Error())
+
           errs = append(errs,err2)
           continue
+        }
+
+        if !isMatch {
+
+          continue
+
+        } else {
+
+          err = os.Remove(dMgr.absolutePath + osPathSepStr + nameFInfo.Name())
+
+          if err != nil {
+            err2 = fmt.Errorf(ePrefix+
+              "Error returned by os.Remove(pathFileName).\n"+
+              "pathFileName='%v'\nError='%v'\n\n",
+              dMgr.absolutePath + osPathSepStr + nameFInfo.Name(),
+              err.Error())
+
+            errs = append(errs,err2)
+            continue
+          }
         }
       }
     }
@@ -1089,14 +1133,40 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 
   if err != nil {
     err2 = fmt.Errorf(ePrefix+
-      "Error returned by dir.Close(). "+
-      "dir='%v' Error='%v' ",
+      "Error returned by dir.Close().\n"+
+      "dir='%v'\nError='%v'\n",
       dMgr.absolutePath, err.Error())
     errs = append(errs,err2)
   }
 
   return errs
 }
+
+// DeleteFilesBySelectionCriteria - Deletes selected files from the directory
+// identified by the current 'DirMgr' instance. Files in sub-directories are
+// not deleted or altered in any way.
+func (dMgr *DirMgr) DeleteFilesBySelectionCriteria(
+  deleteFileSelectionCriteria FileSelectionCriteria) (numOfRemainingFiles,
+                                                      numOfDeletedFiles int,
+                                                      errs []error) {
+    ePrefix := "DirMgr.DeleteDirectoryTreeFiles() "
+
+    numOfRemainingFiles = 0
+    numOfDeletedFiles = 0
+    errs = make([]error, 0, 300)
+
+    _,
+    numOfRemainingFiles,
+    numOfDeletedFiles,
+    errs = dMgr.deleteDirectoryTreeFiles(
+    false,
+    ePrefix,
+    deleteFileSelectionCriteria)
+
+    return numOfRemainingFiles,
+           numOfDeletedFiles,
+           errs
+  }
 
 // DeleteWalkDirFiles - !!! BE CAREFUL !!! This method deletes files
 // in a specified directory tree.
@@ -1282,8 +1352,10 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(
     }
 
     return deleteFilesInfo,
-      fmt.Errorf(ePrefix + "Error returned by os.Stat(dMgr.absolutePath).\n" +
-        "dMgr.absolutePath='%v'\nError='%v'\n", dMgr.absolutePath, err.Error())
+      fmt.Errorf(ePrefix +
+        "Non-Path Error returned by os.Stat(dMgr.absolutePath).\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n",
+        dMgr.absolutePath, err.Error())
   }
 
   deleteFilesInfo.StartPath = dMgr.absolutePath
@@ -4575,7 +4647,6 @@ func (dMgr *DirMgr) copyDirectoryTree(
       isTopLevelDir = false
     }
 
-
     if isTopLevelDir &&
       !skipTopLevelDirectory &&
        copyEmptyDirectories {
@@ -4645,7 +4716,6 @@ func (dMgr *DirMgr) copyDirectoryTree(
 
         } else {
           // This is a file which is eligible for processing
-
 
             // This is not a directory. It is a file.
             // Determine if it matches the find file criteria.
@@ -4728,6 +4798,205 @@ func (dMgr *DirMgr) copyDirectoryTree(
   }
 
   return errs
+}
+
+
+func (dMgr *DirMgr) deleteDirectoryTreeFiles(
+  scanSubDirectories bool,
+  errorPrefixLabel string,
+  deleteFileSelectionCriteria FileSelectionCriteria) (numOfSubDirectories,
+                                             numOfRemainingFiles,
+                                             numOfDeletedFiles int,
+                                             errs []error) {
+
+  ePrefix := "DirMgr.DeleteDirectoryTreeFiles() "
+
+  numOfSubDirectories = 0
+  numOfRemainingFiles = 0
+  numOfDeletedFiles = 0
+  errs = make([]error, 0, 300)
+
+  var err2, err, err3 error
+
+  err = dMgr.IsDirMgrValid(ePrefix)
+
+  if err != nil {
+    errs = append(errs,err)
+    return numOfSubDirectories,
+      numOfRemainingFiles,
+      numOfDeletedFiles,
+      errs
+  }
+
+  _, err = os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+
+    if os.IsNotExist(err) {
+      err2 =
+        fmt.Errorf(ePrefix +
+          "ERROR: Directory DOES NOT EXIST!\n" +
+          "DirMgr Directory='%v'\n",dMgr.absolutePath)
+    } else {
+      err2 = fmt.Errorf(ePrefix +
+        "Non-Path Error returned by os.Stat(dMgr.absolutePath).\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n",
+        dMgr.absolutePath, err.Error())
+    }
+
+    errs = append(errs,err2)
+
+    return numOfSubDirectories,
+      numOfRemainingFiles,
+      numOfDeletedFiles,
+      errs
+  }
+
+  osPathSepStr := string(os.PathSeparator)
+  var xNumOfSubDirectories, xNumOfTotalFiles, xNumOfDeletedFiles int
+
+  var nameFileInfos []os.FileInfo
+  dirs := DirMgrCollection{}
+  var dir *os.File
+  var isMatch bool
+  nextDir := dMgr.CopyOut()
+  fh := FileHelper{}
+
+  for nextDir.isInitialized {
+
+    dir, err = os.Open(nextDir.absolutePath)
+
+    if err != nil {
+
+      err2 = fmt.Errorf(ePrefix+
+        "Error return by os.Open(dMgr.absolutePath). "+
+        "dMgr.absolutePath='%v' Error='%v' ",
+        dMgr.absolutePath, err.Error())
+
+      errs = append(errs, err2)
+
+      nextDir, _ = dirs.PopFirstDirMgr()
+
+      continue
+    }
+
+    err3 = nil
+
+    for err3 != io.EOF {
+
+      nameFileInfos, err3 = dir.Readdir(1000)
+
+      if err3 != nil && err3 != io.EOF {
+
+        err2 = fmt.Errorf("\n" + ePrefix+
+          "Error returned by dir.Readdirnames(-1). "+
+          "dMgr.absolutePath='%v'\nError='%v'\n",
+          dMgr.absolutePath, err.Error())
+
+        errs = append(errs, err2)
+
+        break
+      }
+
+      for _, nameFInfo := range nameFileInfos {
+
+        if nameFInfo.IsDir() {
+
+          xNumOfSubDirectories++
+
+          if !scanSubDirectories {
+            continue
+          }
+
+          err = dirs.AddDirMgrByPathNameStr(nextDir.absolutePath + osPathSepStr + nameFInfo.Name())
+
+          if err != nil {
+
+            err2 =
+              fmt.Errorf("\n" + ePrefix+
+                "Error returned by dirs.AddDirMgrByPathNameStr(newDirPathFileName).\n"+
+                "newDirPathFileName='%v'\nError='%v'\n",
+                nextDir.absolutePath + osPathSepStr + nameFInfo.Name(), err.Error())
+
+            errs = append(errs, err2)
+            continue
+          }
+
+
+        } else {
+          // This is a file which is eligible for processing
+
+          xNumOfTotalFiles++
+
+          // This is not a directory. It is a file.
+          // Determine if it matches the find file criteria.
+          isMatch, err =
+            fh.FilterFileName(nameFInfo, deleteFileSelectionCriteria)
+
+          if err != nil {
+
+            err2 =
+              fmt.Errorf("\n" + ePrefix+
+                "Error returned by fh.FilterFileName(nameFInfo, fileSelectCriteria). "+
+                "directorySearched='%v'\nfileName='%v'\nError='%v'\n",
+                dMgr.absolutePath, nameFInfo.Name(), err.Error())
+
+            errs = append(errs, err2)
+
+            continue
+          }
+
+          if !isMatch {
+
+            continue
+
+          } else {
+
+            // We have a match, delete the file
+
+            err = os.Remove(nextDir.absolutePath + osPathSepStr + nameFInfo.Name())
+
+            if err != nil {
+              err2 = fmt.Errorf("\n" + ePrefix +
+                "ERROR returned by os.Remove(pathFileName)\n" +
+                "pathFileName='%v'\nError='%v'\n\n",
+                nextDir.absolutePath + osPathSepStr + nameFInfo.Name(),
+                err.Error())
+
+              errs = append(errs, err2)
+
+            }
+
+            xNumOfDeletedFiles++
+          }
+        }
+      }
+    }
+
+    if dir != nil {
+      err = dir.Close()
+
+      if err != nil {
+        err2 = fmt.Errorf(ePrefix+
+          "Error returned by dir.Close(). "+
+          "dir='%v' Error='%v' ",
+          dMgr.absolutePath, err.Error())
+
+        errs = append(errs, err2)
+      }
+    }
+
+    nextDir, err = dirs.PopFirstDirMgr()
+  }
+
+  numOfSubDirectories = xNumOfSubDirectories
+  numOfRemainingFiles = xNumOfTotalFiles - xNumOfDeletedFiles
+  numOfDeletedFiles = xNumOfDeletedFiles
+
+  return numOfSubDirectories,
+    numOfRemainingFiles,
+    numOfDeletedFiles,
+    errs
 }
 
 // executeFileOpsOnFoundFiles - This function is designed to work in conjunction
