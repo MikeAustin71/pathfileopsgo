@@ -39,7 +39,91 @@ func main() {
 
 func main() {
 
-  mainTest60CopyDirTree()
+  mainTest64DeleteDirectoryFiles()
+}
+
+func mainTest64DeleteDirectoryFiles() {
+  srcDir := "D:\\T05\\Vehicle_02"
+
+  srcDMgr, err := pf.DirMgr{}.New(srcDir)
+
+  if err != nil {
+    fmt.Printf("Error returned by pf.DirMgr{}.New(srcDir).\n" +
+      "srcDir='%v'\nError='%v'\n", srcDir, err.Error())
+    return
+  }
+
+  fsc := pf.FileSelectionCriteria{}
+
+  numOfRemainingFiles,
+  numOfDeletedFiles,
+  errs := srcDMgr.DeleteFilesBySelectionCriteria(fsc)
+
+  if len(errs) > 0 {
+    fmt.Printf("Errors returned by srcDMgr.DeleteFilesBySelectionCriteria(fsc).\n" +
+      "srcDMgr='%v'\nErrors:\n\n", srcDMgr.GetAbsolutePath())
+
+    for i:=0; i < len(errs); i++ {
+      fmt.Printf("%v\n\n", errs[i].Error())
+    }
+
+    fmt.Printf("\n\n")
+
+    return
+  }
+
+
+  fmt.Println("          mainTest64DeleteDirectoryFiles                ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println("         Target Directory: ", srcDMgr.GetAbsolutePath())
+  fmt.Println("  Number of Deleted Files: ", numOfDeletedFiles)
+  fmt.Println("Number of Remaining Files: ", numOfRemainingFiles)
+
+}
+
+func mainTest63DeleteDirectoryTree() {
+  srcDir := "D:\\T04\\WebSite_15"
+
+  srcDMgr, err := pf.DirMgr{}.New(srcDir)
+
+  if err != nil {
+    fmt.Printf("Error returned by pf.DirMgr{}.New(srcDir).\n" +
+      "srcDir='%v'\nError='%v'\n", srcDir, err.Error())
+    return
+  }
+
+  fsc := pf.FileSelectionCriteria{}
+
+  numOfSubDirectories,
+  numOfRemainingFiles,
+  numOfDeletedFiles,
+  errs := srcDMgr.DeleteDirectoryTreeFiles(fsc)
+
+  if len(errs) > 0 {
+    fmt.Printf("Errors returned by srcDMgr.DeleteDirectoryTreeFiles(fsc).\n" +
+      "srcDMgr='%v'\nErrors:\n\n", srcDMgr.GetAbsolutePath())
+
+    for i:=0; i < len(errs); i++ {
+      fmt.Printf("%v\n\n", errs[i].Error())
+    }
+
+    fmt.Printf("\n\n")
+
+    return
+  }
+
+
+  fmt.Println("           mainTest63DeleteDirectoryTree                ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println("         Target Directory: ", srcDMgr.GetAbsolutePath())
+  fmt.Println("Number of Sub-Directories: ", numOfSubDirectories)
+  fmt.Println("  Number of Deleted Files: ", numOfDeletedFiles)
+  fmt.Println("Number of Remaining Files: ", numOfRemainingFiles)
+
 }
 
 func mainTest62CopySubDirs() {

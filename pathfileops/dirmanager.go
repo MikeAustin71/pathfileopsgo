@@ -4800,7 +4800,12 @@ func (dMgr *DirMgr) copyDirectoryTree(
   return errs
 }
 
-
+// deleteDirectoryTreeFiles - Helper method used to delete files using file
+// selection criteria. Scope of scans and file deletions is controlled by
+// input parameter 'scanSubDirectories'. If set to 'true' files may be deleted
+// in the entire directory tree. If set to 'false' the file deletions are limited
+// solely to the directory identified by the current 'DirMgr' instance.
+//
 func (dMgr *DirMgr) deleteDirectoryTreeFiles(
   scanSubDirectories bool,
   errorPrefixLabel string,
