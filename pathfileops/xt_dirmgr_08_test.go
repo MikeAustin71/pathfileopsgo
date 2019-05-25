@@ -963,3 +963,156 @@ func TestDirMgr_SubstituteBaseDir_02(t *testing.T) {
 
 }
 
+func TestDirMgr_SubstituteBaseDir_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  rawOrigPath := fh.AdjustPathSlash("../dirwalktests/dir01/dir02/dir03/")
+
+  rawBasePath := fh.AdjustPathSlash("../dirwalktests/dir01/")
+
+  substitutePath := fh.AdjustPathSlash("../checkfiles/")
+
+  expectedPath := fh.AdjustPathSlash("../checkfiles/dir02/dir03")
+
+  expectedAbsPath, err := fh.GetAbsPathFromFilePath(expectedPath)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath). expectedPath='%v'  Error='%v'", expectedPath, err.Error())
+  }
+
+  expectedAbsPath = strings.ToLower(expectedAbsPath)
+
+  dMgrOrig, err := DirMgr{}.New(rawOrigPath)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawOrigPath). rawOrigPath='%v'  Error='%v'", rawOrigPath, err.Error())
+  }
+
+  dMgrBase, err := DirMgr{}.New(rawBasePath)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawBasePath). rawBasePath='%v'  Error='%v'", rawBasePath, err.Error())
+  }
+
+  dMgrSubstitute, err := DirMgr{}.New(substitutePath)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(substitutePath). substitutePath='%v'  Error='%v'", substitutePath, err.Error())
+  }
+
+  dMgrOrig.isInitialized = false
+
+  _, err = dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute)
+
+  if err == nil {
+    t.Error("Expected an error return from dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute)\n" +
+      "because dMgrOrig is INVALID!\nHowever, NO ERROR WAS RETURNED!!!!\n")
+  }
+
+  dMgrOrig.isInitialized = true
+
+}
+
+func TestDirMgr_SubstituteBaseDir_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  rawOrigPath := fh.AdjustPathSlash("../dirwalktests/dir01/dir02/dir03/")
+
+  rawBasePath := fh.AdjustPathSlash("../dirwalktests/dir01/")
+
+  substitutePath := fh.AdjustPathSlash("../checkfiles/")
+
+  expectedPath := fh.AdjustPathSlash("../checkfiles/dir02/dir03")
+
+  expectedAbsPath, err := fh.GetAbsPathFromFilePath(expectedPath)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath). expectedPath='%v'  Error='%v'", expectedPath, err.Error())
+  }
+
+  expectedAbsPath = strings.ToLower(expectedAbsPath)
+
+  dMgrOrig, err := DirMgr{}.New(rawOrigPath)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawOrigPath). rawOrigPath='%v'  Error='%v'", rawOrigPath, err.Error())
+  }
+
+  dMgrBase, err := DirMgr{}.New(rawBasePath)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawBasePath). rawBasePath='%v'  Error='%v'", rawBasePath, err.Error())
+  }
+
+  dMgrSubstitute, err := DirMgr{}.New(substitutePath)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(substitutePath). substitutePath='%v'  Error='%v'", substitutePath, err.Error())
+  }
+
+  dMgrBase.isInitialized = false
+
+  _, err = dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute)
+
+  if err == nil {
+    t.Error("Expected an error return from dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute)\n" +
+      "because dMgrBase is INVALID!\nHowever, NO ERROR WAS RETURNED!!!!\n")
+  }
+
+  dMgrBase.isInitialized = true
+
+}
+
+func TestDirMgr_SubstituteBaseDir_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  rawOrigPath := fh.AdjustPathSlash("../dirwalktests/dir01/dir02/dir03/")
+
+  rawBasePath := fh.AdjustPathSlash("../dirwalktests/dir01/")
+
+  substitutePath := fh.AdjustPathSlash("../checkfiles/")
+
+  expectedPath := fh.AdjustPathSlash("../checkfiles/dir02/dir03")
+
+  expectedAbsPath, err := fh.GetAbsPathFromFilePath(expectedPath)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath). expectedPath='%v'  Error='%v'", expectedPath, err.Error())
+  }
+
+  expectedAbsPath = strings.ToLower(expectedAbsPath)
+
+  dMgrOrig, err := DirMgr{}.New(rawOrigPath)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawOrigPath). rawOrigPath='%v'  Error='%v'", rawOrigPath, err.Error())
+  }
+
+  dMgrBase, err := DirMgr{}.New(rawBasePath)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawBasePath). rawBasePath='%v'  Error='%v'", rawBasePath, err.Error())
+  }
+
+  dMgrSubstitute, err := DirMgr{}.New(substitutePath)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(substitutePath). substitutePath='%v'  Error='%v'", substitutePath, err.Error())
+  }
+
+  dMgrSubstitute.isInitialized = false
+
+  _, err = dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute)
+
+  if err == nil {
+    t.Error("Expected an error return from dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute)\n" +
+      "because dMgrSubstitute is INVALID!\nHowever, NO ERROR WAS RETURNED!!!!\n")
+  }
+
+  dMgrSubstitute.isInitialized = true
+
+}
+
