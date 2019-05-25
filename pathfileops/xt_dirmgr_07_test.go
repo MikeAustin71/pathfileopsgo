@@ -8,12 +8,14 @@ func TestDirMgr_MakeDir_01(t *testing.T) {
 
   fh := FileHelper{}
 
-  origDir := fh.AdjustPathSlash("../checkfiles/checkfiles99/checkfiles999")
+  origDir := fh.AdjustPathSlash("../checkfiles/checkfiles99/TestDirMgr_MakeDir_01")
 
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v'  Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned from DirMgr{}.New(origDir).\n" +
+      "origDir='%v'\nError='%v'\n",
+      origDir, err.Error())
   }
 
   if dMgr.doesAbsolutePathExist {
@@ -21,26 +23,273 @@ func TestDirMgr_MakeDir_01(t *testing.T) {
     err = dMgr.DeleteAll()
 
     if err != nil {
-      t.Errorf("%v", err.Error())
+      t.Errorf("Error returned by dMgr.DeleteAll()\n" +
+        "Error='%v'", err.Error())
+      return
     }
 
   }
 
   if dMgr.doesAbsolutePathExist {
-    t.Errorf("Error: Attempted to delete dMgr.absolutePath='%v'. Deletion Attempt FAILED. This directory still exists.", dMgr.absolutePath)
+    t.Errorf("Error: Attempted to delete dMgr.absolutePath='%v'.\n" +
+    "Deletion Attempt FAILED. This directory still exists.\n",
+    dMgr.absolutePath)
+
+    return
   }
 
   err = dMgr.MakeDir()
 
   if err != nil {
-    t.Errorf("%v", err.Error())
+    t.Errorf("Error returned by dMgr.MakeDir()\n" +
+      "Error='%v'", err.Error())
+    return
   }
 
   if !dMgr.doesAbsolutePathExist {
-    t.Errorf("Error: Attempted to create dMgr.absolutePath='%v'. Creation Attempt FAILED. This directory does NOT exist.", dMgr.absolutePath)
+    t.Errorf("Error: Attempted to create dMgr.absolutePath='%v'.\n" +
+      "Creation Attempt FAILED. This directory does NOT exist.\n",
+      dMgr.absolutePath)
+  }
+
+  err = dMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by dMgr.DeleteAll().\n" +
+      "Error='%v'\n", err.Error())
   }
 
 }
+
+func TestDirMgr_MakeDir_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  origDir := fh.AdjustPathSlash("../checkfiles/checkfiles99/TestDirMgr_MakeDir_02")
+
+  dMgr, err := DirMgr{}.New(origDir)
+
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.New(origDir).\n" +
+      "origDir='%v'\nError='%v'\n",
+      origDir, err.Error())
+
+    return
+  }
+
+  if dMgr.doesAbsolutePathExist {
+
+    err = dMgr.DeleteAll()
+
+    if err != nil {
+      t.Errorf("Error returned by dMgr.DeleteAll()\n" +
+        "Error=%v", err.Error())
+    }
+
+    return
+  }
+
+  if dMgr.doesAbsolutePathExist {
+    t.Errorf("Error: Attempted to delete dMgr.absolutePath.\n" +
+      "Deletion Attempt FAILED. This directory still exists.\n" +
+      "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
+
+    return
+  }
+
+  dMgr.isInitialized = false
+
+  err = dMgr.MakeDir()
+
+  if err == nil {
+    t.Error("Expected an error to be returned by dMgr.MakeDir()\n" +
+      "because dMgr is INVALID!\nHowever, NO ERROR WAS RETURNED!!!\n")
+    return
+  }
+
+  dMgr.isInitialized = true
+
+  err = dMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by dMgr.DeleteAll().\n" +
+      "Error='%v'\n", err.Error())
+  }
+}
+
+func TestDirMgr_MakeDirWithPermission_01(t *testing.T) {
+
+  targetDir := "../checkfiles/TestDirMgr_MakeDirWithPermission_01"
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n" +
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
+    return
+  }
+
+  fPermCfg, err := FilePermissionConfig{}.New("drwxrwxrwx")
+
+  if err != nil {
+   t.Errorf("Error returned by FilePermissionConfig{}.New(\"drwxrwxrwx\").\n" +
+     "Error='%v'\n", err.Error())
+  }
+
+  err = targetDMgr.MakeDirWithPermission(fPermCfg)
+
+  if err != nil {
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"drwxrwxrwx\").\n" +
+      "Error='%v'\n", err.Error())
+
+    _ = targetDMgr.DeleteAll()
+
+    return
+  }
+
+  if !targetDMgr.DoesAbsolutePathExist() {
+    t.Errorf("ERROR: Target Directory Path DOES NOT EXIST!\n" +
+      "Target Directory='%v'\n", targetDMgr.GetAbsolutePath())
+  }
+
+  err = targetDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n" +
+      "Target Directory='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
+  }
+
+}
+
+func TestDirMgr_MakeDirWithPermission_02(t *testing.T) {
+
+  targetDir := "../checkfiles/TestDirMgr_MakeDirWithPermission_02"
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n" +
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
+    return
+  }
+
+  fPermCfg, err := FilePermissionConfig{}.New("drwxrwxrwx")
+
+  if err != nil {
+   t.Errorf("Error returned by FilePermissionConfig{}.New(\"drwxrwxrwx\").\n" +
+     "Error='%v'\n", err.Error())
+  }
+
+  targetDMgr.isInitialized = false
+
+  err = targetDMgr.MakeDirWithPermission(fPermCfg)
+
+  if err == nil {
+    t.Error("Expected an error return from targetDMgr.MakeDirWithPermission(fPermCfg)\n" +
+      "because targetDMgr is INVALID!\nHowever NO ERROR WAS RETURNED!!!\n")
+  }
+
+  targetDMgr.isInitialized = true
+
+  err = targetDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n" +
+      "Target Directory='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
+  }
+}
+
+func TestDirMgr_MakeDirWithPermission_03(t *testing.T) {
+
+  targetDir := "../checkfiles/TestDirMgr_MakeDirWithPermission_03"
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n" +
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
+    return
+  }
+
+  fPermCfg, err := FilePermissionConfig{}.New("drwxrwxrwx")
+
+  if err != nil {
+   t.Errorf("Error returned by FilePermissionConfig{}.New(\"drwxrwxrwx\").\n" +
+     "Error='%v'\n", err.Error())
+  }
+
+  fPermCfg.isInitialized = false
+
+  err = targetDMgr.MakeDirWithPermission(fPermCfg)
+
+  if err == nil {
+    t.Error("Expected an error return from targetDMgr.MakeDirWithPermission(fPermCfg)\n" +
+      "because fPermCfg is INVALID!\nHowever NO ERROR WAS RETURNED!!!\n")
+  }
+
+  err = targetDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n" +
+      "Target Directory='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
+  }
+}
+
+func TestDirMgr_MakeDirWithPermission_04(t *testing.T) {
+
+  targetDir := "../checkfiles/TestDirMgr_MakeDirWithPermission_04"
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n" +
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
+    return
+  }
+
+  err = targetDMgr.MakeDir()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by targetDMgr.MakeDir().\n" +
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
+
+    _ = targetDMgr.DeleteAll()
+
+    return
+  }
+
+  fPermCfg, err := FilePermissionConfig{}.New("drwxrwxrwx")
+
+  if err != nil {
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"drwxrwxrwx\").\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  err = targetDMgr.MakeDirWithPermission(fPermCfg)
+
+  if err != nil {
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"drwxrwxrwx\").\n" +
+      "Error='%v'\n", err.Error())
+
+    _ = targetDMgr.DeleteAll()
+
+    return
+  }
+
+  if !targetDMgr.DoesAbsolutePathExist() {
+    t.Errorf("ERROR: Target Directory Path DOES NOT EXIST!\n" +
+      "Target Directory='%v'\n", targetDMgr.GetAbsolutePath())
+  }
+
+  err = targetDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n" +
+      "Target Directory='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
+  }
+
+}
+
 
 func TestDirMgr_MoveDirectory_01(t *testing.T) {
 
@@ -1441,4 +1690,160 @@ func TestDirMgr_MoveSubDirectoryTree_02(t *testing.T) {
     return
   }
 
+  srcDirMgr.isInitialized = false
+
+  errs = srcDirMgr.MoveSubDirectoryTree(targetDMgr)
+
+  if len(errs) == 0 {
+    t.Errorf("Expected an error return from srcDirMgr.MoveSubDirectoryTree(targetDMgr)\n" +
+      "because 'srcDirMgr' is INVALID!\nHowever, NO ERROR WAS RETURNED!!!\n")
+  }
+
+  srcDirMgr.isInitialized = true
+
+  err = fh.DeleteDirPathAll(baseDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(baseDir)\baseDir='%v'\n"+
+      "Error='%v'\n", baseDir, err.Error())
+  }
+
+  return
+
+}
+
+func TestDirMgr_MoveSubDirectoryTree_03(t *testing.T) {
+
+  baseDir := "../dirmgrtests/TestDirMgr_MoveSubDirectoryTree_03"
+
+  srcDir := baseDir +  "/source"
+
+  targetDir := baseDir + "/target"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(baseDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(baseDir).\n"+
+      "baseDir='%v'\nError='%v'\n", baseDir, err.Error())
+    return
+  }
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n" +
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
+    return
+  }
+
+  srcDirMgr, err := DirMgr{}.New(srcDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir).\n" +
+      "srcDir='%v'\nError='%v'\n", srcDir, err.Error())
+    return
+  }
+
+  origSrcDir := "../logTest"
+
+  origSrcDMgr, err := DirMgr{}.New(origSrcDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(origSrcDir).\n" +
+      "origSrcDir='%v'\nError='%v'\n", origSrcDir, err.Error())
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
+
+  if len(errs) > 0 {
+    for i:=0; i < len(errs); i++ {
+      t.Errorf("Test Setup Error returned from origSrcDMgr." +
+        "CopyDirectoryTree(srcDirMgr, fsc)\n" +
+        "srcDirMgr='%v'\nError='%v'\n\n",
+        srcDirMgr.GetAbsolutePath(), errs[i].Error())
+    }
+
+    _ = fh.DeleteDirPathAll(baseDir)
+
+    return
+  }
+
+  targetDMgr.isInitialized = false
+
+  errs = srcDirMgr.MoveSubDirectoryTree(targetDMgr)
+
+  if len(errs) == 0 {
+    t.Errorf("Expected an error return from srcDirMgr.MoveSubDirectoryTree(targetDMgr)\n" +
+      "because 'targetDMgr' is INVALID!\nHowever, NO ERROR WAS RETURNED!!!\n")
+  }
+
+  targetDMgr.isInitialized = true
+
+  err = fh.DeleteDirPathAll(baseDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(baseDir)\baseDir='%v'\n"+
+      "Error='%v'\n", baseDir, err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_MoveSubDirectoryTree_04(t *testing.T) {
+
+  baseDir := "../dirmgrtests/TestDirMgr_MoveSubDirectoryTree_03"
+
+  srcDir := baseDir +  "/source"
+
+  targetDir := baseDir + "/target"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(baseDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(baseDir).\n"+
+      "baseDir='%v'\nError='%v'\n", baseDir, err.Error())
+    return
+  }
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n" +
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
+    return
+  }
+
+  srcDirMgr, err := DirMgr{}.New(srcDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir).\n" +
+      "srcDir='%v'\nError='%v'\n", srcDir, err.Error())
+    return
+  }
+
+  errs := srcDirMgr.MoveSubDirectoryTree(targetDMgr)
+
+  if len(errs) == 0 {
+    t.Errorf("Expected an error return from srcDirMgr.MoveSubDirectoryTree(targetDMgr)\n" +
+      "because 'srcDirMgr' Does Not Exist!\nHowever, NO ERROR WAS RETURNED!!!\n")
+  }
+
+  err = fh.DeleteDirPathAll(baseDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(baseDir)\baseDir='%v'\n"+
+      "Error='%v'\n", baseDir, err.Error())
+  }
+
+  return
 }

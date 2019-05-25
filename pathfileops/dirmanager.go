@@ -3299,36 +3299,6 @@ func (dMgr *DirMgr) GetVolumeName() string {
   return dMgr.volumeName
 }
 
-// IsAbsolutePathDifferentFromPath - Returns a boolean value indicating
-// whether the absolute path differs from the base path for this
-// Directory Manager instance.
-//
-func (dMgr *DirMgr) IsAbsolutePathDifferentFromPath() bool {
-
-  if dMgr.path != dMgr.absolutePath {
-    dMgr.isAbsolutePathDifferentFromPath = true
-  } else {
-    dMgr.isAbsolutePathDifferentFromPath = false
-  }
-
-  return dMgr.isAbsolutePathDifferentFromPath
-}
-
-// IsAbsolutePathPopulated - Returns a boolean value indicating
-// whether the absolute path for the current Directory Manager
-// instance is populated.
-//
-func (dMgr *DirMgr) IsAbsolutePathPopulated() bool {
-
-  if len(dMgr.absolutePath) == 0 {
-    dMgr.isAbsolutePathPopulated = false
-  } else {
-    dMgr.isAbsolutePathPopulated = true
-  }
-
-  return dMgr.isAbsolutePathPopulated
-}
-
 // IsDirMgrValid - This method examines the current DirMgr object
 // to determine whether it has been properly configured.
 // If the current DirMgr object is valid, the method returns
@@ -3436,9 +3406,24 @@ func (dMgr *DirMgr) MakeDirWithPermission(fPermCfg FilePermissionConfig) error {
     return err
   }
 
-  if dMgr.doesAbsolutePathExist {
-    // No need to create directory, it already
-    // exists.
+  dirDoesExist := true
+
+  _, err = os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+
+    if os.IsNotExist(err) {
+      dirDoesExist = false
+    } else {
+      err2 := fmt.Errorf(ePrefix + "Non-Path error returned by os.Stat(dMgr.absolutePath)\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n",dMgr.absolutePath, err.Error())
+
+      return err2
+    }
+  }
+
+  if dirDoesExist {
+    // nothing to do. Exit!
     return nil
   }
 
@@ -3488,7 +3473,7 @@ func (dMgr *DirMgr) MakeDir() error {
   err = dMgr.IsDirMgrValid(ePrefix)
 
   if err != nil {
-    return nil
+    return err
   }
 
   fPermCfg, err := FilePermissionConfig{}.New("drwxrwxrwx")
@@ -4379,7 +4364,6 @@ func (dMgr *DirMgr) SetDirMgrWithFileInfo(pathStr string, info os.FileInfo) erro
   return nil
 }
 
-
 // SubstituteBaseDir - Substitute 'baseDir' segment of the current DirMgr with a new
 // parent directory identified by input parameter 'substituteBaseDir'. This is useful
 // in copying files to new directory trees.
@@ -4461,83 +4445,6 @@ func (dMgr *DirMgr) SubstituteBaseDir(
   err = nil
   return newDMgr, err
 }
-
-// SubstituteBaseDir - Substitute baseDir segment of the current DirMgr with a new
-// parent directory identified by input parameter 'substituteBaseDir'. This is useful
-// in copying files to new directory trees.
-/*
-func (dMgr *DirMgr) SubstituteBaseDir(
-  baseDir DirMgr,
-  substituteBaseDir DirMgr) (newDMgr DirMgr, err error) {
-
-  ePrefix := "DirMgr.SubstituteBaseDir() "
-
-  newDMgr = DirMgr{}
-  err = nil
-
-  err2 := baseDir.IsDirMgrValid("")
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix + "Error: baseDir DirMgr object is INVALID!")
-    return
-  }
-
-  err2 = substituteBaseDir.IsDirMgrValid("")
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix + "Error: substituteBaseDir DirMgr object is INVALID!")
-    return
-  }
-
-  var trimmedRemainingPath string
-  var newPath string
-
-  if strings.HasPrefix(dMgr.path, baseDir.path) {
-
-    trimmedRemainingPath = strings.TrimPrefix(dMgr.path, baseDir.path)
-
-    lPath := len(trimmedRemainingPath)
-
-    if lPath > 0 && trimmedRemainingPath[0] == os.PathSeparator {
-      trimmedRemainingPath = trimmedRemainingPath[1:]
-    }
-
-    newPath = substituteBaseDir.GetPathWithSeparator() + trimmedRemainingPath
-
-  } else if strings.HasPrefix(dMgr.absolutePath, baseDir.absolutePath) {
-
-    trimmedRemainingPath = strings.TrimPrefix(dMgr.absolutePath, baseDir.absolutePath)
-
-    lPath := len(trimmedRemainingPath)
-
-    if lPath > 0 && trimmedRemainingPath[0] == os.PathSeparator {
-      trimmedRemainingPath = trimmedRemainingPath[1:]
-    }
-
-    newPath = substituteBaseDir.GetAbsolutePathWithSeparator() + trimmedRemainingPath
-
-  } else {
-    err = fmt.Errorf(ePrefix+
-      "Error: Could not locate baseDir.path or "+
-      "baseDir.absolutePath in this dMgr. dMgr.path='%v' dMgr.absolutePath='%v'",
-      dMgr.path, dMgr.absolutePath)
-    return
-  }
-
-  newDMgr, err2 = DirMgr{}.New(newPath)
-
-  if err2 != nil {
-    newDMgr = DirMgr{}
-    err = fmt.Errorf(ePrefix+
-      "Error returned from DirMgr{}.NewFromPathFileNameExtStr(newPath). "+
-      "newPath='%v'  Error='%v'", newPath, err2.Error())
-    return
-  }
-
-  err = nil
-  return
-}
-*/
 
 func (dMgr *DirMgr) copyDirectoryTree(
   targetDir DirMgr,

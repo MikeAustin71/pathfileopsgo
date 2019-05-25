@@ -803,6 +803,50 @@ func TestDirMgr_New_09(t *testing.T) {
   }
 }
 
+func TestDirMgr_SetDirMgr_01(t *testing.T) {
+
+  firstDir := "../checkfiles"
+
+  dMgr, err := DirMgr{}.New(firstDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(firstDir).\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  testDir := ""
+
+  _, err = dMgr.SetDirMgr(testDir)
+
+  if err == nil {
+    t.Error("Expected an error return from dMgr.SetDirMgr(testDir) because\n" +
+      "'testDir' is an empty string.\nHowever, NO ERROR WAS RETURNED!!!!\n")
+  }
+
+}
+
+func TestDirMgr_SetDirMgr_02(t *testing.T) {
+
+  firstDir := "../checkfiles"
+
+  dMgr, err := DirMgr{}.New(firstDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(firstDir).\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  testDir := "      "
+
+  _, err = dMgr.SetDirMgr(testDir)
+
+  if err == nil {
+    t.Error("Expected an error return from dMgr.SetDirMgr(testDir) because\n" +
+      "'testDir' consists entirely of blank spaces.\nHowever, NO ERROR WAS RETURNED!!!!\n")
+  }
+
+}
+
 func TestDirMgr_SubstituteBaseDir_01(t *testing.T) {
 
   fh := FileHelper{}

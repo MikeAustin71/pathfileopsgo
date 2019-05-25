@@ -632,3 +632,187 @@ func TestDirMgr_GetPathWithSeparator_01(t *testing.T) {
   }
 }
 
+func TestDirMgr_GetPathWithSeparator_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  sourceDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+
+  dMgr, err := DirMgr{}.New(sourceDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+  }
+
+  sourceDir = sourceDir + string(os.PathSeparator)
+
+  dMgr.path = ""
+
+  dirPath := dMgr.GetPathWithSeparator()
+
+  if dirPath != "" {
+    t.Errorf("ERROR: Expected dMgr.GetPath() would return an empty string.\nInstead, dMgr.GetPath()='%v'.\n",
+      dirPath)
+  }
+}
+
+func TestDirMgr_GetVolumeName_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  sourceDir := "../filesfortest/htmlFilesForTest"
+
+  sourceDir, err := fh.MakeAbsolutePath(sourceDir)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(sourceDir).\n" +
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+  }
+
+  sourceDMgr, err := DirMgr{}.New(sourceDir)
+
+  expectedVolName := fh.GetVolumeName(sourceDir)
+
+  actualVolName := sourceDMgr.GetVolumeName()
+
+  if expectedVolName != actualVolName {
+    t.Errorf("Expected volume name='%v'. Instead, volume name='%v'\n",
+      expectedVolName, actualVolName)
+  }
+
+}
+
+func TestDirMgr_IsInitialized_01(t *testing.T) {
+  testDMgr := DirMgr{}
+
+  isInitialized := testDMgr.IsInitialized()
+
+  if isInitialized != false {
+    t.Error("Error: Expected isInitialized='false'. Instead, isInitialized='true'.\n")
+  }
+
+}
+
+func TestDirMgr_IsInitialized_02(t *testing.T) {
+
+  testDMgr, err := DirMgr{}.New("../filesfortest/htmlFilesForTest")
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(\"../filesfortest/htmlFilesForTest\").\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  isInitialized := testDMgr.IsInitialized()
+
+  if isInitialized != true {
+    t.Error("Error: Expected isInitialized='true'. Instead, isInitialized='false'.\n")
+  }
+
+}
+
+func TestDirMgr_IsParentPathPopulated_01(t *testing.T) {
+
+  testDMgr, err := DirMgr{}.New("../filesfortest/htmlFilesForTest")
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(\"../filesfortest/htmlFilesForTest\").\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  isParentPopulated := testDMgr.IsParentPathPopulated()
+
+  if isParentPopulated != true {
+    t.Error("Error: Expected IsParentPathPopulated()='true'. Instead, IsParentPathPopulated()='false'.\n")
+  }
+
+}
+
+func TestDirMgr_IsParentPathPopulated_02(t *testing.T) {
+
+  testDMgr, err := DirMgr{}.New("../filesfortest/htmlFilesForTest")
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(\"../filesfortest/htmlFilesForTest\").\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  testDMgr.parentPath = ""
+
+  isParentPopulated := testDMgr.IsParentPathPopulated()
+
+  if isParentPopulated != false {
+    t.Error("Error: Expected IsParentPathPopulated()='false'. Instead, IsParentPathPopulated()='true'.\n")
+  }
+
+}
+
+func TestDirMgr_IsPathPopulated_01(t *testing.T) {
+
+  testDMgr, err := DirMgr{}.New("../filesfortest/htmlFilesForTest")
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(\"../filesfortest/htmlFilesForTest\").\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  testDMgr.path = ""
+
+  isParentPopulated := testDMgr.IsPathPopulated()
+
+  if isParentPopulated != false {
+    t.Error("Error: Expected IsPathPopulated()='false'. Instead, IsPathPopulated()='true'.\n")
+  }
+}
+
+func TestDirMgr_IsPathPopulated_02(t *testing.T) {
+
+  testDMgr, err := DirMgr{}.New("../filesfortest/htmlFilesForTest")
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(\"../filesfortest/htmlFilesForTest\").\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  isParentPopulated := testDMgr.IsPathPopulated()
+
+  if isParentPopulated != true {
+    t.Error("Error: Expected IsPathPopulated()='true'. Instead, IsPathPopulated()='false'.\n")
+  }
+}
+
+func TestDirMgr_IsVolumeNamePopulated_01(t *testing.T) {
+
+  testDMgr, err := DirMgr{}.New("../filesfortest/htmlFilesForTest")
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(\"../filesfortest/htmlFilesForTest\").\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  isVolumeNamePopulated := testDMgr.IsVolumeNamePopulated()
+
+  if isVolumeNamePopulated != true {
+    t.Error("Error: Expected IsVolumeNamePopulated()='true'. Instead, IsVolumeNamePopulated()='false'.\n")
+  }
+
+}
+
+func TestDirMgr_IsVolumeNamePopulated_02(t *testing.T) {
+
+  testDMgr, err := DirMgr{}.New("../filesfortest/htmlFilesForTest")
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(\"../filesfortest/htmlFilesForTest\").\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  testDMgr.volumeName = ""
+
+  isVolumeNamePopulated := testDMgr.IsVolumeNamePopulated()
+
+  if isVolumeNamePopulated != false {
+    t.Error("Error: Expected IsVolumeNamePopulated()='false'. Instead, IsVolumeNamePopulated()='true'.\n")
+  }
+
+}

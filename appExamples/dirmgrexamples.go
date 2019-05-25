@@ -218,8 +218,6 @@ func PrintDirMgrFields(dMgr pathFileOps.DirMgr) {
   fmt.Println("                   parentPath: ", dMgr.GetParentPath())
   fmt.Println("        isParentPathPopulated: ", dMgr.IsParentPathPopulated())
   fmt.Println("                 absolutePath: ", dMgr.GetAbsolutePath())
-  fmt.Println("      isAbsolutePathPopulated: ", dMgr.IsAbsolutePathPopulated())
-  fmt.Println("isAbsolutePathDifferentFromPath: ", dMgr.IsAbsolutePathDifferentFromPath())
   fmt.Println("        doesAbsolutePathExist: ", dMgr.DoesAbsolutePathExist())
   fmt.Println("               Directory Name: ", dMgr.GetDirectoryName())
   fmt.Println("                   volumeName: ", dMgr.GetVolumeName())
