@@ -666,6 +666,18 @@ func (dMgr *DirMgr) DeleteAll() error {
     if err2 != nil {
       err = fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(dMgr.absolutePath) "+
         "returned error. dMgr.absolutePath='%v' Error='%v' ", dMgr.absolutePath, err.Error())
+
+      return err
+    }
+
+  } else {
+
+    if !os.IsNotExist(err2) {
+      err = fmt.Errorf(ePrefix + "Non-Path Error returned by os.RemoveAll(dMgr.absolutePath).\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n",
+        dMgr.absolutePath, err.Error())
+
+      return err
     }
 
   }
@@ -700,7 +712,8 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
   ePrefix := "DirMgr.DeleteAllFilesInDir() "
 
   errs = make([]error, 0, 300)
-  var err, err2 error
+  var err, err2, err3 error
+  osPathSepStr := string(os.PathSeparator)
 
   err = dMgr.IsDirMgrValid(ePrefix)
 
@@ -739,52 +752,59 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
     return errs
   }
 
-  fh := FileHelper{}
+  err3 = nil
+  var nameFileInfos []os.FileInfo
 
-  nameFileInfos, err := dir.Readdir(-1)
+  for err3 != io.EOF {
 
-  if err != nil {
-    _ = dir.Close()
-    err2 = fmt.Errorf(ePrefix+
-      "Error returned by dir.Readdirnames(-1).\n"+
-      "dMgr.absolutePath='%v'\nError='%v'\n",
-      dMgr.absolutePath, err.Error())
-    errs = append(errs, err2)
-    return errs
+    nameFileInfos, err3 = dir.Readdir(1000)
 
-  }
+    if  err3 != nil && err3 != io.EOF {
 
-  for _, nameFInfo := range nameFileInfos {
+      _ = dir.Close()
+      err2 = fmt.Errorf(ePrefix+
+        "Error returned by dir.Readdirnames(-1).\n"+
+        "dMgr.absolutePath='%v'\nError='%v'\n",
+        dMgr.absolutePath, err.Error())
+      errs = append(errs, err2)
+      return errs
+    }
 
-    if nameFInfo.IsDir() {
-      continue
+    for _, nameFInfo := range nameFileInfos {
 
-    } else {
-      name := fh.JoinPathsAdjustSeparators(dMgr.absolutePath, nameFInfo.Name())
+      if nameFInfo.IsDir() {
+        continue
 
-      err = os.Remove(name)
+      } else {
 
-      if err != nil {
-        err2 = fmt.Errorf(ePrefix+
-          "Error returned by os.Remove(name).\n"+
-          "dMgr.absolutePath='%v'\nfile name='%v'\nError='%v'\n",
-          dMgr.absolutePath,name, err.Error())
+        err = os.Remove(dMgr.absolutePath + osPathSepStr + nameFInfo.Name())
 
-        errs = append(errs, err2)
+        if err != nil {
+          err2 = fmt.Errorf(ePrefix+
+            "Error returned by os.Remove(fileName).\n"+
+            "dMgr.absolutePath='%v'\nfileName='%v'\nError='%v'\n",
+            dMgr.absolutePath,
+            dMgr.absolutePath + osPathSepStr + nameFInfo.Name(),
+            err.Error())
+
+          errs = append(errs, err2)
+        }
       }
     }
   }
 
-  err = dir.Close()
+  if dir != nil {
 
-  if err != nil {
-    err2 = fmt.Errorf(ePrefix +
-      "Error returned by dir.Close(). An attempt to close the os.File pointer to the current\n" +
-      "DirMgr path has FAILED!\n" +
-      "dMgr.absolutePath='%v'\nError='%v'\n",
-      dMgr.absolutePath, err.Error())
-    errs = append(errs, err2)
-    return errs
+    err = dir.Close()
+
+    if err != nil {
+      err2 = fmt.Errorf(ePrefix +
+        "Error returned by dir.Close(). An attempt to close the os.File pointer to the current\n" +
+        "DirMgr path has FAILED!\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n",
+        dMgr.absolutePath, err.Error())
+      errs = append(errs, err2)
+    }
   }
 
   return errs
@@ -1078,8 +1098,8 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
   return errs
 }
 
-// DeleteWalkDirFiles - !!! BE CAREFUL !!! This method
-// deletes files in a specified directory tree.
+// DeleteWalkDirFiles - !!! BE CAREFUL !!! This method deletes files
+// in a specified directory tree.
 //
 // This method searches for files residing in the directory tree
 // identified by the current DirMgr object. The method 'walks the
@@ -1087,9 +1107,9 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 // match the file selection criteria submitted as method input parameter,
 // 'deleteFileSelectionCriteria'.
 //
-// If a file matches the File Selection Criteria, it is DELETED. By the way,
-// if ALL the file selection criterion are set to zero values or 'Inactive',
-// then ALL FILES IN THE DIRECTORY ARE DELETED!!!
+// If a file matches the File Selection Criteria, it is DELETED. By the
+// way, if ALL the file selection criterion are set to zero values or
+// 'Inactive', then ALL FILES IN THE DIRECTORY ARE DELETED!!!
 //
 // A record of file deletions is included in the returned DirectoryDeleteFileInfo
 // structure (DirectoryDeleteFileInfo.DeletedFiles).
