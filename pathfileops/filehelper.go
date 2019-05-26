@@ -1843,9 +1843,11 @@ func (fh FileHelper) FindFilesInPath(pathName, fileSearchPattern string) ([]stri
 //                                    search patterns. If a file name matches any one of the
 //                                    search pattern strings, it is deemed to be a 'match'
 //                                    for the search pattern criterion.
-//                                    Example Patterns:
-//                                        "*.log"
-//                                        "current*.txt"
+//
+//                                      Example Patterns:
+//                                       FileNamePatterns = []string{"*.log"}
+//                                       FileNamePatterns = []string{"current*.txt"}
+//                                       FileNamePatterns = []string{"*.txt", "*.log"}
 //
 //                                    If this string array has zero length or if
 //                                    all the strings are empty strings, then this

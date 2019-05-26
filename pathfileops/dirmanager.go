@@ -111,8 +111,9 @@ type DirMgr struct {
 //                                    for the search pattern criterion.
 //
 //                                      Example Patterns:
-//                                        "*.log"
-//                                        "current*.txt"
+//                                       FileNamePatterns = []string{"*.log"}
+//                                       FileNamePatterns = []string{"current*.txt"}
+//                                       FileNamePatterns = []string{"*.txt", "*.log"}
 //
 //                                    If this string array has zero length or if
 //                                    all the strings are empty strings, then this
@@ -219,6 +220,42 @@ func (dMgr *DirMgr) CopyDirectoryTree(
   fileSelectCriteria FileSelectionCriteria) (errs []error) {
 
   ePrefix := "DirMgr.CopyDirectoryTree() "
+  var err, err2 error
+
+  err = dMgr.IsDirMgrValid(ePrefix)
+
+  if err != nil {
+    errs = append(errs, err)
+    return errs
+  }
+
+  err = targetDMgr.IsDirMgrValid(ePrefix)
+
+  if err != nil {
+    err2 = fmt.Errorf("Input parameter 'targetDMgr' is INVALID!\n" +
+      "Error='%v'\n", err.Error())
+    errs = append(errs, err2)
+    return errs
+  }
+
+  _, err = os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+
+    if os.IsNotExist(err) {
+      err2 = fmt.Errorf(ePrefix + "The current DirMgr path DOES NOT EXIST!\n" +
+        "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
+    } else {
+      err2 = fmt.Errorf(ePrefix + "Non-Path error returned by os.Stat(dMgr.absolutePath)\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n",
+        dMgr.absolutePath, err.Error())
+    }
+
+    errs = append(errs, err2)
+
+    return errs
+  }
+
 
   return dMgr.copyDirectoryTree(
     targetDMgr,
@@ -284,8 +321,9 @@ func (dMgr *DirMgr) CopyDirectoryTree(
 //                                    for the search pattern criterion.
 //
 //                                      Example Patterns:
-//                                        "*.log"
-//                                        "current*.txt"
+//                                       FileNamePatterns = []string{"*.log"}
+//                                       FileNamePatterns = []string{"current*.txt"}
+//                                       FileNamePatterns = []string{"*.txt", "*.log"}
 //
 //                                    If this string array has zero length or if
 //                                    all the strings are empty strings, then this
@@ -618,14 +656,49 @@ func (dMgr *DirMgr) CopyOut() DirMgr {
 // directory will NOT be created.
 //
 func (dMgr *DirMgr) CopySubDirectoryTree(
-  targetDir DirMgr,
+  targetDMgr DirMgr,
   copyEmptyDirectories bool,
   fileSelectCriteria FileSelectionCriteria) (errs []error) {
 
   ePrefix := "DirMgr.CopySubDirectoryTree() "
+  var err, err2 error
+
+  err = dMgr.IsDirMgrValid(ePrefix)
+
+  if err != nil {
+    errs = append(errs, err)
+    return errs
+  }
+
+  err = targetDMgr.IsDirMgrValid(ePrefix)
+
+  if err != nil {
+    err2 = fmt.Errorf("Input parameter 'targetDMgr' is INVALID!\n" +
+      "Error='%v'\n", err.Error())
+    errs = append(errs, err2)
+    return errs
+  }
+
+  _, err = os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+
+    if os.IsNotExist(err) {
+      err2 = fmt.Errorf(ePrefix + "The current DirMgr path DOES NOT EXIST!\n" +
+        "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
+    } else {
+      err2 = fmt.Errorf(ePrefix + "Non-Path error returned by os.Stat(dMgr.absolutePath)\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n",
+        dMgr.absolutePath, err.Error())
+    }
+
+    errs = append(errs, err2)
+
+    return errs
+  }
 
   return dMgr.copyDirectoryTree(
-    targetDir,
+    targetDMgr,
     copyEmptyDirectories,
     true,
     ePrefix ,
@@ -940,7 +1013,147 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
 
 // DeleteDirectoryTreeFiles - Deletes files in the directory tree. The parent
 // directory for this tree is the directory specified by the current 'DirMgr'
-// instance.
+// instance. The file deletion operation is conducted in three steps:
+//    1. The criteria for selecting files to be deleted is created using
+//       input parameter 'deleteFileSelectionCriteria'.
+//    2. A file search is conducted which includes the DirMgr parent directory
+//       and all sub-directories in the tree.
+//    3. Files processed during the directory tree search are compared to the
+//       file selection criteria specified by 'deleteFileSelectionCriteria'.
+//       Those files which match the selection criteria are then deleted.
+//
+// This method is similar to method 'DirMgr.DeleteWalkDirFiles()'. However this
+// method returns less data and is designed to work with very large numbers of
+// files and directories.
+//
+//
+// ------------------------------------------------------------------------------
+//
+// Input Parameters:
+//
+//  deleteFileSelectionCriteria FileSelectionCriteria
+//    This input parameter should be configured with the desired file
+//    selection criteria. Files matching this criteria will be deleted.
+//
+//    type FileSelectionCriteria struct {
+//     FileNamePatterns    []string// An array of strings containing File Name Patterns
+//     FilesOlderThan      time.Time// Match files with older modification date times
+//     FilesNewerThan      time.Time// Match files with newer modification date times
+//     SelectByFileMode    FilePermissionConfig  // Match file mode (os.FileMode).
+//     SelectCriterionModeFileSelectCriterionMode // Specifies 'AND' or 'OR' selection mode
+//    }
+//
+//    The FileSelectionCriteria type allows for configuration of single or multiple file
+//    selection criterion. The 'SelectCriterionMode' can be used to specify whether the
+//    file must match all, or any one, of the active file selection criterion.
+//
+//    Elements of the FileSelectionCriteria are described below:
+//
+//    FileNamePatterns    []string  - An array of strings which may define one or more
+//                                    search patterns. If a file name matches any one of the
+//                                    search pattern strings, it is deemed to be a 'match'
+//                                    for the search pattern criterion.
+//
+//                                      Example Patterns:
+//                                       FileNamePatterns = []string{"*.log"}
+//                                       FileNamePatterns = []string{"current*.txt"}
+//                                       FileNamePatterns = []string{"*.txt", "*.log"}
+//
+//                                    If this string array has zero length or if
+//                                    all the strings are empty strings, then this
+//                                    file search criterion is considered 'Inactive'
+//                                    or 'Not Set'.
+//
+//
+//    FilesOlderThan      time.Time - This date time type is compared to file modification
+//                                    date times in order to determine whether the file is
+//                                    older than the 'FilesOlderThan' file selection criterion.
+//                                    If the file modification date time is older than the
+//                                    'FilesOlderThan' date time, that file is considered a
+//                                    'match'	for this file selection criterion.
+//
+//                                    If the value of 'FilesOlderThan' is set to time zero,
+//                                    the default value for type time.Time{}, then this
+//                                    file selection criterion is considered to be 'Inactive'
+//                                    or 'Not Set'.
+//
+//    FilesNewerThan      time.Time - This date time type is compared to the file
+//                                    modification date time in order to determine
+//                                    whether the file is newer than the 'FilesNewerThan'
+//                                    file selection criterion. If the file modification date time
+//                                    is newer than the 'FilesNewerThan' date time, that file is
+//                                    considered a 'match' for this file selection criterion.
+//
+//                                    If the value of 'FilesNewerThan' is set to time zero,
+//                                    the default value for type time.Time{}, then this
+//                                    file selection criterion is considered to be 'Inactive'
+//                                    or 'Not Set'.
+//
+//    SelectByFileMode  FilePermissionConfig -
+//                                    Type FilePermissionConfig encapsulates an os.FileMode. The file
+//                                    selection criterion allows for the selection of files by File Mode.
+//                                    File modes are compared to the value	of 'SelectByFileMode'. If the
+//                                    File Mode for a given file is equal to the value of 'SelectByFileMode',
+//                                    that file is considered to be a 'match' for this file selection
+//                                    criterion. Examples for setting SelectByFileMode are shown as follows:
+//
+//                                         fsc := FileSelectionCriteria{}
+//                                           err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                           err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//
+//    SelectCriterionMode FileSelectCriterionMode -
+//                                    This parameter selects the manner in which the file selection
+//                                    criteria above are applied in determining a 'match' for file
+//                                    selection purposes. 'SelectCriterionMode' may be set to one of
+//                                    two constant values:
+//
+//                                    FileSelectMode.ANDSelect() - File selected if all active selection
+//                                      criteria are satisfied.
+//
+//                                    	If this constant value is specified for the file selection mode,
+//                                    	then a given file will not be judged as 'selected' unless all of
+//                                    	the active selection criterion are satisfied. In other words, if
+//                                    	three active search criterion are provided for 'FileNamePatterns',
+//                                    	'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                    	selected unless it has satisfied all three criterion in this example.
+//
+//                                    FileSelectMode.ORSelect() - File selected if any active selection
+//                                      criterion is satisfied.
+//
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will be selected if any one of the active file
+//                                      selection criterion is satisfied. In other words, if three active
+//                                      search criterion are provided for 'FileNamePatterns', 'FilesOlderThan'
+//                                      and 'FilesNewerThan', then a file will be selected if it satisfies any
+//                                      one of the three criterion in this example.
+//
+// ------------------------------------------------------------------------
+//
+// IMPORTANT:
+//
+// If all of the file selection criterion in the FileSelectionCriteria object are
+// 'Inactive' or 'Not Set' (set to their zero or default values), then all of
+// the files processed in the directory tree will be selected and deleted.
+//
+//      Example:
+//        fsc := FileSelectCriterionMode{}
+//
+//        In this example, 'fsc' is NOT initialized. Therefore,
+//        all of the selection criterion are 'Inactive'. Consequently,
+//        all of the files encountered in the target directory tree
+//        during the search operation will be selected and deleted.
+//
+//
+// ---------------------------------------------------------------------------
+//
+// Return Value:
+//
+//  errs     []error  - An array of errors is returned. If the method completes
+//                      successfully with no errors, a ZERO-length array is
+//                      is returned.
+//
+//                      If errors are encountered they are stored in the error
+//                      array and returned to the caller.
 //
 func (dMgr *DirMgr) DeleteDirectoryTreeFiles(
   deleteFileSelectionCriteria FileSelectionCriteria ) (numOfSubDirectories,
@@ -1143,8 +1356,152 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 }
 
 // DeleteFilesBySelectionCriteria - Deletes selected files from the directory
-// identified by the current 'DirMgr' instance. Files in sub-directories are
-// not deleted or altered in any way.
+// identified by the current 'DirMgr' instance.
+//
+// Files in sub-directories are not deleted or altered in any way. ONLY files
+// in the directory identified by the current 'DirMgr' instance are deleted.
+//
+// The file deletion operation consists of three steps:
+//
+//    1. The criteria for selecting files to be deleted is created using
+//       input parameter 'deleteFileSelectionCriteria'.
+//
+//    2. A file search is conducted which is limited ONLY to the DirMg
+//       directory. Files in sub-directory tree ARE NEVER DELETED.
+//
+//    3. Files processed during the directory search are compared to the
+//       file selection criteria specified by 'deleteFileSelectionCriteria'.
+//       Those files which match the selection criteria are then deleted.
+//
+// ------------------------------------------------------------------------------
+//
+// Input Parameters:
+//
+//  deleteFileSelectionCriteria FileSelectionCriteria
+//    This input parameter should be configured with the desired file selection
+//    criteria. Files in the DirMgr directory, matching this criteria, will be
+//    deleted.
+//
+//    type FileSelectionCriteria struct {
+//     FileNamePatterns    []string// An array of strings containing File Name Patterns
+//     FilesOlderThan      time.Time// Match files with older modification date times
+//     FilesNewerThan      time.Time// Match files with newer modification date times
+//     SelectByFileMode    FilePermissionConfig  // Match file mode (os.FileMode).
+//     SelectCriterionModeFileSelectCriterionMode // Specifies 'AND' or 'OR' selection mode
+//    }
+//
+//    The FileSelectionCriteria type allows for configuration of single or multiple file
+//    selection criterion. The 'SelectCriterionMode' can be used to specify whether the
+//    file must match all, or any one, of the active file selection criterion.
+//
+//    Elements of the FileSelectionCriteria are described below:
+//
+//    FileNamePatterns    []string  - An array of strings which may define one or more
+//                                    search patterns. If a file name matches any one of the
+//                                    search pattern strings, it is deemed to be a 'match'
+//                                    for the search pattern criterion.
+//
+//                                      Example Patterns:
+//                                       FileNamePatterns = []string{"*.log"}
+//                                       FileNamePatterns = []string{"current*.txt"}
+//                                       FileNamePatterns = []string{"*.txt", "*.log"}
+//
+//                                    If this string array has zero length or if
+//                                    all the strings are empty strings, then this
+//                                    file search criterion is considered 'Inactive'
+//                                    or 'Not Set'.
+//
+//
+//    FilesOlderThan      time.Time - This date time type is compared to file modification
+//                                    date times in order to determine whether the file is
+//                                    older than the 'FilesOlderThan' file selection criterion.
+//                                    If the file modification date time is older than the
+//                                    'FilesOlderThan' date time, that file is considered a
+//                                    'match'	for this file selection criterion.
+//
+//                                    If the value of 'FilesOlderThan' is set to time zero,
+//                                    the default value for type time.Time{}, then this
+//                                    file selection criterion is considered to be 'Inactive'
+//                                    or 'Not Set'.
+//
+//    FilesNewerThan      time.Time - This date time type is compared to the file
+//                                    modification date time in order to determine
+//                                    whether the file is newer than the 'FilesNewerThan'
+//                                    file selection criterion. If the file modification date time
+//                                    is newer than the 'FilesNewerThan' date time, that file is
+//                                    considered a 'match' for this file selection criterion.
+//
+//                                    If the value of 'FilesNewerThan' is set to time zero,
+//                                    the default value for type time.Time{}, then this
+//                                    file selection criterion is considered to be 'Inactive'
+//                                    or 'Not Set'.
+//
+//    SelectByFileMode  FilePermissionConfig -
+//                                    Type FilePermissionConfig encapsulates an os.FileMode. The file
+//                                    selection criterion allows for the selection of files by File Mode.
+//                                    File modes are compared to the value	of 'SelectByFileMode'. If the
+//                                    File Mode for a given file is equal to the value of 'SelectByFileMode',
+//                                    that file is considered to be a 'match' for this file selection
+//                                    criterion. Examples for setting SelectByFileMode are shown as follows:
+//
+//                                         fsc := FileSelectionCriteria{}
+//                                           err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                           err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//
+//    SelectCriterionMode FileSelectCriterionMode -
+//                                    This parameter selects the manner in which the file selection
+//                                    criteria above are applied in determining a 'match' for file
+//                                    selection purposes. 'SelectCriterionMode' may be set to one of
+//                                    two constant values:
+//
+//                                    FileSelectMode.ANDSelect() - File selected if all active selection
+//                                      criteria are satisfied.
+//
+//                                    	If this constant value is specified for the file selection mode,
+//                                    	then a given file will not be judged as 'selected' unless all of
+//                                    	the active selection criterion are satisfied. In other words, if
+//                                    	three active search criterion are provided for 'FileNamePatterns',
+//                                    	'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                    	selected unless it has satisfied all three criterion in this example.
+//
+//                                    FileSelectMode.ORSelect() - File selected if any active selection
+//                                      criterion is satisfied.
+//
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will be selected if any one of the active file
+//                                      selection criterion is satisfied. In other words, if three active
+//                                      search criterion are provided for 'FileNamePatterns', 'FilesOlderThan'
+//                                      and 'FilesNewerThan', then a file will be selected if it satisfies any
+//                                      one of the three criterion in this example.
+//
+// ------------------------------------------------------------------------
+//
+// IMPORTANT:
+//
+// If all of the file selection criterion in the FileSelectionCriteria object are
+// 'Inactive' or 'Not Set' (set to their zero or default values), then all of
+// the files processed in the directory tree will be selected and deleted.
+//
+//      Example:
+//        fsc := FileSelectCriterionMode{}
+//
+//        In this example, 'fsc' is NOT initialized. Therefore,
+//        all of the selection criterion are 'Inactive'. Consequently,
+//        all of the files encountered in the target directory tree
+//        during the search operation will be selected and deleted.
+//
+//
+// ---------------------------------------------------------------------------
+//
+// Return Value:
+//
+//  errs     []error  - An array of errors is returned. If the method completes
+//                      successfully with no errors, a ZERO-length array is
+//                      is returned.
+//
+//                      If errors are encountered they are stored in the error
+//                      array and returned to the caller.
+//
 func (dMgr *DirMgr) DeleteFilesBySelectionCriteria(
   deleteFileSelectionCriteria FileSelectionCriteria) (numOfRemainingFiles,
                                                       numOfDeletedFiles int,
@@ -1213,8 +1570,9 @@ func (dMgr *DirMgr) DeleteFilesBySelectionCriteria(
 //                                    for the search pattern criterion.
 //
 //                                      Example Patterns:
-//                                        "*.log"
-//                                        "current*.txt"
+//                                       FileNamePatterns = []string{"*.log"}
+//                                       FileNamePatterns = []string{"current*.txt"}
+//                                       FileNamePatterns = []string{"*.txt", "*.log"}
 //
 //                                    If this string array has zero length or if
 //                                    all the strings are empty strings, then this
@@ -1639,8 +1997,9 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //                                    for the search pattern criterion.
 //
 //                                      Example Patterns:
-//                                        "*.log"
-//                                        "current*.txt"
+//                                       FileNamePatterns = []string{"*.log"}
+//                                       FileNamePatterns = []string{"current*.txt"}
+//                                       FileNamePatterns = []string{"*.txt", "*.log"}
 //
 //                                    If this string array has zero length or if
 //                                    all the strings are empty strings, then this
@@ -2072,8 +2431,9 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 //                                    for the search pattern criterion.
 //
 //                                      Example Patterns:
-//                                        "*.log"
-//                                        "current*.txt"
+//                                       FileNamePatterns = []string{"*.log"}
+//                                       FileNamePatterns = []string{"current*.txt"}
+//                                       FileNamePatterns = []string{"*.txt", "*.log"}
 //
 //                                    If this string array has zero length or if
 //                                    all the strings are empty strings, then this
@@ -2548,8 +2908,9 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
 //                                    for the search pattern criterion.
 //
 //                                      Example Patterns:
-//                                        "*.log"
-//                                        "current*.txt"
+//                                       FileNamePatterns = []string{"*.log"}
+//                                       FileNamePatterns = []string{"current*.txt"}
+//                                       FileNamePatterns = []string{"*.txt", "*.log"}
 //
 //                                    If this string array has zero length or if
 //                                    all the strings are empty strings, then this
@@ -2813,8 +3174,9 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 //                                    for the search pattern criterion.
 //
 //                                      Example Patterns:
-//                                        "*.log"
-//                                        "current*.txt"
+//                                       FileNamePatterns = []string{"*.log"}
+//                                       FileNamePatterns = []string{"current*.txt"}
+//                                       FileNamePatterns = []string{"*.txt", "*.log"}
 //
 //                                    If this string array has zero length or if
 //                                    all the strings are empty strings, then this
@@ -3655,8 +4017,9 @@ func (dMgr *DirMgr) MakeDir() error {
 //                                    for the search pattern criterion.
 //
 //                                      Example Patterns:
-//                                        "*.log"
-//                                        "current*.txt"
+//                                       FileNamePatterns = []string{"*.log"}
+//                                       FileNamePatterns = []string{"current*.txt"}
+//                                       FileNamePatterns = []string{"*.txt", "*.log"}
 //
 //                                    If this string array has zero length or if
 //                                    all the strings are empty strings, then this
@@ -4538,8 +4901,17 @@ func (dMgr *DirMgr) SubstituteBaseDir(
   return newDMgr, err
 }
 
+// copyDirectoryTree - This method is a private helper method which is designed
+// to be called by other public methods for this type. As such, there is no error
+// checking performed on 'dMgr' or 'targetDMgr'.
+//
+// The calling method is responsible for ensuring that both 'dMgr' and 'targetDMgr'
+// are valid DirMgr instances. This is accomplished by calling DirMgr.IsDirMgrValid()
+// on both instances. In addition, the calling method is also responsible for verifying
+// that the directory path identified by 'dMgr' is valid and currently exists on disk.
+//
 func (dMgr *DirMgr) copyDirectoryTree(
-  targetDir DirMgr,
+  targetDMgr DirMgr,
   copyEmptyDirectories bool,
   skipTopLevelDirectory bool,
   errorPrefixLabel string,
@@ -4560,40 +4932,6 @@ func (dMgr *DirMgr) copyDirectoryTree(
   }
 
   var err, err2, err3 error
-
-  err = dMgr.IsDirMgrValid(ePrefix)
-
-  if err != nil {
-    errs = append(errs, err)
-    return errs
-  }
-
-  err = targetDir.IsDirMgrValid(ePrefix)
-
-  if err != nil {
-    err2 = fmt.Errorf("Input parameter 'targetDir' is INVALID!\n" +
-      "Error='%v'\n", err.Error())
-    errs = append(errs, err2)
-    return errs
-  }
-
-  _, err = os.Stat(dMgr.absolutePath)
-
-  if err != nil {
-
-    if os.IsNotExist(err) {
-      err2 = fmt.Errorf(ePrefix + "The current DirMgr path DOES NOT EXIST!\n" +
-        "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
-    } else {
-      err2 = fmt.Errorf(ePrefix + "Non-Path error returned by os.Stat(dMgr.absolutePath)\n" +
-        "dMgr.absolutePath='%v'\nError='%v'\n",
-        dMgr.absolutePath, err.Error())
-    }
-
-    errs = append(errs, err2)
-
-    return errs
-  }
 
   baseDirLen := len(dMgr.absolutePath)
   osPathSepStr := string(os.PathSeparator)
@@ -4624,7 +4962,7 @@ func (dMgr *DirMgr) copyDirectoryTree(
     }
 
     nextTargetDMgr, err = DirMgr{}.New(
-      targetDir.GetAbsolutePath() +
+      targetDMgr.GetAbsolutePath() +
         nextDir.absolutePath[baseDirLen:])
 
     if err != nil {
