@@ -18,23 +18,6 @@ import (
   "time"
 )
 
-const (
-  baseAppDir = "../../003_filehelper/app"
-  // commonDir        = "../common"
-  logTestTopDIR = "../logTest"
-  // logTestBottomDir = "../logTest/CmdrX"
-  // logFile          = "CmdrX.log"
-)
-
-func main() {
- if, err := os.Open("/test.txt")
-    if err, ok := err.(*os.PathError); ok {
-        fmt.Println("File at path", err.path, "failed to open")
-        return
-    }
-    fmt.Println(f.Name(), "opened successfully")
-}
-
 */
 
 func main() {
@@ -48,7 +31,7 @@ func mainTest64DeleteDirectoryFiles() {
   srcDMgr, err := pf.DirMgr{}.New(srcDir)
 
   if err != nil {
-    fmt.Printf("Error returned by pf.DirMgr{}.New(srcDir).\n" +
+    fmt.Printf("Error returned by pf.DirMgr{}.New(srcDir).\n"+
       "srcDir='%v'\nError='%v'\n", srcDir, err.Error())
     return
   }
@@ -56,14 +39,14 @@ func mainTest64DeleteDirectoryFiles() {
   fsc := pf.FileSelectionCriteria{}
 
   numOfRemainingFiles,
-  numOfDeletedFiles,
-  errs := srcDMgr.DeleteFilesBySelectionCriteria(fsc)
+    numOfDeletedFiles,
+    errs := srcDMgr.DeleteFilesBySelectionCriteria(fsc)
 
   if len(errs) > 0 {
-    fmt.Printf("Errors returned by srcDMgr.DeleteFilesBySelectionCriteria(fsc).\n" +
+    fmt.Printf("Errors returned by srcDMgr.DeleteFilesBySelectionCriteria(fsc).\n"+
       "srcDMgr='%v'\nErrors:\n\n", srcDMgr.GetAbsolutePath())
 
-    for i:=0; i < len(errs); i++ {
+    for i := 0; i < len(errs); i++ {
       fmt.Printf("%v\n\n", errs[i].Error())
     }
 
@@ -71,7 +54,6 @@ func mainTest64DeleteDirectoryFiles() {
 
     return
   }
-
 
   fmt.Println("          mainTest64DeleteDirectoryFiles                ")
   fmt.Println("********************************************************")
@@ -89,7 +71,7 @@ func mainTest63DeleteDirectoryTree() {
   srcDMgr, err := pf.DirMgr{}.New(srcDir)
 
   if err != nil {
-    fmt.Printf("Error returned by pf.DirMgr{}.New(srcDir).\n" +
+    fmt.Printf("Error returned by pf.DirMgr{}.New(srcDir).\n"+
       "srcDir='%v'\nError='%v'\n", srcDir, err.Error())
     return
   }
@@ -97,15 +79,15 @@ func mainTest63DeleteDirectoryTree() {
   fsc := pf.FileSelectionCriteria{}
 
   numOfSubDirectories,
-  numOfRemainingFiles,
-  numOfDeletedFiles,
-  errs := srcDMgr.DeleteDirectoryTreeFiles(fsc)
+    numOfRemainingFiles,
+    numOfDeletedFiles,
+    errs := srcDMgr.DeleteDirectoryTreeFiles(fsc)
 
   if len(errs) > 0 {
-    fmt.Printf("Errors returned by srcDMgr.DeleteDirectoryTreeFiles(fsc).\n" +
+    fmt.Printf("Errors returned by srcDMgr.DeleteDirectoryTreeFiles(fsc).\n"+
       "srcDMgr='%v'\nErrors:\n\n", srcDMgr.GetAbsolutePath())
 
-    for i:=0; i < len(errs); i++ {
+    for i := 0; i < len(errs); i++ {
       fmt.Printf("%v\n\n", errs[i].Error())
     }
 
@@ -113,7 +95,6 @@ func mainTest63DeleteDirectoryTree() {
 
     return
   }
-
 
   fmt.Println("           mainTest63DeleteDirectoryTree                ")
   fmt.Println("********************************************************")
@@ -132,7 +113,7 @@ func mainTest62CopySubDirs() {
   srcDMgr, err := pf.DirMgr{}.New(srcDir)
 
   if err != nil {
-    fmt.Printf("Error returned by pf.DirMgr{}.New(srcDir).\n" +
+    fmt.Printf("Error returned by pf.DirMgr{}.New(srcDir).\n"+
       "srcDir='%v'\nError='%v'\n", srcDir, err.Error())
     return
   }
@@ -142,20 +123,20 @@ func mainTest62CopySubDirs() {
   targetDMgr, err := pf.DirMgr{}.New(targetDir)
 
   if err != nil {
-    fmt.Printf("Error returned by pf.DirMgr{}.New(targetDir).\n" +
+    fmt.Printf("Error returned by pf.DirMgr{}.New(targetDir).\n"+
       "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
     return
   }
 
   fsc := pf.FileSelectionCriteria{}
 
-  errs := srcDMgr.CopySubDirectoryTree(targetDMgr,true, fsc)
+  errs := srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) > 0 {
-    fmt.Printf("Errors returned by srcDMgr.CopySubDirectoryTree(targetDMgr,true, fsc).\n" +
+    fmt.Printf("Errors returned by srcDMgr.CopySubDirectoryTree(targetDMgr,true, fsc).\n"+
       "targetDir='%v'\nErrors:\n\n", targetDMgr.GetAbsolutePath())
 
-    for i:=0; i < len(errs); i++ {
+    for i := 0; i < len(errs); i++ {
       fmt.Printf("%v\n\n", errs[i].Error())
     }
 
@@ -163,7 +144,6 @@ func mainTest62CopySubDirs() {
 
     return
   }
-
 
   fmt.Println("               mainTest62CopySubDirs                    ")
   fmt.Println("********************************************************")
@@ -179,7 +159,7 @@ func mainTest61DeleteSubDirs() {
   dMgr, err := pf.DirMgr{}.New(targetDir)
 
   if err != nil {
-    fmt.Printf("Error returned by pf.DirMgr{}.New(targetDir).\n" +
+    fmt.Printf("Error returned by pf.DirMgr{}.New(targetDir).\n"+
       "srcDir='%v'\nError='%v'\n", targetDir, err.Error())
     return
   }
@@ -187,10 +167,10 @@ func mainTest61DeleteSubDirs() {
   errs := dMgr.DeleteAllSubDirectories()
 
   if len(errs) > 0 {
-    fmt.Printf("Errors returned by dMgr.DeleteAllSubDirectories().\n" +
+    fmt.Printf("Errors returned by dMgr.DeleteAllSubDirectories().\n"+
       "targetDir='%v'\nErrors:\n\n", targetDir)
 
-    for i:=0; i < len(errs); i++ {
+    for i := 0; i < len(errs); i++ {
       fmt.Printf("%v\n\n", errs[i].Error())
     }
 
@@ -214,15 +194,15 @@ func mainTest60CopyDirTree() {
   srcDMgr, err := pf.DirMgr{}.New(srcDir)
 
   if err != nil {
-    fmt.Printf("Error returned by pf.DirMgr{}.New(srcDir).\n" +
+    fmt.Printf("Error returned by pf.DirMgr{}.New(srcDir).\n"+
       "srcDir='%v'\nError='%v'\n", srcDir, err.Error())
     return
   }
-  
+
   targetDMgr, err := pf.DirMgr{}.New(targetDir)
 
   if err != nil {
-    fmt.Printf("Error returned by pf.DirMgr{}.New(targetDir).\n" +
+    fmt.Printf("Error returned by pf.DirMgr{}.New(targetDir).\n"+
       "srcDir='%v'\nError='%v'\n", targetDir, err.Error())
     return
   }
@@ -232,10 +212,10 @@ func mainTest60CopyDirTree() {
   errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) > 0 {
-    fmt.Printf("Errors returned by dMgr.CopyDirectoryTree().\n" +
+    fmt.Printf("Errors returned by dMgr.CopyDirectoryTree().\n"+
       "srcDir='%v'\nErrors:\n\n", srcDir)
 
-    for i:=0; i < len(errs); i++ {
+    for i := 0; i < len(errs); i++ {
       fmt.Printf("%v\n\n", errs[i].Error())
     }
 
@@ -257,7 +237,7 @@ func mainTest59GetSubDirs() {
   dMgr, err := pf.DirMgr{}.New(testDir)
 
   if err != nil {
-    fmt.Printf("Error returned by pf.DirMgr{}.New(testDir).\n" +
+    fmt.Printf("Error returned by pf.DirMgr{}.New(testDir).\n"+
       "testDir='%v'\nError='%v'\n", testDir, err.Error())
     return
   }
@@ -265,10 +245,10 @@ func mainTest59GetSubDirs() {
   dirs, errs := dMgr.GetDirectoryTree()
 
   if len(errs) > 0 {
-    fmt.Printf("Errors returned by dMgr.GetDirectoryTree().\n" +
+    fmt.Printf("Errors returned by dMgr.GetDirectoryTree().\n"+
       "testDir='%v'\nErrors:\n\n", testDir)
 
-    for i:=0; i < len(errs); i++ {
+    for i := 0; i < len(errs); i++ {
       fmt.Printf("%v\n\n", errs[i].Error())
     }
 
@@ -281,7 +261,7 @@ func mainTest59GetSubDirs() {
   fmt.Println("****************** Success!!!! ***************************")
   fmt.Println("Directory Listing:")
   fmt.Println()
-  for k:=0; k < dirs.GetNumOfDirs(); k++ {
+  for k := 0; k < dirs.GetNumOfDirs(); k++ {
 
     dmgr, err := dirs.GetDirMgrAtIndex(k)
 
@@ -299,16 +279,15 @@ func mainTest59GetSubDirs() {
 
 func mainTest58ModTime() {
 
-  newAccessTime := time.Date(2006,2,25,10,30,30,120, time.Local)
-  newModTime := time.Date(2006,2,25,10,30,30,120, time.Local)
+  newAccessTime := time.Date(2006, 2, 25, 10, 30, 30, 120, time.Local)
+  newModTime := time.Date(2006, 2, 25, 10, 30, 30, 120, time.Local)
 
   pathFileName := "D:\\T98\\xcopyHelp.txt"
-
 
   fInfo, err := os.Stat(pathFileName)
 
   if err != nil {
-    fmt.Printf("Error returned by #1 os.Stat(pathFileName).\n" +
+    fmt.Printf("Error returned by #1 os.Stat(pathFileName).\n"+
       "Error='%v'\n", err.Error())
     return
   }
@@ -319,10 +298,10 @@ func mainTest58ModTime() {
 
   fh := pf.FileHelper{}
 
-  err = fh.ChangeFileTimes(pathFileName,newAccessTime, newModTime)
+  err = fh.ChangeFileTimes(pathFileName, newAccessTime, newModTime)
 
   if err != nil {
-    fmt.Printf("Error returned by fh.ChangeFileTimes(pathFileName,newAccessTime, newModTime)\n" +
+    fmt.Printf("Error returned by fh.ChangeFileTimes(pathFileName,newAccessTime, newModTime)\n"+
       "Error='%v'", err.Error())
     return
   }
@@ -330,7 +309,7 @@ func mainTest58ModTime() {
   fInfo, err = os.Stat(pathFileName)
 
   if err != nil {
-    fmt.Printf("Error returned by os.Stat(pathFileName).\n" +
+    fmt.Printf("Error returned by os.Stat(pathFileName).\n"+
       "Error='%v'\n", err.Error())
     return
   }
@@ -339,13 +318,11 @@ func mainTest58ModTime() {
 
   modTimeStr := modTime.Format("2006-01-02 15:04:05.000000000 -0700 MST")
 
-  fmt.Println("Original Mod Time: ",originalModTime.Format("2006-01-02 15:04:05.000000000 -0700 MST"))
+  fmt.Println("Original Mod Time: ", originalModTime.Format("2006-01-02 15:04:05.000000000 -0700 MST"))
   fmt.Println("     New Mod Time: ", newModTime.Format("2006-01-02 15:04:05.000000000 -0700 MST"))
   fmt.Println(" Current Mod Time: ", modTimeStr)
 
 }
-
-
 
 func mainTest58ChangeFileMode(pathFileName string, filePermission pf.FilePermissionConfig) {
 
@@ -369,7 +346,6 @@ func mainTest58ChangeFileMode(pathFileName string, filePermission pf.FilePermiss
   fmt.Println()
   fmt.Println(" Change Mode Text: ", changeModeText)
   fmt.Println("Change Mode Value: ", changeModeValue)
-
 
 }
 
@@ -403,7 +379,7 @@ func mainTest56CopyFileLink(source, destination string) {
   err := fh.CopyFileByLink(source, destination)
 
   if err != nil {
-    fmt.Printf("Error returned by fh.CopyFileByLink(source, destination). \n" +
+    fmt.Printf("Error returned by fh.CopyFileByLink(source, destination). \n"+
       "source='%v'\ndestination='%v'\nError='%v'",
       source, destination, err.Error())
     return
@@ -422,7 +398,7 @@ func mainTest55CopyFileIo(source, destination string) {
   err := fh.CopyFileByIo(source, destination)
 
   if err != nil {
-    fmt.Printf("Error returned by fh.CopyFileByIo(source, destination). \n" +
+    fmt.Printf("Error returned by fh.CopyFileByIo(source, destination). \n"+
       "source='%v'\ndestination='%v'\nError='%v'",
       source, destination, err.Error())
     return
@@ -431,7 +407,6 @@ func mainTest55CopyFileIo(source, destination string) {
   fmt.Println("********** mainTest55CopyFileIo **********")
   fmt.Println("")
   fmt.Println("           SUCCESS!!!           ")
-
 
 }
 
@@ -458,17 +433,16 @@ func mainTest54DeleteAll(targetDir string) {
     fmt.Println("os.Stat(targetDir) returned an 'IsNotExist' type error!")
   }
 
-  if err !=nil {
+  if err != nil {
     fmt.Printf("Expected error reads: %v\n\n", err.Error())
   }
 
-  if err == nil  {
+  if err == nil {
     fmt.Printf("Deletion Failed! \n +"+
       "os.Stat(targetDir) targetDir='%v' \n"+
       "Error='%v' \n", targetDir, err.Error())
     return
   }
-
 
   fmt.Println("********** mainTest54DeleteAll **********")
   fmt.Println("")
