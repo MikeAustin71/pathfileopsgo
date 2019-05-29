@@ -642,8 +642,6 @@ func TestDirMgr_CopyDirectoryTree_04(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  targetDMgr.isInitialized = false
-
   errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) == 0 {

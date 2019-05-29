@@ -552,7 +552,34 @@ func TestDirMgr_GetParentDirMgr_02(t *testing.T) {
     t.Errorf("Error: Expected hasParent='false'. Instead, hasParent='%v'.",
       hasParent)
   }
+}
 
+func TestDirMgr_GetParentDirMgr_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  origBaseAbsPath, err := fh.MakeAbsolutePath("../dirwalktests/dir01/dir02/dir03")
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(\"../dirwalktests/dir01/dir02/dir03\") " +
+      "Error='%v' ", err.Error())
+  }
+
+  baseDMgr, err := DirMgr{}.New(origBaseAbsPath)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(origBaseAbsPath) " +
+      "Error='%v' ", err.Error())
+  }
+
+  baseDMgr.isInitialized = false
+
+  _, _, err = baseDMgr.GetParentDirMgr()
+
+  if err == nil {
+    t.Error("Expected an error return from baseDMgr.GetParentDirMgr()\n" +
+      "because 'baseDMgr' is INVALID!\nHowever, NO ERROR WAS RETURNED!!!\n")
+  }
 }
 
 func TestDirMgr_GetParentPath_01(t *testing.T) {

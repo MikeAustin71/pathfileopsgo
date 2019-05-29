@@ -956,10 +956,9 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
     return errs
   }
 
-  fh := FileHelper{}
-
   var nameFileInfos []os.FileInfo
   err3 = nil
+  osPathSeparatorStr := string(os.PathSeparator)
 
   for err3 != io.EOF {
 
@@ -979,15 +978,13 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
 
       if nameFInfo.IsDir() {
 
-        subDir := fh.JoinPathsAdjustSeparators(
-                  dMgr.absolutePath, nameFInfo.Name())
-
-        err = os.RemoveAll(subDir)
+        err = os.RemoveAll(dMgr.absolutePath + osPathSeparatorStr + nameFInfo.Name())
 
         if err != nil {
           err2 = fmt.Errorf(ePrefix +
             "Error returned by os.RemoveAll(subDir)\n" +
-            "subDir='%v'\nError='%v'\n", subDir, err.Error())
+            "subDir='%v'\nError='%v'\n",
+            dMgr.absolutePath + osPathSeparatorStr + nameFInfo.Name(), err.Error())
 
           errs = append(errs, err2)
 
