@@ -4817,11 +4817,15 @@ func (dMgr *DirMgr) SetDirMgrWithFileInfo(pathStr string, info os.FileInfo) erro
 }
 
 // SetPermissions - Sets the read/write and execute permissions for the directory
-// identified by the current DirMgr instance.
+// identified by the current DirMgr instance. Note the treatment of execute
+// permissions may vary by operating system.
 //
 // The permissions are configured based on input parameter 'permissionConfig' which
 // is of type, 'FilePermissionConfig'. For an explanation of permission codes, see
 // method 'FilePermissionConfig.New()'.
+//
+// If the directory identified by the current DirMgr instance does not exist, an
+// error will be returned.
 //
 func (dMgr *DirMgr) SetPermissions(permissionConfig FilePermissionConfig) error {
   ePrefix := "DirMgr.SetPermissions() "

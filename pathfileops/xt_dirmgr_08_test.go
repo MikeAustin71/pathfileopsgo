@@ -1022,6 +1022,136 @@ func TestDirMgr_SetPermissions_03(t *testing.T) {
 
 }
 
+func TestDirMgr_SetPermissions_04(t *testing.T) {
+
+  testDir := "../dirmgrtests/TestDirMgr_SetPermissions_04"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir).\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  fh := FileHelper{}
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir)\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = testDMgr.MakeDir()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by testDMgr.MakeDir().\n" +
+      "testDMgr='%v'\nError='%v'\n",
+      testDMgr.GetAbsolutePath(), err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  originalPermCfg, err := testDMgr.GetDirPermissionCodes()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by testDMgr.GetDirPermissionCodes()\n" +
+      "testDMgr='%v'\nError='%v'\n",
+      testDMgr.GetAbsolutePath(), err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  originalPermCfgStr, err := originalPermCfg.GetPermissionTextCode()
+
+  if err != nil {
+
+    t.Errorf("Test Setup Error returned by originalPermCfg.GetPermissionTextCode()\n" +
+      "Error='%v'\n", err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  newPermissionsCfgStr := "dr--r--r--"
+  newPermissionsCfg, err := FilePermissionConfig{}.New(newPermissionsCfgStr)
+
+  err = testDMgr.SetPermissions(newPermissionsCfg)
+
+  if err != nil {
+    t.Errorf("Error returned by testDMgr.SetPermissions(newPermissionsCfg).\n" +
+      "testDMgr='%v'\nnewPermissionsCfg='%v'\n",
+      testDMgr.GetAbsolutePath(), newPermissionsCfgStr)
+  }
+
+  actualPermCfg, err := testDMgr.GetDirPermissionCodes()
+
+  if err != nil {
+    t.Errorf("Error returning actual permission configuration by " +
+      "testDMgr.GetDirPermissionCodes()\n" +
+      "testDMgr='%v'\nError='%v'\n",
+      testDMgr.GetAbsolutePath(), err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  actualPermCfgStr, err := actualPermCfg.GetPermissionTextCode()
+
+  if err != nil {
+    t.Errorf("Error returned by actualPermCfg.GetPermissionTextCode().\n" +
+      "Error='%v'\n", err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  err = fh.ChangeFileMode(testDMgr.GetAbsolutePath(), originalPermCfg)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.ChangeFileMode(testDMgr." +
+      "GetAbsolutePath(), permissionsCfg2).\n" +
+      "testDMgr='%v'\npermissionsCfg2='%v'\nError='%v'\n",
+      testDMgr.GetAbsolutePath(), originalPermCfgStr, err.Error() )
+  }
+
+  if actualPermCfgStr == originalPermCfgStr {
+    t.Errorf("ERROR: Actual Permission Codes equals Original Permission Codes\n" +
+      "Actual Permission Codes='%v'\nOriginal Permission Codes='%v'\n",
+      actualPermCfgStr, originalPermCfgStr)
+  }
+
+  actualPermCfgRunes := []rune(actualPermCfgStr)
+  cntOfRs := 0
+  for i:=0; i < len(actualPermCfgRunes); i++ {
+    if actualPermCfgRunes[i] == 'r' {
+      cntOfRs++
+    }
+  }
+
+  if cntOfRs != 3 {
+    t.Errorf("Expected the Actual Permissions Codes to contain 3-r's or read-only codes.\n" +
+      "It did NOT! Therefore the operation to change Permissions Codes FAILED!\n" +
+      "Expected Permission Codes='%v'\nActual Permission Codes='%v'\n",
+      newPermissionsCfgStr, actualPermCfgStr)
+  }
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(testDir)\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+  }
+}
 
 func TestDirMgr_SubstituteBaseDir_01(t *testing.T) {
 
