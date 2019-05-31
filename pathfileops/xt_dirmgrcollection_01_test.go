@@ -127,6 +127,21 @@ func TestDirMgrCollection_AddDirMgr_01(t *testing.T) {
 
 }
 
+func TestDirMgrCollection_AddDirMgrByPathNameStr(t *testing.T) {
+
+  testDirStr := ""
+
+  dMgrs := DirMgrCollection{}
+
+  err := dMgrs.AddDirMgrByPathNameStr(testDirStr)
+
+  if err == nil {
+    t.Error("Expected an error return from dMgrs.AddDirMgrByPathNameStr(testDirStr)\n" +
+      "because input parameter 'testDirStr' is an empty string!\n" +
+      "However, NO ERROR WAS RETURNED!!!!\n")
+  }
+}
+
 func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
 
   fh := FileHelper{}
