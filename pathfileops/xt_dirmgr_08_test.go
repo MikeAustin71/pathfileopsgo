@@ -844,8 +844,184 @@ func TestDirMgr_SetDirMgr_02(t *testing.T) {
     t.Error("Expected an error return from dMgr.SetDirMgr(testDir) because\n" +
       "'testDir' consists entirely of blank spaces.\nHowever, NO ERROR WAS RETURNED!!!!\n")
   }
+}
+
+func TestDirMgr_SetPermissions_01(t *testing.T) {
+
+  testDir := "../dirmgrtests/TestDirMgr_SetPermissions_01"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir).\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = testDMgr.MakeDir()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by testDMgr.MakeDir().\n" +
+      "testDMgr='%v'\nError='%v'\n",
+      testDMgr.GetAbsolutePath(), err.Error())
+
+    return
+  }
+
+  permissionsCfg, err := FilePermissionConfig{}.New("dr--r--r--")
+
+  fh := FileHelper{}
+
+  permissionsCfg2, err := FilePermissionConfig{}.New("drwxrwxrwx")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by FilePermissionConfig{}.New(\"drwxrwxrwx\")\n" +
+      "Error='%v'\n", err.Error())
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  permission2Txt, err := permissionsCfg2.GetPermissionTextCode()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by permissionsCfg2.GetPermissionTextCode()\n" +
+      "Error='%v'\n", err.Error())
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  testDMgr.isInitialized = false
+
+  err = testDMgr.SetPermissions(permissionsCfg)
+
+  if err == nil {
+    t.Error("Expected an error returned by testDMgr.SetPermissions(permissionsCfg)\n" +
+      "because testDMgr is INVALID!\nHowever, NO ERROR WAS RETURNED!!!\n")
+  }
+
+  testDMgr.isInitialized = true
+
+  err = fh.ChangeFileMode(testDMgr.GetAbsolutePath(), permissionsCfg2)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.ChangeFileMode(testDMgr." +
+      "GetAbsolutePath(), permissionsCfg2).\n" +
+      "testDMgr='%v'\npermissionsCfg2='%v'\nError='%v'\n",
+      testDMgr.GetAbsolutePath(), permission2Txt, err.Error() )
+  }
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(testDir)\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+  }
 
 }
+
+func TestDirMgr_SetPermissions_02(t *testing.T) {
+
+  testDir := "../dirmgrtests/TestDirMgr_SetPermissions_02"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir).\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = testDMgr.MakeDir()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by testDMgr.MakeDir().\n" +
+      "testDMgr='%v'\nError='%v'\n",
+      testDMgr.GetAbsolutePath(), err.Error())
+
+    return
+  }
+
+  permissionsCfg, err := FilePermissionConfig{}.New("dr--r--r--")
+
+  fh := FileHelper{}
+
+  permissionsCfg2, err := FilePermissionConfig{}.New("drwxrwxrwx")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by FilePermissionConfig{}.New(\"drwxrwxrwx\")\n" +
+      "Error='%v'\n", err.Error())
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  permission2Txt, err := permissionsCfg2.GetPermissionTextCode()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by permissionsCfg2.GetPermissionTextCode()\n" +
+      "Error='%v'\n", err.Error())
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  permissionsCfg.isInitialized = false
+
+  err = testDMgr.SetPermissions(permissionsCfg)
+
+  if err == nil {
+    t.Error("Expected an error returned by testDMgr.SetPermissions(permissionsCfg)\n" +
+      "because permissionsCfg is INVALID!\nHowever, NO ERROR WAS RETURNED!!!\n")
+  }
+
+  err = fh.ChangeFileMode(testDMgr.GetAbsolutePath(), permissionsCfg2)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.ChangeFileMode(testDMgr." +
+      "GetAbsolutePath(), permissionsCfg2).\n" +
+      "testDMgr='%v'\npermissionsCfg2='%v'\nError='%v'\n",
+      testDMgr.GetAbsolutePath(), permission2Txt, err.Error() )
+  }
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(testDir)\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+  }
+
+}
+
+func TestDirMgr_SetPermissions_03(t *testing.T) {
+
+  testDir := "../dirmgrtests/TestDirMgr_SetPermissions_01"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir).\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  permissionsCfg, err := FilePermissionConfig{}.New("dr--r--r--")
+
+  err = testDMgr.SetPermissions(permissionsCfg)
+
+  if err == nil {
+    t.Error("Expected an error returned by testDMgr.SetPermissions(permissionsCfg)\n" +
+      "because testDMgr directory DOES NOT EXIST!\nHowever, NO ERROR WAS RETURNED!!!\n")
+  }
+
+  fh := FileHelper{}
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(testDir)\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+  }
+
+}
+
 
 func TestDirMgr_SubstituteBaseDir_01(t *testing.T) {
 

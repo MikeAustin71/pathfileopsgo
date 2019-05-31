@@ -299,7 +299,7 @@ func (fPerm *FilePermissionConfig) GetPermissionComponents() (
 // GetPermissionFileModeValueText - Returns the Permission File Mode numeric
 // value as text. The text presents the octal value of the File Mode.
 //
-//  Example2:
+//  Example:
 //        -rw-rw-rw- = returned value 0666
 //        drwxrwxrwx = returned value 020000000777
 //
@@ -334,6 +334,9 @@ func (fPerm *FilePermissionConfig) GetPermissionFileModeValueText() string {
 
 // GetPermissionNarrativeText - Returns a string containing a narrative
 // text description of the current permission codes.
+//
+//   Example Return Value
+//       "Entry Type: ModeFile  -Permission Code: -rwxrwxrwx   -File Mode Value: 0777"
 //
 func (fPerm *FilePermissionConfig) GetPermissionNarrativeText() string {
 
@@ -387,6 +390,11 @@ func (fPerm *FilePermissionConfig) GetPermissionNarrativeText() string {
 // GetPermissionTextCode - Returns the file mode permissions expressed as
 // a text string. The returned string includes the full and complete
 // 10-character permission code.
+//
+//  Example Return Values:
+//        -rwxrwxrwx
+//        -rw-rw-rw-
+//        drwxrwxrwx
 //
 func (fPerm *FilePermissionConfig) GetPermissionTextCode() (string, error) {
 

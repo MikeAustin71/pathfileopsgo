@@ -22,7 +22,7 @@ import (
 
 func main() {
 
-  mainTest64DeleteDirectoryFiles()
+  mainTest32()
 }
 
 func mainTest64DeleteDirectoryFiles() {

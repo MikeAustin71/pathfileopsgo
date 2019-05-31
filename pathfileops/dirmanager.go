@@ -4816,6 +4816,58 @@ func (dMgr *DirMgr) SetDirMgrWithFileInfo(pathStr string, info os.FileInfo) erro
   return nil
 }
 
+// SetPermissions - Sets the read/write and execute permissions for the directory
+// identified by the current DirMgr instance.
+//
+// The permissions are configured based on input parameter 'permissionConfig' which
+// is of type, 'FilePermissionConfig'. For an explanation of permission codes, see
+// method 'FilePermissionConfig.New()'.
+//
+func (dMgr *DirMgr) SetPermissions(permissionConfig FilePermissionConfig) error {
+  ePrefix := "DirMgr.SetPermissions() "
+  var err, err2 error
+
+  err = dMgr.IsDirMgrValid(ePrefix)
+
+  if err != nil {
+    return err
+  }
+
+  err = permissionConfig.IsValid()
+
+  if err != nil{
+    return fmt.Errorf(ePrefix + "Input parameter 'permissionConfig' is INVALID!\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  _, err = os.Stat(dMgr.absolutePath)
+
+  if err != nil {
+
+    if os.IsNotExist(err) {
+      err2 = fmt.Errorf(ePrefix + "The current DirMgr path DOES NOT EXIST!\n" +
+        "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
+    } else {
+      err2 = fmt.Errorf(ePrefix + "Non-Path error returned by os.Stat(dMgr.absolutePath)\n" +
+        "dMgr.absolutePath='%v'\nError='%v'\n",
+        dMgr.absolutePath, err.Error())
+    }
+
+    return err2
+  }
+
+  fh := FileHelper{}
+
+  err = fh.ChangeFileMode(dMgr.absolutePath, permissionConfig)
+
+  if err != nil{
+    return fmt.Errorf(ePrefix + "Input parameter 'permissionConfig' is INVALID!\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  return nil
+}
+
 // SubstituteBaseDir - Substitute 'baseDir' segment of the current DirMgr with a new
 // parent directory identified by input parameter 'substituteBaseDir'. This is useful
 // in copying files to new directory trees.
