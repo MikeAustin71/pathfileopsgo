@@ -140,7 +140,7 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
   absDir, err := fh.MakeAbsolutePath(dir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(dir)\n" +
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(dir)\n"+
       "dir='%v'\nError='%v'\n",
       dir, err.Error())
 
@@ -338,6 +338,15 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 
   dInfo, err := dMgr.FindWalkDirFiles(fsc)
 
+  if err != nil {
+    t.Errorf("Error returned by dMgr.FindWalkDirFiles(fsc)\n"+
+      "Error='%v'\n", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
+  }
+
   if dInfo.FoundFiles.GetNumOfFileMgrs() != 6 {
     t.Errorf("Expected to find 6-files deleted. Instead, %v-files were deleted.",
       dInfo.FoundFiles.GetNumOfFileMgrs())
@@ -438,7 +447,7 @@ func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
   err = fh.DeleteDirPathAll(absDir)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirPathAll(absDir)\n" +
+    t.Errorf("Error returned by fh.DeleteDirPathAll(absDir)\n"+
       "absDir='%v'\nError='%v'\n", absDir, err.Error())
   }
 
@@ -615,7 +624,7 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
   sourceDMgr, err := DirMgr{}.New(sourceDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n"+
       "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
     return
   }
@@ -640,7 +649,7 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
   sourceDMgr, err := DirMgr{}.New(sourceDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n" +
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir).\n"+
       "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
     return
   }
@@ -972,14 +981,14 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
   oldFiles[1] = origDir + string(os.PathSeparator) + oldFile2
   oldFiles[2] = origDir + string(os.PathSeparator) + oldFile3
 
-  newAccessTime := time.Date(2017,2,25,10,30,30,1250, time.Local)
-  newModTime := time.Date(2017,2,25,10,30,30,1250, time.Local)
+  newAccessTime := time.Date(2017, 2, 25, 10, 30, 30, 1250, time.Local)
+  newModTime := time.Date(2017, 2, 25, 10, 30, 30, 1250, time.Local)
   dateFmtStr := "2006-01-02 15:04:05.000000000 -0700 MST"
 
-  err = fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime)
+  err = fh.ChangeFileTimes(oldFiles[0], newAccessTime, newModTime)
 
   if err != nil {
-    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime).\n" +
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime).\n"+
       "oldFiles[0]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[0], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
 
@@ -988,13 +997,13 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
     return
   }
 
-  newAccessTime = time.Date(2017,11,30,10,30,30,1250, time.Local)
-  newModTime = time.Date(2017,11,30,10,30,30,1250, time.Local)
+  newAccessTime = time.Date(2017, 11, 30, 10, 30, 30, 1250, time.Local)
+  newModTime = time.Date(2017, 11, 30, 10, 30, 30, 1250, time.Local)
 
-  err = fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime)
+  err = fh.ChangeFileTimes(oldFiles[1], newAccessTime, newModTime)
 
   if err != nil {
-    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime).\n" +
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime).\n"+
       "oldFiles[1]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[1], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
 
@@ -1003,13 +1012,13 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
     return
   }
 
-  newAccessTime = time.Date(2017,12,1,18,30,30,1250, time.Local)
-  newModTime = time.Date(2017,12,1,18,30,30,1250, time.Local)
+  newAccessTime = time.Date(2017, 12, 1, 18, 30, 30, 1250, time.Local)
+  newModTime = time.Date(2017, 12, 1, 18, 30, 30, 1250, time.Local)
 
-  err = fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime)
+  err = fh.ChangeFileTimes(oldFiles[2], newAccessTime, newModTime)
 
   if err != nil {
-    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime).\n" +
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime).\n"+
       "oldFiles[2]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[2], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
 
@@ -1110,9 +1119,8 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
 
   err = fh.DeleteDirPathAll(absDir)
 
-
   if err != nil {
-    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n" +
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n"+
       "absDir='%v'\nError='%v'\n", absDir, err.Error())
   }
 
@@ -1165,30 +1173,29 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
   oldFiles[1] = origDir + string(os.PathSeparator) + oldFile2
   oldFiles[2] = origDir + string(os.PathSeparator) + oldFile3
 
-  newAccessTime := time.Date(2017,2,25,10,30,30,1250, time.Local)
-  newModTime := time.Date(2017,2,25,10,30,30,1250, time.Local)
+  newAccessTime := time.Date(2017, 2, 25, 10, 30, 30, 1250, time.Local)
+  newModTime := time.Date(2017, 2, 25, 10, 30, 30, 1250, time.Local)
   dateFmtStr := "2006-01-02 15:04:05.000000000 -0700 MST"
 
-  err = fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime)
+  err = fh.ChangeFileTimes(oldFiles[0], newAccessTime, newModTime)
 
   if err != nil {
-    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime).\n" +
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime).\n"+
       "oldFiles[0]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[0], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
-
 
     _ = fh.DeleteDirPathAll(absDir)
 
     return
   }
 
-  newAccessTime = time.Date(2017,11,30,10,30,30,1250, time.Local)
-  newModTime = time.Date(2017,11,30,10,30,30,1250, time.Local)
+  newAccessTime = time.Date(2017, 11, 30, 10, 30, 30, 1250, time.Local)
+  newModTime = time.Date(2017, 11, 30, 10, 30, 30, 1250, time.Local)
 
-  err = fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime)
+  err = fh.ChangeFileTimes(oldFiles[1], newAccessTime, newModTime)
 
   if err != nil {
-    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime).\n" +
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime).\n"+
       "oldFiles[1]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[1], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
 
@@ -1197,13 +1204,13 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
     return
   }
 
-  newAccessTime = time.Date(2017,12,1,18,30,30,1250, time.Local)
-  newModTime = time.Date(2017,12,1,18,30,30,1250, time.Local)
+  newAccessTime = time.Date(2017, 12, 1, 18, 30, 30, 1250, time.Local)
+  newModTime = time.Date(2017, 12, 1, 18, 30, 30, 1250, time.Local)
 
-  err = fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime)
+  err = fh.ChangeFileTimes(oldFiles[2], newAccessTime, newModTime)
 
   if err != nil {
-    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime).\n" +
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime).\n"+
       "oldFiles[2]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[2], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
 
@@ -1211,7 +1218,6 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
 
     return
   }
-
 
   dMgr, err := DirMgr{}.New(origDir)
 
@@ -1223,7 +1229,6 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
 
     return
   }
-
 
   fOlderThanStr := "2017-01-30 00:00:00.000000000 -0600 CST"
 
@@ -1272,7 +1277,7 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
   err = fh.DeleteDirPathAll(absDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n" +
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n"+
       "absDir='%v'\nError='%v'\n", absDir, err.Error())
   }
 }
@@ -1324,14 +1329,14 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
   oldFiles[1] = origDir + string(os.PathSeparator) + oldFile2
   oldFiles[2] = origDir + string(os.PathSeparator) + oldFile3
 
-  newAccessTime := time.Date(2016,2,25,10,30,30,1250, time.Local)
-  newModTime := time.Date(2016,2,25,10,30,30,1250, time.Local)
+  newAccessTime := time.Date(2016, 2, 25, 10, 30, 30, 1250, time.Local)
+  newModTime := time.Date(2016, 2, 25, 10, 30, 30, 1250, time.Local)
   dateFmtStr := "2006-01-02 15:04:05.000000000 -0700 MST"
 
-  err = fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime)
+  err = fh.ChangeFileTimes(oldFiles[0], newAccessTime, newModTime)
 
   if err != nil {
-    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime).\n" +
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime).\n"+
       "oldFiles[0]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[0], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
 
@@ -1340,13 +1345,13 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
     return
   }
 
-  newAccessTime = time.Date(2017,11,30,10,30,30,1250, time.Local)
-  newModTime = time.Date(2017,11,30,10,30,30,1250, time.Local)
+  newAccessTime = time.Date(2017, 11, 30, 10, 30, 30, 1250, time.Local)
+  newModTime = time.Date(2017, 11, 30, 10, 30, 30, 1250, time.Local)
 
-  err = fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime)
+  err = fh.ChangeFileTimes(oldFiles[1], newAccessTime, newModTime)
 
   if err != nil {
-    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime).\n" +
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime).\n"+
       "oldFiles[1]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[1], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
 
@@ -1355,13 +1360,13 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
     return
   }
 
-  newAccessTime = time.Date(2017,12,1,18,30,30,1250, time.Local)
-  newModTime = time.Date(2017,12,1,18,30,30,1250, time.Local)
+  newAccessTime = time.Date(2017, 12, 1, 18, 30, 30, 1250, time.Local)
+  newModTime = time.Date(2017, 12, 1, 18, 30, 30, 1250, time.Local)
 
-  err = fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime)
+  err = fh.ChangeFileTimes(oldFiles[2], newAccessTime, newModTime)
 
   if err != nil {
-    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime).\n" +
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime).\n"+
       "oldFiles[2]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[2], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
 
@@ -1380,14 +1385,14 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
   newFiles[1] = origDir + string(os.PathSeparator) + newFile2
   newFiles[2] = origDir + string(os.PathSeparator) + newFile3
 
-  newAccessTime = time.Date(2018,1,25,10,30,30,1250, time.Local)
-  newModTime = time.Date(2018,1,25,10,30,30,1250, time.Local)
+  newAccessTime = time.Date(2018, 1, 25, 10, 30, 30, 1250, time.Local)
+  newModTime = time.Date(2018, 1, 25, 10, 30, 30, 1250, time.Local)
   dateFmtStr = "2006-01-02 15:04:05.000000000 -0700 MST"
 
-  err = fh.ChangeFileTimes(newFiles[0],newAccessTime, newModTime)
+  err = fh.ChangeFileTimes(newFiles[0], newAccessTime, newModTime)
 
   if err != nil {
-    t.Errorf("Test Set Error from fh.ChangeFileTimes(newFiles[0],newAccessTime, newModTime).\n" +
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(newFiles[0],newAccessTime, newModTime).\n"+
       "newFiles[0]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       newFiles[0], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
 
@@ -1396,13 +1401,13 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
     return
   }
 
-  newAccessTime = time.Date(2017,12,30,10,30,30,1250, time.Local)
-  newModTime = time.Date(2017,12,30,10,30,30,1250, time.Local)
+  newAccessTime = time.Date(2017, 12, 30, 10, 30, 30, 1250, time.Local)
+  newModTime = time.Date(2017, 12, 30, 10, 30, 30, 1250, time.Local)
 
-  err = fh.ChangeFileTimes(newFiles[1],newAccessTime, newModTime)
+  err = fh.ChangeFileTimes(newFiles[1], newAccessTime, newModTime)
 
   if err != nil {
-    t.Errorf("Test Set Error from fh.ChangeFileTimes(newFiles[1],newAccessTime, newModTime).\n" +
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(newFiles[1],newAccessTime, newModTime).\n"+
       "oldFiles[1]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       newFiles[1], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
 
@@ -1411,13 +1416,13 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
     return
   }
 
-  newAccessTime = time.Date(2017,12,1,19,54,31,1250, time.Local)
-  newModTime = time.Date(2017,12,1,19,54,31,1250, time.Local)
+  newAccessTime = time.Date(2017, 12, 1, 19, 54, 31, 1250, time.Local)
+  newModTime = time.Date(2017, 12, 1, 19, 54, 31, 1250, time.Local)
 
-  err = fh.ChangeFileTimes(newFiles[2],newAccessTime, newModTime)
+  err = fh.ChangeFileTimes(newFiles[2], newAccessTime, newModTime)
 
   if err != nil {
-    t.Errorf("Test Set Error from fh.ChangeFileTimes(newFiles[2],newAccessTime, newModTime).\n" +
+    t.Errorf("Test Set Error from fh.ChangeFileTimes(newFiles[2],newAccessTime, newModTime).\n"+
       "newFiles[2]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       newFiles[2], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
 
@@ -1516,7 +1521,7 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
   err = fh.DeleteDirPathAll(absDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n" +
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n"+
       "absDir='%v'\nError='%v'\n", absDir, err.Error())
   }
 
@@ -1681,7 +1686,7 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
   err = fh.DeleteDirPathAll(absDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n" +
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n"+
       "absDir='%v'\nError='%v'\n", absDir, err.Error())
   }
 
@@ -1748,7 +1753,7 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
   err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
 
   if err != nil {
-    t.Errorf("Error from fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))\n" +
+    t.Errorf("Error from fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))\n"+
       "Error='%v'\n", err.Error())
 
     _ = fh.DeleteDirPathAll(absDir)
@@ -1851,7 +1856,7 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
   err = fh.DeleteDirPathAll(absDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n" +
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n"+
       "absDir='%v'\nError='%v'\n", absDir, err.Error())
   }
 
@@ -1919,7 +1924,7 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
   err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
 
   if err != nil {
-    t.Errorf("Error returne by fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666)).\n" +
+    t.Errorf("Error returne by fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666)).\n"+
       "Error='%v'\n", err.Error())
   }
 
@@ -2018,7 +2023,7 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
   err = fh.DeleteDirPathAll(absDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n" +
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n"+
       "absDir='%v'\nError='%v'\n", absDir, err.Error())
   }
 
@@ -2030,7 +2035,7 @@ func TestDirMgr_DeleteWalkDirFiles_09(t *testing.T) {
   dMgr, err := DirMgr{}.New(testDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir)\n" +
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir)\n"+
       "testDir='%v'\nError='%v'\n", testDir, err.Error())
     return
   }
@@ -2049,7 +2054,7 @@ func TestDirMgr_DeleteWalkDirFiles_09(t *testing.T) {
   err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
 
   if err != nil {
-    t.Errorf("Error returned by fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666)).\n" +
+    t.Errorf("Error returned by fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666)).\n"+
       "Error='%v'\n", err.Error())
   }
 
@@ -2105,7 +2110,7 @@ func TestDirMgr_DeleteWalkDirFiles_10(t *testing.T) {
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(origDir)\n" +
+    t.Errorf("Error returned by DirMgr{}.New(origDir)\n"+
       "origDir='%v'\nError='%v'\n",
       origDir, err.Error())
   }
@@ -2124,7 +2129,7 @@ func TestDirMgr_DeleteWalkDirFiles_10(t *testing.T) {
   err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
 
   if err != nil {
-    t.Errorf("Error returned by fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666)).\n" +
+    t.Errorf("Error returned by fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666)).\n"+
       "Error='%v'\n", err.Error())
 
     _ = fh.DeleteDirPathAll(absDir)
@@ -2146,7 +2151,7 @@ func TestDirMgr_DeleteWalkDirFiles_10(t *testing.T) {
   err = fh.DeleteDirPathAll(absDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n" +
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n"+
       "absDir='%v'\nError='%v'\n", absDir, err.Error())
   }
 
@@ -2168,7 +2173,7 @@ func dirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 
   if err != nil {
     return "",
-      fmt.Errorf(ePrefix +
+      fmt.Errorf(ePrefix+
         "Error returned by fh.MakeAbsolutePath(\"../dirwalkdeletetests/dirdelete01\").\n"+
         "Error='%v'\n", err.Error())
   }
@@ -2180,7 +2185,6 @@ func dirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
       "Test Setup Error returned by fh.DeleteDirPathAll(origDir).\n"+
       "origDir='%v'\nError='%v'\n", origDir, err.Error())
   }
-
 
   origFullDir := origDir + string(os.PathSeparator) + "dirdelete02" +
     string(os.PathSeparator) + "dirdelete03"
@@ -2195,7 +2199,6 @@ func dirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
         "Error returned from fh.MakeDirAll(origFullDir).\n"+
         "origDir='%v'\nError='%v'", origFullDir, err.Error())
   }
-
 
   dirOldFilesForTest, err := fh.MakeAbsolutePath("../filesfortest/oldfilesfortest")
 
@@ -2219,7 +2222,7 @@ func dirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
   oldFiles[1] = "006890_WritingFiles.htm"
   oldFiles[2] = "006870_ReadingFiles.htm"
 
-  for i:=0; i < 3 ; i++ {
+  for i := 0; i < 3; i++ {
 
     srcFile := dirOldFilesForTest + string(os.PathSeparator) + oldFiles[i]
     destFile := origDir + string(os.PathSeparator) + oldFiles[i]
@@ -2228,7 +2231,7 @@ func dirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 
     if err != nil {
       return "", fmt.Errorf(ePrefix+
-        "Error while Copying Source File to  Destination File: fh.CopyFileByIo(srcFile, destFile)\n" +
+        "Error while Copying Source File to  Destination File: fh.CopyFileByIo(srcFile, destFile)\n"+
         "srcFile='%v', destFile='%v'\nError:'%v'",
         srcFile, destFile, err)
     }
@@ -2250,7 +2253,7 @@ func dirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
         "dirNewFilesForTest='%v'\nError='%v' ", dirNewFilesForTest, err.Error())
   }
 
-  for i:=0; i < 3; i++ {
+  for i := 0; i < 3; i++ {
 
     srcFile := dirNewFilesForTest + string(os.PathSeparator) + newFiles[i]
     destFile := origDir + string(os.PathSeparator) + newFiles[i]
@@ -2260,8 +2263,8 @@ func dirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
     if err != nil {
       return "",
         fmt.Errorf(ePrefix+
-          "Error while Copying Source File to  Destination File\n" +
-          "fh.CopyFileByIo(srcFile, destFile)\n"  +
+          "Error while Copying Source File to  Destination File\n"+
+          "fh.CopyFileByIo(srcFile, destFile)\n"+
           "srcFile='%v'\ndestFile='%v'\nError:'%v'",
           srcFile, destFile, err)
     }
@@ -2333,6 +2336,8 @@ func dirMgr02SetupDirWalkTests() error {
     return fmt.Errorf(ePrefix+"Error from DirMgr{}.NewFromPathFileNameExtStr(dest1) "+
       "dest1='%v' Error='%v' ", dest0, err.Error())
   }
+
+  time.Sleep(100 * time.Millisecond)
 
   // If the directory tree ../dirwalktests/dir01/dir02/dir03
   // does not exist, create it.
