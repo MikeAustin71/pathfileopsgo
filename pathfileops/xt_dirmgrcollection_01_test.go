@@ -332,6 +332,38 @@ func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
 
 }
 
+func TestDirMgrCollection_AddFileInfo_01(t *testing.T) {
+
+  testDir := "../logTest"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir)\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  fInfo, err := testDMgr.GetFileInfoPlus()
+
+  dMgrs := DirMgrCollection{}
+
+  err = dMgrs.AddFileInfo(testDMgr.absolutePath, fInfo)
+
+  if err != nil {
+    t.Errorf("Error returned by dMgrs.AddFileInfo(testDMgr.absolutePath, fInfo)\n"+
+      "testDMgr='%v'\nError='%v'\n", testDMgr.absolutePath, err.Error())
+  }
+
+  numOfDirs := dMgrs.GetNumOfDirs()
+
+  if numOfDirs != 1 {
+    t.Errorf("ERROR: Expected number of directories in collection would equal '1'.\n"+
+      "Instead, the number of directories='%v'.\n", numOfDirs)
+  }
+
+}
+
 func TestDirMgrCollection_GetDirMgrArray_01(t *testing.T) {
 
   fh := FileHelper{}
