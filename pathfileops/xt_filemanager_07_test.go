@@ -24,13 +24,17 @@ func TestFileMgr_SetFileInfo_01(t *testing.T) {
   info, err := fh.GetFileInfo(absPathFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetFileInfo(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+    t.Errorf("Error returned from fh.GetFileInfo(absPathFileNameExt).\n"+
+      "absPathFileNameExt='%v'\nError='%v'\n", absPathFileNameExt, err.Error())
+    return
   }
 
   fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt).\n"+
+      "absPathFileNameExt='%v'\nError='%v'\n", absPathFileNameExt, err.Error())
+    return
   }
 
   err = fmgr.SetFileInfo(info)
@@ -69,7 +73,9 @@ func TestFileMgr_SetFileInfo_02(t *testing.T) {
   fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt).\n"+
+      "absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+    return
   }
 
   err = fmgr.SetFileInfo(nil)
@@ -99,13 +105,16 @@ func TestFileMgr_SetFileInfo_03(t *testing.T) {
   info, err := fh.GetFileInfo(absPath)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetFileInfo(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+    t.Errorf("Error returned from fh.GetFileInfo(absPathFileNameExt).\n"+
+      "absPathFileNameExt='%v'\nError='%v'\n", absPathFileNameExt, err.Error())
   }
 
   fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt).\n"+
+      "absPathFileNameExt='%v'\nError='%v'\n", absPathFileNameExt, err.Error())
+    return
   }
 
   err = fmgr.SetFileInfo(info)
@@ -145,7 +154,9 @@ func TestFileMgr_SetFileInfo_04(t *testing.T) {
   fmgr, err := FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(absPathFileNameExt).\n"+
+      "absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
+    return
   }
 
   err = fmgr.SetFileInfo(info)
@@ -262,6 +273,7 @@ func TestFileMgr_SetFileMgrFromDirMgrFileName_04(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). "+
       "adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+    return
   }
 
   fMgr := FileMgr{}
@@ -609,6 +621,7 @@ func TestFileMgr_WriteBytesToFile_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
       "filePathName='%v'  Error='%v'", filePath, err.Error())
+    return
   }
 
   err = fMgr.CreateThisFile()
@@ -710,6 +723,7 @@ func TestFileMgr_WriteBytesToFile_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
       "filePathName='%v'  Error='%v'", filePath, err.Error())
+    return
   }
 
   fMgr2 := fMgr.CopyOut()
@@ -762,6 +776,7 @@ func TestFileMgr_WriteBytesToFile_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
       "filePathName='%v'  Error='%v'", filePath, err.Error())
+    return
   }
 
   err = fMgr.DeleteThisFile()
@@ -872,7 +887,9 @@ func TestFileMgr_WriteStrToFile_01(t *testing.T) {
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
   if err != nil {
-    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath). filePathName='%v'  Error='%v'", filePath, err.Error())
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath).\n"+
+      "filePathName='%v'  Error='%v'", filePath, err.Error())
+    return
   }
 
   expectedStr := "Test Write File. Do NOT alter the contents of this file."
@@ -941,6 +958,7 @@ func TestFileMgr_WriteStrToFile_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
       "filePathName='%v'  Error='%v'", filePath, err.Error())
+    return
   }
 
   fMgr2 := fMgr.CopyOut()
