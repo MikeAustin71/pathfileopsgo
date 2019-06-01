@@ -37,6 +37,7 @@ func TestDirMgr_GetAbsolutePathElements_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(testDir). Error='%v' ",
       err.Error())
+    return
   }
 
   elementsArray := dMgr.GetAbsolutePathElements()
@@ -173,6 +174,7 @@ func TestDirMgr_GetDirectoryTree_01(t *testing.T) {
     if err != nil {
       t.Errorf("Error returned by dirs.GetDirMgrAtIndex(%v).\n"+
         "Error='%v'\n\n", i, err.Error())
+      continue
     }
 
     dName := dMgr.GetDirectoryName()
@@ -271,6 +273,7 @@ func TestDirMgr_GetDirPermissionTextCodes_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by sourceDMgr.GetDirPermissionCodes().\n"+
       "Error='%v'\n", err.Error())
+    return
   }
 
   permissionCodes, err := fPerm.GetPermissionTextCode()
@@ -345,6 +348,12 @@ func TestDirMgr_GetFileInfoPlus_01(t *testing.T) {
 
   fInfoPlus, err := sourceDMgr.GetFileInfoPlus()
 
+  if err != nil {
+    t.Errorf("Error returned by sourceDMgr.GetFileInfoPlus()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
   dirName := fInfoPlus.Name()
 
   if "htmlFilesForTest" != dirName {
@@ -404,6 +413,7 @@ func TestDirMgr_GetNumberOfAbsPathElements_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(origBaseAbsPath). "+
       "Error='%v' ", err.Error())
+    return
   }
 
   numOfElements := dMgr.GetNumberOfAbsPathElements()
@@ -424,6 +434,7 @@ func TestDirMgr_GetNumberOfAbsPathElements_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(origBaseAbsPath). "+
       "Error='%v' ", err.Error())
+    return
   }
 
   numOfElements := dMgr.GetNumberOfAbsPathElements()
@@ -444,6 +455,7 @@ func TestDirMgr_GetNumberOfAbsPathElements_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(origBaseAbsPath). "+
       "Error='%v' ", err.Error())
+    return
   }
 
   numOfElements := dMgr.GetNumberOfAbsPathElements()
@@ -500,6 +512,7 @@ func TestDirMgr_GetParentDirMgr_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(origBaseAbsPath) "+
       "Error='%v' ", err.Error())
+    return
   }
 
   parentDMgr, hasParent, err := baseDMgr.GetParentDirMgr()
@@ -507,6 +520,7 @@ func TestDirMgr_GetParentDirMgr_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by baseDMgr.GetParentDirMgr() "+
       "Error='%v' ", err.Error())
+    return
   }
 
   if origParentPath != parentDMgr.GetAbsolutePath() {
@@ -530,6 +544,7 @@ func TestDirMgr_GetParentDirMgr_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(origBaseAbsPath) "+
       "Error='%v' ", err.Error())
+    return
   }
 
   parentDMgr, hasParent, err := baseDMgr.GetParentDirMgr()
@@ -560,6 +575,7 @@ func TestDirMgr_GetParentDirMgr_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fh.MakeAbsolutePath(\"../dirwalktests/dir01/dir02/dir03\") "+
       "Error='%v' ", err.Error())
+    return
   }
 
   baseDMgr, err := DirMgr{}.New(origBaseAbsPath)
@@ -567,6 +583,7 @@ func TestDirMgr_GetParentDirMgr_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(origBaseAbsPath) "+
       "Error='%v' ", err.Error())
+    return
   }
 
   baseDMgr.isInitialized = false
@@ -623,6 +640,7 @@ func TestDirMgr_GetPath_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(sourceDir).\n"+
       "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
   }
 
   dirPath := dMgr.GetPath()
@@ -644,6 +662,7 @@ func TestDirMgr_GetPathWithSeparator_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(sourceDir).\n"+
       "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
   }
 
   sourceDir = sourceDir + string(os.PathSeparator)
@@ -667,6 +686,7 @@ func TestDirMgr_GetPathWithSeparator_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(sourceDir).\n"+
       "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
   }
 
   sourceDir = sourceDir + string(os.PathSeparator)
@@ -755,6 +775,7 @@ func TestDirMgr_IsInitialized_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(\"../filesfortest/htmlFilesForTest\").\n"+
       "Error='%v'\n", err.Error())
+    return
   }
 
   isInitialized := testDMgr.IsInitialized()
@@ -772,6 +793,7 @@ func TestDirMgr_IsParentPathPopulated_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(\"../filesfortest/htmlFilesForTest\").\n"+
       "Error='%v'\n", err.Error())
+    return
   }
 
   isParentPopulated := testDMgr.IsParentPathPopulated()
@@ -789,6 +811,7 @@ func TestDirMgr_IsParentPathPopulated_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(\"../filesfortest/htmlFilesForTest\").\n"+
       "Error='%v'\n", err.Error())
+    return
   }
 
   testDMgr.parentPath = ""
@@ -808,6 +831,7 @@ func TestDirMgr_IsPathPopulated_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(\"../filesfortest/htmlFilesForTest\").\n"+
       "Error='%v'\n", err.Error())
+    return
   }
 
   testDMgr.path = ""
@@ -826,6 +850,7 @@ func TestDirMgr_IsPathPopulated_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(\"../filesfortest/htmlFilesForTest\").\n"+
       "Error='%v'\n", err.Error())
+    return
   }
 
   isParentPopulated := testDMgr.IsPathPopulated()
@@ -842,6 +867,7 @@ func TestDirMgr_IsVolumeNamePopulated_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(\"../filesfortest/htmlFilesForTest\").\n"+
       "Error='%v'\n", err.Error())
+    return
   }
 
   isVolumeNamePopulated := testDMgr.IsVolumeNamePopulated()
@@ -859,6 +885,7 @@ func TestDirMgr_IsVolumeNamePopulated_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(\"../filesfortest/htmlFilesForTest\").\n"+
       "Error='%v'\n", err.Error())
+    return
   }
 
   testDMgr.volumeName = ""

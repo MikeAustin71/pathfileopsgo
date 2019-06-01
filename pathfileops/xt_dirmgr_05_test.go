@@ -515,6 +515,15 @@ func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
 
   dInfo, err := dMgr.FindWalkDirFiles(fsc)
 
+  if err != nil {
+    t.Errorf("Error returned by dMgr.FindWalkDirFiles(fsc)\n"+
+      "Error='%v'\n", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
+  }
+
   if dInfo.FoundFiles.GetNumOfFileMgrs() != 6 {
     t.Errorf("Expected to find 6-files deleted. Instead, %v-files were deleted.",
       dInfo.FoundFiles.GetNumOfFileMgrs())
@@ -703,6 +712,10 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'",
       origDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   searchPattern := ""
@@ -717,6 +730,15 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
   fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
 
   dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by dMgr.DeleteWalkDirFiles(fsc)\n"+
+      "Error='%v'\n", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
+  }
 
   if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
     t.Errorf("Expected to find 6-files deleted. Instead, %v-files were deleted.",
@@ -869,6 +891,15 @@ func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
   fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
 
   dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by dMgr.DeleteWalkDirFiles(fsc)\n"+
+      "Error='%v'\n", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
+  }
 
   if dInfo.DeletedFiles.GetNumOfFileMgrs() != 3 {
     t.Errorf("Expected to find 3-files deleted. Instead, %v-files were deleted.",
@@ -1063,6 +1094,15 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
 
   dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
+  if err != nil {
+    t.Errorf("Error returned by dMgr.DeleteWalkDirFiles(fsc)\n"+
+      "Error='%v'\n", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
+  }
+
   if dInfo.DeletedFiles.GetNumOfFileMgrs() != 3 {
     t.Errorf("Expected to find 3-files deleted. Instead, "+
       "%v-files were deleted.", dInfo.DeletedFiles.GetNumOfFileMgrs())
@@ -1254,6 +1294,15 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
   fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
 
   dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by dMgr.DeleteWalkDirFiles(fsc)\n"+
+      "Error='%v'\n", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
+  }
 
   if dInfo.DeletedFiles.GetNumOfFileMgrs() != 0 {
     t.Errorf("Expected to find 0-files deleted. Instead, %v-files were deleted.",
@@ -1468,6 +1517,15 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
 
   dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
 
+  if err != nil {
+    t.Errorf("Error returned by dMgr.DeleteWalkDirFiles(fsc)\n"+
+      "Error='%v'\n", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
+  }
+
   if dInfo.DeletedFiles.GetNumOfFileMgrs() != 3 {
     t.Errorf("Expected to find 3-files deleted. Instead, %v-files "+
       "were deleted.", dInfo.DeletedFiles.GetNumOfFileMgrs())
@@ -1599,6 +1657,15 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
   fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
 
   dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by dMgr.DeleteWalkDirFiles(fsc)\n"+
+      "Error='%v'\n", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
+  }
 
   if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
     t.Errorf("Expected to find 6-files deleted. Instead, %v-files "+
@@ -1764,6 +1831,15 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
   fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
 
   dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by dMgr.DeleteWalkDirFiles(fsc)\n"+
+      "Error='%v'\n", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
+  }
 
   if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
     t.Errorf("Expected to find 6-files deleted. Instead, "+
@@ -1931,6 +2007,15 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
   fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
 
   dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by dMgr.DeleteWalkDirFiles(fsc)\n"+
+      "Error='%v'\n", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
+  }
 
   if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
     t.Errorf("Expected to find 6-files deleted. Instead, %v-files "+
