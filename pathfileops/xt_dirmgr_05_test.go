@@ -10,14 +10,6 @@ import (
 
 func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
 
-  err := dirMgr02SetupDirWalkTests()
-
-  if err != nil {
-    t.Errorf("Error return from dirMgr02SetupDirWalkTests(). "+
-      "Error='%v' ", err.Error())
-    return
-  }
-
   fh := FileHelper{}
 
   baseDirPath := fh.AdjustPathSlash("../dirwalktests/dir01")
@@ -30,6 +22,17 @@ func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
     return
   }
 
+  err = dirMgr02SetupDirWalkTests()
+
+  if err != nil {
+    t.Errorf("Error return from dirMgr02SetupDirWalkTests(). "+
+      "Error='%v' ", err.Error())
+
+    _ = fh.DeleteDirPathAll(dir)
+
+    return
+  }
+
   searchPattern := ""
   filesOlderThan := time.Time{}
   filesNewerThan := time.Time{}
@@ -39,11 +42,20 @@ func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(dir). dir='%v' Error='%v'",
       dir, err.Error())
+
+    _ = fh.DeleteDirPathAll(dir)
+
+    return
   }
 
   if !dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected target directory to exist. I does NOT exist. "+
+    t.Errorf("Expected target directory to exist. Instead, it does NOT exist. "+
       "dMgr.path='%v' dMgr.AbolutePath='%v'", dMgr.path, dMgr.absolutePath)
+
+    _ = fh.DeleteDirPathAll(dir)
+
+    return
+
   }
 
   fsc := FileSelectionCriteria{}
@@ -59,11 +71,19 @@ func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
     t.Errorf("Error returned from dMgr.FindWalkDirFiles(searchPattern, "+
       "filesOlderThan, filesNewerThan). dir='%v' Error='%v'",
       dir, err.Error())
+
+    _ = fh.DeleteDirPathAll(dir)
+
+    return
   }
 
   if dirTreeInfo.FoundFiles.GetNumOfFileMgrs() != 6 {
     t.Errorf("Expected to find 6-files in directory tree. Instead, found %v files.",
       dirTreeInfo.FoundFiles.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(dir)
+
+    return
   }
 
   foundnewTestFile3 := false
@@ -107,20 +127,38 @@ func TestDirMgr_FindWalkDirFiles_01(t *testing.T) {
       "This directory was NOT found!", dir3)
   }
 
+  _ = fh.DeleteDirPathAll(dir)
+
+  return
+
 }
 
 func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
 
-  err := dirMgr02SetupDirWalkTests()
+  fh := FileHelper{}
+  dir := fh.AdjustPathSlash("../dirwalktests/dir01")
+  absDir, err := fh.MakeAbsolutePath(dir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(dir)\n" +
+      "dir='%v'\nError='%v'\n",
+      dir, err.Error())
+
+    _ = fh.DeleteDirPathAll(dir)
+
+    return
+  }
+
+  err = dirMgr02SetupDirWalkTests()
 
   if err != nil {
     t.Errorf("Error returned by dirMgr02SetupDirWalkTests(). "+
       "Error='%v' ", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
-
-  fh := FileHelper{}
-  dir := fh.AdjustPathSlash("../dirwalktests/dir01")
 
   searchPattern := "*Files.htm"
   filesOlderThan := time.Time{}
@@ -131,11 +169,19 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(dir). dir='%v' Error='%v'",
       dir, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   if !dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected target directory to exist. I does NOT exist. "+
+    t.Errorf("Expected target directory to exist. Instead, it does NOT exist. "+
       "dMgr.path='%v' dMgr.AbolutePath='%v'", dMgr.path, dMgr.absolutePath)
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   fsc := FileSelectionCriteria{}
@@ -150,11 +196,19 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from dMgr.FindWalkDirFiles(searchPattern, "+
       "filesOlderThan, filesNewerThan). dir='%v' Error='%v'", dir, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   if dWalker.FoundFiles.GetNumOfFileMgrs() != 2 {
     t.Errorf("Expected to find 2-files in directory tree. Instead, "+
       "found %v files.", dWalker.FoundFiles.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   foundWritingFiles := false
@@ -201,237 +255,27 @@ func TestDirMgr_FindWalkDirFiles_02(t *testing.T) {
       "This directory was NOT found!", dir3)
   }
 
+  _ = fh.DeleteDirPathAll(absDir)
+
+  return
 }
 
-/*
 func TestDirMgr_FindWalkDirFiles_03(t *testing.T) {
 
-  err := dirMgr02SetupDirWalkTests()
+  fh := FileHelper{}
+
+  baseDirPath := "../dirwalkdeletetests/dirdelete01"
+
+  absDir, err := fh.MakeAbsolutePath(baseDirPath)
 
   if err != nil {
-    t.Errorf("Error returned by dirMgr02SetupDirWalkTests(). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("fh.MakeAbsolutePath(baseDirPath) baseDirPath='%v' Error='%v'",
+      baseDirPath, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseDirPath)
+
     return
   }
-
-  fh := FileHelper{}
-  dir := fh.AdjustPathSlash("../dirwalktests/dir01")
-  fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
-  fOlderThanStr := "2017-12-01 19:54:30.000000000 -0600 CST"
-
-  searchPattern := ""
-  filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
-
-  if err != nil {
-    t.Errorf("Failed to parse FilesOlderThan time value. "+
-      "fmtstr='%v' fOlderThanStr='%v'  Error='%v'",
-      fmtstr, fOlderThanStr, err.Error())
-  }
-
-  filesNewerThan := time.Time{}
-  filesNewerThan.AddDate(0, 1, 0)
-
-  dMgr, err := DirMgr{}.New(dir)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(dir). "+
-      "dir='%v' Error='%v'", dir, err.Error())
-  }
-
-  if !dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected target directory to exist. I does NOT exist. "+
-      "dMgr.path='%v' dMgr.AbolutePath='%v'", dMgr.path, dMgr.absolutePath)
-  }
-  fsc := FileSelectionCriteria{}
-
-  fsc.FileNamePatterns = []string{searchPattern}
-  fsc.FilesOlderThan = filesOlderThan
-  fsc.FilesNewerThan = filesNewerThan
-  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
-
-  dWalker, err := dMgr.FindWalkDirFiles(fsc)
-
-  if err != nil {
-    t.Errorf("Error returned from dMgr.FindWalkDirFiles(searchPattern, "+
-      "filesOlderThan, filesNewerThan). dir='%v' Error='%v'", dir, err.Error())
-  }
-
-  if dWalker.FoundFiles.GetNumOfFileMgrs() != 3 {
-    t.Errorf("Expected to find 3-files in directory tree. Instead, "+
-      "found %v files.", dWalker.FoundFiles.GetNumOfFileMgrs())
-  }
-
-  foundOldWritingFiles := false
-  foundOldReadingFile := false
-  foundOldTestHtmFile := false
-
-  for i := 0; i < dWalker.FoundFiles.GetNumOfFileMgrs(); i++ {
-    if dWalker.FoundFiles.fileMgrs[i].fileNameExt == "006890_WritingFiles.htm" {
-      foundOldWritingFiles = true
-    }
-
-    if dWalker.FoundFiles.fileMgrs[i].fileNameExt == "006870_ReadingFiles.htm" {
-      foundOldReadingFile = true
-    }
-
-    if dWalker.FoundFiles.fileMgrs[i].fileNameExt == "test.htm" {
-      foundOldTestHtmFile = true
-    }
-
-  }
-
-  if !foundOldWritingFiles {
-    t.Error("Expected FoundFiles would include 006890_WritingFiles.htm. " +
-      "It did NOT!")
-  }
-
-  if !foundOldReadingFile {
-    t.Error("Expected FoundFiles would include 006870_ReadingFiles.htm. " +
-      "It did NOT!")
-  }
-
-  if !foundOldTestHtmFile {
-    t.Error("Expected FoundFiles would include test.htm. " +
-      "It did NOT!")
-  }
-
-  if dWalker.Directories.GetNumOfDirs() != 3 {
-    t.Errorf("Expected the number of directories found would equal 3. "+
-      "It did NOT! Number of directories= '%v'",
-      dWalker.Directories.GetNumOfDirs())
-  }
-
-  dir3 := fh.AdjustPathSlash("/dirwalktests/dir01/dir02/dir03")
-
-  foundDir3 := false
-
-  for j := 0; j < dWalker.Directories.GetNumOfDirs(); j++ {
-    if strings.Contains(dWalker.Directories.dirMgrs[j].path, dir3) {
-      foundDir3 = true
-    }
-  }
-
-  if !foundDir3 {
-    t.Errorf("Expected to find Directory %v in dWalker.dirMgrs. "+
-      "This directory was NOT found!", dir3)
-  }
-
-}
-
-*/
-
-/*
-func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
-
-  err := dirMgr02SetupDirWalkTests()
-
-  if err != nil {
-    t.Errorf("Error returned by dirMgr02SetupDirWalkTests(). "+
-      "Error='%v' ", err.Error())
-    return
-  }
-
-  fh := FileHelper{}
-  dir := fh.AdjustPathSlash("../dirwalktests/dir01")
-  fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
-  fNewerThanStr := "2017-12-01 19:54:30.000000000 -0600 CST"
-
-  searchPattern := ""
-  filesOlderThan := time.Time{}
-
-  filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
-
-  if err != nil {
-    t.Errorf("Failed to parse FilesNewerThan time value. fmtstr='%v' "+
-      "fNewerThanStr='%v'  Error='%v'", fmtstr, fNewerThanStr, err.Error())
-  }
-
-  dMgr, err := DirMgr{}.New(dir)
-
-  if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(dir). dir='%v' Error='%v'",
-      dir, err.Error())
-  }
-
-  if !dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected target directory to exist. I does NOT exist. "+
-      "dMgr.path='%v' dMgr.AbolutePath='%v'", dMgr.path, dMgr.absolutePath)
-  }
-
-  fsc := FileSelectionCriteria{}
-
-  fsc.FileNamePatterns = []string{searchPattern}
-  fsc.FilesOlderThan = filesOlderThan
-  fsc.FilesNewerThan = filesNewerThan
-  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
-
-  dWalker, err := dMgr.FindWalkDirFiles(fsc)
-
-  if err != nil {
-    t.Errorf("Error returned from dMgr.FindWalkDirFiles(searchPattern, "+
-      "filesOlderThan, filesNewerThan). dir='%v' Error='%v'", dir, err.Error())
-  }
-
-  if dWalker.FoundFiles.GetNumOfFileMgrs() != 3 {
-    t.Errorf("Expected to find 3-files in directory tree. Instead, "+
-      "found %v files.", dWalker.FoundFiles.GetNumOfFileMgrs())
-  }
-
-  foundNewerFile1 := false
-  foundNewerFile2 := false
-  foundNewerFile3 := false
-
-  for i := 0; i < dWalker.FoundFiles.GetNumOfFileMgrs(); i++ {
-    if dWalker.FoundFiles.fileMgrs[i].fileNameExt == "newerFileForTest_01.txt" {
-      foundNewerFile1 = true
-    }
-
-    if dWalker.FoundFiles.fileMgrs[i].fileNameExt == "newerFileForTest_02.txt" {
-      foundNewerFile2 = true
-    }
-
-    if dWalker.FoundFiles.fileMgrs[i].fileNameExt == "newerFileForTest_03.txt" {
-      foundNewerFile3 = true
-    }
-
-  }
-
-  if !foundNewerFile1 {
-    t.Error("Expected FoundFiles would include newerFileForTest_01.txt. File was NOT found!")
-  }
-
-  if !foundNewerFile2 {
-    t.Error("Expected FoundFiles would include newerFileForTest_02.txt. File was NOT found!")
-  }
-
-  if !foundNewerFile3 {
-    t.Error("Expected FoundFiles would include newerFileForTest_03.txt. File was NOT found!")
-  }
-
-  if dWalker.Directories.GetNumOfDirs() != 3 {
-    t.Errorf("Expected the number of directories found would equal 3. It did NOT! "+
-      "Number of directories= '%v'", dWalker.Directories.GetNumOfDirs())
-  }
-
-  dir3 := fh.AdjustPathSlash("/dirwalktests/dir01/dir02/dir03")
-
-  foundDir3 := false
-
-  for j := 0; j < dWalker.Directories.GetNumOfDirs(); j++ {
-    if strings.Contains(dWalker.Directories.dirMgrs[j].path, dir3) {
-      foundDir3 = true
-    }
-  }
-
-  if !foundDir3 {
-    t.Errorf("Expected to find Directory %v in dWalker.dirMgrs. This directory was NOT found!",
-      dir3)
-  }
-
-}
-*/
-
-func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 
   origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
 
@@ -441,10 +285,12 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
     return
   }
 
-  fh := FileHelper{}
-
   if !fh.DoesFileExist(origDir) {
     t.Errorf("Error: The target directory does NOT Exist! origDir='%v'", origDir)
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   dMgr, err := DirMgr{}.New(origDir)
@@ -452,6 +298,10 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' "+
       "Error='%v'", origDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   searchPattern := ""
@@ -462,6 +312,9 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from time.Parse(fmtstr,fOlderThanStr). "+
       "fmtstr='%v' fOlderThanStr='%v' Error='%v'", fmtstr, fOlderThanStr, err.Error())
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   fNewerThanStr := "2017-12-01 19:54:30.000000000 -0600 CST"
@@ -470,6 +323,10 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from time.Parse(fmtstr,fNewerThanStr). "+
       "fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   fsc := FileSelectionCriteria{}
@@ -578,9 +435,33 @@ func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
       "This directory was NOT found!", dir3)
   }
 
+  err = fh.DeleteDirPathAll(absDir)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirPathAll(absDir)\n" +
+      "absDir='%v'\nError='%v'\n", absDir, err.Error())
+  }
+
+  return
+
 }
 
-func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
+func TestDirMgr_FindWalkDirFiles_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  baseDirPath := "../dirwalkdeletetests/dirdelete01"
+
+  absDir, err := fh.MakeAbsolutePath(baseDirPath)
+
+  if err != nil {
+    t.Errorf("fh.MakeAbsolutePath(baseDirPath) baseDirPath='%v' Error='%v'",
+      baseDirPath, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseDirPath)
+
+    return
+  }
 
   origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
 
@@ -591,10 +472,12 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 
   }
 
-  fh := FileHelper{}
-
   if !fh.DoesFileExist(origDir) {
     t.Errorf("Error: The target directory does NOT Exist! origDir='%v'", origDir)
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   dMgr, err := DirMgr{}.New(origDir)
@@ -602,6 +485,10 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'",
       origDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   searchPattern1 := "*.txt"
@@ -715,9 +602,13 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
     t.Errorf("Expected to find Directory %v in dInfo.dirMgrs. "+
       "This directory was NOT found!", dir3)
   }
+
+  _ = fh.DeleteDirPathAll(absDir)
+
+  return
 }
 
-func TestDirMgr_FindWalkDirFiles_07(t *testing.T) {
+func TestDirMgr_FindWalkDirFiles_05(t *testing.T) {
 
   sourceDir := "../filesfortest/levelfilesfortest"
 
@@ -742,7 +633,7 @@ func TestDirMgr_FindWalkDirFiles_07(t *testing.T) {
 
 }
 
-func TestDirMgr_FindWalkDirFiles_08(t *testing.T) {
+func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 
   sourceDir := "../filesfortest/iDoNotExist"
 
@@ -777,8 +668,25 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
 
   fh := FileHelper{}
 
+  baseDirPath := "../dirwalkdeletetests/dirdelete01"
+
+  absDir, err := fh.MakeAbsolutePath(baseDirPath)
+
+  if err != nil {
+    t.Errorf("fh.MakeAbsolutePath(baseDirPath) baseDirPath='%v' Error='%v'",
+      baseDirPath, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseDirPath)
+
+    return
+  }
+
   if !fh.DoesFileExist(origDir) {
     t.Errorf("Error: The target directory does NOT Exist! origDir='%v'", origDir)
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   dMgr, err := DirMgr{}.New(origDir)
@@ -804,6 +712,10 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
   if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
     t.Errorf("Expected to find 6-files deleted. Instead, %v-files were deleted.",
       dInfo.DeletedFiles.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   oldFile1 := "test.htm"
@@ -846,7 +758,6 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
     if strings.Contains(dInfo.DeletedFiles.fileMgrs[i].fileNameExt, newFile3) {
       newFile3Found = true
     }
-
   }
 
   if oldFile1Found == false {
@@ -884,23 +795,46 @@ func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
       dInfo.Directories.GetNumOfDirs())
   }
 
+  _ = fh.DeleteDirPathAll(absDir)
+
+  return
 }
 
 func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  baseDirPath := "../dirwalkdeletetests/dirdelete01"
+
+  absDir, err := fh.MakeAbsolutePath(baseDirPath)
+
+  if err != nil {
+    t.Errorf("fh.MakeAbsolutePath(baseDirPath) baseDirPath='%v' Error='%v'",
+      baseDirPath, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseDirPath)
+
+    return
+  }
 
   origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
 
   if err != nil {
     t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
       "Error='%v'", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
-
-  fh := FileHelper{}
 
   if !fh.DoesFileExist(origDir) {
     t.Errorf("Error: The target directory does NOT Exist! origDir='%v'",
       origDir)
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   dMgr, err := DirMgr{}.New(origDir)
@@ -908,6 +842,10 @@ func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'",
       origDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   searchPattern := "*.htm"
@@ -926,6 +864,10 @@ func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
   if dInfo.DeletedFiles.GetNumOfFileMgrs() != 3 {
     t.Errorf("Expected to find 3-files deleted. Instead, %v-files were deleted.",
       dInfo.DeletedFiles.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   oldFile1 := "test.htm"
@@ -977,24 +919,47 @@ func TestDirMgr_DeleteWalkDirFiles_02(t *testing.T) {
       "directories found='%v'", dInfo.Directories.GetNumOfDirs())
   }
 
+  _ = fh.DeleteDirPathAll(absDir)
+
+  return
 }
 
 func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  baseDirPath := "../dirwalkdeletetests/dirdelete01"
+
+  absDir, err := fh.MakeAbsolutePath(baseDirPath)
+
+  if err != nil {
+    t.Errorf("fh.MakeAbsolutePath(baseDirPath) baseDirPath='%v' Error='%v'",
+      baseDirPath, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseDirPath)
+
+    return
+  }
 
   origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
 
   if err != nil {
     t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
       "Error='%v'", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
 
   }
 
-  fh := FileHelper{}
-
   if !fh.DoesFileExist(origDir) {
     t.Errorf("Test Setup Error: The target directory does NOT Exist! origDir='%v'",
       origDir)
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   oldFile1 := "test.htm"
@@ -1017,6 +982,9 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
     t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime).\n" +
       "oldFiles[0]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[0], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
 
@@ -1029,6 +997,9 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
     t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime).\n" +
       "oldFiles[1]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[1], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
 
@@ -1041,6 +1012,9 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
     t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime).\n" +
       "oldFiles[2]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[2], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
 
@@ -1049,6 +1023,10 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'",
       origDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   searchPattern := ""
@@ -1059,6 +1037,10 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from time.Parse(dateFmtStr, fOlderThanStr). "+
       "fOlderThanStr='%v' Error='%v'", fOlderThanStr, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   filesNewerThan := time.Time{}
@@ -1076,6 +1058,9 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
     t.Errorf("Expected to find 3-files deleted. Instead, "+
       "%v-files were deleted.", dInfo.DeletedFiles.GetNumOfFileMgrs())
 
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   oldFile1Found := false
@@ -1123,29 +1108,51 @@ func TestDirMgr_DeleteWalkDirFiles_03(t *testing.T) {
       "of directories found='%v'", dInfo.Directories.GetNumOfDirs())
   }
 
-  err = fh.DeleteDirPathAll(origDir)
+  err = fh.DeleteDirPathAll(absDir)
+
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(origDir).\n" +
-      "origDir='%v'\nError='%v'\n", origDir, err.Error())
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n" +
+      "absDir='%v'\nError='%v'\n", absDir, err.Error())
   }
 
 }
 
 func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  baseDirPath := "../dirwalkdeletetests/dirdelete01"
+
+  absDir, err := fh.MakeAbsolutePath(baseDirPath)
+
+  if err != nil {
+    t.Errorf("fh.MakeAbsolutePath(baseDirPath) baseDirPath='%v' Error='%v'",
+      baseDirPath, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseDirPath)
+
+    return
+  }
+
   origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
 
   if err != nil {
     t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
       "Error='%v'", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
-
-  fh := FileHelper{}
 
   if !fh.DoesFileExist(origDir) {
     t.Errorf("Error: The target directory does NOT Exist! origDir='%v'",
       origDir)
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   oldFile1 := "test.htm"
@@ -1168,6 +1175,10 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
     t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime).\n" +
       "oldFiles[0]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[0], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
 
@@ -1180,6 +1191,9 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
     t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime).\n" +
       "oldFiles[1]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[1], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
 
@@ -1192,6 +1206,9 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
     t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime).\n" +
       "oldFiles[2]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[2], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
 
@@ -1201,6 +1218,10 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' "+
       "Error='%v'", origDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
 
@@ -1212,6 +1233,10 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from time.Parse(fmtstr, fOlderThanStr). "+
       "fOlderThanStr='%v' Error='%v'", fOlderThanStr, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   filesNewerThan := time.Time{}
@@ -1228,6 +1253,10 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
   if dInfo.DeletedFiles.GetNumOfFileMgrs() != 0 {
     t.Errorf("Expected to find 0-files deleted. Instead, %v-files were deleted.",
       dInfo.DeletedFiles.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   if len(dInfo.ErrReturns) != 0 {
@@ -1240,29 +1269,49 @@ func TestDirMgr_DeleteWalkDirFiles_04(t *testing.T) {
       "found='%v'", dInfo.Directories.GetNumOfDirs())
   }
 
-  err = fh.DeleteDirPathAll(origDir)
+  err = fh.DeleteDirPathAll(absDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(origDir).\n" +
-      "origDir='%v'\nError='%v'\n", origDir, err.Error())
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n" +
+      "absDir='%v'\nError='%v'\n", absDir, err.Error())
   }
-
 }
 
 func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  baseDirPath := "../dirwalkdeletetests/dirdelete01"
+
+  absDir, err := fh.MakeAbsolutePath(baseDirPath)
+
+  if err != nil {
+    t.Errorf("fh.MakeAbsolutePath(baseDirPath) baseDirPath='%v' Error='%v'",
+      baseDirPath, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseDirPath)
+
+    return
+  }
+
   origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
 
   if err != nil {
     t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
       "Error='%v'", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
-
-  fh := FileHelper{}
 
   if !fh.DoesFileExist(origDir) {
     t.Errorf("Error: The target directory does NOT Exist! origDir='%v'",
       origDir)
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   oldFile1 := "test.htm"
@@ -1285,6 +1334,9 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
     t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[0],newAccessTime, newModTime).\n" +
       "oldFiles[0]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[0], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
 
@@ -1297,6 +1349,9 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
     t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[1],newAccessTime, newModTime).\n" +
       "oldFiles[1]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[1], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
 
@@ -1309,9 +1364,11 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
     t.Errorf("Test Set Error from fh.ChangeFileTimes(oldFiles[2],newAccessTime, newModTime).\n" +
       "oldFiles[2]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       oldFiles[2], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
-
 
   newFile1 := "newerFileForTest_01.txt"
   newFile2 := "newerFileForTest_02.txt"
@@ -1333,6 +1390,9 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
     t.Errorf("Test Set Error from fh.ChangeFileTimes(newFiles[0],newAccessTime, newModTime).\n" +
       "newFiles[0]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       newFiles[0], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
 
@@ -1345,6 +1405,9 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
     t.Errorf("Test Set Error from fh.ChangeFileTimes(newFiles[1],newAccessTime, newModTime).\n" +
       "oldFiles[1]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       newFiles[1], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
 
@@ -1357,6 +1420,9 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
     t.Errorf("Test Set Error from fh.ChangeFileTimes(newFiles[2],newAccessTime, newModTime).\n" +
       "newFiles[2]='%v'\nnewAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       newFiles[2], newAccessTime.Format(dateFmtStr), newModTime.Format(dateFmtStr), err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
 
@@ -1365,6 +1431,10 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'",
       origDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   searchPattern := ""
@@ -1378,6 +1448,10 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from time.Parse(fmtstr, fNewerThanStr). "+
       "fNewerThanStr='%v' Error='%v'", fNewerThanStr, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   fsc := FileSelectionCriteria{}
@@ -1392,7 +1466,6 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
   if dInfo.DeletedFiles.GetNumOfFileMgrs() != 3 {
     t.Errorf("Expected to find 3-files deleted. Instead, %v-files "+
       "were deleted.", dInfo.DeletedFiles.GetNumOfFileMgrs())
-
   }
 
   newFile1Found := false
@@ -1440,31 +1513,48 @@ func TestDirMgr_DeleteWalkDirFiles_05(t *testing.T) {
       "directories found='%v'", dInfo.Directories.GetNumOfDirs())
   }
 
-  err = fh.DeleteDirPathAll(origDir)
+  err = fh.DeleteDirPathAll(absDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(origDir).\n" +
-      "origDir='%v'\nError='%v'\n", origDir, err.Error())
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n" +
+      "absDir='%v'\nError='%v'\n", absDir, err.Error())
   }
 
 }
 
 func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 
-  // origDir = D:\gowork\src\MikeAustin71\pathfileopsgo\dirwalkdeletetests\dirdelete01
+  fh := FileHelper{}
+
+  baseDirPath := "../dirwalkdeletetests/dirdelete01"
+
+  absDir, err := fh.MakeAbsolutePath(baseDirPath)
+
+  if err != nil {
+    t.Errorf("fh.MakeAbsolutePath(baseDirPath) baseDirPath='%v' Error='%v'",
+      baseDirPath, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseDirPath)
+
+    return
+  }
+
   origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
 
   if err != nil {
     t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
       "Error='%v'", err.Error())
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
-
-  fh := FileHelper{}
 
   if !fh.DoesFileExist(origDir) {
     t.Errorf("Error: The target directory does NOT Exist! origDir='%v'",
       origDir)
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
 
@@ -1473,6 +1563,10 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' "+
       "Error='%v'", origDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   searchPattern := ""
@@ -1486,6 +1580,10 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from time.Parse(fmtstr, fNewerThanStr). "+
       "fNewerThanStr='%v' Error='%v'", fNewerThanStr, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   fsc := FileSelectionCriteria{}
@@ -1580,29 +1678,50 @@ func TestDirMgr_DeleteWalkDirFiles_06(t *testing.T) {
 
   }
 
-  err = fh.DeleteDirPathAll(origDir)
+  err = fh.DeleteDirPathAll(absDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(origDir).\n" +
-      "origDir='%v'\nError='%v'\n", origDir, err.Error())
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n" +
+      "absDir='%v'\nError='%v'\n", absDir, err.Error())
   }
 
 }
 
 func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
+
+  fh := FileHelper{}
+
+  baseDirPath := "../dirwalkdeletetests/dirdelete01"
+
+  absDir, err := fh.MakeAbsolutePath(baseDirPath)
+
+  if err != nil {
+    t.Errorf("fh.MakeAbsolutePath(baseDirPath) baseDirPath='%v' Error='%v'",
+      baseDirPath, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseDirPath)
+
+    return
+  }
+
   origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
 
   if err != nil {
     t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
       "Error='%v'", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
-
-  fh := FileHelper{}
 
   if !fh.DoesFileExist(origDir) {
     t.Errorf("Error: The target directory does NOT Exist! origDir='%v'",
       origDir)
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   dMgr, err := DirMgr{}.New(origDir)
@@ -1610,6 +1729,10 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' "+
       "Error='%v'", origDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   searchPattern := ""
@@ -1627,6 +1750,10 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
   if err != nil {
     t.Errorf("Error from fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))\n" +
       "Error='%v'\n", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
@@ -1721,29 +1848,50 @@ func TestDirMgr_DeleteWalkDirFiles_07(t *testing.T) {
       "directories found='%v'", dInfo.Directories.GetNumOfDirs())
   }
 
-  err = fh.DeleteDirPathAll(origDir)
+  err = fh.DeleteDirPathAll(absDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(origDir).\n" +
-      "origDir='%v'\nError='%v'\n", origDir, err.Error())
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n" +
+      "absDir='%v'\nError='%v'\n", absDir, err.Error())
   }
 
 }
 
 func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
+
+  fh := FileHelper{}
+
+  baseDirPath := "../dirwalkdeletetests/dirdelete01"
+
+  absDir, err := fh.MakeAbsolutePath(baseDirPath)
+
+  if err != nil {
+    t.Errorf("fh.MakeAbsolutePath(baseDirPath) baseDirPath='%v' Error='%v'",
+      baseDirPath, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseDirPath)
+
+    return
+  }
+
   origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
 
   if err != nil {
     t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
       "Error='%v'", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
-
-  fh := FileHelper{}
 
   if !fh.DoesFileExist(origDir) {
     t.Errorf("Error: The target directory does NOT Exist! origDir='%v'",
       origDir)
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   dMgr, err := DirMgr{}.New(origDir)
@@ -1751,6 +1899,10 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' "+
       "Error='%v'", origDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   searchPattern1 := "*.txt"
@@ -1863,11 +2015,11 @@ func TestDirMgr_DeleteWalkDirFiles_08(t *testing.T) {
       "directories found='%v'", dInfo.Directories.GetNumOfDirs())
   }
 
-  err = fh.DeleteDirPathAll(origDir)
+  err = fh.DeleteDirPathAll(absDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(origDir).\n" +
-      "origDir='%v'\nError='%v'\n", origDir, err.Error())
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n" +
+      "absDir='%v'\nError='%v'\n", absDir, err.Error())
   }
 
 }
@@ -1914,22 +2066,49 @@ func TestDirMgr_DeleteWalkDirFiles_09(t *testing.T) {
 }
 
 func TestDirMgr_DeleteWalkDirFiles_10(t *testing.T) {
+
+  fh := FileHelper{}
+
+  baseDirPath := "../dirwalkdeletetests/dirdelete01"
+
+  absDir, err := fh.MakeAbsolutePath(baseDirPath)
+
+  if err != nil {
+    t.Errorf("fh.MakeAbsolutePath(baseDirPath) baseDirPath='%v' Error='%v'",
+      baseDirPath, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseDirPath)
+
+    return
+  }
+
   origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()
 
   if err != nil {
     t.Errorf("Error returned from dirMgr02TestSetupFileWalkDeleteFiles(). "+
       "Error='%v'", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
     return
   }
-
-  fh := FileHelper{}
 
   if !fh.DoesFileExist(origDir) {
     t.Errorf("Error: The target directory does NOT Exist! origDir='%v'",
       origDir)
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   dMgr, err := DirMgr{}.New(origDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(origDir)\n" +
+      "origDir='%v'\nError='%v'\n",
+      origDir, err.Error())
+  }
 
   searchPattern1 := "*.txt"
   searchPattern2 := "*.htm"
@@ -1947,6 +2126,10 @@ func TestDirMgr_DeleteWalkDirFiles_10(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666)).\n" +
       "Error='%v'\n", err.Error())
+
+    _ = fh.DeleteDirPathAll(absDir)
+
+    return
   }
 
   fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
@@ -1960,11 +2143,11 @@ func TestDirMgr_DeleteWalkDirFiles_10(t *testing.T) {
       "However, NO ERROR WAS RETURNED!")
   }
 
-  err = fh.DeleteDirPathAll(origDir)
+  err = fh.DeleteDirPathAll(absDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(origDir).\n" +
-      "origDir='%v'\nError='%v'\n", origDir, err.Error())
+    t.Errorf("Test Clean-Up Error from fh.DeleteDirPathAll(absDir).\n" +
+      "absDir='%v'\nError='%v'\n", absDir, err.Error())
   }
 
 }
@@ -1977,7 +2160,7 @@ func TestDirMgr_DeleteWalkDirFiles_10(t *testing.T) {
 
 func dirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 
-  ePrefix := "xt_dirmgr_02_test.go Func: dirMgr02TestSetupFileWalkDeleteFiles() "
+  ePrefix := "xt_dirmgr_05_test.go Func: dirMgr02TestSetupFileWalkDeleteFiles() "
 
   fh := FileHelper{}
 
@@ -2091,13 +2274,20 @@ func dirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 // Set up Directory Tree, ../dirwalktests for tests!
 func dirMgr02SetupDirWalkTests() error {
 
-  ePrefix := "xt_dirmgr02.dirMgr02SetupDirWalkTests() "
+  ePrefix := "xt_dirmgr05.dirMgr02SetupDirWalkTests() "
 
   fh := FileHelper{}
 
   var err error
 
-  _ = fh.DeleteDirPathAll("../dirwalktests")
+  err = fh.DeleteDirPathAll("../dirwalktests")
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Error returned by fh.DeleteDirPathAll(\"../dirwalktests\"). "+
+      "Error='%v' ", err.Error())
+
+  }
 
   dest3, err := fh.MakeAbsolutePath("../dirwalktests/dir01/dir02/dir03")
 
@@ -2110,7 +2300,7 @@ func dirMgr02SetupDirWalkTests() error {
   destDirMgr3, err := DirMgr{}.New(dest3)
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"Error from DirMgr{}.NewFromPathFileNameExtStr(dest3) "+
+    return fmt.Errorf(ePrefix+"Error from DirMgr{}.New(dest3)) "+
       "dest3='%v' Error='%v' ", dest3, err.Error())
   }
 

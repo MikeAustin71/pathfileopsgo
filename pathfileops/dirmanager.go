@@ -4727,21 +4727,6 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
       isEmpty = true
       return
     }
-  } else {
-    // err2 != nil
-
-    if !os.IsNotExist(err2) {
-      // The error returned by os.Stat(dMgr.absolutePath) is NOT
-      // a standard PATH DOES NOT EXIST error.
-      dMgr.Empty()
-      err = fmt.Errorf(ePrefix+
-        "Non-Path Error triggered on Directory Manager absoltue path.\n" +
-        "os.Stat(dMgr.absolutePath) error.\n" +
-        "dMgr.absolutePath='%v' Error='%v'",
-        dMgr.absolutePath, err2.Error())
-      isEmpty = true
-      return isEmpty, err
-    }
   }
 
   dMgr.isAbsolutePathPopulated = true

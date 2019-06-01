@@ -127,7 +127,7 @@ func TestDirMgrCollection_AddDirMgr_01(t *testing.T) {
 
 }
 
-func TestDirMgrCollection_AddDirMgrByPathNameStr(t *testing.T) {
+func TestDirMgrCollection_AddDirMgrByPathNameStr_01(t *testing.T) {
 
   testDirStr := ""
 
