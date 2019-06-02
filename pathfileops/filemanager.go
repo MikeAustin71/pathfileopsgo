@@ -2452,7 +2452,7 @@ func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err erro
       "Error returned from "+
       "fh.MoveFile(fMgr.absolutePathFileName, destPathFileName). "+
       "fMgr.absolutePathFileName='%v' pathFile='%v' Error='%v'",
-      fMgr.absolutePathFileName, destPathFileName, err.Error())
+      fMgr.absolutePathFileName, destPathFileName, err2.Error())
     return newFMgr, err
   }
 
@@ -4036,7 +4036,7 @@ func (fMgr *FileMgr) WriteBytesToFile(bytes []byte) (numBytesWritten int, err er
     err =
       fmt.Errorf(ePrefix+
         "Error returned from fMgr.fileBufWriter.Write(bytes). Output File='%v'. "+
-        "Error='%v'", fMgr.absolutePathFileName, err.Error())
+        "Error='%v'", fMgr.absolutePathFileName, err2.Error())
 
   }
 

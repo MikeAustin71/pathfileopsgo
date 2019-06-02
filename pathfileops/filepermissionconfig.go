@@ -268,7 +268,7 @@ func (fPerm *FilePermissionConfig) GetPermissionComponents() (
 
   err2 = fPerm.IsValid()
 
-  if err != nil {
+  if err2 != nil {
     err =
       fmt.Errorf(ePrefix+
         "Error: This FilePermissionConfig instance INVALID. "+

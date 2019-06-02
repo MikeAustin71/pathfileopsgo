@@ -253,7 +253,7 @@ func (dMgrs *DirMgrCollection) FindDirectories(
 
     }
 
-    if isMatchedFile && err == nil {
+    if isMatchedFile {
       dMgrs2.AddDirMgr(dMgr)
     }
 

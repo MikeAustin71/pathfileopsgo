@@ -1504,7 +1504,7 @@ func (fh FileHelper) DoesFileInfoExist(
 
   if err2 != nil {
     err = fmt.Errorf("Error returned by os.Stat(pathFileName). "+
-      "pathFileName='%v' Error='%v' ", pathFileName, err.Error())
+      "pathFileName='%v' Error='%v' ", pathFileName, err2.Error())
     return doesFInfoExist, fInfo, err
   }
 
@@ -1580,7 +1580,7 @@ func (fh *FileHelper) FilterFileName(
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
       "Error returned from fh.SearchFilePatternMatch(info, fileSelectionCriteria).\n" +
-      "info.Name()='%v'\nError='%v'\n", info.Name(), err.Error())
+      "info.Name()='%v'\nError='%v'\n", info.Name(), err2.Error())
     isMatchedFile = false
     return
   }
@@ -1591,7 +1591,7 @@ func (fh *FileHelper) FilterFileName(
     err = fmt.Errorf(ePrefix +
       "Error returned from dMgr.searchFileOlderThan(info, fileSelectionCriteria)\n" +
       "fileSelectionCriteria.FilesOlderThan='%v' info.Name()='%v'\nError='%v'\n",
-      fileSelectionCriteria.FilesOlderThan, info.Name(), err.Error())
+      fileSelectionCriteria.FilesOlderThan, info.Name(), err2.Error())
     isMatchedFile = false
     return
   }
@@ -1602,7 +1602,7 @@ func (fh *FileHelper) FilterFileName(
     err = fmt.Errorf(ePrefix +
       "Error returned from dMgr.searchFileNewerThan(info, fileSelectionCriteria).\n" +
       "fileSelectionCriteria.FilesNewerThan='%v' info.Name()='%v'\nError='%v'\n",
-      fileSelectionCriteria.FilesNewerThan, info.Name(), err.Error())
+      fileSelectionCriteria.FilesNewerThan, info.Name(), err2.Error())
     isMatchedFile = false
     return
   }
@@ -1618,7 +1618,7 @@ func (fh *FileHelper) FilterFileName(
       "fileSelectionCriteria.SelectByFileMode='%v'\n" +
       "info.Name()='%v' Error='%v'\n",
       fileModeTxt,
-      info.Name(), err.Error())
+      info.Name(), err2.Error())
     isMatchedFile = false
     return
   }
@@ -4507,7 +4507,7 @@ func (fh FileHelper) OpenFile(
 
     err = fmt.Errorf(ePrefix+
       "Error returned by os.OpenFile(pathFileName, fOpenCode, fileMode) "+
-      "targetpathFileName='%v' Error='%v' ", pathFileName, err.Error())
+      "targetpathFileName='%v' Error='%v' ", pathFileName, err2.Error())
 
     return filePtr, err
   }
@@ -4648,7 +4648,7 @@ func (fh FileHelper) OpenFileReadOnly(pathFileName string) (filePtr *os.File, er
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix + "File Open Error: %v\n" +
-      "pathFileName='%v'", err.Error(), pathFileName)
+      "pathFileName='%v'", err2.Error(), pathFileName)
     filePtr = nil
     return filePtr, err
   }
@@ -5216,7 +5216,10 @@ func (fh *FileHelper) SearchFilePatternMatch(
 
     if err2 != nil {
       isPatternSet = true
-      err = fmt.Errorf(ePrefix+"Error returned from filepath.Match(fileSelectCriteria.FileNamePatterns[i] , info.Name()) fileSelectCriteria.FileNamePatterns[i]='%v' info.Name()='%v' Error='%v'", fileSelectCriteria.FileNamePatterns[i], info.Name(), err.Error())
+      err = fmt.Errorf(ePrefix+
+        "Error returned from filepath.Match(fileSelectCriteria.FileNamePatterns[i], " +
+        "info.Name())\nfileSelectCriteria.FileNamePatterns[i]='%v'\ninfo.Name()='%v'\nError='%v'\n",
+        fileSelectCriteria.FileNamePatterns[i], info.Name(), err2.Error())
       isPatternMatch = false
       return
     }
@@ -5399,14 +5402,19 @@ func (fh *FileHelper) makeFileHelperWalkDirDeleteFilesFunc(dInfo *DirectoryDelet
       subDir, err := DirMgr{}.New(pathFile)
 
       if err != nil {
-        ex := fmt.Errorf(ePrefix+"Error returned from DirMgr{}.NewFromPathFileNameExtStr(pathFile). pathFile:='%v' Error='%v'", pathFile, err.Error())
+
+        ex := fmt.Errorf(ePrefix+
+          "Error returned from DirMgr{}.NewFromPathFileNameExtStr(pathFile).\n" +
+          "pathFile:='%v'\nError='%v'\n", pathFile, err.Error())
 
         dInfo.ErrReturns = append(dInfo.ErrReturns, ex.Error())
 
+        /*
         if subDir.isInitialized {
           subDir.actualDirFileInfo = FileInfoPlus{}.NewFromPathFileInfo(pathFile, info)
           dInfo.Directories.AddDirMgr(subDir)
         }
+        */
 
         return nil
       }
@@ -5476,11 +5484,13 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
 
     if info.IsDir() {
       subDir, err := DirMgr{}.NewFromFileInfo(pathFile, info)
-      if err != nil {
 
+      if err != nil {
+        /*
         if subDir.isInitialized {
           dInfo.Directories.AddDirMgr(subDir)
         }
+        */
 
         er2 := fmt.Errorf(ePrefix+"Error returned by DirMgr{}.NewFromPathFileNameExtStr(pathFile). "+
           "pathFile='%v' Error='%v'", pathFile, err.Error())

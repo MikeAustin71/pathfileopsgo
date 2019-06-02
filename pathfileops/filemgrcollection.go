@@ -319,7 +319,7 @@ func (fMgrs *FileMgrCollection) FindFiles(
 
     }
 
-    if isMatchedFile && err == nil {
+    if isMatchedFile  {
       fMgrs2.AddFileMgr(fMgr)
     }
 
