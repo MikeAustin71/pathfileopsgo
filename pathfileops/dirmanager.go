@@ -7,6 +7,7 @@ import (
   "os"
   fp "path/filepath"
   "strings"
+  "sync"
   "time"
 )
 
@@ -50,6 +51,7 @@ type DirMgr struct {
   volumeName                      string
   isVolumePopulated               bool
   actualDirFileInfo               FileInfoPlus
+  dataMutex                       sync.Mutex // Used internally to ensure thread safe operations
 }
 
 // CopyDirectoryTree - Copies all selected files in the directory tree to
@@ -601,7 +603,8 @@ func (dMgr *DirMgr) CopyDirectory(
 // is completed, the current DirMgr object is a duplicate of the
 // incoming DirMgr object.
 func (dMgr *DirMgr) CopyIn(dmgrIn *DirMgr) {
-
+  dmgrIn.dataMutex.Lock()
+  dMgr.dataMutex.Lock()
   dMgr.isInitialized = dmgrIn.isInitialized
   dMgr.originalPath = dmgrIn.originalPath
   dMgr.path = dmgrIn.path
@@ -617,6 +620,8 @@ func (dMgr *DirMgr) CopyIn(dmgrIn *DirMgr) {
   dMgr.volumeName = dmgrIn.volumeName
   dMgr.isVolumePopulated = dmgrIn.isVolumePopulated
   dMgr.actualDirFileInfo = dmgrIn.actualDirFileInfo.CopyOut()
+  dmgrIn.dataMutex.Unlock()
+  dMgr.dataMutex.Unlock()
 }
 
 // CopyOut - Makes a duplicate copy of the current DirMgr values and
@@ -624,6 +629,7 @@ func (dMgr *DirMgr) CopyIn(dmgrIn *DirMgr) {
 func (dMgr *DirMgr) CopyOut() DirMgr {
 
   dOut := DirMgr{}
+  dMgr.dataMutex.Lock()
 
   dOut.isInitialized = dMgr.isInitialized
   dOut.originalPath = dMgr.originalPath
@@ -641,6 +647,7 @@ func (dMgr *DirMgr) CopyOut() DirMgr {
   dOut.isVolumePopulated = dMgr.isVolumePopulated
   dOut.actualDirFileInfo = dMgr.actualDirFileInfo.CopyOut()
 
+  dMgr.dataMutex.Unlock()
   return dOut
 }
 
@@ -739,6 +746,8 @@ func (dMgr *DirMgr) DeleteAll() error {
     return nonPathError
   }
 
+  dMgr.dataMutex.Lock()
+
   if dirPathDoesExist {
 
     err2 := os.RemoveAll(dMgr.absolutePath)
@@ -747,10 +756,14 @@ func (dMgr *DirMgr) DeleteAll() error {
      nonPathError = fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(dMgr.absolutePath) "+
         "returned error. dMgr.absolutePath='%v' Error='%v' ", dMgr.absolutePath, err2.Error())
 
+      dMgr.dataMutex.Unlock()
       return nonPathError
     }
 
   }
+
+  dMgr.dataMutex.Unlock()
+
   _ = dMgr.DoesPathExist()
 
   if dMgr.DoesAbsolutePathExist() {
@@ -814,7 +827,11 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
     return errs
   }
 
+  dMgr.dataMutex.Lock()
+
   dir, err := os.Open(dMgr.absolutePath)
+
+  dMgr.dataMutex.Unlock()
 
   if err != nil {
     err2 = fmt.Errorf(ePrefix+
@@ -825,6 +842,7 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
     errs = append(errs, err2)
     return errs
   }
+
 
   err3 = nil
   var nameFileInfos []os.FileInfo
@@ -852,7 +870,11 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
 
       } else {
 
+        dMgr.dataMutex.Lock()
+
         err = os.Remove(dMgr.absolutePath + osPathSepStr + nameFInfo.Name())
+
+        dMgr.dataMutex.Unlock()
 
         if err != nil {
           err2 = fmt.Errorf(ePrefix+
@@ -943,7 +965,11 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
     return errs
   }
 
+  dMgr.dataMutex.Lock()
+
   dir, err := os.Open(dMgr.absolutePath)
+
+  dMgr.dataMutex.Unlock()
 
   if err != nil {
 
@@ -979,7 +1005,11 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
 
       if nameFInfo.IsDir() {
 
+        dMgr.dataMutex.Lock()
+
         err = os.RemoveAll(dMgr.absolutePath + osPathSeparatorStr + nameFInfo.Name())
+
+        dMgr.dataMutex.Unlock()
 
         if err != nil {
           err2 = fmt.Errorf(ePrefix +
@@ -1299,7 +1329,11 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
     return errs
   }
 
+  dMgr.dataMutex.Lock()
+
   dir, err := os.Open(dMgr.absolutePath)
+
+  dMgr.dataMutex.Unlock()
 
   if err != nil {
 
@@ -1359,7 +1393,11 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 
         } else {
 
+          dMgr.dataMutex.Lock()
+
           err = os.Remove(dMgr.absolutePath + osPathSepStr + nameFInfo.Name())
+
+          dMgr.dataMutex.Unlock()
 
           if err != nil {
             err2 = fmt.Errorf(ePrefix+
@@ -2307,7 +2345,11 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
     return errs
   }
 
-  dir, err := os.Open(dMgr.absolutePath)
+  dMgr.dataMutex.Lock()
+
+    dir, err := os.Open(dMgr.absolutePath)
+
+  dMgr.dataMutex.Unlock()
 
   if err != nil {
     err2 := fmt.Errorf(ePrefix+
@@ -2844,7 +2886,11 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
         "DirMgr Path ='%v'\n", dMgr.absolutePath)
   }
 
+  dMgr.dataMutex.Lock()
+
   dir, err := os.Open(dMgr.absolutePath)
+
+  dMgr.dataMutex.Unlock()
 
   if err != nil {
     return FileMgrCollection{},
@@ -3093,7 +3139,11 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
         "DirMgr Path ='%v'\n", dMgr.absolutePath)
   }
 
+  dMgr.dataMutex.Lock()
+
   dir, err := os.Open(dMgr.absolutePath)
+
+  dMgr.dataMutex.Unlock()
 
   if err != nil {
     return FileMgrCollection{},
@@ -3919,7 +3969,11 @@ func (dMgr *DirMgr) MakeDirWithPermission(fPermCfg FilePermissionConfig) error {
     return fmt.Errorf(ePrefix+"%v", err.Error())
   }
 
+  dMgr.dataMutex.Lock()
+
   err = os.MkdirAll(dMgr.absolutePath, modePerm)
+
+  dMgr.dataMutex.Unlock()
 
   if err != nil {
     return fmt.Errorf(ePrefix+
@@ -4193,7 +4247,11 @@ func (dMgr *DirMgr) MoveDirectory(
     return errs
   }
 
+  dMgr.dataMutex.Lock()
+
   dir, err := os.Open(dMgr.absolutePath)
+
+  dMgr.dataMutex.Unlock()
 
   if err != nil {
 
@@ -4418,7 +4476,11 @@ func (dMgr *DirMgr) MoveDirectoryTree(targetDMgr DirMgr) (errs []error) {
   // Now delete the current directory tree
   // to complete the move operation.
 
-  err = os.RemoveAll(dMgr.GetAbsolutePath())
+  dMgr.dataMutex.Lock()
+
+  err = os.RemoveAll(dMgr.absolutePath)
+
+  dMgr.dataMutex.Unlock()
 
   if err != nil {
     err2 = fmt.Errorf(ePrefix + "Files were copied successfuly to target directory.\n" +
@@ -4723,11 +4785,15 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
     return isEmpty, err
   }
 
+  dMgr.dataMutex.Lock()
+
   dMgr.originalPath = adjustedTrimmedPathStr
 
   dMgr.path = finalPathStr
 
   dMgr.isPathPopulated = true
+
+  dMgr.dataMutex.Unlock()
 
   dirPathDoesExist, _, nonPathError :=
     dMgr.doesDirPathExist(dMgr.path, ePrefix, "dMgr.path")
@@ -4781,6 +4847,8 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
 
   dMgr.isAbsolutePathPopulated = true
 
+  dMgr.dataMutex.Lock()
+
   strAry := strings.Split(dMgr.absolutePath, string(os.PathSeparator))
   lStr := len(strAry)
   idxStr := strAry[lStr-1]
@@ -4825,6 +4893,8 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
   }
 
   err = nil
+
+  dMgr.dataMutex.Unlock()
 
   return
 }
@@ -4893,7 +4963,11 @@ func (dMgr *DirMgr) SetPermissions(permissionConfig FilePermissionConfig) error 
 
   fh := FileHelper{}
 
+  dMgr.dataMutex.Lock()
+
   err = fh.ChangeFileMode(dMgr.absolutePath, permissionConfig)
+
+  dMgr.dataMutex.Unlock()
 
   if err != nil{
     return fmt.Errorf(ePrefix + "Input parameter 'permissionConfig' is INVALID!\n" +
@@ -5534,6 +5608,8 @@ func (dMgr *DirMgr) doesDirPathExist(
 
   ePrefix := "DirMgr.doesDirPathExist() "
 
+  dMgr.dataMutex.Lock()
+
   pathDoesExist = false
   fInfo = FileInfoPlus{}
   nonPathError = nil
@@ -5555,12 +5631,14 @@ func (dMgr *DirMgr) doesDirPathExist(
   if errCode == -1 {
     nonPathError = fmt.Errorf(ePrefix +
       "Error: Input parameter '%v' is an empty string!", pathTitle)
+    dMgr.dataMutex.Unlock()
     return pathDoesExist, fInfo, nonPathError
   }
 
   if errCode == -2 {
     nonPathError = fmt.Errorf(ePrefix +
       "Error: Input parameter '%v' consists of blank spaces!", pathTitle)
+    dMgr.dataMutex.Unlock()
     return pathDoesExist, fInfo, nonPathError
   }
 
@@ -5583,6 +5661,7 @@ func (dMgr *DirMgr) doesDirPathExist(
         fInfo = FileInfoPlus{}
         nonPathError = nil
 
+        dMgr.dataMutex.Unlock()
         return pathDoesExist, fInfo, nonPathError
 
       }
@@ -5601,11 +5680,14 @@ func (dMgr *DirMgr) doesDirPathExist(
       pathDoesExist = true
       nonPathError = nil
       fInfo = FileInfoPlus{}.NewFromFileInfo(info)
+      dMgr.dataMutex.Unlock()
       return pathDoesExist, fInfo, nonPathError
     }
 
     time.Sleep(30 * time.Millisecond)
   }
+
+  dMgr.dataMutex.Unlock()
 
   return pathDoesExist, fInfo, nonPathError
 }
