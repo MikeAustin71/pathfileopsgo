@@ -1521,18 +1521,39 @@ func (fMgr *FileMgr) DoesFileExist() bool {
 // designating whether the file specified by the
 // current FileMgr.absolutePathFileName field
 // exists.
-func (fMgr *FileMgr) DoesThisFileExist() (bool, error) {
+func (fMgr *FileMgr) DoesThisFileExist() (fileDoesExist bool, nonPathError error) {
 
   ePrefix := "FileMgr.DoesThisFileExist() "
 
-  err := fMgr.IsFileMgrValid(ePrefix)
+  fileDoesExist = false
+  nonPathError = nil
+  var fInfoPlus FileInfoPlus
 
-  if err != nil {
-    return false,
-      err
+  nonPathError = fMgr.IsFileMgrValid(ePrefix)
+
+  if nonPathError != nil {
+    return fileDoesExist,  nonPathError
   }
 
-  return fMgr.doesAbsolutePathFileNameExist, nil
+ fileDoesExist, fInfoPlus, nonPathError =
+   fMgr.doesPathFileExist(fMgr.absolutePathFileName,
+                          ePrefix,
+                          "fMgr.absolutePathFileName")
+
+ if nonPathError != nil {
+   fileDoesExist = false
+   return fileDoesExist, nonPathError
+ }
+
+ if fileDoesExist {
+   fMgr.actualFileInfo = fInfoPlus.CopyOut()
+   fMgr.doesAbsolutePathFileNameExist = true
+ } else {
+   fMgr.actualFileInfo = FileInfoPlus{}
+   fMgr.doesAbsolutePathFileNameExist = false
+ }
+
+ return fileDoesExist, nonPathError
 }
 
 // Equal - Compares a second FileHelper data structure
@@ -1831,37 +1852,29 @@ func (fMgr *FileMgr) GetFileExt() string {
 // }
 func (fMgr *FileMgr) GetFileInfo() (os.FileInfo, error) {
 
-  ePrefix := "FileMgr.DeleteThisFile() "
+  ePrefix := "FileMgr.GetFileInfo() "
 
-  err := fMgr.IsFileMgrValid(ePrefix)
+  nonPathError := fMgr.IsFileMgrValid(ePrefix)
 
-  if err != nil {
-    return nil, err
+  if nonPathError != nil {
+    return nil, nonPathError
   }
 
-  if !fMgr.doesAbsolutePathFileNameExist {
-    return nil,
-      errors.New(ePrefix + "The current FileMgr file does NOT exist!")
+  filePathDoesExist, fInfoPlus, nonPathError :=
+     fMgr.doesPathFileExist(fMgr.absolutePathFileName, ePrefix, "fMgr.absolutePathFileName")
+
+  if nonPathError != nil {
+    return nil, nonPathError
   }
 
-  fMgr.dataMutex.Lock()
-
-  info, err := os.Stat(fMgr.absolutePathFileName)
-
-  if err != nil {
-    fMgr.dataMutex.Unlock()
-
-    return nil,
-      fmt.Errorf(ePrefix+"Error returned by "+
-        "os.Stat(fMgr.absolutePathFileName). fMgr.absolutePathFileName='%v'  Error='%v'",
-        fMgr.absolutePathFileName, err.Error())
+  if filePathDoesExist {
+    fMgr.doesAbsolutePathFileNameExist = true
+    fMgr.actualFileInfo = fInfoPlus.CopyOut()
+    return fInfoPlus, nil
   }
 
-  fMgr.actualFileInfo = FileInfoPlus{}.NewFromPathFileInfo(fMgr.dMgr.absolutePath, info)
-
-  fMgr.dataMutex.Unlock()
-
-  return info, nil
+  return nil,
+    errors.New(ePrefix + "The current FileMgr file does NOT exist!")
 }
 
 // GetFileInfoPlus - Returns a FileInfoPlus instance containing
@@ -1879,12 +1892,22 @@ func (fMgr *FileMgr) GetFileInfoPlus() (FileInfoPlus, error) {
     return FileInfoPlus{}, err
   }
 
-  if !fMgr.doesAbsolutePathFileNameExist {
-    return FileInfoPlus{},
-      errors.New(ePrefix + "The current FileMgr file does NOT exist!")
+  filePathDoesExist, fInfoPlus, nonPathError :=
+    fMgr.doesPathFileExist(fMgr.absolutePathFileName, ePrefix, "fMgr.absolutePathFileName")
+
+  if nonPathError != nil {
+    return FileInfoPlus{}, nonPathError
   }
 
-  return fMgr.actualFileInfo.CopyOut(), nil
+  if filePathDoesExist {
+    fMgr.doesAbsolutePathFileNameExist = true
+    fMgr.actualFileInfo = fInfoPlus.CopyOut()
+    return fInfoPlus, nil
+  }
+
+  return FileInfoPlus{}, fmt.Errorf(ePrefix +
+    "Error: File Manager file DOES NOT EXIST!\n" +
+    "File='%v'\n", fMgr.absolutePathFileName)
 }
 
 // GetFileModTime - Returns the time of the last file modification as a
@@ -4132,4 +4155,112 @@ func (fMgr *FileMgr) WriteStrToFile(str string) (numBytesWritten int, err error)
   }
 
   return numBytesWritten, err
+}
+
+
+// doesPathFileExist - A helper method which public methods use to determine whether a
+// path and file does or does not exist.
+//
+// This method calls os.Stat(dirPath) which returns an error which is one of two types:
+//     1. A Non-Path Error - An error which is not path related. It signals some other type
+//        of error which makes impossible to determine if the path actually exists. These
+//        types of errors may include access errors. In this case, no valid existence test
+//        can be performed.
+//
+//            or
+//
+//     2. A Path Error - indicates that the path does not exist.
+//
+// To deal with these types of errors, this method will test path existence up to three times before
+// returning a non-path error.
+//
+func (fMgr *FileMgr) doesPathFileExist(
+  filePath, errorPrefix, filePathTitle string) (filePathDoesExist bool,
+  fInfo FileInfoPlus,
+  nonPathError error) {
+
+  ePrefix := "DirMgr.doesDirPathExist() "
+
+  fMgr.dataMutex.Lock()
+
+  filePathDoesExist = false
+  fInfo = FileInfoPlus{}
+  nonPathError = nil
+
+  if len(errorPrefix) > 0 {
+    ePrefix = errorPrefix
+  }
+
+  if len(filePathTitle) == 0 {
+    filePathTitle = "filePath"
+  }
+
+  fh := FileHelper{}
+
+  errCode := 0
+
+  errCode, _, filePath = fh.isStringEmptyOrBlank(filePath)
+
+  if errCode == -1 {
+    nonPathError = fmt.Errorf(ePrefix +
+      "Error: Input parameter '%v' is an empty string!", filePathTitle)
+    fMgr.dataMutex.Unlock()
+    return filePathDoesExist, fInfo, nonPathError
+  }
+
+  if errCode == -2 {
+    nonPathError = fmt.Errorf(ePrefix +
+      "Error: Input parameter '%v' consists of blank spaces!", filePathTitle)
+    fMgr.dataMutex.Unlock()
+    return filePathDoesExist, fInfo, nonPathError
+  }
+
+  var err error
+  var info os.FileInfo
+
+  for i:=0; i < 3; i++ {
+
+    filePathDoesExist = false
+    fInfo = FileInfoPlus{}
+    nonPathError = nil
+
+    info, err = os.Stat(filePath)
+
+    if err != nil {
+
+      if os.IsNotExist(err) {
+
+        filePathDoesExist = false
+        fInfo = FileInfoPlus{}
+        nonPathError = nil
+
+        fMgr.dataMutex.Unlock()
+        return filePathDoesExist, fInfo, nonPathError
+
+      }
+      // err == nil and err != os.IsNotExist(err)
+      // This is a non-path error. The non-path error will be test
+      // up to 3-times before it is returned.
+      nonPathError = fmt.Errorf(ePrefix+"Non-Path error returned by os.Stat(%v)\n"+
+        "%v='%v'\nError='%v'\n",
+        filePathTitle, filePathTitle, filePath, err.Error())
+      fInfo = FileInfoPlus{}
+      filePathDoesExist = false
+
+    } else {
+      // err == nil
+      // The path really does exist!
+      filePathDoesExist = true
+      nonPathError = nil
+      fInfo = FileInfoPlus{}.NewFromFileInfo(info)
+      fMgr.dataMutex.Unlock()
+      return filePathDoesExist, fInfo, nonPathError
+    }
+
+    time.Sleep(30 * time.Millisecond)
+  }
+
+  fMgr.dataMutex.Unlock()
+
+  return filePathDoesExist, fInfo, nonPathError
 }
