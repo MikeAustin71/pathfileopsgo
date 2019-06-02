@@ -2422,8 +2422,6 @@ func dirMgr02SetupDirWalkTests() error {
       "dest1='%v' Error='%v' ", dest0, err.Error())
   }
 
-  time.Sleep(100 * time.Millisecond)
-
   // If the directory tree ../dirwalktests/dir01/dir02/dir03
   // does not exist, create it.
   if !destDirMgr3.DoesAbsolutePathExist() {
