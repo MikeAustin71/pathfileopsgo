@@ -4195,19 +4195,20 @@ func (fMgr *FileMgr) WriteStrToFile(str string) (numBytesWritten int, err error)
   return numBytesWritten, err
 }
 
-
 // doesPathFileExist - A helper method which public methods use to determine whether a
 // path and file does or does not exist.
 //
 // This method calls os.Stat(dirPath) which returns an error which is one of two types:
+//
 //     1. A Non-Path Error - An error which is not path related. It signals some other type
 //        of error which makes impossible to determine if the path actually exists. These
-//        types of errors may include access errors. In this case, no valid existence test
-//        can be performed.
+//        types of errors generally relate to "access denied" situations, but there may be
+//        other reasons behind non-path errors. If a non-path error is returned, no valid
+//        existence test can be performed on the file path.
 //
 //            or
 //
-//     2. A Path Error - indicates that the path does not exist.
+//     2. A Path Error - indicates that the path definitely does not exist.
 //
 // To deal with these types of errors, this method will test path existence up to three times before
 // returning a non-path error.

@@ -1433,9 +1433,19 @@ func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
   return nil
 }
 
-// DoesFileExist - Returns a boolean value
-// designating whether the passed file name
-// exists.
+// DoesFileExist - Returns a boolean value designating whether the passed
+// file name exists.
+//
+// This method does not differentiate between Path Errors and Non-Path
+// Errors returned by os.Stat(). The method only returns a boolean
+// value.
+//
+// If a Non-Path Error is returned by os.Stat(), this method will
+// classify the file as "Does NOT Exist" and return a value of
+// false.
+//
+// For a more granular test of whether a file exists, see method
+// FileHelper.DoesThisFileExist().
 func (fh FileHelper) DoesFileExist(pathFileName string) bool {
 
   errCode := 0
@@ -1454,9 +1464,12 @@ func (fh FileHelper) DoesFileExist(pathFileName string) bool {
     return false
   }
 
-  _, err = os.Stat(pathFileName)
+  pathFileDoesExist, _, nonPathError :=
+    fh.doesPathFileExist(pathFileName,
+      "",
+      "pathFileName")
 
-  if err != nil {
+  if !pathFileDoesExist || nonPathError != nil {
     return false
   }
 
@@ -1533,6 +1546,59 @@ func (fh FileHelper) DoesStringEndWithPathSeparator(pathStr string) bool {
   }
 
   return false
+}
+
+// DoesThisFileExist - Returns a boolean value signaling whether the path and file name
+// represented by input parameter, 'pathFileName', does in fact exist. Unlike the similar
+// method FileHelper.DoesFileExist(), this method returns an error in the case of
+// Non-Path errors associated with 'pathFileName'.
+//
+// Non-Path errors may arise for a variety of reasons, but the most common is associated
+// with 'access denied' situations.
+//
+func (fh FileHelper) DoesThisFileExist(pathFileName string) (pathFileNameDoesExist bool,
+                                                             nonPathError error) {
+
+  ePrefix := "FileHelper.DoesThisFileExist() "
+  pathFileNameDoesExist = false
+  nonPathError = nil
+
+  errCode := 0
+
+  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
+
+  if errCode == -1 {
+    nonPathError = errors.New(ePrefix +
+      "Error: Input parameter 'pathFileName' is an empty string!")
+
+    return pathFileNameDoesExist, nonPathError
+  }
+
+  if errCode == -2 {
+    nonPathError = errors.New(ePrefix +
+      "Error: Input parameter 'pathFileName' consists entirely of blank spaces!")
+
+    return pathFileNameDoesExist, nonPathError
+  }
+
+
+  pathFileName, nonPathError = fh.MakeAbsolutePath(pathFileName)
+
+  if nonPathError != nil {
+    return pathFileNameDoesExist, nonPathError
+  }
+
+  pathFileNameDoesExist, _, nonPathError =
+    fh.doesPathFileExist(pathFileName,
+      ePrefix,
+      "pathFileName")
+
+  if nonPathError != nil {
+    pathFileNameDoesExist = false
+    return pathFileNameDoesExist, nonPathError
+  }
+
+  return pathFileNameDoesExist, nonPathError
 }
 
 // FilterFileName - Utility method designed to determine whether a file described by a filePath string
@@ -5329,6 +5395,105 @@ func (fh FileHelper) SwapBasePath(
 /*
   FileHelper private methods
 */
+
+
+// doesPathFileExist - A helper method which public methods use to determine whether a
+// path and file does or does not exist.
+//
+// This method calls os.Stat(dirPath) which returns an error which is one of two types:
+//
+//     1. A Non-Path Error - An error which is not path related. It signals some other type
+//        of error which makes impossible to determine if the path actually exists. These
+//        types of errors generally relate to "access denied" situations, but there may be
+//        other reasons behind non-path errors. If a non-path error is returned, no valid
+//        existence test can be performed on the file path.
+//
+//            or
+//
+//     2. A Path Error - indicates that the path definitely does not exist.
+//
+// To deal with these types of errors, this method will test path existence up to three times before
+// returning a non-path error.
+//
+func (fh FileHelper) doesPathFileExist(
+  filePath, errorPrefix, filePathTitle string) (filePathDoesExist bool,
+  fInfo FileInfoPlus,
+  nonPathError error) {
+
+  ePrefix := "DirMgr.doesDirPathExist() "
+
+  filePathDoesExist = false
+  fInfo = FileInfoPlus{}
+  nonPathError = nil
+
+  if len(errorPrefix) > 0 {
+    ePrefix = errorPrefix
+  }
+
+  if len(filePathTitle) == 0 {
+    filePathTitle = "filePath"
+  }
+
+  errCode := 0
+
+  errCode, _, filePath = fh.isStringEmptyOrBlank(filePath)
+
+  if errCode == -1 {
+    nonPathError = fmt.Errorf(ePrefix +
+      "Error: Input parameter '%v' is an empty string!", filePathTitle)
+    return filePathDoesExist, fInfo, nonPathError
+  }
+
+  if errCode == -2 {
+    nonPathError = fmt.Errorf(ePrefix +
+      "Error: Input parameter '%v' consists of blank spaces!", filePathTitle)
+    return filePathDoesExist, fInfo, nonPathError
+  }
+
+  var err error
+  var info os.FileInfo
+
+  for i:=0; i < 3; i++ {
+
+    filePathDoesExist = false
+    fInfo = FileInfoPlus{}
+    nonPathError = nil
+
+    info, err = os.Stat(filePath)
+
+    if err != nil {
+
+      if os.IsNotExist(err) {
+
+        filePathDoesExist = false
+        fInfo = FileInfoPlus{}
+        nonPathError = nil
+        return filePathDoesExist, fInfo, nonPathError
+      }
+      // err == nil and err != os.IsNotExist(err)
+      // This is a non-path error. The non-path error will be test
+      // up to 3-times before it is returned.
+      nonPathError = fmt.Errorf(ePrefix+"Non-Path error returned by os.Stat(%v)\n"+
+        "%v='%v'\nError='%v'\n",
+        filePathTitle, filePathTitle, filePath, err.Error())
+      fInfo = FileInfoPlus{}
+      filePathDoesExist = false
+
+    } else {
+      // err == nil
+      // The path really does exist!
+      filePathDoesExist = true
+      nonPathError = nil
+      fInfo = FileInfoPlus{}.NewFromFileInfo(info)
+      return filePathDoesExist, fInfo, nonPathError
+    }
+
+    time.Sleep(30 * time.Millisecond)
+  }
+
+  return filePathDoesExist, fInfo, nonPathError
+}
+
 
 // isStringEmptyOrBlank - Analyzes a string to determine if the string is 'empty' or
 // if the string consists of all blanks (spaces).
