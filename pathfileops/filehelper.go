@@ -1581,10 +1581,10 @@ func (fh FileHelper) DoesThisFileExist(pathFileName string) (pathFileNameDoesExi
     return pathFileNameDoesExist, nonPathError
   }
 
-
   pathFileName, nonPathError = fh.MakeAbsolutePath(pathFileName)
 
   if nonPathError != nil {
+    nonPathError = fmt.Errorf(ePrefix + "%v", nonPathError.Error())
     return pathFileNameDoesExist, nonPathError
   }
 

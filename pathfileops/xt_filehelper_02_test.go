@@ -327,7 +327,6 @@ func TestFileHelper_CopyFileByLink_12(t *testing.T) {
       "fh.CopyFileByIo(srcFile, destFile) FAILED!\n"+
       "srcFile='%v'\ndestFile='%v'", srcFile, destFile)
     return
-
   }
 
   err = fh.CopyFileByLink(srcFile, destFile)
@@ -336,6 +335,8 @@ func TestFileHelper_CopyFileByLink_12(t *testing.T) {
     t.Errorf("Error returned by fh.CopyFileByLink(srcFile, destFile).\n"+
       "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
       srcFile, destFile, err.Error())
+    _ = fh.DeleteDirFile(destFile)
+    return
   }
 
   if !fh.DoesFileExist(destFile) {
@@ -359,6 +360,7 @@ func TestFileHelper_CopyFileByLink_12(t *testing.T) {
   if err !=nil {
     t.Errorf("Error returned by os.Stat(destFile).\n" +
       "destFile='%v'\nError='%v'", destFile, err.Error())
+    return
   }
 
   if finfoSrc.Size() != finfoDest.Size() {
@@ -447,6 +449,8 @@ func TestFileHelper_CreateFile_02(t *testing.T) {
 
   if err != nil {
     t.Error(fmt.Sprintf("Error: Create File Failed for file: %v", tstFile))
+    _ = fh.DeleteDirFile(tstFile)
+    return
   }
 
   _, err4 := f.WriteString(aLoremIpsumTxt)
@@ -454,12 +458,16 @@ func TestFileHelper_CreateFile_02(t *testing.T) {
   if err4 != nil {
     _ = f.Close()
     t.Error(fmt.Sprintf("Error Re-Writing to File: %v, Error: ", tstFile), err4)
+    _ = fh.DeleteDirFile(tstFile)
+    return
   }
 
   err = f.Close()
 
   if err != nil {
     t.Errorf("%v", err.Error())
+    _ = fh.DeleteDirFile(tstFile)
+    return
   }
 
   // Now recreate the original file. It should be
@@ -468,6 +476,8 @@ func TestFileHelper_CreateFile_02(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error: Re-Creating File %v", tstFile)
+    _ = fh.DeleteDirFile(tstFile)
+    return
   }
 
   fOvrWriteTxt := "Test Over Write and existing file using Create()"
@@ -477,18 +487,24 @@ func TestFileHelper_CreateFile_02(t *testing.T) {
   if err5 != nil {
     _ = f2.Close()
     t.Error(fmt.Sprintf("Error Re-Writing to File: %v, Error: ", tstFile), err5)
+    _ = fh.DeleteDirFile(tstFile)
+    return
   }
 
   err = f2.Close()
 
   if err != nil {
     t.Errorf("Error closing f2. %v", err.Error())
+    _ = fh.DeleteDirFile(tstFile)
+    return
   }
 
   dat, err := ioutil.ReadFile(tstFile)
 
   if err != nil {
     t.Errorf("Error Reading Re-Written Text for File:'%v' Error='%v'", tstFile, err)
+    _ = fh.DeleteDirFile(tstFile)
+    return
   }
 
   s := string(dat)
@@ -496,6 +512,8 @@ func TestFileHelper_CreateFile_02(t *testing.T) {
   if s != fOvrWriteTxt {
     t.Errorf("Was expecting to read text: '%v', instead received text: %v", fOvrWriteTxt, s)
   }
+
+  _ = fh.DeleteDirFile(tstFile)
 
 }
 
@@ -755,8 +773,11 @@ func TestFileHelper_DeleteDirPathAll_05(t *testing.T) {
 
       err = os.RemoveAll(basePath)
 
-      t.Errorf("Secondary Clean-Up Error returned by os.RemoveAll(basePath).\n" +
-        "basePath='%v'\nError='%v'\n", basePath, err.Error())
+      if err != nil {
+
+        t.Errorf("Secondary Clean-Up Error returned by os.RemoveAll(basePath).\n" +
+          "basePath='%v'\nError='%v'\n", basePath, err.Error())
+      }
 
       return
     }
@@ -769,11 +790,12 @@ func TestFileHelper_DeleteDirPathAll_05(t *testing.T) {
 
     err = os.RemoveAll(basePath)
 
-    t.Errorf("Secondary Clean-Up Error returned by os.RemoveAll(basePath).\n" +
-      "basePath='%v'\nError='%v'\n", basePath, err.Error())
+    if err != nil {
+      t.Errorf("Secondary Clean-Up Error returned by os.RemoveAll(basePath).\n" +
+        "basePath='%v'\nError='%v'\n", basePath, err.Error())
+    }
 
     return
-
   }
 
   err = fh.DeleteDirPathAll(basePath)
@@ -875,6 +897,7 @@ func TestFileHelper_DoesFileInfoExist_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fh.DoesFileInfoExist(testFile). "+
       "testFile='%v' Error='%v' ", testFile, err.Error())
+    return
   }
 
   if doesFileExist == false {
@@ -1004,6 +1027,117 @@ func TestFileHelper_DoesStringEndWithPathSeparator_05(t *testing.T) {
 
 }
 
+func TestFileHelper_DoesThisFileExist_01(t *testing.T) {
+  fh := FileHelper{}
+
+  testDirStr := "../checkfiles/iDoNotExist.txt"
+
+  pathFileDoesExist, err := fh.DoesThisFileExist(testDirStr)
+
+  if err != nil {
+    t.Errorf("Error: Non-Path Error returned from fh.DoesThisFileExist(testDirStr)\n" +
+      "testDirStr='%v'\nError='%v'\n", testDirStr, err.Error())
+    return
+  }
+
+  if pathFileDoesExist {
+    t.Errorf("Error: Expected result from exitence test = 'File Does NOT Exist!\n" +
+      "Instead, existence test= 'File DOES Exist!\n" +
+      "testDirStr='%v'", testDirStr)
+  }
+
+}
+
+func TestFileHelper_DoesThisFileExist_02(t *testing.T) {
+  fh := FileHelper{}
+
+  testDirStr := ""
+
+  _, err := fh.DoesThisFileExist(testDirStr)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.DoesThisFileExist(testDirStr)\n" +
+      "because input parameter 'testDirStr' is an empty string!\n" +
+      "However, NO ERROR WAS RETURNED!!!" )
+  }
+}
+
+func TestFileHelper_DoesThisFileExist_03(t *testing.T) {
+  fh := FileHelper{}
+
+  testDirStr := "   "
+
+  _, err := fh.DoesThisFileExist(testDirStr)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.DoesThisFileExist(testDirStr)\n" +
+      "because input parameter 'testDirStr' consists entirely of empty spaces!\n" +
+      "However, NO ERROR WAS RETURNED!!!" )
+  }
+}
+
+func TestFileHelper_DoesThisFileExist_04(t *testing.T) {
+  fh := FileHelper{}
+
+  testDirStr := "../filesfortest/htmlFilesForTest/006860_sample.htm"
+
+  pathFileDoesExist, err := fh.DoesThisFileExist(testDirStr)
+
+  if err != nil {
+    t.Errorf("Error: Error returned from fh.DoesThisFileExist(testDirStr)\n" +
+      "testDirStr='%v'\nError='%v'\n", testDirStr, err.Error())
+    return
+  }
+
+  if !pathFileDoesExist {
+    t.Errorf("Error: Expected result from exitence test = 'File DOES Exist!\n" +
+      "Instead, existence test= 'File Does NOT Exist!\n" +
+      "testDirStr='%v'", testDirStr)
+  }
+
+}
+
+func TestFileHelper_DoesThisFileExist_05(t *testing.T) {
+  fh := FileHelper{}
+
+  testDirStr := "../filesfortest/htmlFilesForTest"
+
+  pathFileDoesExist, err := fh.DoesThisFileExist(testDirStr)
+
+  if err != nil {
+    t.Errorf("Error: Error returned from fh.DoesThisFileExist(testDirStr)\n" +
+      "testDirStr='%v'\nError='%v'\n", testDirStr, err.Error())
+    return
+  }
+
+  if !pathFileDoesExist {
+    t.Errorf("Error: Expected result from exitence test = 'Directory DOES Exist!\n" +
+      "Instead, existence test= 'Directory Does NOT Exist!\n" +
+      "testDirStr='%v'", testDirStr)
+  }
+
+}
+
+func TestFileHelper_DoesThisFileExist_06(t *testing.T) {
+  fh := FileHelper{}
+
+  testDirStr := "filesfortest/iDoNotExist"
+
+  pathFileDoesExist, err := fh.DoesThisFileExist(testDirStr)
+
+  if err != nil {
+    t.Errorf("Error: Error returned from fh.DoesThisFileExist(testDirStr)\n" +
+      "testDirStr='%v'\nError='%v'\n", testDirStr, err.Error())
+    return
+  }
+
+  if pathFileDoesExist {
+    t.Errorf("Error: Expected result from exitence test = 'Directory DOES NOT Exist!\n" +
+      "Instead, existence test= 'Directory DOES Exist!\n" +
+      "testDirStr='%v'", testDirStr)
+  }
+}
+
 func TestFileHelper_FindFilesInPath_01(t *testing.T) {
 
   fh := FileHelper{}
@@ -1036,6 +1170,10 @@ func TestFileHelper_FindFilesInPath_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
       "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
+
+    _ = targetDir.DeleteAll()
+
+    return
   }
 
   if targetDir.DoesAbsolutePathExist() {
@@ -1046,6 +1184,7 @@ func TestFileHelper_FindFilesInPath_01(t *testing.T) {
       t.Errorf("Error returned by targetDir.DeleteAll() "+
         "targetDir='%v' Error='%v' ",
         targetDir.GetAbsolutePath(), err.Error())
+      return
     }
   }
 
@@ -1112,6 +1251,9 @@ func TestFileHelper_FindFilesInPath_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
       "sourceDir='%v' Error='%v' ", sourceDir, err.Error())
+
+    _ = targetDir.DeleteAll()
+    return
   }
 
   if targetDir.DoesAbsolutePathExist() {
@@ -1141,6 +1283,10 @@ func TestFileHelper_FindFilesInPath_02(t *testing.T) {
     for i := 0; i < len(errArray); i++ {
       t.Errorf("sourceDir.ExecuteDirectoryTreeOps-Error: %v", errArray[i])
     }
+
+    _ = targetDir.DeleteAll()
+
+    return
   }
 
   foundFiles, err := fh.FindFilesInPath(targetDir.GetAbsolutePath(), "*")
