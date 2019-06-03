@@ -1494,27 +1494,44 @@ func (fMgr *FileMgr) DeleteThisFile() error {
   return nil
 }
 
-// DoesFileExist - returns 'true' if the subject FileMgr
-// file does in fact exist. If the file does NOT exist,
-// a boolean value of 'false' is returned.
+// DoesFileExist - returns 'true' if the subject FileMgr file does
+// in fact exist. If the file does NOT exist, a boolean value of
+// 'false' is returned.
 //
-// This is very similar to 'FileMgr.DoesThisFileExist()'
-// however, this method does not return an error.
+// This method uses os.Stat() to test for the existence of a file
+// path. If a non-path error is returned by os.Stat(), it is
+// ignored and the file path is classified as 'Does Not Exist'.
 //
-// If this method encounters an error, a boolean value
-// of 'false' will be return.
+//
+// This is very similar to 'FileMgr.DoesThisFileExist()'.
+// However, unlike this method, 'FileMgr.DoesThisFileExist()'
+// will return a non-path error. This method only returns
+// a boolean value signaling whether the file path exists.
+//
+// If this method encounters a non-path error or if the current
+// FileMgr instance is invalid, a boolean value of 'false'
+// will be returned.
 //
 func (fMgr *FileMgr) DoesFileExist() bool {
 
   ePrefix := "FileMgr.DoesFileExist() "
 
-  err := fMgr.IsFileMgrValid(ePrefix)
+  nonPathError := fMgr.IsFileMgrValid(ePrefix)
 
-  if err != nil {
+  if nonPathError != nil {
     return false
   }
 
-  return fMgr.doesAbsolutePathFileNameExist
+  filePathDoesExist, _, nonPathError :=
+    fMgr.doesPathFileExist(fMgr.absolutePathFileName,
+                           ePrefix ,
+                           "fMgr.absolutePathFileName")
+
+  if !filePathDoesExist || nonPathError!=nil {
+    return false
+  }
+
+  return true
 }
 
 // DoesThisFileExist - Returns a boolean value
@@ -1874,7 +1891,8 @@ func (fMgr *FileMgr) GetFileInfo() (os.FileInfo, error) {
   }
 
   return nil,
-    errors.New(ePrefix + "The current FileMgr file does NOT exist!")
+   fmt.Errorf(ePrefix + "The current FileMgr file DOES NOT EXIST!\n" +
+     "File='%v'\n", fMgr.absolutePathFileName)
 }
 
 // GetFileInfoPlus - Returns a FileInfoPlus instance containing
@@ -2244,22 +2262,23 @@ func (fMgr *FileMgr) IsFileMgrValid(errorPrefixStr string) error {
     return fmt.Errorf("FileMgr Directory Manager INVALID - %v", err.Error())
   }
 
-  fMgr.dataMutex.Lock()
+  filePathDoesExist, fInfoPlus, nonPathError :=
+    fMgr.doesPathFileExist(fMgr.absolutePathFileName,
+                           ePrefix,
+                           "fMgr.absolutePathFileName")
 
-  info, err := os.Stat(fMgr.absolutePathFileName)
 
-  fMgr.dataMutex.Unlock()
-
-  if err != nil {
+  if !filePathDoesExist || nonPathError != nil {
     fMgr.actualFileInfo = FileInfoPlus{}
     fMgr.doesAbsolutePathFileNameExist = false
   } else {
     fMgr.isAbsolutePathFileNamePopulated = true
     fMgr.doesAbsolutePathFileNameExist = true
-    fMgr.actualFileInfo = FileInfoPlus{}.NewFromPathFileInfo(fMgr.absolutePathFileName, info)
+    fMgr.actualFileInfo = fInfoPlus.CopyOut()
   }
 
-  fMgr.dMgr.DoesPathExist()
+  _ = fMgr.dMgr.DoesPathExist()
+  _ = fMgr.dMgr.DoesAbsolutePathExist()
 
   return nil
 }
@@ -3765,9 +3784,17 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
     return
   }
 
-  if len(fileNameExt) == 0 {
+  errCode, _, fileNameExt := fh.isStringEmptyOrBlank(fileNameExt)
+
+  if errCode == -1 {
     err = errors.New(ePrefix +
       "Error: Input parameter 'fileNameExt' is a Zero length string!")
+    return
+  }
+
+  if errCode == -2 {
+    err = errors.New(ePrefix +
+      "Error: Input parameter 'fileNameExt' consists entirely of blank spaces!")
     return
   }
 
@@ -3788,14 +3815,11 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
 
   fMgr.Empty()
 
-  fMgr.dataMutex.Lock()
-
   fMgr.dMgr = dMgr.CopyOut()
 
   s, fNameIsEmpty, err2 := fh.GetFileNameWithoutExt(adjustedFileNameExt)
 
   if err2 != nil {
-    fMgr.dataMutex.Unlock()
     err = fmt.Errorf(ePrefix+
       "Error returned from fh.GetFileNameWithoutExt(adjustedFileNameExt). "+
       "adjustedFileNameExt='%v'  Error='%v' ", adjustedFileNameExt, err2.Error())
@@ -3805,14 +3829,12 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
   }
 
   if fNameIsEmpty {
-    fMgr.dataMutex.Unlock()
     err = fmt.Errorf(ePrefix+
       "Error: fileName returned from fh.GetFileNameWithoutExt(adjustedFileNameExt) "+
       "is Zero length string! adjustedFileNameExt='%v'  ", adjustedFileNameExt)
     fMgr.Empty()
     isEmpty = true
     return
-
   }
 
   fMgr.isFileNamePopulated = true
@@ -3821,7 +3843,6 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
   s, extIsEmpty, err2 := fh.GetFileExtension(adjustedFileNameExt)
 
   if err2 != nil {
-    fMgr.dataMutex.Unlock()
     err = fmt.Errorf(ePrefix+
       "Error returned from fh.GetFileExt(fileNameAndExt). "+
       "fileNameAndExt='%v'  Error='%v' ", adjustedFileNameExt, err2.Error())
@@ -3829,6 +3850,8 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
     isEmpty = true
     return
   }
+
+  fMgr.dataMutex.Lock()
 
   if !extIsEmpty {
     fMgr.isFileExtPopulated = true
@@ -3867,11 +3890,16 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
 
   fMgr.isAbsolutePathFileNamePopulated = true
 
-  fInfo, err2 := os.Stat(fMgr.absolutePathFileName)
+  fMgr.dataMutex.Unlock()
 
-  if err2 == nil {
+  filePathDoesExist, fInfoPlus, nonPathError :=
+    fMgr.doesPathFileExist(fMgr.absolutePathFileName,ePrefix, "fMgr.absolutePathFileName" )
+
+  fMgr.dataMutex.Lock()
+
+  if filePathDoesExist && nonPathError==nil {
     fMgr.doesAbsolutePathFileNameExist = true
-    fMgr.actualFileInfo = FileInfoPlus{}.NewFromPathFileInfo(fMgr.dMgr.absolutePath, fInfo)
+    fMgr.actualFileInfo = fInfoPlus.CopyOut()
   } else {
     fMgr.doesAbsolutePathFileNameExist = false
     fMgr.actualFileInfo = FileInfoPlus{}
@@ -3911,9 +3939,19 @@ func (fMgr *FileMgr) SetFileMgrFromPathFileName(
   err = nil
   fh := FileHelper{}
 
-  if len(pathFileNameExt) == 0 {
+  errCode := 0
+
+  errCode, _, pathFileNameExt = fh.isStringEmptyOrBlank(pathFileNameExt)
+
+  if errCode == -1 {
     err = errors.New(ePrefix +
       "Error: Input parameter 'pathFileNameExt' is a zero length or empty string!")
+    return
+  }
+
+  if errCode == -2 {
+    err = errors.New(ePrefix +
+      "Error: Input parameter 'pathFileNameExt' consists entirely of blank spaces!")
     return
   }
 
