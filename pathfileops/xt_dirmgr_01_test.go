@@ -1460,3 +1460,122 @@ func TestDirMgr_CopySubDirectoryTree_05(t *testing.T) {
 
   return
 }
+
+func TestDirMgr_CopySubDirectoryTree_06(t *testing.T) {
+
+  srcDir := "../logTest"
+
+  srcDMgr, err := DirMgr{}.New(srcDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(srcDir).\n"+
+      "srcDir='%v'\nError='%v'", srcDir, err.Error())
+    return
+  }
+
+  targetDir := "../dirmgrtests/TestDirMgr_CopySubDirectoryTree_06"
+
+  fh := FileHelper{}
+
+  _ = fh.DeleteDirPathAll(targetDir)
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(targetDir).\n"+
+      "targetDir='%v'\nError='%v'", targetDir, err.Error())
+    _ = fh.DeleteDirPathAll(targetDir)
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  errs := srcDMgr.CopySubDirectoryTree(targetDMgr, false, fsc)
+
+  if len(errs) > 0 {
+    t.Errorf("Errors returned by srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n" +
+      "targetDMgr='%v'\nErrors:\n",  targetDMgr.GetAbsolutePath())
+
+    for i := 0; i < len(errs); i++ {
+      t.Errorf("'%v'\n\n", errs[i].Error())
+    }
+
+    _ = targetDMgr.DeleteAll()
+
+    return
+  }
+
+  if !targetDMgr.DoesAbsolutePathExist() {
+    t.Error("ERROR: The target directory path DOES NOT EXIST!!\n")
+
+    return
+  }
+
+  fsc = FileSelectionCriteria{}
+
+  srcDTreeInfo, err := srcDMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Test Verification Error returned by srcDMgr.FindWalkDirFiles(fsc).\n" +
+      "source directory='%v'\nError='%v'", srcDMgr.GetAbsolutePath(), err.Error())
+
+    _ = targetDMgr.DeleteAll()
+
+    return
+  }
+
+  fsc = FileSelectionCriteria{}
+
+  targetDTreeInfo, err := targetDMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Test Verification Error returned by targetDMgr.FindWalkDirFiles(fsc).\n" +
+      "target directory='%v'\nError='%v'", targetDMgr.GetAbsolutePath(), err.Error())
+
+    _ = targetDMgr.DeleteAll()
+
+    return
+  }
+
+  srcDirs := srcDTreeInfo.Directories.GetNumOfDirs()
+  srcDirs-- // Discount top level directories. Only count subdirectories
+  srcDirs -= 2 // Eliminate the two empty directories.
+
+  targetDirs := targetDTreeInfo.Directories.GetNumOfDirs()
+  targetDirs-- // Discount top level directories. Only count subdirectories
+
+  if srcDirs != targetDirs   {
+    t.Errorf("ERROR: Expected %v-directories would be created.\n" +
+      "Instead, %v-directories were created!\n",
+      srcDirs, targetDirs)
+
+    _ = targetDMgr.DeleteAll()
+
+    return
+  }
+
+  tFileInfo, err := targetDMgr.FindFilesBySelectCriteria(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by targetDMgr.FindFilesBySelectCriteria(fsc).\n" +
+      "targetDMgr='%v'\nError='%v'\n",targetDMgr.GetAbsolutePath(), err.Error())
+    _ = targetDMgr.DeleteAll()
+
+    return
+  }
+
+  if tFileInfo.GetNumOfFileMgrs() > 0 {
+    t.Errorf("ERROR: Expected ZERO files in top level target directory.\n" +
+      "Instead, the top level target directory had %v-files.\nTarget Directory='%v'\n",
+      tFileInfo.GetNumOfFileMgrs(), targetDMgr.GetAbsolutePath())
+  }
+
+  err = targetDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n" +
+      "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
+  }
+
+  return
+}
