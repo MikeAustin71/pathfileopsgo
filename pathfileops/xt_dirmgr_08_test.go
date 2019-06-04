@@ -10,10 +10,13 @@ func TestDirMgr_New_01(t *testing.T) {
   fh := FileHelper{}
   origDir := fh.AdjustPathSlash("../testfiles/testfiles2")
   expectedPath := fh.AdjustPathSlash("../testfiles/testfiles2")
+  
   expectedAbsDir, err := fh.MakeAbsolutePath(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir).\n" +
+      "origDir=='%v'  Error='%v'", origDir, err.Error())
+    return
   }
 
   expectedPathDoesExist := fh.DoesFileExist(origDir)
@@ -39,7 +42,9 @@ func TestDirMgr_New_01(t *testing.T) {
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned from DirMgr{}.New(origDir).\n" +
+      "origDir=='%v'\nError='%v'\n", origDir, err.Error())
+    return
   }
 
   if true != dMgr.isInitialized {
@@ -55,39 +60,54 @@ func TestDirMgr_New_01(t *testing.T) {
   }
 
   if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.", expectedPathDoesExist, dMgr.doesPathExist)
+    t.Errorf("Expected doesPathExist=='%v'.\n" +
+      "Instead, doesPathExist=='%v'.",
+      expectedPathDoesExist, dMgr.doesPathExist)
   }
 
   if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.", true, dMgr.isAbsolutePathPopulated)
+    t.Errorf("Expected isAbsolutePathPopulated=='%v'.\n" +
+      "Instead, isAbsolutePathPopulated=='%v'.",
+      true, dMgr.isAbsolutePathPopulated)
   }
 
   if expectedAbsDir != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'", expectedAbsDir, dMgr.absolutePath)
+    t.Errorf("Expected absolutePath=='%v'.\n" +
+      "Instead, absolutePath=='%v'", expectedAbsDir, dMgr.absolutePath)
   }
 
   if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.", expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
+    t.Errorf("Expected doesAbsolutePathExist=='%v'.\n" +
+      "Instead, doesAbsolutePathExist=='%v'.",
+      expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
   }
 
   if true != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.", true, dMgr.isAbsolutePathDifferentFromPath)
+    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'.\n" +
+      "Instead, isAbsolutePathDifferentFromPath=='%v'.",
+      true, dMgr.isAbsolutePathDifferentFromPath)
   }
 
   if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.", expectedVolumeName, dMgr.volumeName)
+    t.Errorf("Expected volumeName=='%v'.\n" +
+      "Instead, volumeName=='%v'.", expectedVolumeName, dMgr.volumeName)
   }
 
   if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.", expectedVolumeIsPopulated, dMgr.isVolumePopulated)
+    t.Errorf("Expected isVolumePopulated=='%v'.\n" +
+      "Instead, isVolumePopulated=='%v'.",
+      expectedVolumeIsPopulated, dMgr.isVolumePopulated)
   }
 
   if expectedParentPath != dMgr.parentPath {
-    t.Errorf("Expected parentPath=='%v'. Instead, parentPath=='%v'.", expectedParentPath, dMgr.parentPath)
+    t.Errorf("Expected parentPath=='%v'.\n" +
+      "Instead, parentPath=='%v'.", expectedParentPath, dMgr.parentPath)
   }
 
   if expectedIsParentPathPopulated != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.", expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
+    t.Errorf("Expected isParentPathPopulated=='%v'.\n" +
+      "Instead, isParentPathPopulated=='%v'.",
+      expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
   }
 
 }
@@ -99,7 +119,9 @@ func TestDirMgr_New_02(t *testing.T) {
   expectedAbsDir, err := fh.MakeAbsolutePath(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir).\n" +
+      "origDir=='%v'  Error='%v'", origDir, err.Error())
+    return
   }
 
   expectedPathDoesExist := fh.DoesFileExist(origDir)
@@ -118,51 +140,73 @@ func TestDirMgr_New_02(t *testing.T) {
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned from DirMgr{}.New(origDir).\n" +
+      "origDir=='%v' Error='%v'", origDir, err.Error())
+    return
   }
 
   if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'", true, dMgr.isInitialized)
+    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'.\n" +
+      "Instead, DirMgr.IsFInfoInitialized=='%v'",
+      true, dMgr.isInitialized)
   }
 
   if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'", true, dMgr.isPathPopulated)
+    t.Errorf("Expected DirMgr.isPathPopulated=='%v'.\n" +
+      "Instead, DirMgr.isPathPopulated=='%v'", true, dMgr.isPathPopulated)
   }
 
   if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
+    t.Errorf("Expected path=='%v'.\n" +
+      "Instead, path=='%v'.", expectedPath, dMgr.path)
   }
 
   if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.", expectedPathDoesExist, dMgr.doesPathExist)
+    t.Errorf("Expected doesPathExist=='%v'.\n" +
+      "Instead, doesPathExist=='%v'.\n",
+      expectedPathDoesExist, dMgr.doesPathExist)
   }
 
   if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.", true, dMgr.isAbsolutePathPopulated)
+    t.Errorf("Expected isAbsolutePathPopulated=='%v'.\n" +
+      "Instead, isAbsolutePathPopulated=='%v'.",
+      true, dMgr.isAbsolutePathPopulated)
   }
 
   if expectedAbsDir != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'", expectedAbsDir, dMgr.absolutePath)
+    t.Errorf("Expected absolutePath=='%v'.\n" +
+      "Instead, absolutePath=='%v'",
+      expectedAbsDir, dMgr.absolutePath)
   }
 
   if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.", expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
+    t.Errorf("Expected doesAbsolutePathExist=='%v'.\n" +
+      "Instead, doesAbsolutePathExist=='%v'.",
+      expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
   }
 
   if true != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.", true, dMgr.isAbsolutePathDifferentFromPath)
+    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'.\n" +
+      "Instead, isAbsolutePathDifferentFromPath=='%v'.",
+      true, dMgr.isAbsolutePathDifferentFromPath)
   }
 
   if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.", expectedVolumeName, dMgr.volumeName)
+    t.Errorf("Expected volumeName=='%v'.\n" +
+      "Instead, volumeName=='%v'.",
+      expectedVolumeName, dMgr.volumeName)
   }
 
   if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.", expectedVolumeIsPopulated, dMgr.isVolumePopulated)
+    t.Errorf("Expected isVolumePopulated=='%v'.\n" +
+      "Instead, isVolumePopulated=='%v'.",
+      expectedVolumeIsPopulated, dMgr.isVolumePopulated)
   }
 
   if true != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.", true, dMgr.isParentPathPopulated)
+    t.Errorf("Expected isParentPathPopulated=='%v'.\n" +
+      "Instead, isParentPathPopulated=='%v'.",
+      true, dMgr.isParentPathPopulated)
   }
 
 }
@@ -174,7 +218,9 @@ func TestDirMgr_New_03(t *testing.T) {
   expectedAbsDir, err := fh.MakeAbsolutePath(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir).\n" +
+      "origDir=='%v' Error='%v'", origDir, err.Error())
+    return
   }
 
   expectedPathDoesExist := fh.DoesFileExist(origDir)
@@ -193,54 +239,66 @@ func TestDirMgr_New_03(t *testing.T) {
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'",
+    t.Errorf("Error returned from DirMgr{}.New(origDir).\n" +
+      "origDir=='%v'\nError='%v'",
       origDir, err.Error())
+    return
   }
 
   if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
+    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'.\n" +
+      "Instead, DirMgr.IsFInfoInitialized=='%v'",
       true, dMgr.isInitialized)
   }
 
   if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
+    t.Errorf("Expected DirMgr.isPathPopulated=='%v'.\n" +
+      "Instead, DirMgr.isPathPopulated=='%v'",
       true, dMgr.isPathPopulated)
   }
 
   if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
+    t.Errorf("Expected path=='%v'.\n" +
+      "Instead, path=='%v'.",
+      expectedPath, dMgr.path)
   }
 
   if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.",
+    t.Errorf("Expected doesPathExist=='%v'.\n" +
+      "Instead, doesPathExist=='%v'.",
       expectedPathDoesExist, dMgr.doesPathExist)
   }
 
   if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
+    t.Errorf("Expected isAbsolutePathPopulated=='%v'.\n" +
+      "Instead, isAbsolutePathPopulated=='%v'.",
       true, dMgr.isAbsolutePathPopulated)
   }
 
   if expectedAbsDir != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
+    t.Errorf("Expected absolutePath=='%v'.\n" +
+      "Instead, absolutePath=='%v'",
       expectedAbsDir, dMgr.absolutePath)
   }
 
   if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
+    t.Errorf("Expected doesAbsolutePathExist=='%v'.\n" +
+      "Instead, doesAbsolutePathExist=='%v'.",
       expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
   }
 
   if true != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.",
+    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'.\n" +
+      "Instead, isAbsolutePathDifferentFromPath=='%v'.",
       true, dMgr.isAbsolutePathDifferentFromPath)
   }
 
   if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.",
+    t.Errorf("Expected volumeName=='%v'.\n" +
+      "Instead, volumeName=='%v'.",
       expectedVolumeName, dMgr.volumeName)
   }
-
+  
   if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
     t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.",
       expectedVolumeIsPopulated, dMgr.isVolumePopulated)
@@ -250,7 +308,6 @@ func TestDirMgr_New_03(t *testing.T) {
     t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
       true, dMgr.isParentPathPopulated)
   }
-
 }
 
 func TestDirMgr_New_04(t *testing.T) {
@@ -258,7 +315,9 @@ func TestDirMgr_New_04(t *testing.T) {
   xDir, err := fh.GetCurrentDir()
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetCurrentDir(). Error='%v'", err.Error())
+    t.Errorf("Error returned from fh.GetCurrentDir().\n" +
+      "Error='%v'", err.Error())
+    return
   }
 
   volName := fp.VolumeName(xDir)
@@ -266,10 +325,6 @@ func TestDirMgr_New_04(t *testing.T) {
   origDir := fh.AdjustPathSlash(volName)
   expectedPath := fh.AdjustPathSlash(origDir)
   expectedAbsDir := origDir
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
-  }
 
   expectedPathDoesExist := fh.DoesFileExist(origDir)
 
@@ -287,57 +342,72 @@ func TestDirMgr_New_04(t *testing.T) {
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned from DirMgr{}.New(origDir).\n" +
+      "origDir=='%v' Error='%v'", origDir, err.Error())
+    return
   }
 
   if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
+    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'.\n" +
+      "Instead, DirMgr.IsFInfoInitialized=='%v'",
       true, dMgr.isInitialized)
   }
 
   if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
+    t.Errorf("Expected DirMgr.isPathPopulated=='%v'.\n" +
+      "Instead, DirMgr.isPathPopulated=='%v'",
       true, dMgr.isPathPopulated)
   }
 
   if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
+    t.Errorf("Expected path=='%v'.\n" +
+      "Instead, path=='%v'.", expectedPath, dMgr.path)
   }
 
   if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.", expectedPathDoesExist, dMgr.doesPathExist)
+    t.Errorf("Expected doesPathExist=='%v'.\n" +
+      "Instead, doesPathExist=='%v'.\n",
+      expectedPathDoesExist, dMgr.doesPathExist)
   }
 
   if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
+    t.Errorf("Expected isAbsolutePathPopulated=='%v'.\n" +
+      "Instead, isAbsolutePathPopulated=='%v'.\n",
       true, dMgr.isAbsolutePathPopulated)
   }
 
   if expectedAbsDir != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
+    t.Errorf("Expected absolutePath=='%v'.\n" +
+      "Instead, absolutePath=='%v'\n",
       expectedAbsDir, dMgr.absolutePath)
   }
 
   if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
+    t.Errorf("Expected doesAbsolutePathExist=='%v'.\n" +
+      "Instead, doesAbsolutePathExist=='%v'.\n",
       expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
   }
 
   if false != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.",
+    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'.\n" +
+      "Instead, isAbsolutePathDifferentFromPath=='%v'.\n",
       false, dMgr.isAbsolutePathDifferentFromPath)
   }
 
   if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.", expectedVolumeName, dMgr.volumeName)
+    t.Errorf("Expected volumeName=='%v'.\n" +
+      "Instead, volumeName=='%v'.\n", expectedVolumeName, dMgr.volumeName)
   }
 
   if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.", expectedVolumeIsPopulated, dMgr.isVolumePopulated)
+    t.Errorf("Expected isVolumePopulated=='%v'.\n" +
+      "Instead, isVolumePopulated=='%v'.\n",
+      expectedVolumeIsPopulated, dMgr.isVolumePopulated)
   }
 
   if false != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.\n" +
+    t.Errorf("Expected isParentPathPopulated=='%v'.\n" +
+      "Instead, isParentPathPopulated=='%v'.\n" +
       "Parent Path='%v'\n",
       false, dMgr.isParentPathPopulated, dMgr.parentPath)
   }
@@ -348,14 +418,18 @@ func TestDirMgr_New_05(t *testing.T) {
   origDir, err := fh.GetCurrentDir()
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetCurrentDir(). Error='%v'", err.Error())
+    t.Errorf("Error returned from fh.GetCurrentDir().\n" +
+      "Error='%v'\n", err.Error())
+    return
   }
 
   expectedPath := fh.AdjustPathSlash(origDir)
   expectedAbsDir, err := fh.MakeAbsolutePath(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned from fh.MakeAbsolutePath(origDir).\n" +
+      "origDir=='%v'\nError='%v'\n", origDir, err.Error())
+    return
   }
 
   expectedPathDoesExist := fh.DoesFileExist(origDir)
@@ -374,55 +448,73 @@ func TestDirMgr_New_05(t *testing.T) {
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned from DirMgr{}.New(origDir).\n" +
+      "origDir=='%v'\nError='%v'\n", origDir, err.Error())
+    return
   }
 
   if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
+    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'.\n" +
+      "Instead, DirMgr.IsFInfoInitialized=='%v'\n",
       true, dMgr.isInitialized)
   }
 
   if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
+    t.Errorf("Expected DirMgr.isPathPopulated=='%v'.\n" +
+      "Instead, DirMgr.isPathPopulated=='%v'\n",
       true, dMgr.isPathPopulated)
   }
 
   if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
+    t.Errorf("Expected path=='%v'.\n" +
+      "Instead, path=='%v'.\n", expectedPath, dMgr.path)
   }
 
   if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.", expectedPathDoesExist, dMgr.doesPathExist)
+    t.Errorf("Expected doesPathExist=='%v'.\n" +
+      "Instead, doesPathExist=='%v'.\n",
+      expectedPathDoesExist, dMgr.doesPathExist)
   }
 
   if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
+    t.Errorf("Expected isAbsolutePathPopulated=='%v'.\n" +
+      "Instead, isAbsolutePathPopulated=='%v'.\n",
       true, dMgr.isAbsolutePathPopulated)
   }
 
   if expectedAbsDir != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'", expectedAbsDir, dMgr.absolutePath)
+    t.Errorf("Expected absolutePath=='%v'.\n" +
+      "Instead, absolutePath=='%v'\n",
+      expectedAbsDir, dMgr.absolutePath)
   }
 
   if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.", expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
+    t.Errorf("Expected doesAbsolutePathExist=='%v'.\n" +
+      "Instead, doesAbsolutePathExist=='%v'.\n",
+      expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
   }
 
   if false != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.",
+    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'.\n" +
+      "Instead, isAbsolutePathDifferentFromPath=='%v'.\n",
       false, dMgr.isAbsolutePathDifferentFromPath)
   }
 
   if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.", expectedVolumeName, dMgr.volumeName)
+    t.Errorf("Expected volumeName=='%v'.\n" +
+      "Instead, volumeName=='%v'.\n",
+      expectedVolumeName, dMgr.volumeName)
   }
 
   if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.", expectedVolumeIsPopulated, dMgr.isVolumePopulated)
+    t.Errorf("Expected isVolumePopulated=='%v'.\n" +
+      "Instead, isVolumePopulated=='%v'.\n",
+      expectedVolumeIsPopulated, dMgr.isVolumePopulated)
   }
 
   if true != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
+    t.Errorf("Expected isParentPathPopulated=='%v'.\n" +
+      "Instead, isParentPathPopulated=='%v'.\n",
       true, dMgr.isParentPathPopulated)
   }
 }
@@ -433,6 +525,12 @@ func TestDirMgr_New_06(t *testing.T) {
   expectedPath := fh.AdjustPathSlash("../testfiles/testfiles2")
   expectedAbsDir, err := fh.MakeAbsolutePath(expectedPath)
 
+  if err != nil {
+    t.Errorf("Test Startup Error returned by fh.MakeAbsolutePath(expectedPath).\n" +
+      "expectedPath='%v'\nError='%v'\n", expectedPath, err.Error())
+    return
+  }
+  
   expectedPathDoesExist := fh.DoesFileExist(expectedPath)
 
   expectedAbsPathDoesExist := fh.DoesFileExist(expectedAbsDir)
@@ -456,64 +554,81 @@ func TestDirMgr_New_06(t *testing.T) {
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned from DirMgr{}.New(origDir).\n" +
+      "origDir=='%v' Error='%v'\n",
+      origDir, err.Error())
+    return
   }
 
   if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
+    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'.\n" +
+      "Instead, DirMgr.IsFInfoInitialized=='%v'\n",
       true, dMgr.isInitialized)
   }
 
   if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
+    t.Errorf("Expected DirMgr.isPathPopulated=='%v'.\n" +
+      "Instead, DirMgr.isPathPopulated=='%v'\n",
       true, dMgr.isPathPopulated)
   }
 
   if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
+    t.Errorf("Expected path=='%v'.\n" +
+      "Instead, path=='%v'.\n",
+      expectedPath, dMgr.path)
   }
 
   if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.", expectedPathDoesExist, dMgr.doesPathExist)
+    t.Errorf("Expected doesPathExist=='%v'.\n" +
+      "Instead, doesPathExist=='%v'.\n",
+      expectedPathDoesExist, dMgr.doesPathExist)
   }
 
   if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
+    t.Errorf("Expected isAbsolutePathPopulated=='%v'.\n" +
+      "Instead, isAbsolutePathPopulated=='%v'.\n",
       true, dMgr.isAbsolutePathPopulated)
   }
 
   if expectedAbsDir != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
+    t.Errorf("Expected absolutePath=='%v'.\n" +
+      "Instead, absolutePath=='%v'\n",
       expectedAbsDir, dMgr.absolutePath)
   }
 
   if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
+    t.Errorf("Expected doesAbsolutePathExist=='%v'.\n" +
+      "Instead, doesAbsolutePathExist=='%v'.\n",
       expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
   }
 
   if true != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.",
+    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'.\n" +
+      "Instead, isAbsolutePathDifferentFromPath=='%v'.\n",
       true, dMgr.isAbsolutePathDifferentFromPath)
   }
 
   if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.",
+    t.Errorf("Expected volumeName=='%v'.\n" +
+      "Instead, volumeName=='%v'.\n",
       expectedVolumeName, dMgr.volumeName)
   }
 
   if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.",
+    t.Errorf("Expected isVolumePopulated=='%v'.\n" +
+      "Instead, isVolumePopulated=='%v'.\n",
       expectedVolumeIsPopulated, dMgr.isVolumePopulated)
   }
 
   if expectedParentPath != dMgr.parentPath {
-    t.Errorf("Expected parentPath=='%v'. Instead, parentPath=='%v'.",
+    t.Errorf("Expected parentPath=='%v'.\n" +
+      "Instead, parentPath=='%v'.\n",
       expectedParentPath, dMgr.parentPath)
   }
 
   if expectedIsParentPathPopulated != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
+    t.Errorf("Expected isParentPathPopulated=='%v'.\n" +
+      "Instead, isParentPathPopulated=='%v'.\n",
       expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
   }
 }
@@ -525,7 +640,10 @@ func TestDirMgr_New_07(t *testing.T) {
   expectedAbsDir, err := fh.MakeAbsolutePath(expectedPath)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned from fh.MakeAbsolutePath(origDir).\n" +
+      "origDir=='%v'\nError='%v'\n",
+      origDir, err.Error())
+    return
   }
 
   expectedPathDoesExist := fh.DoesFileExist(expectedPath)
@@ -541,7 +659,9 @@ func TestDirMgr_New_07(t *testing.T) {
     expectedVolumeIsPopulated = false
   }
 
-  expectedParentPath := strings.TrimSuffix(expectedAbsDir, fh.AdjustPathSlash("/testfiles2"))
+  expectedParentPath := 
+    strings.TrimSuffix(expectedAbsDir, fh.AdjustPathSlash("/testfiles2"))
+  
   expectedIsParentPathPopulated := false
 
   if expectedParentPath != "" {
@@ -551,66 +671,81 @@ func TestDirMgr_New_07(t *testing.T) {
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
+    t.Errorf("Error returned from DirMgr{}.New(origDir).\n" +
+      "origDir=='%v'\nError='%v'\n",
+      origDir, err.Error())
+    return
   }
 
   if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
+    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'.\n" +
+      "Instead, DirMgr.IsFInfoInitialized=='%v'\n",
       true, dMgr.isInitialized)
   }
 
   if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
+    t.Errorf("Expected DirMgr.isPathPopulated=='%v'.\n" +
+      "Instead, DirMgr.isPathPopulated=='%v'\n",
       true, dMgr.isPathPopulated)
   }
 
   if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
+    t.Errorf("Expected path=='%v'.\n" +
+      "Instead, path=='%v'.",
+      expectedPath, dMgr.path)
   }
 
   if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.",
+    t.Errorf("Expected doesPathExist=='%v'.\n" +
+      "Instead, doesPathExist=='%v'.\n",
       expectedPathDoesExist, dMgr.doesPathExist)
   }
 
   if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
+    t.Errorf("Expected isAbsolutePathPopulated=='%v'.\n" +
+      "Instead, isAbsolutePathPopulated=='%v'.\n",
       true, dMgr.isAbsolutePathPopulated)
   }
 
   if expectedAbsDir != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
+    t.Errorf("Expected absolutePath=='%v'.\n" +
+      "Instead, absolutePath=='%v'\n",
       expectedAbsDir, dMgr.absolutePath)
   }
 
   if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
+    t.Errorf("Expected doesAbsolutePathExist=='%v'.\n" +
+      "Instead, doesAbsolutePathExist=='%v'.\n",
       expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
   }
 
   if true != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, "+
-      "isAbsolutePathDifferentFromPath=='%v'.",
+    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'.\n" +
+      "Instead, isAbsolutePathDifferentFromPath=='%v'.\n",
       true, dMgr.isAbsolutePathDifferentFromPath)
   }
 
   if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.",
+    t.Errorf("Expected volumeName=='%v'.\n" +
+      "Instead, volumeName=='%v'.\n",
       expectedVolumeName, dMgr.volumeName)
   }
 
   if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.",
+    t.Errorf("Expected isVolumePopulated=='%v'.\n" +
+      "Instead, isVolumePopulated=='%v'.",
       expectedVolumeIsPopulated, dMgr.isVolumePopulated)
   }
 
   if expectedParentPath != dMgr.parentPath {
-    t.Errorf("Expected parentPath=='%v'. Instead, parentPath=='%v'.",
+    t.Errorf("Expected parentPath=='%v'.\n" +
+      "Instead, parentPath=='%v'.",
       expectedParentPath, dMgr.parentPath)
   }
 
   if expectedIsParentPathPopulated != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
+    t.Errorf("Expected isParentPathPopulated=='%v'.\n" +
+      "Instead, isParentPathPopulated=='%v'.",
       expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
   }
 }
@@ -639,68 +774,82 @@ func TestDirMgr_New_08(t *testing.T) {
   dMgr, err := DirMgr{}.New(rawDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawDir). rawDir=='%v' Error='%v'", rawDir, err.Error())
+    t.Errorf("Error returned from DirMgr{}.New(rawDir).\n" +
+      "rawDir=='%v'\nError='%v'\n",
+      rawDir, err.Error())
+    return
   }
 
   if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
+    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'.\n" +
+      "Instead, DirMgr.IsFInfoInitialized=='%v'\n",
       true, dMgr.isInitialized)
   }
 
   if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
+    t.Errorf("Expected DirMgr.isPathPopulated=='%v'.\n" +
+      "Instead, DirMgr.isPathPopulated=='%v'\n",
       true, dMgr.isPathPopulated)
   }
 
   if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.",
+    t.Errorf("Expected path=='%v'.\n" +
+      "Instead, path=='%v'.\n",
       expectedPath, dMgr.path)
   }
 
   if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.",
+    t.Errorf("Expected doesPathExist=='%v'.\n" +
+      "Instead, doesPathExist=='%v'.\n",
       expectedPathDoesExist, dMgr.doesPathExist)
   }
 
   if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
+    t.Errorf("Expected isAbsolutePathPopulated=='%v'.\n" +
+      "Instead, isAbsolutePathPopulated=='%v'.\n",
       true, dMgr.isAbsolutePathPopulated)
   }
 
   if expectedAbsDir != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
+    t.Errorf("Expected absolutePath=='%v'.\n" +
+      "Instead, absolutePath=='%v'\n",
       expectedAbsDir, dMgr.absolutePath)
   }
 
   if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
+    t.Errorf("Expected doesAbsolutePathExist=='%v'.\n" +
+      "Instead, doesAbsolutePathExist=='%v'.\n",
       expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
   }
 
   if false != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. "+
-      "Instead, isAbsolutePathDifferentFromPath=='%v'.",
+    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'.\n"+
+      "Instead, isAbsolutePathDifferentFromPath=='%v'.\n",
       false, dMgr.isAbsolutePathDifferentFromPath)
   }
 
   if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.",
+    t.Errorf("Expected volumeName=='%v'.\n" +
+      "Instead, volumeName=='%v'.\n",
       expectedVolumeName, dMgr.volumeName)
   }
 
   if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.",
+    t.Errorf("Expected isVolumePopulated=='%v'.\n" +
+      "Instead, isVolumePopulated=='%v'.\n",
       expectedVolumeIsPopulated, dMgr.isVolumePopulated)
   }
 
   if expectedParentPath != dMgr.parentPath {
-    t.Errorf("Expected parentPath=='%v'. Instead, parentPath=='%v'.",
+    t.Errorf("Expected parentPath=='%v'.\n" +
+      "Instead, parentPath=='%v'.\n",
       expectedParentPath, dMgr.parentPath)
   }
 
   if false != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.\n" +
-      "Parent Path='%v'",
+    t.Errorf("Expected isParentPathPopulated=='%v'.\n" +
+      "Instead, isParentPathPopulated=='%v'.\n" +
+      "Parent Path='%v'\n",
       false, dMgr.isParentPathPopulated, dMgr.parentPath)
   }
 }
@@ -712,7 +861,10 @@ func TestDirMgr_New_09(t *testing.T) {
   expectedAbsPath, err := fh.MakeAbsolutePath(expectedPath)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(expectedPath). expectedPath=='%v'  Error='%v'", expectedPath, err.Error())
+    t.Errorf("Error returned from fh.GetAbsPathFromFilePath(expectedPath).\n" +
+      "expectedPath=='%v'\nError='%v'\n",
+      expectedPath, err.Error())
+    return
   }
 
   expectedPathDoesExist := fh.DoesFileExist(expectedPath)
@@ -728,7 +880,8 @@ func TestDirMgr_New_09(t *testing.T) {
     expectedVolumeIsPopulated = false
   }
 
-  expectedParentPath := strings.TrimSuffix(expectedAbsPath, fh.AdjustPathSlash("/newfilesfortest"))
+  expectedParentPath := 
+    strings.TrimSuffix(expectedAbsPath, fh.AdjustPathSlash("/newfilesfortest"))
   expectedIsParentPathPopulated := false
 
   if expectedParentPath != "" {
@@ -738,67 +891,81 @@ func TestDirMgr_New_09(t *testing.T) {
   dMgr, err := DirMgr{}.New(rawPath)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawPath). rawPath=='%v' Error='%v'",
+    t.Errorf("Error returned from DirMgr{}.New(rawPath).\n" +
+      "rawPath=='%v'\nError='%v'\n",
       rawPath, err.Error())
+    return
   }
 
   if true != dMgr.isInitialized {
-    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
+    t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'.\n" +
+      "Instead, DirMgr.IsFInfoInitialized=='%v'\n",
       true, dMgr.isInitialized)
   }
 
   if true != dMgr.isPathPopulated {
-    t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
+    t.Errorf("Expected DirMgr.isPathPopulated=='%v'.\n" +
+      "Instead, DirMgr.isPathPopulated=='%v'\n",
       true, dMgr.isPathPopulated)
   }
 
   if expectedPath != dMgr.path {
-    t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
+    t.Errorf("Expected path=='%v'.\n" +
+      "Instead, path=='%v'.\n",
+      expectedPath, dMgr.path)
   }
 
   if expectedPathDoesExist != dMgr.doesPathExist {
-    t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.",
+    t.Errorf("Expected doesPathExist=='%v'.\n" +
+      "Instead, doesPathExist=='%v'.\n",
       expectedPathDoesExist, dMgr.doesPathExist)
   }
 
   if true != dMgr.isAbsolutePathPopulated {
-    t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
+    t.Errorf("Expected isAbsolutePathPopulated=='%v'.\n" +
+      "Instead, isAbsolutePathPopulated=='%v'.\n",
       true, dMgr.isAbsolutePathPopulated)
   }
 
   if expectedAbsPath != dMgr.absolutePath {
-    t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
+    t.Errorf("Expected absolutePath=='%v'.\n" +
+      "Instead, absolutePath=='%v'\n",
       expectedAbsPath, dMgr.absolutePath)
   }
 
   if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
+    t.Errorf("Expected doesAbsolutePathExist=='%v'.\n" +
+      "Instead, doesAbsolutePathExist=='%v'.\n",
       expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
   }
 
   if true != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. "+
-      "Instead, isAbsolutePathDifferentFromPath=='%v'.",
+    t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'.\n"+
+      "Instead, isAbsolutePathDifferentFromPath=='%v'.\n",
       true, dMgr.isAbsolutePathDifferentFromPath)
   }
 
   if expectedVolumeName != dMgr.volumeName {
-    t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.",
+    t.Errorf("Expected volumeName=='%v'.\n" +
+      "Instead, volumeName=='%v'.\n",
       expectedVolumeName, dMgr.volumeName)
   }
 
   if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-    t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.",
+    t.Errorf("Expected isVolumePopulated=='%v'.\n" +
+      "Instead, isVolumePopulated=='%v'.\n",
       expectedVolumeIsPopulated, dMgr.isVolumePopulated)
   }
 
   if expectedParentPath != dMgr.parentPath {
-    t.Errorf("Expected parentPath=='%v'. Instead, parentPath=='%v'.",
+    t.Errorf("Expected parentPath=='%v'.\n" +
+      "Instead, parentPath=='%v'.\n",
       expectedParentPath, dMgr.parentPath)
   }
 
   if expectedIsParentPathPopulated != dMgr.isParentPathPopulated {
-    t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
+    t.Errorf("Expected isParentPathPopulated=='%v'.\n" +
+      "Instead, isParentPathPopulated=='%v'.\n",
       expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
   }
 }
@@ -812,6 +979,7 @@ func TestDirMgr_SetDirMgr_01(t *testing.T) {
   if err != nil {
     t.Errorf("Test Setup Error returned by DirMgr{}.New(firstDir).\n" +
       "Error='%v'\n", err.Error())
+    return
   }
 
   testDir := ""
@@ -834,6 +1002,7 @@ func TestDirMgr_SetDirMgr_02(t *testing.T) {
   if err != nil {
     t.Errorf("Test Setup Error returned by DirMgr{}.New(firstDir).\n" +
       "Error='%v'\n", err.Error())
+    return
   }
 
   testDir := "      "
@@ -1165,10 +1334,33 @@ func TestDirMgr_SubstituteBaseDir_01(t *testing.T) {
 
   expectedPath := fh.AdjustPathSlash("../checkfiles/dir02/dir03")
 
+  expectedBasePath := fh.AdjustPathSlash("../checkfiles/dir02")
+  
+  err := fh.DeleteDirPathAll(rawBasePath)
+  
+  if err != nil {
+    t.Errorf("Test Startup Error returned by fh.DeleteDirPathAll(rawBasePath)\n" +
+      "rawBasePath='%v'\nError='%v'\n",
+      rawBasePath, err.Error())
+    return
+  }
+
+  err = fh.DeleteDirPathAll(expectedBasePath)
+
+  if err != nil {
+    t.Errorf("Test Startup Error returned by fh.DeleteDirPathAll(expectedBasePath)\n" +
+      "expectedBasePath='%v'\nError='%v'\n",
+      expectedBasePath, err.Error())
+    return
+  }
+  
   expectedAbsPath, err := fh.GetAbsPathFromFilePath(expectedPath)
 
   if err != nil {
-    t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath). expectedPath='%v'  Error='%v'", expectedPath, err.Error())
+    t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath).\n" +
+      "expectedPath='%v'\nError='%v'\n",
+      expectedPath, err.Error())
+    return
   }
 
   expectedAbsPath = strings.ToLower(expectedAbsPath)
@@ -1176,41 +1368,80 @@ func TestDirMgr_SubstituteBaseDir_01(t *testing.T) {
   dMgrOrig, err := DirMgr{}.New(rawOrigPath)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawOrigPath). rawOrigPath='%v'  Error='%v'", rawOrigPath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(rawOrigPath).\n" +
+      "rawOrigPath='%v'\nError='%v'\n",
+      rawOrigPath, err.Error())
+    
+    _ = fh.DeleteDirPathAll(rawBasePath)
+    _ = fh.DeleteDirPathAll(expectedBasePath)
+    return
   }
 
   dMgrBase, err := DirMgr{}.New(rawBasePath)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawBasePath). rawBasePath='%v'  Error='%v'", rawBasePath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(rawBasePath).\n" +
+      "rawBasePath='%v'\nError='%v'\n",
+      rawBasePath, err.Error())
+
+    _ = fh.DeleteDirPathAll(rawBasePath)
+    _ = fh.DeleteDirPathAll(expectedBasePath)
+    return
   }
 
   dMgrSubstitute, err := DirMgr{}.New(substitutePath)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(substitutePath). substitutePath='%v'  Error='%v'", substitutePath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(substitutePath).\n" +
+      "substitutePath='%v'\nError='%v'\n",
+      substitutePath, err.Error())
+
+    _ = fh.DeleteDirPathAll(rawBasePath)
+    _ = fh.DeleteDirPathAll(expectedBasePath)
+    return
   }
 
   dMgrResult, err := dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute)
 
   if err != nil {
     t.Errorf("Error returned by dMgrOrig.SubstituteBaseDir(dMgrBase, "+
-      "dMgrSubstitute).  Error='%v'",
+      "dMgrSubstitute).\nError='%v'\n",
       err.Error())
+
+    _ = fh.DeleteDirPathAll(rawBasePath)
+    _ = fh.DeleteDirPathAll(expectedBasePath)
+    return
   }
 
   if expectedAbsPath != dMgrResult.path {
-    t.Errorf("Expected final substituted path = '%v'.  Instead substituted "+
-      "path = '%v' ",
+    t.Errorf("Expected final substituted path = '%v'.\n" +
+      "Instead substituted path = '%v'\n",
       expectedAbsPath, dMgrResult.path)
   }
 
   if expectedAbsPath != dMgrResult.absolutePath {
-    t.Errorf("Expected final substituted absolute path = '%v'.  Instead "+
-      "substituted absolute path = '%v' ",
+    t.Errorf("Expected final substituted absolute path = '%v'.\n" +
+      "Instead substituted absolute path = '%v'\n",
       expectedAbsPath, dMgrResult.absolutePath)
   }
 
+  err = fh.DeleteDirPathAll(rawBasePath)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(rawBasePath)\n" +
+      "rawBasePath='%v'\nError='%v'\n",
+      rawBasePath, err.Error())
+  }
+
+  err = fh.DeleteDirPathAll(expectedBasePath)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(expectedBasePath)\n" +
+      "expectedBasePath='%v'\nError='%v'\n",
+      expectedBasePath, err.Error())
+  }
+
+  return
 }
 
 func TestDirMgr_SubstituteBaseDir_02(t *testing.T) {
@@ -1225,10 +1456,33 @@ func TestDirMgr_SubstituteBaseDir_02(t *testing.T) {
 
   expectedPath := fh.AdjustPathSlash("../checkfiles/dir02/dir03")
 
+  expectedBasePath := fh.AdjustPathSlash("../checkfiles/dir02/dir03")
+
+  err := fh.DeleteDirPathAll(rawBasePath)
+
+  if err != nil {
+    t.Errorf("Test Startup Error returned by fh.DeleteDirPathAll(rawBasePath)\n" +
+      "rawBasePath='%v'\nError='%v'\n",
+      rawBasePath, err.Error())
+    return
+  }
+
+  err = fh.DeleteDirPathAll(expectedBasePath)
+
+  if err != nil {
+    t.Errorf("Test Startup Error returned by fh.DeleteDirPathAll(expectedBasePath)\n" +
+      "expectedBasePath='%v'\nError='%v'\n",
+      expectedBasePath, err.Error())
+    return
+  }
+  
   expectedAbsPath, err := fh.GetAbsPathFromFilePath(expectedPath)
 
   if err != nil {
-    t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath). expectedPath='%v'  Error='%v'", expectedPath, err.Error())
+    t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath).\n" +
+      "expectedPath='%v'\nError='%v'",
+      expectedPath, err.Error())
+    return
   }
 
   expectedAbsPath = strings.ToLower(expectedAbsPath)
@@ -1236,36 +1490,79 @@ func TestDirMgr_SubstituteBaseDir_02(t *testing.T) {
   dMgrOrig, err := DirMgr{}.New(rawOrigPath)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawOrigPath). rawOrigPath='%v'  Error='%v'", rawOrigPath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(rawOrigPath).\n" +
+      "rawOrigPath='%v'\nError='%v'\n",
+      rawOrigPath, err.Error())
+
+    _ = fh.DeleteDirPathAll(rawBasePath)
+    _ = fh.DeleteDirPathAll(expectedBasePath)
+    return
+   
   }
 
   dMgrBase, err := DirMgr{}.New(rawBasePath)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawBasePath). rawBasePath='%v'  Error='%v'", rawBasePath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(rawBasePath).\n" +
+      "rawBasePath='%v'\nError='%v'\n",
+      rawBasePath, err.Error())
+
+    _ = fh.DeleteDirPathAll(rawBasePath)
+    _ = fh.DeleteDirPathAll(expectedBasePath)
+    return
   }
 
   dMgrSubstitute, err := DirMgr{}.New(substitutePath)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(substitutePath). substitutePath='%v'  Error='%v'", substitutePath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(substitutePath).\n" +
+      "substitutePath='%v'\nError='%v'\n",
+      substitutePath, err.Error())
+
+    _ = fh.DeleteDirPathAll(rawBasePath)
+    _ = fh.DeleteDirPathAll(expectedBasePath)
+    return
   }
 
   dMgrResult, err := dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute)
 
   if err != nil {
-    t.Errorf("Error returned by dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute).  Error='%v'", err.Error())
+    t.Errorf("Error returned by dMgrOrig.SubstituteBaseDir(dMgrBase, "+
+      "dMgrSubstitute).\nError='%v'\n", err.Error())
+    _ = fh.DeleteDirPathAll(rawBasePath)
+    _ = fh.DeleteDirPathAll(expectedBasePath)
+    return
   }
 
   if expectedAbsPath != dMgrResult.path {
-    t.Errorf("Expected final substituted path = '%v'.  Instead substituted path = '%v' ",
+    t.Errorf("Expected final substituted path = '%v'.\n" +
+      "Instead substituted path = '%v'\n",
       expectedAbsPath, dMgrResult.path)
   }
 
   if expectedAbsPath != dMgrResult.absolutePath {
-    t.Errorf("Expected final substituted absolute path = '%v'.  Instead substituted absolute path = '%v' ",
+    t.Errorf("Expected final substituted absolute path = '%v'.\n" +
+      "Instead substituted absolute path = '%v'\n",
       expectedAbsPath, dMgrResult.absolutePath)
   }
+
+  err = fh.DeleteDirPathAll(rawBasePath)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(rawBasePath)\n" +
+      "rawBasePath='%v'\nError='%v'\n",
+      rawBasePath, err.Error())
+  }
+
+  err = fh.DeleteDirPathAll(expectedBasePath)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(expectedBasePath)\n" +
+      "expectedBasePath='%v'\nError='%v'\n",
+      expectedBasePath, err.Error())
+  }
+
+  return
 
 }
 
@@ -1281,10 +1578,33 @@ func TestDirMgr_SubstituteBaseDir_03(t *testing.T) {
 
   expectedPath := fh.AdjustPathSlash("../checkfiles/dir02/dir03")
 
+  expectedBasePath := fh.AdjustPathSlash("../checkfiles/dir02")
+
+  err := fh.DeleteDirPathAll(rawBasePath)
+
+  if err != nil {
+    t.Errorf("Test Startup Error returned by fh.DeleteDirPathAll(rawBasePath)\n" +
+      "rawBasePath='%v'\nError='%v'\n",
+      rawBasePath, err.Error())
+    return
+  }
+
+  err = fh.DeleteDirPathAll(expectedBasePath)
+
+  if err != nil {
+    t.Errorf("Test Startup Error returned by fh.DeleteDirPathAll(expectedBasePath)\n" +
+      "expectedBasePath='%v'\nError='%v'\n",
+      expectedBasePath, err.Error())
+    return
+  }
+
   expectedAbsPath, err := fh.GetAbsPathFromFilePath(expectedPath)
 
   if err != nil {
-    t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath). expectedPath='%v'  Error='%v'", expectedPath, err.Error())
+    t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath).\n" +
+      "expectedPath='%v'\nError='%v'\n",
+      expectedPath, err.Error())
+    return
   }
 
   expectedAbsPath = strings.ToLower(expectedAbsPath)
@@ -1292,19 +1612,27 @@ func TestDirMgr_SubstituteBaseDir_03(t *testing.T) {
   dMgrOrig, err := DirMgr{}.New(rawOrigPath)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawOrigPath). rawOrigPath='%v'  Error='%v'", rawOrigPath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(rawOrigPath).\n" +
+      "rawOrigPath='%v'\nError='%v'\n",
+      rawOrigPath, err.Error())
+    return
   }
 
   dMgrBase, err := DirMgr{}.New(rawBasePath)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawBasePath). rawBasePath='%v'  Error='%v'", rawBasePath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(rawBasePath).\n" +
+      "rawBasePath='%v'\n" +
+      "Error='%v'", rawBasePath, err.Error())
+    return
   }
 
   dMgrSubstitute, err := DirMgr{}.New(substitutePath)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(substitutePath). substitutePath='%v'  Error='%v'", substitutePath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(substitutePath).\n" +
+      "substitutePath='%v'\nError='%v'\n",
+      substitutePath, err.Error())
   }
 
   dMgrOrig.isInitialized = false
@@ -1317,7 +1645,24 @@ func TestDirMgr_SubstituteBaseDir_03(t *testing.T) {
   }
 
   dMgrOrig.isInitialized = true
+  
+  err = fh.DeleteDirPathAll(rawBasePath)
 
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(rawBasePath)\n" +
+      "rawBasePath='%v'\nError='%v'\n",
+      rawBasePath, err.Error())
+  }
+
+  err = fh.DeleteDirPathAll(expectedBasePath)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(expectedBasePath)\n" +
+      "expectedBasePath='%v'\nError='%v'\n",
+      expectedBasePath, err.Error())
+  }
+
+  return
 }
 
 func TestDirMgr_SubstituteBaseDir_04(t *testing.T) {
@@ -1332,10 +1677,33 @@ func TestDirMgr_SubstituteBaseDir_04(t *testing.T) {
 
   expectedPath := fh.AdjustPathSlash("../checkfiles/dir02/dir03")
 
+  expectedBasePath := fh.AdjustPathSlash("../checkfiles/dir02")
+
+  err := fh.DeleteDirPathAll(rawBasePath)
+
+  if err != nil {
+    t.Errorf("Test Startup Error returned by fh.DeleteDirPathAll(rawBasePath)\n" +
+      "rawBasePath='%v'\nError='%v'\n",
+      rawBasePath, err.Error())
+    return
+  }
+
+  err = fh.DeleteDirPathAll(expectedBasePath)
+
+  if err != nil {
+    t.Errorf("Test Startup Error returned by fh.DeleteDirPathAll(expectedBasePath)\n" +
+      "expectedBasePath='%v'\nError='%v'\n",
+      expectedBasePath, err.Error())
+    return
+  }
+
   expectedAbsPath, err := fh.GetAbsPathFromFilePath(expectedPath)
 
   if err != nil {
-    t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath). expectedPath='%v'  Error='%v'", expectedPath, err.Error())
+    t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath).\n" +
+      "expectedPath='%v'\nError='%v'\n",
+      expectedPath, err.Error())
+    return
   }
 
   expectedAbsPath = strings.ToLower(expectedAbsPath)
@@ -1343,19 +1711,36 @@ func TestDirMgr_SubstituteBaseDir_04(t *testing.T) {
   dMgrOrig, err := DirMgr{}.New(rawOrigPath)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawOrigPath). rawOrigPath='%v'  Error='%v'", rawOrigPath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(rawOrigPath).\n" +
+      "rawOrigPath='%v'\nError='%v'\n", rawOrigPath, err.Error())
+
+    _ = fh.DeleteDirPathAll(rawBasePath)
+    _ = fh.DeleteDirPathAll(expectedBasePath)
+    return
   }
 
   dMgrBase, err := DirMgr{}.New(rawBasePath)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawBasePath). rawBasePath='%v'  Error='%v'", rawBasePath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(rawBasePath).\n" +
+      "rawBasePath='%v'\nError='%v'",
+      rawBasePath, err.Error())
+
+    _ = fh.DeleteDirPathAll(rawBasePath)
+    _ = fh.DeleteDirPathAll(expectedBasePath)
+    return
   }
 
   dMgrSubstitute, err := DirMgr{}.New(substitutePath)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(substitutePath). substitutePath='%v'  Error='%v'", substitutePath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(substitutePath).\n" +
+      "substitutePath='%v'\nError='%v'\n",
+      substitutePath, err.Error())
+
+    _ = fh.DeleteDirPathAll(rawBasePath)
+    _ = fh.DeleteDirPathAll(expectedBasePath)
+    return
   }
 
   dMgrBase.isInitialized = false
@@ -1368,6 +1753,24 @@ func TestDirMgr_SubstituteBaseDir_04(t *testing.T) {
   }
 
   dMgrBase.isInitialized = true
+
+  err = fh.DeleteDirPathAll(rawBasePath)
+
+  if err != nil {
+    t.Errorf("Test Startup Error returned by fh.DeleteDirPathAll(rawBasePath)\n" +
+      "rawBasePath='%v'\nError='%v'\n",
+      rawBasePath, err.Error())
+    return
+  }
+
+  err = fh.DeleteDirPathAll(expectedBasePath)
+
+  if err != nil {
+    t.Errorf("Test Startup Error returned by fh.DeleteDirPathAll(expectedBasePath)\n" +
+      "expectedBasePath='%v'\nError='%v'\n",
+      expectedBasePath, err.Error())
+    return
+  }
 
 }
 
@@ -1383,10 +1786,33 @@ func TestDirMgr_SubstituteBaseDir_05(t *testing.T) {
 
   expectedPath := fh.AdjustPathSlash("../checkfiles/dir02/dir03")
 
+  expectedBasePath := fh.AdjustPathSlash("../checkfiles/dir02")
+
+  err := fh.DeleteDirPathAll(rawBasePath)
+
+  if err != nil {
+    t.Errorf("Test Startup Error returned by fh.DeleteDirPathAll(rawBasePath)\n" +
+      "rawBasePath='%v'\nError='%v'\n",
+      rawBasePath, err.Error())
+    return
+  }
+
+  err = fh.DeleteDirPathAll(expectedBasePath)
+
+  if err != nil {
+    t.Errorf("Test Startup Error returned by fh.DeleteDirPathAll(expectedBasePath)\n" +
+      "expectedBasePath='%v'\nError='%v'\n",
+      expectedBasePath, err.Error())
+    return
+  }
+
   expectedAbsPath, err := fh.GetAbsPathFromFilePath(expectedPath)
 
   if err != nil {
-    t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath). expectedPath='%v'  Error='%v'", expectedPath, err.Error())
+    t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath).\n" +
+      "expectedPath='%v'\nError='%v'\n",
+      expectedPath, err.Error())
+    return
   }
 
   expectedAbsPath = strings.ToLower(expectedAbsPath)
@@ -1394,19 +1820,37 @@ func TestDirMgr_SubstituteBaseDir_05(t *testing.T) {
   dMgrOrig, err := DirMgr{}.New(rawOrigPath)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawOrigPath). rawOrigPath='%v'  Error='%v'", rawOrigPath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(rawOrigPath).\n" +
+      "rawOrigPath='%v'\nError='%v'\n",
+      rawOrigPath, err.Error())
+
+    _ = fh.DeleteDirPathAll(rawBasePath)
+    _ = fh.DeleteDirPathAll(expectedBasePath)
+    return
   }
 
   dMgrBase, err := DirMgr{}.New(rawBasePath)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawBasePath). rawBasePath='%v'  Error='%v'", rawBasePath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(rawBasePath).\n" +
+      "rawBasePath='%v'\nError='%v'\n",
+      rawBasePath, err.Error())
+
+    _ = fh.DeleteDirPathAll(rawBasePath)
+    _ = fh.DeleteDirPathAll(expectedBasePath)
+    return
   }
 
   dMgrSubstitute, err := DirMgr{}.New(substitutePath)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(substitutePath). substitutePath='%v'  Error='%v'", substitutePath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.New(substitutePath).\n" +
+      "substitutePath='%v'\nError='%v'\n",
+      substitutePath, err.Error())
+
+    _ = fh.DeleteDirPathAll(rawBasePath)
+    _ = fh.DeleteDirPathAll(expectedBasePath)
+    return
   }
 
   dMgrSubstitute.isInitialized = false
@@ -1420,5 +1864,22 @@ func TestDirMgr_SubstituteBaseDir_05(t *testing.T) {
 
   dMgrSubstitute.isInitialized = true
 
+  err = fh.DeleteDirPathAll(rawBasePath)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(rawBasePath)\n" +
+      "rawBasePath='%v'\nError='%v'\n",
+      rawBasePath, err.Error())
+  }
+
+  err = fh.DeleteDirPathAll(expectedBasePath)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(expectedBasePath)\n" +
+      "expectedBasePath='%v'\nError='%v'\n",
+      expectedBasePath, err.Error())
+  }
+
+  return
 }
 
