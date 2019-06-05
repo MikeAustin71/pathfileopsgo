@@ -26,6 +26,7 @@ func TestFileHelper_FindFilesWalkDirectory_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fh.FindFilesWalkDirectory(startPath, fsc). "+
       "startPath='%v' Error='%v' ", startPath, err.Error())
+    return
   }
 
   numOfDirs := dTreeInfo.Directories.GetNumOfDirs()
@@ -56,6 +57,7 @@ func TestFileHelper_FindFilesWalkDirectory_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fh.FindFilesWalkDirectory(startPath, fsc). "+
       "startPath='%v' Error='%v' ", startPath, err.Error())
+    return
   }
 
   numOfDirs := dTreeInfo.Directories.GetNumOfDirs()
@@ -91,8 +93,9 @@ func TestFileHelper_FindFilesWalkDirectory_03(t *testing.T) {
   _, err := fh.FindFilesWalkDirectory(startPath, fsc)
 
   if err == nil {
-    t.Errorf("Error returned by fh.FindFilesWalkDirectory(startPath, fsc). "+
-      "startPath='%v' Error='%v' ", startPath, err.Error())
+    t.Error("ERROR: Expected an error returned from fh.FindFilesWalkDirectory(startPath, fsc)\n" +
+      "because 'startPath' does not exist on disk.\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
   }
 
 }
@@ -162,6 +165,7 @@ func TestFileHelper_FindFilesWalkDirectory_06(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fh.FindFilesWalkDirectory(startPath, fsc). "+
       "startPath='%v' Error='%v' ", startPath, err.Error())
+    return
   }
 
   numOfDirs := dTreeInfo.Directories.GetNumOfDirs()
@@ -561,13 +565,17 @@ func TestFileHelper_GetFileLastModificationDate_01(t *testing.T) {
   fileTime, tStr, err := fh.GetFileLastModificationDate(target, tStrFmt)
 
   if err != nil {
-    t.Error("Error from FileHelper:GetFileLastModificationDate():", err.Error())
+    t.Errorf("Error returned by FileHelper:GetFileLastModificationDate().\n" +
+      "Error='%v'\n", err.Error())
+    return
   }
 
   fInfo, err := fh.GetFileInfo(target)
 
   if err != nil {
-    t.Error("Error from FileHelper:GetFileInfo():", err.Error())
+    t.Errorf("Error returned by FileHelper:GetFileInfo().\n" +
+      "Error='%v'\n", err.Error())
+    return
   }
 
   actualFileTime := fInfo.ModTime()
@@ -575,11 +583,13 @@ func TestFileHelper_GetFileLastModificationDate_01(t *testing.T) {
   expected := actualFileTime.Format(tStrFmt)
 
   if tStr != expected {
-    t.Errorf("Expected Time String for file %v == %v, received time string: %v", target, expected, tStr)
+    t.Errorf("Expected Time String for file %v == %v.\n" +
+      "Instead, received time string= %v", target, expected, tStr)
   }
 
   if !actualFileTime.Equal(fileTime) {
-    t.Error(fmt.Sprintf("Expected Time value %v, instead got:", actualFileTime), fileTime)
+    t.Errorf("Expected Time Value='%v'. Instead, Time Value='%v'\n",
+      actualFileTime, fileTime)
   }
 }
 
@@ -631,7 +641,9 @@ func TestFileHelper_GetFileLastModificationDate_04(t *testing.T) {
   fInfo, err := fh.GetFileInfo(target)
 
   if err != nil {
-    t.Error("Error from FileHelper:GetFileInfo():", err.Error())
+    t.Errorf("Error returned by FileHelper:GetFileInfo()\n" +
+      "Error='%v'\n", err.Error())
+    return
   }
 
   actualFileTime := fInfo.ModTime()
@@ -710,6 +722,7 @@ func TestFileHelper_GetFileMode_04(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fh.GetFileMode(pathFileName)\n" +
       "pathFileName='%v'\nError='%v'", pathFileName, err.Error())
+    return
   }
 
   err = filePermission.IsValid()

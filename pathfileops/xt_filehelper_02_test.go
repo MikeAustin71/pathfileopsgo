@@ -442,7 +442,11 @@ func TestFileHelper_CreateFile_02(t *testing.T) {
   }
 
   if fh.DoesFileExist(tstFile) {
-    t.Error(fmt.Sprintf("Error: Deletion Failed! File %v should not exist!", tstFile))
+    t.Error(fmt.Sprintf("Error: Deletion Failed!\n" +
+      "File %v should not exist!",
+      tstFile))
+    _ = fh.DeleteDirFile(tstFile)
+    return
   }
 
   f, err := fh.CreateFile(tstFile)
