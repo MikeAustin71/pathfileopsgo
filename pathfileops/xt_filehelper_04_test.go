@@ -686,6 +686,7 @@ func TestFileHelper_IsPathFileString_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
       "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
   }
 
   if pathFileType != PathFileType.PathFile() {
@@ -721,6 +722,7 @@ func TestFileHelper_IsPathFileString_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
       "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
   }
 
   if pathFileType != PathFileType.PathFile() {
@@ -756,6 +758,7 @@ func TestFileHelper_IsPathFileString_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
       "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
   }
 
   if pathFileType != PathFileType.Path() {
@@ -791,6 +794,7 @@ func TestFileHelper_IsPathFileString_04(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
       "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
   }
 
   expectedFileType := PathFileType.Indeterminate()
@@ -826,6 +830,7 @@ func TestFileHelper_IsPathFileString_05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
       "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
   }
 
   expectedFileType := PathFileType.Volume()
@@ -857,6 +862,7 @@ func TestFileHelper_IsPathFileString_06(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
       "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
   }
 
   expectedFileType := PathFileType.Path()
@@ -888,6 +894,7 @@ func TestFileHelper_IsPathFileString_07(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
       "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
   }
 
   expectedFileType := PathFileType.File()
@@ -922,6 +929,7 @@ func TestFileHelper_IsPathFileString_08(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
       "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
   }
 
   expectedFileType := PathFileType.File()
@@ -956,6 +964,7 @@ func TestFileHelper_IsPathFileString_09(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
       "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
   }
 
   expectedFileType := PathFileType.Path()
@@ -990,6 +999,7 @@ func TestFileHelper_IsPathFileString_10(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
       "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
   }
 
   expectedFileType := PathFileType.Path()
@@ -1080,6 +1090,7 @@ func TestFileHelper_IsPathFileString_15(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
       "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
   }
 
   expectedFileType := PathFileType.Path()
@@ -1114,6 +1125,7 @@ func TestFileHelper_IsPathFileString_16(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
       "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
   }
 
   expectedFileType := PathFileType.Path()
