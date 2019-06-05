@@ -317,11 +317,21 @@ func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
   targetFile = fh.AdjustPathSlash(targetFile)
   testString := "How now, brown cow!"
 
+  err := fh.DeleteDirFile(targetFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from fh.DeleteDirFile(targetFile).\n" +
+      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
+    return
+  }
+
+
   fInfo, err := os.Stat(srcFile)
 
   if err != nil {
     t.Errorf("ERROR: Test Setup Source File DOES NOT EXIST!\n"+
       "Source File='%v'\n", srcFile)
+    return
   }
 
   sourceByteSize := fInfo.Size()
@@ -342,7 +352,6 @@ func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
         "targetFile='%v'\n", targetFile)
       return
     }
-
   }
 
   err = fh.CopyFileByIo(srcFile, targetFile)
