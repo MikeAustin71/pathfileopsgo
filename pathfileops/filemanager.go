@@ -2572,10 +2572,6 @@ func (fMgr FileMgr) New(pathFileNameExt string) (FileMgr, error) {
 
   ePrefix := "FileMgr.New() "
 
-  if pathFileNameExt == "" {
-    return FileMgr{}, errors.New(ePrefix + "-Error: pathFileNameExt is Empty!")
-  }
-
   fMgrOut := FileMgr{}
 
   isEmpty, err := fMgrOut.SetFileMgrFromPathFileName(pathFileNameExt)

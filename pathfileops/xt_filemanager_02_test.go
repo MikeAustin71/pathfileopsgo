@@ -1763,7 +1763,8 @@ func TestFileMgr_CopyFileToDirByIoByLink_02(t *testing.T) {
 
 func TestFileMgr_CopyFileToDirByIoByLink_03(t *testing.T) {
 
-  sourceFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+  fileName := "newerFileForTest_01.txt"
+  sourceFile := "../filesfortest/newfilesfortest/" + fileName
 
   fh := FileHelper{}
 
@@ -1810,13 +1811,13 @@ func TestFileMgr_CopyFileToDirByIoByLink_03(t *testing.T) {
     return
   }
 
-  newFileMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, "newerFileForTest_01.txt")
+  newFileMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, fileName)
 
   if err != nil {
     t.Errorf("Error returned from FileMgr{}." +
-      "NewFromDirMgrFileNameExt(destDMgr, \"newerFileForTest_01.txt\").\n" +
-      "destDMgr='%v'\nError='%v'\n",
-      destDMgr.GetAbsolutePath(), err.Error())
+      "NewFromDirMgrFileNameExt(destDMgr, fileName).\n" +
+      "destDMgr='%v'\nfileName='%v'\nError='%v'\n",
+      destDMgr.GetAbsolutePath(), fileName, err.Error())
     return
   }
 

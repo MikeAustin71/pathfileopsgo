@@ -1320,11 +1320,25 @@ func (fh FileHelper) CreateFile(pathFileName string) (*os.File, error) {
     return nil, errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
   }
 
+  var err error
+
+  pathFileName, err = fh.MakeAbsolutePath(pathFileName)
+
+  if err != nil {
+    return nil,
+    fmt.Errorf(ePrefix +
+      "Error returned by fh.MakeAbsolutePath(pathFileName)\n" +
+      "pathFileName='%v'\nError='%v'\n",
+      pathFileName, err.Error())
+  }
+
   filePtr, err := os.Create(pathFileName)
 
   if err != nil {
-    return nil, fmt.Errorf(ePrefix+"Error returned from os.Create(pathFileName): '%v' ",
-      err.Error())
+    return nil, fmt.Errorf(ePrefix+
+      "Error returned from os.Create(pathFileName)\n" +
+      "pathFileName='%v'\nError='%v'\n",
+      pathFileName, err.Error())
   }
 
   return filePtr, nil
@@ -1332,31 +1346,45 @@ func (fh FileHelper) CreateFile(pathFileName string) (*os.File, error) {
 
 // DeleteDirFile - Wrapper function for Remove.
 // Remove removes the named file or directory.
-// If there is an error, it will be of type *PathError.
+// If there is an error, it will be a Non-Path Error.
+//
 func (fh FileHelper) DeleteDirFile(pathFile string) error {
   ePrefix := "FileHelper.DeleteDirFile() "
+  var fileDoesExist bool
+  var err error
 
-  errCode := 0
+  pathFile ,fileDoesExist, _, err = fh.doesPathFileExist(pathFile, ePrefix, "pathFile")
 
-  errCode, _, pathFile = fh.isStringEmptyOrBlank(pathFile)
-
-  if errCode == -1 {
-    return errors.New(ePrefix + "Error: Input parameter 'pathFile' is an empty string!")
+  if err != nil {
+    return err
   }
 
-  if errCode == -2 {
-    return errors.New(ePrefix + "Error: Input parameter 'pathFile' consists of blank spaces!")
-  }
-
-  if !fh.DoesFileExist(pathFile) {
+  if !fileDoesExist {
     // Doesn't exist. Nothing to do.
     return nil
   }
 
-  err := os.Remove(pathFile)
+  err = os.Remove(pathFile)
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"Error returned from os.Remove(pathFile). pathFile='%v' Error='%v'", pathFile, err.Error())
+    return fmt.Errorf(ePrefix +
+      "Error returned from os.Remove(pathFile).\n" +
+      "pathFile='%v'\nError='%v'",
+      pathFile, err.Error())
+  }
+
+  _, fileDoesExist, _, err = fh.doesPathFileExist(pathFile, ePrefix, "pathFile")
+
+  if err != nil {
+    return fmt.Errorf("After attempted deletion, file error occurred!\n" +
+      "pathFile='%v'\n" +
+      "%v", pathFile, err.Error())
+  }
+
+  if fileDoesExist {
+    // File STILL Exists! ERROR!
+    return fmt.Errorf("ERROR: After attempted deletion, file still exists!\n" +
+      "pathFile='%v'\n", pathFile)
   }
 
   return nil
@@ -1448,23 +1476,7 @@ func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
 // FileHelper.DoesThisFileExist().
 func (fh FileHelper) DoesFileExist(pathFileName string) bool {
 
-  errCode := 0
-
-  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
-
-  if errCode < 0 {
-    return false
-  }
-
-  var err error
-
-  pathFileName, err = fh.MakeAbsolutePath(pathFileName)
-
-  if err != nil {
-    return false
-  }
-
-  pathFileDoesExist, _, nonPathError :=
+  _, pathFileDoesExist, _, nonPathError :=
     fh.doesPathFileExist(pathFileName,
       "",
       "pathFileName")
@@ -1563,32 +1575,7 @@ func (fh FileHelper) DoesThisFileExist(pathFileName string) (pathFileNameDoesExi
   pathFileNameDoesExist = false
   nonPathError = nil
 
-  errCode := 0
-
-  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
-
-  if errCode == -1 {
-    nonPathError = errors.New(ePrefix +
-      "Error: Input parameter 'pathFileName' is an empty string!")
-
-    return pathFileNameDoesExist, nonPathError
-  }
-
-  if errCode == -2 {
-    nonPathError = errors.New(ePrefix +
-      "Error: Input parameter 'pathFileName' consists entirely of blank spaces!")
-
-    return pathFileNameDoesExist, nonPathError
-  }
-
-  pathFileName, nonPathError = fh.MakeAbsolutePath(pathFileName)
-
-  if nonPathError != nil {
-    nonPathError = fmt.Errorf(ePrefix + "%v", nonPathError.Error())
-    return pathFileNameDoesExist, nonPathError
-  }
-
-  pathFileNameDoesExist, _, nonPathError =
+  _, pathFileNameDoesExist, _, nonPathError =
     fh.doesPathFileExist(pathFileName,
       ePrefix,
       "pathFileName")
@@ -5416,12 +5403,14 @@ func (fh FileHelper) SwapBasePath(
 // returning a non-path error.
 //
 func (fh FileHelper) doesPathFileExist(
-  filePath, errorPrefix, filePathTitle string) (filePathDoesExist bool,
-  fInfo FileInfoPlus,
-  nonPathError error) {
+  filePath, errorPrefix, filePathTitle string) (absFilePath string,
+                                                filePathDoesExist bool,
+                                                fInfo FileInfoPlus,
+                                                nonPathError error) {
 
   ePrefix := "DirMgr.doesDirPathExist() "
 
+  absFilePath = ""
   filePathDoesExist = false
   fInfo = FileInfoPlus{}
   nonPathError = nil
@@ -5441,16 +5430,26 @@ func (fh FileHelper) doesPathFileExist(
   if errCode == -1 {
     nonPathError = fmt.Errorf(ePrefix +
       "Error: Input parameter '%v' is an empty string!", filePathTitle)
-    return filePathDoesExist, fInfo, nonPathError
+    return absFilePath, filePathDoesExist, fInfo, nonPathError
   }
 
   if errCode == -2 {
     nonPathError = fmt.Errorf(ePrefix +
       "Error: Input parameter '%v' consists of blank spaces!", filePathTitle)
-    return filePathDoesExist, fInfo, nonPathError
+    return absFilePath,filePathDoesExist, fInfo, nonPathError
   }
 
   var err error
+
+  absFilePath, err = fh.MakeAbsolutePath(filePath)
+
+  if err != nil {
+    absFilePath = ""
+    nonPathError = fmt.Errorf(ePrefix + "fh.MakeAbsolutePath() FAILED\n" +
+      "%v", err.Error())
+    return absFilePath ,filePathDoesExist, fInfo, nonPathError
+  }
+
   var info os.FileInfo
 
   for i:=0; i < 3; i++ {
@@ -5459,7 +5458,7 @@ func (fh FileHelper) doesPathFileExist(
     fInfo = FileInfoPlus{}
     nonPathError = nil
 
-    info, err = os.Stat(filePath)
+    info, err = os.Stat(absFilePath)
 
     if err != nil {
 
@@ -5468,7 +5467,7 @@ func (fh FileHelper) doesPathFileExist(
         filePathDoesExist = false
         fInfo = FileInfoPlus{}
         nonPathError = nil
-        return filePathDoesExist, fInfo, nonPathError
+        return absFilePath, filePathDoesExist, fInfo, nonPathError
       }
       // err == nil and err != os.IsNotExist(err)
       // This is a non-path error. The non-path error will be test
@@ -5485,13 +5484,13 @@ func (fh FileHelper) doesPathFileExist(
       filePathDoesExist = true
       nonPathError = nil
       fInfo = FileInfoPlus{}.NewFromFileInfo(info)
-      return filePathDoesExist, fInfo, nonPathError
+      return absFilePath, filePathDoesExist, fInfo, nonPathError
     }
 
     time.Sleep(30 * time.Millisecond)
   }
 
-  return filePathDoesExist, fInfo, nonPathError
+  return absFilePath, filePathDoesExist, fInfo, nonPathError
 }
 
 
