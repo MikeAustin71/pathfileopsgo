@@ -1353,7 +1353,11 @@ func (fh FileHelper) DeleteDirFile(pathFile string) error {
   var fileDoesExist bool
   var err error
 
-  pathFile ,fileDoesExist, _, err = fh.doesPathFileExist(pathFile, ePrefix, "pathFile")
+  pathFile ,fileDoesExist, _, err = fh.doesPathFileExist(
+                                    pathFile,
+                                    false, // Skip Absolute File Conversion
+                                    ePrefix,
+                                    "pathFile")
 
   if err != nil {
     return err
@@ -1373,7 +1377,11 @@ func (fh FileHelper) DeleteDirFile(pathFile string) error {
       pathFile, err.Error())
   }
 
-  _, fileDoesExist, _, err = fh.doesPathFileExist(pathFile, ePrefix, "pathFile")
+  _, fileDoesExist, _, err = fh.doesPathFileExist(
+    pathFile,
+    true, // Skip Absolute File Path Conversion
+    ePrefix,
+    "pathFile")
 
   if err != nil {
     return fmt.Errorf("After attempted deletion, file error occurred!\n" +
@@ -1477,7 +1485,9 @@ func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
 func (fh FileHelper) DoesFileExist(pathFileName string) bool {
 
   _, pathFileDoesExist, _, nonPathError :=
-    fh.doesPathFileExist(pathFileName,
+    fh.doesPathFileExist(
+      pathFileName,
+      false, // skip absolute path conversion
       "",
       "pathFileName")
 
@@ -1576,7 +1586,9 @@ func (fh FileHelper) DoesThisFileExist(pathFileName string) (pathFileNameDoesExi
   nonPathError = nil
 
   _, pathFileNameDoesExist, _, nonPathError =
-    fh.doesPathFileExist(pathFileName,
+    fh.doesPathFileExist(
+      pathFileName,
+      false, // Skip Absolute Path Conversion
       ePrefix,
       "pathFileName")
 
@@ -5403,10 +5415,13 @@ func (fh FileHelper) SwapBasePath(
 // returning a non-path error.
 //
 func (fh FileHelper) doesPathFileExist(
-  filePath, errorPrefix, filePathTitle string) (absFilePath string,
-                                                filePathDoesExist bool,
-                                                fInfo FileInfoPlus,
-                                                nonPathError error) {
+  filePath string,
+  skipAbsFileCnvrsn bool,
+  errorPrefix string,
+  filePathTitle string) (absFilePath string,
+                         filePathDoesExist bool,
+                         fInfo FileInfoPlus,
+                         nonPathError error) {
 
   ePrefix := "DirMgr.doesDirPathExist() "
 
@@ -5441,14 +5456,22 @@ func (fh FileHelper) doesPathFileExist(
 
   var err error
 
-  absFilePath, err = fh.MakeAbsolutePath(filePath)
+  if skipAbsFileCnvrsn {
 
-  if err != nil {
-    absFilePath = ""
-    nonPathError = fmt.Errorf(ePrefix + "fh.MakeAbsolutePath() FAILED\n" +
-      "%v", err.Error())
-    return absFilePath ,filePathDoesExist, fInfo, nonPathError
+    absFilePath = filePath
+
+  } else {
+
+    absFilePath, err = fh.MakeAbsolutePath(filePath)
+
+    if err != nil {
+      absFilePath = ""
+      nonPathError = fmt.Errorf(ePrefix + "fh.MakeAbsolutePath() FAILED!\n" +
+        "%v", err.Error())
+      return absFilePath ,filePathDoesExist, fInfo, nonPathError
+    }
   }
+
 
   var info os.FileInfo
 
