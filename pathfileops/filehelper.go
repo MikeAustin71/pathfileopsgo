@@ -173,138 +173,6 @@ func (fh FileHelper) AreSameFile(pathFile1, pathFile2 string) (bool, error) {
 
   return false, nil
 }
-/*
-func (fh FileHelper) AreSameFile(pathFile1, pathFile2 string) (bool, error) {
-
-  ePrefix := "FileHelper.AreSameFile() "
-
-  errCode := 0
-
-  errCode, _, pathFile1 = fh.isStringEmptyOrBlank(pathFile1)
-
-  isEmptyStr1 := false
-
-  if errCode < 0 {
-    isEmptyStr1 = true
-  }
-
-  isEmptyStr2 := false
-
-  errCode, _, pathFile2 = fh.isStringEmptyOrBlank(pathFile2)
-
-  if errCode < 0 {
-    isEmptyStr2 = true
-  }
-
-  if isEmptyStr1 && !isEmptyStr2 {
-    return false, errors.New(ePrefix + "Error: First Path File String is EMPTY and INVALID!")
-  }
-
-  if isEmptyStr2 && !isEmptyStr1 {
-    return false, errors.New(ePrefix +
-      "Error: Second Path File String is EMPTY and INVALID!")
-  }
-
-  if isEmptyStr1 && isEmptyStr2 {
-    return false, errors.New(ePrefix +
-      "Error: Both Path File Strings are EMPTY and INVALID!")
-  }
-
-  correctedPathFile1 := strings.ToLower(fh.AdjustPathSlash(pathFile1))
-
-  correctedPathFile2 := strings.ToLower(fh.AdjustPathSlash(pathFile2))
-
-  lcPathFile1 := strings.ToLower(pathFile1)
-  lcPathFile2 := strings.ToLower(pathFile2)
-
-  if correctedPathFile1 != lcPathFile1 &&
-    correctedPathFile2 != lcPathFile2 {
-
-    return false, fmt.Errorf(ePrefix+
-      "Error: Both input parameters 'pathFile1' and 'pathFile2' contain INVALID "+
-      "path separators.\npathFile1='%v'\npathFile2='%v'\n",
-      pathFile1, pathFile2)
-  }
-
-  if correctedPathFile1 != lcPathFile1 {
-
-    return false, fmt.Errorf(ePrefix+
-      "Error: Input parameter 'pathFile1' contains INVALID "+
-      "path separators.\npathFile1='%v'\n", pathFile1)
-  }
-
-  if correctedPathFile2 != lcPathFile2 {
-
-    return false, fmt.Errorf(ePrefix+
-      "Error: Input parameter 'pathFile2' contains INVALID "+
-      "path separators.\npathFile2='%v'\n", pathFile2)
-  }
-
-  str1Exists := false
-
-  f1, err := os.Stat(pathFile1)
-
-  if err == nil {
-    str1Exists = true
-  }
-
-  str2Exists := false
-
-  f2, err := os.Stat(pathFile2)
-
-  if err == nil {
-    str2Exists = true
-  }
-
-  if str1Exists && str2Exists {
-
-    if os.SameFile(f1, f2) {
-      // pathFile1 and pathFile2 are the same
-      // path and file name.
-
-      return true, nil
-
-    } else {
-
-      return false, nil
-    }
-
-  }
-
-  if str1Exists != str2Exists {
-
-    return false, nil
-  }
-
-  // Both pathFile1 and pathFile2 do NOT exist
-
-  absPathFile1, err := fh.MakeAbsolutePath(pathFile1)
-
-  if err != nil {
-    return false,
-      fmt.Errorf(ePrefix+
-        "Error: %v", err.Error())
-  }
-
-  absPathFile1 = strings.ToLower(absPathFile1)
-
-  absPathFile2, err := fh.MakeAbsolutePath(pathFile2)
-
-  if err != nil {
-    return false,
-      fmt.Errorf(ePrefix+
-        "Error: %v", err.Error())
-  }
-
-  absPathFile2 = strings.ToLower(absPathFile2)
-
-  if absPathFile1 == absPathFile2 {
-    return true, nil
-  }
-
-  return false, nil
-}
-*/
 
 // ChangeFileMode changes the file mode of an existing file designated by input
 // parameter 'pathFileName'. The os.FileMode value to which the mode will be changed
@@ -317,17 +185,25 @@ func (fh FileHelper) AreSameFile(pathFile1, pathFile2 string) (bool, error) {
 //
 func (fh FileHelper) ChangeFileMode(pathFileName string, filePermission FilePermissionConfig) error {
   ePrefix := "FileHelper.ChangeFileMode() "
-  errCode := 0
   var err error
+  var filePathDoesExist bool
 
-  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
+  pathFileName,
+  filePathDoesExist,
+  _,
+  err = fh.doesPathFileExist(
+                              pathFileName,
+                              false,
+                              ePrefix,
+                              "pathFileName")
 
-  if errCode == -1 {
-    return errors.New(ePrefix + "Error: Input parameter 'dirPath' is an empty string!")
+  if err != nil {
+    return err
   }
 
-  if errCode == -2 {
-    return errors.New(ePrefix + "Error: Input parameter 'dirPath' consists of blank spaces!")
+  if !filePathDoesExist {
+    return fmt.Errorf("ERROR: 'pathFileName' DOES NOT EXIST!\n" +
+      "pathFileName='%v'\n", pathFileName)
   }
 
   err = filePermission.IsValid()
@@ -338,28 +214,12 @@ func (fh FileHelper) ChangeFileMode(pathFileName string, filePermission FilePerm
       "Error='%v'\n", err.Error())
   }
 
-  pathFileName, err = fh.MakeAbsolutePath(pathFileName)
-
-  if err != nil {
-    return fmt.Errorf(ePrefix +
-      "Error returned by fh.MakeAbsolutePath(pathFileName).\n" +
-      "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
-  }
-
   newOsFileMode, err := filePermission.GetFileMode()
 
   if err != nil {
     return fmt.Errorf(ePrefix +
       "Error returned by filePermission.GetFileMode().\nError='%v'\n",
       err.Error())
-  }
-
-  _, err = os.Stat(pathFileName)
-
-  if err != nil {
-    return fmt.Errorf(ePrefix +
-      "ERROR: 'pathFileName' does NOT exist! os.Stat(pathFileName)\n" +
-      "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
   }
 
   err = os.Chmod(pathFileName, newOsFileMode)
