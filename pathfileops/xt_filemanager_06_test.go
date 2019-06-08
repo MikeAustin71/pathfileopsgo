@@ -10,7 +10,29 @@ import (
 func TestFileMgr_OpenThisFile_01(t *testing.T) {
   fh := FileHelper{}
 
-  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/testRead2008.txt")
+
+  filePath := fh.AdjustPathSlash(
+    "../checkfiles/checkfiles03/testRead2008.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -177,7 +199,29 @@ func TestFileMgr_OpenThisFile_03(t *testing.T) {
 func TestFileMgr_OpenThisFile_04(t *testing.T) {
   fh := FileHelper{}
 
-  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/testRead2008.txt")
+
+  filePath := fh.AdjustPathSlash(
+    "../checkfiles/checkfiles03/testRead2008.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -224,6 +268,7 @@ func TestFileMgr_OpenThisFile_04(t *testing.T) {
       "because fMgr is invalid.\n" +
       "However, NO ERROR WAS RETURNED!\n")
   }
+  fMgr.isInitialized = true
 
   _ = fMgr.CloseThisFile()
 }
@@ -231,7 +276,29 @@ func TestFileMgr_OpenThisFile_04(t *testing.T) {
 func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
   fh := FileHelper{}
 
-  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/testRead2008.txt")
+
+  filePath := fh.AdjustPathSlash(
+    "../checkfiles/checkfiles03/testRead2008.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -279,7 +346,29 @@ func TestFileMgr_OpenThisFileReadOnly_02(t *testing.T) {
 
   fh := FileHelper{}
 
-  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/testRead2008.txt")
+
+  filePath := fh.AdjustPathSlash(
+    "../checkfiles/checkfiles03/testRead2008.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -299,6 +388,10 @@ func TestFileMgr_OpenThisFileReadOnly_02(t *testing.T) {
       "because fMgr is invalid.\n" +
       "However, NO ERROR WAS RETURNED!\n")
   }
+
+  fMgr.isInitialized = true
+
+  _ = fMgr.CloseThisFile()
 }
 
 func TestFileMgr_OpenThisFileReadOnly_03(t *testing.T) {
@@ -412,7 +505,29 @@ func TestFileMgr_OpenThisFileReadOnly_04(t *testing.T) {
 func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
   fh := FileHelper{}
 
-  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/testRead2008.txt")
+
+  filePath := fh.AdjustPathSlash(
+    "../checkfiles/checkfiles03/testRead2008.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -442,9 +557,7 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
       filePath, err.Error())
 
     _ = fMgr.CloseThisFile()
-    _ = fMgr.DeleteThisFile()
-
-    return
+      return
   }
 
   actualStr := string(b)
@@ -464,14 +577,34 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
     t.Errorf("Error returned from final fMgr.CloseThisFile(). Error='%v' ",
       err.Error())
   }
-
-  _ = fMgr.DeleteThisFile()
 }
 
 func TestFileMgr_OpenThisFileReadWrite_02(t *testing.T) {
   fh := FileHelper{}
 
-  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testRead2008.txt")
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/testRead2008.txt")
+
+  filePath := fh.AdjustPathSlash(
+    "../checkfiles/checkfiles03/testRead2008.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -495,7 +628,6 @@ func TestFileMgr_OpenThisFileReadWrite_02(t *testing.T) {
   fMgr.isInitialized = true
 
   _ = fMgr.CloseThisFile()
-
 }
 
 func TestFileMgr_OpenThisFileWriteOnly_01(t *testing.T) {
@@ -901,7 +1033,30 @@ func TestFileMgr_ReadAllFile_01(t *testing.T) {
 
   fh := FileHelper{}
 
-  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/checkfiles03_02/testRead857268.txt")
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/checkfiles03_02/testRead857268.txt")
+
+
+  filePath := fh.AdjustPathSlash(
+    "../checkfiles/checkfiles03/checkfiles03_02/testRead857268.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -949,8 +1104,29 @@ func TestFileMgr_ReadAllFile_02(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/checkfiles03_02/testRead857268.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/checkfiles03_02/testRead857268.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -984,8 +1160,29 @@ func TestFileMgr_ReadAllFile_03(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/checkfiles03_02/testRead918256.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1037,8 +1234,29 @@ func TestFileMgr_ReadFileLine_01(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/checkfiles03_02/testRead918256.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1097,8 +1315,29 @@ func TestFileMgr_ReadFileLine_02(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/checkfiles03_02/testRead918256.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1137,8 +1376,29 @@ func TestFileMgr_ReadFileLine_03(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/checkfiles03_02/testRead918256.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1216,8 +1476,29 @@ func TestFileMgr_ReadFileLine_04(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/checkfiles03_02/testRead918256.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1299,8 +1580,29 @@ func TestFileMgr_ReadFileLine_05(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/checkfiles03_02/testRead918256.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1354,8 +1656,29 @@ func TestFileMgr_ReadFileBytes_01(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/testRead2008.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/testRead2008.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1378,18 +1701,6 @@ func TestFileMgr_ReadFileBytes_01(t *testing.T) {
       filePath, err.Error())
     _ = fMgr.CloseThisFile()
     return
-  }
-
-  isErrEOF := false
-
-  if err == io.EOF {
-    isErrEOF = true
-  }
-
-  if !isErrEOF {
-    t.Error("ERROR: Expected the last error return from fMgr.ReadFileBytes(byteBuff)\n" +
-      "to be io.EOF.\n" +
-      "Instead, error WAS NOT equal to io.EOF!\n")
   }
 
   var rStr = make([]rune, 0, 2048)
@@ -1442,8 +1753,29 @@ func TestFileMgr_ReadFileBytes_02(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/testRead2008.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/testRead2008.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1477,8 +1809,29 @@ func TestFileMgr_ReadFileBytes_03(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/testRead2008.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/testRead2008.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1504,18 +1857,6 @@ func TestFileMgr_ReadFileBytes_03(t *testing.T) {
       fMgr.GetAbsolutePathFileName(), err.Error())
     _ = fMgr.CloseThisFile()
     return
-  }
-
-  isErrEOF := false
-
-  if err == io.EOF {
-    isErrEOF = true
-  }
-
-  if !isErrEOF {
-    t.Error("ERROR: Expected the last error return from fMgr.ReadFileBytes(byteBuff)\n" +
-      "to be io.EOF.\n" +
-      "Instead, error WAS NOT equal to io.EOF!\n")
   }
 
   var rStr = make([]rune, 0, 2048)
@@ -1557,8 +1898,29 @@ func TestFileMgr_ReadFileString_01(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/checkfiles03_02/testRead918256.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1612,8 +1974,29 @@ func TestFileMgr_ReadFileString_02(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/checkfiles03_02/testRead918256.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1704,8 +2087,29 @@ func TestFileMgr_ReadFileString_03(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/checkfiles03_02/testRead918256.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1775,8 +2179,29 @@ func TestFileMgr_ReadFileString_04(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/checkfiles03_02/testRead918256.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1844,8 +2269,29 @@ func TestFileMgr_ReadFileString_05(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/checkfiles03_02/testRead918256.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1915,8 +2361,29 @@ func TestFileMgr_ReadFileString_06(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/checkfiles03_02/testRead918256.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1953,8 +2420,29 @@ func TestFileMgr_ReadFileString_07(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/checkfiles03_02/testRead918256.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/checkfiles03_02/testRead918256.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -2015,8 +2503,29 @@ func TestFileMgr_ResetFileInfo_01(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/testRead2008.txt")
+
   filePath := fh.AdjustPathSlash(
     "../checkfiles/checkfiles03/testRead2008.txt")
+
+  err := fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
+    return
+  }
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 

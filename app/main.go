@@ -3,63 +3,141 @@ package main
 import (
   pf "../pathfileops"
   "fmt"
+  "io"
 )
 
 /*
 
+
 import (
-  "MikeAustin71/pathfilego/003_filehelper/common"
+  pf "../pathfileops"
   "fmt"
-  "time"
 )
+
 
 */
 
 func main() {
 
-  mainTest62CopySubDirs()
+  mainTest66ReadFileBytes()
 
 }
 
-func mainTest62CopySubDirs() {
-  srcDir := "D:\\T03\\WebSite_15"
+func mainTest66ReadFileBytes() {
 
-  srcDMgr, err := pf.DirMgr{}.New(srcDir)
+  fh := pf.FileHelper{}
+
+  setupFile := fh.AdjustPathSlash(
+    "../filesfortest/checkfiles03/testRead2008.txt")
+
+  filePath := fh.AdjustPathSlash(
+    "../checkfiles/checkfiles03/testRead2008.txt")
+
+  err := fh.DeleteDirFile(filePath)
 
   if err != nil {
-    fmt.Printf("Error returned by pf.DirMgr{}.New(srcDir).\n"+
-      "srcDir='%v'\nError='%v'\n", srcDir, err.Error())
+    fmt.Printf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
     return
   }
 
-  targetDir := "D:\\T04"
-
-  targetDMgr, err := pf.DirMgr{}.New(targetDir)
+  err = fh.CopyFileByIo(setupFile, filePath)
 
   if err != nil {
-    fmt.Printf("Error returned by pf.DirMgr{}.New(targetDir).\n"+
-      "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
+    fmt.Printf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+      "setupFile='%v'\nfilePath='%v'\n",
+      setupFile, filePath)
     return
   }
 
-  fsc := pf.FileSelectionCriteria{}
+  fMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
-  errs := srcDMgr.CopySubDirectoryTree(targetDMgr, false, fsc)
+  if err != nil {
+    fmt.Printf("Error returned from common.FileMgr{}." +
+      "NewFromPathFileNameExtStr(filePath).\n"+
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
 
-  if len(errs) > 0 {
-    fmt.Printf("Errors returned by srcDMgr.CopySubDirectoryTree(targetDMgr,true, fsc).\n"+
-      "targetDir='%v'\nErrors:\n\n", targetDMgr.GetAbsolutePath())
+  byteBuff := make([]byte, 2048, 2048)
 
-    for i := 0; i < len(errs); i++ {
-      fmt.Printf("%v\n\n", errs[i].Error())
+  bytesRead, err := fMgr.ReadFileBytes(byteBuff)
+
+  if err != nil &&
+    err != io.EOF {
+    fmt.Printf("Error returned from fMgr.ReadFileBytes(byteBuff).\n"+
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    _ = fMgr.CloseThisFile()
+    return
+  } else if err != nil {
+    fmt.Printf("Error return from ReadFileBytes:\n" +
+      "%v", err.Error())
+    return
+  } else if err == nil {
+    fmt.Printf("Error return from ReadFileBytes is 'nil'!\n\n")
+  }
+
+  isErrEOF := false
+
+  if err == io.EOF {
+    isErrEOF = true
+  }
+
+  if !isErrEOF {
+    fmt.Print("ERROR: Expected the last error return from fMgr.ReadFileBytes(byteBuff)\n" +
+      "to be io.EOF.\n" +
+      "Instead, error WAS NOT equal to io.EOF!\n")
+  }
+
+  var rStr = make([]rune, 0, 2048)
+
+  for i := 0; i < len(byteBuff); i++ {
+
+    if byteBuff[i] == 0 {
+      break
     }
 
-    fmt.Printf("\n\n")
+    rStr = append(rStr, rune(byteBuff[i]))
+  }
 
+  expectedStr :=
+    "Test Read File. Do NOT alter the contents of this file."
+  actualStr := string(rStr)
+
+  if expectedStr != actualStr {
+    fmt.Printf("Expected Read String='%v'.\n" +
+      "Instead, Actual Read String='%v'\n",
+      expectedStr, actualStr)
+  }
+
+  expectedBytesRead := len(expectedStr)
+
+  if expectedBytesRead != bytesRead {
+    fmt.Printf("Expected Bytes Read='%v'.\n" +
+      "Instead, Actual Bytes Read='%v'\n",
+      expectedBytesRead, bytesRead)
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    fmt.Printf("Error returned from fMgr.CloseThisFile()\n" +
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
     return
   }
 
-  fmt.Println("               mainTest62CopySubDirs                    ")
+  if fMgr.GetFilePtr() != nil {
+    fmt.Print("ERROR: After fMgr.CloseThisFile() expected " +
+      "fMgr.filePtr==nil.\n" +
+      "fMgr.filePtr IS NOT EQUAL TO NIL!\n")
+    return
+  }
+
+  fmt.Println("              mainTest66ReadFileBytes                   ")
   fmt.Println("********************************************************")
   fmt.Println("                    SUCCESS!!!                          ")
   fmt.Println("********************************************************")

@@ -3412,8 +3412,8 @@ func (fMgr *FileMgr) ReadAllFile() (bytesRead []byte, err error) {
 // If successful, the returned error value is 'nil'. The returned value 'int'
 // contains the number of bytes read from the current file.
 //
-// If End Of File (EOF) is reached, this method will return an EOF error (err == io.EOF)
-// and the number of bytes read.
+// At End of File (EOF), the byte count will be zero and err will be equal to
+// 'io.EOF'.
 //
 func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (bytesRead int, err error) {
 
@@ -4231,7 +4231,7 @@ func (fMgr *FileMgr) doesPathFileExist(
                          fInfo FileInfoPlus,
                          nonPathError error) {
 
-  ePrefix := "DirMgr.doesDirPathExist() "
+  ePrefix := "FileMgr.doesPathFileExist() "
 
   absFilePath = ""
   filePathDoesExist = false
