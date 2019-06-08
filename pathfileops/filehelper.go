@@ -1126,118 +1126,95 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   ePrefix := "FileHelper.CopyFileByIo() "
   err = nil
-  errCode := 0
 
-  errCode, _, src = fh.isStringEmptyOrBlank(src)
+  var err2 error
+  var srcFileDoesExist bool
+  var srcFInfo FileInfoPlus
 
-  if errCode == -1 {
-    return errors.New(ePrefix + "Error: Input parameter 'src' is an empty string!")
-  }
+  src,
+  srcFileDoesExist,
+  srcFInfo,
+  err = fh.doesPathFileExist(src,
+                              false, // skip file conversion
+                              ePrefix,
+                              "src")
 
-  if errCode == -2 {
-    return errors.New(ePrefix + "Error: Input parameter 'src' consists of blank spaces!")
-  }
-
-  errCode, _, dst = fh.isStringEmptyOrBlank(dst)
-
-  if errCode == -1 {
-    return errors.New(ePrefix + "Error: Input parameter 'dst' is an empty string!")
-  }
-
-  if errCode == -2 {
-    return errors.New(ePrefix + "Error: Input parameter 'dst' consists of blank spaces!")
-  }
-
-  correctedSrc, err2 := fh.MakeAbsolutePath(src)
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix +
-      "Error from fh.MakeAbsolutePath(src).\nsrc='%v'\nError='%v'",
-      src, err2.Error())
+  if err != nil {
     return err
   }
 
-  correctedDest, err2 := fh.MakeAbsolutePath(dst)
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix +
-      "Error from fh.MakeAbsolutePath(dst).\nsrc='%v'\nError='%v'",
-      dst, err2.Error())
+  if !srcFileDoesExist {
+    err = fmt.Errorf(ePrefix + "Error: Source File DOES NOT EXIST!\n" +
+      "src='%v'\n", src)
     return err
   }
 
-  areSameFile, err2 := fh.AreSameFile(correctedSrc, correctedDest)
+
+  dst,
+  _,
+  _,
+  err = fh.doesPathFileExist(dst,
+                              false,
+                              ePrefix,
+                              "dst")
+
+  if err != nil {
+    return err
+  }
+
+  areSameFile, err2 := fh.AreSameFile(src, dst)
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix + "Error occurred during path file name comparison.\n" +
       "Source File:'%v'\nDestination File:'%v'\nError='%v'\n",
-      correctedSrc, correctedDest, err2.Error())
+      src, dst, err2.Error())
     return err
   }
 
   if areSameFile {
     err = fmt.Errorf(ePrefix + "Error: The source and destination file are the same - equivalent.\n" +
       "Source File:'%v'\nDestination File:'%v'\n",
-      correctedSrc, correctedDest)
+      src, dst)
     return err
   }
 
-  sfi, err2 := os.Stat(correctedSrc)
-
-  if err2 != nil {
-
-    err = fmt.Errorf(ePrefix+
-      "Error: Source File is NOT Valid! Error returned from os.Stat(src). \n"+
-      "src='%v'  Error='%v'\n", correctedSrc, err2.Error())
-    return err
-  }
-
-  if !sfi.Mode().IsRegular() {
+  if !srcFInfo.Mode().IsRegular() {
     // cannot copy non-regular files (e.g., directories,
     // symlinks, devices, etc.)
-    err = fmt.Errorf(ePrefix+"Error non-regular source file ='%v' source file Mode='%v'",
-      sfi.Name(), sfi.Mode().String())
+    err = fmt.Errorf(ePrefix+"Error non-regular source file ='%v'\n" +
+      "source file Mode='%v'\n",
+      srcFInfo.Name(), srcFInfo.Mode().String())
     return err
   }
 
-  dfi, err2 := os.Stat(correctedDest)
-
   // If the destination file does NOT exist, this is not a problem
-  // since it will be created later. If the destination Path does
+  // since it will be created later. If the destination 'Path' does
   // not exist, an error return will be triggered.
 
-  if err2 == nil {
-    // The destination file already exists!
-
-    if !dfi.Mode().IsRegular() {
-      err = fmt.Errorf(ePrefix+
-        "Error: non-regular destination file. Cannot Overwrite destination file. "+
-        "Destination file='%v' destination file mode='%v'",
-        dfi.Name(), dfi.Mode().String())
-      return err
-    }
-
-  }
 
   // Create a new destination file and copy source
   // file contents to the destination file.
 
-  in, err2 := os.Open(correctedSrc)
+  // First, open the source file
+  in, err2 := os.Open(src)
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
       "Error returned from os.Open(src) src='%v'  Error='%v'",
-      correctedSrc, err2.Error())
+      src, err2.Error())
     return err
   }
 
-  out, err2 := os.Create(correctedDest)
+  // Next, 'Create' the destination file
+  // If the destination file previously exists,
+  // it will be truncated.
+  out, err2 := os.Create(dst)
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
       "Error returned from os.Create(destinationFile)\n"+
       "destinationFile='%v'\nError='%v'\n",
-      correctedDest, err2.Error())
+      dst, err2.Error())
 
     _ = in.Close()
 
@@ -1248,9 +1225,10 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
     _ = in.Close()
     _ = out.Close()
     err = fmt.Errorf(ePrefix+
-      "Error returned from io.Copy(destination, source) \ndestination='%v'\n"+
+      "Error returned from io.Copy(destination, source) \n" +
+      "destination='%v'\n"+
       "source='%v'\nError='%v'\n",
-      correctedDest, correctedSrc, err2.Error())
+      dst, src, err2.Error())
     return
   }
 
@@ -1261,8 +1239,9 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
     _ = in.Close()
     _ = out.Close()
     err = fmt.Errorf(ePrefix+
-      "Error returned from out.Sync()\nout=destination='%v'\nError='%v'\n",
-      correctedDest, err2.Error())
+      "Error returned from out.Sync()\n" +
+      "out=destination='%v'\nError='%v'\n",
+      dst, err2.Error())
     return
   }
 
@@ -1273,7 +1252,7 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
 
     err = fmt.Errorf(ePrefix+
       "Error returned from in.Close()\nin=source='%v'\nError='%v'\n",
-      correctedSrc, err2.Error())
+      src, err2.Error())
 
     return err
   }
@@ -1284,7 +1263,7 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
 
     err = fmt.Errorf(ePrefix+
       "Error returned from out.Close()\nout=destination='%v'\nError='%v'\n",
-      correctedDest, err2.Error())
+      dst, err2.Error())
 
     return err
   }
@@ -1292,7 +1271,6 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   err = nil
 
   return err
-
 }
 
 // CreateFile - Wrapper function for os.Create. If the path component of input
