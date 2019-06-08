@@ -3,7 +3,6 @@ package main
 import (
   pf "../pathfileops"
   "fmt"
-  "io"
 )
 
 /*
@@ -19,125 +18,42 @@ import (
 
 func main() {
 
-  mainTest66ReadFileBytes()
+  mainTest67AreFilesSame()
 
 }
 
-func mainTest66ReadFileBytes() {
+func mainTest67AreFilesSame() {
+  // ..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir\\level_04_dir\\level_4_2_test.txt
 
   fh := pf.FileHelper{}
 
-  setupFile := fh.AdjustPathSlash(
-    "../filesfortest/checkfiles03/testRead2008.txt")
+  /*
+  rawFile1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
+    "\\level_04_dir\\level_4_2_test.txt"
+  */
 
-  filePath := fh.AdjustPathSlash(
-    "../checkfiles/checkfiles03/testRead2008.txt")
+  rawFile1 := "D:/gowork/src/MikeAustin71/pathfileopsgo/filesfortest/levelfilesfortest" +
+    "/level_01_dir/level_02_dir/level_03_dir/level_04_dir/level_4_2_test.txt"
 
-  err := fh.DeleteDirFile(filePath)
+  correctedFile1 := fh.AdjustPathSlash(rawFile1)
 
-  if err != nil {
-    fmt.Printf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
-      "filePath='%v'\nError='%v'\n",
-      filePath, err.Error())
-    return
-  }
+  correctedFile2 := correctedFile1
 
-  err = fh.CopyFileByIo(setupFile, filePath)
+  filesAreSame, err := fh.AreSameFile(correctedFile1, correctedFile2)
 
   if err != nil {
-    fmt.Printf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
-      "setupFile='%v'\nfilePath='%v'\n",
-      setupFile, filePath)
+    fmt.Printf("Error returned by fh.AreSameFile(relFile1, relFile2). "+
+      "relFile1='%v'\nrelFile2='%v'\nError='%v'",
+      correctedFile1, correctedFile2, err.Error())
     return
   }
 
-  fMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(filePath)
-
-  if err != nil {
-    fmt.Printf("Error returned from common.FileMgr{}." +
-      "NewFromPathFileNameExtStr(filePath).\n"+
-      "filePath='%v'\nError='%v'\n",
-      filePath, err.Error())
+  if !filesAreSame {
+    fmt.Println ("Error: Expected file comparison='true'. Instead, file comparison='false'.")
     return
   }
 
-  byteBuff := make([]byte, 2048, 2048)
-
-  bytesRead, err := fMgr.ReadFileBytes(byteBuff)
-
-  if err != nil &&
-    err != io.EOF {
-    fmt.Printf("Error returned from fMgr.ReadFileBytes(byteBuff).\n"+
-      "filePath='%v'\nError='%v'\n",
-      filePath, err.Error())
-    _ = fMgr.CloseThisFile()
-    return
-  } else if err != nil {
-    fmt.Printf("Error return from ReadFileBytes:\n" +
-      "%v", err.Error())
-    return
-  } else if err == nil {
-    fmt.Printf("Error return from ReadFileBytes is 'nil'!\n\n")
-  }
-
-  isErrEOF := false
-
-  if err == io.EOF {
-    isErrEOF = true
-  }
-
-  if !isErrEOF {
-    fmt.Print("ERROR: Expected the last error return from fMgr.ReadFileBytes(byteBuff)\n" +
-      "to be io.EOF.\n" +
-      "Instead, error WAS NOT equal to io.EOF!\n")
-  }
-
-  var rStr = make([]rune, 0, 2048)
-
-  for i := 0; i < len(byteBuff); i++ {
-
-    if byteBuff[i] == 0 {
-      break
-    }
-
-    rStr = append(rStr, rune(byteBuff[i]))
-  }
-
-  expectedStr :=
-    "Test Read File. Do NOT alter the contents of this file."
-  actualStr := string(rStr)
-
-  if expectedStr != actualStr {
-    fmt.Printf("Expected Read String='%v'.\n" +
-      "Instead, Actual Read String='%v'\n",
-      expectedStr, actualStr)
-  }
-
-  expectedBytesRead := len(expectedStr)
-
-  if expectedBytesRead != bytesRead {
-    fmt.Printf("Expected Bytes Read='%v'.\n" +
-      "Instead, Actual Bytes Read='%v'\n",
-      expectedBytesRead, bytesRead)
-  }
-
-  err = fMgr.CloseThisFile()
-
-  if err != nil {
-    fmt.Printf("Error returned from fMgr.CloseThisFile()\n" +
-      "filePath='%v'\nError='%v'\n",
-      filePath, err.Error())
-    return
-  }
-
-  if fMgr.GetFilePtr() != nil {
-    fmt.Print("ERROR: After fMgr.CloseThisFile() expected " +
-      "fMgr.filePtr==nil.\n" +
-      "fMgr.filePtr IS NOT EQUAL TO NIL!\n")
-    return
-  }
-
-  fmt.Println("              mainTest66ReadFileBytes                   ")
+  fmt.Println("              mainTest67AreFilesSame                   ")
   fmt.Println("********************************************************")
   fmt.Println("                    SUCCESS!!!                          ")
   fmt.Println("********************************************************")

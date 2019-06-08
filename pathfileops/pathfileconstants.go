@@ -131,6 +131,7 @@ type FileInfoPlus struct {
   fModTime time.Time   // FileInfo.ModTime() file modification time
   isDir    bool        // FileInfo.IsDir() 'true'= this is a directory not a file
   dataSrc  interface{} // FileInfo.Sys() underlying data source (can return nil)
+  origFileInfo os.FileInfo
 }
 
 // Name - base name of the file.
@@ -152,7 +153,7 @@ func (fip FileInfoPlus) Size() int64 {
 // A FileMode represents a file's mode and permission bits.
 // The bits have the same definition on all systems, so that
 // information about files can be moved from one system
-// to another portably. Not all bits apply to all systems.
+// to another as a portable. Not all bits apply to all systems.
 // The only required bit is ModeDir for directories.
 //
 // type FileMode uint32
@@ -283,6 +284,15 @@ func (fip *FileInfoPlus) Equal(fip2 *FileInfoPlus) bool {
 
 }
 
+// GetOriginalFileInfo - If the FileInfoPlus instance was initialized
+// with an os.FileInfo value, this method will return that original
+// os.FileInfo value. This is useful for passing parameters to some
+// low level go routines such as os.SameFile().
+//
+func (fip *FileInfoPlus) GetOriginalFileInfo() os.FileInfo {
+  return fip.origFileInfo
+}
+
 // NewFromFileInfo - Creates and returns a new FileInfoPlus object
 // populated with FileInfo data received from the input parameter.
 // Notice that this version of the 'NewFromPathFileNameExtStr' method does NOT set the
@@ -305,6 +315,7 @@ func (fip FileInfoPlus) NewFromFileInfo(info os.FileInfo) FileInfoPlus {
   newInfo.SetIsDir(info.IsDir())
   newInfo.SetSysDataSrc(info.Sys())
   newInfo.SetIsFInfoInitialized(true)
+  newInfo.origFileInfo = info
   return newInfo
 }
 

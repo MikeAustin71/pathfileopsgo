@@ -135,20 +135,18 @@ func TestFileHelper_AreSameFile_01(t *testing.T) {
 
   correctedFile2 := correctedFile1
 
-  relFile1 := fh.AdjustPathSlash(correctedFile1)
-
-  relFile2 := fh.AdjustPathSlash(correctedFile2)
-
-  filesAreSame, err := fh.AreSameFile(relFile1, relFile2)
+  filesAreSame, err := fh.AreSameFile(correctedFile1, correctedFile2)
 
   if err != nil {
-    t.Errorf("Error returned by fh.AreSameFile(relFile1, relFile2). "+
-      "relFile1='%v'\nrelFile2='%v'\nError='%v'",
-      relFile1, relFile2, err.Error())
+    t.Errorf("Error returned by fh.AreSameFile(correctedFile1, correctedFile2).\n"+
+      "relFile1='%v'\nrelFile2='%v'\nError='%v'\n",
+      correctedFile1, correctedFile2, err.Error())
+    return
   }
 
   if !filesAreSame {
-    t.Error("Error: Expected file comparison='true'. Instead, file comparison='false'.")
+    t.Error("Error: Expected file comparison='true'.\n" +
+      "Instead, file comparison='false'.\n")
   }
 
 }
@@ -234,15 +232,19 @@ func TestFileHelper_AreSameFile_04(t *testing.T) {
     correctedFile1 = strings.ReplaceAll(correctedFile1, "\\", "/")
   }
 
-  _, err := fh.AreSameFile(correctedFile1, correctedFile2)
+  filesAreTheSame, err := fh.AreSameFile(correctedFile1, correctedFile2)
 
-  if err == nil {
-    t.Error("Expected an error return from fh.AreSameFile" +
-      "(correctedFile1, correctedFile2) " +
-      "because 'relFile1' contained INVALID path separators.\n" +
-      "However, NO ERROR WAS RETURNED!")
+  if err != nil {
+    t.Errorf("Error returned by fh.AreSameFile(correctedFile1, correctedFile2).\n" +
+      "correctedFile1='%v'\ncorrectedFile2='%v'\nError='%v'\n",
+      correctedFile1, correctedFile2, err.Error())
   }
 
+  if !filesAreTheSame {
+    t.Errorf("ERROR: Expected that AreSameFile='true'.\nInstead, AreSameFile='false'\n" +
+      "correctedFile1='%v'\ncorrectedFile2='%v'\n",
+      correctedFile1, correctedFile2)
+  }
 }
 
 func TestFileHelper_AreSameFile_05(t *testing.T) {
@@ -349,12 +351,18 @@ func TestFileHelper_AreSameFile_09(t *testing.T) {
     rawFile2 = strings.ReplaceAll(rawFile2, "\\", "/")
   }
 
-  _, err := fh.AreSameFile(rawFile1, rawFile2)
+  filesAreSame, err := fh.AreSameFile(rawFile1, rawFile2)
 
-  if err == nil {
-    t.Error("Expected an error return from fh.AreSameFile(rawFile1, rawFile2) " +
-      "because both rawFile1 and rawFile2 use incorrect path separators.\n" +
-      "However, NO ERROR WAS RETURNED!\n")
+  if err != nil {
+    t.Errorf("Error returned by fh.AreSameFile(rawFile1, rawFile2).\n"+
+      "rawFile1='%v'\nrawFile2='%v'\nError='%v'\n",
+      rawFile1, rawFile2, err.Error())
+    return
+  }
+
+  if filesAreSame {
+    t.Error("Error: Expected file comparison='false'.\n" +
+      "Instead, file comparison='true'.\n")
   }
 
 }
@@ -375,13 +383,18 @@ func TestFileHelper_AreSameFile_10(t *testing.T) {
 
   rawFile2 = fh.AdjustPathSlash(rawFile2)
 
+  filesAreSame, err := fh.AreSameFile(rawFile1, rawFile2)
 
-  _, err := fh.AreSameFile(rawFile1, rawFile2)
+  if err != nil {
+    t.Errorf("Error returned by fh.AreSameFile(rawFile1, rawFile2).\n"+
+      "rawFile1='%v'\nrawFile2='%v'\nError='%v'\n",
+      rawFile1, rawFile2, err.Error())
+    return
+  }
 
-  if err == nil {
-    t.Error("Expected an error return from fh.AreSameFile(rawFile1, rawFile2) " +
-      "because rawFile1 uses incorrect path separators.\n" +
-      "However, NO ERROR WAS RETURNED!\n")
+  if filesAreSame {
+    t.Error("Error: Expected file comparison='false'.\n" +
+      "Instead, file comparison='true'.\n")
   }
 
 }
@@ -401,14 +414,81 @@ func TestFileHelper_AreSameFile_11(t *testing.T) {
     rawFile2 = strings.ReplaceAll(rawFile2, "\\", "/")
   }
 
-  _, err := fh.AreSameFile(rawFile1, rawFile2)
+  filesAreSame, err := fh.AreSameFile(rawFile1, rawFile2)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.AreSameFile(rawFile1, rawFile2).\n"+
+      "rawFile1='%v'\nrawFile2='%v'\nError='%v'\n",
+      rawFile1, rawFile2, err.Error())
+    return
+  }
+
+  if filesAreSame {
+    t.Error("Error: Expected file comparison='false'.\n" +
+      "Instead, file comparison='true'.\n")
+  }
+
+}
+
+func TestFileHelper_AreSameFile_12(t *testing.T) {
+
+  rawFile1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
+    "\\level_04_dir\\iDoNotExist1.txt"
+
+  correctedFile2 := "  "
+
+  fh := FileHelper{}
+
+  correctedFile1 := fh.AdjustPathSlash(rawFile1)
+
+  _, err := fh.AreSameFile(correctedFile1, correctedFile2)
 
   if err == nil {
-    t.Error("Expected an error return from fh.AreSameFile(rawFile1, rawFile2) " +
-      "because rawFile2 uses incorrect path separators.\n" +
+    t.Error("Expected an error return from fh.AreSameFile(correctedFile1, correctedFile2) " +
+      "because correctedFile2 consists entirely of blank spaces.\n" +
       "However, NO ERROR WAS RETURNED!\n")
   }
 
+}
+
+func TestFileHelper_AreSameFile_13(t *testing.T) {
+
+  correctedFile1 := "   "
+
+  rawFile2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
+    "\\level_04_dir\\iDoNotExist2.txt"
+
+  fh := FileHelper{}
+
+  correctedFile2 := fh.AdjustPathSlash(rawFile2)
+
+  _, err := fh.AreSameFile(correctedFile1, correctedFile2)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.AreSameFile(" +
+      "correctedFile1, correctedFile2)\n" +
+      "because correctedFile1 consists entirely of blank spaces.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+}
+
+func TestFileHelper_AreSameFile_14(t *testing.T) {
+
+  correctedFile1 := "   "
+
+  correctedFile2 := "  "
+
+  fh := FileHelper{}
+
+  _, err := fh.AreSameFile(correctedFile1, correctedFile2)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.AreSameFile(" +
+      "correctedFile1, correctedFile2)\n" +
+      "because both correctedFile1 and correctedFile2 consist entirely of blank spaces.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
 }
 
 func TestFileHelper_ChangeFileMode_01(t *testing.T) {
@@ -521,6 +601,7 @@ func TestFileHelper_ChangeFileMode_05(t *testing.T) {
   if err != nil {
     t.Errorf("Error return from FilePermissionConfig{}.New(\"-rwxrwxrwx\").\n" +
       "Error='%v'\n", err.Error())
+    return
   }
 
   filePermission.isInitialized = false
@@ -1507,33 +1588,33 @@ func TestFileHelper_CopyFileByIo_02(t *testing.T) {
   srcFile, err := FileHelper{}.MakeAbsolutePath(rawSrcFile)
 
   if err != nil {
-    if err != nil {
-      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile). "+
-        "rawSrcFile='%v' Error='%v' ", rawSrcFile, err.Error())
-    }
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile).\n"+
+      "rawSrcFile='%v'\nError='%v'\n",
+      rawSrcFile, err.Error())
+    return
   }
 
   err = FileHelper{}.CopyFileByIo(srcFile, "")
 
   if err == nil {
-    t.Error("Expected error from FileHelper{}.CopyFileByIo(srcFile,\"\") " +
-      "because input parameter destination file is an empty string. " +
-      "However, NO ERROR WAS RETURNED!")
+    t.Error("Expected error from FileHelper{}.CopyFileByIo(srcFile,\"\")\n" +
+      "because input parameter destination file is an empty string.\n" +
+      "\nHowever, NO ERROR WAS RETURNED!\n")
   }
 
 }
 
 func TestFileHelper_CopyFileByIo_03(t *testing.T) {
 
-  rawDestFile := "..\\checkfiles\\scratchTestCopyFile2047552.txt"
+  rawDestFile := "..\\checkfiles\\TestFileHelper_CopyFileByIo_03.txt"
 
   destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
 
   if err != nil {
-    if err != nil {
-      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile). "+
-        "rawDestFile='%v' Error='%v' ", rawDestFile, err.Error())
-    }
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile).\n"+
+      "rawDestFile='%v'\nError='%v'\n",
+      rawDestFile, err.Error())
+    return
   }
 
   _ = FileHelper{}.DeleteDirFile(destFile)
@@ -1543,22 +1624,21 @@ func TestFileHelper_CopyFileByIo_03(t *testing.T) {
   srcFile, err := FileHelper{}.MakeAbsolutePath(rawSrcFile)
 
   if err != nil {
-    if err != nil {
-      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile). "+
-        "rawSrcFile='%v' Error='%v' ", rawSrcFile, err.Error())
-    }
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile).\n"+
+      "rawSrcFile='%v'\nError='%v'\n",
+      rawSrcFile, err.Error())
+    return
   }
 
   err = FileHelper{}.CopyFileByIo(srcFile, destFile)
 
   if err == nil {
-    t.Error("Expected error from FileHelper{}.CopyFileByIo(srcFile,destFile) " +
-      "because input parameter source file does not exist. " +
-      "However, NO ERROR WAS RETURNED!")
+    t.Error("Expected error from FileHelper{}.CopyFileByIo(srcFile,destFile)\n" +
+      "because input parameter source file does not exist.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
   _ = FileHelper{}.DeleteDirFile(destFile)
-
 }
 
 func TestFileHelper_CopyFileByIo_04(t *testing.T) {
@@ -1568,10 +1648,10 @@ func TestFileHelper_CopyFileByIo_04(t *testing.T) {
   destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
 
   if err != nil {
-    if err != nil {
-      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile). "+
-        "rawDestFile='%v' Error='%v' ", rawDestFile, err.Error())
-    }
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile).\n"+
+      "rawDestFile='%v'\nError='%v'\n",
+      rawDestFile, err.Error())
+    return
   }
 
   srcFile := destFile
@@ -1579,40 +1659,40 @@ func TestFileHelper_CopyFileByIo_04(t *testing.T) {
   err = FileHelper{}.CopyFileByIo(srcFile, destFile)
 
   if err == nil {
-    t.Error("Expected an error from FileHelper{}.CopyFileByIo(srcFile,destFile) " +
+    t.Error("Expected an error from FileHelper{}.CopyFileByIo(srcFile,destFile)\n" +
       "because input parameter source file is equivalent to destination file.\n" +
       "However, NO ERROR WAS RETURNED!\n")
   }
-
 }
 
 func TestFileHelper_CopyFileByIo_05(t *testing.T) {
 
-  rawDestFile := "..\\checkfiles\\scratchDestTestKJ5901375.txt"
+  rawDestFile := "..\\checkfiles\\TestFileHelper_CopyFileByIo_05.txt"
   fh := FileHelper{}
 
   destFile, err := fh.MakeAbsolutePath(rawDestFile)
 
   if err != nil {
-    if err != nil {
-      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile). "+
-        "rawDestFile='%v' Error='%v' ", rawDestFile, err.Error())
-    }
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile).\n"+
+      "rawDestFile='%v'\nError='%v'\n",
+      rawDestFile, err.Error())
+    return
   }
 
   err = FileHelper{}.CopyFileByIo("   ", destFile)
 
   if err == nil {
-    t.Error("Expected an error return from  err = FileHelper{}.CopyFileByIo(\"   \", destFile)" +
-      "because input parameter source file name consists entirely of blank spaces. " +
-      "However, NO ERROR WAS RETURNED!")
+    t.Error("Expected an error return from  err = FileHelper{}.CopyFileByIo(\"   \", destFile)\n" +
+      "because input parameter source file name consists entirely of blank spaces.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
   if fh.DoesFileExist(destFile) {
     err = fh.DeleteDirFile(destFile)
     if err != nil {
-      t.Errorf("Error returned from last attempt to delte destFile. "+
-        "fh.DeleteDirFile(destFile) destFile='%v' Error='%v' ", destFile, err.Error())
+      t.Errorf("Error returned from last attempt to delete destFile.\n"+
+        "fh.DeleteDirFile(destFile)\ndestFile='%v'\nError='%v'\n",
+        destFile, err.Error())
     }
   }
 }
@@ -1625,16 +1705,18 @@ func TestFileHelper_CopyFileByIo_06(t *testing.T) {
   srcFile, err := fh.MakeAbsolutePath(rawSrcFile)
 
   if err != nil {
-    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile). "+
-      "rawSrcFile='%v' Error='%v' ", rawSrcFile, err.Error())
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile).\n"+
+      "rawSrcFile='%v'\nError='%v'\n",
+      rawSrcFile, err.Error())
+    return
   }
 
   err = FileHelper{}.CopyFileByIo(srcFile, "   ")
 
   if err == nil {
-    t.Error("Expected an error return from  err = FileHelper{}.CopyFileByIo(src, \"    \")" +
-      "because input parameter destination file consists entirely of blank spaces. " +
-      "However, NO ERROR WAS RETURNED!")
+    t.Error("Expected an error return from  err = FileHelper{}.CopyFileByIo(src, \"    \")\n" +
+      "because input parameter destination file consists entirely of blank spaces.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }
@@ -1646,10 +1728,10 @@ func TestFileHelper_CopyFileByIo_07(t *testing.T) {
   destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
 
   if err != nil {
-    if err != nil {
-      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile). "+
-        "rawDestFile='%v' Error='%v' ", rawDestFile, err.Error())
-    }
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile).\n"+
+      "rawDestFile='%v'\nError='%v'\n",
+      rawDestFile, err.Error())
+    return
   }
 
   srcFile := ""
@@ -1657,7 +1739,7 @@ func TestFileHelper_CopyFileByIo_07(t *testing.T) {
   err = FileHelper{}.CopyFileByIo(srcFile, destFile)
 
   if err == nil {
-    t.Error("Expected an error from FileHelper{}.CopyFileByIo(srcFile,destFile) " +
+    t.Error("Expected an error from FileHelper{}.CopyFileByIo(srcFile,destFile)\n" +
       "because input parameter source file is an empty string.\n" +
       "However, NO ERROR WAS RETURNED!\n")
   }
@@ -1673,16 +1755,16 @@ func TestFileHelper_CopyFileByIo_08(t *testing.T) {
   srcFile, err := FileHelper{}.MakeAbsolutePath(rawSrcFile)
 
   if err != nil {
-    if err != nil {
-      t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile). "+
-        "rawSrcFile='%v' Error='%v' ", rawSrcFile, err.Error())
-    }
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile).\n"+
+      "rawSrcFile='%v'\nError='%v'\n",
+      rawSrcFile, err.Error())
+    return
   }
 
   err = FileHelper{}.CopyFileByIo(srcFile, destFile)
 
   if err == nil {
-    t.Error("Expected an error from FileHelper{}.CopyFileByIo(srcFile,destFile) " +
+    t.Error("Expected an error from FileHelper{}.CopyFileByIo(srcFile,destFile)\n" +
       "because input parameter destination file is an empty string.\n" +
       "However, NO ERROR WAS RETURNED!\n")
   }

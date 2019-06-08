@@ -116,10 +116,64 @@ func (fh FileHelper) AdjustPathSlash(path string) string {
 // If the path file input parameters identify the same file, this method returns
 // 'true'.
 //
-// Before calling this method, it would be wise to ensure that both input parameters
-// are using the correct os.PathSeparator character. If the path file strings are
-// using the incorrect path separators, an error will be triggered.
+// The two input parameters 'pathFile1' and 'pathFile2' will be converted to their
+// absolute paths before comparisons are applied.
 //
+func (fh FileHelper) AreSameFile(pathFile1, pathFile2 string) (bool, error) {
+
+  ePrefix := "FileHelper.AreSameFile() "
+
+  var pathFile1DoesExist, pathFile2DoesExist bool
+  var fInfoPathFile1, fInfoPathFile2 FileInfoPlus
+  var err error
+
+  pathFile1,
+  pathFile1DoesExist,
+  fInfoPathFile1,
+  err = fh.doesPathFileExist(pathFile1,
+                             false,  // Skip Absolute Path Conversion
+                             ePrefix,
+                             "pathFile1")
+
+  if err != nil {
+    return false, err
+  }
+
+  pathFile2,
+  pathFile2DoesExist,
+  fInfoPathFile2,
+  err = fh.doesPathFileExist(pathFile2,
+                             false,  // Skip Absolute Path Conversion
+                             ePrefix,
+                             "pathFile2")
+
+  if err != nil {
+    return false, err
+  }
+
+  if pathFile1DoesExist && pathFile2DoesExist {
+
+    if os.SameFile(fInfoPathFile1.GetOriginalFileInfo(), fInfoPathFile2.GetOriginalFileInfo()) {
+      // pathFile1 and pathFile2 are the same
+      // path and file name.
+
+      return true, nil
+
+    }
+
+    return false, nil
+  }
+
+  pathFile1 = strings.ToLower(pathFile1)
+  pathFile2 = strings.ToLower(pathFile2)
+
+  if pathFile1 == pathFile2 {
+    return true, nil
+  }
+
+  return false, nil
+}
+/*
 func (fh FileHelper) AreSameFile(pathFile1, pathFile2 string) (bool, error) {
 
   ePrefix := "FileHelper.AreSameFile() "
@@ -250,7 +304,7 @@ func (fh FileHelper) AreSameFile(pathFile1, pathFile2 string) (bool, error) {
 
   return false, nil
 }
-
+*/
 
 // ChangeFileMode changes the file mode of an existing file designated by input
 // parameter 'pathFileName'. The os.FileMode value to which the mode will be changed
