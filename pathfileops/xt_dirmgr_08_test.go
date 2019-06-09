@@ -115,7 +115,7 @@ func TestDirMgr_New_01(t *testing.T) {
 func TestDirMgr_New_02(t *testing.T) {
   fh := FileHelper{}
   origDir := fh.AdjustPathSlash("./")
-  expectedPath := fh.AdjustPathSlash(".")
+  expectedPath := fh.AdjustPathSlash("./")
   expectedAbsDir, err := fh.MakeAbsolutePath(origDir)
 
   if err != nil {
@@ -214,7 +214,7 @@ func TestDirMgr_New_02(t *testing.T) {
 func TestDirMgr_New_03(t *testing.T) {
   fh := FileHelper{}
   origDir := fh.AdjustPathSlash("../")
-  expectedPath := fh.AdjustPathSlash("..")
+  expectedPath := fh.AdjustPathSlash("../")
   expectedAbsDir, err := fh.MakeAbsolutePath(origDir)
 
   if err != nil {

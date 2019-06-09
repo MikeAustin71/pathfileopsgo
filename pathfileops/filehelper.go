@@ -346,197 +346,248 @@ func (fh FileHelper) ChangeWorkingDir(dirPath string) error {
 //
 //     dirName = '../dir1/dir2/filename.ext' returns '../dir1/dir2'
 //
-func (fh FileHelper) CleanDirStr(dirNameStr string) (dirName string, isEmpty bool, err error) {
+func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isEmpty bool, err error) {
 
   ePrefix := "FileHelper.CleanDirStr() "
-  dirName = ""
+  returnedDirName = ""
   isEmpty = true
   err = nil
+  var pathDoesExist bool
+  var fInfo FileInfoPlus
+  var adjustedDirName string
 
-  errCode := 0
+  adjustedDirName,
+  pathDoesExist,
+  fInfo,
+  err = fh.doesPathFileExist(dirNameStr,
+                              true, // Skip Conversion to Absolute Path
+                              ePrefix,
+                              "dirNameStr")
 
-  errCode, _, dirNameStr = fh.isStringEmptyOrBlank(dirNameStr)
-
-  if errCode == -1 {
-    return "", true,
-      errors.New(ePrefix + "Error: Input parameter 'dirNameStr' is an empty string!")
+  if err != nil {
+    returnedDirName = ""
+    isEmpty = true
+    return returnedDirName, isEmpty, err
   }
-
-  if errCode == -2 {
-    return "", true,
-      errors.New(ePrefix + "Error: Input parameter 'dirNameStr' consists of blank spaces!")
-  }
-
-  adjustedDirName := fh.AdjustPathSlash(dirNameStr)
 
   lAdjustedDirName := len(adjustedDirName)
 
   if lAdjustedDirName == 0 {
+    returnedDirName = ""
+    isEmpty = true
     err = errors.New(ePrefix +
-      "Error: After adjusting for path separators, input parameter 'dirNameStr' is an empty string!")
-    return
+      "Error: After adjusting for path separators.\n" +
+      "Input parameter 'dirNameStr' is an empty string!\n")
+    return returnedDirName, isEmpty, err
   }
 
   if strings.Contains(adjustedDirName, "...") {
+    returnedDirName = ""
+    isEmpty = true
     err = fmt.Errorf(ePrefix+
-      "Error: Invalid Directory string. Contains invalid dots. adjustedDirName='%v' ",
+      "Error: Invalid Directory string.\n" +
+      "Directory string contains invalid dots.\n" +
+      "adjustedDirName='%v' ",
       adjustedDirName)
-    return
+    return returnedDirName, isEmpty, err
   }
 
   volName := fp.VolumeName(adjustedDirName)
 
   if volName == adjustedDirName {
-    dirName = adjustedDirName
-    isEmpty = false
+    returnedDirName = adjustedDirName
+
+    if len(returnedDirName) == 0 {
+      isEmpty = true
+    } else {
+      isEmpty = false
+    }
+
     err = nil
-    return
+    return returnedDirName, isEmpty, err
   }
 
-  // Find out if the directory path
-  // actually exists.
-  fInfo, err2 := os.Stat(adjustedDirName)
-
-  if err2 == nil {
+  if pathDoesExist {
     // The path exists
 
     if fInfo.IsDir() {
       // The path exists and it is a directory
       if adjustedDirName[lAdjustedDirName-1] == os.PathSeparator {
-        dirName = adjustedDirName[0 : lAdjustedDirName-1]
+        // The last character in the directory string is an
+        // os.PathSeparator
+        if lAdjustedDirName >=2 &&
+          adjustedDirName[lAdjustedDirName-2] == '.' {
+          returnedDirName = adjustedDirName
+        } else {
+          returnedDirName = adjustedDirName[0 : lAdjustedDirName-1]
+        }
+
       } else {
-        dirName = adjustedDirName
+        returnedDirName = adjustedDirName
       }
 
-      if len(dirName) == 0 {
+      if len(returnedDirName) == 0 {
         isEmpty = true
       } else {
         isEmpty = false
       }
 
       err = nil
-      return
+      return returnedDirName, isEmpty, err
 
     } else {
       // The path exists but it is
       // a File Name and NOT a directory name.
-      adjustedDirName = strings.TrimSuffix(adjustedDirName, fInfo.Name())
+      adjustedDirName = adjustedDirName[0:lAdjustedDirName - len(fInfo.Name())]
       lAdjustedDirName = len(adjustedDirName)
 
       if lAdjustedDirName < 1 {
-        dirName = ""
+        returnedDirName = ""
         isEmpty = true
         err = nil
-        return
+        return returnedDirName, isEmpty, err
       }
 
       if adjustedDirName[lAdjustedDirName-1] == os.PathSeparator {
-        dirName = adjustedDirName[0 : lAdjustedDirName-1]
+        returnedDirName = adjustedDirName[0 : lAdjustedDirName-1]
       } else {
 
-        dirName = adjustedDirName
+        returnedDirName = adjustedDirName
       }
 
-      if len(dirName) == 0 {
+      if len(returnedDirName) == 0 {
         isEmpty = true
       } else {
         isEmpty = false
       }
 
       err = nil
-      return
+      return returnedDirName, isEmpty, err
     }
   }
 
-  firstCharIdx, lastCharIdx, err2 := fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedDirName)
+  firstCharIdx, lastCharIdx, err2 :=
+    fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedDirName)
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
-      "Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedDirName). "+
-      "adjustedDirName='%v'  Error='%v'", adjustedDirName, err2.Error())
-    return
+      "Error returned by fh." +
+      "GetFirstLastNonSeparatorCharIndexInPathStr(adjustedDirName).\n"+
+      "adjustedDirName='%v'\nError='%v'\n",
+      adjustedDirName, err2.Error())
+    returnedDirName = ""
+    isEmpty = true
+    return returnedDirName, isEmpty, err
   }
 
   if firstCharIdx == -1 || lastCharIdx == -1 {
     if adjustedDirName[lAdjustedDirName-1] == os.PathSeparator {
-      dirName = adjustedDirName[0 : lAdjustedDirName-1]
+      returnedDirName = adjustedDirName[0 : lAdjustedDirName-1]
     } else {
-      dirName = adjustedDirName
+      returnedDirName = adjustedDirName
     }
 
-    isEmpty = false
+    if len(returnedDirName) == 0 {
+      isEmpty = true
+    } else {
+      isEmpty = false
+    }
+
     err = nil
-    return
+    return returnedDirName, isEmpty, err
   }
 
   interiorDotPathIdx := strings.LastIndex(adjustedDirName, "."+string(os.PathSeparator))
 
   if interiorDotPathIdx > firstCharIdx {
     err = fmt.Errorf(ePrefix+
-      "Error: INVALID PATH. Invalid interior relative path detected! adjustedDirName='%v'",
+      "Error: INVALID PATH. Invalid interior relative path detected!\n" +
+      "adjustedDirName='%v'\n",
       adjustedDirName)
-    return
+    returnedDirName = ""
+    isEmpty = true
+    return returnedDirName, isEmpty, err
   }
 
   slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(adjustedDirName)
 
   if err2 != nil {
-    err = fmt.Errorf("Error returned by fh.GetPathSeparatorIndexesInPathStr(adjustedDirName). "+
-      "adjusteDirName='%v'  Error='%v'", adjustedDirName, err2.Error())
-    return
+    err = fmt.Errorf("Error returned by fh." +
+      "GetPathSeparatorIndexesInPathStr(adjustedDirName).\n"+
+      "adjusteDirName='%v'\nError='%v'\n",
+      adjustedDirName, err2.Error())
+    returnedDirName = ""
+    isEmpty = true
+    return returnedDirName, isEmpty, err
   }
 
   lSlashIdxs := len(slashIdxs)
 
   if lSlashIdxs == 0 {
-    dirName = adjustedDirName
-    isEmpty = false
+    returnedDirName = adjustedDirName
+
+    if len(returnedDirName) == 0 {
+      isEmpty = true
+    } else {
+      isEmpty = false
+    }
+
     err = nil
-    return
+    return returnedDirName, isEmpty, err
   }
 
   dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(adjustedDirName)
 
   if err2 != nil {
-    err = fmt.Errorf("Error returned by fh.GetDotSeparatorIndexesInPathStr(adjustedDirName). "+
-      "adjustedDirName='%v'  Error='%v'",
+    err = fmt.Errorf("Error returned by fh." +
+      "GetDotSeparatorIndexesInPathStr(adjustedDirName).\n"+
+      "adjustedDirName='%v'\nError='%v'\n",
       adjustedDirName, err2.Error())
-    return
+    returnedDirName = ""
+    isEmpty = true
+    return returnedDirName, isEmpty, err
   }
 
   lDotIdxs := len(dotIdxs)
 
   // If a path separator is the last character
   if slashIdxs[lSlashIdxs-1] == lAdjustedDirName-1 {
-    dirName = adjustedDirName[0:slashIdxs[lSlashIdxs-1]]
-    if len(dirName) == 0 {
+    returnedDirName = adjustedDirName[0:slashIdxs[lSlashIdxs-1]]
+
+    if len(returnedDirName) == 0 {
       isEmpty = true
     } else {
       isEmpty = false
     }
 
     err = nil
-    return
+    return returnedDirName, isEmpty, err
   }
 
   // If there is a dot after the last path separator,
   // this is a filename extension, NOT a directory
   if lDotIdxs > 0 && dotIdxs[lDotIdxs-1] > slashIdxs[lSlashIdxs-1] {
 
-    dirName = adjustedDirName[0:slashIdxs[lSlashIdxs-1]]
+    returnedDirName = adjustedDirName[0:slashIdxs[lSlashIdxs-1]]
 
-    if len(dirName) == 0 {
+    if len(returnedDirName) == 0 {
       isEmpty = true
     } else {
       isEmpty = false
     }
 
     err = nil
-    return
+    return returnedDirName, isEmpty, err
   }
 
-  dirName = adjustedDirName
-  isEmpty = false
+  returnedDirName = adjustedDirName
+
+  if len(returnedDirName) == 0 {
+    isEmpty = true
+  } else {
+    isEmpty = false
+  }
+
   err = nil
   return
 }
@@ -3075,10 +3126,11 @@ func (fh FileHelper) GetPathAndFileNameExt(
 //
 //  pathFileNameExt = ""        returns isEmpty==true  err==nil
 //  pathFileNameExt = "D:\"     returns "D:\"
-//  pathFileNameExt = "."       returns "."
+//  pathFileNameExt = "."       returns ".\"
 //  pathFileNameExt = "..\"     returns "..\"
 //  pathFileNameExt = "...\"    returns ERROR
 //  pathFileNameExt = ".\pathfile\003_filehelper\wt_HowToRunTests.md"  returns ".\pathfile\003_filehelper"
+//  pathFileNameExt = "someFile.go" returns ""
 //
 func (fh FileHelper) GetPathFromPathFileName(
   pathFileNameExt string) (dirPath string, isEmpty bool, err error) {
@@ -3105,7 +3157,9 @@ func (fh FileHelper) GetPathFromPathFileName(
   testPathStr, isDirEmpty, err2 := fh.CleanDirStr(pathFileNameExt)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error returned by fh.CleanDirStr(pathFileNameExt). pathFileNameExt='%v'  Error='%v'", pathFileNameExt, err2.Error())
+    err = fmt.Errorf(ePrefix+"Error returned by fh.CleanDirStr(pathFileNameExt).\n" +
+      "pathFileNameExt='%v'\nError='%v'\n",
+      pathFileNameExt, err2.Error())
     return dirPath, isEmpty, err
   }
 
@@ -3120,7 +3174,8 @@ func (fh FileHelper) GetPathFromPathFileName(
 
   if lTestPathStr == 0 {
     err = errors.New(ePrefix +
-      "Error: AdjustPathSlash was applied to 'pathStr'. The 'testPathStr' string is a Zero Length string!")
+      "Error: AdjustPathSlash was applied to 'pathStr'.\n" +
+      "The 'testPathStr' string is a Zero Length string!\n")
     return dirPath, isEmpty, err
   }
 
@@ -3128,19 +3183,22 @@ func (fh FileHelper) GetPathFromPathFileName(
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
-      "Error returned by fh.GetPathSeparatorIndexesInPathStr(testPathStr). testPathStr='%v'  Error='%v'",
+      "Error returned by fh.GetPathSeparatorIndexesInPathStr(testPathStr).\n" +
+      "testPathStr='%v'\nError='%v'\n",
       testPathStr, err2.Error())
     return dirPath, isEmpty, err
   }
 
   lSlashIdxs := len(slashIdxs)
 
-  firstGoodChar, lastGoodChar, err2 := fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathStr)
+  firstGoodChar, lastGoodChar, err2 :=
+    fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathStr)
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
-      "Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathStr). "+
-      "testPathStr='%v'  Error='%v'",
+      "Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr(" +
+      "testPathStr).\n"+
+      "testPathStr='%v'\nError='%v'\n",
       testPathStr, err2.Error())
     return dirPath, isEmpty, err
   }
@@ -3149,8 +3207,9 @@ func (fh FileHelper) GetPathFromPathFileName(
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
-      "Error returned by fh.GetDotSeparatorIndexesInPathStr(testPathStr). "+
-      "testPathStr='%v'  Error='%v'", testPathStr, err2.Error())
+      "Error returned by fh.GetDotSeparatorIndexesInPathStr(testPathStr).\n"+
+      "testPathStr='%v'\nError='%v'\n",
+      testPathStr, err2.Error())
     return dirPath, isEmpty, err
   }
 
@@ -3166,7 +3225,8 @@ func (fh FileHelper) GetPathFromPathFileName(
 
   } else if strings.Contains(testPathStr, "...") {
 
-    err = fmt.Errorf(ePrefix+"Error: PATH CONTAINS INVALID Dot Characters! testPathStr='%v'", testPathStr)
+    err = fmt.Errorf(ePrefix+"Error: PATH CONTAINS INVALID Dot Characters!\n" +
+      "testPathStr='%v'\n", testPathStr)
     return dirPath, isEmpty, err
 
   } else if firstGoodChar == -1 || lastGoodChar == -1 {
@@ -3174,12 +3234,15 @@ func (fh FileHelper) GetPathFromPathFileName(
     absPath, err2 := fh.MakeAbsolutePath(testPathStr)
 
     if err2 != nil {
-      err = fmt.Errorf(ePrefix+"Error returned from fh.MakeAbsolutePath(testPathStr). testPathStr='%v' Error='%v'", testPathStr, err2.Error())
+      err = fmt.Errorf(ePrefix+"Error returned from fh.MakeAbsolutePath(testPathStr).\n" +
+        "testPathStr='%v'\nError='%v'\n", testPathStr, err2.Error())
       return dirPath, isEmpty, err
     }
 
     if absPath == "" {
-      err = fmt.Errorf(ePrefix+"Error: Could not convert 'testPathStr' to Absolute path! tesPathStr='%v'", testPathStr)
+      err = fmt.Errorf(ePrefix+"Error: Could not convert 'testPathStr' to Absolute path!\n" +
+        "testPathStr='%v'\n",
+        testPathStr)
       return dirPath, isEmpty, err
     }
 
@@ -3211,12 +3274,13 @@ func (fh FileHelper) GetPathFromPathFileName(
     finalPathStr = testPathStr
 
   } else {
-    err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING. testPathStr='%v'", testPathStr)
+    err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING.\n" +
+      "testPathStr='%v'\n", testPathStr)
     return dirPath, isEmpty, err
   }
 
   if len(finalPathStr) == 0 {
-    err = fmt.Errorf(ePrefix + "Error: Processed path is a Zero Length String!")
+    err = fmt.Errorf(ePrefix + "Error: Processed path is a Zero Length String!\n")
     return dirPath, isEmpty, err
   }
 
@@ -5343,7 +5407,7 @@ func (fh FileHelper) doesPathFileExist(
 
   if skipAbsFileCnvrsn {
 
-    absFilePath = filePath
+    absFilePath =  fh.AdjustPathSlash(filePath)
 
   } else {
 

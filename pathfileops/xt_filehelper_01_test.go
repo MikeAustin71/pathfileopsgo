@@ -1298,7 +1298,7 @@ func TestFileHelper_CleanDirStr_08(t *testing.T) {
 func TestFileHelper_CleanDirStr_09(t *testing.T) {
   fh := FileHelper{}
   testPath := fh.AdjustPathSlash("../../")
-  expectedDirName := fh.AdjustPathSlash("../..")
+  expectedDirName := fh.AdjustPathSlash("../../")
 
   cleanDirStr, isDirEmpty, err := fh.CleanDirStr(testPath)
 

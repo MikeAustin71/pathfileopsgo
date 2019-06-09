@@ -18,44 +18,50 @@ import (
 
 func main() {
 
-  mainTest67AreFilesSame()
+  mainTest69CleanDirStr()
 
 }
 
-func mainTest67AreFilesSame() {
-  // ..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir\\level_04_dir\\level_4_2_test.txt
+func mainTest70AdjustPathStr() {
 
   fh := pf.FileHelper{}
 
-  /*
-  rawFile1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
-    "\\level_04_dir\\level_4_2_test.txt"
-  */
+  testPath := "../../../"
 
-  rawFile1 := "D:/gowork/src/MikeAustin71/pathfileopsgo/filesfortest/levelfilesfortest" +
-    "/level_01_dir/level_02_dir/level_03_dir/level_04_dir/level_4_2_test.txt"
+  adjustedPath := fh.AdjustPathSlash(testPath)
 
-  correctedFile1 := fh.AdjustPathSlash(rawFile1)
-
-  correctedFile2 := correctedFile1
-
-  filesAreSame, err := fh.AreSameFile(correctedFile1, correctedFile2)
-
-  if err != nil {
-    fmt.Printf("Error returned by fh.AreSameFile(relFile1, relFile2). "+
-      "relFile1='%v'\nrelFile2='%v'\nError='%v'",
-      correctedFile1, correctedFile2, err.Error())
-    return
-  }
-
-  if !filesAreSame {
-    fmt.Println ("Error: Expected file comparison='true'. Instead, file comparison='false'.")
-    return
-  }
 
   fmt.Println("              mainTest67AreFilesSame                   ")
   fmt.Println("********************************************************")
-  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("    testPath: ", testPath)
+  fmt.Println("adjustedPath: ", adjustedPath)
+}
+
+func mainTest69CleanDirStr() {
+
+  fh := pf.FileHelper{}
+
+  testPathFile := "xt_dirmgr_01_test.go"
+
+  fmt.Println("              mainTest67AreFilesSame                   ")
   fmt.Println("********************************************************")
 
+  cleanFilePath, isEmpty, err := fh.CleanDirStr(testPathFile)
+
+  if err != nil {
+    fmt.Printf("Error returned by fh.CleanDirStr(testPathFile)\n" +
+      "testPathFile='%v'\nError='%v'\n",
+      testPathFile, err.Error())
+    return
+  }
+
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println("testPathFile: ", testPathFile)
+  fmt.Println("--------------------------------------------------------")
+  fmt.Println("fh.CleanDirStr() Results:")
+  fmt.Println("--------------------------------------------------------")
+  fmt.Println("     isEmpty: ", isEmpty)
+  fmt.Println("   cleanPath: ", cleanFilePath)
+  fmt.Println()
 }
