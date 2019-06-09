@@ -41,7 +41,7 @@ func mainTest69CleanDirStr() {
 
   fh := pf.FileHelper{}
 
-  testPathFile := "xt_dirmgr_01_test.go"
+  testPathFile := "/someDir/xt_dirmgr_01_test.go"
 
   fmt.Println("              mainTest67AreFilesSame                   ")
   fmt.Println("********************************************************")
