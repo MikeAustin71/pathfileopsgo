@@ -193,7 +193,7 @@ func (fh FileHelper) ChangeFileMode(pathFileName string, filePermission FilePerm
   _,
   err = fh.doesPathFileExist(
                               pathFileName,
-                              false,
+                              false, // Skip Conversion to Absoltue Path
                               ePrefix,
                               "pathFileName")
 
@@ -248,16 +248,31 @@ func (fh FileHelper) ChangeFileTimes(pathFileName string, newAccessTime, newModT
 
   ePrefix := "FileHelper.ChangeFileTimes() "
   var err error
-  errCode := 0
+  var filePathDoesExist bool
+  var fInfo FileInfoPlus
 
-  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
+  pathFileName,
+    filePathDoesExist,
+    fInfo,
+    err = fh.doesPathFileExist( pathFileName,
+                                false, // Skip Conversion to Absolute Path
+                                ePrefix,
+                                "pathFileName")
 
-  if errCode == -1 {
-    return errors.New(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
+  if err != nil {
+    return err
   }
 
-  if errCode == -2 {
-    return errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
+  if !filePathDoesExist {
+    return fmt.Errorf(ePrefix +
+      "ERROR: 'pathFileName' DOES NOT EXIST!\n" +
+      "pathFileName='%v'\n", pathFileName)
+  }
+
+  if fInfo.IsDir() {
+    return fmt.Errorf(ePrefix +
+      "ERROR: 'pathFileName' is a directory path and NOT a file!\n" +
+      "pathFileName='%v'\n", pathFileName)
   }
 
   tDefault := time.Time{}
@@ -274,28 +289,6 @@ func (fh FileHelper) ChangeFileTimes(pathFileName string, newAccessTime, newModT
     return fmt.Errorf(ePrefix +
       "Error: Input parameter 'newModTime' is INVALID!\nnewModTime='%v'",
       newModTime)
-  }
-
-  pathFileName, err = fh.MakeAbsolutePath(pathFileName)
-
-  if err != nil {
-    return fmt.Errorf(ePrefix +
-      "Error returned by fh.MakeAbsolutePath(pathFileName).\n" +
-      "pathFileName='%v'\nError='%v'\n",
-      pathFileName, err.Error())
-  }
-
-  fInfo, err := os.Stat(pathFileName)
-
-  if err != nil {
-    return fmt.Errorf(ePrefix +
-      "ERROR: 'pathFileName' does NOT exist!\nError='%v'\n", err.Error())
-  }
-
-  if fInfo.IsDir() {
-    return fmt.Errorf(ePrefix +
-      "ERROR: 'pathFileName' is a directory path and NOT a file!\n" +
-      "pathFileName='%v'\n", pathFileName)
   }
 
   err = os.Chtimes(pathFileName,newAccessTime, newModTime)
