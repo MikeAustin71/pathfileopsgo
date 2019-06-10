@@ -4224,36 +4224,49 @@ func (fh FileHelper) MakeDirAllPerm(dirPath string, permission FilePermissionCon
   err2 := permission.IsValid()
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix+"Input parameter 'permission' is INVALID! "+
-      "Error='%v' ", err2.Error())
+    return fmt.Errorf(ePrefix+"Input parameter 'permission' is INVALID!\n"+
+      "Error='%v'\n", err2.Error())
   }
 
   dirPermCode, err2 := permission.GetCompositePermissionMode()
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix+"INVALID Permission Code "+
-      "Error='%v' ", err2.Error())
+    return fmt.Errorf(ePrefix+"ERROR: INVALID Permission Code\n"+
+      "Error='%v'\n", err2.Error())
   }
 
   dirPath, err2 = fh.MakeAbsolutePath(dirPath)
 
   if err2 != nil {
     return fmt.Errorf(ePrefix + "Error returned by fh.MakeAbsolutePath(dirPath).\n" +
-      "dirPath='%v'\nError='%v'\n", dirPath, err2.Error())
+      "dirPath='%v'\nError='%v'\n",
+      dirPath, err2.Error())
   }
 
   err2 = os.MkdirAll(dirPath, dirPermCode)
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix+"Error return from os.MkdirAll(dirPath, permission). "+
-      "dirPath='%v' Error='%v' ", dirPath, err2.Error())
+    return fmt.Errorf(ePrefix+"Error return from os.MkdirAll(dirPath, permission).\n"+
+      "dirPath='%v'\nError='%v'\n",
+      dirPath, err2.Error())
   }
 
-  _, err2 = os.Stat(dirPath)
+  var pathDoesExist bool
+  _,
+  pathDoesExist,
+  _,
+  err2 = fh.doesPathFileExist(dirPath,
+    true, // Skip Conversion to Absolute Path
+    ePrefix,
+    "dirPath")
 
   if err2 != nil {
+    return err2
+  }
+
+  if !pathDoesExist {
     return fmt.Errorf(ePrefix+
-      "Error: Directory creation FAILED!. New Directory Path DOES NOT EXIST! \n"+
+      "Error: Directory creation FAILED!. New Directory Path DOES NOT EXIST!\n"+
       "dirPath='%v' \n", dirPath)
   }
 
