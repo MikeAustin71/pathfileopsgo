@@ -2629,36 +2629,27 @@ func (fh FileHelper) GetFileLastModificationDate(
 func (fh FileHelper) GetFileMode(pathFileName string) (FilePermissionConfig, error) {
 
   ePrefix := "FileHelper.GetFileMode() "
-  errCode := 0
+  var pathFileNameDoesExist bool
+  var fInfo FileInfoPlus
   var err error
 
-  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
-
-  if errCode == -1 {
-    return FilePermissionConfig{},
-      errors.New(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
-  }
-
-  if errCode == -2 {
-    return FilePermissionConfig{},
-      errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
-  }
-
-  pathFileName, err = fh.MakeAbsolutePath(pathFileName)
+  pathFileName,
+    pathFileNameDoesExist,
+    fInfo,
+    err = fh.doesPathFileExist(pathFileName,
+    false, // Skip Conversion to Absolute Path
+    ePrefix,
+    "pathFileName")
 
   if err != nil {
-    return FilePermissionConfig{},
-      fmt.Errorf(ePrefix + "Error returned by fh.MakeAbsolutePath(pathFileName).\n" +
-        "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
+    return FilePermissionConfig{}, err
   }
 
-  fInfo, err := os.Stat(pathFileName)
-
-  if err != nil {
+  if !pathFileNameDoesExist {
     return FilePermissionConfig{},
       fmt.Errorf(ePrefix +
-        "ERROR: 'pathFileName' does NOT exist. Error returned by os.Stat(pathFileName).\n" +
-        "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
+        "ERROR: 'pathFileName' DOES NOT EXIST!\n" +
+        "pathFileName='%v'\n", pathFileName)
   }
 
   fPermCfg, err := FilePermissionConfig{}.NewByFileMode(fInfo.Mode())
@@ -2667,7 +2658,8 @@ func (fh FileHelper) GetFileMode(pathFileName string) (FilePermissionConfig, err
     return FilePermissionConfig{},
       fmt.Errorf(ePrefix +
         "Error returned by FilePermissionConfig{}.NewByFileMode(fInfo.Mode()).\n" +
-        "fInfo.Mode()='%v'\nError='%v'\n", fInfo.Mode(), err.Error())
+        "fInfo.Mode()='%v'\nError='%v'\n",
+        fInfo.Mode(), err.Error())
   }
 
   return fPermCfg, nil
