@@ -2544,47 +2544,30 @@ func (fh FileHelper) GetFileExtension(
 func (fh FileHelper) GetFileInfo(pathFileName string) (os.FileInfo, error) {
 
   ePrefix := "FileHelper.GetFileInfo() "
-  errCode := 0
-
-  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
-
-  if errCode == -1 {
-    return nil,
-      errors.New(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
-  }
-
-  if errCode == -2 {
-    return nil,
-      errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
-  }
-
+  var pathDoesExist bool
+  var fInfo FileInfoPlus
   var err error
 
-  pathFileName, err = fh.MakeAbsolutePath(pathFileName)
+  pathFileName,
+  pathDoesExist,
+  fInfo,
+  err = fh.doesPathFileExist(pathFileName,
+           false, // Skip Conversion to Absolute Path
+            ePrefix,
+            "pathFileName")
 
   if err != nil {
-    return nil, fmt.Errorf(ePrefix +
-      "Error returned by fh.MakeAbsolutePath(pathFileName).\n" +
-      "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
+    return nil, err
   }
 
-  fileInfo, err := os.Stat(pathFileName)
-
-  if os.IsNotExist(err) {
+  if !pathDoesExist {
     return nil, fmt.Errorf(ePrefix+
-      "Error: Input parameter 'pathFileName' does NOT exist! "+
-      "pathFileName='%v' Error='%v' ",
-      pathFileName, err.Error())
+      "Error: Input parameter 'pathFileName' does NOT exist!\n"+
+      "pathFileName='%v'\n",
+      pathFileName)
   }
 
-  if err != nil {
-    return nil,
-      fmt.Errorf(ePrefix+
-        "Error returned by os.Stat(pathFileName). pathFileName='%v' "+
-        "Error='%v' ", pathFileName, err.Error())
-  }
-
-  return fileInfo, nil
+  return fInfo.GetOriginalFileInfo(), nil
 }
 
 // GetFileLastModificationDate - Returns the last modification'
