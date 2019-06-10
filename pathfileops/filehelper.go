@@ -4301,26 +4301,26 @@ func (fh FileHelper) MakeDirPerm(dirPath string, permission FilePermissionConfig
 
   if errCode == -1 {
     return  errors.New(ePrefix +
-      "Error: Input parameter 'dirPath' is an empty string!")
+      "Error: Input parameter 'dirPath' is an empty string!\n")
   }
 
   if errCode == -2 {
     return errors.New(ePrefix +
-      "Error: Input parameter 'dirPath' consists of blank spaces!")
+      "Error: Input parameter 'dirPath' consists of blank spaces!\n")
   }
 
   err2 := permission.IsValid()
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix+"Input parameter 'permission' is INVALID! "+
-      "Error='%v' ", err2.Error())
+    return fmt.Errorf(ePrefix+"Input parameter 'permission' is INVALID!\n"+
+      "Error='%v'\n", err2.Error())
   }
 
   dirPermCode, err2 := permission.GetCompositePermissionMode()
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix+"INVALID Permission Code "+
-      "Error='%v' ", err2.Error())
+    return fmt.Errorf(ePrefix+"ERROR: INVALID Permission Code\n"+
+      "Error='%v'\n", err2.Error())
   }
 
   dirPath, err2 = fh.MakeAbsolutePath(dirPath)
@@ -4333,16 +4333,28 @@ func (fh FileHelper) MakeDirPerm(dirPath string, permission FilePermissionConfig
   err2 = os.Mkdir(dirPath, dirPermCode)
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix+"Error return from os.Mkdir(dirPath, dirPermCode). "+
-      "dirPath='%v' Error='%v' ", dirPath, err2.Error())
+    return fmt.Errorf(ePrefix+"Error return from os.Mkdir(dirPath, dirPermCode).\n"+
+      "dirPath='%v'\nError='%v'\n",
+      dirPath, err2.Error())
   }
 
-  _, err2 = os.Stat(dirPath)
+  var pathDoesExist bool
+  _,
+    pathDoesExist,
+    _,
+    err2 = fh.doesPathFileExist(dirPath,
+    true, // Skip Conversion to Absolute Path
+    ePrefix,
+    "dirPath")
 
   if err2 != nil {
+    return err2
+  }
+
+  if !pathDoesExist {
     return fmt.Errorf(ePrefix+
-      "Error: Directory creation FAILED!. New Directory Path DOES NOT EXIST! \n"+
-      "dirPath='%v' \n", dirPath)
+      "Error: Directory creation FAILED!. New Directory Path DOES NOT EXIST!\n"+
+      "dirPath='%v'\n", dirPath)
   }
 
   return nil
