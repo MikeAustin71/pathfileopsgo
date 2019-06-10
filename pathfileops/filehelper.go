@@ -4485,8 +4485,6 @@ func (fh FileHelper) MoveFile(src, dst string) error {
     return err
   }
 
-  _, err = os.Stat(src)
-
   if srcFileDoesExist {
     return fmt.Errorf("Verification Error: File 'src' still exists!\n" +
       "src='%v'\n", src)
@@ -4567,38 +4565,27 @@ func (fh FileHelper) OpenDirectory(
 
   ePrefix := "FileHelper.OpenDirectory() "
   var err error
-  errCode := 0
+  var directoryPathDoesExist bool
+  var dirPathFInfo FileInfoPlus
 
-  errCode, _, directoryPath = fh.isStringEmptyOrBlank(directoryPath)
-
-  if errCode == -1 {
-    return nil,
-      errors.New(ePrefix + "Input parameter 'directoryPath' is an empty string!")
-
-  }
-
-  if errCode == -2 {
-    return nil,
-      errors.New(ePrefix +
-        "Input parameter 'directoryPath' consists of all spaces!")
-  }
-
-  directoryPath, err = fh.MakeAbsolutePath(directoryPath)
+  directoryPath,
+    directoryPathDoesExist,
+    dirPathFInfo,
+    err = fh.doesPathFileExist(directoryPath,
+             false, // skip file conversion
+              ePrefix,
+              "directoryPath")
 
   if err != nil {
-    return nil,
-      fmt.Errorf(ePrefix + "Error returned by fh.MakeAbsolutePath(directoryPath).\n" +
-        "directoryPath='%v'\nError='%v'", directoryPath, err.Error())
+    return nil, err
   }
 
-  fInfo, err := os.Stat(directoryPath)
-
-  if err != nil {
+  if !directoryPathDoesExist {
 
     if !createDir {
       return nil,
-        fmt.Errorf(ePrefix + "Error returned by os.Stat(directoryPath).\n" +
-          "directoryPath='%v'\nError='%v'\n", directoryPath, err.Error())
+        fmt.Errorf(ePrefix + "Error 'directoryPath' DOES NOT EXIST!\n" +
+          "directoryPath='%v'\n", directoryPath)
     }
 
     // Parameter 'createDir' must be 'true'.
@@ -4613,36 +4600,48 @@ func (fh FileHelper) OpenDirectory(
 
     // Verify that the directory exists and get
     // the associated file info object.
-    fInfo, err = os.Stat(directoryPath)
+    _,
+    directoryPathDoesExist,
+    dirPathFInfo,
+    err = fh.doesPathFileExist(directoryPath,
+      true, // skip file conversion
+      ePrefix,
+      "directoryPath")
 
     if err != nil {
-      return nil,
-        fmt.Errorf(ePrefix + "Error occurred verifying existance of newly created 'directoryPath'!\n"+
-          "Error returned by os.Stat(directoryPath)\ndirectoryPath='%v'\nError='%v'\n",
-          directoryPath, err.Error())
+      return nil, fmt.Errorf(ePrefix + "Error occurred verifying existance of " +
+        "newly created 'directoryPath'!\n"+
+        "Non-Path error returned by os.Stat(directoryPath)\ndirectoryPath='%v'\nError='%v'\n",
+        directoryPath, err.Error())
+    }
+
+    if !directoryPathDoesExist {
+      return nil, fmt.Errorf(ePrefix + "Error: Verification of newly created " +
+        "directoryPath FAILED!\n" +
+        "'directoryPath' DOES NOT EXIST!\n" +
+        "directoryPath='%v'\n", directoryPath)
     }
 
   }
 
-  if !fInfo.IsDir() {
+  if !dirPathFInfo.IsDir() {
     return nil,
       fmt.Errorf(ePrefix + "ERROR: Input Paramter 'directoryPath' is NOT a directory!\n" +
-        "directoryPath='%v'", directoryPath)
+        "directoryPath='%v'\n", directoryPath)
   }
-
 
   filePtr, err := os.Open(directoryPath)
 
   if err != nil {
     return nil,
       fmt.Errorf(ePrefix + "File Open Error: %v\n" +
-        "directoryPath='%v'", err.Error(), directoryPath)
+        "directoryPath='%v'\n",
+        err.Error(), directoryPath)
   }
-
 
   if filePtr == nil {
     return nil, errors.New(ePrefix +
-      "ERROR: os.OpenFile() returned a 'nil' file pointer!")
+      "ERROR: os.OpenFile() returned a 'nil' file pointer!\n")
   }
 
   return filePtr, nil
