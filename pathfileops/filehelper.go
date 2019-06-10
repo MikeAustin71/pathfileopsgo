@@ -4412,7 +4412,7 @@ func (fh FileHelper) MoveFile(src, dst string) error {
   dstFileDoesExist,
   dstFInfo,
   err = fh.doesPathFileExist(dst,
-           false,
+           false, // Skip Conversion to Absolute Path
            ePrefix,
            "dst")
 
@@ -4436,17 +4436,29 @@ func (fh FileHelper) MoveFile(src, dst string) error {
     // Copy Operation Failed. Return an error
     // and DO NOT delete the source file!
     return fmt.Errorf(ePrefix +
-      "Error: Copy operation FAILED!\nSource File='%v'\nDestination File='%v'\nError='%v'\n",
+      "Error: Copy operation FAILED!\n" +
+      "Source File='%v'\nDestination File='%v'\nError='%v'\n",
       src, dst, err.Error())
   }
 
   // CopyFileByIo operation was apparently successful.
   // Now, verify that destination file exists.
 
-  _, err = os.Stat(dst)
+  _,
+  dstFileDoesExist,
+  _,
+  err = fh.doesPathFileExist(dst,
+        true, // Skip Conversion to Absolute Path
+    ePrefix,
+    "dst")
 
   if err != nil {
-    return fmt.Errorf(ePrefix + "Error: After Copy Operation, destination file DOES NOT EXIST!\n" +
+    return err
+  }
+
+  if !dstFileDoesExist {
+    return fmt.Errorf(ePrefix + "Error: After Copy Operation, destination file " +
+      "DOES NOT EXIST!\n" +
       "Therefore, the copy operation FAILED! Source file was NOT deleted.\n" +
       "destination file='%v'\n", dst)
   }
@@ -4461,11 +4473,23 @@ func (fh FileHelper) MoveFile(src, dst string) error {
       "Source File='%v'\n", src)
   }
 
+  _,
+  srcFileDoesExist,
+  _,
+  err = fh.doesPathFileExist(src,
+           true, // skip file conversion
+           ePrefix,
+           "src")
+
+  if err != nil {
+    return err
+  }
+
   _, err = os.Stat(src)
 
-  if err == nil {
+  if srcFileDoesExist {
     return fmt.Errorf("Verification Error: File 'src' still exists!\n" +
-      "src='%v'", src)
+      "src='%v'\n", src)
   }
 
   // Success, source was copied to destination
