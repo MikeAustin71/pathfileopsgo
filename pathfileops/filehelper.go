@@ -880,8 +880,9 @@ func (fh FileHelper) CleanFileNameExtStr(
     // Dots and slashes, but no characters.
     returnedFileNameExt = ""
 
-  } else if lDotIdxs > 0 && lSlashIdxs > 0 && lastCharIdx > -1 {
+  } else {
     // Option # 8
+    // MUST BE lDotIdxs > 0 && lSlashIdxs > 0 && lastCharIdx > -1
     // We have dots, slashes and characters
 
     if lastCharIdx > slashIdxs[lSlashIdxs-1] {
@@ -894,10 +895,7 @@ func (fh FileHelper) CleanFileNameExtStr(
       returnedFileNameExt = ""
     }
 
-  } else {
-    returnedFileNameExt = ""
   }
-
 
   if len(returnedFileNameExt) == 0 {
     isEmpty = true
