@@ -4380,56 +4380,51 @@ func (fh FileHelper) MoveFile(src, dst string) error {
 
   ePrefix := "FileHelper.MoveFile() "
 
-  errCode := 0
-
-  errCode, _, src = fh.isStringEmptyOrBlank(src)
-
-  if errCode == -1 {
-    return errors.New(ePrefix +
-      "Error: Input parameter 'src' is an empty string!")
-  }
-
-  if errCode == -2 {
-    return errors.New(ePrefix +
-      "Error: Input parameter 'src' consists of blank spaces!")
-  }
-
-  errCode, _, dst = fh.isStringEmptyOrBlank(dst)
-
-  if errCode == -1 {
-    return errors.New(ePrefix +
-      "Error: Input parameter 'dst' is an empty string!")
-  }
-
-  if errCode == -2 {
-    return errors.New(ePrefix +
-      "Error: Input parameter 'dst' consists of blank spaces!")
-  }
-
   var err error
+  var srcFileDoesExist, dstFileDoesExist bool
+  var srcFInfo, dstFInfo FileInfoPlus
 
-  src, err = fh.MakeAbsolutePath(src)
-
-  if err != nil {
-    return fmt.Errorf(ePrefix +
-      "Error returned by fh.MakeAbsolutePath(src).\nsrc='%v'\nError='%v'\n",
-      src, err.Error())
-  }
-
-  dst, err = fh.MakeAbsolutePath(dst)
-
-  if err != nil {
-    return fmt.Errorf(ePrefix +
-      "Error returned by fh.MakeAbsolutePath(dst).\ndst='%v'\nError='%v'\n",
-      dst, err.Error())
-  }
-
-  _, err = os.Stat(src)
+  src,
+  srcFileDoesExist,
+  srcFInfo,
+  err = fh.doesPathFileExist(src,
+           false, // skip file conversion
+           ePrefix,
+           "src")
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"Error: Input parameter 'src' file DOES NOT EXIST! src='%v'", src)
+    return err
   }
 
+  if !srcFileDoesExist {
+    return fmt.Errorf(ePrefix+"Error: Input parameter " +
+      "'src' file DOES NOT EXIST!\n" +
+      "src='%v'\n", src)
+  }
+
+  if srcFInfo.IsDir() {
+    return fmt.Errorf(ePrefix + "Error: Input parameter 'src' " +
+      "exists and it is directory NOT a file!\n" +
+      "src='%v'\n", src)
+  }
+
+  dst,
+  dstFileDoesExist,
+  dstFInfo,
+  err = fh.doesPathFileExist(dst,
+           false,
+           ePrefix,
+           "dst")
+
+  if err != nil {
+    return err
+  }
+
+  if dstFileDoesExist && dstFInfo.IsDir() {
+    return fmt.Errorf(ePrefix + "Error: Input parameter 'dst' does exist,\n" +
+      "but it a 'directory' and NOT a File!\n" +
+      "dst='%v'\n", dst)
+  }
 
   // ============================
   // Perform the copy operation!
