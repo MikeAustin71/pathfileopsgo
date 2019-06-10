@@ -44,11 +44,13 @@ func mainTest69CleanDirStr() {
 /*
   testPathFile := "/d/gowork/src/MikeAustin71/pathfileopsgo/pathfileops/" +
     "levelfilesfortest/level_0_0_test.txt"
+
+   testPathFile := "d:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\pathfileops" +
+     "\\levelfilesfortest\\level_0_0_test.txt"
+
 */
 
-  testPathFile := "d:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\pathfileops" +
-    "\\levelfilesfortest\\level_0_0_test.txt"
-
+  testPathFile := "../filesfortest//levelfilesfortest/level_01_dir/level_1_1_test.txt"
 
   absFilePath, err := fh.MakeAbsolutePath(testPathFile)
 

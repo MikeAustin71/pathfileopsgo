@@ -389,6 +389,19 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
     return returnedDirName, isEmpty, err
   }
 
+  osPathSepStr := string(os.PathSeparator)
+
+  if strings.Contains(adjustedDirName, osPathSepStr + osPathSepStr ) {
+    returnedDirName = ""
+    isEmpty = true
+    err = fmt.Errorf(ePrefix+
+      "Error: Invalid Directory string.\n" +
+      "Directory string contains invalid Path Separators.\n" +
+      "adjustedDirName='%v' ",
+      adjustedDirName)
+    return returnedDirName, isEmpty, err
+  }
+
   if strings.Contains(adjustedDirName, "...") {
     returnedDirName = ""
     isEmpty = true
@@ -435,7 +448,6 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
     isAbsPath = true
   }
 
-  osPathSepStr := string(os.PathSeparator)
   dotPlusOsPathSepStr := "." + osPathSepStr
 
   if pathDoesExist {
