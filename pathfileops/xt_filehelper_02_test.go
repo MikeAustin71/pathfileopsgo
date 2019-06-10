@@ -933,9 +933,10 @@ func TestFileHelper_DoesFileInfoExist_04(t *testing.T) {
 
   doesFileExist, fInfo, err := fh.DoesFileInfoExist(testFile)
 
-  if err == nil {
-    t.Error("Expected an error return from fh.DoesFileInfoExist(testFile). " +
-      "because 'testFile' does NOT exist. However, NO ERROR WAS RETURNED!")
+  if err != nil {
+    t.Error("Error return from fh.DoesFileInfoExist(testFile).\n" +
+      "testFile='%v'\nError='%v'\n",
+      testFile, err.Error())
   }
 
   if doesFileExist == true {

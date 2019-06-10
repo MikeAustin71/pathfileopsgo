@@ -1632,46 +1632,39 @@ func (fh FileHelper) DoesFileExist(pathFileName string) bool {
 // If the file actually exists, the function will return
 // the associated FileInfo structure.
 //
-// However, if 'pathFileName' does NOT exist, an error will
-// be returned, return value 'doesFInfoExist' will be set to
-// 'false' and return value 'fInfo' will be set to nil.
+// If 'pathFileName' does NOT exist, 'doesFInfoExist' will
+// be set to'false', 'fInfo' will be set to 'nil' and the
+// returned error value will be 'nil'.
 //
 func (fh FileHelper) DoesFileInfoExist(
   pathFileName string) (doesFInfoExist bool, fInfo os.FileInfo, err error) {
 
   ePrefix := "FileHelper.DoesFileInfoExist() "
   doesFInfoExist = false
+  fInfo = nil
+  fInfoPlus := FileInfoPlus{}
 
-  errCode := 0
+  pathFileName,
+  doesFInfoExist,
+  fInfoPlus,
+  err = fh.doesPathFileExist(
+          pathFileName,
+          false, // Skip Conversion to Absoltue Path
+          ePrefix,
+          "pathFileName")
 
-  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
-
-  if errCode == -1 {
-    return doesFInfoExist, nil,
-      errors.New(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
-  }
-
-  if errCode == -2 {
-    return doesFInfoExist, nil,
-      errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
-  }
-
-  var err2 error
-
-  if fInfo, err2 = os.Stat(pathFileName); os.IsNotExist(err2) {
-    err = fmt.Errorf(ePrefix+"Error from os.Stat(pathFileName). "+
-      "'pathFileName' does NOT exist! pathfileName='%v' Error='%v' ", pathFileName, err2)
+  if err != nil {
+    doesFInfoExist = false
     return doesFInfoExist, fInfo, err
   }
 
-  if err2 != nil {
-    err = fmt.Errorf("Error returned by os.Stat(pathFileName). "+
-      "pathFileName='%v' Error='%v' ", pathFileName, err2.Error())
+  if !doesFInfoExist {
+    err = nil
+    fInfo = nil
     return doesFInfoExist, fInfo, err
   }
 
-  doesFInfoExist = true
-  err = nil
+  fInfo = fInfoPlus.GetOriginalFileInfo()
 
   return doesFInfoExist, fInfo, err
 }
