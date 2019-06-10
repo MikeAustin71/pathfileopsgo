@@ -1547,31 +1547,21 @@ func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
   ePrefix := "FileHelper.DeleteDirPathAll() "
 
   var err error
+  var pathFileDoesExist bool
 
-  errCode := 0
-
-  errCode, _, pathDir = fh.isStringEmptyOrBlank(pathDir)
-
-  if errCode == -1 {
-    return errors.New(ePrefix + "Error: Input parameter 'pathDir' is an empty string!")
-  }
-
-  if errCode == -2 {
-    return errors.New(ePrefix + "Error: Input parameter 'pathDir' consists of blank spaces!")
-  }
-
-  pathDir, err = fh.MakeAbsolutePath(pathDir)
+  pathDir,
+  pathFileDoesExist,
+  _,
+  err = fh.doesPathFileExist(pathDir,
+                             false, // skip file conversion
+                             ePrefix,
+                             "pathDir")
 
   if err != nil {
-    return fmt.Errorf(ePrefix + "Error from fh.MakeAbsolutePath(pathDir).\n" +
-      "pathDir='%v'\nError='%v'\n", pathDir, err.Error())
+    return err
   }
 
-  // If the path does NOT exist,
-  // Do nothing an return.
-  _, err = os.Stat(pathDir)
-
-  if err != nil {
+  if !pathFileDoesExist {
     // Doesn't exist. Nothing to do.
     return nil
   }
@@ -1580,16 +1570,27 @@ func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
 
   if err != nil {
     return fmt.Errorf(ePrefix+
-      "Error returned by os.RemoveAll(pathDir). pathDir='%v'  Error='%v'",
+      "Error returned by os.RemoveAll(pathDir).\n" +
+      "pathDir='%v'\nError='%v'",
       pathDir, err.Error())
   }
 
-  _, err = os.Stat(pathDir)
+  pathDir,
+  pathFileDoesExist,
+  _,
+  err = fh.doesPathFileExist(pathDir,
+                             true, // skip file conversion
+                             ePrefix,
+                             "pathDir")
 
-  if err == nil {
+  if err != nil {
+    return err
+  }
+
+  if pathFileDoesExist {
     // Path still exists. Something is wrong.
-    return fmt.Errorf("Delete Failed! 'pathDir' still exists! \n"+
-      "pathDir='%v' ", pathDir)
+    return fmt.Errorf("Delete Failed! 'pathDir' still exists!\n"+
+      "pathDir='%v'\n", pathDir)
   }
 
   return nil
