@@ -2585,19 +2585,27 @@ func (fh FileHelper) GetFileLastModificationDate(
   ePrefix := "FileHelper.GetFileLastModificationDate() "
   const fmtDateTimeNanoSecondStr = "2006-01-02 15:04:05.000000000 -0700 MST"
   var zeroTime time.Time
+  var pathFileNameDoesExist bool
+  var fInfo FileInfoPlus
+  var err error
+  var errCode int
 
-  errCode := 0
+  pathFileName,
+  pathFileNameDoesExist,
+  fInfo,
+  err = fh.doesPathFileExist(pathFileName,
+           false, // Skip Conversion to Absolute Path
+           ePrefix,
+           "pathFileName")
 
-  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
-
-  if errCode == -1 {
-    return time.Time{}, "",
-      errors.New(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
+  if err != nil {
+    return zeroTime, "", err
   }
 
-  if errCode == -2 {
-    return time.Time{}, "",
-      errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
+  if !pathFileNameDoesExist {
+    return zeroTime, "",
+      fmt.Errorf(ePrefix + "ERROR: 'pathFileName' DOES NOT EXIST!\n" +
+        "pathFileName='%v'\n", pathFileName)
   }
 
   errCode, _, customTimeFmt = fh.isStringEmptyOrBlank(customTimeFmt)
@@ -2606,27 +2614,6 @@ func (fh FileHelper) GetFileLastModificationDate(
 
   if errCode < 0 {
     fmtStr = fmtDateTimeNanoSecondStr
-  }
-
-  var err error
-
-  pathFileName, err = fh.MakeAbsolutePath(pathFileName)
-
-  if err != nil {
-    return zeroTime, "",
-      fmt.Errorf(ePrefix+
-        "Error retrned by fh.MakeAbsolutePath(pathFileName)\n" +
-        "pathFileName='%v'\nError='%v'\n",
-        pathFileName, err.Error())
-  }
-
-  fInfo, err := fh.GetFileInfo(pathFileName)
-
-  if err != nil {
-    return zeroTime, "",
-      fmt.Errorf(ePrefix+
-        "Error Getting FileInfo on %v Error on GetFileInfo(): %v\n",
-        pathFileName, err.Error())
   }
 
   return fInfo.ModTime(), fInfo.ModTime().Format(fmtStr), nil
