@@ -380,15 +380,6 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
 
   lAdjustedDirName := len(adjustedDirName)
 
-  if lAdjustedDirName == 0 {
-    returnedDirName = ""
-    isEmpty = true
-    err = errors.New(ePrefix +
-      "Error: After adjusting for path separators.\n" +
-      "Input parameter 'dirNameStr' is an empty string!\n")
-    return returnedDirName, isEmpty, err
-  }
-
   osPathSepStr := string(os.PathSeparator)
 
   if strings.Contains(adjustedDirName, osPathSepStr + osPathSepStr ) {
@@ -416,7 +407,8 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
   absPath, err := fh.MakeAbsolutePath(adjustedDirName)
 
   if err != nil {
-    err = fmt.Errorf(ePrefix + "Error occurred while convert path to absolute path!\n" +
+    err = fmt.Errorf(ePrefix + "Error occurred while convert path " +
+      "to absolute path!\n" +
       "dirPath='%v'\nError='%v'\n",
       adjustedDirName, err.Error())
     returnedDirName = ""
@@ -702,6 +694,9 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
 //     fileNameExt = 'fileName.ext"
 //                    returns "fileName.ext" and isEmpty=false
 //
+//     fileNameExt = "../filesfortest/newfilesfortest/" (actually exists on disk)
+//                   returns "" and isEmpty=true and error = nil
+//
 //     fileNameExt = '../dir1/dir2/'
 //                    returns "" and isEmpty=true
 //
@@ -711,63 +706,86 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
 //     fileNameExt = '../filesfortest/newfilesfortest/.gitignore'
 //                   returns ".gitignore" and isEmpty=false
 //
-func (fh FileHelper) CleanFileNameExtStr(fileNameExtStr string) (fileNameExt string, isEmpty bool, err error) {
+func (fh FileHelper) CleanFileNameExtStr(
+  fileNameExtStr string) (returnedFileNameExt string, isEmpty bool, err error) {
 
   ePrefix := "FileHelper.CleanFileNameExtStr() "
-  fileNameExt = ""
+  returnedFileNameExt = ""
   isEmpty = true
   err = nil
 
-  errCode := 0
+  var pathDoesExist bool
+  var fInfo FileInfoPlus
+  var adjustedFileNameExt string
 
-  errCode, _, fileNameExtStr = fh.isStringEmptyOrBlank(fileNameExtStr)
+  adjustedFileNameExt,
+  pathDoesExist,
+  fInfo,
+  err = fh.doesPathFileExist(fileNameExtStr,
+    true, // Skip Conversion to Absolute Path
+    ePrefix,
+    "fileNameExtStr")
 
-  if errCode == -1 {
-    return "", true,
-      errors.New(ePrefix + "Error: Input parameter 'fileNameExtStr' is an empty string!")
+  if err != nil {
+    returnedFileNameExt = ""
+    isEmpty = true
+    return returnedFileNameExt, isEmpty, err
   }
 
-  if errCode == -2 {
-    return "", true,
-      errors.New(ePrefix + "Error: Input parameter 'fileNameExtStr' consists of blank spaces!")
+  osPathSepStr := string(os.PathSeparator)
+
+  if strings.Contains(adjustedFileNameExt, osPathSepStr + osPathSepStr ) {
+    returnedFileNameExt = ""
+    isEmpty = true
+    err = fmt.Errorf(ePrefix+
+      "Error: Invalid Directory string.\n" +
+      "Directory string contains invalid Path Separators.\n" +
+      "adjustedFileNameExt='%v' ",
+      adjustedFileNameExt)
+    return returnedFileNameExt, isEmpty, err
   }
 
-  adjustedFileNameExt := fh.AdjustPathSlash(fileNameExtStr)
 
   if strings.Contains(adjustedFileNameExt, "...") {
-    err = fmt.Errorf(ePrefix+"Error: Invalid Directory string. Contains invalid dots. adjustedFileNameExt='%v' ", adjustedFileNameExt)
+    err = fmt.Errorf(ePrefix+"Error: Invalid Directory string. Contains invalid dots.\n" +
+      "adjustedFileNameExt='%v'\n", adjustedFileNameExt)
     return
   }
 
   // Find out if the file name extension path
   // actually exists.
-  fInfo, err2 := os.Stat(adjustedFileNameExt)
 
-  if err2 == nil {
+  if pathDoesExist {
     // The path exists
 
     if fInfo.IsDir() {
       // The path exists and it is a directory.
       // There is no File Name present.
-      fileNameExt = ""
+      returnedFileNameExt = ""
       isEmpty = true
-      err = fmt.Errorf(ePrefix+"Error: adjustedFileNameExt exists as a 'Directory' - NOT A FILE NAME! adjustedFileNameExt='%v'", adjustedFileNameExt)
+      err = nil
       return
+
     } else {
       // The path exists and it is a valid
       // file name.
-      fileNameExt = fInfo.Name()
+      returnedFileNameExt = fInfo.Name()
       isEmpty = false
 
       err = nil
       return
     }
-  }
+  } // End of if pathDoesExist
 
-  firstCharIdx, lastCharIdx, err := fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedFileNameExt)
+
+  firstCharIdx, lastCharIdx, err :=
+    fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedFileNameExt)
 
   if firstCharIdx == -1 || lastCharIdx == -1 {
-    err = fmt.Errorf(ePrefix+"File Name Extension string contains no valid file name characters! adjustedFileNameExt='%v'", adjustedFileNameExt)
+    err = fmt.Errorf(ePrefix+"File Name Extension string contains no " +
+      "valid file name characters!\n" +
+      "adjustedFileNameExt='%v'\n",
+      adjustedFileNameExt)
     return
   }
 
@@ -776,39 +794,112 @@ func (fh FileHelper) CleanFileNameExtStr(fileNameExtStr string) (fileNameExt str
   interiorDotPathIdx := strings.LastIndex(adjustedFileNameExt, "."+string(os.PathSeparator))
 
   if interiorDotPathIdx > firstCharIdx {
-    err = fmt.Errorf(ePrefix+"Error: INVALID PATH. Invalid interior relative path detected! adjustedFileNameExt='%v'", adjustedFileNameExt)
+    err = fmt.Errorf(ePrefix+"Error: INVALID PATH. " +
+      "Invalid interior relative path detected!\n" +
+      "adjustedFileNameExt='%v'\n", adjustedFileNameExt)
     return
   }
 
   slashIdxs, err := fh.GetPathSeparatorIndexesInPathStr(adjustedFileNameExt)
 
   if err != nil {
-    err = fmt.Errorf(ePrefix+"Error returned from fh.GetPathSeparatorIndexesInPathStr(adjustedFileNameExt). adustedFileNameExt='%v'  Error='%v'", adjustedFileNameExt, err.Error())
+    err = fmt.Errorf(ePrefix+"Error returned from fh.GetPathSeparatorIndexesInPathStr" +
+      "(adjustedFileNameExt).\n" +
+      "adustedFileNameExt='%v'\nError='%v'\n",
+      adjustedFileNameExt, err.Error())
     return
   }
 
   lSlashIdxs := len(slashIdxs)
 
   if lSlashIdxs == 0 {
-    fileNameExt = adjustedFileNameExt
+    returnedFileNameExt = adjustedFileNameExt
     isEmpty = false
     err = nil
     return
   }
 
-  if lastCharIdx < slashIdxs[lSlashIdxs-1] {
-    // Example: ../dir1/dir2/
-    fileNameExt = ""
+  dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(adjustedFileNameExt)
+
+  if err2 != nil {
+    err = fmt.Errorf("Error returned by fh." +
+      "GetDotSeparatorIndexesInPathStr(adjustedDirName).\n"+
+      "adjustedFileNameExt='%v'\nError='%v'\n",
+      adjustedFileNameExt, err2.Error())
+    returnedFileNameExt = ""
     isEmpty = true
-    err = nil
-    return
+    return returnedFileNameExt, isEmpty, err
   }
 
-  result := adjustedFileNameExt[slashIdxs[lSlashIdxs-1]+1:]
+  lDotIdxs := len(dotIdxs)
 
-  fileNameExt = result
+  // Option # 1
+  if lDotIdxs == 0 && lSlashIdxs == 0  && lastCharIdx == -1 {
+    // There are no valid characters in the string
+    returnedFileNameExt = ""
 
-  if len(result) == 0 {
+  } else if lDotIdxs == 0 && lSlashIdxs== 0 && lastCharIdx > -1 {
+    // Option # 2
+    // String consists only of eligible alphanumeric characters
+    // "sometextstring"
+    returnedFileNameExt = adjustedFileNameExt
+
+  } else if lDotIdxs == 0 && lSlashIdxs > 0 && lastCharIdx == -1 {
+    // Option # 3
+    // There no dots no characters but string does contain
+    // slashes
+    returnedFileNameExt = ""
+
+  } else if lDotIdxs == 0 && lSlashIdxs > 0 && lastCharIdx > -1 {
+    // Option # 4
+    // strings contains slashes and characters but no dots.
+
+    if  lastCharIdx < slashIdxs[lSlashIdxs-1] {
+      // Example: ../dir1/dir2/
+      returnedFileNameExt = ""
+    } else {
+      // Must be  lastCharIdx > slashIdxs[lSlashIdxs-1]
+      // Example: ../dir1/dir2/filename
+      returnedFileNameExt = adjustedFileNameExt[slashIdxs[lSlashIdxs-1]+1:]
+    }
+
+  } else if lDotIdxs > 0 && lSlashIdxs == 0 && lastCharIdx == -1 {
+    // Option # 5
+    // dots only. Must be "." or ".."
+    // The is no file name
+    returnedFileNameExt = ""
+
+  } else if lDotIdxs > 0 && lSlashIdxs == 0 && lastCharIdx > -1 {
+    // Option # 6
+    // Dots and characters only. No slashes.
+    // Maybe 'fileName.ext'
+    returnedFileNameExt = adjustedFileNameExt
+
+  } else if lDotIdxs > 0 && lSlashIdxs > 0 && lastCharIdx == -1 {
+    // Option # 7
+    // Dots and slashes, but no characters.
+    returnedFileNameExt = ""
+
+  } else if lDotIdxs > 0 && lSlashIdxs > 0 && lastCharIdx > -1 {
+    // Option # 8
+    // We have dots, slashes and characters
+
+    if lastCharIdx > slashIdxs[lSlashIdxs-1] {
+      // The last char comes after the last slash.
+      // Take everything after the last slash
+      returnedFileNameExt = adjustedFileNameExt[slashIdxs[lSlashIdxs-1]+1:]
+    } else {
+      // The last character comes before the last
+      // slash. There is no file name here.
+      returnedFileNameExt = ""
+    }
+
+  } else {
+    returnedFileNameExt = ""
+  }
+
+
+  if len(returnedFileNameExt) == 0 {
     isEmpty = true
   } else {
     isEmpty = false
@@ -1042,121 +1133,119 @@ func (fh FileHelper) CopyFileByLinkByIo(src, dst string) (err error) {
 func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 
   ePrefix := "FileHelper.CopyFileByLink() "
+  err = nil
+  var err2 error
+  var srcFileDoesExist, dstFileDoesExist bool
+  var srcFInfo FileInfoPlus
 
-  errCode := 0
+  src,
+  srcFileDoesExist,
+  srcFInfo,
+  err = fh.doesPathFileExist(src,
+                             false, // skip file conversion
+                             ePrefix,
+                             "src")
 
-  errCode, _, src = fh.isStringEmptyOrBlank(src)
-
-  if errCode == -1 {
-    return errors.New(ePrefix + "Error: Input parameter 'src' is an empty string!")
-  }
-
-  if errCode == -2 {
-    return errors.New(ePrefix + "Error: Input parameter 'src' consists of blank spaces!")
-  }
-
-  errCode, _, dst = fh.isStringEmptyOrBlank(dst)
-
-  if errCode == -1 {
-    return errors.New(ePrefix + "Error: Input parameter 'dst' is an empty string!")
-  }
-
-  if errCode == -2 {
-    return errors.New(ePrefix + "Error: Input parameter 'dst' consists of blank spaces!")
-  }
-
-  correctedSrc, err2 := fh.MakeAbsolutePath(src)
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix +
-      "Error from fh.MakeAbsolutePath(src).\nsrc='%v'\nError='%v'",
-      src, err2.Error())
+  if err != nil {
     return err
   }
 
-  correctedDest, err2 := fh.MakeAbsolutePath(dst)
+  dst,
+  dstFileDoesExist,
+  _,
+  err = fh.doesPathFileExist(dst,
+                             false, // skip file conversion
+                             ePrefix,
+                             "dst")
 
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix +
-      "Error from fh.MakeAbsolutePath(dst).\nsrc='%v'\nError='%v'",
-      dst, err2.Error())
+  if err != nil {
     return err
   }
 
-  areSameFile, err2 := fh.AreSameFile(correctedSrc, correctedDest)
+  areSameFile, err2 := fh.AreSameFile(src, dst)
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix + "Error occurred during path file name comparison.\n" +
       "Source File:'%v'\nDestination File:'%v'\nError='%v' ",
-      correctedSrc, correctedDest, err2.Error())
+      src, dst, err2.Error())
     return err
   }
 
   if areSameFile {
-    err = fmt.Errorf(ePrefix + "Error: The source and destination file are the same - equivalent.\n" +
+    err = fmt.Errorf(ePrefix + "Error: The source and destination file" +
+      " are the same - equivalent.\n" +
       "Source File:'%v'\nDestination File:'%v'\n",
-      correctedSrc, correctedDest)
+      src, dst)
     return err
   }
 
-  sfi, err2 := os.Stat(correctedSrc)
-
-  if err2!=nil {
+  if !srcFileDoesExist {
     err = fmt.Errorf(ePrefix+
-      "Error: Input parameter 'src' file DOES NOT EXIST! src='%v'\n" +
-      "os.Stat(src) Error='%v'\n", src, err2.Error())
+      "Error: Input parameter 'src' file DOES NOT EXIST!\n" +
+      "src='%v'\n", src)
     return err
   }
 
 
-  if !sfi.Mode().IsRegular() {
+  if !srcFInfo.Mode().IsRegular() {
     // cannot copy non-regular files (e.g., directories,
     // symlinks, devices, etc.)
     err = fmt.Errorf(ePrefix+
-      "Error: non-regular source file. Source File Name='%v'  Source File Mode='%v' ",
-      sfi.Name(), sfi.Mode().String())
+      "Error: Non-regular source file.\n" +
+      "Source File Name='%v'\n" +
+      "Source File Mode='%v'\n",
+      srcFInfo.Name(), srcFInfo.Mode().String())
     return err
   }
-
-  _, err2 = os.Stat(correctedDest)
 
   // If the destination file does NOT exist - this is not a problem
   // because the destination file will be created later.
 
-  if err2 == nil {
+  if dstFileDoesExist {
     // The destination file exists. This IS a problem. Link will
     // fail when attempting to create a link to an existing file.
 
-    err2 = os.Remove(correctedDest)
+    err2 = os.Remove(dst)
 
     if err2 != nil {
       err = fmt.Errorf(ePrefix+
         "Error: The target destination file exists and could NOT be deleted! \n"+
-        "destination file='%v' Error='%v' ", correctedDest, err2.Error())
+        "destination file='%v' Error='%v' ", dst, err2.Error())
       return err
     }
 
-    _, err2 = os.Stat(correctedDest)
+    dst,
+    dstFileDoesExist,
+    _,
+    err = fh.doesPathFileExist(dst,
+               true, // skip file conversion
+                              ePrefix,
+                    "dst")
 
-    if err2 == nil {
-      err = fmt.Errorf(ePrefix+"Error: Deletion of preexisting destination file failed! \n"+
-        "The copy link operation cannot proceed! \n"+
-        "destination file='%v' ", correctedDest)
+    if err != nil {
+      return err
+    }
+
+    if dstFileDoesExist {
+      err = fmt.Errorf(ePrefix+"Error: Deletion of preexisting " +
+        "destination file failed!\n"+
+        "The copy link operation cannot proceed!\n"+
+        "destination file='%v' ", dst)
       return err
     }
 
   }
 
-  err2 = os.Link(correctedSrc, correctedDest)
+  err2 = os.Link(src, dst)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"- os.Link(correctedSrc, correctedDest) FAILED!\n" +
-      "src='%v' dst='%v'  Error='%v'", correctedSrc, correctedDest, err2.Error())
+    err = fmt.Errorf(ePrefix+"- os.Link(src, dst) FAILED!\n" +
+      "src='%v'\ndst='%v'\nError='%v'\n",
+      src, dst, err2.Error())
     return err
   }
 
   err = nil
-
   return err
 }
 

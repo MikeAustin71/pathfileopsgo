@@ -1224,7 +1224,8 @@ func TestFileHelper_CleanDirStr_04(t *testing.T) {
   _, _, err := fh.CleanDirStr(testPath)
 
   if err == nil {
-    t.Errorf("Expected error to be returned by fh.CleanDirStr(testPath). testPath='%v'", testPath)
+    t.Errorf("Expected error to be returned by fh.CleanDirStr(testPath).\n" +
+      "testPath='%v'\n", testPath)
   }
 
 }
@@ -1236,7 +1237,8 @@ func TestFileHelper_CleanDirStr_05(t *testing.T) {
   _, _, err := fh.CleanDirStr(testPath)
 
   if err == nil {
-    t.Errorf("Expected error to be returned by fh.CleanDirStr(testPath). It was NOT. testPath='%v'", testPath)
+    t.Errorf("Expected error to be returned by fh.CleanDirStr(testPath).\n" +
+      "It was NOT.\ntestPath='%v'\n", testPath)
   }
 
 }
@@ -1248,7 +1250,8 @@ func TestFileHelper_CleanDirStr_06(t *testing.T) {
   _, _, err := fh.CleanDirStr(testPath)
 
   if err == nil {
-    t.Errorf("Expected error to be returned by fh.CleanDirStr(testPath). It was NOT. testPath='%v'", testPath)
+    t.Errorf("Expected error to be returned by fh.CleanDirStr(testPath).\n" +
+      "It was NOT.\ntestPath='%v'\n", testPath)
   }
 
 }
@@ -1261,15 +1264,17 @@ func TestFileHelper_CleanDirStr_07(t *testing.T) {
   cleanDirStr, isDirEmpty, err := fh.CleanDirStr(testPath)
 
   if err != nil {
-    t.Errorf("Error returned by fh.CleanDirStr(testPath). testPath='%v' Error='%v'", testPath, err.Error())
+    t.Errorf("Error returned by fh.CleanDirStr(testPath).\n" +
+      "testPath='%v'\nError='%v'", testPath, err.Error())
   }
 
   if isDirEmpty {
-    t.Error("Expected isDirEmpty='false'. Instead, isDirEmpty='true'")
+    t.Error("Expected isDirEmpty='false'.\nInstead, isDirEmpty='true'\n")
   }
 
   if expectedDirName != cleanDirStr {
-    t.Errorf("Expected cleanDirStr='%v'. Instead cleanDirStr='%v'", expectedDirName, cleanDirStr)
+    t.Errorf("Expected cleanDirStr='%v'.\nInstead cleanDirStr='%v'\n",
+      expectedDirName, cleanDirStr)
   }
 
 }
@@ -1385,15 +1390,20 @@ func TestFileHelper_CleanFileNameExtStr_02(t *testing.T) {
   result, isFileNameEmpty, err := fh.CleanFileNameExtStr(testPath)
 
   if err != nil {
-    t.Errorf("Error returned by fh.CleanFileNameExtStr(testPath). testPath='%v' Error='%v'", testPath, err.Error())
+    t.Errorf("Error returned by fh.CleanFileNameExtStr(testPath).\n" +
+      "testPath='%v'\nError='%v'",
+      testPath, err.Error())
   }
 
   if isFileNameEmpty {
-    t.Error("Expected isFileNameEmpty='false'. Instead, isFileNameEmpty='true'")
+    t.Error("Expected isFileNameEmpty='false'.\n" +
+      "Instead, isFileNameEmpty='true'\n")
   }
 
   if expectedFileNameExt != result {
-    t.Errorf("Expected fh.CleanFileNameExtStr to return '%v'. Instead, it returned '%v'", expectedFileNameExt, result)
+    t.Errorf("Expected fh.CleanFileNameExtStr to return '%v'.\n" +
+      "Instead, it returned '%v'\n",
+      expectedFileNameExt, result)
   }
 
 }
@@ -1401,10 +1411,20 @@ func TestFileHelper_CleanFileNameExtStr_02(t *testing.T) {
 func TestFileHelper_CleanFileNameExtStr_03(t *testing.T) {
   fh := FileHelper{}
   testPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest/")
-  _, _, err := fh.CleanFileNameExtStr(testPath)
+  // testPath is a directory which actually exists
+  _, isEmpty, err := fh.CleanFileNameExtStr(testPath)
 
-  if err == nil {
-    t.Errorf("Expected error returned by fh.CleanFileNameExtStr(testPath). testPath='%v'. But, no Error was returned. ", testPath)
+  if err != nil {
+    t.Errorf("Unexpected Error returned by fh.CleanFileNameExtStr(testPath)\n" +
+      "testPath='%v'\nError='%v'\n",
+      testPath, err.Error())
+    return
+  }
+
+  if isEmpty == false {
+    t.Error("ERROR: Expected 'isEmpty' == 'true' because input parameter\n" +
+      "'testPath' was an actual directory the physically exists on disk.\n" +
+      "However, 'isEmpty' return value was 'false'!\n")
   }
 
 }
