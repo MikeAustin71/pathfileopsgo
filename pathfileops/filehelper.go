@@ -1913,57 +1913,46 @@ func (fh FileHelper) FindFilesInPath(pathName, fileSearchPattern string) ([]stri
 
   ePrefix := "FileHelper.FindFilesInPath() "
 
+  var pathDoesExist bool
+  var fInfo FileInfoPlus
   var err error
-  errCode := 0
+  var errCode int
 
-  errCode, _, pathName = fh.isStringEmptyOrBlank(pathName)
+  pathName,
+  pathDoesExist,
+  fInfo,
+  err = fh.doesPathFileExist(pathName,
+           false, // Skip Conversion to Absolute Path
+            ePrefix,
+           "pathName")
 
-  if errCode == -1 {
-    return []string{},
-      errors.New(ePrefix + "Error: Input parameter 'pathName' is an empty string!")
-  }
-
-  if errCode == -2 {
-    return []string{},
-      errors.New(ePrefix + "Error: Input parameter 'pathName' consists of blank spaces!")
+  if err != nil {
+    return []string{}, err
   }
 
   errCode, _, fileSearchPattern = fh.isStringEmptyOrBlank(fileSearchPattern)
 
   if errCode == -1 {
     return []string{},
-      errors.New(ePrefix + "Error: Input parameter 'fileSearchPattern' is an empty string!")
+      errors.New(ePrefix + "Error: Input parameter 'fileSearchPattern' is " +
+        "an empty string!\n")
   }
 
   if errCode == -2 {
     return []string{},
-      errors.New(ePrefix + "Error: Input parameter 'fileSearchPattern' consists of blank spaces!")
+      errors.New(ePrefix + "Error: Input parameter 'fileSearchPattern' consists " +
+        "of blank spaces!\n")
   }
 
-  pathName, err = fh.MakeAbsolutePath(pathName)
-
-  if err != nil {
+  if!pathDoesExist {
     return []string{},
-      fmt.Errorf(ePrefix+"%v", err.Error())
-  }
-
-  fInfo, err := os.Stat(pathName)
-
-  if err != nil && os.IsNotExist(err) {
-    return []string{},
-      errors.New(ePrefix + "Error: Input parameter 'pathName' DOES NOT EXIST!")
-  }
-
-  if err != nil {
-    return []string{},
-      fmt.Errorf(ePrefix+
-        "Error returned by os.Stat(pathName). "+
-        "pathName='%v' Error='%v' ", pathName, err.Error())
+      fmt.Errorf(ePrefix + "Error: Input parameter 'pathName' DOES NOT EXIST!\n" +
+        "pathName='%v'\n", pathName)
   }
 
   if !fInfo.IsDir() {
     return []string{},
-      fmt.Errorf(ePrefix+"Error: The path exists, but it NOT a directory! "+
+      fmt.Errorf(ePrefix+"Error: The path exists, but it NOT a directory!\n"+
         "pathName='%v' ", pathName)
   }
 
@@ -1976,8 +1965,9 @@ func (fh FileHelper) FindFilesInPath(pathName, fileSearchPattern string) ([]stri
   if err != nil {
     return []string{},
       fmt.Errorf(ePrefix+
-        "Error returned by fp.Glob(searchStr). "+
-        "searchStr='%v' Error='%v' ", searchStr, err.Error())
+        "Error returned by fp.Glob(searchStr).\n"+
+        "searchStr='%v'\nError='%v'\n",
+        searchStr, err.Error())
   }
 
   return results, nil
