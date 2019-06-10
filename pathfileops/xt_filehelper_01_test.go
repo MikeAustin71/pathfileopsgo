@@ -1256,7 +1256,7 @@ func TestFileHelper_CleanDirStr_06(t *testing.T) {
 func TestFileHelper_CleanDirStr_07(t *testing.T) {
   fh := FileHelper{}
   testPath := fh.AdjustPathSlash("./xt_dirmgr_01_test.go")
-  expectedDirName := fh.AdjustPathSlash(".")
+  expectedDirName := fh.AdjustPathSlash("./")
 
   cleanDirStr, isDirEmpty, err := fh.CleanDirStr(testPath)
 

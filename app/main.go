@@ -1,6 +1,7 @@
 package main
 
 import (
+  fp "path/filepath"
   pf "../pathfileops"
   "fmt"
 )
@@ -40,11 +41,25 @@ func mainTest70AdjustPathStr() {
 func mainTest69CleanDirStr() {
 
   fh := pf.FileHelper{}
+/*
+  testPathFile := "/d/gowork/src/MikeAustin71/pathfileopsgo/pathfileops/" +
+    "levelfilesfortest/level_0_0_test.txt"
+*/
 
-  testPathFile := "/someDir/xt_dirmgr_01_test.go"
+  testPathFile := "d:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\pathfileops" +
+    "\\levelfilesfortest\\level_0_0_test.txt"
+
+
+  absFilePath, err := fh.MakeAbsolutePath(testPathFile)
+
+  if err != nil {
+
+  }
 
   fmt.Println("              mainTest67AreFilesSame                   ")
   fmt.Println("********************************************************")
+
+  volName :=  fp.VolumeName(testPathFile)
 
   cleanFilePath, isEmpty, err := fh.CleanDirStr(testPathFile)
 
@@ -61,7 +76,9 @@ func mainTest69CleanDirStr() {
   fmt.Println("--------------------------------------------------------")
   fmt.Println("fh.CleanDirStr() Results:")
   fmt.Println("--------------------------------------------------------")
-  fmt.Println("     isEmpty: ", isEmpty)
-  fmt.Println("   cleanPath: ", cleanFilePath)
+  fmt.Println("      isEmpty: ", isEmpty)
+  fmt.Println("    cleanPath: ", cleanFilePath)
+  fmt.Println("  Volume Name: ", volName)
+  fmt.Println("Absolute Path: ", absFilePath)
   fmt.Println()
 }

@@ -338,15 +338,21 @@ func (fh FileHelper) ChangeWorkingDir(dirPath string) error {
 //
 //   Examples:
 //
-//     dirName = '../dir1/dir2/fileName.ext' returns "../dir1/dir2"
+//     dirName = '/someDir/xt_dirmgr_01_test.go' returns "./someDir"
 //
-//     dirName = 'fileName.ext'              returns "" isEmpty = true
+//     dirName = '../dir1/dir2/fileName.ext'     returns "../dir1/dir2"
 //
-//     dirName = 'xt_dirmgr_01_test.go'      returns "" isEmpty = true
+//     dirName = 'fileName.ext'                  returns "" isEmpty = true
 //
-//     dirName = '../dir1/dir2/'             returns '../dir1/dir2'
+//     dirName = 'xt_dirmgr_01_test.go'          returns "" isEmpty = true
 //
-//     dirName = '../dir1/dir2/filename.ext' returns '../dir1/dir2'
+//     dirName = '../dir1/dir2/'                 returns "../dir1/dir2"
+//
+//     dirName = '../../../dir1/'                returns '../../../dir1'
+//
+//     dirName = '../dir1/dir2/filename.ext'     returns "../dir1/dir2"
+//
+//     dirName = 'somevalidcharacters'           returns "./somevalidchracters"
 //
 func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isEmpty bool, err error) {
 
@@ -394,9 +400,23 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
     return returnedDirName, isEmpty, err
   }
 
-  volName := fp.VolumeName(adjustedDirName)
+  absPath, err := fh.MakeAbsolutePath(adjustedDirName)
 
-  if volName == adjustedDirName {
+  if err != nil {
+    err = fmt.Errorf(ePrefix + "Error occurred while convert path to absolute path!\n" +
+      "dirPath='%v'\nError='%v'\n",
+      adjustedDirName, err.Error())
+    returnedDirName = ""
+    isEmpty = true
+    return returnedDirName, isEmpty, err
+  }
+
+  volName := fp.VolumeName(absPath)
+
+  volumeIdx :=  strings.Index(adjustedDirName, volName)
+
+  if strings.ToLower(volName) == strings.ToLower(adjustedDirName) {
+
     returnedDirName = adjustedDirName
 
     if len(returnedDirName) == 0 {
@@ -409,35 +429,22 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
     return returnedDirName, isEmpty, err
   }
 
+  isAbsPath := false
+
+  if strings.ToLower(absPath) == strings.ToLower(adjustedDirName) {
+    isAbsPath = true
+  }
+
+  osPathSepStr := string(os.PathSeparator)
+  dotPlusOsPathSepStr := "." + osPathSepStr
+
   if pathDoesExist {
     // The path exists
 
     if fInfo.IsDir() {
+
       // The path exists and it is a directory
-      if adjustedDirName[lAdjustedDirName-1] == os.PathSeparator {
-        // The last character in the directory string is an
-        // os.PathSeparator
-        if lAdjustedDirName >=2 &&
-          adjustedDirName[lAdjustedDirName-2] == '.' {
-          // The char immediately preceding the Path Separator
-          // is a dot. Keep the path separator
-          returnedDirName = adjustedDirName
-        } else {
-          returnedDirName = adjustedDirName[0 : lAdjustedDirName-1]
-        }
-
-      } else {
         returnedDirName = adjustedDirName
-      }
-
-      if len(returnedDirName) == 0 {
-        isEmpty = true
-      } else {
-        isEmpty = false
-      }
-
-      err = nil
-      return returnedDirName, isEmpty, err
 
     } else {
       // The path exists but it is
@@ -447,29 +454,67 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
 
       if lAdjustedDirName < 1 {
         returnedDirName = ""
-        isEmpty = true
-        err = nil
-        return returnedDirName, isEmpty, err
-      }
-
-      if adjustedDirName[lAdjustedDirName-1] == os.PathSeparator {
-        returnedDirName = adjustedDirName[0 : lAdjustedDirName-1]
       } else {
-
         returnedDirName = adjustedDirName
       }
 
-      if len(returnedDirName) == 0 {
-        isEmpty = true
-      } else {
-        isEmpty = false
-      }
+    }
 
+    lAdjustedDirName = len(returnedDirName)
+
+    if lAdjustedDirName == 0 {
+      isEmpty = true
       err = nil
       return returnedDirName, isEmpty, err
     }
-  }
 
+    if returnedDirName[lAdjustedDirName-1] == os.PathSeparator {
+      // Last character in path is a Path Separator
+
+      if lAdjustedDirName >=2 &&
+        returnedDirName[lAdjustedDirName-2] == '.' {
+        // The char immediately preceding the Path Separator
+        // in the last char position is a dot.
+        // Keep the path separator
+        returnedDirName = adjustedDirName
+      } else {
+        // The char immediately preceding the Path Separator in
+        // the last char position is NOT a dot. Delete the
+        // trailing path separator
+        returnedDirName = returnedDirName[0 : lAdjustedDirName-1]
+      }
+    }
+
+    lAdjustedDirName = len(returnedDirName)
+
+    if returnedDirName[0] != '.' &&
+      returnedDirName[0] != os.PathSeparator &&
+      volumeIdx == -1   &&
+      !isAbsPath    {
+
+      // First letter in path is a character
+      // Add a leading dot
+      returnedDirName = dotPlusOsPathSepStr + returnedDirName
+
+    } else if returnedDirName[0] == os.PathSeparator &&
+      volumeIdx == -1 &&
+      !isAbsPath  {
+
+      returnedDirName = "." + returnedDirName
+    }
+
+    if len(returnedDirName) == 0 {
+      isEmpty = true
+    } else {
+      isEmpty = false
+    }
+
+    err = nil
+    return returnedDirName, isEmpty, err
+
+  } // End of pathDoesExist == true
+
+  // The Path DOES NOT EXIST ON DISK
   firstCharIdx, lastCharIdx, err2 :=
     fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedDirName)
 
@@ -481,23 +526,6 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
       adjustedDirName, err2.Error())
     returnedDirName = ""
     isEmpty = true
-    return returnedDirName, isEmpty, err
-  }
-
-  if firstCharIdx == -1 || lastCharIdx == -1 {
-    if adjustedDirName[lAdjustedDirName-1] == os.PathSeparator {
-      returnedDirName = adjustedDirName[0 : lAdjustedDirName-1]
-    } else {
-      returnedDirName = adjustedDirName
-    }
-
-    if len(returnedDirName) == 0 {
-      isEmpty = true
-    } else {
-      isEmpty = false
-    }
-
-    err = nil
     return returnedDirName, isEmpty, err
   }
 
@@ -541,152 +569,116 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
 
   lDotIdxs := len(dotIdxs)
 
+  // Option # 1
+  if lDotIdxs == 0 && lSlashIdxs == 0  && lastCharIdx == -1 {
+    // There are no valid characters in the string
+    returnedDirName = ""
 
-  // If a path separator is the last character
-  if lSlashIdxs > 0 &&
-    lAdjustedDirName > 0 &&
-    slashIdxs[lSlashIdxs-1] == lAdjustedDirName-1 {
-    // ./dir/dir/
+  } else if lDotIdxs == 0 && lSlashIdxs== 0 && lastCharIdx > -1 {
+    // Option # 2
+    // String consists only of eligible alphanumeric characters
+    // "sometextstring"
+    returnedDirName = dotPlusOsPathSepStr + adjustedDirName
 
-    if lAdjustedDirName >=2 &&
-      adjustedDirName[lAdjustedDirName-2] == '.' {
-      // The char immediately preceding the Path Separator
-      // is a dot. Keep the Path Separator
-      returnedDirName = adjustedDirName
-    } else if adjustedDirName[0:1] == string(os.PathSeparator) {
+  } else if lDotIdxs == 0 && lSlashIdxs > 0 && lastCharIdx == -1 {
+    // Option # 3
+    // There no dots no characters but string does contain
+    // slashes
 
-      returnedDirName =  "." + adjustedDirName[0:slashIdxs[lSlashIdxs-1]]
-
+    if lSlashIdxs > 1 {
+      returnedDirName = ""
     } else {
+      // lSlashIdxs must be '1'
+      returnedDirName = dotPlusOsPathSepStr
+    }
+
+  } else if lDotIdxs == 0 && lSlashIdxs > 0 && lastCharIdx > -1 {
+    // Option # 4
+    // strings contains slashes and characters but no dots.
+
+    returnedDirName = adjustedDirName
+
+  } else if lDotIdxs > 0 && lSlashIdxs == 0 && lastCharIdx == -1 {
+    // Option # 5
+    // dots only. Must be "." or ".."
+    // Add trailing path separator
+    returnedDirName = adjustedDirName + osPathSepStr
+
+  } else if lDotIdxs > 0 && lSlashIdxs == 0 && lastCharIdx > -1 {
+    // Option # 6
+    // Dots and characters only. No slashes.
+    // Maybe 'fileName.ext'
+    returnedDirName = ""
+
+  } else if lDotIdxs > 0 && lSlashIdxs > 0 && lastCharIdx == -1 {
+    // Option # 7
+    // Dots and slashes, but no characters.
+    returnedDirName = adjustedDirName
+
+  } else if lDotIdxs > 0 && lSlashIdxs > 0 && lastCharIdx > -1 {
+    // Option # 8
+    returnedDirName = adjustedDirName
+
+    // If there is a dot after the last path separator
+    // and there is a character following the dot.
+    // Therefore, this is a filename extension, NOT a directory
+    if dotIdxs[lDotIdxs-1] > slashIdxs[lSlashIdxs-1] &&
+      dotIdxs[lDotIdxs-1] < lastCharIdx {
+
       returnedDirName = adjustedDirName[0:slashIdxs[lSlashIdxs-1]]
     }
 
-    if len(returnedDirName) == 0 {
-      isEmpty = true
-    } else {
-      isEmpty = false
-    }
-
-    err = nil
-    return returnedDirName, isEmpty, err
-  }
-
-  if lSlashIdxs == 0 &&
-     lDotIdxs > 0 &&
-    lastCharIdx > dotIdxs[lDotIdxs-1] {
-    // This is a file name with a dot and a file extension!
-    // Example: someFile.ext
-
+  } else {
     returnedDirName = ""
+  }
+
+  lAdjustedDirName = len(returnedDirName)
+
+  if lAdjustedDirName == 0 {
     isEmpty = true
     err = nil
     return returnedDirName, isEmpty, err
   }
 
-  if lSlashIdxs == 0 &&
-    lDotIdxs == 0 &&
-    lastCharIdx > 0 {
-    // This is text string with no dots and no
-    // path separators.
-    // Example: "someText"
-    returnedDirName = adjustedDirName
-
-    if len(returnedDirName) == 0 {
-      isEmpty = true
+  if returnedDirName[lAdjustedDirName-1] == os.PathSeparator {
+    // Last character in path is a Path Separator
+    if lAdjustedDirName >=2 &&
+      returnedDirName[lAdjustedDirName-2] == '.' {
+      // The char immediately preceding the Path Separator
+      // is a dot. Keep the path separator
+      // do nothing
+      lAdjustedDirName = len(returnedDirName)
     } else {
-      isEmpty = false
+      returnedDirName = returnedDirName[0 : lAdjustedDirName-1]
     }
-
-    err = nil
-    return returnedDirName, isEmpty, err
-
   }
 
-  // "/xt_dirmgr_01_test.go"
-  if lSlashIdxs > 0 &&
-    lDotIdxs > 0 &&
-    lastCharIdx > dotIdxs[lDotIdxs - 1] {
+  lAdjustedDirName = len(returnedDirName)
 
-    returnedDirName = adjustedDirName[0:slashIdxs[lSlashIdxs-1]+1]
+  if returnedDirName[0] != '.' &&
+    returnedDirName[0] != os.PathSeparator &&
+    volumeIdx == -1   &&
+    !isAbsPath    {
 
-    if returnedDirName[0:1] == string(os.PathSeparator) {
-      returnedDirName = "." + returnedDirName
-    }
+    // First letter in path is a character
+    // Add a leading dot
+    returnedDirName = dotPlusOsPathSepStr + returnedDirName
 
-    if len(returnedDirName) == 0 {
-      isEmpty = true
-    } else {
-      isEmpty = false
-    }
+  } else if returnedDirName[0] == os.PathSeparator &&
+    volumeIdx == -1 &&
+    !isAbsPath  {
 
-    err = nil
-    return returnedDirName, isEmpty, err
-
+    returnedDirName = "." + returnedDirName
   }
 
-  if lDotIdxs > 0 &&
-    lSlashIdxs > 0 &&
-    lastCharIdx > slashIdxs[lSlashIdxs-1] &&
-    lastCharIdx > dotIdxs[lDotIdxs-1] {
-    // Example "../checkfiles/dir"
-    // This is classified as a directory
-    returnedDirName = adjustedDirName
-
-    if len(returnedDirName) == 0 {
-      isEmpty = true
-    } else {
-      isEmpty = false
-    }
-
-    err = nil
-    return returnedDirName, isEmpty, err
-
-  }
-
-  if lDotIdxs == 0 &&
-    lSlashIdxs > 0 &&
-    lastCharIdx > slashIdxs[lSlashIdxs-1] {
-    // Example "D:/checkfiles/dir"
-    // This is classified as a directory
-    returnedDirName = adjustedDirName
-
-    if len(returnedDirName) == 0 {
-      isEmpty = true
-    } else {
-      isEmpty = false
-    }
-
-    err = nil
-    return returnedDirName, isEmpty, err
-
-  }
-
-  // If there is a dot after the last path separator
-  // and there is a character following the dot.
-  // Therefore, this is a filename extension, NOT a directory
-  if lDotIdxs > 0 &&
-    lSlashIdxs > 0 &&
-    dotIdxs[lDotIdxs-1] > slashIdxs[lSlashIdxs-1] &&
-    dotIdxs[lDotIdxs-1] < lastCharIdx {
-
-    returnedDirName = adjustedDirName[0:slashIdxs[lSlashIdxs-1]]
-
-    if len(returnedDirName) == 0 {
-      isEmpty = true
-    } else {
-      isEmpty = false
-    }
-
-    err = nil
-    return returnedDirName, isEmpty, err
-  }
-
-
-  returnedDirName = ""
+  if len(returnedDirName) == 0 {
     isEmpty = true
+  } else {
+    isEmpty = false
+  }
 
   err = nil
-  return
+  return returnedDirName, isEmpty, err
 }
 
 // CleanFileNameExtStr - Cleans up a file name extension string.

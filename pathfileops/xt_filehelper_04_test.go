@@ -295,7 +295,7 @@ func TestFileHelper_GetPathFromPathFileName_12(t *testing.T) {
 
   commonDir := fh.AdjustPathSlash("./xt_dirmgr_01_test.go")
 
-  expectedDir := fh.AdjustPathSlash(".")
+  expectedDir := fh.AdjustPathSlash("./")
 
   result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
 
