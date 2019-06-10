@@ -619,8 +619,11 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
     // Dots and slashes, but no characters.
     returnedDirName = adjustedDirName
 
-  } else if lDotIdxs > 0 && lSlashIdxs > 0 && lastCharIdx > -1 {
+  } else {
     // Option # 8
+    // MUST BE lDotIdxs > 0 && lSlashIdxs > 0 && lastCharIdx > -1
+    // Has dots, slashes and characters
+
     returnedDirName = adjustedDirName
 
     // If there is a dot after the last path separator
@@ -631,9 +634,6 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
 
       returnedDirName = adjustedDirName[0:slashIdxs[lSlashIdxs-1]]
     }
-
-  } else {
-    returnedDirName = ""
   }
 
   lAdjustedDirName = len(returnedDirName)
