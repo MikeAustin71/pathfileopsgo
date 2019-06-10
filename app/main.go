@@ -19,7 +19,29 @@ import (
 
 func main() {
 
-  mainTest69CleanDirStr()
+  mainTest71IsPathFileString()
+
+}
+
+func mainTest71IsPathFileString() {
+  fh := pf.FileHelper{}
+
+  testPath :=  fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/" +
+    "level_02_dir/iDoNotExist")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(testPath)
+
+  if err != nil {
+    fmt.Printf("Error returned from fh.IsPathFileString(testPath). "+
+      "pathFile='%v' Error='%v' ", testPath, err.Error())
+    return
+  }
+
+  fmt.Println("              mainTest70AdjustPathStr                   ")
+  fmt.Println("********************************************************")
+  fmt.Println("    testPath: ", testPath)
+  fmt.Println("absolutePath: ", absolutePath)
+  fmt.Println("pathFileType: ", pathFileType.String())
 
 }
 
@@ -32,7 +54,7 @@ func mainTest70AdjustPathStr() {
   adjustedPath := fh.AdjustPathSlash(testPath)
 
 
-  fmt.Println("              mainTest67AreFilesSame                   ")
+  fmt.Println("              mainTest70AdjustPathStr                   ")
   fmt.Println("********************************************************")
   fmt.Println("    testPath: ", testPath)
   fmt.Println("adjustedPath: ", adjustedPath)
