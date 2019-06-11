@@ -4704,19 +4704,38 @@ func (fh FileHelper) OpenFile(
 
   filePtr = nil
   err = nil
-  errCode := 0
   ePrefix := "FileHelper.OpenFile() "
 
-  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
+  var pathFileNameDoesExist bool
+  var fInfoPlus FileInfoPlus
 
-  if errCode == -1 {
-    err = errors.New(ePrefix + "Input parameter 'pathFileName' is an empty string!")
+  pathFileName,
+  pathFileNameDoesExist,
+  fInfoPlus,
+  err = fh.doesPathFileExist(
+           pathFileName,
+           false, // Skip Conversion to Absolute Path
+           ePrefix,
+           "pathFileName")
+
+  if err != nil {
+    return nil, err
+  }
+
+  if !pathFileNameDoesExist {
+    err = fmt.Errorf(ePrefix +
+      "ERROR: Input parameter 'pathFileName' DOES NOT EXIST!\n" +
+      "pathFileName='%v'\n", pathFileName)
+
     return filePtr, err
   }
 
-  if errCode == -2 {
-    err = errors.New(ePrefix +
-      "Input parameter 'pathFileName' consists of all spaces!")
+  if fInfoPlus.IsDir() {
+    err =
+      fmt.Errorf(ePrefix + "ERROR: Input parameter 'pathFileName' is " +
+        "a 'Directory' - NOT a file!\n" +
+        "pathFileName='%v'\n", pathFileName)
+
     return filePtr, err
   }
 
@@ -4753,25 +4772,16 @@ func (fh FileHelper) OpenFile(
   filePtr, err2 = os.OpenFile(pathFileName, fOpenCode, fileMode)
 
   if err2 != nil {
-
-    if os.IsNotExist(err2) {
-      err = fmt.Errorf(ePrefix+"The 'pathFileName' DOES NOT EXIST! "+
-        "pathFileName='%v' Error='%v' ",
-        pathFileName, err2.Error())
-      filePtr = nil
-      return filePtr, err
-    }
-
     err = fmt.Errorf(ePrefix+
-      "Error returned by os.OpenFile(pathFileName, fOpenCode, fileMode) "+
-      "targetpathFileName='%v' Error='%v' ", pathFileName, err2.Error())
+      "Error returned by os.OpenFile(pathFileName, fOpenCode, fileMode).\n"+
+      "pathFileName='%v'\nError='%v'\n", pathFileName, err2.Error())
 
     return filePtr, err
   }
 
   if filePtr == nil {
     err = errors.New(ePrefix +
-      "ERROR: os.OpenFile() returned a 'nil' file pointer!")
+      "ERROR: os.OpenFile() returned a 'nil' file pointer!\n")
     return filePtr, err
   }
 
@@ -4993,7 +5003,6 @@ func (fh FileHelper) OpenFileReadWrite(
 
   var fPtr *os.File
   var err error
-
   var pathFileNameDoesExist bool
   var fInfoPlus FileInfoPlus
 
@@ -5173,36 +5182,25 @@ func (fh FileHelper) OpenFileWriteOnly(
 
   var fPtr *os.File
   var err error
+  var pathFileNameDoesExist bool
+  var fInfoPlus FileInfoPlus
 
-  errCode := 0
-
-  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
-
-  if errCode == -1 {
-    return nil,
-      errors.New(ePrefix + "Input parameter 'pathFileName' is an empty string!")
-
-  }
-
-  if errCode == -2 {
-    return nil, errors.New(ePrefix +
-      "Input parameter 'pathFileName' consists of all spaces!")
-  }
-
-  pathFileName, err = fh.MakeAbsolutePath(pathFileName)
+  pathFileName,
+  pathFileNameDoesExist,
+  fInfoPlus,
+  err = fh.doesPathFileExist(
+             pathFileName,
+             false, // Skip Conversion to Absolute Path
+             ePrefix,
+             "pathFileName")
 
   if err != nil {
-    return nil,
-      fmt.Errorf(ePrefix +
-        "Error creating absolute path: %v\n" +
-        "pathFileName='%v'\n", err.Error(), pathFileName)
+    return nil, err
   }
 
   var fileOpenCfg FileOpenConfig
 
-  _, err = os.Stat(pathFileName)
-
-  if err != nil {
+  if !pathFileNameDoesExist {
     // The pathFileName DOES NOT EXIST!
 
     fileOpenCfg, err = FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
@@ -5218,6 +5216,13 @@ func (fh FileHelper) OpenFileWriteOnly(
 
   } else {
     // The pathFileName DOES EXIST!
+
+    if fInfoPlus.IsDir() {
+      return nil,
+        fmt.Errorf(ePrefix + "ERROR: Input parameter 'pathFileName' is " +
+          "a 'Directory' NOT a file.\n" +
+          "pathFileName='%v'\n", pathFileName)
+    }
 
     if truncateFile {
       // truncateFile == true; Set Mode 'Truncate'
@@ -5275,13 +5280,14 @@ func (fh FileHelper) OpenFileWriteOnly(
 
   if err != nil {
     return nil, fmt.Errorf(ePrefix +
-      "Error returned from os.OpenFile().\nError='%v'\n" +
-      "pathFileName='%v'", err.Error(), pathFileName)
+      "Error returned from os.OpenFile().\n" +
+      "pathFileName='%v'\nError='%v'\n",
+      pathFileName, err.Error())
   }
 
   if fPtr == nil {
     return nil, fmt.Errorf(ePrefix +
-      "ERROR: File pointer returned from os.OpenFile() is 'nil'!")
+      "ERROR: File pointer returned from os.OpenFile() is 'nil'!\n")
   }
 
   return fPtr, nil
