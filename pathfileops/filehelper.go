@@ -4560,7 +4560,7 @@ func (fh FileHelper) MoveFile(src, dst string) error {
 //
 func (fh FileHelper) OpenDirectory(
   directoryPath string,
-  createDir bool,) (*os.File, error) {
+  createDir bool) (*os.File, error) {
 
 
   ePrefix := "FileHelper.OpenDirectory() "
@@ -4827,49 +4827,48 @@ func (fh FileHelper) OpenFileReadOnly(pathFileName string) (filePtr *os.File, er
   filePtr = nil
   err = nil
   var err2 error
-  errCode := 0
+  var pathFileNameDoesExist bool
+  var fInfoPlus FileInfoPlus
 
-  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
+  pathFileName,
+  pathFileNameDoesExist,
+  fInfoPlus,
+  err = fh.doesPathFileExist(
+             pathFileName,
+             false, // Skip Conversion to Absolute Path
+              ePrefix,
+              "pathFileName")
 
-  if errCode == -1 {
-    err = errors.New(ePrefix + "Input parameter 'pathFileName' is an empty string!\n")
+  if err != nil {
     return filePtr, err
   }
 
-  if errCode == -2 {
-    err = errors.New(ePrefix +
-      "Input parameter 'pathFileName' consists entirely of blank spaces!\n")
-    return filePtr, err
-  }
-
-  pathFileName, err2 = fh.MakeAbsolutePath(pathFileName)
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix +
-      "Error occurred while converting input parameter file name ('pathFileName') to absolute path.\n" +
-      "pathFileName='%v'\nError='%v'\n", pathFileName, err2.Error())
-
-    return filePtr, err
-  }
-
-  _, err2 = os.Stat(pathFileName)
-
-  if err2 != nil {
+  if !pathFileNameDoesExist {
     err = fmt.Errorf(ePrefix +
       "ERROR: The input parameter 'pathFileName' DOES NOT EXIST!\n" +
-      "Error returned from os.Stat(pathFileName).\n" +
-      "pathFileName='%v'\nError='%v'", pathFileName, err2.Error())
+      "pathFileName='%v'\n", pathFileName)
+    return filePtr, err
+  }
+
+  if fInfoPlus.IsDir() {
+    err = fmt.Errorf(ePrefix +
+      "ERROR: The input parameter 'pathFileName' is a 'Directory' " +
+      "and NOT a path file name.\n" +
+      "'pathFileName' is therefore INVALID!\n" +
+      "pathFileName='%v'\n", pathFileName)
+
     return filePtr, err
   }
 
   fileOpenCfg, err2 := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
-    FOpenMode.ModeNone())
+                         FOpenMode.ModeNone())
 
   if err2 != nil {
     err =
       fmt.Errorf(ePrefix +
         "Error returned by FileOpenConfig{}.New(FOpenType.TypeReadOnly()," +
-        "FOpenMode.ModeNone()).\nError='%v'\n",
+        "FOpenMode.ModeNone()).\n" +
+        "Error='%v'\n",
         err2.Error())
     return filePtr, err
   }
@@ -4877,7 +4876,8 @@ func (fh FileHelper) OpenFileReadOnly(pathFileName string) (filePtr *os.File, er
   fOpenCode, err2 := fileOpenCfg.GetCompositeFileOpenCode()
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix + "Error Creating File Open Code.\nError=%v\n",
+    err = fmt.Errorf(ePrefix + "Error Creating File Open Code.\n" +
+      "Error=%v\n",
       err2.Error())
     return filePtr, err
   }
@@ -4888,14 +4888,15 @@ func (fh FileHelper) OpenFileReadOnly(pathFileName string) (filePtr *os.File, er
     err =
       fmt.Errorf(ePrefix +
         "Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n" +
-        "Error='%v' \n", err2.Error())
+        "Error='%v'\n", err2.Error())
     return filePtr, err
   }
 
   fileMode, err2 := fPermCfg.GetCompositePermissionMode()
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix + "Error Creating File Mode Code.\nError=%v\n",
+    err = fmt.Errorf(ePrefix + "Error Creating File Mode Code.\n" +
+      "Error=%v\n",
       err2.Error())
 
     return filePtr, err
@@ -4910,10 +4911,9 @@ func (fh FileHelper) OpenFileReadOnly(pathFileName string) (filePtr *os.File, er
     return filePtr, err
   }
 
-
   if filePtr == nil {
     err = fmt.Errorf(ePrefix +
-      "ERROR: os.OpenFile() returned a 'nil' file pointer!")
+      "ERROR: os.OpenFile() returned a 'nil' file pointer!\n")
 
     return filePtr, err
   }
@@ -4994,35 +4994,26 @@ func (fh FileHelper) OpenFileReadWrite(
   var fPtr *os.File
   var err error
 
-  errCode := 0
+  var pathFileNameDoesExist bool
+  var fInfoPlus FileInfoPlus
 
-  errCode, _, pathFileName = fh.isStringEmptyOrBlank(pathFileName)
-
-  if errCode == -1 {
-    return nil,
-    errors.New(ePrefix + "Input parameter 'pathFileName' is an empty string!")
-
-  }
-
-  if errCode == -2 {
-    return nil, errors.New(ePrefix +
-      "Input parameter 'pathFileName' consists of all spaces!")
-  }
-
-  pathFileName, err = fh.MakeAbsolutePath(pathFileName)
+  pathFileName,
+    pathFileNameDoesExist,
+    fInfoPlus,
+    err = fh.doesPathFileExist(
+          pathFileName,
+    false, // Skip Conversion to Absolute Path
+          ePrefix,
+          "pathFileName")
 
   if err != nil {
-    return nil,
-    fmt.Errorf(ePrefix +
-      "Error creating absolute path: %v\n" +
-      "pathFileName='%v'\n", err.Error(), pathFileName)
+    return nil, err
   }
 
   var fileOpenCfg FileOpenConfig
 
-  _, err = os.Stat(pathFileName)
-
-  if err != nil {
+  if !pathFileNameDoesExist {
+    // pathFileName does NOT exist
 
     fileOpenCfg, err = FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
       FOpenMode.ModeCreate(), FOpenMode.ModeAppend())
@@ -5031,11 +5022,20 @@ func (fh FileHelper) OpenFileReadWrite(
       return nil,
         fmt.Errorf(ePrefix +
           "Error returned by FileOpenConfig{}.New(FOpenType.TypeWriteOnly()," +
-          "FOpenMode.ModeCreate(), FOpenMode.ModeAppend()).\nError='%v'\n",
+          "FOpenMode.ModeCreate(), FOpenMode.ModeAppend()).\n" +
+          "Error='%v'\n",
           err.Error())
     }
 
   } else {
+    // pathFileName does exist
+
+    if fInfoPlus.IsDir() {
+      return nil,
+        fmt.Errorf(ePrefix + "ERROR: Input parameter 'pathFileName' is " +
+          "a 'Directory' NOT a file.\n" +
+          "pathFileName='%v'\n", pathFileName)
+    }
 
     if truncateFile {
       // truncateFile == true
@@ -5046,7 +5046,8 @@ func (fh FileHelper) OpenFileReadWrite(
         return nil,
           fmt.Errorf(ePrefix +
             "Error returned by FileOpenConfig{}.New(FOpenType.TypeReadWrite()," +
-            "FOpenMode.ModeTruncate()).\nError='%v'\n",
+            "FOpenMode.ModeTruncate()).\n" +
+            "Error='%v'\n",
             err.Error())
       }
 
@@ -5059,7 +5060,8 @@ func (fh FileHelper) OpenFileReadWrite(
         return nil,
           fmt.Errorf(ePrefix +
             "Error returned by FileOpenConfig{}.New(FOpenType.TypeReadWrite()," +
-            "FOpenMode.ModeAppend()).\nError='%v'\n",
+            "FOpenMode.ModeAppend()).\n" +
+            "Error='%v'\n",
             err.Error())
       }
     }
@@ -5078,25 +5080,27 @@ func (fh FileHelper) OpenFileReadWrite(
     return nil,
     fmt.Errorf(ePrefix +
       "Error returned by FilePermissionConfig{}.New(\"-rwxrwxrwx\")\n" +
-      "Error='%v' \n", err.Error())
+      "Error='%v'\n", err.Error())
   }
 
   fileMode, err := fPermCfg.GetCompositePermissionMode()
 
   if err != nil {
-    return nil, fmt.Errorf(ePrefix + "%v", err.Error())
+    return nil, fmt.Errorf(ePrefix + "%v\n", err.Error())
   }
 
   fPtr, err = os.OpenFile(pathFileName, fOpenCode, fileMode)
 
   if err != nil {
-    return nil, fmt.Errorf(ePrefix + "File Open Error: %v\n" +
-      "pathFileName='%v'", err.Error(), pathFileName)
+    return nil, fmt.Errorf(ePrefix + "File Open Error\n" +
+      "pathFileName='%v'\nError='%v'\n",
+      pathFileName, err.Error())
   }
 
   if fPtr == nil {
     return nil, fmt.Errorf(ePrefix +
-      "ERROR: os.OpenFile() returned a 'nil' file pointer!")
+      "ERROR: os.OpenFile() returned a 'nil' file pointer!\n" +
+      "pathFileName='%v'\n", pathFileName)
   }
 
   return fPtr, nil
