@@ -59,7 +59,7 @@ func (pfTyp PathFileTypeCode) ParseString(
   valueString string,
   caseSensitive bool) (PathFileTypeCode, error) {
 
-  ePrefix := "OsFilePermissionCode.ParseString() "
+  ePrefix := "PathFileTypeCode.ParseString() "
 
   lenValueStr := len(valueString)
 
@@ -71,8 +71,8 @@ func (pfTyp PathFileTypeCode) ParseString(
   if lenValueStr < 3 {
     return PathFileTypeCode(0).None(),
       fmt.Errorf(ePrefix+
-        "Input parameter 'valueString' is INVALID! Length Less than 3-characters "+
-        "valueString='%v' ", valueString)
+        "Input parameter 'valueString' is INVALID! Length Less than 3-characters\n"+
+        "valueString='%v'\n", valueString)
   }
 
   var ok bool
@@ -85,7 +85,7 @@ func (pfTyp PathFileTypeCode) ParseString(
 
     if !ok {
       return PathFileType.None(),
-        errors.New(ePrefix + "Invalid Permission Code!")
+        errors.New(ePrefix + "Invalid PathFileTypeCode Code!")
     }
 
   } else {
@@ -96,7 +96,7 @@ func (pfTyp PathFileTypeCode) ParseString(
 
     if !ok {
       return PathFileType.None(),
-        errors.New(ePrefix + "Invalid Permission Code!")
+        errors.New(ePrefix + "Invalid PathFileTypeCode Code!")
     }
 
   }
