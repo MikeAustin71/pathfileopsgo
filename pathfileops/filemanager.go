@@ -1522,16 +1522,20 @@ func (fMgr *FileMgr) DoesFileExist() bool {
     return false
   }
 
+  fMgr.dataMutex.Lock()
+
   _, filePathDoesExist, _, nonPathError :=
-    fMgr.doesPathFileExist(fMgr.absolutePathFileName,
-                           true, // Skip Absolute Path Conversion
+    FileHelper{}.doesPathFileExist(fMgr.absolutePathFileName,
+                           PreProcPathCode.None(), // Do NOT apply pre-processing to path
                            ePrefix ,
                            "fMgr.absolutePathFileName")
 
   if !filePathDoesExist || nonPathError!=nil {
+    fMgr.dataMutex.Unlock()
     return false
   }
 
+  fMgr.dataMutex.Unlock()
   return true
 }
 
@@ -1553,9 +1557,10 @@ func (fMgr *FileMgr) DoesThisFileExist() (fileDoesExist bool, nonPathError error
     return fileDoesExist,  nonPathError
   }
 
+
  _, fileDoesExist, fInfoPlus, nonPathError =
-   fMgr.doesPathFileExist(fMgr.absolutePathFileName,
-                          true, // Skip absolute path conversion
+   FileHelper{}.doesPathFileExist(fMgr.absolutePathFileName,
+                          PreProcPathCode.None(), // Do NOT perform in pre-processing on path
                           ePrefix,
                           "fMgr.absolutePathFileName")
 
@@ -1880,8 +1885,8 @@ func (fMgr *FileMgr) GetFileInfo() (os.FileInfo, error) {
   }
 
   _, filePathDoesExist, fInfoPlus, nonPathError :=
-     fMgr.doesPathFileExist(fMgr.absolutePathFileName,
-                            true,  // Skip absolute path conversion
+     FileHelper{}.doesPathFileExist(fMgr.absolutePathFileName,
+                            PreProcPathCode.None(),  // Skip absolute path conversion
                             ePrefix,
                             "fMgr.absolutePathFileName")
 
@@ -1916,9 +1921,9 @@ func (fMgr *FileMgr) GetFileInfoPlus() (FileInfoPlus, error) {
   }
 
   _, filePathDoesExist, fInfoPlus, nonPathError :=
-    fMgr.doesPathFileExist(
+    FileHelper{}.doesPathFileExist(
         fMgr.absolutePathFileName,
-        true,  // Skip absolute path conversion
+        PreProcPathCode.None(),  // Do NOT any pre-processing on path
         ePrefix,
         "fMgr.absolutePathFileName")
 
@@ -2163,11 +2168,11 @@ func (fMgr *FileMgr) GetFileSize() int64 {
   err := fMgr.IsFileMgrValid("")
 
   if err != nil {
-    return int64(-1)
+    return -1
   }
 
   if !fMgr.doesAbsolutePathFileNameExist {
-    return int64(-1)
+    return -1
   }
 
   return fMgr.actualFileInfo.Size()
@@ -2272,8 +2277,8 @@ func (fMgr *FileMgr) IsFileMgrValid(errorPrefixStr string) error {
   }
 
   _, filePathDoesExist, fInfoPlus, nonPathError :=
-    fMgr.doesPathFileExist(fMgr.absolutePathFileName,
-                           true,   // Skip Absolute Path Conversion
+    FileHelper{}.doesPathFileExist(fMgr.absolutePathFileName,
+                           PreProcPathCode.None(),   // Skip Absolute Path Conversion
                            ePrefix,
                            "fMgr.absolutePathFileName")
 
@@ -3821,6 +3826,8 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
 
   fMgr.Empty()
 
+  fMgr.dataMutex.Lock()
+
   fMgr.dMgr = dMgr.CopyOut()
 
   s, fNameIsEmpty, err2 := fh.GetFileNameWithoutExt(adjustedFileNameExt)
@@ -3829,6 +3836,7 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
     err = fmt.Errorf(ePrefix+
       "Error returned from fh.GetFileNameWithoutExt(adjustedFileNameExt). "+
       "adjustedFileNameExt='%v'  Error='%v' ", adjustedFileNameExt, err2.Error())
+    fMgr.dataMutex.Unlock()
     fMgr.Empty()
     isEmpty = true
     return
@@ -3838,6 +3846,7 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
     err = fmt.Errorf(ePrefix+
       "Error: fileName returned from fh.GetFileNameWithoutExt(adjustedFileNameExt) "+
       "is Zero length string! adjustedFileNameExt='%v'  ", adjustedFileNameExt)
+    fMgr.dataMutex.Unlock()
     fMgr.Empty()
     isEmpty = true
     return
@@ -3852,12 +3861,11 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
     err = fmt.Errorf(ePrefix+
       "Error returned from fh.GetFileExt(fileNameAndExt). "+
       "fileNameAndExt='%v'  Error='%v' ", adjustedFileNameExt, err2.Error())
+    fMgr.dataMutex.Unlock()
     fMgr.Empty()
     isEmpty = true
     return
   }
-
-  fMgr.dataMutex.Lock()
 
   if !extIsEmpty {
     fMgr.isFileExtPopulated = true
@@ -3896,15 +3904,12 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
 
   fMgr.isAbsolutePathFileNamePopulated = true
 
-  fMgr.dataMutex.Unlock()
 
   _, filePathDoesExist, fInfoPlus, nonPathError :=
-    fMgr.doesPathFileExist(fMgr.absolutePathFileName,
-                           true,  // Skip Absolute Path Conversion
+    FileHelper{}.doesPathFileExist(fMgr.absolutePathFileName,
+                           PreProcPathCode.None(),  // Do NOT perform pre-processing on path
                            ePrefix,
                            "fMgr.absolutePathFileName" )
-
-  fMgr.dataMutex.Lock()
 
   if filePathDoesExist && nonPathError==nil {
     fMgr.doesAbsolutePathFileNameExist = true
@@ -4222,6 +4227,8 @@ func (fMgr *FileMgr) WriteStrToFile(str string) (numBytesWritten int, err error)
 // To deal with these types of errors, this method will test path existence up to three times before
 // returning a non-path error.
 //
+
+/*
 func (fMgr *FileMgr) doesPathFileExist(
   filePath string,
   skipAbsPathCvrsn bool,
@@ -4335,3 +4342,4 @@ func (fMgr *FileMgr) doesPathFileExist(
 
   return absFilePath, filePathDoesExist, fInfo, nonPathError
 }
+*/
