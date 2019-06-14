@@ -4196,13 +4196,17 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
 
   ePrefix := strings.TrimRight(errPrefixStr, " ") + " DirMgr.IsDirMgrValid() "
 
+  dMgr.dataMutex.Lock()
+
   if !dMgr.isInitialized {
+    dMgr.dataMutex.Unlock()
     return fmt.Errorf(ePrefix + "Error: DirMgr is NOT Initialized.")
   }
 
   dMgr.isAbsolutePathPopulated = false
 
   if dMgr.absolutePath == "" {
+    dMgr.dataMutex.Unlock()
     return fmt.Errorf(ePrefix + "Error: DirMgr.absolutePath is EMPTY!.")
   }
 
@@ -4211,6 +4215,7 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
   dMgr.isPathPopulated = false
 
   if dMgr.path == "" {
+    dMgr.dataMutex.Unlock()
     return fmt.Errorf(ePrefix + "Error: DirMgr.absolutePath is EMPTY!.")
   }
 
@@ -4226,6 +4231,7 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
       "dMgr.absolutePath")
 
   if nonPathError != nil {
+    dMgr.dataMutex.Unlock()
     return nonPathError
   }
 
@@ -4248,6 +4254,7 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
       "dMgr.path")
 
   if nonPathError != nil {
+    dMgr.dataMutex.Unlock()
     return nonPathError
   }
 
@@ -4257,6 +4264,7 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
     dMgr.doesPathExist = true
   }
 
+  dMgr.dataMutex.Unlock()
   return nil
 }
 
