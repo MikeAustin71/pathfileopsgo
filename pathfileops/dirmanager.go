@@ -4215,9 +4215,47 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
   }
 
   dMgr.isPathPopulated = true
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      "",
+      "dMgr.absolutePath")
 
-  _ = dMgr.DoesAbsolutePathExist()
-  _ = dMgr.DoesPathExist()
+  if nonPathError != nil {
+    return nonPathError
+  }
+
+  if !dirPathDoesExist {
+    dMgr.doesAbsolutePathExist = false
+    dMgr.actualDirFileInfo = FileInfoPlus{}
+  } else {
+    dMgr.doesAbsolutePathExist = true
+    dMgr.actualDirFileInfo = fInfoPlus.CopyOut()
+  }
+
+  _,
+    dirPathDoesExist,
+    _,
+    nonPathError =
+    FileHelper{}.doesPathFileExist(
+      dMgr.path,
+      PreProcPathCode.None(),
+      "",
+      "dMgr.path")
+
+  if nonPathError != nil {
+    return nonPathError
+  }
+
+  if !dirPathDoesExist {
+    dMgr.doesPathExist = false
+  } else {
+    dMgr.doesPathExist = true
+  }
 
   return nil
 }
