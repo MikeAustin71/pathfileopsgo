@@ -8,7 +8,6 @@ import (
   fp "path/filepath"
   "strings"
   "sync"
-  "time"
 )
 
 /*
@@ -232,15 +231,20 @@ func (dMgr *DirMgr) CopyDirectory(
   err = targetDMgr.IsDirMgrValid(ePrefix)
 
   if err != nil {
-    err2 = fmt.Errorf("Input parameter 'targetDMgr' is INVALID!\n" +
+    err2 = fmt.Errorf("Input parameter 'targetDMgr' is INVALID!\n"+
       "Error='%v'\n", err.Error())
     errs = append(errs, err2)
     return errs
   }
 
-
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
 
@@ -250,8 +254,17 @@ func (dMgr *DirMgr) CopyDirectory(
   }
 
   if !dirPathDoesExist {
-    err2 = fmt.Errorf(ePrefix + "The current DirMgr path DOES NOT EXIST!\n" +
+    err2 = fmt.Errorf(ePrefix+"The current DirMgr path DOES NOT EXIST!\n"+
       "DirMgr='%v'\n", dMgr.absolutePath)
+
+    errs = append(errs, err2)
+
+    return errs
+  }
+
+  if !fInfoPlus.IsDir() {
+    err2 = fmt.Errorf(ePrefix+"Directory Path exists, but it is a File - NOT a Directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
 
     errs = append(errs, err2)
 
@@ -263,9 +276,9 @@ func (dMgr *DirMgr) CopyDirectory(
   if err != nil {
 
     err2 = fmt.Errorf(ePrefix+
-        "Error return by os.Open(dMgr.absolutePath). "+
-        "dMgr.absolutePath='%v' Error='%v' ",
-        dMgr.absolutePath, err.Error())
+      "Error return by os.Open(dMgr.absolutePath). "+
+      "dMgr.absolutePath='%v' Error='%v' ",
+      dMgr.absolutePath, err.Error())
 
     errs = append(errs, err2)
 
@@ -312,7 +325,7 @@ func (dMgr *DirMgr) CopyDirectory(
       if err != nil {
 
         err2 =
-          fmt.Errorf("\n" + ePrefix+
+          fmt.Errorf("\n"+ePrefix+
             "Error returned by fh.FilterFileName(nameFInfo, fileSelectCriteria). "+
             "directorySearched='%v'\nfileName='%v'\nError='%v'\n",
             dMgr.absolutePath, nameFInfo.Name(), err.Error())
@@ -336,8 +349,8 @@ func (dMgr *DirMgr) CopyDirectory(
           err = targetDMgr.MakeDir()
 
           if err != nil {
-            err2 = fmt.Errorf("\n" + ePrefix +
-              "Error creating target directory!\n" +
+            err2 = fmt.Errorf("\n"+ePrefix+
+              "Error creating target directory!\n"+
               "Target Directory='%v'\nError='%v'\n",
               targetDMgr.absolutePath, err.Error())
 
@@ -356,8 +369,8 @@ func (dMgr *DirMgr) CopyDirectory(
         err = fh.CopyFileByIo(src, target)
 
         if err != nil {
-          err2 = fmt.Errorf("\n" + ePrefix +
-            "ERROR: fh.CopyFileByIo(src, target)\n" +
+          err2 = fmt.Errorf("\n"+ePrefix+
+            "ERROR: fh.CopyFileByIo(src, target)\n"+
             "src='%v'\ntarget='%v'\nError='%v'\n\n",
             src, target, err.Error())
 
@@ -371,7 +384,7 @@ func (dMgr *DirMgr) CopyDirectory(
     err = dir.Close()
 
     if err != nil {
-      err2 = fmt.Errorf(ePrefix +
+      err2 = fmt.Errorf(ePrefix+
         "Error returned by dir.Close(). "+
         "dir='%v' Error='%v' ",
         dMgr.absolutePath, err.Error())
@@ -567,14 +580,20 @@ func (dMgr *DirMgr) CopyDirectoryTree(
   err = targetDMgr.IsDirMgrValid(ePrefix)
 
   if err != nil {
-    err2 = fmt.Errorf("Input parameter 'targetDMgr' is INVALID!\n" +
+    err2 = fmt.Errorf("Input parameter 'targetDMgr' is INVALID!\n"+
       "Error='%v'\n", err.Error())
     errs = append(errs, err2)
     return errs
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     errs = append(errs, nonPathError)
@@ -582,9 +601,17 @@ func (dMgr *DirMgr) CopyDirectoryTree(
   }
 
   if !dirPathDoesExist {
-    err2 = fmt.Errorf(ePrefix +
-      "Error: Source DirMgr Path DOES NOT EXIST!\n" +
+    err2 = fmt.Errorf(ePrefix+
+      "Error: Source DirMgr Path DOES NOT EXIST!\n"+
       "DirMgr Path='%v'", dMgr.absolutePath)
+    errs = append(errs, nonPathError)
+    return errs
+  }
+
+  if !fInfoPlus.IsDir() {
+    err2 = fmt.Errorf(ePrefix+
+      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
     errs = append(errs, nonPathError)
     return errs
   }
@@ -593,8 +620,8 @@ func (dMgr *DirMgr) CopyDirectoryTree(
     targetDMgr,
     copyEmptyDirectories,
     false,
-    ePrefix ,
-    fileSelectCriteria )
+    ePrefix,
+    fileSelectCriteria)
 }
 
 // CopyIn - Receives a pointer to a DirMgr object as an
@@ -683,14 +710,21 @@ func (dMgr *DirMgr) CopySubDirectoryTree(
   err = targetDMgr.IsDirMgrValid(ePrefix)
 
   if err != nil {
-    err2 = fmt.Errorf("Input parameter 'targetDMgr' is INVALID!\n" +
+    err2 = fmt.Errorf("Input parameter 'targetDMgr' is INVALID!\n"+
       "Error='%v'\n", err.Error())
     errs = append(errs, err2)
     return errs
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     errs = append(errs, nonPathError)
@@ -699,12 +733,20 @@ func (dMgr *DirMgr) CopySubDirectoryTree(
 
   if !dirPathDoesExist {
 
-    err2 = fmt.Errorf(ePrefix + "The current DirMgr path DOES NOT EXIST!\n" +
+    err2 = fmt.Errorf(ePrefix+"The current DirMgr path DOES NOT EXIST!\n"+
       "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
 
     errs = append(errs, err2)
     return errs
+  }
 
+  if !fInfoPlus.IsDir() {
+    err2 = fmt.Errorf(ePrefix+
+      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
+
+    errs = append(errs, err2)
+    return errs
   }
 
   // dMgr.absolutePath DOES EXIST!
@@ -713,8 +755,8 @@ func (dMgr *DirMgr) CopySubDirectoryTree(
     targetDMgr,
     copyEmptyDirectories,
     true,
-    ePrefix ,
-    fileSelectCriteria )
+    ePrefix,
+    fileSelectCriteria)
 }
 
 // DeleteAll - BE CAREFUL!!! - This method will remove the directory identified by
@@ -739,11 +781,23 @@ func (dMgr *DirMgr) DeleteAll() error {
     return nonPathError
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     return nonPathError
+  }
+
+  if dirPathDoesExist && !fInfoPlus.IsDir() {
+    return fmt.Errorf(ePrefix+
+      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
   }
 
   dMgr.dataMutex.Lock()
@@ -753,7 +807,7 @@ func (dMgr *DirMgr) DeleteAll() error {
     err2 := os.RemoveAll(dMgr.absolutePath)
 
     if err2 != nil {
-     nonPathError = fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(dMgr.absolutePath) "+
+      nonPathError = fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(dMgr.absolutePath) "+
         "returned error. dMgr.absolutePath='%v' Error='%v' ", dMgr.absolutePath, err2.Error())
 
       dMgr.dataMutex.Unlock()
@@ -764,13 +818,30 @@ func (dMgr *DirMgr) DeleteAll() error {
 
   dMgr.dataMutex.Unlock()
 
-  _ = dMgr.DoesPathExist()
+  _,
+    dirPathDoesExist,
+    _,
+    nonPathError =
+    FileHelper{}.doesPathFileExist(dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
-  if dMgr.DoesAbsolutePathExist() {
-    return fmt.Errorf (ePrefix +
-      "Error: FAILED TO DELETE DIRECTORY!!\n" +
-      "\nDirectory Path='%v'\n",dMgr.absolutePath)
+  if nonPathError != nil {
+    return fmt.Errorf(ePrefix+
+      "ERROR: After attempted directory deletion, a non-path error was returned.\n"+
+      "Directory Path='%v'\nError='%v'\n",
+      dMgr.absolutePath, nonPathError)
   }
+
+  if dirPathDoesExist {
+    return fmt.Errorf(ePrefix+
+      "Error: FAILED TO DELETE DIRECTORY!!\n"+
+      "\nDirectory Path='%v'\n", dMgr.absolutePath)
+  }
+
+  _ = dMgr.DoesPathExist()
+  _ = dMgr.DoesAbsolutePathExist()
 
   return nil
 }
@@ -809,20 +880,35 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
     return errs
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath,ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     errs = append(errs, nonPathError)
     return errs
-
   }
 
   if !dirPathDoesExist {
     err2 =
-      fmt.Errorf(ePrefix +
-        "ERROR: DirMgr Path DOES NOT EXIST!\n" +
-        "DirMgr Path='%v'\n",dMgr.absolutePath)
+      fmt.Errorf(ePrefix+
+        "ERROR: DirMgr Path DOES NOT EXIST!\n"+
+        "DirMgr Path='%v'\n", dMgr.absolutePath)
+    errs = append(errs, err2)
+    return errs
+  }
+
+  if !fInfoPlus.IsDir() {
+    err2 = fmt.Errorf(ePrefix+
+      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
+
     errs = append(errs, err2)
     return errs
   }
@@ -842,7 +928,6 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
     errs = append(errs, err2)
     return errs
   }
-
 
   err3 = nil
   var nameFileInfos []os.FileInfo
@@ -881,7 +966,7 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
             "Error returned by os.Remove(fileName).\n"+
             "dMgr.absolutePath='%v'\nfileName='%v'\nError='%v'\n",
             dMgr.absolutePath,
-            dMgr.absolutePath + osPathSepStr + nameFInfo.Name(),
+            dMgr.absolutePath+osPathSepStr+nameFInfo.Name(),
             err.Error())
 
           errs = append(errs, err2)
@@ -895,9 +980,9 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
     err = dir.Close()
 
     if err != nil {
-      err2 = fmt.Errorf(ePrefix +
-        "Error returned by dir.Close(). An attempt to close the os.File pointer to the current\n" +
-        "DirMgr path has FAILED!\n" +
+      err2 = fmt.Errorf(ePrefix+
+        "Error returned by dir.Close(). An attempt to close the os.File pointer to the current\n"+
+        "DirMgr path has FAILED!\n"+
         "dMgr.absolutePath='%v'\nError='%v'\n",
         dMgr.absolutePath, err.Error())
       errs = append(errs, err2)
@@ -948,8 +1033,15 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
     return errs
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     errs = append(errs, nonPathError)
@@ -958,8 +1050,17 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
 
   if !dirPathDoesExist {
 
-    err2 = fmt.Errorf(ePrefix + "The current DirMgr path DOES NOT EXIST!\n" +
+    err2 = fmt.Errorf(ePrefix+"The current DirMgr path DOES NOT EXIST!\n"+
       "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
+
+    errs = append(errs, err2)
+    return errs
+  }
+
+  if !fInfoPlus.IsDir() {
+    err2 = fmt.Errorf(ePrefix+
+      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
 
     errs = append(errs, err2)
     return errs
@@ -1012,10 +1113,10 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
         dMgr.dataMutex.Unlock()
 
         if err != nil {
-          err2 = fmt.Errorf(ePrefix +
-            "Error returned by os.RemoveAll(subDir)\n" +
+          err2 = fmt.Errorf(ePrefix+
+            "Error returned by os.RemoveAll(subDir)\n"+
             "subDir='%v'\nError='%v'\n",
-            dMgr.absolutePath + osPathSeparatorStr + nameFInfo.Name(), err.Error())
+            dMgr.absolutePath+osPathSeparatorStr+nameFInfo.Name(), err.Error())
 
           errs = append(errs, err2)
 
@@ -1028,7 +1129,7 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
   err = dir.Close()
 
   if err != nil {
-    err2 = fmt.Errorf(ePrefix +
+    err2 = fmt.Errorf(ePrefix+
       "Error returned by dir.Close(). "+
       "dir='%v' Error='%v' ",
       dMgr.absolutePath, err.Error())
@@ -1184,10 +1285,10 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
 //                      array and returned to the caller.
 //
 func (dMgr *DirMgr) DeleteDirectoryTreeFiles(
-  deleteFileSelectionCriteria FileSelectionCriteria ) (numOfSubDirectories,
-                                                       numOfRemainingFiles,
-                                                       numOfDeletedFiles int,
-                                                       errs []error) {
+  deleteFileSelectionCriteria FileSelectionCriteria) (numOfSubDirectories,
+  numOfRemainingFiles,
+  numOfDeletedFiles int,
+  errs []error) {
   ePrefix := "DirMgr.DeleteDirectoryTreeFiles() "
 
   numOfSubDirectories = 0
@@ -1200,49 +1301,68 @@ func (dMgr *DirMgr) DeleteDirectoryTreeFiles(
   if nonPathError != nil {
     errs = append(errs, nonPathError)
 
-    return  numOfSubDirectories,
+    return numOfSubDirectories,
       numOfRemainingFiles,
       numOfDeletedFiles,
       errs
   }
-
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
 
     errs = append(errs, nonPathError)
 
-    return  numOfSubDirectories,
+    return numOfSubDirectories,
       numOfRemainingFiles,
       numOfDeletedFiles,
       errs
   }
 
   if !dirPathDoesExist {
-    nonPathError = fmt.Errorf(ePrefix +
-      "Error: Source DirMgr Path DOES NOT EXIST!\n" +
+    nonPathError = fmt.Errorf(ePrefix+
+      "Error: Source DirMgr Path DOES NOT EXIST!\n"+
       "DirMgr Path='%v'", dMgr.absolutePath)
     errs = append(errs, nonPathError)
 
-    return  numOfSubDirectories,
+    return numOfSubDirectories,
+      numOfRemainingFiles,
+      numOfDeletedFiles,
+      errs
+  }
+
+  if !fInfoPlus.IsDir() {
+    nonPathError = fmt.Errorf(ePrefix+
+      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
+
+    errs = append(errs, nonPathError)
+
+    return numOfSubDirectories,
       numOfRemainingFiles,
       numOfDeletedFiles,
       errs
   }
 
   numOfSubDirectories,
-  numOfRemainingFiles,
-  numOfDeletedFiles,
-  errs = dMgr.deleteDirectoryTreeFiles(
-  true,
-  ePrefix,
-  deleteFileSelectionCriteria)
+    numOfRemainingFiles,
+    numOfDeletedFiles,
+    errs = dMgr.deleteDirectoryTreeFiles(
+    true,
+    ePrefix,
+    deleteFileSelectionCriteria)
 
   return numOfSubDirectories,
-         numOfRemainingFiles,
-         numOfDeletedFiles,
-         errs
+    numOfRemainingFiles,
+    numOfDeletedFiles,
+    errs
 }
 
 // DeleteFilesByNamePattern - Receives a string defining a pattern to use
@@ -1286,12 +1406,19 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
   err = dMgr.IsDirMgrValid(ePrefix)
 
   if err != nil {
-    errs = append(errs,err)
+    errs = append(errs, err)
     return errs
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     errs = append(errs, nonPathError)
@@ -1300,9 +1427,18 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 
   if !dirPathDoesExist {
     err2 =
-      fmt.Errorf(ePrefix +
-        "ERROR: Directory DOES NOT EXIST!\n" +
-        "DirMgr Directory='%v'\n",dMgr.absolutePath)
+      fmt.Errorf(ePrefix+
+        "ERROR: Directory DOES NOT EXIST!\n"+
+        "DirMgr Directory='%v'\n", dMgr.absolutePath)
+
+    errs = append(errs, err2)
+    return errs
+  }
+
+  if !fInfoPlus.IsDir() {
+    err2 = fmt.Errorf(ePrefix+
+      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
 
     errs = append(errs, err2)
     return errs
@@ -1318,14 +1454,14 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
     err2 = errors.New(ePrefix +
       "Error: Input parameter 'fileSearchPattern' is an empty string!")
 
-    errs = append(errs,err2)
+    errs = append(errs, err2)
     return errs
   }
 
   if errCode == -2 {
     err2 = errors.New(ePrefix +
       "Error: Input parameter 'fileSearchPattern' consists of blank spaces!")
-    errs = append(errs,err2)
+    errs = append(errs, err2)
     return errs
   }
 
@@ -1341,7 +1477,7 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
       "Error return by os.Open(dMgr.absolutePath). "+
       "dMgr.absolutePath='%v' Error='%v' ",
       dMgr.absolutePath, err.Error())
-    errs = append(errs,err2)
+    errs = append(errs, err2)
     return errs
   }
 
@@ -1362,7 +1498,7 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
         "dMgr.absolutePath='%v' Error='%v' ",
         dMgr.absolutePath, err3.Error())
 
-      errs = append(errs,err2)
+      errs = append(errs, err2)
       return errs
     }
 
@@ -1383,7 +1519,7 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
             "directorySearched='%v'\nfileSearchPattern='%v' fileName='%v'\nError='%v'\n",
             dMgr.absolutePath, fileSearchPattern, nameFInfo.Name(), err.Error())
 
-          errs = append(errs,err2)
+          errs = append(errs, err2)
           continue
         }
 
@@ -1403,10 +1539,10 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
             err2 = fmt.Errorf(ePrefix+
               "Error returned by os.Remove(pathFileName).\n"+
               "pathFileName='%v'\nError='%v'\n\n",
-              dMgr.absolutePath + osPathSepStr + nameFInfo.Name(),
+              dMgr.absolutePath+osPathSepStr+nameFInfo.Name(),
               err.Error())
 
-            errs = append(errs,err2)
+            errs = append(errs, err2)
             continue
           }
         }
@@ -1421,7 +1557,7 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
       "Error returned by dir.Close().\n"+
       "dir='%v'\nError='%v'\n",
       dMgr.absolutePath, err.Error())
-    errs = append(errs,err2)
+    errs = append(errs, err2)
   }
 
   return errs
@@ -1576,8 +1712,8 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 //
 func (dMgr *DirMgr) DeleteFilesBySelectionCriteria(
   deleteFileSelectionCriteria FileSelectionCriteria) (numOfRemainingFiles,
-                                                      numOfDeletedFiles int,
-                                                      errs []error) {
+  numOfDeletedFiles int,
+  errs []error) {
   ePrefix := "DirMgr.DeleteDirectoryTreeFiles() "
 
   numOfRemainingFiles = 0
@@ -1587,18 +1723,25 @@ func (dMgr *DirMgr) DeleteFilesBySelectionCriteria(
   nonPathError := dMgr.IsDirMgrValid(ePrefix)
 
   if nonPathError != nil {
-    errs = append(errs,nonPathError)
+    errs = append(errs, nonPathError)
 
     return numOfRemainingFiles,
       numOfDeletedFiles,
       errs
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
-    errs = append(errs,nonPathError)
+    errs = append(errs, nonPathError)
 
     return numOfRemainingFiles,
       numOfDeletedFiles,
@@ -1607,10 +1750,22 @@ func (dMgr *DirMgr) DeleteFilesBySelectionCriteria(
 
   if !dirPathDoesExist {
 
-    nonPathError = fmt.Errorf(ePrefix +
-      "Error: Source DirMgr Path DOES NOT EXIST!\n" +
+    nonPathError = fmt.Errorf(ePrefix+
+      "Error: Source DirMgr Path DOES NOT EXIST!\n"+
       "DirMgr Path='%v'\n", dMgr.absolutePath)
-    errs = append(errs,nonPathError)
+    errs = append(errs, nonPathError)
+
+    return numOfRemainingFiles,
+      numOfDeletedFiles,
+      errs
+  }
+
+  if !fInfoPlus.IsDir() {
+    nonPathError = fmt.Errorf(ePrefix+
+      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
+
+    errs = append(errs, nonPathError)
 
     return numOfRemainingFiles,
       numOfDeletedFiles,
@@ -1618,16 +1773,16 @@ func (dMgr *DirMgr) DeleteFilesBySelectionCriteria(
   }
 
   _,
-  numOfRemainingFiles,
-  numOfDeletedFiles,
-  errs = dMgr.deleteDirectoryTreeFiles(
-  false,
-  ePrefix,
-  deleteFileSelectionCriteria)
+    numOfRemainingFiles,
+    numOfDeletedFiles,
+    errs = dMgr.deleteDirectoryTreeFiles(
+    false,
+    ePrefix,
+    deleteFileSelectionCriteria)
 
   return numOfRemainingFiles,
-         numOfDeletedFiles,
-         errs
+    numOfDeletedFiles,
+    errs
 }
 
 // DeleteWalkDirFiles - !!! BE CAREFUL !!! This method deletes files
@@ -1805,8 +1960,15 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(
     return deleteFilesInfo, err
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     return deleteFilesInfo, nonPathError
@@ -1814,9 +1976,17 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(
 
   if !dirPathDoesExist {
     return deleteFilesInfo,
-      fmt.Errorf(ePrefix +
-        "ERROR: DirMgr Path DOES NOT EXIST!\n" +
-        "DirMgr Path='%v'\n",dMgr.absolutePath)
+      fmt.Errorf(ePrefix+
+        "ERROR: DirMgr Path DOES NOT EXIST!\n"+
+        "DirMgr Path='%v'\n", dMgr.absolutePath)
+  }
+
+  if !fInfoPlus.IsDir() {
+    nonPathError = fmt.Errorf(ePrefix+
+      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
+
+    return deleteFilesInfo, nonPathError
   }
 
   deleteFilesInfo.StartPath = dMgr.absolutePath
@@ -1848,8 +2018,15 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(
 //
 func (dMgr *DirMgr) DoesAbsolutePathExist() bool {
 
-  dirPathDoesExist, fInfoPlus, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, "", "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      "",
+      "dMgr.absolutePath")
 
   if nonPathError != nil || !dirPathDoesExist {
     dMgr.doesAbsolutePathExist = false
@@ -1891,9 +2068,15 @@ func (dMgr *DirMgr) DoesDirectoryExist() (doesPathExist, doesAbsolutePathExist b
 // updates the DirMgr field DirMgr.doesPathExist field.
 //
 func (dMgr *DirMgr) DoesPathExist() bool {
-
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.path, "", "dMgr.path")
+  _,
+    dirPathDoesExist,
+    _,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.path,
+      PreProcPathCode.None(),
+      "",
+      "dMgr.path")
 
   if nonPathError != nil || !dirPathDoesExist {
     dMgr.doesPathExist = false
@@ -1923,9 +2106,15 @@ func (dMgr *DirMgr) DoesThisDirectoryExist() (directoryDoesExist bool, nonPathEr
   nonPathError = nil
 
   fInfoPlus := FileInfoPlus{}
-
-  directoryDoesExist, fInfoPlus, nonPathError =
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    directoryDoesExist,
+    fInfoPlus,
+    nonPathError =
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     directoryDoesExist = false
@@ -1942,6 +2131,7 @@ func (dMgr *DirMgr) DoesThisDirectoryExist() (directoryDoesExist bool, nonPathEr
 
   return directoryDoesExist, nonPathError
 }
+
 // Empty - Returns all DirMgr field values to their uninitialized
 // or original zero values.
 func (dMgr *DirMgr) Empty() {
@@ -2007,7 +2197,6 @@ func (dMgr *DirMgr) Equal(dmgr2 *DirMgr) bool {
 // 'dMgr2' are uninitialized, a value of 'false' is returned.
 //
 func (dMgr *DirMgr) EqualAbsPaths(dMgr2 *DirMgr) bool {
-
 
   if !dMgr.isInitialized || !dMgr2.isInitialized {
     return false
@@ -2369,8 +2558,15 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
     return errs
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     errs = append(errs, nonPathError)
@@ -2379,8 +2575,17 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 
   if !dirPathDoesExist {
 
-    err = fmt.Errorf(ePrefix + "The current DirMgr path DOES NOT EXIST!\n" +
+    nonPathError = fmt.Errorf(ePrefix+"The current DirMgr path DOES NOT EXIST!\n"+
       "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
+
+    errs = append(errs, nonPathError)
+    return errs
+  }
+
+  if !fInfoPlus.IsDir() {
+    nonPathError = fmt.Errorf(ePrefix+
+      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
 
     errs = append(errs, nonPathError)
     return errs
@@ -2388,7 +2593,7 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 
   dMgr.dataMutex.Lock()
 
-    dir, err := os.Open(dMgr.absolutePath)
+  dir, err := os.Open(dMgr.absolutePath)
 
   dMgr.dataMutex.Unlock()
 
@@ -2433,7 +2638,7 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 
       _ = dir.Close()
 
-      err2 := fmt.Errorf(ePrefix +
+      err2 := fmt.Errorf(ePrefix+
         "Error returned by fh.FilterFileName(nameFInfo, fileSelectCriteria).\n"+
         "directorySearched='%v'\nfileName='%v'\nError='%v'\n",
         dMgr.absolutePath, nameFInfo.Name(), err.Error())
@@ -2779,7 +2984,6 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
   dirOp.CallingFunc = ePrefix
   errs = make([]error, 0, 300)
 
-
   err := dMgr.IsDirMgrValid(ePrefix)
 
   if err != nil {
@@ -2811,8 +3015,15 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
     return errs
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     errs = append(errs, nonPathError)
@@ -2821,8 +3032,17 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 
   if !dirPathDoesExist {
 
-    err = fmt.Errorf(ePrefix + "The current DirMgr path DOES NOT EXIST!\n" +
+    err = fmt.Errorf(ePrefix+"The current DirMgr path DOES NOT EXIST!\n"+
       "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
+
+    errs = append(errs, err)
+    return errs
+  }
+
+  if !fInfoPlus.IsDir() {
+    err = fmt.Errorf(ePrefix+
+      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
 
     errs = append(errs, err)
     return errs
@@ -2836,9 +3056,9 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
   err = fp.Walk(dMgr.GetAbsolutePath(), dMgr.executeFileOpsOnFoundFiles(&dirOp))
 
   if err != nil {
-    err2 := fmt.Errorf(ePrefix +
+    err2 := fmt.Errorf(ePrefix+
       "Error returned by fp.Walk(). Error='%v' ", err.Error())
-    errs = append(errs, dirOp.ErrReturns ...)
+    errs = append(errs, dirOp.ErrReturns...)
     errs = append(errs, err2)
     return errs
   }
@@ -2913,8 +3133,15 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
         "'fileSearchPattern' is an EMPTY STRING!\n")
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     return FileMgrCollection{}, nonPathError
@@ -2922,9 +3149,16 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
 
   if !dirPathDoesExist {
     return FileMgrCollection{},
-      fmt.Errorf(ePrefix +
-        "DirMgr Path DOES NOT EXIST!\n" +
+      fmt.Errorf(ePrefix+
+        "DirMgr Path DOES NOT EXIST!\n"+
         "DirMgr Path ='%v'\n", dMgr.absolutePath)
+  }
+
+  if !fInfoPlus.IsDir() {
+    return FileMgrCollection{},
+      fmt.Errorf(ePrefix+
+        "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+        "DMgr='%v'\n", dMgr.absolutePath)
   }
 
   dMgr.dataMutex.Lock()
@@ -3166,8 +3400,15 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
     return FileMgrCollection{}, err
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     return FileMgrCollection{}, nonPathError
@@ -3175,9 +3416,16 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 
   if !dirPathDoesExist {
     return FileMgrCollection{},
-      fmt.Errorf(ePrefix +
-        "DirMgr Path DOES NOT EXIST!\n" +
+      fmt.Errorf(ePrefix+
+        "DirMgr Path DOES NOT EXIST!\n"+
         "DirMgr Path ='%v'\n", dMgr.absolutePath)
+  }
+
+  if !fInfoPlus.IsDir() {
+    return FileMgrCollection{},
+      fmt.Errorf(ePrefix+
+        "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+        "DMgr='%v'\n", dMgr.absolutePath)
   }
 
   dMgr.dataMutex.Lock()
@@ -3447,8 +3695,15 @@ func (dMgr *DirMgr) FindWalkDirFiles(
     return findFilesInfo, err
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     return findFilesInfo, nonPathError
@@ -3456,9 +3711,16 @@ func (dMgr *DirMgr) FindWalkDirFiles(
 
   if !dirPathDoesExist {
     return findFilesInfo,
-      fmt.Errorf(ePrefix +
-        "DirMgr Path DOES NOT EXIST!\n" +
+      fmt.Errorf(ePrefix+
+        "DirMgr Path DOES NOT EXIST!\n"+
         "DirMgr Path ='%v'\n", dMgr.absolutePath)
+  }
+
+  if !fInfoPlus.IsDir() {
+    return findFilesInfo,
+      fmt.Errorf(ePrefix+
+        "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+        "DMgr='%v'\n", dMgr.absolutePath)
   }
 
   findFilesInfo.StartPath = dMgr.absolutePath
@@ -3570,8 +3832,15 @@ func (dMgr *DirMgr) GetDirectoryTree() (dirMgrs DirMgrCollection, errs []error) 
     return dirMgrs, errs
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath,ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     errs = append(errs, nonPathError)
@@ -3581,9 +3850,18 @@ func (dMgr *DirMgr) GetDirectoryTree() (dirMgrs DirMgrCollection, errs []error) 
 
   if !dirPathDoesExist {
     err2 =
-      fmt.Errorf(ePrefix +
-        "ERROR: DirMgr Path DOES NOT EXIST!\n" +
-        "DirMgr Path='%v'\n",dMgr.absolutePath)
+      fmt.Errorf(ePrefix+
+        "ERROR: DirMgr Path DOES NOT EXIST!\n"+
+        "DirMgr Path='%v'\n", dMgr.absolutePath)
+    errs = append(errs, err2)
+    return dirMgrs, errs
+  }
+
+  if !fInfoPlus.IsDir() {
+    err2 = fmt.Errorf(ePrefix+
+      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
+
     errs = append(errs, err2)
     return dirMgrs, errs
   }
@@ -3619,7 +3897,7 @@ func (dMgr *DirMgr) GetDirectoryTree() (dirMgrs DirMgrCollection, errs []error) 
 
       if err3 != nil && err3 != io.EOF {
 
-        err2 = fmt.Errorf("\n" + ePrefix+
+        err2 = fmt.Errorf("\n"+ePrefix+
           "Error returned by dir.Readdirnames(-1).\n"+
           "dMgr.absolutePath='%v'\nError='%v'\n",
           dMgr.absolutePath, err3.Error())
@@ -3641,7 +3919,7 @@ func (dMgr *DirMgr) GetDirectoryTree() (dirMgrs DirMgrCollection, errs []error) 
           if err != nil {
 
             err2 =
-              fmt.Errorf("\n" + ePrefix+
+              fmt.Errorf("\n"+ePrefix+
                 "Error returned by dirMgrs.AddDirMgrByPathNameStr(newDirPathFileName). "+
                 "dir='%v' Error='%v' ",
                 newDirPathFileName, err.Error())
@@ -3661,7 +3939,7 @@ func (dMgr *DirMgr) GetDirectoryTree() (dirMgrs DirMgrCollection, errs []error) 
 
       if err != nil {
 
-        err2 = fmt.Errorf("\n" + ePrefix+
+        err2 = fmt.Errorf("\n"+ePrefix+
           "Error returned by dir.Close().\n"+
           "dir='%v'\nError='%v'\n",
           dMgr.absolutePath, err.Error())
@@ -3696,8 +3974,15 @@ func (dMgr *DirMgr) GetFileInfoPlus() (FileInfoPlus, error) {
     return FileInfoPlus{}, err
   }
 
-  dirPathDoesExist, fInfoPlus, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     return FileInfoPlus{}, nonPathError
@@ -3705,8 +3990,15 @@ func (dMgr *DirMgr) GetFileInfoPlus() (FileInfoPlus, error) {
 
   if !dirPathDoesExist {
     return FileInfoPlus{},
-    fmt.Errorf(ePrefix + "DirMgr Path DOES NOT EXIST!\n" +
-      "DirMgr Path='%v'\n", dMgr.absolutePath)
+      fmt.Errorf(ePrefix+"DirMgr Path DOES NOT EXIST!\n"+
+        "DirMgr Path='%v'\n", dMgr.absolutePath)
+  }
+
+  if !fInfoPlus.IsDir() {
+    return FileInfoPlus{},
+      fmt.Errorf(ePrefix+
+        "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+        "DMgr='%v'\n", dMgr.absolutePath)
   }
 
   dMgr.actualDirFileInfo = fInfoPlus.CopyOut()
@@ -3733,8 +4025,15 @@ func (dMgr *DirMgr) GetDirPermissionCodes() (FilePermissionConfig, error) {
     return FilePermissionConfig{}, nonPathError
   }
 
-  dirPathDoesExist, fInfoPlus, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     return FilePermissionConfig{}, nonPathError
@@ -3742,8 +4041,15 @@ func (dMgr *DirMgr) GetDirPermissionCodes() (FilePermissionConfig, error) {
 
   if !dirPathDoesExist {
     return FilePermissionConfig{},
-      fmt.Errorf(ePrefix + "DirMgr Path DOES NOT EXIST!\n" +
+      fmt.Errorf(ePrefix+"DirMgr Path DOES NOT EXIST!\n"+
         "DirMgr Path='%v'\n", dMgr.absolutePath)
+  }
+
+  if !fInfoPlus.IsDir() {
+    return FilePermissionConfig{},
+      fmt.Errorf(ePrefix+
+        "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+        "DMgr='%v'\n", dMgr.absolutePath)
   }
 
   dMgr.actualDirFileInfo = fInfoPlus.CopyOut()
@@ -3986,8 +4292,15 @@ func (dMgr *DirMgr) MakeDirWithPermission(fPermCfg FilePermissionConfig) error {
     return err
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    _,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     return nonPathError
@@ -4027,9 +4340,9 @@ func (dMgr *DirMgr) MakeDirWithPermission(fPermCfg FilePermissionConfig) error {
   dMgr.DoesAbsolutePathExist()
 
   if !dMgr.doesAbsolutePathExist {
-    return fmt.Errorf (ePrefix +
-      "Error: FAILED TO CREATE DIRECTORY!!\n" +
-      "\nDirectory Path='%v'\n",dMgr.absolutePath)
+    return fmt.Errorf(ePrefix+
+      "Error: FAILED TO CREATE DIRECTORY!!\n"+
+      "\nDirectory Path='%v'\n", dMgr.absolutePath)
   }
 
   // No errors - directory created.
@@ -4072,7 +4385,6 @@ func (dMgr *DirMgr) MakeDir() error {
   // No errors - directory created.
   return nil
 }
-
 
 // MoveDirectory - Moves files from the source directory identified
 // by DirMgr to a target directory. The 'move' operation is accomplished
@@ -4266,14 +4578,21 @@ func (dMgr *DirMgr) MoveDirectory(
   err = targetDMgr.IsDirMgrValid(ePrefix)
 
   if err != nil {
-    err2 = fmt.Errorf("Input parameter 'targetDMgr' is INVALID!\n" +
+    err2 = fmt.Errorf("Input parameter 'targetDMgr' is INVALID!\n"+
       "Error='%v'\n", err.Error())
     errs = append(errs, err2)
     return errs
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     errs = append(errs, nonPathError)
@@ -4281,10 +4600,19 @@ func (dMgr *DirMgr) MoveDirectory(
   }
 
   if !dirPathDoesExist {
-    err2 = fmt.Errorf(ePrefix +
-      "Error: Source DirMgr Path DOES NOT EXIST!\n" +
+    err2 = fmt.Errorf(ePrefix+
+      "Error: Source DirMgr Path DOES NOT EXIST!\n"+
       "DirMgr Path='%v'", dMgr.absolutePath)
     errs = append(errs, nonPathError)
+    return errs
+  }
+
+  if !fInfoPlus.IsDir() {
+    err2 = fmt.Errorf(ePrefix+
+      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
+
+    errs = append(errs, err2)
     return errs
   }
 
@@ -4348,7 +4676,7 @@ func (dMgr *DirMgr) MoveDirectory(
       if err != nil {
 
         err2 =
-          fmt.Errorf("\n" + ePrefix+
+          fmt.Errorf("\n"+ePrefix+
             "Error returned by fh.FilterFileName(nameFInfo, fileSelectCriteria). "+
             "directorySearched='%v'\nfileName='%v'\nError='%v'\n",
             dMgr.absolutePath, nameFInfo.Name(), err.Error())
@@ -4371,8 +4699,8 @@ func (dMgr *DirMgr) MoveDirectory(
           err = targetDMgr.MakeDir()
 
           if err != nil {
-            err2 = fmt.Errorf("\n" + ePrefix +
-              "Error creating target directory!\n" +
+            err2 = fmt.Errorf("\n"+ePrefix+
+              "Error creating target directory!\n"+
               "Target Directory='%v'\nError='%v'\n",
               targetDMgr.absolutePath, err.Error())
 
@@ -4391,8 +4719,8 @@ func (dMgr *DirMgr) MoveDirectory(
         err = fh.MoveFile(src, target)
 
         if err != nil {
-          err2 = fmt.Errorf("\n" + ePrefix +
-            "ERROR: fh.MoveFile(src, target)\n" +
+          err2 = fmt.Errorf("\n"+ePrefix+
+            "ERROR: fh.MoveFile(src, target)\n"+
             "src='%v'\ntarget='%v'\nError='%v'\n\n",
             src, target, err.Error())
 
@@ -4408,7 +4736,7 @@ func (dMgr *DirMgr) MoveDirectory(
   err = dir.Close()
 
   if err != nil {
-    err2 = fmt.Errorf(ePrefix +
+    err2 = fmt.Errorf(ePrefix+
       "Error returned by dir.Close(). "+
       "dir='%v' Error='%v' ",
       dMgr.absolutePath, err.Error())
@@ -4473,15 +4801,22 @@ func (dMgr *DirMgr) MoveDirectoryTree(targetDMgr DirMgr) (errs []error) {
   err = targetDMgr.IsDirMgrValid("targetDMgr ")
 
   if err != nil {
-    err2 = fmt.Errorf(ePrefix + "Input parameter targetDMgr is INVALID!\n" +
+    err2 = fmt.Errorf(ePrefix+"Input parameter targetDMgr is INVALID!\n"+
       "Error='%v'", err.Error())
 
     errs = append(errs, err2)
     return errs
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     errs = append(errs, nonPathError)
@@ -4489,27 +4824,36 @@ func (dMgr *DirMgr) MoveDirectoryTree(targetDMgr DirMgr) (errs []error) {
   }
 
   if !dirPathDoesExist {
-    err2 = fmt.Errorf(ePrefix +
-      "Error: Source DirMgr Path DOES NOT EXIST!\n" +
+    err2 = fmt.Errorf(ePrefix+
+      "Error: Source DirMgr Path DOES NOT EXIST!\n"+
       "DirMgr Path='%v'", dMgr.absolutePath)
     errs = append(errs, nonPathError)
     return errs
   }
 
+  if !fInfoPlus.IsDir() {
+    err2 = fmt.Errorf(ePrefix+
+      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
+
+    errs = append(errs, err2)
+    return errs
+  }
+
   fsc := FileSelectionCriteria{}
   errs2 := dMgr.copyDirectoryTree(
-            targetDMgr,
-            true,
-            false,
-            ePrefix,
-            fsc)
+    targetDMgr,
+    true,
+    false,
+    ePrefix,
+    fsc)
 
   if len(errs2) > 0 {
     err2 = fmt.Errorf("Errors occurred while copying directory tree to target directory.\n"+
       "Source Directory='%v'\nTarget Directory='%v'\nErrors Follow:\n\n",
       dMgr.GetAbsolutePath(), targetDMgr.GetAbsolutePath())
     errs = append(errs, err2)
-    errs = append(errs, errs2 ...)
+    errs = append(errs, errs2...)
     return errs
   }
 
@@ -4524,8 +4868,8 @@ func (dMgr *DirMgr) MoveDirectoryTree(targetDMgr DirMgr) (errs []error) {
   dMgr.dataMutex.Unlock()
 
   if err != nil {
-    err2 = fmt.Errorf(ePrefix + "Files were copied successfuly to target directory.\n" +
-      "However, errors occurred while deleting the source directory tree. os.RemoveAll(dMgr.GetAbsolutePath())\n" +
+    err2 = fmt.Errorf(ePrefix+"Files were copied successfuly to target directory.\n"+
+      "However, errors occurred while deleting the source directory tree. os.RemoveAll(dMgr.GetAbsolutePath())\n"+
       "dMgr.GetAbsolutePath() (DirMgr)='%v'\nError='%v'\n",
       dMgr.GetAbsolutePath(), err.Error())
 
@@ -4585,15 +4929,22 @@ func (dMgr *DirMgr) MoveSubDirectoryTree(targetDMgr DirMgr) (errs []error) {
   err = targetDMgr.IsDirMgrValid("targetDMgr ")
 
   if err != nil {
-    err2 = fmt.Errorf(ePrefix + "Input parameter targetDMgr is INVALID!\n" +
+    err2 = fmt.Errorf(ePrefix+"Input parameter targetDMgr is INVALID!\n"+
       "Error='%v'", err.Error())
 
     errs = append(errs, err2)
     return errs
   }
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     errs = append(errs, nonPathError)
@@ -4601,10 +4952,19 @@ func (dMgr *DirMgr) MoveSubDirectoryTree(targetDMgr DirMgr) (errs []error) {
   }
 
   if !dirPathDoesExist {
-    err2 = fmt.Errorf(ePrefix +
-      "Error: Source DirMgr Path DOES NOT EXIST!\n" +
+    err2 = fmt.Errorf(ePrefix+
+      "Error: Source DirMgr Path DOES NOT EXIST!\n"+
       "DirMgr Path='%v'", dMgr.absolutePath)
     errs = append(errs, nonPathError)
+    return errs
+  }
+
+  if !fInfoPlus.IsDir() {
+    err2 = fmt.Errorf(ePrefix+
+      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
+
+    errs = append(errs, err2)
     return errs
   }
 
@@ -4621,7 +4981,7 @@ func (dMgr *DirMgr) MoveSubDirectoryTree(targetDMgr DirMgr) (errs []error) {
       "Source Directory='%v'\nTarget Directory='%v'\nErrors Follow:\n\n",
       dMgr.GetAbsolutePath(), targetDMgr.GetAbsolutePath())
     errs = append(errs, err2)
-    errs = append(errs, errs2 ...)
+    errs = append(errs, errs2...)
     return errs
   }
 
@@ -4632,13 +4992,13 @@ func (dMgr *DirMgr) MoveSubDirectoryTree(targetDMgr DirMgr) (errs []error) {
   errs2 = dMgr.DeleteAllSubDirectories()
 
   if len(errs2) > 0 {
-    err2 = fmt.Errorf(ePrefix + "Files were copied successfuly to target directory.\n" +
-      "However, errors occurred while deleting the sub-directory tree.\n" +
+    err2 = fmt.Errorf(ePrefix+"Files were copied successfuly to target directory.\n"+
+      "However, errors occurred while deleting the sub-directory tree.\n"+
       "Source Directory (DirMgr)='%v'\nErrors Follow:\n\n",
       dMgr.GetAbsolutePath())
 
     errs = append(errs, err2)
-    errs = append(errs, errs2 ...)
+    errs = append(errs, errs2...)
   }
 
   return errs
@@ -4776,6 +5136,8 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
 
   dMgr.Empty()
 
+  dMgr.dataMutex.Lock()
+
   fh := FileHelper{}
 
   err = nil
@@ -4787,12 +5149,14 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
   if errCode == -1 {
     isEmpty = true
     err = errors.New(ePrefix + "Error: Input parameter 'pathStr' is an empty string!")
+    dMgr.dataMutex.Unlock()
     return isEmpty, err
   }
 
   if errCode == -2 {
     isEmpty = true
     err = errors.New(ePrefix + "Error: Input parameter 'pathStr' consists of blank spaces!")
+    dMgr.dataMutex.Unlock()
     return isEmpty, err
   }
 
@@ -4805,6 +5169,7 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
       "Error: INVALID PATH. fh.GetPathFromPathFileName(pathStr) "+
       "pathStr='%v'  Error='%v'", pathStr, err2.Error())
     isEmpty = isEmptyPath
+    dMgr.dataMutex.Unlock()
     return isEmpty, err
   }
 
@@ -4813,6 +5178,7 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
     err = fmt.Errorf(ePrefix+
       "Error: INVALID PATH. 'pathStr' generated an Empty path! pathStr='%v' ",
       pathStr)
+    dMgr.dataMutex.Unlock()
     return isEmpty, err
   }
 
@@ -4823,10 +5189,9 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
       "Error: path returned from fh.GetPathFromPathFileName(pathStr) is EMPTY! "+
       "pathStr='%v'", pathStr)
     isEmpty = true
+    dMgr.dataMutex.Unlock()
     return isEmpty, err
   }
-
-  dMgr.dataMutex.Lock()
 
   dMgr.originalPath = adjustedTrimmedPathStr
 
@@ -4834,14 +5199,39 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
 
   dMgr.isPathPopulated = true
 
-  dMgr.dataMutex.Unlock()
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    fh.doesPathFileExist(
+      dMgr.path,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.path")
 
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.path, ePrefix, "dMgr.path")
+  if nonPathError != nil {
+    dMgr.dataMutex.Unlock()
+    dMgr.Empty()
+    err = nonPathError
+    isEmpty = true
+    return isEmpty, err
+  }
 
-  if nonPathError != nil || !dirPathDoesExist {
+  if !dirPathDoesExist {
     dMgr.doesPathExist = false
+
   } else {
+
+    if !fInfoPlus.IsDir() {
+      dMgr.dataMutex.Unlock()
+      dMgr.Empty()
+      err = fmt.Errorf(ePrefix+
+        "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+        "DMgr='%v'\n", dMgr.absolutePath)
+      isEmpty = true
+      return isEmpty, err
+    }
+
     dMgr.doesPathExist = true
   }
 
@@ -4855,6 +5245,7 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
     dMgr.absolutePath, err2 = fh.MakeAbsolutePath(dMgr.path)
 
     if err2 != nil {
+      dMgr.dataMutex.Unlock()
       dMgr.Empty()
       err = fmt.Errorf(ePrefix+
         "- fh.MakeAbsolutePath(dMgr.path) returned error. dMgr.path='%v' Error='%v'",
@@ -4864,15 +5255,31 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
     }
   }
 
-  dirPathDoesExist, fInfoPlus, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError =
+    fh.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
-  if dirPathDoesExist && nonPathError == nil {
+  if nonPathError != nil {
+    dMgr.dataMutex.Unlock()
+    dMgr.Empty()
+    err = nonPathError
+    isEmpty = true
+    return isEmpty, err
+  }
+
+  if dirPathDoesExist {
 
     if !fInfoPlus.IsDir() {
+      dMgr.dataMutex.Unlock()
       dMgr.Empty()
       err = fmt.Errorf(ePrefix+
-        "- The Directory Manager absolute path exists and IS NOT A DIRECTORY!.\n" +
+        "- The Directory Manager absolute path exists and IS NOT A DIRECTORY!.\n"+
         "DirMgr Path='%v'", dMgr.absolutePath)
       isEmpty = true
       return
@@ -4887,8 +5294,6 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
   }
 
   dMgr.isAbsolutePathPopulated = true
-
-  dMgr.dataMutex.Lock()
 
   strAry := strings.Split(dMgr.absolutePath, string(os.PathSeparator))
   lStr := len(strAry)
@@ -4984,34 +5389,44 @@ func (dMgr *DirMgr) SetPermissions(permissionConfig FilePermissionConfig) error 
 
   err = permissionConfig.IsValid()
 
-  if err != nil{
-    return fmt.Errorf(ePrefix + "Input parameter 'permissionConfig' is INVALID!\n" +
+  if err != nil {
+    return fmt.Errorf(ePrefix+"Input parameter 'permissionConfig' is INVALID!\n"+
       "Error='%v'\n", err.Error())
   }
-
-  dirPathDoesExist, _, nonPathError :=
-    dMgr.doesDirPathExist(dMgr.absolutePath, ePrefix, "dMgr.absolutePath")
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    FileHelper{}.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      "dMgr.absolutePath")
 
   if nonPathError != nil {
     return nonPathError
   }
 
   if !dirPathDoesExist {
-    return fmt.Errorf(ePrefix +
-        "ERROR: DirMgr Path DOES NOT EXIST!\n" +
-        "DirMgr Path='%v'\n",dMgr.absolutePath)
+    return fmt.Errorf(ePrefix+
+      "ERROR: DirMgr Path DOES NOT EXIST!\n"+
+      "DirMgr Path='%v'\n", dMgr.absolutePath)
   }
 
-  fh := FileHelper{}
+  if !fInfoPlus.IsDir() {
+    return fmt.Errorf(ePrefix+
+      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+      "DMgr='%v'\n", dMgr.absolutePath)
+  }
 
   dMgr.dataMutex.Lock()
 
-  err = fh.ChangeFileMode(dMgr.absolutePath, permissionConfig)
+  err = FileHelper{}.ChangeFileMode(dMgr.absolutePath, permissionConfig)
 
   dMgr.dataMutex.Unlock()
 
-  if err != nil{
-    return fmt.Errorf(ePrefix + "Input parameter 'permissionConfig' is INVALID!\n" +
+  if err != nil {
+    return fmt.Errorf(ePrefix+"Input parameter 'permissionConfig' is INVALID!\n"+
       "Error='%v'\n", err.Error())
   }
 
@@ -5061,7 +5476,7 @@ func (dMgr *DirMgr) SubstituteBaseDir(
   idx := strings.Index(thisDirAbsPath, oldBaseAbsPath)
 
   if idx < 0 {
-    err = fmt.Errorf(ePrefix + "The base directory was NOT found in the current DirMgr path!\n" +
+    err = fmt.Errorf(ePrefix+"The base directory was NOT found in the current DirMgr path!\n"+
       "DirMgr Path='%v'\nbaseDir Path='%v'\n",
       thisDirAbsPath, oldBaseAbsPath)
 
@@ -5069,7 +5484,7 @@ func (dMgr *DirMgr) SubstituteBaseDir(
   }
 
   if idx != 0 {
-    err = fmt.Errorf(ePrefix + "The base directory was NOT found at the beginning of the current DirMgr path!\n" +
+    err = fmt.Errorf(ePrefix+"The base directory was NOT found at the beginning of the current DirMgr path!\n"+
       "DirMgr Path='%v'\nbaseDir Path='%v'\n",
       thisDirAbsPath, oldBaseAbsPath)
 
@@ -5091,7 +5506,7 @@ func (dMgr *DirMgr) SubstituteBaseDir(
 
   if isEmpty {
     newDMgr.Empty()
-    err = fmt.Errorf(ePrefix + "ERROR: New generated Directory Path Is Invalid!\n" +
+    err = fmt.Errorf(ePrefix+"ERROR: New generated Directory Path Is Invalid!\n"+
       "newAbsPath='%v'\n", newAbsPath)
     return newDMgr, err
   }
@@ -5114,7 +5529,7 @@ func (dMgr *DirMgr) copyDirectoryTree(
   copyEmptyDirectories bool,
   skipTopLevelDirectory bool,
   errorPrefixLabel string,
-  fileSelectCriteria FileSelectionCriteria) ( errs []error ){
+  fileSelectCriteria FileSelectionCriteria) (errs []error) {
 
   ePrefix := "DirMgr.copyDirectoryTree() "
 
@@ -5166,13 +5581,13 @@ func (dMgr *DirMgr) copyDirectoryTree(
       nextDir, err = dirs.PopFirstDirMgr()
 
       if err != nil && err != io.EOF {
-        err2 = fmt.Errorf(ePrefix +
-          "Error return from #1 dirs.PopFirstDirMgr()\n" +
+        err2 = fmt.Errorf(ePrefix+
+          "Error return from #1 dirs.PopFirstDirMgr()\n"+
           "Error='%v'\n", err.Error())
         errs = append(errs, err2)
         return
 
-      } else if err!= nil {
+      } else if err != nil {
 
         break
       }
@@ -5197,13 +5612,13 @@ func (dMgr *DirMgr) copyDirectoryTree(
 
       if err != nil && err != io.EOF {
 
-        err2 = fmt.Errorf(ePrefix +
-          "Error return from #2 dirs.PopFirstDirMgr()\n" +
+        err2 = fmt.Errorf(ePrefix+
+          "Error return from #2 dirs.PopFirstDirMgr()\n"+
           "Error='%v'\n", err.Error())
         errs = append(errs, err2)
         return
 
-      } else if err!= nil {
+      } else if err != nil {
 
         break
       }
@@ -5219,7 +5634,7 @@ func (dMgr *DirMgr) copyDirectoryTree(
 
     if isTopLevelDir &&
       !skipTopLevelDirectory &&
-       copyEmptyDirectories {
+      copyEmptyDirectories {
 
       err = nextTargetDMgr.MakeDir()
 
@@ -5232,8 +5647,8 @@ func (dMgr *DirMgr) copyDirectoryTree(
     }
 
     if err != nil {
-      err2 = fmt.Errorf("\n" + ePrefix +
-        "Error creating target directory!\n" +
+      err2 = fmt.Errorf("\n"+ePrefix+
+        "Error creating target directory!\n"+
         "Target Directory='%v'\nError='%v'\n",
         nextTargetDMgr.absolutePath, err.Error())
 
@@ -5243,13 +5658,13 @@ func (dMgr *DirMgr) copyDirectoryTree(
 
       if err != nil && err != io.EOF {
 
-        err2 = fmt.Errorf(ePrefix +
-          "Error return from #3 dirs.PopFirstDirMgr()\n" +
+        err2 = fmt.Errorf(ePrefix+
+          "Error return from #3 dirs.PopFirstDirMgr()\n"+
           "Error='%v'\n", err.Error())
         errs = append(errs, err2)
         return
 
-      } else if err!= nil {
+      } else if err != nil {
 
         break
       }
@@ -5265,7 +5680,7 @@ func (dMgr *DirMgr) copyDirectoryTree(
 
       if err3 != nil && err3 != io.EOF {
 
-        err2 = fmt.Errorf("\n" + ePrefix+
+        err2 = fmt.Errorf("\n"+ePrefix+
           "Error returned by dir.Readdirnames(-1). "+
           "dMgr.absolutePath='%v'\nError='%v'\n",
           dMgr.absolutePath, err3.Error())
@@ -5284,10 +5699,10 @@ func (dMgr *DirMgr) copyDirectoryTree(
           if err != nil {
 
             err2 =
-              fmt.Errorf("\n" + ePrefix+
+              fmt.Errorf("\n"+ePrefix+
                 "Error returned by dirs.AddDirMgrByPathNameStr(newDirPathFileName).\n"+
                 "newDirPathFileName='%v'\nError='%v'\n",
-                nextDir.absolutePath + osPathSepStr + nameFInfo.Name(), err.Error())
+                nextDir.absolutePath+osPathSepStr+nameFInfo.Name(), err.Error())
 
             errs = append(errs, err2)
             continue
@@ -5302,66 +5717,66 @@ func (dMgr *DirMgr) copyDirectoryTree(
         } else {
           // This is a file which is eligible for processing
 
-            // This is not a directory. It is a file.
-            // Determine if it matches the find file criteria.
-            isMatch, err =
-              fh.FilterFileName(nameFInfo, fileSelectCriteria)
+          // This is not a directory. It is a file.
+          // Determine if it matches the find file criteria.
+          isMatch, err =
+            fh.FilterFileName(nameFInfo, fileSelectCriteria)
 
-            if err != nil {
+          if err != nil {
 
-              err2 =
-                fmt.Errorf("\n" + ePrefix+
-                  "Error returned by fh.FilterFileName(nameFInfo, fileSelectCriteria). "+
-                  "directorySearched='%v'\nfileName='%v'\nError='%v'\n",
-                  dMgr.absolutePath, nameFInfo.Name(), err.Error())
+            err2 =
+              fmt.Errorf("\n"+ePrefix+
+                "Error returned by fh.FilterFileName(nameFInfo, fileSelectCriteria). "+
+                "directorySearched='%v'\nfileName='%v'\nError='%v'\n",
+                dMgr.absolutePath, nameFInfo.Name(), err.Error())
 
-              errs = append(errs, err2)
+            errs = append(errs, err2)
 
-              continue
-            }
+            continue
+          }
 
-            if !isMatch {
+          if !isMatch {
 
-              continue
+            continue
 
-            } else {
+          } else {
 
-              // We have a match
+            // We have a match
 
-              // Create Directory if needed
-              if !nextTargetDMgr.DoesAbsolutePathExist() {
+            // Create Directory if needed
+            if !nextTargetDMgr.DoesAbsolutePathExist() {
 
-                err = nextTargetDMgr.MakeDir()
-
-                if err != nil {
-                  err2 = fmt.Errorf("\n" + ePrefix +
-                    "Error creating targetFile directory!\n" +
-                    "Target Directory='%v'\nError='%v'\n",
-                    nextTargetDMgr.absolutePath, err.Error())
-
-                  errs = append(errs, err2)
-                  err3 = io.EOF
-                  break
-                }
-              }
-
-              srcFile = nextDir.absolutePath +
-                osPathSepStr + nameFInfo.Name()
-
-              targetFile = nextTargetDMgr.absolutePath +
-                osPathSepStr + nameFInfo.Name()
-
-              err = fh.CopyFileByIo(srcFile, targetFile)
+              err = nextTargetDMgr.MakeDir()
 
               if err != nil {
-                err2 = fmt.Errorf("\n" + ePrefix +
-                  "ERROR: fh.CopyFileByIo(srcFile, targetFile)\n" +
-                  "srcFile='%v'\ntargetFile='%v'\nError='%v'\n\n",
-                  srcFile, targetFile, err.Error())
+                err2 = fmt.Errorf("\n"+ePrefix+
+                  "Error creating targetFile directory!\n"+
+                  "Target Directory='%v'\nError='%v'\n",
+                  nextTargetDMgr.absolutePath, err.Error())
 
                 errs = append(errs, err2)
+                err3 = io.EOF
+                break
               }
             }
+
+            srcFile = nextDir.absolutePath +
+              osPathSepStr + nameFInfo.Name()
+
+            targetFile = nextTargetDMgr.absolutePath +
+              osPathSepStr + nameFInfo.Name()
+
+            err = fh.CopyFileByIo(srcFile, targetFile)
+
+            if err != nil {
+              err2 = fmt.Errorf("\n"+ePrefix+
+                "ERROR: fh.CopyFileByIo(srcFile, targetFile)\n"+
+                "srcFile='%v'\ntargetFile='%v'\nError='%v'\n\n",
+                srcFile, targetFile, err.Error())
+
+              errs = append(errs, err2)
+            }
+          }
         }
       }
     }
@@ -5382,14 +5797,14 @@ func (dMgr *DirMgr) copyDirectoryTree(
     nextDir, err = dirs.PopFirstDirMgr()
     if err != nil && err != io.EOF {
 
-      err2 = fmt.Errorf(ePrefix +
-        "Error return from #4 dirs.PopFirstDirMgr()\n" +
+      err2 = fmt.Errorf(ePrefix+
+        "Error return from #4 dirs.PopFirstDirMgr()\n"+
         "Error='%v'\n", err.Error())
 
       errs = append(errs, err2)
       return
 
-    } else if err!= nil {
+    } else if err != nil {
 
       break
     }
@@ -5414,9 +5829,9 @@ func (dMgr *DirMgr) deleteDirectoryTreeFiles(
   scanSubDirectories bool,
   errorPrefixLabel string,
   deleteFileSelectionCriteria FileSelectionCriteria) (numOfSubDirectories,
-                                             numOfRemainingFiles,
-                                             numOfDeletedFiles int,
-                                             errs []error) {
+  numOfRemainingFiles,
+  numOfDeletedFiles int,
+  errs []error) {
 
   ePrefix := "DirMgr.deleteDirectoryTreeFiles() "
 
@@ -5447,7 +5862,6 @@ func (dMgr *DirMgr) deleteDirectoryTreeFiles(
 
     errs = append(errs, err2)
 
-
     return numOfSubDirectories,
       numOfRemainingFiles,
       numOfDeletedFiles,
@@ -5472,7 +5886,7 @@ func (dMgr *DirMgr) deleteDirectoryTreeFiles(
       nextDir, err = dirs.PopFirstDirMgr()
 
       if err != nil && err != io.EOF {
-        err2 = fmt.Errorf(ePrefix + "Error returned by #1 dirs.PopFirstDirMgr()\n" +
+        err2 = fmt.Errorf(ePrefix+"Error returned by #1 dirs.PopFirstDirMgr()\n"+
           "Error='%v'\n", err.Error())
 
         errs = append(errs, err2)
@@ -5498,7 +5912,7 @@ func (dMgr *DirMgr) deleteDirectoryTreeFiles(
 
       if err3 != nil && err3 != io.EOF {
 
-        err2 = fmt.Errorf("\n" + ePrefix+
+        err2 = fmt.Errorf("\n"+ePrefix+
           "Error returned by dir.Readdirnames(-1). "+
           "dMgr.absolutePath='%v'\nError='%v'\n",
           dMgr.absolutePath, err3.Error())
@@ -5523,15 +5937,14 @@ func (dMgr *DirMgr) deleteDirectoryTreeFiles(
           if err != nil {
 
             err2 =
-              fmt.Errorf("\n" + ePrefix+
+              fmt.Errorf("\n"+ePrefix+
                 "Error returned by dirs.AddDirMgrByPathNameStr(newDirPathFileName).\n"+
                 "newDirPathFileName='%v'\nError='%v'\n",
-                nextDir.absolutePath + osPathSepStr + nameFInfo.Name(), err.Error())
+                nextDir.absolutePath+osPathSepStr+nameFInfo.Name(), err.Error())
 
             errs = append(errs, err2)
             continue
           }
-
 
         } else {
           // This is a file which is eligible for processing
@@ -5546,7 +5959,7 @@ func (dMgr *DirMgr) deleteDirectoryTreeFiles(
           if err != nil {
 
             err2 =
-              fmt.Errorf("\n" + ePrefix+
+              fmt.Errorf("\n"+ePrefix+
                 "Error returned by fh.FilterFileName(nameFInfo, fileSelectCriteria). "+
                 "directorySearched='%v'\nfileName='%v'\nError='%v'\n",
                 dMgr.absolutePath, nameFInfo.Name(), err.Error())
@@ -5567,10 +5980,10 @@ func (dMgr *DirMgr) deleteDirectoryTreeFiles(
             err = os.Remove(nextDir.absolutePath + osPathSepStr + nameFInfo.Name())
 
             if err != nil {
-              err2 = fmt.Errorf("\n" + ePrefix +
-                "ERROR returned by os.Remove(pathFileName)\n" +
+              err2 = fmt.Errorf("\n"+ePrefix+
+                "ERROR returned by os.Remove(pathFileName)\n"+
                 "pathFileName='%v'\nError='%v'\n\n",
-                nextDir.absolutePath + osPathSepStr + nameFInfo.Name(),
+                nextDir.absolutePath+osPathSepStr+nameFInfo.Name(),
                 err.Error())
 
               errs = append(errs, err2)
@@ -5599,7 +6012,7 @@ func (dMgr *DirMgr) deleteDirectoryTreeFiles(
     nextDir, err = dirs.PopFirstDirMgr()
 
     if err != nil && err != io.EOF {
-      err2 = fmt.Errorf(ePrefix + "Error returned by #2 dirs.PopFirstDirMgr()\n" +
+      err2 = fmt.Errorf(ePrefix+"Error returned by #2 dirs.PopFirstDirMgr()\n"+
         "Error='%v'\n", err.Error())
 
       errs = append(errs, err2)
@@ -5626,112 +6039,6 @@ func (dMgr *DirMgr) deleteDirectoryTreeFiles(
     errs
 }
 
-// doesDirPathExist - A helper method which public methods use to determine whether a
-// directory path does or does not exist.
-//
-// This method calls os.Stat(dirPath) which returns an error which is one of two types:
-//     1. A Non-Path Error - An error which is not path related. It signals some other type
-//        of error which makes impossible to determine if the path actually exists. These
-//        types of errors may include access errors so that no existence test could be
-//        performed.
-//
-//            or
-//
-//     2. A Path Error - indicates that the path does not exist.
-//
-// To deal with these types of errors, this method will test path existence up to three times before
-// returning a non-path error.
-//
-func (dMgr *DirMgr) doesDirPathExist(
-  dirPath, errorPrefix, pathTitle string) (pathDoesExist bool,
-                                           fInfo FileInfoPlus,
-                                           nonPathError error) {
-
-  ePrefix := "DirMgr.doesDirPathExist() "
-
-  dMgr.dataMutex.Lock()
-
-  pathDoesExist = false
-  fInfo = FileInfoPlus{}
-  nonPathError = nil
-
-  if len(errorPrefix) > 0 {
-    ePrefix = errorPrefix
-  }
-
-  if len(pathTitle) == 0 {
-    pathTitle = "dirPath"
-  }
-
-  fh := FileHelper{}
-
-  errCode := 0
-
-  errCode, _, dirPath = fh.isStringEmptyOrBlank(dirPath)
-
-  if errCode == -1 {
-    nonPathError = fmt.Errorf(ePrefix +
-      "Error: Input parameter '%v' is an empty string!", pathTitle)
-    dMgr.dataMutex.Unlock()
-    return pathDoesExist, fInfo, nonPathError
-  }
-
-  if errCode == -2 {
-    nonPathError = fmt.Errorf(ePrefix +
-      "Error: Input parameter '%v' consists of blank spaces!", pathTitle)
-    dMgr.dataMutex.Unlock()
-    return pathDoesExist, fInfo, nonPathError
-  }
-
-  var err error
-  var info os.FileInfo
-
-  for i:=0; i < 3; i++ {
-
-    pathDoesExist = false
-    fInfo = FileInfoPlus{}
-    nonPathError = nil
-
-    info, err = os.Stat(dirPath)
-
-    if err != nil {
-
-      if os.IsNotExist(err) {
-
-        pathDoesExist = false
-        fInfo = FileInfoPlus{}
-        nonPathError = nil
-
-        dMgr.dataMutex.Unlock()
-        return pathDoesExist, fInfo, nonPathError
-
-      }
-      // err == nil and err != os.IsNotExist(err)
-      // This is a non-path error. The non-path error will be test
-      // up to 3-times before it is returned.
-      nonPathError = fmt.Errorf(ePrefix+"Non-Path error returned by os.Stat(%v)\n"+
-        "%v='%v'\nError='%v'\n",
-        pathTitle, pathTitle, dirPath, err.Error())
-      fInfo = FileInfoPlus{}
-      pathDoesExist = false
-
-    } else {
-      // err == nil
-      // The path really does exist!
-      pathDoesExist = true
-      nonPathError = nil
-      fInfo = FileInfoPlus{}.NewFromFileInfo(info)
-      dMgr.dataMutex.Unlock()
-      return pathDoesExist, fInfo, nonPathError
-    }
-
-    time.Sleep(30 * time.Millisecond)
-  }
-
-  dMgr.dataMutex.Unlock()
-
-  return pathDoesExist, fInfo, nonPathError
-}
 // executeFileOpsOnFoundFiles - This function is designed to work in conjunction
 // with a walk directory function like FindWalkDirFiles. It will process
 // files extracted from a 'Directory Walk' operation initiated by the
