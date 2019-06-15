@@ -3345,12 +3345,13 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
 func (fMgr *FileMgr) OpenThisFileReadOnly() error {
   ePrefix := "FileMgr.OpenThisFileReadOnly() "
   var err error
+  var filePathDoesExist bool
 
   fMgr.dataMutex.Lock()
 
   fMgrHelpr := fileMgrHelper{}
   filePathDoesExist,
-    err := fMgrHelpr.doesFileMgrPathFileExist(
+    err = fMgrHelpr.doesFileMgrPathFileExist(
     fMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -3751,14 +3752,30 @@ func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (bytesRead int, err error) {
   err = nil
 
   var err2 error
+  var filePathDoesExist bool
 
-  err2 = fMgr.IsFileMgrValid("")
+  fMgr.dataMutex.Lock()
 
-  if err2 != nil {
-    err =
-      fmt.Errorf(ePrefix+
-        "Error: This File Manger is INVALID! fileNameExt='%v'  Error='%v'",
-        fMgr.absolutePathFileName, err2.Error())
+  fMgrHelpr := fileMgrHelper{}
+  filePathDoesExist,
+    err = fMgrHelpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  fMgr.dataMutex.Unlock()
+
+  if err != nil {
+    return bytesRead, err
+  }
+
+  if !filePathDoesExist {
+
+    err = fmt.Errorf(ePrefix+
+      "The file to be opened Reading does not Exist!\n"+
+      "(FileMgr) FileName: %v\n",
+      fMgr.absolutePathFileName)
 
     return bytesRead, err
   }
