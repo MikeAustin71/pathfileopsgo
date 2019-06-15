@@ -3237,7 +3237,17 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
   ePrefix := "FileMgr.OpenThisFile() "
   var err error
 
-  err = fMgr.IsFileMgrValid(ePrefix)
+  fMgr.dataMutex.Lock()
+
+  fMgrHelpr := fileMgrHelper{}
+  _,
+    err = fMgrHelpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  fMgr.dataMutex.Unlock()
 
   if err != nil {
     return err
