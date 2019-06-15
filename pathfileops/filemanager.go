@@ -2075,45 +2075,38 @@ func (fMgr *FileMgr) GetFileExt() string {
 // 	IsDir() bool        // abbreviation for Mode().IsDir()
 // 	Sys() interface{}   // underlying data source (can return nil)
 // }
-func (fMgr *FileMgr) GetFileInfo() (os.FileInfo, error) {
-
-  ePrefix := "FileMgr.GetFileInfo() "
-
-  nonPathError := fMgr.IsFileMgrValid(ePrefix)
-
-  if nonPathError != nil {
-    return nil, nonPathError
-  }
+func (fMgr *FileMgr) GetFileInfo() (fInfo os.FileInfo, err error) {
 
   fMgr.dataMutex.Lock()
 
-  _,
-    filePathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(fMgr.absolutePathFileName,
-      PreProcPathCode.None(), // Take No Pre-Processing Action
-      ePrefix,
-      "fMgr.absolutePathFileName")
+  fInfo = nil
+  err = nil
+  filePathDoesExist := false
+  ePrefix := "FileMgr.GetFileInfo() "
 
-  if nonPathError != nil {
-    fMgr.dataMutex.Unlock()
-    return nil, nonPathError
-  }
+  fMgrHelpr := fileMgrHelper{}
 
-  if filePathDoesExist {
-    fMgr.doesAbsolutePathFileNameExist = true
-    fMgr.actualFileInfo = fInfoPlus.CopyOut()
-    fMgr.dataMutex.Unlock()
-    return fInfoPlus, nil
+  filePathDoesExist,
+    err = fMgrHelpr.doesFileMgrPathFileExist(fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err != nil {
+    fInfo = nil
+  } else if filePathDoesExist {
+    err = nil
+    fInfo = fMgr.actualFileInfo.GetOriginalFileInfo()
+  } else {
+    fInfo = nil
+    err =
+      fmt.Errorf(ePrefix+
+        "The current FileMgr file DOES NOT EXIST!\n"+
+        "File='%v'\n", fMgr.absolutePathFileName)
   }
 
   fMgr.dataMutex.Unlock()
-
-  return nil,
-    fmt.Errorf(ePrefix+
-      "The current FileMgr file DOES NOT EXIST!\n"+
-      "File='%v'\n", fMgr.absolutePathFileName)
+  return fInfo, err
 }
 
 // GetFileInfoPlus - Returns a FileInfoPlus instance containing
@@ -2121,44 +2114,38 @@ func (fMgr *FileMgr) GetFileInfo() (os.FileInfo, error) {
 //
 // An error will be triggered if the file path does NOT exist!
 //
-func (fMgr *FileMgr) GetFileInfoPlus() (FileInfoPlus, error) {
-
-  ePrefix := "FileMgr.GetFileInfoPlus() "
-
-  err := fMgr.IsFileMgrValid(ePrefix)
-
-  if err != nil {
-    return FileInfoPlus{}, err
-  }
+func (fMgr *FileMgr) GetFileInfoPlus() (fInfo FileInfoPlus, err error) {
 
   fMgr.dataMutex.Lock()
 
-  _,
-    filePathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      fMgr.absolutePathFileName,
-      PreProcPathCode.None(), // Do NOT apply any pre-processing on path
-      ePrefix,
-      "fMgr.absolutePathFileName")
+  fInfo = FileInfoPlus{}
+  err = nil
+  ePrefix := "FileMgr.GetFileInfoPlus() "
 
-  if nonPathError != nil {
-    fMgr.dataMutex.Unlock()
-    return FileInfoPlus{}, nonPathError
-  }
+  fMgrHelpr := fileMgrHelper{}
+  filePathDoesExist := false
 
-  if filePathDoesExist {
-    fMgr.doesAbsolutePathFileNameExist = true
-    fMgr.actualFileInfo = fInfoPlus.CopyOut()
-    fMgr.dataMutex.Unlock()
-    return fInfoPlus, nil
+  filePathDoesExist,
+    err = fMgrHelpr.doesFileMgrPathFileExist(fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err != nil {
+    fInfo = FileInfoPlus{}
+  } else if filePathDoesExist {
+    fInfo = fMgr.actualFileInfo.CopyOut()
+    err = nil
+  } else {
+    fInfo = FileInfoPlus{}
+    err = fmt.Errorf(ePrefix+
+      "Error: File Manager file DOES NOT EXIST!\n"+
+      "File='%v'\n", fMgr.absolutePathFileName)
   }
 
   fMgr.dataMutex.Unlock()
-  return FileInfoPlus{}, fmt.Errorf(ePrefix+
-    "Error: File Manager file DOES NOT EXIST!\n"+
-    "File='%v'\n", fMgr.absolutePathFileName)
+
+  return fInfo, err
 }
 
 // GetFileModTime - Returns the time of the last file modification as a
@@ -2487,60 +2474,45 @@ func (fMgr *FileMgr) IsFileExtPopulated() bool {
 //
 // If the current FileMgr is VALID, this method returns 'nil'
 //
-func (fMgr *FileMgr) IsFileMgrValid(errorPrefixStr string) error {
-
-  ePrefix := strings.TrimRight(errorPrefixStr, " ") + "FileMgr.IsFileMgrValid()"
+func (fMgr *FileMgr) IsFileMgrValid(errorPrefixStr string) (err error) {
 
   fMgr.dataMutex.Lock()
 
+  err = nil
+  ePrefix := strings.TrimRight(errorPrefixStr, " ") + "FileMgr.IsFileMgrValid()"
+
   if !fMgr.isInitialized {
-    fMgr.dataMutex.Unlock()
-    return errors.New(ePrefix + " Error: This data structure is NOT initialized.")
-  }
-
-  if !fMgr.isAbsolutePathFileNamePopulated {
-    fMgr.dataMutex.Unlock()
-    return errors.New(ePrefix + " Error: absolutePathFileName is NOT populated/initialized.")
-  }
-
-  if fMgr.absolutePathFileName == "" {
+    err = errors.New(ePrefix + " Error: This data structure is NOT initialized.")
+  } else if fMgr.absolutePathFileName == "" {
     fMgr.isAbsolutePathFileNamePopulated = false
-    fMgr.dataMutex.Unlock()
-    return errors.New(ePrefix + " Error: absolutePathFileName is EMPTY!")
+    err = errors.New(ePrefix + " Error: absolutePathFileName is EMPTY!")
+  } else {
+    err2 := fMgr.dMgr.IsDirMgrValid(ePrefix)
+
+    if err2 != nil {
+      err = fmt.Errorf("FileMgr Directory Manager INVALID\n"+
+        "Error='%v'\n",
+        err2.Error())
+    }
+
   }
 
-  err := fMgr.dMgr.IsDirMgrValid(ePrefix)
-
-  if err != nil {
-    fMgr.dataMutex.Unlock()
-    return fmt.Errorf("FileMgr Directory Manager INVALID - %v", err.Error())
-  }
-
-  _,
-    filePathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      fMgr.absolutePathFileName,
-      PreProcPathCode.None(), // Do NOT apply pre-processing to path
+  if err == nil {
+    fMgrHelpr := fileMgrHelper{}
+    _,
+      err = fMgrHelpr.doesFileMgrPathFileExist(
+      fMgr,
+      PreProcPathCode.None(),
       ePrefix,
       "fMgr.absolutePathFileName")
 
-  if !filePathDoesExist || nonPathError != nil {
-    fMgr.actualFileInfo = FileInfoPlus{}
-    fMgr.doesAbsolutePathFileNameExist = false
-  } else {
-    fMgr.isAbsolutePathFileNamePopulated = true
-    fMgr.doesAbsolutePathFileNameExist = true
-    fMgr.actualFileInfo = fInfoPlus.CopyOut()
+    _ = fMgr.dMgr.DoesPathExist()
+    _ = fMgr.dMgr.DoesAbsolutePathExist()
   }
-
-  _ = fMgr.dMgr.DoesPathExist()
-  _ = fMgr.dMgr.DoesAbsolutePathExist()
 
   fMgr.dataMutex.Unlock()
 
-  return nil
+  return err
 }
 
 // IsFileNameExtPopulated - Returns a boolean value indicating whether both the
