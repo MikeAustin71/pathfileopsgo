@@ -3416,10 +3416,21 @@ func (fMgr *FileMgr) OpenThisFileReadOnly() error {
 //
 func (fMgr *FileMgr) OpenThisFileWriteOnly() error {
   var err error
+  var filePathDoesExist bool
 
   ePrefix := "FileMgr.OpenThisFileWriteOnly() "
 
-  err = fMgr.IsFileMgrValid(ePrefix)
+  fMgr.dataMutex.Lock()
+
+  fMgrHelpr := fileMgrHelper{}
+  filePathDoesExist,
+    err = fMgrHelpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  fMgr.dataMutex.Unlock()
 
   if err != nil {
     return err
@@ -3429,13 +3440,7 @@ func (fMgr *FileMgr) OpenThisFileWriteOnly() error {
     _ = fMgr.CloseThisFile()
   }
 
-  doesFileExist, err := fMgr.DoesThisFileExist()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
-
-  if !doesFileExist {
+  if !filePathDoesExist {
 
     err = fMgr.CreateDirAndFile()
 
