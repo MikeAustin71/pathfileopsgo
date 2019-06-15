@@ -13,17 +13,17 @@ import (
 )
 
 /*
-    'filehelper.go' - Contains type 'FileHelper' and related data structures.
+   'filehelper.go' - Contains type 'FileHelper' and related data structures.
 
-     The 'FileHelper' type provides methods used in managing files and
-     directories.
+    The 'FileHelper' type provides methods used in managing files and
+    directories.
 
-    The Source Repository for this source code file is :
-      https://github.com/MikeAustin71/pathfilego.git
+   The Source Repository for this source code file is :
+     https://github.com/MikeAustin71/pathfilego.git
 
-    'FileHelper' is a dependency of 'DirMgr' and 'FileMgr'. 'FileMgr'
-    is located in source file 'filemanager.go'. 'DirMgr' is located
-    in 'dirmanager.go'.
+   'FileHelper' is a dependency of 'DirMgr' and 'FileMgr'. 'FileMgr'
+   is located in source file 'filemanager.go'. 'DirMgr' is located
+   in 'dirmanager.go'.
 
 
 */
@@ -128,24 +128,24 @@ func (fh FileHelper) AreSameFile(pathFile1, pathFile2 string) (bool, error) {
   var err error
 
   pathFile1,
-  pathFile1DoesExist,
-  fInfoPathFile1,
-  err = fh.doesPathFileExist(pathFile1,
-                             PreProcPathCode.AbsolutePath(),  // Convert To Absolute Path
-                             ePrefix,
-                             "pathFile1")
+    pathFile1DoesExist,
+    fInfoPathFile1,
+    err = fh.doesPathFileExist(pathFile1,
+    PreProcPathCode.AbsolutePath(), // Convert To Absolute Path
+    ePrefix,
+    "pathFile1")
 
   if err != nil {
     return false, err
   }
 
   pathFile2,
-  pathFile2DoesExist,
-  fInfoPathFile2,
-  err = fh.doesPathFileExist(pathFile2,
-                             PreProcPathCode.AbsolutePath(),  // Convert To Absolute Path
-                             ePrefix,
-                             "pathFile2")
+    pathFile2DoesExist,
+    fInfoPathFile2,
+    err = fh.doesPathFileExist(pathFile2,
+    PreProcPathCode.AbsolutePath(), // Convert To Absolute Path
+    ePrefix,
+    "pathFile2")
 
   if err != nil {
     return false, err
@@ -189,46 +189,46 @@ func (fh FileHelper) ChangeFileMode(pathFileName string, filePermission FilePerm
   var filePathDoesExist bool
 
   pathFileName,
-  filePathDoesExist,
-  _,
-  err = fh.doesPathFileExist(
-                              pathFileName,
-                              PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
-                              ePrefix,
-                              "pathFileName")
+    filePathDoesExist,
+    _,
+    err = fh.doesPathFileExist(
+    pathFileName,
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
+    ePrefix,
+    "pathFileName")
 
   if err != nil {
     return err
   }
 
   if !filePathDoesExist {
-    return fmt.Errorf("ERROR: 'pathFileName' DOES NOT EXIST!\n" +
+    return fmt.Errorf("ERROR: 'pathFileName' DOES NOT EXIST!\n"+
       "pathFileName='%v'\n", pathFileName)
   }
 
   err = filePermission.IsValid()
 
   if err != nil {
-    return fmt.Errorf(ePrefix +
-      "ERROR: Input parameter 'filePermission' is INVALID!\n" +
+    return fmt.Errorf(ePrefix+
+      "ERROR: Input parameter 'filePermission' is INVALID!\n"+
       "Error='%v'\n", err.Error())
   }
 
   newOsFileMode, err := filePermission.GetFileMode()
 
   if err != nil {
-    return fmt.Errorf(ePrefix +
+    return fmt.Errorf(ePrefix+
       "Error returned by filePermission.GetFileMode().\nError='%v'\n",
       err.Error())
   }
 
   err = os.Chmod(pathFileName, newOsFileMode)
 
-  if err!= nil {
+  if err != nil {
     changeModeTxt, _ := filePermission.GetPermissionTextCode()
     changeModeValue := filePermission.GetPermissionFileModeValueText()
-    return fmt.Errorf(ePrefix +
-      "Error returned by os.Chmod(pathFileName, newOsFileMode).\n" +
+    return fmt.Errorf(ePrefix+
+      "Error returned by os.Chmod(pathFileName, newOsFileMode).\n"+
       "pathFileName='%v'\nnewOsFileMode Text='%v'\nnewOsFileModeValue='%v'\nError='%v'",
       pathFileName, changeModeTxt, changeModeValue, err.Error())
   }
@@ -254,24 +254,24 @@ func (fh FileHelper) ChangeFileTimes(pathFileName string, newAccessTime, newModT
   pathFileName,
     filePathDoesExist,
     fInfo,
-    err = fh.doesPathFileExist( pathFileName,
-                                PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
-                                ePrefix,
-                                "pathFileName")
+    err = fh.doesPathFileExist(pathFileName,
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
+    ePrefix,
+    "pathFileName")
 
   if err != nil {
     return err
   }
 
   if !filePathDoesExist {
-    return fmt.Errorf(ePrefix +
-      "ERROR: 'pathFileName' DOES NOT EXIST!\n" +
+    return fmt.Errorf(ePrefix+
+      "ERROR: 'pathFileName' DOES NOT EXIST!\n"+
       "pathFileName='%v'\n", pathFileName)
   }
 
   if fInfo.IsDir() {
-    return fmt.Errorf(ePrefix +
-      "ERROR: 'pathFileName' is a directory path and NOT a file!\n" +
+    return fmt.Errorf(ePrefix+
+      "ERROR: 'pathFileName' is a directory path and NOT a file!\n"+
       "pathFileName='%v'\n", pathFileName)
   }
 
@@ -279,24 +279,24 @@ func (fh FileHelper) ChangeFileTimes(pathFileName string, newAccessTime, newModT
 
   if newAccessTime == tDefault {
 
-    return fmt.Errorf(ePrefix +
+    return fmt.Errorf(ePrefix+
       "Error: Input parameter 'newAccessTime' is INVALID!\nnewAccessTime='%v'",
       newAccessTime)
 
   }
 
   if newModTime == tDefault {
-    return fmt.Errorf(ePrefix +
+    return fmt.Errorf(ePrefix+
       "Error: Input parameter 'newModTime' is INVALID!\nnewModTime='%v'",
       newModTime)
   }
 
-  err = os.Chtimes(pathFileName,newAccessTime, newModTime)
+  err = os.Chtimes(pathFileName, newAccessTime, newModTime)
 
   if err != nil {
 
-    return fmt.Errorf(ePrefix +
-      "ERROR returned by os.Chtimes(pathFileName,newAccessTime, newModTime)\n" +
+    return fmt.Errorf(ePrefix+
+      "ERROR returned by os.Chtimes(pathFileName,newAccessTime, newModTime)\n"+
       "newAccessTime='%v'\nnewModTime='%v'\nError='%v'\n",
       newAccessTime.Format("2006-01-02 15:04:05.000000000 -0700 MST"),
       newModTime.Format("2006-01-02 15:04:05.000000000 -0700 MST"),
@@ -365,12 +365,12 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
   var adjustedDirName string
 
   adjustedDirName,
-  pathDoesExist,
-  fInfo,
-  err = fh.doesPathFileExist(dirNameStr,
-                              PreProcPathCode.PathSeparator(), // Convert to os Path Separators
-                              ePrefix,
-                              "dirNameStr")
+    pathDoesExist,
+    fInfo,
+    err = fh.doesPathFileExist(dirNameStr,
+    PreProcPathCode.PathSeparator(), // Convert to os Path Separators
+    ePrefix,
+    "dirNameStr")
 
   if err != nil {
     returnedDirName = ""
@@ -382,12 +382,12 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
 
   osPathSepStr := string(os.PathSeparator)
 
-  if strings.Contains(adjustedDirName, osPathSepStr + osPathSepStr ) {
+  if strings.Contains(adjustedDirName, osPathSepStr+osPathSepStr) {
     returnedDirName = ""
     isEmpty = true
     err = fmt.Errorf(ePrefix+
-      "Error: Invalid Directory string.\n" +
-      "Directory string contains invalid Path Separators.\n" +
+      "Error: Invalid Directory string.\n"+
+      "Directory string contains invalid Path Separators.\n"+
       "adjustedDirName='%v' ",
       adjustedDirName)
     return returnedDirName, isEmpty, err
@@ -397,8 +397,8 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
     returnedDirName = ""
     isEmpty = true
     err = fmt.Errorf(ePrefix+
-      "Error: Invalid Directory string.\n" +
-      "Directory string contains invalid dots.\n" +
+      "Error: Invalid Directory string.\n"+
+      "Directory string contains invalid dots.\n"+
       "adjustedDirName='%v' ",
       adjustedDirName)
     return returnedDirName, isEmpty, err
@@ -407,8 +407,8 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
   absPath, err := fh.MakeAbsolutePath(adjustedDirName)
 
   if err != nil {
-    err = fmt.Errorf(ePrefix + "Error occurred while convert path " +
-      "to absolute path!\n" +
+    err = fmt.Errorf(ePrefix+"Error occurred while convert path "+
+      "to absolute path!\n"+
       "dirPath='%v'\nError='%v'\n",
       adjustedDirName, err.Error())
     returnedDirName = ""
@@ -418,7 +418,7 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
 
   volName := fp.VolumeName(absPath)
 
-  volumeIdx :=  strings.Index(adjustedDirName, volName)
+  volumeIdx := strings.Index(adjustedDirName, volName)
 
   if strings.ToLower(volName) == strings.ToLower(adjustedDirName) {
 
@@ -448,12 +448,12 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
     if fInfo.IsDir() {
 
       // The path exists and it is a directory
-        returnedDirName = adjustedDirName
+      returnedDirName = adjustedDirName
 
     } else {
       // The path exists but it is
       // a File Name and NOT a directory name.
-      adjustedDirName = adjustedDirName[0:lAdjustedDirName - len(fInfo.Name())]
+      adjustedDirName = adjustedDirName[0 : lAdjustedDirName-len(fInfo.Name())]
       lAdjustedDirName = len(adjustedDirName)
 
       if lAdjustedDirName < 1 {
@@ -475,7 +475,7 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
     if returnedDirName[lAdjustedDirName-1] == os.PathSeparator {
       // Last character in path is a Path Separator
 
-      if lAdjustedDirName >=2 &&
+      if lAdjustedDirName >= 2 &&
         returnedDirName[lAdjustedDirName-2] == '.' {
         // The char immediately preceding the Path Separator
         // in the last char position is a dot.
@@ -493,8 +493,8 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
 
     if returnedDirName[0] != '.' &&
       returnedDirName[0] != os.PathSeparator &&
-      volumeIdx == -1   &&
-      !isAbsPath    {
+      volumeIdx == -1 &&
+      !isAbsPath {
 
       // First letter in path is a character
       // Add a leading dot
@@ -502,7 +502,7 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
 
     } else if returnedDirName[0] == os.PathSeparator &&
       volumeIdx == -1 &&
-      !isAbsPath  {
+      !isAbsPath {
 
       returnedDirName = "." + returnedDirName
     }
@@ -524,7 +524,7 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
-      "Error returned by fh." +
+      "Error returned by fh."+
       "GetFirstLastNonSeparatorCharIndexInPathStr(adjustedDirName).\n"+
       "adjustedDirName='%v'\nError='%v'\n",
       adjustedDirName, err2.Error())
@@ -537,7 +537,7 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
 
   if interiorDotPathIdx > firstCharIdx {
     err = fmt.Errorf(ePrefix+
-      "Error: INVALID PATH. Invalid interior relative path detected!\n" +
+      "Error: INVALID PATH. Invalid interior relative path detected!\n"+
       "adjustedDirName='%v'\n",
       adjustedDirName)
     returnedDirName = ""
@@ -548,7 +548,7 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
   slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(adjustedDirName)
 
   if err2 != nil {
-    err = fmt.Errorf("Error returned by fh." +
+    err = fmt.Errorf("Error returned by fh."+
       "GetPathSeparatorIndexesInPathStr(adjustedDirName).\n"+
       "adjusteDirName='%v'\nError='%v'\n",
       adjustedDirName, err2.Error())
@@ -562,7 +562,7 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
   dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(adjustedDirName)
 
   if err2 != nil {
-    err = fmt.Errorf("Error returned by fh." +
+    err = fmt.Errorf("Error returned by fh."+
       "GetDotSeparatorIndexesInPathStr(adjustedDirName).\n"+
       "adjustedDirName='%v'\nError='%v'\n",
       adjustedDirName, err2.Error())
@@ -573,12 +573,12 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
 
   lDotIdxs := len(dotIdxs)
 
-  if lDotIdxs == 0 && lSlashIdxs == 0  && lastCharIdx == -1 {
+  if lDotIdxs == 0 && lSlashIdxs == 0 && lastCharIdx == -1 {
     // Option # 1
     // There are no valid characters in the string
     returnedDirName = ""
 
-  } else if lDotIdxs == 0 && lSlashIdxs== 0 && lastCharIdx > -1 {
+  } else if lDotIdxs == 0 && lSlashIdxs == 0 && lastCharIdx > -1 {
     // Option # 2
     // String consists only of eligible alphanumeric characters
     // "sometextstring"
@@ -646,7 +646,7 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
 
   if returnedDirName[lAdjustedDirName-1] == os.PathSeparator {
     // Last character in path is a Path Separator
-    if lAdjustedDirName >=2 &&
+    if lAdjustedDirName >= 2 &&
       returnedDirName[lAdjustedDirName-2] == '.' {
       // The char immediately preceding the Path Separator
       // is a dot. Keep the path separator
@@ -661,8 +661,8 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
 
   if returnedDirName[0] != '.' &&
     returnedDirName[0] != os.PathSeparator &&
-    volumeIdx == -1   &&
-    !isAbsPath    {
+    volumeIdx == -1 &&
+    !isAbsPath {
 
     // First letter in path is a character
     // Add a leading dot
@@ -670,7 +670,7 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
 
   } else if returnedDirName[0] == os.PathSeparator &&
     volumeIdx == -1 &&
-    !isAbsPath  {
+    !isAbsPath {
 
     returnedDirName = "." + returnedDirName
   }
@@ -719,9 +719,9 @@ func (fh FileHelper) CleanFileNameExtStr(
   var adjustedFileNameExt string
 
   adjustedFileNameExt,
-  pathDoesExist,
-  fInfo,
-  err = fh.doesPathFileExist(fileNameExtStr,
+    pathDoesExist,
+    fInfo,
+    err = fh.doesPathFileExist(fileNameExtStr,
     PreProcPathCode.PathSeparator(), // Convert to os Path Separators
     ePrefix,
     "fileNameExtStr")
@@ -734,20 +734,19 @@ func (fh FileHelper) CleanFileNameExtStr(
 
   osPathSepStr := string(os.PathSeparator)
 
-  if strings.Contains(adjustedFileNameExt, osPathSepStr + osPathSepStr ) {
+  if strings.Contains(adjustedFileNameExt, osPathSepStr+osPathSepStr) {
     returnedFileNameExt = ""
     isEmpty = true
     err = fmt.Errorf(ePrefix+
-      "Error: Invalid Directory string.\n" +
-      "Directory string contains invalid Path Separators.\n" +
+      "Error: Invalid Directory string.\n"+
+      "Directory string contains invalid Path Separators.\n"+
       "adjustedFileNameExt='%v' ",
       adjustedFileNameExt)
     return returnedFileNameExt, isEmpty, err
   }
 
-
   if strings.Contains(adjustedFileNameExt, "...") {
-    err = fmt.Errorf(ePrefix+"Error: Invalid Directory string. Contains invalid dots.\n" +
+    err = fmt.Errorf(ePrefix+"Error: Invalid Directory string. Contains invalid dots.\n"+
       "adjustedFileNameExt='%v'\n", adjustedFileNameExt)
     return
   }
@@ -777,13 +776,12 @@ func (fh FileHelper) CleanFileNameExtStr(
     }
   } // End of if pathDoesExist
 
-
   firstCharIdx, lastCharIdx, err :=
     fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedFileNameExt)
 
   if firstCharIdx == -1 || lastCharIdx == -1 {
-    err = fmt.Errorf(ePrefix+"File Name Extension string contains no " +
-      "valid file name characters!\n" +
+    err = fmt.Errorf(ePrefix+"File Name Extension string contains no "+
+      "valid file name characters!\n"+
       "adjustedFileNameExt='%v'\n",
       adjustedFileNameExt)
     return
@@ -794,8 +792,8 @@ func (fh FileHelper) CleanFileNameExtStr(
   interiorDotPathIdx := strings.LastIndex(adjustedFileNameExt, "."+string(os.PathSeparator))
 
   if interiorDotPathIdx > firstCharIdx {
-    err = fmt.Errorf(ePrefix+"Error: INVALID PATH. " +
-      "Invalid interior relative path detected!\n" +
+    err = fmt.Errorf(ePrefix+"Error: INVALID PATH. "+
+      "Invalid interior relative path detected!\n"+
       "adjustedFileNameExt='%v'\n", adjustedFileNameExt)
     return
   }
@@ -803,8 +801,8 @@ func (fh FileHelper) CleanFileNameExtStr(
   slashIdxs, err := fh.GetPathSeparatorIndexesInPathStr(adjustedFileNameExt)
 
   if err != nil {
-    err = fmt.Errorf(ePrefix+"Error returned from fh.GetPathSeparatorIndexesInPathStr" +
-      "(adjustedFileNameExt).\n" +
+    err = fmt.Errorf(ePrefix+"Error returned from fh.GetPathSeparatorIndexesInPathStr"+
+      "(adjustedFileNameExt).\n"+
       "adustedFileNameExt='%v'\nError='%v'\n",
       adjustedFileNameExt, err.Error())
     return
@@ -822,7 +820,7 @@ func (fh FileHelper) CleanFileNameExtStr(
   dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(adjustedFileNameExt)
 
   if err2 != nil {
-    err = fmt.Errorf("Error returned by fh." +
+    err = fmt.Errorf("Error returned by fh."+
       "GetDotSeparatorIndexesInPathStr(adjustedDirName).\n"+
       "adjustedFileNameExt='%v'\nError='%v'\n",
       adjustedFileNameExt, err2.Error())
@@ -834,11 +832,11 @@ func (fh FileHelper) CleanFileNameExtStr(
   lDotIdxs := len(dotIdxs)
 
   // Option # 1
-  if lDotIdxs == 0 && lSlashIdxs == 0  && lastCharIdx == -1 {
+  if lDotIdxs == 0 && lSlashIdxs == 0 && lastCharIdx == -1 {
     // There are no valid characters in the string
     returnedFileNameExt = ""
 
-  } else if lDotIdxs == 0 && lSlashIdxs== 0 && lastCharIdx > -1 {
+  } else if lDotIdxs == 0 && lSlashIdxs == 0 && lastCharIdx > -1 {
     // Option # 2
     // String consists only of eligible alphanumeric characters
     // "sometextstring"
@@ -854,7 +852,7 @@ func (fh FileHelper) CleanFileNameExtStr(
     // Option # 4
     // strings contains slashes and characters but no dots.
 
-    if  lastCharIdx < slashIdxs[lSlashIdxs-1] {
+    if lastCharIdx < slashIdxs[lSlashIdxs-1] {
       // Example: ../dir1/dir2/
       returnedFileNameExt = ""
     } else {
@@ -1137,24 +1135,24 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
   var srcFInfo FileInfoPlus
 
   src,
-  srcFileDoesExist,
-  srcFInfo,
-  err = fh.doesPathFileExist(src,
-                             PreProcPathCode.AbsolutePath(), // Covert to Absolute Path
-                             ePrefix,
-                             "src")
+    srcFileDoesExist,
+    srcFInfo,
+    err = fh.doesPathFileExist(src,
+    PreProcPathCode.AbsolutePath(), // Covert to Absolute Path
+    ePrefix,
+    "src")
 
   if err != nil {
     return err
   }
 
   dst,
-  dstFileDoesExist,
-  _,
-  err = fh.doesPathFileExist(dst,
-                             PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
-                             ePrefix,
-                             "dst")
+    dstFileDoesExist,
+    _,
+    err = fh.doesPathFileExist(dst,
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
+    ePrefix,
+    "dst")
 
   if err != nil {
     return err
@@ -1163,15 +1161,15 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
   areSameFile, err2 := fh.AreSameFile(src, dst)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix + "Error occurred during path file name comparison.\n" +
+    err = fmt.Errorf(ePrefix+"Error occurred during path file name comparison.\n"+
       "Source File:'%v'\nDestination File:'%v'\nError='%v' ",
       src, dst, err2.Error())
     return err
   }
 
   if areSameFile {
-    err = fmt.Errorf(ePrefix + "Error: The source and destination file" +
-      " are the same - equivalent.\n" +
+    err = fmt.Errorf(ePrefix+"Error: The source and destination file"+
+      " are the same - equivalent.\n"+
       "Source File:'%v'\nDestination File:'%v'\n",
       src, dst)
     return err
@@ -1179,13 +1177,13 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 
   if !srcFileDoesExist {
     err = fmt.Errorf(ePrefix+
-      "Error: Input parameter 'src' file DOES NOT EXIST!\n" +
+      "Error: Input parameter 'src' file DOES NOT EXIST!\n"+
       "src='%v'\n", src)
     return err
   }
 
   if srcFInfo.IsDir() {
-    err = fmt.Errorf(ePrefix + "ERROR: Source File (src) is a 'Directory' NOT A FILE!\n" +
+    err = fmt.Errorf(ePrefix+"ERROR: Source File (src) is a 'Directory' NOT A FILE!\n"+
       "Source File (src)='%v'\n", src)
     return err
   }
@@ -1194,8 +1192,8 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
     // cannot copy non-regular files (e.g., directories,
     // symlinks, devices, etc.)
     err = fmt.Errorf(ePrefix+
-      "Error: Non-regular source file.\n" +
-      "Source File Name='%v'\n" +
+      "Error: Non-regular source file.\n"+
+      "Source File Name='%v'\n"+
       "Source File Mode='%v'\n",
       srcFInfo.Name(), srcFInfo.Mode().String())
     return err
@@ -1218,19 +1216,19 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
     }
 
     dst,
-    dstFileDoesExist,
-    _,
-    err = fh.doesPathFileExist(dst,
-               PreProcPathCode.None(), // Apply no pre-processing conversion to 'dst'
-                              ePrefix,
-                    "dst")
+      dstFileDoesExist,
+      _,
+      err = fh.doesPathFileExist(dst,
+      PreProcPathCode.None(), // Apply no pre-processing conversion to 'dst'
+      ePrefix,
+      "dst")
 
     if err != nil {
       return err
     }
 
     if dstFileDoesExist {
-      err = fmt.Errorf(ePrefix+"Error: Deletion of preexisting " +
+      err = fmt.Errorf(ePrefix+"Error: Deletion of preexisting "+
         "destination file failed!\n"+
         "The copy link operation cannot proceed!\n"+
         "destination file='%v' ", dst)
@@ -1242,7 +1240,7 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
   err2 = os.Link(src, dst)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"- os.Link(src, dst) FAILED!\n" +
+    err = fmt.Errorf(ePrefix+"- os.Link(src, dst) FAILED!\n"+
       "src='%v'\ndst='%v'\nError='%v'\n",
       src, dst, err2.Error())
     return err
@@ -1283,31 +1281,30 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   var srcFInfo FileInfoPlus
 
   src,
-  srcFileDoesExist,
-  srcFInfo,
-  err = fh.doesPathFileExist(src,
-                              PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
-                              ePrefix,
-                              "src")
+    srcFileDoesExist,
+    srcFInfo,
+    err = fh.doesPathFileExist(src,
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
+    ePrefix,
+    "src")
 
   if err != nil {
     return err
   }
 
   if !srcFileDoesExist {
-    err = fmt.Errorf(ePrefix + "Error: Source File DOES NOT EXIST!\n" +
+    err = fmt.Errorf(ePrefix+"Error: Source File DOES NOT EXIST!\n"+
       "src='%v'\n", src)
     return err
   }
 
-
   dst,
-  _,
-  _,
-  err = fh.doesPathFileExist(dst,
-                              PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
-                              ePrefix,
-                              "dst")
+    _,
+    _,
+    err = fh.doesPathFileExist(dst,
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
+    ePrefix,
+    "dst")
 
   if err != nil {
     return err
@@ -1316,22 +1313,22 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   areSameFile, err2 := fh.AreSameFile(src, dst)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix + "Error occurred during path file name comparison.\n" +
+    err = fmt.Errorf(ePrefix+"Error occurred during path file name comparison.\n"+
       "Source File:'%v'\nDestination File:'%v'\nError='%v'\n",
       src, dst, err2.Error())
     return err
   }
 
   if areSameFile {
-    err = fmt.Errorf(ePrefix + "Error: The source and destination file " +
-      "are the same - equivalent.\n" +
+    err = fmt.Errorf(ePrefix+"Error: The source and destination file "+
+      "are the same - equivalent.\n"+
       "Source File:'%v'\nDestination File:'%v'\n",
       src, dst)
     return err
   }
 
   if srcFInfo.IsDir() {
-    err = fmt.Errorf(ePrefix + "Error: Source File is 'Directory' and NOT a file!\n" +
+    err = fmt.Errorf(ePrefix+"Error: Source File is 'Directory' and NOT a file!\n"+
       "Source File='%v'\n", src)
     return err
   }
@@ -1339,7 +1336,7 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   if !srcFInfo.Mode().IsRegular() {
     // cannot copy non-regular files (e.g., directories,
     // symlinks, devices, etc.)
-    err = fmt.Errorf(ePrefix+"Error non-regular source file ='%v'\n" +
+    err = fmt.Errorf(ePrefix+"Error non-regular source file ='%v'\n"+
       "source file Mode='%v'\n",
       srcFInfo.Name(), srcFInfo.Mode().String())
     return err
@@ -1348,7 +1345,6 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   // If the destination file does NOT exist, this is not a problem
   // since it will be created later. If the destination 'Path' does
   // not exist, an error return will be triggered.
-
 
   // Create a new destination file and copy source
   // file contents to the destination file.
@@ -1383,7 +1379,7 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
     _ = in.Close()
     _ = out.Close()
     err = fmt.Errorf(ePrefix+
-      "Error returned from io.Copy(destination, source) \n" +
+      "Error returned from io.Copy(destination, source) \n"+
       "destination='%v'\n"+
       "source='%v'\nError='%v'\n",
       dst, src, err2.Error())
@@ -1397,7 +1393,7 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
     _ = in.Close()
     _ = out.Close()
     err = fmt.Errorf(ePrefix+
-      "Error returned from out.Sync()\n" +
+      "Error returned from out.Sync()\n"+
       "out=destination='%v'\nError='%v'\n",
       dst, err2.Error())
     return
@@ -1462,17 +1458,17 @@ func (fh FileHelper) CreateFile(pathFileName string) (*os.File, error) {
 
   if err != nil {
     return nil,
-    fmt.Errorf(ePrefix +
-      "Error returned by fh.MakeAbsolutePath(pathFileName)\n" +
-      "pathFileName='%v'\nError='%v'\n",
-      pathFileName, err.Error())
+      fmt.Errorf(ePrefix+
+        "Error returned by fh.MakeAbsolutePath(pathFileName)\n"+
+        "pathFileName='%v'\nError='%v'\n",
+        pathFileName, err.Error())
   }
 
   filePtr, err := os.Create(pathFileName)
 
   if err != nil {
     return nil, fmt.Errorf(ePrefix+
-      "Error returned from os.Create(pathFileName)\n" +
+      "Error returned from os.Create(pathFileName)\n"+
       "pathFileName='%v'\nError='%v'\n",
       pathFileName, err.Error())
   }
@@ -1489,11 +1485,11 @@ func (fh FileHelper) DeleteDirFile(pathFile string) error {
   var fileDoesExist bool
   var err error
 
-  pathFile ,fileDoesExist, _, err = fh.doesPathFileExist(
-                                    pathFile,
-                                    PreProcPathCode.AbsolutePath(), // Convert to Absolute File Path
-                                    ePrefix,
-                                    "pathFile")
+  pathFile, fileDoesExist, _, err = fh.doesPathFileExist(
+    pathFile,
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute File Path
+    ePrefix,
+    "pathFile")
 
   if err != nil {
     return err
@@ -1504,13 +1500,11 @@ func (fh FileHelper) DeleteDirFile(pathFile string) error {
     return nil
   }
 
-
-
   err = os.Remove(pathFile)
 
   if err != nil {
-    return fmt.Errorf(ePrefix +
-      "Error returned from os.Remove(pathFile).\n" +
+    return fmt.Errorf(ePrefix+
+      "Error returned from os.Remove(pathFile).\n"+
       "pathFile='%v'\nError='%v'",
       pathFile, err.Error())
   }
@@ -1522,14 +1516,14 @@ func (fh FileHelper) DeleteDirFile(pathFile string) error {
     "pathFile")
 
   if err != nil {
-    return fmt.Errorf("After attempted deletion, file error occurred!\n" +
-      "pathFile='%v'\n" +
+    return fmt.Errorf("After attempted deletion, file error occurred!\n"+
+      "pathFile='%v'\n"+
       "%v", pathFile, err.Error())
   }
 
   if fileDoesExist {
     // File STILL Exists! ERROR!
-    return fmt.Errorf("ERROR: After attempted deletion, file still exists!\n" +
+    return fmt.Errorf("ERROR: After attempted deletion, file still exists!\n"+
       "pathFile='%v'\n", pathFile)
   }
 
@@ -1562,12 +1556,12 @@ func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
   var pathFileDoesExist bool
 
   pathDir,
-  pathFileDoesExist,
-  _,
-  err = fh.doesPathFileExist(pathDir,
-                             PreProcPathCode.AbsolutePath(), // Convert To Absolute Path
-                             ePrefix,
-                             "pathDir")
+    pathFileDoesExist,
+    _,
+    err = fh.doesPathFileExist(pathDir,
+    PreProcPathCode.AbsolutePath(), // Convert To Absolute Path
+    ePrefix,
+    "pathDir")
 
   if err != nil {
     return err
@@ -1582,18 +1576,18 @@ func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
 
   if err != nil {
     return fmt.Errorf(ePrefix+
-      "Error returned by os.RemoveAll(pathDir).\n" +
+      "Error returned by os.RemoveAll(pathDir).\n"+
       "pathDir='%v'\nError='%v'",
       pathDir, err.Error())
   }
 
   pathDir,
-  pathFileDoesExist,
-  _,
-  err = fh.doesPathFileExist(pathDir,
-                             PreProcPathCode.None(), // Apply No Pre-Processing. Take No Action.
-                             ePrefix,
-                             "pathDir")
+    pathFileDoesExist,
+    _,
+    err = fh.doesPathFileExist(pathDir,
+    PreProcPathCode.None(), // Apply No Pre-Processing. Take No Action.
+    ePrefix,
+    "pathDir")
 
   if err != nil {
     return err
@@ -1657,13 +1651,13 @@ func (fh FileHelper) DoesFileInfoExist(
   fInfoPlus := FileInfoPlus{}
 
   pathFileName,
-  doesFInfoExist,
-  fInfoPlus,
-  err = fh.doesPathFileExist(
-          pathFileName,
-          PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
-          ePrefix,
-          "pathFileName")
+    doesFInfoExist,
+    fInfoPlus,
+    err = fh.doesPathFileExist(
+    pathFileName,
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
+    ePrefix,
+    "pathFileName")
 
   if err != nil {
     doesFInfoExist = false
@@ -1711,7 +1705,7 @@ func (fh FileHelper) DoesStringEndWithPathSeparator(pathStr string) bool {
 // with 'access denied' situations.
 //
 func (fh FileHelper) DoesThisFileExist(pathFileName string) (pathFileNameDoesExist bool,
-                                                             nonPathError error) {
+  nonPathError error) {
 
   ePrefix := "FileHelper.DoesThisFileExist() "
   pathFileNameDoesExist = false
@@ -1776,7 +1770,7 @@ func (fh *FileHelper) FilterFileName(
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
-      "Error returned from fh.SearchFilePatternMatch(info, fileSelectionCriteria).\n" +
+      "Error returned from fh.SearchFilePatternMatch(info, fileSelectionCriteria).\n"+
       "info.Name()='%v'\nError='%v'\n", info.Name(), err2.Error())
     isMatchedFile = false
     return
@@ -1785,8 +1779,8 @@ func (fh *FileHelper) FilterFileName(
   isFileOlderThanSet, isFileOlderThanMatch, err2 := fh.SearchFileOlderThan(info, fileSelectionCriteria)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix +
-      "Error returned from dMgr.searchFileOlderThan(info, fileSelectionCriteria)\n" +
+    err = fmt.Errorf(ePrefix+
+      "Error returned from dMgr.searchFileOlderThan(info, fileSelectionCriteria)\n"+
       "fileSelectionCriteria.FilesOlderThan='%v' info.Name()='%v'\nError='%v'\n",
       fileSelectionCriteria.FilesOlderThan, info.Name(), err2.Error())
     isMatchedFile = false
@@ -1796,8 +1790,8 @@ func (fh *FileHelper) FilterFileName(
   isFileNewerThanSet, isFileNewerThanMatch, err2 := fh.SearchFileNewerThan(info, fileSelectionCriteria)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix +
-      "Error returned from dMgr.searchFileNewerThan(info, fileSelectionCriteria).\n" +
+    err = fmt.Errorf(ePrefix+
+      "Error returned from dMgr.searchFileNewerThan(info, fileSelectionCriteria).\n"+
       "fileSelectionCriteria.FilesNewerThan='%v' info.Name()='%v'\nError='%v'\n",
       fileSelectionCriteria.FilesNewerThan, info.Name(), err2.Error())
     isMatchedFile = false
@@ -1806,13 +1800,11 @@ func (fh *FileHelper) FilterFileName(
 
   isFileModeSearchSet, isFileModeSearchMatch, err2 := fh.SearchFileModeMatch(info, fileSelectionCriteria)
 
-
-
   if err2 != nil {
     fileModeTxt := fileSelectionCriteria.SelectByFileMode.GetPermissionFileModeValueText()
     err = fmt.Errorf(ePrefix+
-      "Error returned from dMgr.searchFileModeMatch(info, fileSelectionCriteria).\n" +
-      "fileSelectionCriteria.SelectByFileMode='%v'\n" +
+      "Error returned from dMgr.searchFileModeMatch(info, fileSelectionCriteria).\n"+
+      "fileSelectionCriteria.SelectByFileMode='%v'\n"+
       "info.Name()='%v' Error='%v'\n",
       fileModeTxt,
       info.Name(), err2.Error())
@@ -1931,12 +1923,12 @@ func (fh FileHelper) FindFilesInPath(pathName, fileSearchPattern string) ([]stri
   var errCode int
 
   pathName,
-  pathDoesExist,
-  fInfo,
-  err = fh.doesPathFileExist(pathName,
-           PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
-            ePrefix,
-           "pathName")
+    pathDoesExist,
+    fInfo,
+    err = fh.doesPathFileExist(pathName,
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
+    ePrefix,
+    "pathName")
 
   if err != nil {
     return []string{}, err
@@ -1956,9 +1948,9 @@ func (fh FileHelper) FindFilesInPath(pathName, fileSearchPattern string) ([]stri
         "of blank spaces!\n")
   }
 
-  if!pathDoesExist {
+  if !pathDoesExist {
     return []string{},
-      fmt.Errorf(ePrefix + "Error: Input parameter 'pathName' DOES NOT EXIST!\n" +
+      fmt.Errorf(ePrefix+"Error: Input parameter 'pathName' DOES NOT EXIST!\n"+
         "pathName='%v'\n", pathName)
   }
 
@@ -2452,7 +2444,7 @@ func (fh FileHelper) GetFileExtension(
     ext = ""
     isEmpty = true
     err = fmt.Errorf(ePrefix+
-      "Error returned from fh.GetDotSeparatorIndexesInPathStr(testPathFileNameExt).\n" +
+      "Error returned from fh.GetDotSeparatorIndexesInPathStr(testPathFileNameExt).\n"+
       "testPathFileNameExt='%v'\nError='%v'\n", testPathFileNameExt, err2)
     return ext, isEmpty, err
   }
@@ -2561,12 +2553,12 @@ func (fh FileHelper) GetFileInfo(pathFileName string) (os.FileInfo, error) {
   var err error
 
   pathFileName,
-  pathDoesExist,
-  fInfo,
-  err = fh.doesPathFileExist(pathFileName,
-           PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
-            ePrefix,
-            "pathFileName")
+    pathDoesExist,
+    fInfo,
+    err = fh.doesPathFileExist(pathFileName,
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
+    ePrefix,
+    "pathFileName")
 
   if err != nil {
     return nil, err
@@ -2603,12 +2595,12 @@ func (fh FileHelper) GetFileLastModificationDate(
   var errCode int
 
   pathFileName,
-  pathFileNameDoesExist,
-  fInfo,
-  err = fh.doesPathFileExist(pathFileName,
-           PreProcPathCode.AbsolutePath(), // Skip Convert to Absolute Path
-           ePrefix,
-           "pathFileName")
+    pathFileNameDoesExist,
+    fInfo,
+    err = fh.doesPathFileExist(pathFileName,
+    PreProcPathCode.AbsolutePath(), // Skip Convert to Absolute Path
+    ePrefix,
+    "pathFileName")
 
   if err != nil {
     return zeroTime, "", err
@@ -2616,7 +2608,7 @@ func (fh FileHelper) GetFileLastModificationDate(
 
   if !pathFileNameDoesExist {
     return zeroTime, "",
-      fmt.Errorf(ePrefix + "ERROR: 'pathFileName' DOES NOT EXIST!\n" +
+      fmt.Errorf(ePrefix+"ERROR: 'pathFileName' DOES NOT EXIST!\n"+
         "pathFileName='%v'\n", pathFileName)
   }
 
@@ -2659,8 +2651,8 @@ func (fh FileHelper) GetFileMode(pathFileName string) (FilePermissionConfig, err
 
   if !pathFileNameDoesExist {
     return FilePermissionConfig{},
-      fmt.Errorf(ePrefix +
-        "ERROR: 'pathFileName' DOES NOT EXIST!\n" +
+      fmt.Errorf(ePrefix+
+        "ERROR: 'pathFileName' DOES NOT EXIST!\n"+
         "pathFileName='%v'\n", pathFileName)
   }
 
@@ -2668,8 +2660,8 @@ func (fh FileHelper) GetFileMode(pathFileName string) (FilePermissionConfig, err
 
   if err != nil {
     return FilePermissionConfig{},
-      fmt.Errorf(ePrefix +
-        "Error returned by FilePermissionConfig{}.NewByFileMode(fInfo.Mode()).\n" +
+      fmt.Errorf(ePrefix+
+        "Error returned by FilePermissionConfig{}.NewByFileMode(fInfo.Mode()).\n"+
         "fInfo.Mode()='%v'\nError='%v'\n",
         fInfo.Mode(), err.Error())
   }
@@ -3305,7 +3297,7 @@ func (fh FileHelper) GetPathFromPathFileName(
   testPathStr, isDirEmpty, err2 := fh.CleanDirStr(pathFileNameExt)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error returned by fh.CleanDirStr(pathFileNameExt).\n" +
+    err = fmt.Errorf(ePrefix+"Error returned by fh.CleanDirStr(pathFileNameExt).\n"+
       "pathFileNameExt='%v'\nError='%v'\n",
       pathFileNameExt, err2.Error())
     return dirPath, isEmpty, err
@@ -3331,7 +3323,7 @@ func (fh FileHelper) GetPathFromPathFileName(
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
-      "Error returned by fh.GetPathSeparatorIndexesInPathStr(testPathStr).\n" +
+      "Error returned by fh.GetPathSeparatorIndexesInPathStr(testPathStr).\n"+
       "testPathStr='%v'\nError='%v'\n",
       testPathStr, err2.Error())
     return dirPath, isEmpty, err
@@ -3344,7 +3336,7 @@ func (fh FileHelper) GetPathFromPathFileName(
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
-      "Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr(" +
+      "Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr("+
       "testPathStr).\n"+
       "testPathStr='%v'\nError='%v'\n",
       testPathStr, err2.Error())
@@ -3373,7 +3365,7 @@ func (fh FileHelper) GetPathFromPathFileName(
 
   } else if strings.Contains(testPathStr, "...") {
 
-    err = fmt.Errorf(ePrefix+"Error: PATH CONTAINS INVALID Dot Characters!\n" +
+    err = fmt.Errorf(ePrefix+"Error: PATH CONTAINS INVALID Dot Characters!\n"+
       "testPathStr='%v'\n", testPathStr)
     return dirPath, isEmpty, err
 
@@ -3382,13 +3374,13 @@ func (fh FileHelper) GetPathFromPathFileName(
     absPath, err2 := fh.MakeAbsolutePath(testPathStr)
 
     if err2 != nil {
-      err = fmt.Errorf(ePrefix+"Error returned from fh.MakeAbsolutePath(testPathStr).\n" +
+      err = fmt.Errorf(ePrefix+"Error returned from fh.MakeAbsolutePath(testPathStr).\n"+
         "testPathStr='%v'\nError='%v'\n", testPathStr, err2.Error())
       return dirPath, isEmpty, err
     }
 
     if absPath == "" {
-      err = fmt.Errorf(ePrefix+"Error: Could not convert 'testPathStr' to Absolute path!\n" +
+      err = fmt.Errorf(ePrefix+"Error: Could not convert 'testPathStr' to Absolute path!\n"+
         "testPathStr='%v'\n",
         testPathStr)
       return dirPath, isEmpty, err
@@ -3422,7 +3414,7 @@ func (fh FileHelper) GetPathFromPathFileName(
     finalPathStr = testPathStr
 
   } else {
-    err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING.\n" +
+    err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING.\n"+
       "testPathStr='%v'\n", testPathStr)
     return dirPath, isEmpty, err
   }
@@ -3581,8 +3573,8 @@ func (fh FileHelper) IsAbsolutePath(pathStr string) bool {
 //
 func (fh FileHelper) IsPathFileString(
   pathFileStr string) (pathFileType PathFileTypeCode,
-                       absolutePathFile string,
-                       err error) {
+  absolutePathFile string,
+  err error) {
 
   ePrefix := "FileHelper.IsPathFileString() "
 
@@ -3595,9 +3587,9 @@ func (fh FileHelper) IsPathFileString(
   var correctedPathFileStr string
 
   correctedPathFileStr,
-  pathFileDoesExist,
-  fInfo,
-  err = fh.doesPathFileExist(pathFileStr,
+    pathFileDoesExist,
+    fInfo,
+    err = fh.doesPathFileExist(pathFileStr,
     PreProcPathCode.PathSeparator(), // Convert Path Separators to os default Path Separators
     ePrefix,
     "pathFileStr")
@@ -3606,23 +3598,22 @@ func (fh FileHelper) IsPathFileString(
     return pathFileType, absolutePathFile, err
   }
 
-
   if strings.Contains(correctedPathFileStr, "...") {
     pathFileType = PathFileType.None()
     absolutePathFile = ""
-    err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING!\n" +
+    err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING!\n"+
       "pathFileStr='%v'\n", correctedPathFileStr)
     return pathFileType, absolutePathFile, err
   }
 
   osPathSepStr := string(os.PathSeparator)
 
-  if strings.Contains(correctedPathFileStr, osPathSepStr + osPathSepStr ) {
+  if strings.Contains(correctedPathFileStr, osPathSepStr+osPathSepStr) {
     pathFileType = PathFileType.None()
     absolutePathFile = ""
     err = fmt.Errorf(ePrefix+
-      "Error: Invalid Path File string.\n" +
-      "Path File string contains invalid Path Separators.\n" +
+      "Error: Invalid Path File string.\n"+
+      "Path File string contains invalid Path Separators.\n"+
       "pathFileStr='%v' ",
       correctedPathFileStr)
     return pathFileType, absolutePathFile, err
@@ -3661,7 +3652,6 @@ func (fh FileHelper) IsPathFileString(
 
       err = nil
 
-
     } else {
 
       pathFileType = PathFileType.PathFile()
@@ -3685,7 +3675,7 @@ func (fh FileHelper) IsPathFileString(
     absolutePathFile = ""
     err = fmt.Errorf(ePrefix+
       "Error returned from fh.GetFirstLastNonSeparatorCharIndexInPathStr"+
-      "(correctedPathFileStr)\n" +
+      "(correctedPathFileStr)\n"+
       "correctedPathFileStr='%v'\nError='%v'\n",
       correctedPathFileStr, err2.Error())
     return pathFileType, absolutePathFile, err
@@ -3697,7 +3687,7 @@ func (fh FileHelper) IsPathFileString(
     pathFileType = PathFileType.None()
     absolutePathFile = ""
     err = fmt.Errorf(ePrefix+
-      "Error: INVALID PATH. Invalid interior relative path detected!\n" +
+      "Error: INVALID PATH. Invalid interior relative path detected!\n"+
       "correctedPathFileStr='%v'\n",
       correctedPathFileStr)
     return pathFileType, absolutePathFile, err
@@ -3731,15 +3721,15 @@ func (fh FileHelper) IsPathFileString(
 
   lSlashIdxs := len(slashIdxs)
 
-  if lDotIdxs == 0 && lSlashIdxs == 0  && lastCharIdx == -1 {
+  if lDotIdxs == 0 && lSlashIdxs == 0 && lastCharIdx == -1 {
     // Option # 1
     // There are no valid characters in the string
     pathFileType = PathFileType.None()
     absolutePathFile = ""
-    err = fmt.Errorf(ePrefix + "No valid characters in parameter 'pathFileStr'\n" +
+    err = fmt.Errorf(ePrefix+"No valid characters in parameter 'pathFileStr'\n"+
       "pathFileStr='%v'\n", correctedPathFileStr)
 
-  } else if lDotIdxs == 0 && lSlashIdxs== 0 && lastCharIdx > -1 {
+  } else if lDotIdxs == 0 && lSlashIdxs == 0 && lastCharIdx > -1 {
     // Option # 2
     // String consists only of eligible alphanumeric characters
     // "sometextstring"
@@ -3760,8 +3750,8 @@ func (fh FileHelper) IsPathFileString(
     if lSlashIdxs > 1 {
       pathFileType = PathFileType.None()
       absolutePathFile = ""
-      err = fmt.Errorf(ePrefix + "Invalid parameter 'pathFileStr'!\n" +
-        "'pathFileStr' consists entirely of path separators!" +
+      err = fmt.Errorf(ePrefix+"Invalid parameter 'pathFileStr'!\n"+
+        "'pathFileStr' consists entirely of path separators!"+
         "pathFileStr='%v'\n", correctedPathFileStr)
     } else {
       // lSlashIdxs must be '1'
@@ -3867,85 +3857,85 @@ func (fh FileHelper) IsPathFileString(
 
   return pathFileType, absolutePathFile, err
 
-/*
-  if lSlashIdxs == 0 &&
-    lDotIdxs > 0 {
-    // This is a string of alpha numeric characters which
-    // does NOT contain a path separator, but Does contain
-    // a dot separator.
-    // Example "someFileName.txt"
-    // Let's call it a file
-    absolutePathFile = testAbsPathFileStr
+  /*
+     if lSlashIdxs == 0 &&
+       lDotIdxs > 0 {
+       // This is a string of alpha numeric characters which
+       // does NOT contain a path separator, but Does contain
+       // a dot separator.
+       // Example "someFileName.txt"
+       // Let's call it a file
+       absolutePathFile = testAbsPathFileStr
 
-    // Call it a file!
-    // Example: "somefilename"
-    pathFileType = PathFileType.File()
-    err = nil
-    return pathFileType, absolutePathFile, err
+       // Call it a file!
+       // Example: "somefilename"
+       pathFileType = PathFileType.File()
+       err = nil
+       return pathFileType, absolutePathFile, err
 
-  }
+     }
 
-  if lSlashIdxs == 0 &&
-    lDotIdxs == 0 {
+     if lSlashIdxs == 0 &&
+       lDotIdxs == 0 {
 
-    // the string has no dots and no path separators.
-    absolutePathFile = testAbsPathFileStr
+       // the string has no dots and no path separators.
+       absolutePathFile = testAbsPathFileStr
 
-    // Call it a file!
-    // Example: "somefilename"
-    pathFileType = PathFileType.File()
-    err = nil
-    return pathFileType, absolutePathFile, err
-  }
+       // Call it a file!
+       // Example: "somefilename"
+       pathFileType = PathFileType.File()
+       err = nil
+       return pathFileType, absolutePathFile, err
+     }
 
-  if lSlashIdxs > 0 &&
-    lDotIdxs == 0 {
+     if lSlashIdxs > 0 &&
+       lDotIdxs == 0 {
 
-    // string contains one or more path separators, but no dots (aka periods)
-    absolutePathFile = testAbsPathFileStr
+       // string contains one or more path separators, but no dots (aka periods)
+       absolutePathFile = testAbsPathFileStr
 
-    if lastCharIdx > slashIdxs[lSlashIdxs-1] {
-      // Example D:\dir1\dir2\xray
-      // It could be a file or a path. We simply
-      // can't tell.
-      pathFileType = PathFileType.Indeterminate()
+       if lastCharIdx > slashIdxs[lSlashIdxs-1] {
+         // Example D:\dir1\dir2\xray
+         // It could be a file or a path. We simply
+         // can't tell.
+         pathFileType = PathFileType.Indeterminate()
 
-      err = nil
-      return pathFileType, absolutePathFile, err
-    }
+         err = nil
+         return pathFileType, absolutePathFile, err
+       }
 
-    // lastCharIdx <= slashIdxs[lSlashIdxs-1]
-    // Call it a Path (aka Directory)
-    pathFileType = PathFileType.Path()
-    err = nil
-    return pathFileType, absolutePathFile, err
-  }
+       // lastCharIdx <= slashIdxs[lSlashIdxs-1]
+       // Call it a Path (aka Directory)
+       pathFileType = PathFileType.Path()
+       err = nil
+       return pathFileType, absolutePathFile, err
+     }
 
-  // We know that the test string contains both path separators and
-  // dot separators ('.')
+     // We know that the test string contains both path separators and
+     // dot separators ('.')
 
-  if dotIdxs[lDotIdxs-1] > slashIdxs[lSlashIdxs-1] &&
-    lastCharIdx > slashIdxs[lSlashIdxs-1] {
+     if dotIdxs[lDotIdxs-1] > slashIdxs[lSlashIdxs-1] &&
+       lastCharIdx > slashIdxs[lSlashIdxs-1] {
 
-    // Example D:\dir1\dir2\xray.txt
-    absolutePathFile = testAbsPathFileStr
+       // Example D:\dir1\dir2\xray.txt
+       absolutePathFile = testAbsPathFileStr
 
-    // Call this a path file name
-    pathFileType = PathFileType.PathFile()
-    err = nil
-    return pathFileType, absolutePathFile, err
-  }
+       // Call this a path file name
+       pathFileType = PathFileType.PathFile()
+       err = nil
+       return pathFileType, absolutePathFile, err
+     }
 
-  // Cannot be certain of the result.
-  // String doesn't conform to any standard pattern for
-  // a file or a path. Don't know for sure what this string is
+     // Cannot be certain of the result.
+     // String doesn't conform to any standard pattern for
+     // a file or a path. Don't know for sure what this string is
 
-  absolutePathFile = testAbsPathFileStr
+     absolutePathFile = testAbsPathFileStr
 
-  pathFileType = PathFileType.None()
-  err = errors.New(ePrefix + "Unknown string type!")
-  return pathFileType, absolutePathFile, err
- */
+     pathFileType = PathFileType.None()
+     err = errors.New(ePrefix + "Unknown string type!")
+     return pathFileType, absolutePathFile, err
+  */
 
 }
 
@@ -4226,13 +4216,13 @@ func (fh FileHelper) MakeDirAllPerm(dirPath string, permission FilePermissionCon
   errCode, _, dirPath = fh.isStringEmptyOrBlank(dirPath)
 
   if errCode == -1 {
-    return  errors.New(ePrefix +
-        "Error: Input parameter 'dirPath' is an empty string!")
+    return errors.New(ePrefix +
+      "Error: Input parameter 'dirPath' is an empty string!")
   }
 
   if errCode == -2 {
     return errors.New(ePrefix +
-        "Error: Input parameter 'dirPath' consists of blank spaces!")
+      "Error: Input parameter 'dirPath' consists of blank spaces!")
   }
 
   err2 := permission.IsValid()
@@ -4252,7 +4242,7 @@ func (fh FileHelper) MakeDirAllPerm(dirPath string, permission FilePermissionCon
   dirPath, err2 = fh.MakeAbsolutePath(dirPath)
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix + "Error returned by fh.MakeAbsolutePath(dirPath).\n" +
+    return fmt.Errorf(ePrefix+"Error returned by fh.MakeAbsolutePath(dirPath).\n"+
       "dirPath='%v'\nError='%v'\n",
       dirPath, err2.Error())
   }
@@ -4268,9 +4258,9 @@ func (fh FileHelper) MakeDirAllPerm(dirPath string, permission FilePermissionCon
   var pathDoesExist bool
 
   _,
-  pathDoesExist,
-  _,
-  err2 = fh.doesPathFileExist(dirPath,
+    pathDoesExist,
+    _,
+    err2 = fh.doesPathFileExist(dirPath,
     PreProcPathCode.None(), // Take no Pre-Processing Action
     ePrefix,
     "dirPath")
@@ -4315,7 +4305,7 @@ func (fh FileHelper) MakeDirPerm(dirPath string, permission FilePermissionConfig
   errCode, _, dirPath = fh.isStringEmptyOrBlank(dirPath)
 
   if errCode == -1 {
-    return  errors.New(ePrefix +
+    return errors.New(ePrefix +
       "Error: Input parameter 'dirPath' is an empty string!\n")
   }
 
@@ -4341,7 +4331,7 @@ func (fh FileHelper) MakeDirPerm(dirPath string, permission FilePermissionConfig
   dirPath, err2 = fh.MakeAbsolutePath(dirPath)
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix + "Error returned by fh.MakeAbsolutePath(dirPath).\n" +
+    return fmt.Errorf(ePrefix+"Error returned by fh.MakeAbsolutePath(dirPath).\n"+
       "dirPath='%v'\nError='%v'\n", dirPath, err2.Error())
   }
 
@@ -4400,44 +4390,44 @@ func (fh FileHelper) MoveFile(src, dst string) error {
   var srcFInfo, dstFInfo FileInfoPlus
 
   src,
-  srcFileDoesExist,
-  srcFInfo,
-  err = fh.doesPathFileExist(src,
-           PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
-           ePrefix,
-           "src")
+    srcFileDoesExist,
+    srcFInfo,
+    err = fh.doesPathFileExist(src,
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
+    ePrefix,
+    "src")
 
   if err != nil {
     return err
   }
 
   if !srcFileDoesExist {
-    return fmt.Errorf(ePrefix+"Error: Input parameter " +
-      "'src' file DOES NOT EXIST!\n" +
+    return fmt.Errorf(ePrefix+"Error: Input parameter "+
+      "'src' file DOES NOT EXIST!\n"+
       "src='%v'\n", src)
   }
 
   if srcFInfo.IsDir() {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'src' " +
-      "exists and it is directory NOT a file!\n" +
+    return fmt.Errorf(ePrefix+"Error: Input parameter 'src' "+
+      "exists and it is directory NOT a file!\n"+
       "src='%v'\n", src)
   }
 
   dst,
-  dstFileDoesExist,
-  dstFInfo,
-  err = fh.doesPathFileExist(dst,
-           PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
-           ePrefix,
-           "dst")
+    dstFileDoesExist,
+    dstFInfo,
+    err = fh.doesPathFileExist(dst,
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
+    ePrefix,
+    "dst")
 
   if err != nil {
     return err
   }
 
   if dstFileDoesExist && dstFInfo.IsDir() {
-    return fmt.Errorf(ePrefix + "Error: Input parameter 'dst' does exist,\n" +
-      "but it a 'directory' and NOT a File!\n" +
+    return fmt.Errorf(ePrefix+"Error: Input parameter 'dst' does exist,\n"+
+      "but it a 'directory' and NOT a File!\n"+
       "dst='%v'\n", dst)
   }
 
@@ -4450,8 +4440,8 @@ func (fh FileHelper) MoveFile(src, dst string) error {
   if err != nil {
     // Copy Operation Failed. Return an error
     // and DO NOT delete the source file!
-    return fmt.Errorf(ePrefix +
-      "Error: Copy operation FAILED!\n" +
+    return fmt.Errorf(ePrefix+
+      "Error: Copy operation FAILED!\n"+
       "Source File='%v'\nDestination File='%v'\nError='%v'\n",
       src, dst, err.Error())
   }
@@ -4460,21 +4450,21 @@ func (fh FileHelper) MoveFile(src, dst string) error {
   // Now, verify that destination file exists.
 
   _,
-  dstFileDoesExist,
-  _,
-  err = fh.doesPathFileExist(dst,
-        PreProcPathCode.None(), // Take no Pre-Processing action
-        ePrefix,
-        "dst")
+    dstFileDoesExist,
+    _,
+    err = fh.doesPathFileExist(dst,
+    PreProcPathCode.None(), // Take no Pre-Processing action
+    ePrefix,
+    "dst")
 
   if err != nil {
     return err
   }
 
   if !dstFileDoesExist {
-    return fmt.Errorf(ePrefix + "Error: After Copy Operation, destination file " +
-      "DOES NOT EXIST!\n" +
-      "Therefore, the copy operation FAILED! Source file was NOT deleted.\n" +
+    return fmt.Errorf(ePrefix+"Error: After Copy Operation, destination file "+
+      "DOES NOT EXIST!\n"+
+      "Therefore, the copy operation FAILED! Source file was NOT deleted.\n"+
       "destination file='%v'\n", dst)
   }
 
@@ -4483,25 +4473,25 @@ func (fh FileHelper) MoveFile(src, dst string) error {
   err = os.Remove(src)
 
   if err != nil {
-    return fmt.Errorf(ePrefix +
-      "Copy operation succeeded, but attempted deletion of source file FAILED!\n" +
+    return fmt.Errorf(ePrefix+
+      "Copy operation succeeded, but attempted deletion of source file FAILED!\n"+
       "Source File='%v'\n", src)
   }
 
   _,
-  srcFileDoesExist,
-  _,
-  err = fh.doesPathFileExist(src,
-           PreProcPathCode.None(), // Take No Pre-Processing Action
-           ePrefix,
-           "src")
+    srcFileDoesExist,
+    _,
+    err = fh.doesPathFileExist(src,
+    PreProcPathCode.None(), // Take No Pre-Processing Action
+    ePrefix,
+    "src")
 
   if err != nil {
     return err
   }
 
   if srcFileDoesExist {
-    return fmt.Errorf("Verification Error: File 'src' still exists!\n" +
+    return fmt.Errorf("Verification Error: File 'src' still exists!\n"+
       "src='%v'\n", src)
   }
 
@@ -4576,7 +4566,6 @@ func (fh FileHelper) OpenDirectory(
   directoryPath string,
   createDir bool) (*os.File, error) {
 
-
   ePrefix := "FileHelper.OpenDirectory() "
   var err error
   var directoryPathDoesExist bool
@@ -4586,9 +4575,9 @@ func (fh FileHelper) OpenDirectory(
     directoryPathDoesExist,
     dirPathFInfo,
     err = fh.doesPathFileExist(directoryPath,
-             PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
-              ePrefix,
-              "directoryPath")
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
+    ePrefix,
+    "directoryPath")
 
   if err != nil {
     return nil, err
@@ -4598,7 +4587,7 @@ func (fh FileHelper) OpenDirectory(
 
     if !createDir {
       return nil,
-        fmt.Errorf(ePrefix + "Error 'directoryPath' DOES NOT EXIST!\n" +
+        fmt.Errorf(ePrefix+"Error 'directoryPath' DOES NOT EXIST!\n"+
           "directoryPath='%v'\n", directoryPath)
     }
 
@@ -4608,31 +4597,31 @@ func (fh FileHelper) OpenDirectory(
 
     if err != nil {
       return nil,
-        fmt.Errorf(ePrefix + "ERROR: Attmpted creation of 'directoryPath' FAILED!\n" +
+        fmt.Errorf(ePrefix+"ERROR: Attmpted creation of 'directoryPath' FAILED!\n"+
           "directoryPath='%v'\nError='%v'\n", directoryPath, err.Error())
     }
 
     // Verify that the directory exists and get
     // the associated file info object.
     _,
-    directoryPathDoesExist,
-    dirPathFInfo,
-    err = fh.doesPathFileExist(directoryPath,
+      directoryPathDoesExist,
+      dirPathFInfo,
+      err = fh.doesPathFileExist(directoryPath,
       PreProcPathCode.None(), // Take No Pre-Processing Action
       ePrefix,
       "directoryPath")
 
     if err != nil {
-      return nil, fmt.Errorf(ePrefix + "Error occurred verifying existance of " +
+      return nil, fmt.Errorf(ePrefix+"Error occurred verifying existance of "+
         "newly created 'directoryPath'!\n"+
         "Non-Path error returned by os.Stat(directoryPath)\ndirectoryPath='%v'\nError='%v'\n",
         directoryPath, err.Error())
     }
 
     if !directoryPathDoesExist {
-      return nil, fmt.Errorf(ePrefix + "Error: Verification of newly created " +
-        "directoryPath FAILED!\n" +
-        "'directoryPath' DOES NOT EXIST!\n" +
+      return nil, fmt.Errorf(ePrefix+"Error: Verification of newly created "+
+        "directoryPath FAILED!\n"+
+        "'directoryPath' DOES NOT EXIST!\n"+
         "directoryPath='%v'\n", directoryPath)
     }
 
@@ -4640,7 +4629,7 @@ func (fh FileHelper) OpenDirectory(
 
   if !dirPathFInfo.IsDir() {
     return nil,
-      fmt.Errorf(ePrefix + "ERROR: Input Paramter 'directoryPath' is NOT a directory!\n" +
+      fmt.Errorf(ePrefix+"ERROR: Input Paramter 'directoryPath' is NOT a directory!\n"+
         "directoryPath='%v'\n", directoryPath)
   }
 
@@ -4648,7 +4637,7 @@ func (fh FileHelper) OpenDirectory(
 
   if err != nil {
     return nil,
-      fmt.Errorf(ePrefix + "File Open Error: %v\n" +
+      fmt.Errorf(ePrefix+"File Open Error: %v\n"+
         "directoryPath='%v'\n",
         err.Error(), directoryPath)
   }
@@ -4659,8 +4648,7 @@ func (fh FileHelper) OpenDirectory(
   }
 
   return filePtr, nil
- }
-
+}
 
 // OpenFile - wrapper for os.OpenFile. This method may be used to open or
 // create files depending on the File Open and File Permission parameters.
@@ -4724,21 +4712,21 @@ func (fh FileHelper) OpenFile(
   var fInfoPlus FileInfoPlus
 
   pathFileName,
-  pathFileNameDoesExist,
-  fInfoPlus,
-  err = fh.doesPathFileExist(
-           pathFileName,
-           PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
-           ePrefix,
-           "pathFileName")
+    pathFileNameDoesExist,
+    fInfoPlus,
+    err = fh.doesPathFileExist(
+    pathFileName,
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
+    ePrefix,
+    "pathFileName")
 
   if err != nil {
     return nil, err
   }
 
   if !pathFileNameDoesExist {
-    err = fmt.Errorf(ePrefix +
-      "ERROR: Input parameter 'pathFileName' DOES NOT EXIST!\n" +
+    err = fmt.Errorf(ePrefix+
+      "ERROR: Input parameter 'pathFileName' DOES NOT EXIST!\n"+
       "pathFileName='%v'\n", pathFileName)
 
     return filePtr, err
@@ -4746,8 +4734,8 @@ func (fh FileHelper) OpenFile(
 
   if fInfoPlus.IsDir() {
     err =
-      fmt.Errorf(ePrefix + "ERROR: Input parameter 'pathFileName' is " +
-        "a 'Directory' - NOT a file!\n" +
+      fmt.Errorf(ePrefix+"ERROR: Input parameter 'pathFileName' is "+
+        "a 'Directory' - NOT a file!\n"+
         "pathFileName='%v'\n", pathFileName)
 
     return filePtr, err
@@ -4756,7 +4744,7 @@ func (fh FileHelper) OpenFile(
   err2 := fileOpenCfg.IsValid()
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Input Parameter 'fileOpenCfg' is INVALID!\n" +
+    err = fmt.Errorf(ePrefix+"Input Parameter 'fileOpenCfg' is INVALID!\n"+
       "Error='%v'", err2.Error())
     return filePtr, err
   }
@@ -4764,14 +4752,14 @@ func (fh FileHelper) OpenFile(
   fOpenCode, err2 := fileOpenCfg.GetCompositeFileOpenCode()
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix + "%v", err2.Error())
+    err = fmt.Errorf(ePrefix+"%v", err2.Error())
     return filePtr, err
   }
 
   err2 = filePermissionCfg.IsValid()
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Input Parameter 'filePermissionCfg' is INVALID!\n" +
+    err = fmt.Errorf(ePrefix+"Input Parameter 'filePermissionCfg' is INVALID!\n"+
       "Error='%v'\n", err2.Error())
     return filePtr, err
   }
@@ -4779,7 +4767,7 @@ func (fh FileHelper) OpenFile(
   fileMode, err2 := filePermissionCfg.GetCompositePermissionMode()
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix + "%v", err2.Error())
+    err = fmt.Errorf(ePrefix+"%v", err2.Error())
     return filePtr, err
   }
 
@@ -4855,43 +4843,43 @@ func (fh FileHelper) OpenFileReadOnly(pathFileName string) (filePtr *os.File, er
   var fInfoPlus FileInfoPlus
 
   pathFileName,
-  pathFileNameDoesExist,
-  fInfoPlus,
-  err = fh.doesPathFileExist(
-             pathFileName,
-             PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
-              ePrefix,
-              "pathFileName")
+    pathFileNameDoesExist,
+    fInfoPlus,
+    err = fh.doesPathFileExist(
+    pathFileName,
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
+    ePrefix,
+    "pathFileName")
 
   if err != nil {
     return filePtr, err
   }
 
   if !pathFileNameDoesExist {
-    err = fmt.Errorf(ePrefix +
-      "ERROR: The input parameter 'pathFileName' DOES NOT EXIST!\n" +
+    err = fmt.Errorf(ePrefix+
+      "ERROR: The input parameter 'pathFileName' DOES NOT EXIST!\n"+
       "pathFileName='%v'\n", pathFileName)
     return filePtr, err
   }
 
   if fInfoPlus.IsDir() {
-    err = fmt.Errorf(ePrefix +
-      "ERROR: The input parameter 'pathFileName' is a 'Directory' " +
-      "and NOT a path file name.\n" +
-      "'pathFileName' is therefore INVALID!\n" +
+    err = fmt.Errorf(ePrefix+
+      "ERROR: The input parameter 'pathFileName' is a 'Directory' "+
+      "and NOT a path file name.\n"+
+      "'pathFileName' is therefore INVALID!\n"+
       "pathFileName='%v'\n", pathFileName)
 
     return filePtr, err
   }
 
   fileOpenCfg, err2 := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
-                         FOpenMode.ModeNone())
+    FOpenMode.ModeNone())
 
   if err2 != nil {
     err =
-      fmt.Errorf(ePrefix +
-        "Error returned by FileOpenConfig{}.New(FOpenType.TypeReadOnly()," +
-        "FOpenMode.ModeNone()).\n" +
+      fmt.Errorf(ePrefix+
+        "Error returned by FileOpenConfig{}.New(FOpenType.TypeReadOnly(),"+
+        "FOpenMode.ModeNone()).\n"+
         "Error='%v'\n",
         err2.Error())
     return filePtr, err
@@ -4900,18 +4888,18 @@ func (fh FileHelper) OpenFileReadOnly(pathFileName string) (filePtr *os.File, er
   fOpenCode, err2 := fileOpenCfg.GetCompositeFileOpenCode()
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix + "Error Creating File Open Code.\n" +
+    err = fmt.Errorf(ePrefix+"Error Creating File Open Code.\n"+
       "Error=%v\n",
       err2.Error())
     return filePtr, err
   }
 
-  fPermCfg, err2:= FilePermissionConfig{}.New("-r--r--r--")
+  fPermCfg, err2 := FilePermissionConfig{}.New("-r--r--r--")
 
   if err2 != nil {
     err =
-      fmt.Errorf(ePrefix +
-        "Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n" +
+      fmt.Errorf(ePrefix+
+        "Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n"+
         "Error='%v'\n", err2.Error())
     return filePtr, err
   }
@@ -4919,7 +4907,7 @@ func (fh FileHelper) OpenFileReadOnly(pathFileName string) (filePtr *os.File, er
   fileMode, err2 := fPermCfg.GetCompositePermissionMode()
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix + "Error Creating File Mode Code.\n" +
+    err = fmt.Errorf(ePrefix+"Error Creating File Mode Code.\n"+
       "Error=%v\n",
       err2.Error())
 
@@ -4929,7 +4917,7 @@ func (fh FileHelper) OpenFileReadOnly(pathFileName string) (filePtr *os.File, er
   filePtr, err2 = os.OpenFile(pathFileName, fOpenCode, fileMode)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix + "File Open Error: %v\n" +
+    err = fmt.Errorf(ePrefix+"File Open Error: %v\n"+
       "pathFileName='%v'", err2.Error(), pathFileName)
     filePtr = nil
     return filePtr, err
@@ -5024,10 +5012,10 @@ func (fh FileHelper) OpenFileReadWrite(
     pathFileNameDoesExist,
     fInfoPlus,
     err = fh.doesPathFileExist(
-          pathFileName,
-          PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
-          ePrefix,
-          "pathFileName")
+    pathFileName,
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
+    ePrefix,
+    "pathFileName")
 
   if err != nil {
     return nil, err
@@ -5043,9 +5031,9 @@ func (fh FileHelper) OpenFileReadWrite(
 
     if err != nil {
       return nil,
-        fmt.Errorf(ePrefix +
-          "Error returned by FileOpenConfig{}.New(FOpenType.TypeWriteOnly()," +
-          "FOpenMode.ModeCreate(), FOpenMode.ModeAppend()).\n" +
+        fmt.Errorf(ePrefix+
+          "Error returned by FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),"+
+          "FOpenMode.ModeCreate(), FOpenMode.ModeAppend()).\n"+
           "Error='%v'\n",
           err.Error())
     }
@@ -5055,8 +5043,8 @@ func (fh FileHelper) OpenFileReadWrite(
 
     if fInfoPlus.IsDir() {
       return nil,
-        fmt.Errorf(ePrefix + "ERROR: Input parameter 'pathFileName' is " +
-          "a 'Directory' NOT a file.\n" +
+        fmt.Errorf(ePrefix+"ERROR: Input parameter 'pathFileName' is "+
+          "a 'Directory' NOT a file.\n"+
           "pathFileName='%v'\n", pathFileName)
     }
 
@@ -5067,9 +5055,9 @@ func (fh FileHelper) OpenFileReadWrite(
 
       if err != nil {
         return nil,
-          fmt.Errorf(ePrefix +
-            "Error returned by FileOpenConfig{}.New(FOpenType.TypeReadWrite()," +
-            "FOpenMode.ModeTruncate()).\n" +
+          fmt.Errorf(ePrefix+
+            "Error returned by FileOpenConfig{}.New(FOpenType.TypeReadWrite(),"+
+            "FOpenMode.ModeTruncate()).\n"+
             "Error='%v'\n",
             err.Error())
       }
@@ -5081,9 +5069,9 @@ func (fh FileHelper) OpenFileReadWrite(
 
       if err != nil {
         return nil,
-          fmt.Errorf(ePrefix +
-            "Error returned by FileOpenConfig{}.New(FOpenType.TypeReadWrite()," +
-            "FOpenMode.ModeAppend()).\n" +
+          fmt.Errorf(ePrefix+
+            "Error returned by FileOpenConfig{}.New(FOpenType.TypeReadWrite(),"+
+            "FOpenMode.ModeAppend()).\n"+
             "Error='%v'\n",
             err.Error())
       }
@@ -5094,35 +5082,35 @@ func (fh FileHelper) OpenFileReadWrite(
 
   if err != nil {
     return nil,
-      fmt.Errorf(ePrefix + "%v", err.Error())
+      fmt.Errorf(ePrefix+"%v", err.Error())
   }
 
   fPermCfg, err := FilePermissionConfig{}.New("-rwxrwxrwx")
 
   if err != nil {
     return nil,
-    fmt.Errorf(ePrefix +
-      "Error returned by FilePermissionConfig{}.New(\"-rwxrwxrwx\")\n" +
-      "Error='%v'\n", err.Error())
+      fmt.Errorf(ePrefix+
+        "Error returned by FilePermissionConfig{}.New(\"-rwxrwxrwx\")\n"+
+        "Error='%v'\n", err.Error())
   }
 
   fileMode, err := fPermCfg.GetCompositePermissionMode()
 
   if err != nil {
-    return nil, fmt.Errorf(ePrefix + "%v\n", err.Error())
+    return nil, fmt.Errorf(ePrefix+"%v\n", err.Error())
   }
 
   fPtr, err = os.OpenFile(pathFileName, fOpenCode, fileMode)
 
   if err != nil {
-    return nil, fmt.Errorf(ePrefix + "File Open Error\n" +
+    return nil, fmt.Errorf(ePrefix+"File Open Error\n"+
       "pathFileName='%v'\nError='%v'\n",
       pathFileName, err.Error())
   }
 
   if fPtr == nil {
-    return nil, fmt.Errorf(ePrefix +
-      "ERROR: os.OpenFile() returned a 'nil' file pointer!\n" +
+    return nil, fmt.Errorf(ePrefix+
+      "ERROR: os.OpenFile() returned a 'nil' file pointer!\n"+
       "pathFileName='%v'\n", pathFileName)
   }
 
@@ -5200,13 +5188,13 @@ func (fh FileHelper) OpenFileWriteOnly(
   var fInfoPlus FileInfoPlus
 
   pathFileName,
-  pathFileNameDoesExist,
-  fInfoPlus,
-  err = fh.doesPathFileExist(
-             pathFileName,
-             PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
-             ePrefix,
-             "pathFileName")
+    pathFileNameDoesExist,
+    fInfoPlus,
+    err = fh.doesPathFileExist(
+    pathFileName,
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
+    ePrefix,
+    "pathFileName")
 
   if err != nil {
     return nil, err
@@ -5222,8 +5210,8 @@ func (fh FileHelper) OpenFileWriteOnly(
 
     if err != nil {
       return nil,
-        fmt.Errorf(ePrefix +
-          "Error returned by FileOpenConfig{}.New(FOpenType.TypeWriteOnly()," +
+        fmt.Errorf(ePrefix+
+          "Error returned by FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),"+
           "FOpenMode.ModeCreate(), FOpenMode.ModeAppend()).\nError='%v'\n",
           err.Error())
     }
@@ -5233,8 +5221,8 @@ func (fh FileHelper) OpenFileWriteOnly(
 
     if fInfoPlus.IsDir() {
       return nil,
-        fmt.Errorf(ePrefix + "ERROR: Input parameter 'pathFileName' is " +
-          "a 'Directory' NOT a file.\n" +
+        fmt.Errorf(ePrefix+"ERROR: Input parameter 'pathFileName' is "+
+          "a 'Directory' NOT a file.\n"+
           "pathFileName='%v'\n", pathFileName)
     }
 
@@ -5245,8 +5233,8 @@ func (fh FileHelper) OpenFileWriteOnly(
 
       if err != nil {
         return nil,
-          fmt.Errorf(ePrefix +
-            "Error returned by FileOpenConfig{}.New(FOpenType.TypeWriteOnly()," +
+          fmt.Errorf(ePrefix+
+            "Error returned by FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),"+
             "FOpenMode.ModeTruncate()).\nError='%v'\n",
             err.Error())
       }
@@ -5258,8 +5246,8 @@ func (fh FileHelper) OpenFileWriteOnly(
 
       if err != nil {
         return nil,
-          fmt.Errorf(ePrefix +
-            "Error returned by FileOpenConfig{}.New(FOpenType.TypeWriteOnly()," +
+          fmt.Errorf(ePrefix+
+            "Error returned by FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),"+
             "FOpenMode.ModeAppend()).\nError='%v'\n",
             err.Error())
       }
@@ -5270,7 +5258,7 @@ func (fh FileHelper) OpenFileWriteOnly(
 
   if err != nil {
     return nil,
-      fmt.Errorf(ePrefix +
+      fmt.Errorf(ePrefix+
         "Error creating File Open Code.\nError=%v\n", err.Error())
   }
 
@@ -5278,23 +5266,23 @@ func (fh FileHelper) OpenFileWriteOnly(
 
   if err != nil {
     return nil,
-      fmt.Errorf(ePrefix +
-        "Error returned by FilePermissionConfig{}.New(\"-rwxrwxrwx\")\n" +
+      fmt.Errorf(ePrefix+
+        "Error returned by FilePermissionConfig{}.New(\"-rwxrwxrwx\")\n"+
         "Error='%v' \n", err.Error())
   }
 
   fileMode, err := fPermCfg.GetCompositePermissionMode()
 
   if err != nil {
-    return nil, fmt.Errorf(ePrefix +
+    return nil, fmt.Errorf(ePrefix+
       "Error creating file mode code.\nError=%v\n", err.Error())
   }
 
   fPtr, err = os.OpenFile(pathFileName, fOpenCode, fileMode)
 
   if err != nil {
-    return nil, fmt.Errorf(ePrefix +
-      "Error returned from os.OpenFile().\n" +
+    return nil, fmt.Errorf(ePrefix+
+      "Error returned from os.OpenFile().\n"+
       "pathFileName='%v'\nError='%v'\n",
       pathFileName, err.Error())
   }
@@ -5361,7 +5349,7 @@ func (fh *FileHelper) SearchFileModeMatch(
   if err2 != nil {
     ePrefix := "FileHelper.SearchFileModeMatch() "
 
-    err = fmt.Errorf(ePrefix + "SelectByFileMode is INVALID!\n" +
+    err = fmt.Errorf(ePrefix+"SelectByFileMode is INVALID!\n"+
       "Error='%v'\n", err2.Error())
     return isFileModeSet, isFileModeMatch, err
   }
@@ -5498,7 +5486,7 @@ func (fh *FileHelper) SearchFilePatternMatch(
     if err2 != nil {
       isPatternSet = true
       err = fmt.Errorf(ePrefix+
-        "Error returned from filepath.Match(fileSelectCriteria.FileNamePatterns[i], " +
+        "Error returned from filepath.Match(fileSelectCriteria.FileNamePatterns[i], "+
         "info.Name())\nfileSelectCriteria.FileNamePatterns[i]='%v'\ninfo.Name()='%v'\nError='%v'\n",
         fileSelectCriteria.FileNamePatterns[i], info.Name(), err2.Error())
       isPatternMatch = false
@@ -5606,11 +5594,9 @@ func (fh FileHelper) SwapBasePath(
   return newBasePath + targetPath[oldBaseLen:], nil
 }
 
-
 /*
   FileHelper private methods
 */
-
 
 // doesPathFileExist - A helper method which public methods use to determine whether a
 // path and file does or does not exist.
@@ -5635,11 +5621,11 @@ func (fh FileHelper) doesPathFileExist(
   preProcessCode PreProcessPathCode,
   errorPrefix string,
   filePathTitle string) (absFilePath string,
-                         filePathDoesExist bool,
-                         fInfo FileInfoPlus,
-                         nonPathError error) {
+  filePathDoesExist bool,
+  fInfo FileInfoPlus,
+  nonPathError error) {
 
-  ePrefix := "DirMgr.doesDirPathExist() "
+  ePrefix := "FileHelper.doesDirPathExist() "
 
   absFilePath = ""
   filePathDoesExist = false
@@ -5659,22 +5645,22 @@ func (fh FileHelper) doesPathFileExist(
   errCode, _, filePath = fh.isStringEmptyOrBlank(filePath)
 
   if errCode == -1 {
-    nonPathError = fmt.Errorf(ePrefix +
+    nonPathError = fmt.Errorf(ePrefix+
       "Error: Input parameter '%v' is an empty string!", filePathTitle)
     return absFilePath, filePathDoesExist, fInfo, nonPathError
   }
 
   if errCode == -2 {
-    nonPathError = fmt.Errorf(ePrefix +
+    nonPathError = fmt.Errorf(ePrefix+
       "Error: Input parameter '%v' consists of blank spaces!", filePathTitle)
-    return absFilePath,filePathDoesExist, fInfo, nonPathError
+    return absFilePath, filePathDoesExist, fInfo, nonPathError
   }
 
   var err error
 
   if preProcessCode == PreProcPathCode.PathSeparator() {
 
-    absFilePath =  fh.AdjustPathSlash(filePath)
+    absFilePath = fh.AdjustPathSlash(filePath)
 
   } else if preProcessCode == PreProcPathCode.AbsolutePath() {
 
@@ -5682,20 +5668,18 @@ func (fh FileHelper) doesPathFileExist(
 
     if err != nil {
       absFilePath = ""
-      nonPathError = fmt.Errorf(ePrefix + "fh.MakeAbsolutePath() FAILED!\n" +
+      nonPathError = fmt.Errorf(ePrefix+"fh.MakeAbsolutePath() FAILED!\n"+
         "%v", err.Error())
-      return absFilePath ,filePathDoesExist, fInfo, nonPathError
+      return absFilePath, filePathDoesExist, fInfo, nonPathError
     }
   } else {
     // For any other PreProcPathCode value, apply no pre-processing to
     absFilePath = filePath
   }
 
-
-
   var info os.FileInfo
 
-  for i:=0; i < 3; i++ {
+  for i := 0; i < 3; i++ {
 
     filePathDoesExist = false
     fInfo = FileInfoPlus{}
@@ -5735,7 +5719,6 @@ func (fh FileHelper) doesPathFileExist(
 
   return absFilePath, filePathDoesExist, fInfo, nonPathError
 }
-
 
 // isStringEmptyOrBlank - Analyzes a string to determine if the string is 'empty' or
 // if the string consists of all blanks (spaces).
@@ -5812,16 +5795,16 @@ func (fh *FileHelper) makeFileHelperWalkDirDeleteFilesFunc(dInfo *DirectoryDelet
       if err != nil {
 
         ex := fmt.Errorf(ePrefix+
-          "Error returned from DirMgr{}.NewFromPathFileNameExtStr(pathFile).\n" +
+          "Error returned from DirMgr{}.NewFromPathFileNameExtStr(pathFile).\n"+
           "pathFile:='%v'\nError='%v'\n", pathFile, err.Error())
 
         dInfo.ErrReturns = append(dInfo.ErrReturns, ex.Error())
 
         /*
-        if subDir.isInitialized {
-          subDir.actualDirFileInfo = FileInfoPlus{}.NewFromPathFileInfo(pathFile, info)
-          dInfo.Directories.AddDirMgr(subDir)
-        }
+           if subDir.isInitialized {
+             subDir.actualDirFileInfo = FileInfoPlus{}.NewFromPathFileInfo(pathFile, info)
+             dInfo.Directories.AddDirMgr(subDir)
+           }
         */
 
         return nil
@@ -5895,9 +5878,9 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
 
       if err != nil {
         /*
-        if subDir.isInitialized {
-          dInfo.Directories.AddDirMgr(subDir)
-        }
+           if subDir.isInitialized {
+             dInfo.Directories.AddDirMgr(subDir)
+           }
         */
 
         er2 := fmt.Errorf(ePrefix+"Error returned by DirMgr{}.NewFromPathFileNameExtStr(pathFile). "+
