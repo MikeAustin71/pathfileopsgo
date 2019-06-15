@@ -4060,14 +4060,29 @@ func (fMgr *FileMgr) ResetFileInfo() error {
 
   ePrefix := "ResetFileInfo() "
 
-  err := fMgr.IsFileMgrValid(ePrefix)
+  var err error
+  var filePathDoesExist bool
+
+  fMgr.dataMutex.Lock()
+
+  fMgrHelpr := fileMgrHelper{}
+  filePathDoesExist,
+    err = fMgrHelpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  fMgr.dataMutex.Unlock()
 
   if err != nil {
     return err
   }
 
-  if !fMgr.doesAbsolutePathFileNameExist {
-    return fmt.Errorf(ePrefix + "Current FileMgr file DOES NOT EXIST!")
+  if !filePathDoesExist {
+    return fmt.Errorf(ePrefix+
+      "Current FileMgr file DOES NOT EXIST!\n"+
+      "FMgr='%v'", fMgr.absolutePathFileName)
   }
 
   return nil
