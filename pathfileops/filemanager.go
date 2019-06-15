@@ -94,10 +94,13 @@ func (fMgr *FileMgr) ChangePermissionMode(mode FilePermissionConfig) error {
 
   ePrefix := "FileMgr.ChangePermissionMode() "
 
+  fMgrHelpr := fileMgrHelper{}
+
   filePathDoesExist,
-    err := fileMgrHelper{}.doesFileMgrPathFileExist(fMgr,
+    err := fMgrHelpr.doesFileMgrPathFileExist(fMgr,
     PreProcPathCode.None(),
-    ePrefix)
+    ePrefix,
+    "fMgr.absolutePathFileName")
 
   if err != nil {
     return err
@@ -130,6 +133,16 @@ func (fMgr *FileMgr) ChangePermissionMode(mode FilePermissionConfig) error {
       "Error returned by os.Chmod(fMgr.absolutePathFileName, fileMode).\n"+
       "fileMode='%v'\nError='%v'\n",
       mode.GetPermissionFileModeValueText(), err.Error())
+  }
+
+  _,
+    err = fMgrHelpr.doesFileMgrPathFileExist(fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "Verify fMgr.absolutePathFileName")
+
+  if err != nil {
+    return err
   }
 
   return nil
@@ -242,10 +255,13 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
 
   ePrefix := "FileMgr.CopyFileMgrByIo() "
 
+  fMgrHlpr := fileMgrHelper{}
+
   filePathDoesExist,
-    err := fileMgrHelper{}.doesFileMgrPathFileExist(fMgr,
+    err := fMgrHlpr.doesFileMgrPathFileExist(fMgr,
     PreProcPathCode.None(),
-    ePrefix)
+    ePrefix,
+    "fMgr.absolutePathFileName")
 
   if err != nil {
     return err
@@ -272,9 +288,10 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
   }
 
   filePathDoesExist,
-    err = fileMgrHelper{}.doesFileMgrPathFileExist(fMgrDest,
+    err = fMgrHlpr.doesFileMgrPathFileExist(fMgrDest,
     PreProcPathCode.None(),
-    ePrefix)
+    ePrefix,
+    "fMgrDest.absolutePathFileName")
 
   if err != nil {
     return err
@@ -303,9 +320,10 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
   }
 
   filePathDoesExist,
-    err = fileMgrHelper{}.doesFileMgrPathFileExist(fMgrDest,
+    err = fMgrHlpr.doesFileMgrPathFileExist(fMgrDest,
     PreProcPathCode.None(),
-    ePrefix)
+    ePrefix,
+    "fMgrDest.absolutePathFileName")
 
   if err != nil {
     return err
@@ -336,9 +354,11 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
   }
 
   filePathDoesExist,
-    err = fileMgrHelper{}.doesFileMgrPathFileExist(fMgrDest,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    fMgrDest,
     PreProcPathCode.None(),
-    ePrefix)
+    ePrefix,
+    "fMgrDest.absolutePathFileName")
 
   if err != nil {
     return err
@@ -1738,34 +1758,23 @@ func (fMgr *FileMgr) DoesFileExist() bool {
 // exists.
 func (fMgr *FileMgr) DoesThisFileExist() (fileDoesExist bool, nonPathError error) {
 
-  ePrefix := "FileMgr.DoesThisFileExist() "
-
-  fileDoesExist = false
-  nonPathError = nil
-  var fInfoPlus FileInfoPlus
-
   fMgr.dataMutex.Lock()
 
-  _, fileDoesExist, fInfoPlus, nonPathError =
-    FileHelper{}.doesPathFileExist(fMgr.absolutePathFileName,
-      PreProcPathCode.None(), // Do NOT perform in pre-processing on path
-      ePrefix,
-      "fMgr.absolutePathFileName")
+  ePrefix := "FileMgr.DoesThisFileExist() "
+  fileDoesExist = false
+  nonPathError = nil
+  fMgrHelpr := fileMgrHelper{}
+
+  fileDoesExist,
+    nonPathError = fMgrHelpr.doesFileMgrPathFileExist(fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
 
   if nonPathError != nil {
-    fMgr.actualFileInfo = FileInfoPlus{}
-    fMgr.doesAbsolutePathFileNameExist = false
     fileDoesExist = false
     fMgr.dataMutex.Unlock()
     return fileDoesExist, nonPathError
-  }
-
-  if fileDoesExist {
-    fMgr.actualFileInfo = fInfoPlus.CopyOut()
-    fMgr.doesAbsolutePathFileNameExist = true
-  } else {
-    fMgr.actualFileInfo = FileInfoPlus{}
-    fMgr.doesAbsolutePathFileNameExist = false
   }
 
   fMgr.dataMutex.Unlock()

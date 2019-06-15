@@ -1,6 +1,7 @@
 package pathfileops
 
 import (
+  "errors"
   "fmt"
   "os"
   "time"
@@ -15,14 +16,14 @@ type fileMgrHelper struct {
 func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
   fileMgr *FileMgr,
   preProcessCode PreProcessPathCode,
-  errorPrefix string) (filePathDoesExist bool,
+  errorPrefix,
+  filePathTitle string) (filePathDoesExist bool,
   nonPathError error) {
 
   ePrefix := "fileMgrHelper.doesDirPathExist() "
 
   filePathDoesExist = false
   nonPathError = nil
-  filePathTitle := "fileMgr.absolutePathFileName"
 
   if len(errorPrefix) > 0 {
     ePrefix = errorPrefix
@@ -39,18 +40,35 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
     FileHelper{}.isStringEmptyOrBlank(fileMgr.absolutePathFileName)
 
   if errCode == -1 {
+    fileMgr.isAbsolutePathFileNamePopulated = false
     nonPathError = fmt.Errorf(ePrefix+
-      "Error: Input parameter '%v' is an empty string!", filePathTitle)
+      "Error: '%v' is an empty string!", filePathTitle)
     return filePathDoesExist, nonPathError
   }
 
   if errCode == -2 {
+    fileMgr.isAbsolutePathFileNamePopulated = false
     nonPathError = fmt.Errorf(ePrefix+
-      "Error: Input parameter '%v' consists of blank spaces!", filePathTitle)
+      "Error: '%v' consists of blank spaces!", filePathTitle)
+    return filePathDoesExist, nonPathError
+  }
+
+  if !fileMgr.isInitialized {
+    nonPathError = errors.New(ePrefix +
+      "Error: This data structure is NOT initialized.\n" +
+      "fileMgr.isInitialized='false'\n")
     return filePathDoesExist, nonPathError
   }
 
   var err error
+
+  err = fileMgr.dMgr.IsDirMgrValid(ePrefix)
+
+  if err != nil {
+    nonPathError = fmt.Errorf("FileMgr Directory Manager INVALID!\n"+
+      "Error='%v'", err.Error())
+    return filePathDoesExist, nonPathError
+  }
 
   if preProcessCode == PreProcPathCode.PathSeparator() {
 
