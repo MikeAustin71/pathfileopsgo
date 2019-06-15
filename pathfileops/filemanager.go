@@ -3259,11 +3259,20 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
 
   if err != nil {
 
-    return fmt.Errorf(ePrefix+"Input parameter 'fileAccessCtrl' is INVALID! "+
+    return fmt.Errorf(ePrefix+"Input parameter 'fileAccessCtrl' is INVALID!\n"+
       "%v\n", err.Error())
   }
 
-  if !fMgr.dMgr.DoesAbsolutePathExist() {
+  filePathDoesExist, err := fMgr.dMgr.DoesThisDirectoryExist()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Non-Path error returned by fMgr.dMgr.DoesThisDirectoryExist()\n"+
+      "dMgr='%v'\nError='%v'\n",
+      fMgr.dMgr.GetAbsolutePath(), err.Error())
+  }
+
+  if !filePathDoesExist {
 
     err = fMgr.dMgr.MakeDir()
 
@@ -3327,7 +3336,17 @@ func (fMgr *FileMgr) OpenThisFileReadOnly() error {
   ePrefix := "FileMgr.OpenThisFileReadOnly() "
   var err error
 
-  err = fMgr.IsFileMgrValid(ePrefix)
+  fMgr.dataMutex.Lock()
+
+  fMgrHelpr := fileMgrHelper{}
+  filePathDoesExist,
+    err := fMgrHelpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  fMgr.dataMutex.Unlock()
 
   if err != nil {
     return err
@@ -3337,16 +3356,12 @@ func (fMgr *FileMgr) OpenThisFileReadOnly() error {
     _ = fMgr.CloseThisFile()
   }
 
-  doesFileExist, err := fMgr.DoesThisFileExist()
+  if !filePathDoesExist {
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
-
-  if !doesFileExist {
-
-    return fmt.Errorf(ePrefix+"The file to be opened as 'Read-Only' does not Exist! "+
-      "FileName: %v ", fMgr.absolutePathFileName)
+    return fmt.Errorf(ePrefix+
+      "The file to be opened as 'Read-Only' does not Exist!\n"+
+      "(FileMgr) FileName: %v\n",
+      fMgr.absolutePathFileName)
 
   }
 
