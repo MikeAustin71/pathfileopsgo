@@ -769,7 +769,7 @@ func TestFileMgr_WriteBytesToFile_03(t *testing.T) {
 
   lenTestText := len(testText)
 
-  filePath := fh.AdjustPathSlash("../checkfiles/scratchTestWriteVV6431271.txt")
+  filePath := fh.AdjustPathSlash("../checkfiles/TestFileMgr_WriteBytesToFile_03.txt")
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 

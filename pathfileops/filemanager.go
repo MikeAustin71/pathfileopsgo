@@ -4093,7 +4093,9 @@ func (fMgr *FileMgr) ResetFileInfo() error {
 // to the system default size.
 //
 func (fMgr *FileMgr) SetReaderBufferSize(readBuffSize int) {
+  fMgr.dataMutex.Lock()
   fMgr.fileRdrBufSize = readBuffSize
+  fMgr.dataMutex.Unlock()
 }
 
 // SetWriterBufferSize - Sets the Write Buffer size in bytes.
@@ -4101,7 +4103,9 @@ func (fMgr *FileMgr) SetReaderBufferSize(readBuffSize int) {
 // to the system default size.
 //
 func (fMgr *FileMgr) SetWriterBufferSize(writeBuffSize int) {
+  fMgr.dataMutex.Lock()
   fMgr.fileWriterBufSize = writeBuffSize
+  fMgr.dataMutex.Unlock()
 }
 
 // SetFileInfo - Used to initialize the os.FileInfo structure maintained as
@@ -4115,21 +4119,25 @@ func (fMgr *FileMgr) SetFileInfo(info os.FileInfo) error {
   ePrefix := "FileMgr.SetFileInfo() "
 
   if info == nil {
-    return errors.New(ePrefix + "Error: Input parameter 'info' is 'nil' and INVALID!")
+    return errors.New(ePrefix +
+      "Error: Input parameter 'info' is 'nil' and INVALID!\n")
   }
 
   if info.Name() == "" {
-    return errors.New(ePrefix + "Error: info.Name() is an EMPTY string!")
+    return errors.New(ePrefix +
+      "Error: info.Name() is an EMPTY string!\n")
   }
 
   if info.IsDir() {
-    return errors.New(ePrefix + "info.IsDir()=='true'. This is a Directory NOT A FILE!")
+    return errors.New(ePrefix +
+      "Input parameter info.IsDir()=='true'. This is a Directory NOT A FILE!\n")
   }
 
   if strings.ToLower(info.Name()) != strings.ToLower(fMgr.fileNameExt) {
     return fmt.Errorf(ePrefix+
-      "Error: Input parameter 'info' does NOT match current FileMgr file name. "+
-      "FileMgr File Name='%v' info File Name='%v' ", fMgr.fileNameExt, info.Name())
+      "Error: Input parameter 'info' does NOT match current FileMgr file name.\n"+
+      "FileMgr File Name='%v'\ninfo File Name='%v'\n",
+      fMgr.fileNameExt, info.Name())
   }
 
   fMgr.dataMutex.Lock()
@@ -4140,8 +4148,8 @@ func (fMgr *FileMgr) SetFileInfo(info os.FileInfo) error {
 
   if !fMgr.actualFileInfo.IsFInfoInitialized {
     return fmt.Errorf(ePrefix+
-      "Error: Failed to initialize fMgr.actualFileInfo object. info.Name()='%v'",
-      info.Name())
+      "Error: Failed to initialize fMgr.actualFileInfo object.\n"+
+      "info.Name()='%v'", info.Name())
   }
 
   return nil
@@ -4219,8 +4227,9 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
-      "Error returned from fh.GetFileNameWithoutExt(adjustedFileNameExt). "+
-      "adjustedFileNameExt='%v'  Error='%v' ", adjustedFileNameExt, err2.Error())
+      "Error returned from fh.GetFileNameWithoutExt(adjustedFileNameExt).\n"+
+      "adjustedFileNameExt='%v'\nError='%v'\n ",
+      adjustedFileNameExt, err2.Error())
     fMgr.dataMutex.Unlock()
     fMgr.Empty()
     isEmpty = true
@@ -4229,8 +4238,9 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
 
   if fNameIsEmpty {
     err = fmt.Errorf(ePrefix+
-      "Error: fileName returned from fh.GetFileNameWithoutExt(adjustedFileNameExt) "+
-      "is Zero length string! adjustedFileNameExt='%v'  ", adjustedFileNameExt)
+      "Error: fileName returned from fh.GetFileNameWithoutExt(adjustedFileNameExt)\n"+
+      "is Zero length string!\n"+
+      "adjustedFileNameExt='%v'\n", adjustedFileNameExt)
     fMgr.dataMutex.Unlock()
     fMgr.Empty()
     isEmpty = true
@@ -4244,8 +4254,10 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
-      "Error returned from fh.GetFileExt(fileNameAndExt). "+
-      "fileNameAndExt='%v'  Error='%v' ", adjustedFileNameExt, err2.Error())
+      "Error returned from fh.GetFileExt(fileNameAndExt).\n"+
+      "fileNameAndExt='%v'\nError='%v'\n",
+      adjustedFileNameExt, err2.Error())
+
     fMgr.dataMutex.Unlock()
     fMgr.Empty()
     isEmpty = true
@@ -4347,15 +4359,17 @@ func (fMgr *FileMgr) SetFileMgrFromPathFileName(
 
   if errCode == -1 {
     err = errors.New(ePrefix +
-      "Error: Input parameter 'pathFileNameExt' is a zero length or empty string!")
-    return
+      "Error: Input parameter 'pathFileNameExt' is a zero length or empty string!\n")
+    return isEmpty, err
   }
 
   if errCode == -2 {
     err = errors.New(ePrefix +
-      "Error: Input parameter 'pathFileNameExt' consists entirely of blank spaces!")
+      "Error: Input parameter 'pathFileNameExt' consists entirely of blank spaces!\n")
     return
   }
+
+  fMgr.dataMutex.Lock()
 
   adjustedPathFileNameExt := fh.AdjustPathSlash(pathFileNameExt)
 
@@ -4363,22 +4377,30 @@ func (fMgr *FileMgr) SetFileMgrFromPathFileName(
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
-      "Error returned from fh.CleanFileNameExtStr(adjustedPathFileNameExt). "+
-      "adjustedPathFileNameExt='%v' Error='%v'", adjustedPathFileNameExt, err2.Error())
-    return
+      "Error returned from fh.CleanFileNameExtStr(adjustedPathFileNameExt).\n"+
+      "adjustedPathFileNameExt='%v'\nError='%v'\n",
+      adjustedPathFileNameExt, err2.Error())
+    fMgr.dataMutex.Unlock()
+    return isEmpty, err
   }
 
   if isEmptyFileName {
     err = fmt.Errorf(ePrefix+
-      "Error: File Name returned from fh.CleanFileNameExtStr(adjustedPathFileNameExt) "+
-      "is a Zero Length String!. pathFileNameExt='%v'", adjustedPathFileNameExt)
+      "Error: File Name returned from fh.CleanFileNameExtStr(adjustedPathFileNameExt)\n"+
+      "is a Zero Length String!.\n"+
+      "pathFileNameExt='%v'\n",
+      adjustedPathFileNameExt)
+    fMgr.dataMutex.Unlock()
+    return isEmpty, err
   }
 
   remainingPathStr := strings.TrimSuffix(adjustedPathFileNameExt, adjustedFileNameExt)
 
   var dMgr DirMgr
 
-  if len(remainingPathStr) == 0 {
+  errCode, _, remainingPathStr = fh.isStringEmptyOrBlank(remainingPathStr)
+
+  if errCode < 0 {
     dMgr = DirMgr{}
   } else {
 
@@ -4386,34 +4408,46 @@ func (fMgr *FileMgr) SetFileMgrFromPathFileName(
 
     if err2 != nil {
       err = fmt.Errorf(ePrefix+
-        "Error returned from DirMgr{}.NewFromPathFileNameExtStr(remainingPathStr). "+
-        "remainingPathStr='%v'  Error='%v'", remainingPathStr, err2.Error())
-      return
+        "Error returned from DirMgr{}.NewFromPathFileNameExtStr("+
+        "remainingPathStr).\n"+
+        "remainingPathStr='%v'\nError='%v'\n",
+        remainingPathStr, err2.Error())
+      fMgr.dataMutex.Unlock()
+      return isEmpty, err
     }
-
   }
 
-  isEmptyFMgr, err2 := fMgr.SetFileMgrFromDirMgrFileName(dMgr, adjustedFileNameExt)
+  fMgr.dataMutex.Unlock()
+
+  isEmptyFMgr, err2 :=
+    fMgr.SetFileMgrFromDirMgrFileName(dMgr, adjustedFileNameExt)
+
+  fMgr.dataMutex.Lock()
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
-      "Error returned from fMgr.SetFileMgrFromDirMgrFileName(dMgr, adjustedFileNameExt). "+
-      "adjustedFileNameExt='%v'  Error='%v'", adjustedFileNameExt, err2.Error())
-    return
-  }
+      "Error returned from fMgr.SetFileMgrFromDirMgrFileName("+
+      "dMgr, adjustedFileNameExt).\n"+
+      "adjustedFileNameExt='%v'\nError='%v'\n",
+      adjustedFileNameExt, err2.Error())
+    isEmpty = true
 
-  if isEmptyFMgr {
+  } else if isEmptyFMgr {
     err = fmt.Errorf(ePrefix+
       "Error: Empty FileMgr returned from fMgr.SetFileMgrFromDirMgrFileName("+
-      "dMgr, adjustedFileNameExt). dMgr.path='%v'   adjustedFileNameExt='%v' ",
-      dMgr.path, adjustedFileNameExt)
-    return
+      "dMgr, adjustedFileNameExt).\n"+
+      "dMgr='%v'\nadjustedFileNameExt='%v' ",
+      dMgr.absolutePath, adjustedFileNameExt)
+    isEmpty = true
+
+  } else {
+    isEmpty = false
+    err = nil
   }
 
-  isEmpty = false
-  err = nil
+  fMgr.dataMutex.Unlock()
 
-  return
+  return isEmpty, err
 }
 
 // WriteBytesToFile a string to the File identified by
@@ -4425,22 +4459,28 @@ func (fMgr *FileMgr) SetFileMgrFromPathFileName(
 //
 // This method uses the 'bufio' package.
 //
-func (fMgr *FileMgr) WriteBytesToFile(bytes []byte) (numBytesWritten int, err error) {
+func (fMgr *FileMgr) WriteBytesToFile(
+  bytes []byte) (numBytesWritten int, err error) {
 
   ePrefix := "FileMgr.WriteBytesToFile() "
   err = nil
   numBytesWritten = 0
-
   var err2 error
+  var filePathDoesExist bool
 
-  err2 = fMgr.IsFileMgrValid("")
+  fMgr.dataMutex.Lock()
 
-  if err2 != nil {
-    err =
-      fmt.Errorf(ePrefix+
-        "Error: This File Manger is INVALID! fileNameExt='%v'  Error='%v'",
-        fMgr.absolutePathFileName, err2.Error())
+  fMgrHelpr := fileMgrHelper{}
 
+  filePathDoesExist,
+    err = fMgrHelpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err != nil {
+    fMgr.dataMutex.Unlock()
     return numBytesWritten, err
   }
 
@@ -4460,10 +4500,13 @@ func (fMgr *FileMgr) WriteBytesToFile(bytes []byte) (numBytesWritten int, err er
   if !fMgr.isFilePtrOpen ||
     fMgr.filePtr == nil ||
     err2 != nil ||
-    invalidAccessType {
+    invalidAccessType ||
+    !filePathDoesExist {
 
     // If the path and file name do not exist, this method will
     // attempt to create said path and file name.
+    fMgr.dataMutex.Unlock()
+
     err2 = fMgr.OpenThisFileReadWrite()
 
     if err2 != nil {
@@ -4475,11 +4518,10 @@ func (fMgr *FileMgr) WriteBytesToFile(bytes []byte) (numBytesWritten int, err er
       return numBytesWritten, err
     }
 
+    fMgr.dataMutex.Lock()
   }
 
   err = nil
-
-  fMgr.dataMutex.Lock()
 
   if fMgr.fileBufWriter == nil {
     if fMgr.fileWriterBufSize > 0 {
@@ -4491,8 +4533,6 @@ func (fMgr *FileMgr) WriteBytesToFile(bytes []byte) (numBytesWritten int, err er
 
   numBytesWritten, err2 = fMgr.fileBufWriter.Write(bytes)
 
-  fMgr.dataMutex.Unlock()
-
   fMgr.buffBytesWritten += uint64(numBytesWritten)
 
   if err2 != nil {
@@ -4502,6 +4542,8 @@ func (fMgr *FileMgr) WriteBytesToFile(bytes []byte) (numBytesWritten int, err er
         "Error='%v'", fMgr.absolutePathFileName, err2.Error())
 
   }
+
+  fMgr.dataMutex.Unlock()
 
   return numBytesWritten, err
 }
