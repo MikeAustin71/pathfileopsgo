@@ -96,11 +96,16 @@ func (fMgr *FileMgr) ChangePermissionMode(mode FilePermissionConfig) error {
 
   fMgrHelpr := fileMgrHelper{}
 
+  fMgr.dataMutex.Lock()
+
   filePathDoesExist,
-    err := fMgrHelpr.doesFileMgrPathFileExist(fMgr,
+    err := fMgrHelpr.doesFileMgrPathFileExist(
+    fMgr,
     PreProcPathCode.None(),
     ePrefix,
     "fMgr.absolutePathFileName")
+
+  fMgr.dataMutex.Unlock()
 
   if err != nil {
     return err
@@ -109,7 +114,8 @@ func (fMgr *FileMgr) ChangePermissionMode(mode FilePermissionConfig) error {
   if !filePathDoesExist {
     return fmt.Errorf(ePrefix+
       "Error: This file does NOT exist!\n"+
-      "File Name:'%v' ", fMgr.absolutePathFileName)
+      "(FileMgr) File Name:'%v' ",
+      fMgr.absolutePathFileName)
   }
 
   err = mode.IsValid()
@@ -126,26 +132,29 @@ func (fMgr *FileMgr) ChangePermissionMode(mode FilePermissionConfig) error {
     return fmt.Errorf(ePrefix+"%v", err.Error())
   }
 
+  fMgr.dataMutex.Lock()
+
   err = os.Chmod(fMgr.absolutePathFileName, fileMode)
 
   if err != nil {
+
+    fMgr.dataMutex.Unlock()
+
     return fmt.Errorf(ePrefix+
       "Error returned by os.Chmod(fMgr.absolutePathFileName, fileMode).\n"+
       "fileMode='%v'\nError='%v'\n",
       mode.GetPermissionFileModeValueText(), err.Error())
   }
 
+  err = nil
   _,
     err = fMgrHelpr.doesFileMgrPathFileExist(fMgr,
     PreProcPathCode.None(),
     ePrefix,
     "Verify fMgr.absolutePathFileName")
 
-  if err != nil {
-    return err
-  }
-
-  return nil
+  fMgr.dataMutex.Unlock()
+  return err
 }
 
 // CloseThisFile - This method will call the Close()
