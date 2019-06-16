@@ -550,12 +550,20 @@ func (fMgr *FileMgr) CopyFileMgrByLink(fMgrDest *FileMgr) error {
 
   ePrefix := "FileMgr.CopyFileMgrByLink() "
 
-  err := fMgr.IsFileMgrValid("")
+  fMgr.dataMutex.Lock()
+
+  fMgrHlpr := fileMgrHelper{}
+
+  filePathDoesExist,
+    err := fMgrHlpr.doesFileMgrPathFileExist(fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  fMgr.dataMutex.Unlock()
 
   if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error: This FileMgr object is INVALID!\nError='%v'\n",
-      err.Error())
+    return err
   }
 
   if fMgrDest == nil {
@@ -571,7 +579,7 @@ func (fMgr *FileMgr) CopyFileMgrByLink(fMgrDest *FileMgr) error {
       err.Error())
   }
 
-  if !fMgr.doesAbsolutePathFileNameExist {
+  if !filePathDoesExist {
     return fmt.Errorf(ePrefix+"Error: Source file DOES NOT EXIST!\n"+
       "Source File='%v'\n",
       fMgr.absolutePathFileName)
@@ -601,7 +609,7 @@ func (fMgr *FileMgr) CopyFileMgrByLink(fMgrDest *FileMgr) error {
       err.Error())
   }
 
-  destFileExists, err := fMgrDest.DoesThisFileExist()
+  filePathDoesExist, err = fMgrDest.DoesThisFileExist()
 
   if err != nil {
     return fmt.Errorf(ePrefix+
@@ -610,7 +618,7 @@ func (fMgr *FileMgr) CopyFileMgrByLink(fMgrDest *FileMgr) error {
       err.Error())
   }
 
-  if destFileExists && !fMgrDest.actualFileInfo.Mode().IsRegular() {
+  if filePathDoesExist && !fMgrDest.actualFileInfo.Mode().IsRegular() {
     return fmt.Errorf(ePrefix+
       "Error: Destination file exists and it is NOT a 'regular' file.\n"+
       "Copy operation aborted!\nDestination File='%v'\n",
@@ -620,7 +628,7 @@ func (fMgr *FileMgr) CopyFileMgrByLink(fMgrDest *FileMgr) error {
   err = fMgrDest.dMgr.MakeDir()
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"%v\n", err.Error())
   }
 
   // See Reference:
@@ -635,12 +643,13 @@ func (fMgr *FileMgr) CopyFileMgrByLink(fMgrDest *FileMgr) error {
   if err != nil {
     return fmt.Errorf(ePrefix+
       "Error returned by fh.CopyFileByLink(fMgr.absolutePathFileName, "+
-      "fMgrDest.absolutePathFileName)\nfMgr.absolutePathFileName='%v'\n"+
+      "fMgrDest.absolutePathFileName)\n"+
+      "fMgr.absolutePathFileName='%v'\n"+
       "fMgrDest.absolutePathFileName='%v'\nError='%v'\n",
       fMgr.absolutePathFileName, fMgrDest.absolutePathFileName, err.Error())
   }
 
-  destFileExists, err = fMgrDest.DoesThisFileExist()
+  filePathDoesExist, err = fMgrDest.DoesThisFileExist()
 
   if err != nil {
     return fmt.Errorf(ePrefix+
@@ -649,10 +658,10 @@ func (fMgr *FileMgr) CopyFileMgrByLink(fMgrDest *FileMgr) error {
       fMgrDest.absolutePathFileName, err.Error())
   }
 
-  if !destFileExists {
+  if !filePathDoesExist {
     return fmt.Errorf(ePrefix+
-      "Error: After attempted file copy to destination file. Destination "+
-      "file does NOT exist!\n"+
+      "Error: After attempted file copy to destination file, Destination "+
+      "file DOES NOT EXIST!\n"+
       "fMgrDest.absolutePathFileName='%v'\n",
       fMgrDest.absolutePathFileName)
   }
