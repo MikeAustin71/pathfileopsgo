@@ -4563,19 +4563,24 @@ func (fMgr *FileMgr) WriteStrToFile(str string) (numBytesWritten int, err error)
 
   numBytesWritten = 0
   err = nil
-
-  err2 := fMgr.IsFileMgrValid("")
-
-  if err2 != nil {
-    err =
-      fmt.Errorf(ePrefix+
-        "Error: This File Manger is INVALID! fileNameExt='%v'  Error='%v'",
-        fMgr.absolutePathFileName, err2.Error())
-
-    return numBytesWritten, err
-  }
+  var err2 error
+  var filePathDoesExist bool
 
   fMgr.dataMutex.Lock()
+
+  fMgrHelpr := fileMgrHelper{}
+
+  filePathDoesExist,
+    err = fMgrHelpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err != nil {
+    fMgr.dataMutex.Unlock()
+    return numBytesWritten, err
+  }
 
   invalidAccessType := true
 
@@ -4593,7 +4598,8 @@ func (fMgr *FileMgr) WriteStrToFile(str string) (numBytesWritten int, err error)
   if !fMgr.isFilePtrOpen ||
     fMgr.filePtr == nil ||
     err2 != nil ||
-    invalidAccessType {
+    invalidAccessType ||
+    !filePathDoesExist {
 
     fMgr.dataMutex.Unlock()
     // If the path and file name do not exist, this method will
