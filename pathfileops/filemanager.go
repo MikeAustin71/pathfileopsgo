@@ -367,14 +367,13 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
   }
 
   filePathDoesExist,
-    err = fMgrHlpr.doesFileMgrPathFileExist(
-    fMgrDest,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgrDest.absolutePathFileName")
+    err = fMgrDest.DoesThisFileExist()
 
   if err != nil {
-    return err
+    return fmt.Errorf(ePrefix+
+      "After Copy File By IO, Non-Path Error returned by "+
+      "fMgrDest.DoesThisFileExist().\n"+
+      "Error='%v'\n", err.Error())
   }
 
   if !filePathDoesExist {
@@ -834,25 +833,27 @@ func (fMgr *FileMgr) CopyFileStrByIo(dstPathFileNameExt string) error {
 
   ePrefix := "FileMgr.CopyFileStrByIo() "
 
-  err := fMgr.IsFileMgrValid("")
+  fMgr.dataMutex.Lock()
+
+  fMgrHlpr := fileMgrHelper{}
+
+  filePathDoesExist,
+    err := fMgrHlpr.doesFileMgrPathFileExist(fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  fMgr.dataMutex.Unlock()
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"This File Manager instance is INVALID!\n"+
-      "Error='%v'\n", err.Error())
+    return err
   }
 
-  fileDoesExist, err := fMgr.DoesThisFileExist()
-
-  if err != nil {
+  if !filePathDoesExist {
     return fmt.Errorf(ePrefix+
-      "Non-Path Error returned by fMgr.DoesThisFileExist()\n"+
-      "fMgr='%v'\nError='%v'\n",
-      fMgr.GetAbsolutePathFileName(), err.Error())
-  }
-
-  if !fileDoesExist {
-    return fmt.Errorf(ePrefix+"This File Manager file DOES NOT EXIST!\n"+
-      "File Name='%v'\n", fMgr.absolutePathFileName)
+      "This File Manager file DOES NOT EXIST!\n"+
+      "File Name='%v'\n",
+      fMgr.absolutePathFileName)
   }
 
   fMgrDest, err := FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt)
@@ -865,17 +866,67 @@ func (fMgr *FileMgr) CopyFileStrByIo(dstPathFileNameExt string) error {
   }
 
   if fMgr.EqualAbsPaths(&fMgrDest) {
-    return fmt.Errorf(ePrefix+"Error: Source and Destination File are the same!\n"+
+    return fmt.Errorf(ePrefix+
+      "Error: Source and Destination File are the same!\n"+
       "Source File='%v'\nDestination File='%v'\n",
       fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
   }
 
-  err = fMgr.CopyFileMgrByIo(&fMgrDest)
+  err = fMgrDest.dMgr.MakeDir()
 
   if err != nil {
     return fmt.Errorf(ePrefix+
-      "Error returned from fMgr.CopyFileMgrByIo(&fMgrDest) "+
-      "fMgrDest.absolutePathFileName='%v'  Error='%v'", fMgrDest.absolutePathFileName, err.Error())
+      "Atempted creation of destination directory FAILED!\n"+
+      "Error= '%v'\n",
+      err.Error())
+  }
+
+  filePathDoesExist,
+    err = fMgrDest.DoesThisFileExist()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Non-Path Error returned from fMgrDest.DoesThisFileExist().\n"+
+      "Error='%v'\n", err.Error())
+  }
+
+  if filePathDoesExist && !fMgrDest.actualFileInfo.Mode().IsRegular() {
+    return fmt.Errorf(ePrefix+
+      "Error: Destination file exists and it is NOT a 'regular' file.\n"+
+      "Copy operation aborted!\nDestination File='%v'\n",
+      fMgrDest.absolutePathFileName)
+  }
+
+  fMgr.dataMutex.Lock()
+
+  err = FileHelper{}.CopyFileByIo(fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+
+  fMgr.dataMutex.Unlock()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Error returned by fh.CopyFileByIo(fMgr.absolutePathFileName, "+
+      "fMgrDest.absolutePathFileName) fMgr.absolutePathFileName='%v' "+
+      "fMgrDest.absolutePathFileName='%v' Error='%v'",
+      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName, err.Error())
+  }
+
+  filePathDoesExist,
+    err = fMgrDest.DoesThisFileExist()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "After Copy File By IO, Non-Path Error returned by "+
+      "fMgrDest.DoesThisFileExist().\n"+
+      "Error='%v'\n", err.Error())
+  }
+
+  if !filePathDoesExist {
+    return fmt.Errorf(ePrefix+
+      "Error: After attempted file copy to destination file.\n"+
+      "Destination file does NOT exist!\n"+
+      "fMgrDest='%v'\n",
+      fMgrDest.absolutePathFileName)
   }
 
   return nil
