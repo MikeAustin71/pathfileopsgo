@@ -138,7 +138,8 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
 }
 
 // copyFileToDirSetup - Helper method used by FileMgr Copy
-// to Directory routines.
+// to Directory routines for standardized setup and error
+// checking.
 //
 func (fMgrHlpr *fileMgrHelper) copyFileToDirSetup(
   fMgr *FileMgr,
@@ -194,7 +195,8 @@ func (fMgrHlpr *fileMgrHelper) copyFileToDirSetup(
     return fMgrDest, err
   }
 
-  fMgrDest, err2 = FileMgr{}.NewFromDirMgrFileNameExt(dir, fMgr.fileNameExt)
+  fMgrDest, err2 = FileMgr{}.NewFromDirMgrFileNameExt(
+    dir, fMgr.fileNameExt)
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
@@ -256,7 +258,8 @@ func (fMgrHlpr *fileMgrHelper) copyFileToDirSetup(
 // clean up on Copy File Methods.
 func (fMgrHlpr *fileMgrHelper) copyFileToFMgrCleanUp(
   fMgrDest *FileMgr,
-  ePrefix string) (err error) {
+  ePrefix,
+  copyTypeLabel string) (err error) {
 
   err = nil
   ePrefixExtra := "fileMgrHelper.copyFileToFMgrCleanUp "
@@ -281,9 +284,10 @@ func (fMgrHlpr *fileMgrHelper) copyFileToFMgrCleanUp(
 
   if !filePathDoesExist {
     err = fmt.Errorf(ePrefix+
-      "Error: After attempted file copy to destination file,\n"+
+      "Error: After attempted %v to destination file,\n"+
       "Destination file does NOT exist!\n"+
       "fMgrDest='%v'\n",
+      copyTypeLabel,
       fMgrDest.absolutePathFileName)
 
     return err
@@ -294,6 +298,17 @@ func (fMgrHlpr *fileMgrHelper) copyFileToFMgrCleanUp(
       "Error: Destination File was copied, but it is"+
       "classified as a Non-Regular File!\n"+
       "fMgrDest='%v'\n",
+      fMgrDest.absolutePathFileName)
+    return err
+  }
+
+  if fMgrDest.actualFileInfo.Mode().IsDir() {
+    err = fmt.Errorf(ePrefix+
+      "Error: Destination File was copied using procedure %v.\n"+
+      "However, the Destination File is now classified "+
+      "as a Directory - NOT A FILE!\n"+
+      "fMgrDest='%v'\n",
+      copyTypeLabel,
       fMgrDest.absolutePathFileName)
     return err
   }

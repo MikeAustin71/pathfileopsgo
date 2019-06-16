@@ -1372,13 +1372,10 @@ func (fMgr *FileMgr) CopyFileToDirByIo(dir DirMgr) error {
     dir,
     ePrefix)
 
-  fMgr.dataMutex.Unlock()
-
   if err != nil {
+    fMgr.dataMutex.Unlock()
     return err
   }
-
-  fMgr.dataMutex.Lock()
 
   err = FileHelper{}.CopyFileByIo(
     fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
@@ -1395,7 +1392,10 @@ func (fMgr *FileMgr) CopyFileToDirByIo(dir DirMgr) error {
       fMgr.absolutePathFileName, fMgrDest.absolutePathFileName, err.Error())
   }
 
-  return fMgrHlpr.copyFileToFMgrCleanUp(&fMgrDest, ePrefix)
+  return fMgrHlpr.copyFileToFMgrCleanUp(
+    &fMgrDest,
+    ePrefix,
+    "Copy File By IO")
 }
 
 // CopyFileToDirByIoByLink - Copies the file identified by the current File Manager
@@ -1428,83 +1428,16 @@ func (fMgr *FileMgr) CopyFileToDirByIoByLink(dir DirMgr) error {
 
   fMgrHlpr := fileMgrHelper{}
 
-  filePathDoesExist,
-    err := fMgrHlpr.doesFileMgrPathFileExist(fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
-
-  fMgr.dataMutex.Unlock()
+  fMgrDest,
+    err := fMgrHlpr.copyFileToDirSetup(
+    fMgr,
+    dir,
+    ePrefix)
 
   if err != nil {
+    fMgr.dataMutex.Unlock()
     return err
   }
-
-  if !filePathDoesExist {
-    return fmt.Errorf(ePrefix+
-      "This File Manager file DOES NOT EXIST!\n"+
-      "(FileMgr) FileName='%v'\n",
-      fMgr.absolutePathFileName)
-  }
-
-  if !fMgr.actualFileInfo.Mode().IsRegular() {
-    return fmt.Errorf(ePrefix+
-      "Error: Source file is a Non-Regular "+
-      "File and cannot be copied.\nFile='%v'\n",
-      fMgr.absolutePathFileName)
-  }
-
-  err = dir.IsDirMgrValid("")
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error: Input parmater dir is INVALID!\n"+
-      "Error='%v'", err.Error())
-  }
-
-  fMgrDest, err := FileMgr{}.NewFromDirMgrFileNameExt(dir, fMgr.fileNameExt)
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dir, "+
-      "fMgr.fileNameExt)\n"+
-      "dir.absolutePath='%v'\nfMgr.fileNameExt='%v'\nError='%v'\n",
-      dir.absolutePath, fMgr.fileNameExt, err.Error())
-  }
-
-  if fMgr.EqualAbsPaths(&fMgrDest) {
-    return fmt.Errorf(ePrefix+
-      "Error: Source and Destination File are the same!\n"+
-      "Source File='%v'\nDestination File='%v'\n",
-      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
-  }
-
-  err = fMgrDest.dMgr.MakeDir()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Atempted creation of destination directory FAILED!\n"+
-      "Error= '%v'\n",
-      err.Error())
-  }
-
-  filePathDoesExist,
-    err = fMgrDest.DoesThisFileExist()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Non-Path Error Returned by fMgrDest.DoesThisFileExist().\n"+
-      "Error='%v'\n", err.Error())
-  }
-
-  if filePathDoesExist && !fMgrDest.actualFileInfo.Mode().IsRegular() {
-    return fmt.Errorf(ePrefix+
-      "Error: Destination file exists and it is NOT a 'regular' file.\n"+
-      "Copy operation aborted!\nDestination File='%v'\n",
-      fMgrDest.absolutePathFileName)
-  }
-
-  fMgr.dataMutex.Lock()
 
   err = FileHelper{}.CopyFileByIoByLink(
     fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
@@ -1521,25 +1454,10 @@ func (fMgr *FileMgr) CopyFileToDirByIoByLink(dir DirMgr) error {
       fMgr.absolutePathFileName, fMgrDest.absolutePathFileName, err.Error())
   }
 
-  filePathDoesExist,
-    err = fMgrDest.DoesThisFileExist()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "After Copy File By IO By Link, Non-Path Error returned by "+
-      "fMgrDest.DoesThisFileExist().\n"+
-      "Error='%v'\n", err.Error())
-  }
-
-  if !filePathDoesExist {
-    return fmt.Errorf(ePrefix+
-      "Error: After attempted file copy to destination file,\n"+
-      "Destination file does NOT exist!\n"+
-      "fMgrDest='%v'\n",
-      fMgrDest.absolutePathFileName)
-  }
-
-  return nil
+  return fMgrHlpr.copyFileToFMgrCleanUp(
+    &fMgrDest,
+    ePrefix,
+    "Copy File By IO By Link")
 }
 
 // CopyFileToDirByLink - Copies the file identified by the current File Manager
