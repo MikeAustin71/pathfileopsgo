@@ -136,3 +136,168 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
 
   return filePathDoesExist, nonPathError
 }
+
+// copyFileToDirSetup - Helper method used by FileMgr Copy
+// to Directory routines.
+//
+func (fMgrHlpr *fileMgrHelper) copyFileToDirSetup(
+  fMgr *FileMgr,
+  dir DirMgr,
+  ePrefix string) (fMgrDest FileMgr, err error) {
+
+  err = nil
+  fMgrDest = FileMgr{}
+  ePrefixExtra := "fileMgrHelper.copyFileToDirSetup "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixExtra
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixExtra
+  }
+
+  filePathDoesExist,
+    err2 := fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err2 != nil {
+    err = err2
+    return fMgrDest, err
+  }
+
+  if !filePathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "This File Manager file DOES NOT EXIST!\n"+
+      "(FileMgr) FileName='%v'\n",
+      fMgr.absolutePathFileName)
+
+    return fMgrDest, err
+  }
+
+  if !fMgr.actualFileInfo.Mode().IsRegular() {
+    err = fmt.Errorf(ePrefix+
+      "Error: Source file is a Non-Regular "+
+      "File and cannot be copied.\nFile='%v'\n",
+      fMgr.absolutePathFileName)
+
+    return fMgrDest, err
+  }
+
+  err2 = dir.IsDirMgrValid("")
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "Error: Input parmater dir is INVALID!\n"+
+      "Error='%v'", err2.Error())
+    return fMgrDest, err
+  }
+
+  fMgrDest, err2 = FileMgr{}.NewFromDirMgrFileNameExt(dir, fMgr.fileNameExt)
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dir, "+
+      "fMgr.fileNameExt)\n"+
+      "dir.absolutePath='%v'\nfMgr.fileNameExt='%v'\nError='%v'\n",
+      dir.absolutePath, fMgr.fileNameExt, err2.Error())
+    fMgrDest = FileMgr{}
+    return fMgrDest, err
+  }
+
+  if fMgr.EqualAbsPaths(&fMgrDest) {
+
+    err = fmt.Errorf(ePrefix+
+      "Error: Source and Destination File are the same!\n"+
+      "Source File='%v'\n Destination File='%v'\n",
+      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+    fMgrDest = FileMgr{}
+    return fMgrDest, err
+  }
+
+  err2 = fMgrDest.dMgr.MakeDir()
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "Atempted creation of destination directory FAILED!\n"+
+      "dMgr='%v'\n"+
+      "Error= '%v'\n",
+      fMgrDest.dMgr.absolutePath, err2.Error())
+    fMgrDest = FileMgr{}
+    return fMgrDest, err
+  }
+
+  filePathDoesExist,
+    err2 = fMgrDest.DoesThisFileExist()
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "Non-Path Error Returned by fMgrDest.DoesThisFileExist().\n"+
+      "Error='%v'\n", err2.Error())
+    fMgrDest = FileMgr{}
+    return fMgrDest, err
+  }
+
+  if filePathDoesExist && !fMgrDest.actualFileInfo.Mode().IsRegular() {
+    err = fmt.Errorf(ePrefix+
+      "Error: Destination file exists and it is NOT a 'regular' file.\n"+
+      "Copy operation aborted!\nDestination File='%v'\n",
+      fMgrDest.absolutePathFileName)
+    fMgrDest = FileMgr{}
+    return fMgrDest, err
+  }
+
+  err = nil
+  return fMgrDest, err
+}
+
+// copyFileToFMgrCleanUp - Helper method used to perform
+// clean up on Copy File Methods.
+func (fMgrHlpr *fileMgrHelper) copyFileToFMgrCleanUp(
+  fMgrDest *FileMgr,
+  ePrefix string) (err error) {
+
+  err = nil
+  ePrefixExtra := "fileMgrHelper.copyFileToFMgrCleanUp "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixExtra
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixExtra
+  }
+
+  filePathDoesExist,
+    err2 := fMgrDest.DoesThisFileExist()
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "After attempted file copy, Non-Path Error returned by "+
+      "fMgrDest.DoesThisFileExist().\n"+
+      "Error='%v'\n", err2.Error())
+
+    return err
+  }
+
+  if !filePathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "Error: After attempted file copy to destination file,\n"+
+      "Destination file does NOT exist!\n"+
+      "fMgrDest='%v'\n",
+      fMgrDest.absolutePathFileName)
+
+    return err
+  }
+
+  if !fMgrDest.actualFileInfo.Mode().IsRegular() {
+    err = fmt.Errorf(ePrefix+
+      "Error: Destination File was copied, but it is"+
+      "classified as a Non-Regular File!\n"+
+      "fMgrDest='%v'\n",
+      fMgrDest.absolutePathFileName)
+    return err
+  }
+
+  err = nil
+  return err
+}
