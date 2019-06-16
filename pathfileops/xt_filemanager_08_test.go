@@ -993,13 +993,21 @@ func TestFileMgr_WriteStrToFile_01(t *testing.T) {
 
   fh := FileHelper{}
 
-  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testWrite2998.txt")
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/TestFileMgr_WriteStrToFile_01.txt")
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
   if err != nil {
     t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath).\n"+
-      "filePathName='%v'  Error='%v'", filePath, err.Error())
+      "filePathName='%v\nError='%v'\n", filePath, err.Error())
+    return
+  }
+
+  err = fMgr.DeleteThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned by #1 fMgr.DeleteThisFile()\n"+
+      "Error='%v'\n", err.Error())
     return
   }
 
@@ -1010,51 +1018,73 @@ func TestFileMgr_WriteStrToFile_01(t *testing.T) {
   bytesWritten, err := fMgr.WriteStrToFile(expectedStr)
 
   if err != nil {
-    t.Errorf("Error returned from fMgr.WriteStrToFile(expectedStr)  expectedStr='%v'  Error='%v'", expectedStr, err.Error())
+    t.Errorf("Error returned from fMgr.WriteStrToFile(expectedStr)\n"+
+      "expectedStr='%v'\nError='%v'\n", expectedStr, err.Error())
+    _ = fMgr.CloseThisFile()
+    _ = fMgr.DeleteThisFile()
+    return
   }
 
   err = fMgr.CloseThisFile()
 
   if err != nil {
-    t.Errorf("Error returned from fMgr.CloseThisFile() No 1.  Error='%v'", err.Error())
+    t.Errorf("Error returned from #1 fMgr.CloseThisFile().\n"+
+      "Error='%v'\n", err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
   }
 
   bytesRead, err := fMgr.ReadAllFile()
 
   if err != nil {
-    t.Errorf("Error returned from fMgr.ReadAllFile(). filePathName='%v'  Error='%v'", fMgr.absolutePathFileName, err.Error())
+    t.Errorf("Error returned from fMgr.ReadAllFile().\n"+
+      "filePathName='%v'\nError='%v'\n",
+      fMgr.absolutePathFileName, err.Error())
+    _ = fMgr.CloseThisFile()
+    _ = fMgr.DeleteThisFile()
+    return
   }
 
   if lExpectedStr != bytesWritten {
-    t.Errorf("Error: Length of string written NOT equal to Bytes Read! Length of written string='%v'. Actual Bytes Read='%v' ", lExpectedStr, bytesWritten)
+    t.Errorf("Error: Length of string written NOT equal to Bytes Read!\n"+
+      "Length of written string='%v'.\nActual Bytes Read='%v'\n",
+      lExpectedStr, bytesWritten)
   }
 
   actualStr := string(bytesRead)
 
   if lExpectedStr != len(actualStr) {
-    t.Errorf("Error: Length of actual string read is NOT equal to length of string written. lExpectedStr='%v'  len(actualStr)='%v'", lExpectedStr, len(actualStr))
+    t.Errorf("Error: Length of actual string read is NOT equal to length "+
+      "of string written.\n"+
+      "lExpectedStr='%v'\nlen(actualStr)='%v'\n",
+      lExpectedStr, len(actualStr))
   }
 
   if expectedStr != actualStr {
-    t.Errorf("Error: expectedStr written='%v'  Actual string read='%v'", expectedStr, actualStr)
+    t.Errorf("Error: expectedStr written='%v'\n"+
+      "Actual string read='%v'\n",
+      expectedStr, actualStr)
   }
 
   err = fMgr.CloseThisFile()
 
   if err != nil {
-    t.Errorf("Error returned by fMgr.CloseThisFile() No 2. Error='%v'", err.Error())
+    t.Errorf("Error returned by #2 fMgr.CloseThisFile()\n"+
+      "Error='%v'", err.Error())
   }
 
   err = fMgr.DeleteThisFile()
 
   if err != nil {
-    t.Errorf("Error returned from fMgr.DeleteThisFile(). Error='%v'", err.Error())
+    t.Errorf("Error returned from fMgr.DeleteThisFile().\n"+
+      "Error='%v'", err.Error())
   }
 
   doesFileExist := fh.DoesFileExist(filePath)
 
   if doesFileExist {
-    t.Errorf("Error: Failed to DELETE fileNameExt='%v'", fMgr.absolutePathFileName)
+    t.Errorf("Error: Failed to DELETE fileNameExt='%v'\n",
+      fMgr.absolutePathFileName)
   }
 
 }
@@ -1062,7 +1092,7 @@ func TestFileMgr_WriteStrToFile_01(t *testing.T) {
 func TestFileMgr_WriteStrToFile_02(t *testing.T) {
   fh := FileHelper{}
 
-  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/testWrite2998.txt")
+  filePath := fh.AdjustPathSlash("../checkfiles/checkfiles03/TestFileMgr_WriteStrToFile_02.txt")
 
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
@@ -1077,14 +1107,20 @@ func TestFileMgr_WriteStrToFile_02(t *testing.T) {
   err = fMgr.CreateThisFile()
 
   if err != nil {
-    t.Errorf("Error returned from fMgr.CreateThisFile(). "+
-      "filePathName='%v'  Error='%v'", filePath, err.Error())
+    t.Errorf("Error returned from fMgr.CreateThisFile().\n"+
+      "filePathName='%v'\nError='%v'\n",
+      filePath, err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
   }
 
   err = fMgr.CloseThisFile()
 
   if err != nil {
-    t.Errorf("Error returned from fMgr.CloseThisFile() No 1.  Error='%v'", err.Error())
+    t.Errorf("Error returned from #1 fMgr.CloseThisFile()\n"+
+      "Error='%v'", err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
   }
 
   expectedStr := "Test Write File. Do NOT alter the contents of this file."
@@ -1103,6 +1139,126 @@ func TestFileMgr_WriteStrToFile_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error Deleting File: %v. Error returned by fMgr2.DeleteThisFile(). "+
       "Error='%v'", fMgr2.GetAbsolutePathFileName(), err.Error())
+  }
+
+}
+
+func TestFileMgr_WriteStrToFile_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  filePath := fh.AdjustPathSlash(
+    "../checkfiles/checkfiles03/TestFileMgr_WriteStrToFile_03.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr(filePath).\n"+
+      "filePathName='%v\nError='%v'\n", filePath, err.Error())
+    return
+  }
+
+  err = fMgr.DeleteThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned by #1 fMgr.DeleteThisFile()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  err = fMgr.CreateThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.CreateThisFile().\n"+
+      "filePathName='%v'\nError='%v'\n",
+      filePath, err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned from #1 fMgr.CloseThisFile()\n"+
+      "Error='%v'", err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  expectedStr := "Damn the torpedoes, full speed ahead!"
+
+  lExpectedStr := len(expectedStr)
+
+  bytesWritten, err := fMgr.WriteStrToFile(expectedStr)
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.WriteStrToFile(expectedStr)\n"+
+      "expectedStr='%v'\nError='%v'\n", expectedStr, err.Error())
+    _ = fMgr.CloseThisFile()
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned from #1 fMgr.CloseThisFile().\n"+
+      "Error='%v'\n", err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  bytesRead, err := fMgr.ReadAllFile()
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.ReadAllFile().\n"+
+      "filePathName='%v'\nError='%v'\n",
+      fMgr.absolutePathFileName, err.Error())
+    _ = fMgr.CloseThisFile()
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  if lExpectedStr != bytesWritten {
+    t.Errorf("Error: Length of string written NOT equal to Bytes Read!\n"+
+      "Length of written string='%v'.\nActual Bytes Read='%v'\n",
+      lExpectedStr, bytesWritten)
+  }
+
+  actualStr := string(bytesRead)
+
+  if lExpectedStr != len(actualStr) {
+    t.Errorf("Error: Length of actual string read is NOT equal to length "+
+      "of string written.\n"+
+      "lExpectedStr='%v'\nlen(actualStr)='%v'\n",
+      lExpectedStr, len(actualStr))
+  }
+
+  if expectedStr != actualStr {
+    t.Errorf("Error: expectedStr written='%v'\n"+
+      "Actual string read='%v'\n",
+      expectedStr, actualStr)
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned by #2 fMgr.CloseThisFile()\n"+
+      "Error='%v'", err.Error())
+  }
+
+  err = fMgr.DeleteThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned from #2 fMgr.DeleteThisFile().\n"+
+      "Error='%v'", err.Error())
+  }
+
+  doesFileExist := fh.DoesFileExist(filePath)
+
+  if doesFileExist {
+    t.Errorf("Error: Failed to DELETE fileNameExt='%v'\n",
+      fMgr.absolutePathFileName)
   }
 
 }
