@@ -1543,65 +1543,40 @@ func (fMgr *FileMgr) CopyFileToDirByLinkByIo(dir DirMgr) error {
 
   ePrefix := "FileMgr.CopyFileToDirByLinkByIo() "
 
-  err := fMgr.IsFileMgrValid("")
+  fMgr.dataMutex.Lock()
+
+  fMgrHlpr := fileMgrHelper{}
+
+  fMgrDest,
+    err := fMgrHlpr.copyFileToDirSetup(
+    fMgr,
+    dir,
+    ePrefix)
+
+  if err != nil {
+    fMgr.dataMutex.Unlock()
+    return err
+  }
+
+  err = FileHelper{}.CopyFileByLinkByIo(
+    fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+
+  fMgr.dataMutex.Unlock()
 
   if err != nil {
     return fmt.Errorf(ePrefix+
-      "This File Manager instance is INVALID!\n"+
-      "Error='%v'\n", err.Error())
+      "Error returned from FileHelper{}.CopyFileByLinkByIo("+
+      "fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)\n"+
+      "fMgr.absolutePathFileName='%v'\n"+
+      "fMgrDest.absolutePathFileName='%v'\n"+
+      "Error='%v'\n",
+      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName, err.Error())
   }
 
-  fileDoesExist, err := fMgr.DoesThisFileExist()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Non-Path Error returned by fMgr.DoesThisFileExist()\n"+
-      "fMgr='%v'\nError='%v'\n",
-      fMgr.GetAbsolutePathFileName(), err.Error())
-  }
-
-  if !fileDoesExist {
-    return fmt.Errorf(ePrefix+
-      "This File Manager file DOES NOT EXIST!\n"+
-      "FileName='%v'\n",
-      fMgr.absolutePathFileName)
-  }
-
-  err = dir.IsDirMgrValid("")
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error: Input parmater dir is INVALID!\n"+
-      "Error='%v'", err.Error())
-  }
-
-  newFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dir, fMgr.fileNameExt)
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dir, "+
-      "fMgr.fileNameExt)\n"+
-      "dir.absolutePath='%v'\nfMgr.fileNameExt='%v'\nError='%v'\n",
-      dir.absolutePath, fMgr.fileNameExt, err.Error())
-  }
-
-  if fMgr.EqualAbsPaths(&newFMgr) {
-    return fmt.Errorf(ePrefix+
-      "Error: Source and Destination File are the same!\n"+
-      "Source File='%v'\nDestination File='%v'\n",
-      fMgr.absolutePathFileName, newFMgr.absolutePathFileName)
-  }
-
-  err = fMgr.CopyFileMgrByLinkByIo(&newFMgr)
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned from fMgr.CopyFileMgrByLinkByIo(&newFMgr)\n"+
-      "newFMgr='%v'\nError='%v'\n",
-      newFMgr.absolutePathFileName, err.Error())
-  }
-
-  return nil
+  return fMgrHlpr.copyFileToFMgrCleanUp(
+    &fMgrDest,
+    ePrefix,
+    "Copy File By Link By IO")
 }
 
 // CopyIn - Copies data from an incoming FileMgr object
