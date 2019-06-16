@@ -878,6 +878,117 @@ func TestFileMgr_WriteBytesToFile_03(t *testing.T) {
 
 }
 
+func TestFileMgr_WriteBytesToFile_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testText := "Now is the time for all good men to come to the aid of their country."
+
+  lenTestText := len(testText)
+
+  filePath := fh.AdjustPathSlash("../checkfiles/TestFileMgr_WriteBytesToFile_04.txt")
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePathName='%v'  Error='%v'", filePath, err.Error())
+    return
+  }
+
+  err = fMgr.DeleteThisFile()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from fMgr.DeleteThisFile().\n"+
+      "filePathName='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    return
+  }
+
+  bytesToWrite := []byte(testText)
+
+  numBytesWritten, err := fMgr.WriteBytesToFile(bytesToWrite)
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.WriteBytesToFile(bytesToWrite).\n"+
+      "Error='%v'\n", err.Error())
+    _ = fMgr.CloseThisFile()
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  err = fMgr.FlushBytesToDisk()
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.FlushBytesToDisk().\n"+
+      "Error='%v' ", err.Error())
+    _ = fMgr.CloseThisFile()
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  verifyBytesWritten := fMgr.GetFileBytesWritten()
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned by #2 fMgr.CloseThisFile().")
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  bytesRead := make([]byte, lenTestText+5)
+
+  numBytesRead, err := fMgr.ReadFileBytes(bytesRead)
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.ReadFileBytes(bytesRead).\n"+
+      "Error='%v'\n", err.Error())
+    _ = fMgr.CloseThisFile()
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned by #3 fMgr.CloseThisFile().")
+  }
+
+  err = fMgr.DeleteThisFile()
+
+  if err != nil {
+    t.Errorf("fMgr.DeleteThisFile() FAILED!\nError='%v'\n",
+      err.Error())
+  }
+
+  stringRead := string(bytesRead)
+
+  stringRead = stringRead[:len(bytesRead)-5]
+
+  if testText != stringRead {
+    t.Errorf("Error: Expected stringRead='%v'. Instead, stringRead='%v' ",
+      testText, stringRead)
+  }
+
+  if verifyBytesWritten != uint64(lenTestText) {
+    t.Errorf("Error: verifyBytesWritten != lenTestText. verifyBytesWritten='%v' "+
+      "lenTestText='%v' ", verifyBytesWritten, lenTestText)
+  }
+
+  if numBytesRead != lenTestText {
+    t.Errorf("Error: numBytesRead != lenTestText. numBytesRead='%v' "+
+      "lenTestText='%v' ", numBytesRead, lenTestText)
+  }
+
+  if numBytesRead != numBytesWritten {
+    t.Errorf("Error: numBytesRead != numBytesWritten. numBytesRead='%v' "+
+      "numBytesWritten='%v' ", numBytesRead, numBytesWritten)
+
+  }
+
+}
+
 func TestFileMgr_WriteStrToFile_01(t *testing.T) {
 
   fh := FileHelper{}
