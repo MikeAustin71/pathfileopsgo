@@ -505,37 +505,34 @@ func (fMgrHlpr *fileMgrHelper) openFile(
   err = nil
   ePrefixCurrMethod := "fileMgrHelper.openFile() "
 
+  //originalEPrefix := ePrefix
+
   if len(ePrefix) == 0 {
     ePrefix = ePrefixCurrMethod
+    //originalEPrefix = ePrefixCurrMethod
+
   } else {
     ePrefix = ePrefix + "- " + ePrefixCurrMethod
   }
 
   _,
-    err2 := fMgrHlpr.doesFileMgrPathFileExist(
+    err = fMgrHlpr.doesFileMgrPathFileExist(
     fMgr,
     PreProcPathCode.None(),
     ePrefix,
     "fMgr.absolutePathFileName")
 
-  if err2 != nil {
-    err = fmt.Errorf("%v", err2.Error())
+  if err != nil {
     return err
   }
 
-  if fMgr.filePtr != nil {
-    _ = fMgr.CloseThisFile()
+  err = fMgrHlpr.closeFile(fMgr, ePrefix)
+
+  if err != nil {
+    return err
   }
 
-  fMgr.filePtr = nil
-  fMgr.isFilePtrOpen = false
-  fMgr.fileAccessStatus.Empty()
-  fMgr.fileBytesWritten = 0
-  fMgr.buffBytesWritten = 0
-  fMgr.fileBufRdr = nil
-  fMgr.fileBufWriter = nil
-
-  err2 = fileAccessCtrl.IsValid()
+  err2 := fileAccessCtrl.IsValid()
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+"Parameter 'fileAccessCtrl' is INVALID!\n"+
@@ -595,10 +592,10 @@ func (fMgrHlpr *fileMgrHelper) openFile(
     fMgr.filePtr = nil
     fMgr.isFilePtrOpen = false
     fMgr.fileAccessStatus.Empty()
-    fMgr.fileBytesWritten = 0
-    fMgr.buffBytesWritten = 0
     fMgr.fileBufRdr = nil
     fMgr.fileBufWriter = nil
+    fMgr.fileBytesWritten = 0
+    fMgr.buffBytesWritten = 0
 
     err = fmt.Errorf(ePrefix+
       "Error opening file from os.OpenFile(): '%v' Error= '%v'\n",
@@ -620,13 +617,12 @@ func (fMgrHlpr *fileMgrHelper) openFile(
         _ = fMgr.filePtr.Close()
       }
 
-      fMgr.filePtr = nil
       fMgr.isFilePtrOpen = false
       fMgr.fileAccessStatus.Empty()
-      fMgr.fileBytesWritten = 0
-      fMgr.buffBytesWritten = 0
       fMgr.fileBufRdr = nil
       fMgr.fileBufWriter = nil
+      fMgr.fileBytesWritten = 0
+      fMgr.buffBytesWritten = 0
 
       err = fmt.Errorf("%v", err2.Error())
 
@@ -658,4 +654,128 @@ func (fMgrHlpr *fileMgrHelper) openFile(
   }
 
   return err
+}
+
+func (fMgrHlpr *fileMgrHelper) closeFile(
+  fMgr *FileMgr, ePrefix string) (err error) {
+
+  err = nil
+  ePrefixCurrMethod := "fileMgrHelper.openFile() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  _,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err != nil {
+
+    if fMgr.filePtr != nil {
+      _ = fMgr.filePtr.Close()
+    }
+
+    fMgr.isFilePtrOpen = false
+    fMgr.fileAccessStatus.Empty()
+    fMgr.fileBufRdr = nil
+    fMgr.fileBufWriter = nil
+    fMgr.fileBytesWritten = 0
+    fMgr.buffBytesWritten = 0
+
+    return err
+  }
+
+  if fMgr.filePtr == nil {
+    fMgr.isFilePtrOpen = false
+    fMgr.fileAccessStatus.Empty()
+    fMgr.fileBufRdr = nil
+    fMgr.fileBufWriter = nil
+    fMgr.fileBytesWritten = 0
+    fMgr.buffBytesWritten = 0
+    return err // err == nil
+  }
+
+  // fMgr.filePtr != nil
+  err = fMgrHlpr.flushBytesToDisk(fMgr, ePrefix)
+
+  if err != nil {
+
+    _ = fMgr.filePtr.Close()
+
+    fMgr.isFilePtrOpen = false
+    fMgr.fileAccessStatus.Empty()
+    fMgr.fileBufRdr = nil
+    fMgr.fileBufWriter = nil
+    fMgr.fileBytesWritten = 0
+    fMgr.buffBytesWritten = 0
+
+    return err
+  }
+
+  err2 := fMgr.filePtr.Close()
+
+  fMgr.filePtr = nil
+  fMgr.isFilePtrOpen = false
+  fMgr.fileAccessStatus.Empty()
+  fMgr.fileBufRdr = nil
+  fMgr.fileBufWriter = nil
+  fMgr.fileBytesWritten = 0
+  fMgr.buffBytesWritten = 0
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "Error returned by fMgr.filePtr.Close()\n"+
+      "Error='%v'\n", err2.Error())
+  }
+
+  return err
+}
+
+func (fMgrHlpr *fileMgrHelper) flushBytesToDisk(
+  fMgr *FileMgr, ePrefix string) error {
+
+  ePrefixCurrMethod := "fileMgrHelper.flushBytesToDisk() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  var err error
+
+  if fMgr.filePtr != nil &&
+    fMgr.fileBufWriter != nil &&
+    fMgr.buffBytesWritten > 0 {
+
+    err = fMgr.fileBufWriter.Flush()
+
+    if err != nil {
+      return fmt.Errorf(ePrefix+
+        "Error returned from fMgr.fileBufWriter.Flush().\n"+
+        "Error='%v' ",
+        err.Error())
+    }
+  }
+
+  if fMgr.filePtr != nil &&
+    fMgr.fileBytesWritten > 0 ||
+    fMgr.buffBytesWritten > 0 {
+
+    err = fMgr.filePtr.Sync()
+
+    if err != nil {
+      return fmt.Errorf(ePrefix+
+        "Error returned from fMgr.filePtr.Sync()\n"+
+        "Error='%v'", err.Error())
+    }
+  }
+
+  return nil
 }

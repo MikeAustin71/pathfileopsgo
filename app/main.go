@@ -23,12 +23,42 @@ func main() {
 
 }
 
+func mainTest73FileHelperFileExist() {
+
+  filePath := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\checkfiles"
+
+  dMgr, err := pf.DirMgr{}.New(filePath)
+
+  if err != nil {
+    fmt.Printf("Error returned by pf.DirMgr{}.New(filePath)\n"+
+      "Error='%v'", err.Error())
+    return
+  }
+
+  dirDoesExist, err := dMgr.DoesThisDirectoryExist()
+
+  fmt.Println("          mainTest73FileHelperFileExist                 ")
+  fmt.Println("********************************************************")
+  fmt.Println("    filePath: ", filePath)
+  fmt.Println("dirDoesExist: ", dirDoesExist)
+
+}
+
 func mainTest72OpenReadOnlyFile() {
   fh := pf.FileHelper{}
 
-  filePath := fh.AdjustPathSlash("../checkfiles/TestFileMgr_OpenThisFileReadOnly_03.txt")
+  rawPath := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\checkfiles\\TestFileMgr_OpenThisFileReadOnly_03.txt"
+  filePath, err := fh.MakeAbsolutePath(rawPath)
 
-  err := fh.DeleteDirFile(filePath)
+  if err != nil {
+    fmt.Printf("Error returned by fh.MakeAbsolutePath("+
+      "rawPath)\n"+
+      "rawPath='%v'\n"+
+      "Error='%v'\n", rawPath, err.Error())
+    return
+  }
+
+  err = fh.DeleteDirFile(filePath)
 
   if err != nil {
     fmt.Printf("Error returned from fh.DeleteDirFile(filePath)\n"+
