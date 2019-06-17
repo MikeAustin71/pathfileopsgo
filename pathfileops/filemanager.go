@@ -1056,9 +1056,17 @@ func (fMgr *FileMgr) CreateDir() error {
 
   ePrefix := "FileMgr.CreateDir() "
 
-  var err error
+  fMgr.dataMutex.Lock()
 
-  err = fMgr.IsFileMgrValid(ePrefix)
+  fMgrHlpr := fileMgrHelper{}
+  _,
+    err := fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  fMgr.dataMutex.Unlock()
 
   if err != nil {
     return err
@@ -1100,22 +1108,32 @@ func (fMgr *FileMgr) CreateDir() error {
 func (fMgr *FileMgr) CreateDirAndFile() error {
 
   ePrefix := "FileMgr:CreateDirAndFile() "
-  var err error
 
-  err = fMgr.IsFileMgrValid(ePrefix)
+  fMgr.dataMutex.Lock()
+
+  fMgrHlpr := fileMgrHelper{}
+  _,
+    err := fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  fMgr.dataMutex.Unlock()
 
   if err != nil {
     return err
   }
 
-  doesDirExist, err := fMgr.dMgr.DoesThisDirectoryExist()
+  filePathDoesExist, err :=
+    fMgr.dMgr.DoesThisDirectoryExist()
 
   if err != nil {
     return fmt.Errorf(ePrefix+"%v\n",
       err.Error())
   }
 
-  if !doesDirExist {
+  if !filePathDoesExist {
 
     err = fMgr.dMgr.MakeDir()
 
@@ -1134,7 +1152,28 @@ func (fMgr *FileMgr) CreateDirAndFile() error {
       fMgr.absolutePathFileName, err.Error())
   }
 
-  return nil
+  fMgr.dataMutex.Lock()
+
+  filePathDoesExist,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  fMgr.dataMutex.Unlock()
+
+  if err != nil {
+    return err
+  }
+
+  if !filePathDoesExist {
+    err = fmt.Errorf(ePrefix +
+      "Error: Attempted to verify existence of File Manager File.\n" +
+      "File Manager File DOES NOT EXIST!\n")
+  }
+
+  return err
 }
 
 // CreateThisFile - Creates the File identified by FileMgr.absolutePathFileName.
@@ -1152,26 +1191,39 @@ func (fMgr *FileMgr) CreateThisFile() error {
 
   ePrefix := "FileMgr:CreateThisFile() "
 
-  var err error
+  fMgr.dataMutex.Lock()
 
-  err = fMgr.IsFileMgrValid(ePrefix)
+  fMgrHlpr := fileMgrHelper{}
+
+  filePathDoesExist,
+    err := fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  fMgr.dataMutex.Unlock()
 
   if err != nil {
     return err
   }
 
-  doesDirExist, err := fMgr.dMgr.DoesThisDirectoryExist()
+  if !filePathDoesExist {
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v\n",
-      err.Error())
-  }
+    doesDirExist, err := fMgr.dMgr.DoesThisDirectoryExist()
 
-  if !doesDirExist {
+    if err != nil {
+      return fmt.Errorf(ePrefix+"%v\n",
+        err.Error())
+    }
 
-    return fmt.Errorf(ePrefix+
-      "Error: Directory Path DOES NOT EXIST!\n"+
-      "DirPath='%v'\n", fMgr.dMgr.GetAbsolutePath())
+    if !doesDirExist {
+
+      return fmt.Errorf(ePrefix+
+        "Error: Directory Path DOES NOT EXIST!\n"+
+        "DirPath='%v'\n", fMgr.dMgr.GetAbsolutePath())
+    }
+
   }
 
   //  OpenFile(name, O_RDWR|O_CREATE|O_TRUNC, 0666)
