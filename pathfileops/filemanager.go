@@ -1164,16 +1164,12 @@ func (fMgr *FileMgr) CreateThisFile() error {
     FOpenMode.ModeTruncate())
 
   if err != nil {
-    _ = fMgr.filePtr.Close()
-    fMgr.isFilePtrOpen = false
     return fmt.Errorf(ePrefix+"%v", err.Error())
   }
 
   fPermCfg, err := FilePermissionConfig{}.New("-rw-rw-rw-")
 
   if err != nil {
-    _ = fMgr.filePtr.Close()
-    fMgr.isFilePtrOpen = false
     return fmt.Errorf(ePrefix+"%v", err.Error())
   }
 
@@ -2918,38 +2914,8 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
 // method will return an error.
 //
 func (fMgr *FileMgr) OpenThisFileReadOnly() error {
+
   ePrefix := "FileMgr.OpenThisFileReadOnly() "
-  var err error
-  var filePathDoesExist bool
-
-  fMgr.dataMutex.Lock()
-
-  fMgrHelpr := fileMgrHelper{}
-  filePathDoesExist,
-    err = fMgrHelpr.doesFileMgrPathFileExist(
-    fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
-
-  fMgr.dataMutex.Unlock()
-
-  if err != nil {
-    return err
-  }
-
-  if !filePathDoesExist {
-
-    return fmt.Errorf(ePrefix+
-      "The file to be opened as 'Read-Only' does not Exist!\n"+
-      "(FileMgr) FileName: %v\n",
-      fMgr.absolutePathFileName)
-
-  }
-
-  if fMgr.filePtr != nil {
-    _ = fMgr.CloseThisFile()
-  }
 
   fileOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(), FOpenMode.ModeNone())
 
@@ -2969,13 +2935,11 @@ func (fMgr *FileMgr) OpenThisFileReadOnly() error {
     return fmt.Errorf(ePrefix+"%v", err.Error())
   }
 
-  err = fMgr.OpenThisFile(fileAccessCfg)
+  fMgrHlpr := fileMgrHelper{}
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+  err = fMgrHlpr.openFile(fMgr, fileAccessCfg, true, ePrefix)
 
-  return nil
+  return err
 }
 
 // OpenThisFileWriteOnly - Opens the current file for 'WriteOnly'
