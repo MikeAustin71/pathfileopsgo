@@ -1157,41 +1157,6 @@ func (fMgr *FileMgr) CreateThisFile() error {
 
   ePrefix := "FileMgr:CreateThisFile() "
 
-  fMgr.dataMutex.Lock()
-
-  fMgrHlpr := fileMgrHelper{}
-
-  filePathDoesExist,
-    err := fMgrHlpr.doesFileMgrPathFileExist(
-    fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
-
-  fMgr.dataMutex.Unlock()
-
-  if err != nil {
-    return err
-  }
-
-  if !filePathDoesExist {
-
-    doesDirExist, err := fMgr.dMgr.DoesThisDirectoryExist()
-
-    if err != nil {
-      return fmt.Errorf(ePrefix+"%v\n",
-        err.Error())
-    }
-
-    if !doesDirExist {
-
-      return fmt.Errorf(ePrefix+
-        "Error: Directory Path DOES NOT EXIST!\n"+
-        "DirPath='%v'\n", fMgr.dMgr.GetAbsolutePath())
-    }
-
-  }
-
   //  OpenFile(name, O_RDWR|O_CREATE|O_TRUNC, 0666)
   fOpenCfg, err := FileOpenConfig{}.New(
     FOpenType.TypeReadWrite(),
@@ -1218,17 +1183,15 @@ func (fMgr *FileMgr) CreateThisFile() error {
     return fmt.Errorf(ePrefix+"%v\n", err.Error())
   }
 
-  err = fMgr.OpenThisFile(fileAccessCfg)
+  fMgr.dataMutex.Lock()
 
-  if err != nil {
+  fMgrHlpr := fileMgrHelper{}
 
-    return fmt.Errorf(ePrefix+
-      "Error opening file from fMgr.OpenThisFile(fileAccessCfg).\n"+
-      "File Name='%v'\nError='%v'\n",
-      fMgr.absolutePathFileName, err.Error())
-  }
+  err = fMgrHlpr.openFile(fMgr, fileAccessCfg, false, ePrefix)
 
-  return nil
+  fMgr.dataMutex.Unlock()
+
+  return err
 }
 
 // DeleteThisFile - Deletes the file identified by FileMgr.absolutePathFileName
