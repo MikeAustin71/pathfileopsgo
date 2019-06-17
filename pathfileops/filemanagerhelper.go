@@ -137,6 +137,180 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
   return filePathDoesExist, nonPathError
 }
 
+// copyFileToDestFileMgrSetup - Helper method used by FileMgr
+// Copy To Destination File Manager routines. This method
+// performs standardized setup and error checking functions.
+//
+func (fMgrHlpr *fileMgrHelper) copyFileToDestFileMgrSetup(
+  fMgr,
+  fMgrDest *FileMgr,
+  ePrefix string) (err error) {
+
+  ePrefixCurrMethod := "fileMgrHelper.copyFileToDestFileMgrSetup() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  if fMgrDest == nil {
+    err = errors.New(ePrefix +
+      "Error: Destination File Manager (fMgrDest) is a nil pointer!\n")
+    return err
+  }
+
+  filePathDoesExist,
+    err2 := fMgrHlpr.doesFileMgrPathFileExist(fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err2 != nil {
+    err = err2
+    return err
+  }
+
+  if !filePathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "Error: This File Manager file does NOT exist!\n"+
+      "(FileMgr) File Name:'%v' ", fMgr.absolutePathFileName)
+    return err
+  }
+
+  if !fMgr.actualFileInfo.Mode().IsRegular() {
+    err = fmt.Errorf(ePrefix+
+      "Error: Source file is a Non-Regular "+
+      "File and cannot be copied.\n"+
+      "Copy Operation Aborted.\n"+
+      "Source File (FileMgr)='%v'\n",
+      fMgr.absolutePathFileName)
+    return err
+  }
+
+  if fMgr.actualFileInfo.Mode().IsDir() {
+    err = fmt.Errorf(ePrefix+
+      "Error: Source File File Manger exists, but "+
+      "it is classified as a Directory!\n"+
+      "Source File (FileMgr)='%v'\n",
+      fMgr.absolutePathFileName)
+
+    return err
+  }
+
+  err2 = fMgrDest.IsFileMgrValid("")
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "Error: The Destination FileMgr object is INVALID!\n"+
+      "Error='%v'\n",
+      err2.Error())
+    return err
+  }
+
+  filePathDoesExist, err2 =
+    fMgrDest.dMgr.DoesThisDirectoryExist()
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "Destination Directory Error: Non-Path Error returned by\n"+
+      "fMgrDest.dMgr.DoesThisDirectoryExist().\n"+
+      "fMgrDest.dMgr='%v'\n"+
+      "Error='%v'\n",
+      fMgrDest.dMgr.absolutePath, err2.Error())
+
+    return err
+  }
+
+  if !filePathDoesExist {
+
+    err2 = fMgrDest.dMgr.MakeDir()
+
+    if err2 != nil {
+      err = fmt.Errorf(ePrefix+
+        "Error: Attempted creation of destination directory FAILED!\n"+
+        "Destination Directory (fMgrDest.dMgr)='%v'\n"+
+        "Error= '%v'",
+        fMgrDest.dMgr.GetAbsolutePath(), err2.Error())
+
+      return err
+    }
+
+    filePathDoesExist,
+      err2 = fMgrDest.dMgr.DoesThisDirectoryExist()
+
+    if err2 != nil {
+      err = fmt.Errorf("Non-Path Error returned by "+
+        "fMgrDest.dMgr.DoesThisDirectoryExist()\n"+
+        "fMgrDest.dMgr='%v'\n"+
+        "Error='%v'\n",
+        fMgrDest.dMgr.absolutePath, err2.Error())
+
+      return err
+    }
+
+    if !filePathDoesExist {
+      err = fmt.Errorf(ePrefix+
+        "Error: Attempted verification of destination directory "+
+        "creation FAILED!\n"+
+        "Destination Directory DOES NOT EXIST!\n"+
+        "Destination Directory (fMgrDest.dMgr)='%v'\n",
+        fMgrDest.dMgr.absolutePath)
+
+      return err
+    }
+  }
+
+  filePathDoesExist,
+    err2 = fMgrDest.DoesThisFileExist()
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "Non-Path Error returned by fMgrDest.DoesThisFileExist().\n"+
+      "Error='%v'", err2.Error())
+
+    return err
+  }
+
+  if filePathDoesExist &&
+    fMgrDest.actualFileInfo.Mode().IsDir() {
+
+    err = fmt.Errorf(ePrefix+
+      "Error: Destination File (fMgrDest) exists, but "+
+      "it is classified as a Directory!\n"+
+      "Destination File (fMgrDest)='%v'\n",
+      fMgrDest.absolutePathFileName)
+
+    return err
+  }
+
+  if filePathDoesExist &&
+    !fMgrDest.actualFileInfo.Mode().IsRegular() {
+
+    err = fmt.Errorf(ePrefix+
+      "Error: Destination file is a Non-Regular "+
+      "File and cannot be the target of a copy operations.\n"+
+      "Copy Operation Aborted.\n"+
+      "Destination File (fMgrDest)='%v'\n",
+      fMgrDest.absolutePathFileName)
+
+    return err
+  }
+
+  if fMgr.EqualAbsPaths(fMgrDest) {
+    err = fmt.Errorf(ePrefix+
+      "Error: Source and Destination File are the same!\n"+
+      "Source File (FileMgr)='%v'\n"+
+      "Destination File='%v'\n",
+      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+
+    return err
+  }
+
+  err = nil
+  return err
+}
+
 // copyFileToDirSetup - Helper method used by FileMgr Copy
 // to Directory routines for standardized setup and error
 // checking.
@@ -148,45 +322,18 @@ func (fMgrHlpr *fileMgrHelper) copyFileToDirSetup(
 
   err = nil
   fMgrDest = FileMgr{}
-  ePrefixExtra := "fileMgrHelper.copyFileToDirSetup "
+  ePrefixCurrMethod := "fileMgrHelper.copyFileToDirSetup "
+
+  originalEPrefix := ePrefix
 
   if len(ePrefix) == 0 {
-    ePrefix = ePrefixExtra
+    ePrefix = ePrefixCurrMethod
+    originalEPrefix = ePrefixCurrMethod
   } else {
-    ePrefix = ePrefix + "- " + ePrefixExtra
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
   }
 
-  filePathDoesExist,
-    err2 := fMgrHlpr.doesFileMgrPathFileExist(
-    fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
-
-  if err2 != nil {
-    err = err2
-    return fMgrDest, err
-  }
-
-  if !filePathDoesExist {
-    err = fmt.Errorf(ePrefix+
-      "This File Manager file DOES NOT EXIST!\n"+
-      "(FileMgr) FileName='%v'\n",
-      fMgr.absolutePathFileName)
-
-    return fMgrDest, err
-  }
-
-  if !fMgr.actualFileInfo.Mode().IsRegular() {
-    err = fmt.Errorf(ePrefix+
-      "Error: Source file is a Non-Regular "+
-      "File and cannot be copied.\nFile='%v'\n",
-      fMgr.absolutePathFileName)
-
-    return fMgrDest, err
-  }
-
-  err2 = dir.IsDirMgrValid("")
+  err2 := dir.IsDirMgrValid("")
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
@@ -208,49 +355,8 @@ func (fMgrHlpr *fileMgrHelper) copyFileToDirSetup(
     return fMgrDest, err
   }
 
-  if fMgr.EqualAbsPaths(&fMgrDest) {
+  err = fMgrHlpr.copyFileToDestFileMgrSetup(fMgr, &fMgrDest, originalEPrefix)
 
-    err = fmt.Errorf(ePrefix+
-      "Error: Source and Destination File are the same!\n"+
-      "Source File='%v'\n Destination File='%v'\n",
-      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
-    fMgrDest = FileMgr{}
-    return fMgrDest, err
-  }
-
-  err2 = fMgrDest.dMgr.MakeDir()
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+
-      "Atempted creation of destination directory FAILED!\n"+
-      "dMgr='%v'\n"+
-      "Error= '%v'\n",
-      fMgrDest.dMgr.absolutePath, err2.Error())
-    fMgrDest = FileMgr{}
-    return fMgrDest, err
-  }
-
-  filePathDoesExist,
-    err2 = fMgrDest.DoesThisFileExist()
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+
-      "Non-Path Error Returned by fMgrDest.DoesThisFileExist().\n"+
-      "Error='%v'\n", err2.Error())
-    fMgrDest = FileMgr{}
-    return fMgrDest, err
-  }
-
-  if filePathDoesExist && !fMgrDest.actualFileInfo.Mode().IsRegular() {
-    err = fmt.Errorf(ePrefix+
-      "Error: Destination file exists and it is NOT a 'regular' file.\n"+
-      "Copy operation aborted!\nDestination File='%v'\n",
-      fMgrDest.absolutePathFileName)
-    fMgrDest = FileMgr{}
-    return fMgrDest, err
-  }
-
-  err = nil
   return fMgrDest, err
 }
 
