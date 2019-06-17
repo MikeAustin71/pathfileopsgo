@@ -360,6 +360,77 @@ func (fMgrHlpr *fileMgrHelper) copyFileToDirSetup(
   return fMgrDest, err
 }
 
+// copyFileToDestStrSetup - Helper method used by File Manager
+// copy strings. These copy operations format the copy destination
+// as a string. This method performs standardized setup and error
+// checking functions.
+//
+func (fMgrHlpr *fileMgrHelper) copyFileToDestStrSetup(
+  fMgr *FileMgr,
+  dstPathFileNameExt,
+  ePrefix string) (fMgrDest FileMgr, err error) {
+
+  fMgrDest = FileMgr{}
+  err = nil
+  ePrefixCurrMethod := "fileMgrHelper.copyFileToDestStrSetup "
+
+  originalEPrefix := ePrefix
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+    originalEPrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  var errCode int
+
+  errCode,
+    _,
+    dstPathFileNameExt =
+    FileHelper{}.isStringEmptyOrBlank(dstPathFileNameExt)
+
+  if errCode == -1 {
+    err = errors.New(ePrefix +
+      "Error: 'dstPathFileNameExt' is an Empty or " +
+      "Zero Length String!\n")
+    return fMgrDest, err
+  }
+
+  if errCode == -2 {
+    err = errors.New(ePrefix +
+      "Error: 'dstPathFileNameExt' consists entirely of " +
+      "blank spaces!\n")
+    return fMgrDest, err
+  }
+
+  var err2 error
+
+  fMgrDest, err2 =
+    FileMgr{}.NewFromPathFileNameExtStr(dstPathFileNameExt)
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "Error returned by FileMgr{}."+
+      "NewFromPathFileNameExtStr(dstPathFileNameExt).\n"+
+      "dstPathFileNameExt='%v'\nError='%v'\n",
+      dstPathFileNameExt, err2.Error())
+    fMgrDest = FileMgr{}
+    return fMgrDest, err
+  }
+
+  err = fMgrHlpr.copyFileToDestFileMgrSetup(
+    fMgr,
+    &fMgrDest,
+    originalEPrefix)
+
+  if err != nil {
+    fMgrDest = FileMgr{}
+  }
+
+  return fMgrDest, err
+}
+
 // copyFileToFMgrCleanUp - Helper method used to perform
 // clean up on Copy File Methods.
 func (fMgrHlpr *fileMgrHelper) copyFileToFMgrCleanUp(
