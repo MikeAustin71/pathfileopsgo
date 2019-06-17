@@ -1109,69 +1109,35 @@ func (fMgr *FileMgr) CreateDirAndFile() error {
 
   ePrefix := "FileMgr:CreateDirAndFile() "
 
-  fMgr.dataMutex.Lock()
-
-  fMgrHlpr := fileMgrHelper{}
-  _,
-    err := fMgrHlpr.doesFileMgrPathFileExist(
-    fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
-
-  fMgr.dataMutex.Unlock()
+  fOpenCfg, err := FileOpenConfig{}.New(
+    FOpenType.TypeReadWrite(),
+    FOpenMode.ModeCreate(),
+    FOpenMode.ModeTruncate())
 
   if err != nil {
-    return err
+    return fmt.Errorf(ePrefix+"%v", err.Error())
   }
 
-  filePathDoesExist, err :=
-    fMgr.dMgr.DoesThisDirectoryExist()
+  fPermCfg, err := FilePermissionConfig{}.New("-rw-rw-rw-")
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v\n",
-      err.Error())
+    return fmt.Errorf(ePrefix+"%v", err.Error())
   }
 
-  if !filePathDoesExist {
-
-    err = fMgr.dMgr.MakeDir()
-
-    if err != nil {
-      return fmt.Errorf(ePrefix+"- Directory Create Failed! %v\n", err.Error())
-    }
-
-  }
-
-  err = fMgr.CreateThisFile()
+  fileAccessCfg, err :=
+    FileAccessControl{}.New(fOpenCfg, fPermCfg)
 
   if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error creating File. "+
-      "fMgr.absolutePathFileName='%v' Error='%v' ",
-      fMgr.absolutePathFileName, err.Error())
+    return fmt.Errorf(ePrefix+"%v\n", err.Error())
   }
 
   fMgr.dataMutex.Lock()
 
-  filePathDoesExist,
-    err = fMgrHlpr.doesFileMgrPathFileExist(
-    fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
+  fMgrHlpr := fileMgrHelper{}
+
+  err = fMgrHlpr.openFile(fMgr, fileAccessCfg, true, ePrefix)
 
   fMgr.dataMutex.Unlock()
-
-  if err != nil {
-    return err
-  }
-
-  if !filePathDoesExist {
-    err = fmt.Errorf(ePrefix +
-      "Error: Attempted to verify existence of File Manager File.\n" +
-      "File Manager File DOES NOT EXIST!\n")
-  }
 
   return err
 }
@@ -2855,8 +2821,6 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
   ePrefix := "FileMgr.OpenThisFile() "
   var err error
 
-  fMgr.dataMutex.Lock()
-
   fMgrHelpr := fileMgrHelper{}
   _,
     err = fMgrHelpr.doesFileMgrPathFileExist(
@@ -2864,8 +2828,6 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
     PreProcPathCode.None(),
     ePrefix,
     "fMgr.absolutePathFileName")
-
-  fMgr.dataMutex.Unlock()
 
   if err != nil {
     return err
@@ -2886,7 +2848,6 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
   err = fileAccessCtrl.IsValid()
 
   if err != nil {
-
     return fmt.Errorf(ePrefix+"Input parameter 'fileAccessCtrl' is INVALID!\n"+
       "%v\n", err.Error())
   }
@@ -2907,7 +2868,6 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
     if err != nil {
       return fmt.Errorf(ePrefix+"%v", err.Error())
     }
-
   }
 
   fMgr.fileAccessStatus = fileAccessCtrl.CopyOut()
@@ -2919,11 +2879,7 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
     return fmt.Errorf(ePrefix+"%v\n", err.Error())
   }
 
-  fMgr.dataMutex.Lock()
-
   fMgr.filePtr, err = os.OpenFile(fMgr.absolutePathFileName, fOpenParm, fPermParm)
-
-  fMgr.dataMutex.Unlock()
 
   if err != nil {
     fMgr.filePtr = nil
@@ -2941,7 +2897,45 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
 
   fMgr.isFilePtrOpen = true
 
-  return nil
+  filePathDoesExist,
+    err = fMgrHelpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err != nil {
+    if fMgr.filePtr != nil {
+      _ = fMgr.filePtr.Close()
+    }
+    fMgr.filePtr = nil
+    fMgr.isFilePtrOpen = false
+    fMgr.fileAccessStatus.Empty()
+    fMgr.fileBytesWritten = 0
+    fMgr.buffBytesWritten = 0
+    fMgr.fileBufRdr = nil
+    fMgr.fileBufWriter = nil
+
+  } else if !filePathDoesExist {
+
+    err = fmt.Errorf(ePrefix +
+      "Error: Attempted to verify existence of File Manager File.\n" +
+      "File Manager File DOES NOT EXIST!\n")
+
+    if fMgr.filePtr != nil {
+      _ = fMgr.filePtr.Close()
+    }
+
+    fMgr.filePtr = nil
+    fMgr.isFilePtrOpen = false
+    fMgr.fileAccessStatus.Empty()
+    fMgr.fileBytesWritten = 0
+    fMgr.buffBytesWritten = 0
+    fMgr.fileBufRdr = nil
+    fMgr.fileBufWriter = nil
+  }
+
+  return err
 }
 
 // OpenThisFileReadOnly - Opens the file identified by the current
