@@ -439,85 +439,15 @@ func (fMgr *FileMgr) CopyFileMgrByLinkByIo(fMgrDest *FileMgr) error {
 
   fMgrHlpr := fileMgrHelper{}
 
-  filePathDoesExist,
-    err := fMgrHlpr.doesFileMgrPathFileExist(
-    fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
-
-  fMgr.dataMutex.Unlock()
+  err := fMgrHlpr.copyFileToDestFileMgrSetup(fMgr, fMgrDest, ePrefix)
 
   if err != nil {
+    fMgr.dataMutex.Unlock()
     return err
-  }
-
-  if fMgrDest == nil {
-    return errors.New(ePrefix +
-      "Error: Input parameter fMgrDest is a nil pointer!\n")
-  }
-
-  err = fMgrDest.IsFileMgrValid("")
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error: The Destination FileMgr object (input parameter 'fMgrDest') "+
-      "is INVALID!\n"+
-      "Error='%v'\n", err.Error())
-  }
-
-  if !filePathDoesExist {
-    return fmt.Errorf(ePrefix+
-      "Error: Source File DOES NOT EXIST!\n"+
-      "(FileMgr) Source File='%v'\n",
-      fMgr.absolutePathFileName)
-  }
-
-  if fMgr.EqualAbsPaths(fMgrDest) {
-    return fmt.Errorf(ePrefix+
-      "Error: Source and Destination File are the same!\n"+
-      "Source File='%v'\n"+
-      "Destination File='%v'\n",
-      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
-  }
-
-  if !fMgr.actualFileInfo.Mode().IsRegular() {
-    return fmt.Errorf(ePrefix+
-      "Error: Source file is a Non-Regular "+
-      "File and cannot be copied.\n"+
-      "(FileMgr) Source File='%v'",
-      fMgr.absolutePathFileName)
-  }
-
-  err = fMgrDest.dMgr.MakeDir()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Atempted creation of destination directory FAILED!\n"+
-      "Error= '%v'\n",
-      err.Error())
-  }
-
-  filePathDoesExist, err = fMgrDest.DoesThisFileExist()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned by fMgrDest.DoesThisFileExist().\n"+
-      "Error= '%v'\n", err.Error())
-  }
-
-  if filePathDoesExist && !fMgrDest.actualFileInfo.Mode().IsRegular() {
-    return fmt.Errorf(ePrefix+
-      "Error: Destination file exists and it is NOT a 'regular' file. "+
-      "Cannot Copy to a Non-Regular File. Copy operation aborted!\n"+
-      "(fMgrDest) Destination File='%v'\n",
-      fMgrDest.absolutePathFileName)
   }
 
   // See Reference:
   // https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
-
-  fMgr.dataMutex.Lock()
 
   err = FileHelper{}.CopyFileByLinkByIo(fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
 
@@ -533,24 +463,10 @@ func (fMgr *FileMgr) CopyFileMgrByLinkByIo(fMgrDest *FileMgr) error {
       fMgr.absolutePathFileName, fMgrDest.absolutePathFileName, err.Error())
   }
 
-  filePathDoesExist, err = fMgrDest.DoesThisFileExist()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned from fMgrDest.DoesThisFileExist().\n"+
-      "fMgrDest.absolutePathFileName='%v'\nError='%v'\n",
-      fMgrDest.absolutePathFileName, err.Error())
-  }
-
-  if !filePathDoesExist {
-    return fmt.Errorf(ePrefix+
-      "Error: After attempted file copy to destination file, (fMgrDest) "+
-      "Destination file does NOT exist!\n"+
-      "fMgrDest.absolutePathFileName='%v'\n",
-      fMgrDest.absolutePathFileName)
-  }
-
-  return nil
+  return fMgrHlpr.copyFileToFMgrCleanUp(
+    fMgrDest,
+    ePrefix,
+    "Copy File By Link By IO")
 }
 
 // CopyFileStrByIo - Copies the file represented by the current File
