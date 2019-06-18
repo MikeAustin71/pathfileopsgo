@@ -3,7 +3,6 @@ package main
 import (
   pf "../pathfileops"
   "fmt"
-  fp "path/filepath"
 )
 
 /*
@@ -19,10 +18,41 @@ import (
 
 func main() {
 
-  mainTest72OpenReadOnlyFile()
+  maintTest75FileMgrGetTimeVal()
 
 }
 
+func maintTest75FileMgrGetTimeVal() {
+
+  filePath :=
+    "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest\\levelfilesfortest\\level_0_2_test.txt"
+
+  fMgr, err := pf.FileMgr{}.New(filePath)
+
+  if err != nil {
+    fmt.Printf("Error returned  by pf.FileMgr{}.New(filePath)\n"+
+      "filePath='%v'\n"+
+      "Error='%v'\n", filePath, err.Error())
+    return
+  }
+
+  fileModTime, err := fMgr.GetFileModTime()
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.GetFileModTime()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  timeFormatSpec := "2006-01-02 15:04:05 -0700 MST"
+
+  fmt.Println("          maintTest75FileMgrGetTimeVal                 ")
+  fmt.Println("********************************************************")
+  fmt.Println("    fileModTime: ", fileModTime.Format(timeFormatSpec))
+
+}
+
+/*
 func mainTest73FileHelperFileExist() {
 
   filePath := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\checkfiles"
@@ -171,14 +201,13 @@ func mainTest70AdjustPathStr() {
 func mainTest69CleanDirStr() {
 
   fh := pf.FileHelper{}
-  /*
-     testPathFile := "/d/gowork/src/MikeAustin71/pathfileopsgo/pathfileops/" +
-       "levelfilesfortest/level_0_0_test.txt"
 
-      testPathFile := "d:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\pathfileops" +
-        "\\levelfilesfortest\\level_0_0_test.txt"
+  //   testPathFile := "/d/gowork/src/MikeAustin71/pathfileopsgo/pathfileops/" +
+  //     "levelfilesfortest/level_0_0_test.txt"
 
-  */
+  //    testPathFile := "d:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\pathfileops" +
+  //      "\\levelfilesfortest\\level_0_0_test.txt"
+
 
   testPathFile := "../filesfortest//levelfilesfortest/level_01_dir/level_1_1_test.txt"
 
@@ -214,3 +243,5 @@ func mainTest69CleanDirStr() {
   fmt.Println("Absolute Path: ", absFilePath)
   fmt.Println()
 }
+
+*/

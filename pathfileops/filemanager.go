@@ -1598,14 +1598,31 @@ func (fMgr *FileMgr) GetFileModTime() (time.Time, error) {
 
   ePrefix := "FileMgr.GetFileModTime() "
 
-  err := fMgr.ResetFileInfo()
+  fMgrHelpr := fileMgrHelper{}
+  var err error
+  filePathDoesExist := false
+  modTime := time.Time{}
 
-  if err != nil {
-    return time.Time{},
-      fmt.Errorf(ePrefix+"%v\n", err.Error())
+  fMgr.dataMutex.Lock()
+
+  filePathDoesExist,
+    err = fMgrHelpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err == nil && filePathDoesExist {
+    modTime = fMgr.actualFileInfo.ModTime()
   }
 
-  return fMgr.actualFileInfo.ModTime(), nil
+  fMgr.dataMutex.Unlock()
+
+  if err != nil {
+    return time.Time{}, err
+  }
+
+  return modTime, nil
 }
 
 // GetFileModTimeStr - Returns the time of the last file modification as
