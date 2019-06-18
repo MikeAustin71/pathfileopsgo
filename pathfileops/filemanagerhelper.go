@@ -706,16 +706,20 @@ func (fMgrHlpr *fileMgrHelper) closeFile(
   errs := make([]error, 0)
 
   var err2, err3 error
-  _,
+  fileDoesExist := false
+
+  fileDoesExist,
     err2 = fMgrHlpr.doesFileMgrPathFileExist(
     fMgr,
     PreProcPathCode.None(),
     ePrefix,
     "fMgr.absolutePathFileName")
 
-  if err2 != nil {
+  if err2 != nil || !fileDoesExist {
 
-    errs = append(errs, err2)
+    if err2 != nil {
+      errs = append(errs, err2)
+    }
 
     err2 = fMgrHlpr.flushBytesToDisk(fMgr, ePrefix)
 
@@ -817,9 +821,7 @@ func (fMgrHlpr *fileMgrHelper) flushBytesToDisk(
     }
   }
 
-  if fMgr.filePtr != nil &&
-    (fMgr.fileBytesWritten > 0 ||
-      fMgr.buffBytesWritten > 0) {
+  if fMgr.filePtr != nil {
 
     err3 = fMgr.filePtr.Sync()
 
