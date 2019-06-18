@@ -34,6 +34,7 @@ func TestFileAccessControl_New_02(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   _, err = FileAccessControl{}.New(fOpenCfg, fPermCfg)

@@ -86,6 +86,7 @@ func TestFileAccessControl_CopyOut_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess2 := fAccess1.CopyOut()
@@ -125,6 +126,7 @@ func TestFileAccessControl_Empty_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
@@ -132,6 +134,7 @@ func TestFileAccessControl_Empty_01(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -139,6 +142,7 @@ func TestFileAccessControl_Empty_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess2 := FileAccessControl{}
@@ -183,6 +187,7 @@ func TestFileAccessControl_Empty_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
@@ -190,6 +195,7 @@ func TestFileAccessControl_Empty_02(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -197,6 +203,7 @@ func TestFileAccessControl_Empty_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   if !fAccess1.isInitialized {
@@ -236,6 +243,7 @@ func TestFileAccessControl_Equal_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
@@ -244,6 +252,7 @@ func TestFileAccessControl_Equal_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fOpenCfg = FileOpenConfig{}.New(). "+
       "Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -251,6 +260,7 @@ func TestFileAccessControl_Equal_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   textCode2 := "--w--w--w-"
@@ -260,6 +270,7 @@ func TestFileAccessControl_Equal_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg2, err := FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
@@ -268,6 +279,7 @@ func TestFileAccessControl_Equal_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fOpenCfg2 = FileOpenConfig{}.New(). "+
       "Error='%v' \n", err.Error())
+    return
   }
 
   fAccess2, err := FileAccessControl{}.New(fOpenCfg2, fPermCfg2)
@@ -275,6 +287,7 @@ func TestFileAccessControl_Equal_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   if fAccess2.Equal(&fAccess1) {
@@ -296,6 +309,7 @@ func TestFileAccessControl_Equal_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
@@ -303,6 +317,7 @@ func TestFileAccessControl_Equal_02(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -310,6 +325,7 @@ func TestFileAccessControl_Equal_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   textCode2 := "-rw-rw-rw-"
@@ -319,6 +335,7 @@ func TestFileAccessControl_Equal_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode2). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fAccess2, err := FileAccessControl{}.New(fOpenCfg, fPermCfg2)
@@ -326,6 +343,7 @@ func TestFileAccessControl_Equal_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fAccess2 = FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg2). Error='%v' \n", err.Error())
+    return
   }
 
   if fAccess1.Equal(&fAccess2) {
@@ -344,6 +362,7 @@ func TestFileAccessControl_GetCompositeFileOpenCode_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
@@ -351,6 +370,7 @@ func TestFileAccessControl_GetCompositeFileOpenCode_01(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -358,6 +378,7 @@ func TestFileAccessControl_GetCompositeFileOpenCode_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   accessFileOpenCode, err := fAccess1.GetCompositeFileOpenCode()
@@ -365,6 +386,7 @@ func TestFileAccessControl_GetCompositeFileOpenCode_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fAccess1.GetCompositeFileOpenCode() "+
       "Error='%v' \n", err.Error())
+    return
   }
 
   originalFileOpenCode, err := fOpenCfg.GetCompositeFileOpenCode()
@@ -372,6 +394,7 @@ func TestFileAccessControl_GetCompositeFileOpenCode_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.GetCompositeFileOpenCode() "+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if originalFileOpenCode != accessFileOpenCode {
@@ -392,6 +415,7 @@ func TestFileAccessControl_GetCompositeFileOpenCode_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
@@ -399,6 +423,7 @@ func TestFileAccessControl_GetCompositeFileOpenCode_02(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -406,6 +431,7 @@ func TestFileAccessControl_GetCompositeFileOpenCode_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   accessFileOpenCode, err := fAccess1.GetCompositeFileOpenCode()
@@ -413,6 +439,7 @@ func TestFileAccessControl_GetCompositeFileOpenCode_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fAccess1.GetCompositeFileOpenCode() "+
       "Error='%v' \n", err.Error())
+    return
   }
 
   originalFileOpenCode, err := fOpenCfg.GetCompositeFileOpenCode()
@@ -420,6 +447,7 @@ func TestFileAccessControl_GetCompositeFileOpenCode_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.GetCompositeFileOpenCode() "+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if originalFileOpenCode != accessFileOpenCode {
@@ -453,6 +481,7 @@ func TestFileAccessControl_GetCompositeFileOpenCode_04(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
@@ -460,6 +489,7 @@ func TestFileAccessControl_GetCompositeFileOpenCode_04(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -467,6 +497,7 @@ func TestFileAccessControl_GetCompositeFileOpenCode_04(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1.fileOpenCodes.fileOpenType = FileOpenType(-99)
@@ -490,6 +521,7 @@ func TestFileAccessControl_GetCompositePermissionCode01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
@@ -497,6 +529,7 @@ func TestFileAccessControl_GetCompositePermissionCode01(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -504,6 +537,7 @@ func TestFileAccessControl_GetCompositePermissionCode01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fMode, err := fAccess1.GetCompositePermissionMode()
@@ -511,6 +545,7 @@ func TestFileAccessControl_GetCompositePermissionCode01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fAccess1.GetCompositePermissionMode(). "+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if expectedFMode != fMode {
@@ -529,6 +564,7 @@ func TestFileAccessControl_GetCompositePermissionCode02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
@@ -536,6 +572,7 @@ func TestFileAccessControl_GetCompositePermissionCode02(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -543,6 +580,7 @@ func TestFileAccessControl_GetCompositePermissionCode02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fMode, err := fAccess1.GetCompositePermissionMode()
@@ -550,6 +588,7 @@ func TestFileAccessControl_GetCompositePermissionCode02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fAccess1.GetCompositePermissionMode(). "+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if expectedFMode != fMode {
@@ -567,6 +606,7 @@ func TestFileAccessControl_GetCompositePermissionCode03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
@@ -574,6 +614,7 @@ func TestFileAccessControl_GetCompositePermissionCode03(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -581,6 +622,7 @@ func TestFileAccessControl_GetCompositePermissionCode03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1.permissions = FilePermissionConfig{}
@@ -590,6 +632,7 @@ func TestFileAccessControl_GetCompositePermissionCode03(t *testing.T) {
   if err == nil {
     t.Error("Expected an error return from fAccess1.GetCompositePermissionMode() " +
       "because fAcess1.permissions was uninitialized. However, NO ERROR WAS RETURNED! \n")
+    return
   }
 
 }
@@ -603,6 +646,7 @@ func TestFileAccessControl_GetCompositePermissionCode04(t *testing.T) {
   if err == nil {
     t.Error("Expected error return from fAccess1.GetCompositePermissionMode() " +
       "because it is uninitialized. However, NO ERROR WAS RETURNED!\n")
+    return
   }
 
 }
@@ -616,6 +660,7 @@ func TestFileAccessControl_GetCompositePermissionCode05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
@@ -623,6 +668,7 @@ func TestFileAccessControl_GetCompositePermissionCode05(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -630,6 +676,7 @@ func TestFileAccessControl_GetCompositePermissionCode05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1.permissions.isInitialized = false
@@ -654,6 +701,7 @@ func TestFileAccessControl_GetCompositePermissionModeText_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
@@ -661,6 +709,7 @@ func TestFileAccessControl_GetCompositePermissionModeText_01(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -668,6 +717,7 @@ func TestFileAccessControl_GetCompositePermissionModeText_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fModeText := fAccess1.GetCompositePermissionModeText()
@@ -689,6 +739,7 @@ func TestFileAccessControl_GetCompositePermissionModeText_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
@@ -696,6 +747,7 @@ func TestFileAccessControl_GetCompositePermissionModeText_02(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -703,6 +755,7 @@ func TestFileAccessControl_GetCompositePermissionModeText_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fModeText := fAccess1.GetCompositePermissionModeText()
@@ -723,6 +776,7 @@ func TestFileAccessControl_GetCompositePermissionModeText_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
@@ -730,6 +784,7 @@ func TestFileAccessControl_GetCompositePermissionModeText_03(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -737,6 +792,7 @@ func TestFileAccessControl_GetCompositePermissionModeText_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1.permissions = FilePermissionConfig{}
@@ -772,6 +828,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
@@ -779,6 +836,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_01(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -786,6 +844,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fOpenCode, fPermCode, err := fAccess1.GetFileOpenAndPermissionCodes()
@@ -793,6 +852,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fAccess1.GetFileOpenAndPermissionCodes() "+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if fOpenCode != int(FOpenType.TypeReadWrite()) {
@@ -815,6 +875,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
@@ -822,6 +883,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_02(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -829,6 +891,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fOpenCode, fPermCode, err := fAccess1.GetFileOpenAndPermissionCodes()
@@ -836,6 +899,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fAccess1.GetFileOpenAndPermissionCodes() "+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if fOpenCode != int(FOpenType.TypeReadOnly()) {
@@ -858,6 +922,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
@@ -865,6 +930,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_03(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -872,6 +938,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fOpenCode, fPermCode, err := fAccess1.GetFileOpenAndPermissionCodes()
@@ -879,6 +946,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fAccess1.GetFileOpenAndPermissionCodes() "+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if fOpenCode != int(FOpenType.TypeWriteOnly()) {
@@ -901,6 +969,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_04(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
@@ -908,6 +977,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_04(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -915,6 +985,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_04(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1.fileOpenCodes = FileOpenConfig{}
@@ -937,6 +1008,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeWriteOnly(),
@@ -944,6 +1016,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_05(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -951,6 +1024,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1.permissions = FilePermissionConfig{}
@@ -986,6 +1060,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_07(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
@@ -993,6 +1068,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_07(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -1000,6 +1076,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_07(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1.fileOpenCodes.fileOpenType = FileOpenType(-999)
@@ -1022,6 +1099,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_08(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
@@ -1029,6 +1107,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_08(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -1036,6 +1115,7 @@ func TestFileAccessControl_GetFileOpenAndPermissionCodes_08(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1.permissions.fileMode = os.FileMode(999999)
@@ -1059,6 +1139,7 @@ func TestFileAccessControl_GetFileOpenConfig_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
@@ -1066,6 +1147,7 @@ func TestFileAccessControl_GetFileOpenConfig_01(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -1073,6 +1155,7 @@ func TestFileAccessControl_GetFileOpenConfig_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1FileOpenCfg, err := fAccess1.GetFileOpenConfig()
@@ -1080,6 +1163,7 @@ func TestFileAccessControl_GetFileOpenConfig_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fAccess1.GetFileOpenConfig() "+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if !fOpenCfg.Equal(&fAccess1FileOpenCfg) {
@@ -1103,6 +1187,7 @@ func TestFileAccessControl_GetFileOpenConfig_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
@@ -1110,6 +1195,7 @@ func TestFileAccessControl_GetFileOpenConfig_02(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -1117,6 +1203,7 @@ func TestFileAccessControl_GetFileOpenConfig_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1.permissions = FilePermissionConfig{}
@@ -1140,6 +1227,7 @@ func TestFileAccessControl_GetFileOpenConfig_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
@@ -1147,6 +1235,7 @@ func TestFileAccessControl_GetFileOpenConfig_03(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -1154,6 +1243,7 @@ func TestFileAccessControl_GetFileOpenConfig_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1.fileOpenCodes = FileOpenConfig{}
@@ -1191,6 +1281,7 @@ func TestFileAccessControl_GetFilePermissionConfig_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
@@ -1198,6 +1289,7 @@ func TestFileAccessControl_GetFilePermissionConfig_01(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -1205,6 +1297,7 @@ func TestFileAccessControl_GetFilePermissionConfig_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fActualPermCfg, err := fAccess1.GetFilePermissionConfig()
@@ -1212,6 +1305,7 @@ func TestFileAccessControl_GetFilePermissionConfig_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fAccess1.GetFilePermissionConfig() "+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if !fPermCfg.Equal(&fActualPermCfg) {
@@ -1235,6 +1329,7 @@ func TestFileAccessControl_GetFilePermissionConfig_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
@@ -1242,6 +1337,7 @@ func TestFileAccessControl_GetFilePermissionConfig_02(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -1249,6 +1345,7 @@ func TestFileAccessControl_GetFilePermissionConfig_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1.fileOpenCodes = FileOpenConfig{}
@@ -1271,6 +1368,7 @@ func TestFileAccessControl_GetFilePermissionConfig_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(),
@@ -1278,6 +1376,7 @@ func TestFileAccessControl_GetFilePermissionConfig_03(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
@@ -1285,6 +1384,7 @@ func TestFileAccessControl_GetFilePermissionConfig_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
       "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+    return
   }
 
   fAccess1.permissions = FilePermissionConfig{}
