@@ -1213,7 +1213,19 @@ func (fMgr *FileMgr) DoesFileExist() bool {
 
   ePrefix := "FileMgr.DoesFileExist() "
 
-  err := fMgr.IsFileMgrValid(ePrefix)
+  var err error
+  fMgrHlpr := fileMgrHelper{}
+
+  fMgr.dataMutex.Lock()
+
+  _,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  fMgr.dataMutex.Unlock()
 
   if err != nil {
     return false
