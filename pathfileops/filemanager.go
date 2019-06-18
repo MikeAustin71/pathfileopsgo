@@ -1414,40 +1414,15 @@ func (fMgr *FileMgr) FlushBytesToDisk() error {
   ePrefix := "FileMgr.FlushBytesToDisk() "
 
   var err error
+  fMgrHlpr := fileMgrHelper{}
 
-  if fMgr.filePtr != nil &&
-    fMgr.fileBufWriter != nil &&
-    fMgr.buffBytesWritten > 0 {
+  fMgr.dataMutex.Lock()
 
-    fMgr.dataMutex.Lock()
+  err = fMgrHlpr.flushBytesToDisk(fMgr, ePrefix)
 
-    err = fMgr.fileBufWriter.Flush()
+  fMgr.dataMutex.Unlock()
 
-    fMgr.dataMutex.Unlock()
-
-    if err != nil {
-      return fmt.Errorf(ePrefix+"Error returned from fMgr.fileBufWriter.Flush(). Error='%v' ", err.Error())
-    }
-
-  }
-
-  if fMgr.filePtr != nil &&
-    fMgr.fileBytesWritten > 0 ||
-    fMgr.buffBytesWritten > 0 {
-
-    fMgr.dataMutex.Lock()
-
-    err = fMgr.filePtr.Sync()
-
-    fMgr.dataMutex.Unlock()
-
-    if err != nil {
-      return fmt.Errorf(ePrefix+"Error returned from fMgr.filePtr.Sync() Error='%v'", err.Error())
-    }
-
-  }
-
-  return nil
+  return err
 }
 
 // GetAbsolutePath - Returns the absolute path
