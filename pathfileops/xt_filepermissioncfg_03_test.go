@@ -21,6 +21,7 @@ func TestFilePermissionConfig_IsValid_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode(osFMode). "+
       "Error='%v' ", err.Error())
+    return
   }
 
   fPerm.isInitialized = false
@@ -50,6 +51,7 @@ func TestFilePermissionConfig_IsValid_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode(osFMode). "+
       "Error='%v' ", err.Error())
+    return
   }
 
   fPerm.fileMode = os.FileMode(01000)
@@ -79,6 +81,7 @@ func TestFilePermissionConfig_IsValid_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode(osFMode). "+
       "Error='%v' ", err.Error())
+    return
   }
 
   err = fPerm.IsValid()
@@ -99,6 +102,7 @@ func TestFilePermissionConfig_New_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(permissionStr) "+
       "Error='%v' ", err.Error())
+    return
   }
 
   actualTextCode, err := fPermCfg.GetPermissionTextCode()
@@ -148,6 +152,7 @@ func TestFilePermissionConfig_NewByComponents_01(t *testing.T) {
     t.Errorf("Error returned by FilePermissionConfig{}.NewByComponents(entryType, "+
       "permissionStr). entrType='%s' permissionStr='%s' Error='%v' ",
       entryType.String(), permissionStr, err.Error())
+    return
   }
 
   actualPermissionTxt, err := fPermCfg.GetPermissionTextCode()
@@ -155,6 +160,7 @@ func TestFilePermissionConfig_NewByComponents_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg.GetPermissionTextCode(). "+
       "Error='%v' ", err.Error())
+    return
   }
 
   if expectedPermissionTxt != actualPermissionTxt {
@@ -184,6 +190,7 @@ func TestFilePermissionConfig_NewByComponents_02(t *testing.T) {
     t.Errorf("Error returned by FilePermissionConfig{}.NewByComponents(entryType, "+
       "permissionStr). entrType='%s' permissionStr='%s' Error='%v' ",
       entryType.String(), permissionStr, err.Error())
+    return
   }
 
   actualPermissionTxt, err := fPermCfg.GetPermissionTextCode()
@@ -221,6 +228,7 @@ func TestFilePermissionConfig_NewByComponents_03(t *testing.T) {
     t.Errorf("Error returned by FilePermissionConfig{}.NewByComponents(entryType, "+
       "permissionStr). entrType='%s' permissionStr='%s' Error='%v' ",
       entryType.String(), permissionStr, err.Error())
+    return
   }
 
   actualPermissionTxt, err := fPermCfg.GetPermissionTextCode()
@@ -263,6 +271,7 @@ func TestFilePermissionConfig_NewByFileMode_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode"+
       "(os.FileMode(0666)). Error='%v' ", err.Error())
+    return
   }
 
   actualFileMode, err := fPerm.GetCompositePermissionMode()
@@ -270,6 +279,7 @@ func TestFilePermissionConfig_NewByFileMode_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fPerm.GetCompositePermissionMode()"+
       "Error='%v' ", err.Error())
+    return
   }
 
   if expectedFileMode != actualFileMode {
@@ -297,13 +307,14 @@ func TestFilePermissionConfig_NewByFileMode_02(t *testing.T) {
 func TestFilePermissionConfig_NewByOctalDigits_01(t *testing.T) {
 
   expectedTextCode := "-rw-rw-rw-"
-  octalCode := int(666)
+  octalCode := 666 // int
 
   fPerm, err := FilePermissionConfig{}.NewByOctalDigits(octalCode)
 
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}."+
       "NewByOctalDigits(octalCode) Error='%v'", err.Error())
+    return
   }
 
   actualTextCode, err := fPerm.GetPermissionTextCode()
@@ -323,13 +334,14 @@ func TestFilePermissionConfig_NewByOctalDigits_01(t *testing.T) {
 func TestFilePermissionConfig_NewByOctalDigits_02(t *testing.T) {
 
   expectedTextCode := "drw-rw-rw-"
-  octalCode := int(20000000666)
+  octalCode := 20000000666 //int
 
   fPerm, err := FilePermissionConfig{}.NewByOctalDigits(octalCode)
 
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}."+
       "NewByOctalDigits(octalCode) Error='%v'", err.Error())
+    return
   }
 
   actualTextCode, err := fPerm.GetPermissionTextCode()
@@ -349,13 +361,14 @@ func TestFilePermissionConfig_NewByOctalDigits_02(t *testing.T) {
 func TestFilePermissionConfig_NewByOctalDigits_03(t *testing.T) {
 
   expectedTextCode := "--w--w--w-"
-  octalCode := int(222)
+  octalCode := 222 // int
 
   fPerm, err := FilePermissionConfig{}.NewByOctalDigits(octalCode)
 
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}."+
       "NewByOctalDigits(octalCode) Error='%v'", err.Error())
+    return
   }
 
   actualTextCode, err := fPerm.GetPermissionTextCode()
@@ -375,13 +388,14 @@ func TestFilePermissionConfig_NewByOctalDigits_03(t *testing.T) {
 func TestFilePermissionConfig_NewByOctalDigits_04(t *testing.T) {
 
   expectedTextCode := "-r--r--r--"
-  octalCode := int(444)
+  octalCode := 444 // int
 
   fPerm, err := FilePermissionConfig{}.NewByOctalDigits(octalCode)
 
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}."+
       "NewByOctalDigits(octalCode) Error='%v'", err.Error())
+    return
   }
 
   actualTextCode, err := fPerm.GetPermissionTextCode()
@@ -401,13 +415,14 @@ func TestFilePermissionConfig_NewByOctalDigits_04(t *testing.T) {
 func TestFilePermissionConfig_NewByOctalDigits_05(t *testing.T) {
 
   expectedTextCode := "dr--r--r--"
-  octalCode := int(20000000444)
+  octalCode := 20000000444 // int
 
   fPerm, err := FilePermissionConfig{}.NewByOctalDigits(octalCode)
 
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}."+
       "NewByOctalDigits(octalCode) Error='%v'", err.Error())
+    return
   }
 
   actualTextCode, err := fPerm.GetPermissionTextCode()
@@ -427,13 +442,14 @@ func TestFilePermissionConfig_NewByOctalDigits_05(t *testing.T) {
 func TestFilePermissionConfig_NewByOctalDigits_06(t *testing.T) {
 
   expectedTextCode := "d-w--w--w-"
-  octalCode := int(20000000222)
+  octalCode := 20000000222 // int
 
   fPerm, err := FilePermissionConfig{}.NewByOctalDigits(octalCode)
 
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}."+
       "NewByOctalDigits(octalCode) Error='%v'", err.Error())
+    return
   }
 
   actualTextCode, err := fPerm.GetPermissionTextCode()
@@ -452,7 +468,7 @@ func TestFilePermissionConfig_NewByOctalDigits_06(t *testing.T) {
 
 func TestFilePermissionConfig_NewByOctalDigits_07(t *testing.T) {
 
-  octalCode := int(12577)
+  octalCode := 12577 // int
 
   _, err := FilePermissionConfig{}.NewByOctalDigits(octalCode)
 
@@ -466,7 +482,7 @@ func TestFilePermissionConfig_NewByOctalDigits_07(t *testing.T) {
 
 func TestFilePermissionConfig_NewByOctalDigits_08(t *testing.T) {
 
-  octalCode := int(12577)
+  octalCode := 12577 // int
 
   _, err := FilePermissionConfig{}.NewByOctalDigits(octalCode)
 
@@ -925,7 +941,7 @@ func TestFilePermissionConfig_SetFileModeByComponents_14(t *testing.T) {
 func TestFilePermissionConfig_SetFileModeByOctalDigits_01(t *testing.T) {
 
   expectedTextCode := "-rw-rw-rw-"
-  octalCode := int(666)
+  octalCode := 666 // int
 
   fPerm := FilePermissionConfig{}
 
@@ -952,7 +968,7 @@ func TestFilePermissionConfig_SetFileModeByOctalDigits_01(t *testing.T) {
 
 func TestFilePermissionConfig_SetFileModeByOctalDigits_02(t *testing.T) {
 
-  octalCode := int(12666)
+  octalCode := 12666 // int
 
   fPerm := FilePermissionConfig{}
 
@@ -980,6 +996,12 @@ func TestFilePermissionConfig_SetFileModeByTextCode_01(t *testing.T) {
 
   fileMode, err := fpCfg.GetCompositePermissionMode()
 
+  if err != nil {
+    t.Errorf("Error returned by fpCfg.GetCompositePermissionMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
   if textCode != fileMode.String() {
     t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
       textCode, fileMode.String())
@@ -998,9 +1020,16 @@ func TestFilePermissionConfig_SetFileModeByTextCode_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg.SetFileModeByTextCode(textCode). "+
       "Error='%v' ", err.Error())
+    return
   }
 
   fileMode, err := fpCfg.GetCompositePermissionMode()
+
+  if err != nil {
+    t.Errorf("Error returned by fpCfg.GetCompositePermissionMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
 
   if textCode != fileMode.String() {
     t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1024,6 +1053,12 @@ func TestFilePermissionConfig_SetFileModeByTextCode_03(t *testing.T) {
 
   fileMode, err := fpCfg.GetCompositePermissionMode()
 
+  if err != nil {
+    t.Errorf("Error returned by fpCfg.GetCompositePermissionMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
   if textCode != fileMode.String() {
     t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
       textCode, fileMode.String())
@@ -1045,6 +1080,12 @@ func TestFilePermissionConfig_SetFileModeByTextCode_04(t *testing.T) {
   }
 
   fileMode, err := fpCfg.GetCompositePermissionMode()
+
+  if err != nil {
+    t.Errorf("Error returned by fpCfg.GetCompositePermissionMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
 
   if textCode != fileMode.String() {
     t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1068,6 +1109,12 @@ func TestFilePermissionConfig_SetFileModeByTextCode_05(t *testing.T) {
 
   fileMode, err := fpCfg.GetCompositePermissionMode()
 
+  if err != nil {
+    t.Errorf("Error returned by fpCfg.GetCompositePermissionMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
   if textCode != fileMode.String() {
     t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
       textCode, fileMode.String())
@@ -1089,6 +1136,12 @@ func TestFilePermissionConfig_SetFileModeByTextCode_06(t *testing.T) {
   }
 
   fileMode, err := fpCfg.GetCompositePermissionMode()
+
+  if err != nil {
+    t.Errorf("Error returned by fpCfg.GetCompositePermissionMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
 
   if textCode != fileMode.String() {
     t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1112,6 +1165,12 @@ func TestFilePermissionConfig_SetFileModeByTextCode_07(t *testing.T) {
 
   fileMode, err := fpCfg.GetCompositePermissionMode()
 
+  if err != nil {
+    t.Errorf("Error returned by fpCfg.GetCompositePermissionMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
   if textCode != fileMode.String() {
     t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
       textCode, fileMode.String())
@@ -1133,6 +1192,12 @@ func TestFilePermissionConfig_SetFileModeByTextCode_08(t *testing.T) {
   }
 
   fileMode, err := fpCfg.GetCompositePermissionMode()
+
+  if err != nil {
+    t.Errorf("Error returned by fpCfg.GetCompositePermissionMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
 
   if textCode != fileMode.String() {
     t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1156,6 +1221,12 @@ func TestFilePermissionConfig_SetFileModeByTextCode_09(t *testing.T) {
 
   fileMode, err := fpCfg.GetCompositePermissionMode()
 
+  if err != nil {
+    t.Errorf("Error returned by fpCfg.GetCompositePermissionMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
   if textCode != fileMode.String() {
     t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
       textCode, fileMode.String())
@@ -1177,6 +1248,12 @@ func TestFilePermissionConfig_SetFileModeByTextCode_10(t *testing.T) {
   }
 
   fileMode, err := fpCfg.GetCompositePermissionMode()
+
+  if err != nil {
+    t.Errorf("Error returned by fpCfg.GetCompositePermissionMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
 
   if textCode != fileMode.String() {
     t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1200,6 +1277,12 @@ func TestFilePermissionConfig_SetFileModeByTextCode_11(t *testing.T) {
 
   fileMode, err := fpCfg.GetCompositePermissionMode()
 
+  if err != nil {
+    t.Errorf("Error returned by fpCfg.GetCompositePermissionMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
   if textCode != fileMode.String() {
     t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
       textCode, fileMode.String())
@@ -1221,6 +1304,12 @@ func TestFilePermissionConfig_SetFileModeByTextCode_12(t *testing.T) {
   }
 
   fileMode, err := fpCfg.GetCompositePermissionMode()
+
+  if err != nil {
+    t.Errorf("Error returned by fpCfg.GetCompositePermissionMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
 
   if textCode != fileMode.String() {
     t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1244,6 +1333,12 @@ func TestFilePermissionConfig_SetFileModeByTextCode_13(t *testing.T) {
 
   fileMode, err := fpCfg.GetCompositePermissionMode()
 
+  if err != nil {
+    t.Errorf("Error returned by fpCfg.GetCompositePermissionMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
   if textCode != fileMode.String() {
     t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
       textCode, fileMode.String())
@@ -1265,6 +1360,12 @@ func TestFilePermissionConfig_SetFileModeByTextCode_14(t *testing.T) {
   }
 
   fileMode, err := fpCfg.GetCompositePermissionMode()
+
+  if err != nil {
+    t.Errorf("Error returned by fpCfg.GetCompositePermissionMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
 
   if textCode != fileMode.String() {
     t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
@@ -1288,6 +1389,12 @@ func TestFilePermissionConfig_SetFileModeByTextCode_15(t *testing.T) {
 
   fileMode, err := fpCfg.GetCompositePermissionMode()
 
+  if err != nil {
+    t.Errorf("Error returned by fpCfg.GetCompositePermissionMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
   if textCode != fileMode.String() {
     t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
       textCode, fileMode.String())
@@ -1309,6 +1416,12 @@ func TestFilePermissionConfig_SetFileModeByTextCode_16(t *testing.T) {
   }
 
   fileMode, err := fpCfg.GetCompositePermissionMode()
+
+  if err != nil {
+    t.Errorf("Error returned by fpCfg.GetCompositePermissionMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
 
   if textCode != fileMode.String() {
     t.Errorf("Error: Expected File Mode text = '%v'. Instead, text = '%v' .",
