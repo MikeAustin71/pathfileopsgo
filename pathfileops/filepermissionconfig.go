@@ -25,6 +25,7 @@ import (
 // bits.
 //    Example: -rwxrwxrwx
 //             drwxrwxrwx - identifies permissions for directory
+//                          value = 020000000777
 //
 // Internal private member variable stores the consolidated permission as a numerical
 // value in 'FilePermissionConfig.fileMode'.
@@ -510,6 +511,7 @@ func (fPerm *FilePermissionConfig) IsValid() error {
 //                               others have no permissions
 //
 //  Note: drwxrwxrwx - identifies permissions for directory
+//                     value = 020000000777
 //
 // ------------------------------------------------------------------------
 //
@@ -586,6 +588,7 @@ func (fPerm FilePermissionConfig) New(modeStr string) (FilePermissionConfig, err
 //
 //
 //  Note: drwxrwxrwx - identifies permissions for directory
+//                      value = 020000000777
 //
 // ------------------------------------------------------------------------
 //
@@ -749,6 +752,7 @@ func (fPerm FilePermissionConfig) NewByOctalDigits(
 //
 //
 //  Note: drwxrwxrwx - identifies permissions for directory
+//                     value = 020000000777
 //
 // ------------------------------------------------------------------------
 //
@@ -1101,7 +1105,7 @@ func (fPerm *FilePermissionConfig) convertGroupToDecimal(groupStr, groupType str
       len(groupStr), groupStr, groupType)
   }
 
-  tstLtrs := strings.ToLower(string(groupStr))
+  tstLtrs := strings.ToLower(groupStr)
 
   switch tstLtrs {
   case "rwx":

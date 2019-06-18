@@ -293,6 +293,51 @@ func TestFilePermissionConfig_NewByFileMode_01(t *testing.T) {
 
 func TestFilePermissionConfig_NewByFileMode_02(t *testing.T) {
 
+  expectedFileMode := os.FileMode(020000000777)
+
+  fPerm, err := FilePermissionConfig{}.NewByFileMode(expectedFileMode)
+
+  if err != nil {
+    t.Errorf("Error returned by FilePermissionConfig{}.NewByFileMode"+
+      "(os.FileMode(0666)). Error='%v' ", err.Error())
+    return
+  }
+
+  actualFileMode, err := fPerm.GetCompositePermissionMode()
+
+  if err != nil {
+    t.Errorf("Error returned by fPerm.GetCompositePermissionMode()"+
+      "Error='%v' ", err.Error())
+    return
+  }
+
+  if expectedFileMode != actualFileMode {
+    t.Errorf("Error: Expected actual file mode octal value = '%s' Instead, "+
+      "actual file mode octal value= '%s' ",
+      strconv.FormatInt(int64(expectedFileMode), 8),
+      strconv.FormatInt(int64(actualFileMode), 8))
+  }
+
+  expectedPermissionStr := "drwxrwxrwx"
+
+  actualPermStr, err := fPerm.GetPermissionTextCode()
+
+  if err != nil {
+    t.Errorf("Error returned by fPerm.GetPermissionTextCode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  if expectedPermissionStr != actualPermStr {
+    t.Errorf("ERROR: Expected permission string='%v'.\n"+
+      "Instead, permission string='%v'\n",
+      expectedPermissionStr, actualPermStr)
+  }
+
+}
+
+func TestFilePermissionConfig_NewByFileMode_03(t *testing.T) {
+
   expectedFileMode := os.FileMode(9236)
 
   _, err := FilePermissionConfig{}.NewByFileMode(expectedFileMode)
