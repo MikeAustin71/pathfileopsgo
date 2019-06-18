@@ -1618,11 +1618,13 @@ func (fMgr *FileMgr) GetFileModTime() (time.Time, error) {
 
   fMgr.dataMutex.Unlock()
 
-  if err != nil {
-    return time.Time{}, err
+  if err == nil && !filePathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "Current FileMgr file DOES NOT EXIST!\n"+
+      "FileMgr='%v'\n", fMgr.absolutePathFileName)
   }
 
-  return modTime, nil
+  return modTime, err
 }
 
 // GetFileModTimeStr - Returns the time of the last file modification as
@@ -1662,28 +1664,45 @@ func (fMgr *FileMgr) GetFileModTimeStr(timeFormat string) (string, error) {
 
   ePrefix := "FileMgr.GetFileModTimeStr() "
 
-  err := fMgr.ResetFileInfo()
+  fMgrHelpr := fileMgrHelper{}
+  var err error
+  filePathDoesExist := false
+  modTime := time.Time{}
 
-  if err != nil {
-    return "",
-      fmt.Errorf(ePrefix+"%v\n", err.Error())
+  fMgr.dataMutex.Lock()
+
+  filePathDoesExist,
+    err = fMgrHelpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err == nil && filePathDoesExist {
+    modTime = fMgr.actualFileInfo.ModTime()
   }
 
+  fMgr.dataMutex.Unlock()
+
   defaultFmt := "2006-01-02 15:04:05 -0700 MST"
+
+  if err == nil && !filePathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "Current FileMgr file DOES NOT EXIST!\n"+
+      "FileMgr='%v'\n", fMgr.absolutePathFileName)
+  }
 
   if timeFormat == "" {
     timeFormat = defaultFmt
   }
 
-  t := fMgr.actualFileInfo.ModTime()
-
-  tStr := t.Format(timeFormat)
+  tStr := modTime.Format(timeFormat)
 
   if tStr == timeFormat {
-    tStr = t.Format(defaultFmt)
+    tStr = modTime.Format(defaultFmt)
   }
 
-  return tStr, nil
+  return tStr, err
 }
 
 // GetFileName - returns the file name for this
