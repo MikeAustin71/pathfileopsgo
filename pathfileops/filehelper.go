@@ -1552,7 +1552,7 @@ func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
 
   ePrefix := "FileHelper.DeleteDirPathAll() "
 
-  var err error
+  var err, err2 error
   var pathFileDoesExist bool
 
   pathDir,
@@ -1572,13 +1572,28 @@ func (fh FileHelper) DeleteDirPathAll(pathDir string) error {
     return nil
   }
 
-  err = os.RemoveAll(pathDir)
+  for i := 0; i < 3; i++ {
+
+    err = nil
+
+    err2 = os.RemoveAll(pathDir)
+
+    if err2 != nil {
+      err = fmt.Errorf(ePrefix+
+        "Error returned by os.RemoveAll(pathDir).\n"+
+        "pathDir='%v'\nError='%v'",
+        pathDir, err2.Error())
+    }
+
+    if err == nil {
+      break
+    }
+
+    time.Sleep(50 * time.Millisecond)
+  }
 
   if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned by os.RemoveAll(pathDir).\n"+
-      "pathDir='%v'\nError='%v'",
-      pathDir, err.Error())
+    return err
   }
 
   pathDir,

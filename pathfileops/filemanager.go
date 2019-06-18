@@ -1214,11 +1214,13 @@ func (fMgr *FileMgr) DoesFileExist() bool {
   ePrefix := "FileMgr.DoesFileExist() "
 
   var err error
+  pathFileDoesExist := false
+
   fMgrHlpr := fileMgrHelper{}
 
   fMgr.dataMutex.Lock()
 
-  _,
+  pathFileDoesExist,
     err = fMgrHlpr.doesFileMgrPathFileExist(
     fMgr,
     PreProcPathCode.None(),
@@ -1231,7 +1233,7 @@ func (fMgr *FileMgr) DoesFileExist() bool {
     return false
   }
 
-  return fMgr.doesAbsolutePathFileNameExist
+  return pathFileDoesExist
 }
 
 // DoesThisFileExist - Returns a boolean value
@@ -1240,12 +1242,12 @@ func (fMgr *FileMgr) DoesFileExist() bool {
 // exists.
 func (fMgr *FileMgr) DoesThisFileExist() (fileDoesExist bool, nonPathError error) {
 
-  fMgr.dataMutex.Lock()
-
   ePrefix := "FileMgr.DoesThisFileExist() "
   fileDoesExist = false
   nonPathError = nil
   fMgrHelpr := fileMgrHelper{}
+
+  fMgr.dataMutex.Lock()
 
   fileDoesExist,
     nonPathError = fMgrHelpr.doesFileMgrPathFileExist(fMgr,
@@ -1393,32 +1395,15 @@ func (fMgr *FileMgr) EqualPathFileNameExt(fmgr2 *FileMgr) bool {
 // their uninitialized or zero state.
 func (fMgr *FileMgr) Empty() {
 
+  fMgrHlpr := fileMgrHelper{}
+
   fMgr.dataMutex.Lock()
 
-  fMgr.isInitialized = false
-  fMgr.dMgr = DirMgr{}
-  fMgr.originalPathFileName = ""
-  fMgr.absolutePathFileName = ""
-  fMgr.isAbsolutePathFileNamePopulated = false
-  fMgr.doesAbsolutePathFileNameExist = false
-  fMgr.fileName = ""
-  fMgr.isFileNamePopulated = false
-  fMgr.fileExt = ""
-  fMgr.isFileExtPopulated = false
-  fMgr.fileNameExt = ""
-  fMgr.isFileNameExtPopulated = false
-  fMgr.filePtr = nil
-  fMgr.isFilePtrOpen = false
-  fMgr.fileAccessStatus.Empty()
-  fMgr.actualFileInfo = FileInfoPlus{}
-  fMgr.fileBufRdr = nil
-  fMgr.fileBufWriter = nil
-  fMgr.fileBytesWritten = 0
-  fMgr.buffBytesWritten = 0
-  fMgr.fileRdrBufSize = 0
-  fMgr.fileWriterBufSize = 0
+  fMgrHlpr.emptyFileMgr(fMgr)
 
   fMgr.dataMutex.Unlock()
+
+  return
 }
 
 // FlushBytesToDisk - After Writing bytes to a file, use this
