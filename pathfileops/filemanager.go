@@ -1055,41 +1055,17 @@ func (fMgr *FileMgr) CopyOut() FileMgr {
 func (fMgr *FileMgr) CreateDir() error {
 
   ePrefix := "FileMgr.CreateDir() "
+  var err error
+
+  fMgrHlpr := fileMgrHelper{}
 
   fMgr.dataMutex.Lock()
 
-  fMgrHlpr := fileMgrHelper{}
-  _,
-    err := fMgrHlpr.doesFileMgrPathFileExist(
-    fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
+  err = fMgrHlpr.createDirectory(fMgr, ePrefix)
 
   fMgr.dataMutex.Unlock()
 
-  if err != nil {
-    return err
-  }
-
-  doesDirExist, err := fMgr.dMgr.DoesThisDirectoryExist()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v\n",
-      err.Error())
-  }
-
-  if !doesDirExist {
-    // Directory path does NOT exist. Create it!
-    err = fMgr.dMgr.MakeDir()
-
-    if err != nil {
-      return fmt.Errorf(ePrefix+"%v\n", err.Error())
-    }
-
-  }
-
-  return nil
+  return err
 }
 
 // CreateDirAndFile - Performs two operations:
@@ -1135,7 +1111,11 @@ func (fMgr *FileMgr) CreateDirAndFile() error {
 
   fMgrHlpr := fileMgrHelper{}
 
-  err = fMgrHlpr.openFile(fMgr, fileAccessCfg, true, ePrefix)
+  err = fMgrHlpr.openFile(
+    fMgr,
+    fileAccessCfg,
+    true,
+    ePrefix)
 
   fMgr.dataMutex.Unlock()
 
@@ -1183,7 +1163,11 @@ func (fMgr *FileMgr) CreateThisFile() error {
 
   fMgrHlpr := fileMgrHelper{}
 
-  err = fMgrHlpr.openFile(fMgr, fileAccessCfg, false, ePrefix)
+  err = fMgrHlpr.openFile(
+    fMgr,
+    fileAccessCfg,
+    false,
+    ePrefix)
 
   fMgr.dataMutex.Unlock()
 

@@ -463,6 +463,39 @@ func (fMgrHlpr *fileMgrHelper) copyFileToDestStrSetup(
   return fMgrDest, err
 }
 
+func (fMgrHlpr *fileMgrHelper) createDirectory(
+  fMgr *FileMgr,
+  ePrefix string) error {
+
+  ePrefixCurrMethod := "fileMgrHelper.copyFileToFMgrCleanUp "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  _,
+    err := fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err != nil {
+    return err
+  }
+
+  err = fMgr.dMgr.MakeDir()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"%v\n",
+      err.Error())
+  }
+
+  return nil
+}
+
 // copyFileToFMgrCleanUp - Helper method used to perform
 // clean up on Copy File Methods.
 func (fMgrHlpr *fileMgrHelper) copyFileToFMgrCleanUp(
