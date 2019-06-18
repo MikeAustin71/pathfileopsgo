@@ -1159,9 +1159,9 @@ func (fMgr *FileMgr) CreateThisFile() error {
     return fmt.Errorf(ePrefix+"%v\n", err.Error())
   }
 
-  fMgr.dataMutex.Lock()
-
   fMgrHlpr := fileMgrHelper{}
+
+  fMgr.dataMutex.Lock()
 
   err = fMgrHlpr.openFile(
     fMgr,
@@ -1180,73 +1180,15 @@ func (fMgr *FileMgr) DeleteThisFile() error {
 
   ePrefix := "FileMgr.DeleteThisFile() "
 
-  err := fMgr.IsFileMgrValid("")
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error: This FileMgr object is INVALID!\n"+
-      "Error='%v'", err.Error())
-  }
-
-  fileDoesExist, err := fMgr.DoesThisFileExist()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Non-Path Error returned by fMgr.DoesThisFileExist()\n"+
-      "fMgr='%v'\nError='%v'\n",
-      fMgr.GetAbsolutePathFileName(), err.Error())
-  }
-
-  // If file does not exist, return with no error.
-  if !fileDoesExist {
-    return nil
-  }
-
-  if fMgr.filePtr != nil {
-
-    err = fMgr.CloseThisFile()
-
-    if err != nil {
-      return fmt.Errorf(ePrefix+
-        "Error from fMgr.filePtr.Close()!  Error='%v'", err.Error())
-    }
-  }
-
-  fMgr.isFilePtrOpen = false
+  fMgrHlpr := fileMgrHelper{}
 
   fMgr.dataMutex.Lock()
 
-  err = os.Remove(fMgr.absolutePathFileName)
+  err := fMgrHlpr.deleteFile(fMgr, ePrefix)
 
   fMgr.dataMutex.Unlock()
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "- os.Remove(fMgr.absolutePathFileName) "+
-      "returned an error.\n"+
-      "absolutePathFileName='%v'\nError='%v'",
-      fMgr.absolutePathFileName, err.Error())
-  }
-
-  fileDoesExist, err = fMgr.DoesThisFileExist()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned by fMgr.DoesThisFileExist()\n"+
-      "fMgr.absolutePathFileName='%v'\nError='%v'\n",
-      fMgr.absolutePathFileName, err.Error())
-  }
-
-  if fileDoesExist {
-    return fmt.Errorf(ePrefix+
-      "Error: Attempted file deletion FAILED!. "+
-      "File still exists.\n"+
-      "fMgr='%v'\n", fMgr.absolutePathFileName)
-  }
-
-  fMgr.actualFileInfo = FileInfoPlus{}
-
-  return nil
+  return err
 }
 
 // DoesFileExist - returns 'true' if the subject FileMgr file does

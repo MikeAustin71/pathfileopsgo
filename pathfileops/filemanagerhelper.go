@@ -467,7 +467,7 @@ func (fMgrHlpr *fileMgrHelper) createDirectory(
   fMgr *FileMgr,
   ePrefix string) error {
 
-  ePrefixCurrMethod := "fileMgrHelper.copyFileToFMgrCleanUp "
+  ePrefixCurrMethod := "fileMgrHelper.createDirectory "
 
   if len(ePrefix) == 0 {
     ePrefix = ePrefixCurrMethod
@@ -816,6 +816,73 @@ func (fMgrHlpr *fileMgrHelper) closeFile(
   fMgr.buffBytesWritten = 0
 
   return fMgrHlpr.consolidateErrors(errs)
+}
+
+// deleteFile - Helper method used to delete
+// the file identified by 'fMgr'.
+//
+func (fMgrHlpr *fileMgrHelper) deleteFile(
+  fMgr *FileMgr, ePrefix string) error {
+
+  ePrefixCurrMethod := "fileMgrHelper.deleteFile() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  pathFileNameDoesExist,
+    err := fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err != nil {
+    return err
+  }
+
+  if !pathFileNameDoesExist {
+    return nil
+  }
+
+  err = fMgrHlpr.closeFile(fMgr, ePrefix)
+
+  if err != nil {
+    return err
+  }
+
+  err = os.Remove(fMgr.absolutePathFileName)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "- os.Remove(fMgr.absolutePathFileName) "+
+      "returned an error.\n"+
+      "absolutePathFileName='%v'\nError='%v'",
+      fMgr.absolutePathFileName, err.Error())
+  }
+
+  pathFileNameDoesExist,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err != nil {
+    return err
+  }
+
+  if pathFileNameDoesExist {
+
+    return fmt.Errorf(ePrefix+
+      "Error: Attempted file deletion FAILED!. "+
+      "File still exists.\n"+
+      "fMgr='%v'\n", fMgr.absolutePathFileName)
+  }
+
+  return nil
 }
 
 // flushBytesToDisk - Helper method which is designed
