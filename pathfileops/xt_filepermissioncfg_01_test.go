@@ -14,6 +14,7 @@ func TestFilePermissionConfig_CopyIn_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fpCfg2 := FilePermissionConfig{}
@@ -25,6 +26,7 @@ func TestFilePermissionConfig_CopyIn_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg2.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -47,6 +49,7 @@ func TestFilePermissionConfig_CopyIn_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fpCfg2 := FilePermissionConfig{}
@@ -58,6 +61,7 @@ func TestFilePermissionConfig_CopyIn_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg2.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -80,6 +84,7 @@ func TestFilePermissionConfig_CopyOut_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fpCfg2 := fpCfg.CopyOut()
@@ -89,6 +94,7 @@ func TestFilePermissionConfig_CopyOut_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg2.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -110,6 +116,7 @@ func TestFilePermissionConfig_CopyOut_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fpCfg2 := fpCfg.CopyOut()
@@ -119,6 +126,7 @@ func TestFilePermissionConfig_CopyOut_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg2.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -140,6 +148,7 @@ func TestFilePermissionConfig_CopyOut_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fpCfg2 := fpCfg.CopyOut()
@@ -149,6 +158,7 @@ func TestFilePermissionConfig_CopyOut_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg2.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -170,6 +180,7 @@ func TestFilePermissionConfig_CopyOut_04(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fpCfg2 := fpCfg.CopyOut()
@@ -179,6 +190,7 @@ func TestFilePermissionConfig_CopyOut_04(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg2.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -200,6 +212,7 @@ func TestFilePermissionConfig_CopyOut_05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fpCfg2 := fpCfg.CopyOut()
@@ -209,6 +222,7 @@ func TestFilePermissionConfig_CopyOut_05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg2.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -230,6 +244,7 @@ func TestFilePermissionConfig_CopyOut_06(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fpCfg2 := fpCfg.CopyOut()
@@ -239,6 +254,7 @@ func TestFilePermissionConfig_CopyOut_06(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg2.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -260,6 +276,7 @@ func TestFilePermissionConfig_CopyOut_07(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fpCfg2 := fpCfg.CopyOut()
@@ -269,6 +286,7 @@ func TestFilePermissionConfig_CopyOut_07(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg2.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -290,6 +308,7 @@ func TestFilePermissionConfig_CopyOut_08(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fpCfg2 := fpCfg.CopyOut()
@@ -299,6 +318,7 @@ func TestFilePermissionConfig_CopyOut_08(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg2.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -320,6 +340,7 @@ func TestFilePermissionConfig_CopyOut_09(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fpCfg2 := fpCfg.CopyOut()
@@ -329,6 +350,7 @@ func TestFilePermissionConfig_CopyOut_09(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg2.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -350,6 +372,7 @@ func TestFilePermissionConfig_CopyOut_10(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fpCfg2 := fpCfg.CopyOut()
@@ -359,6 +382,7 @@ func TestFilePermissionConfig_CopyOut_10(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg2.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -382,6 +406,7 @@ func TestFilePermissionConfig_Empty_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   actualTextCode, err := fpCfg.GetPermissionTextCode()
@@ -389,6 +414,7 @@ func TestFilePermissionConfig_Empty_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by #1 fpCfg.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -431,6 +457,7 @@ func TestFilePermissionConfig_Empty_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   actualTextCode, err := fpCfg.GetPermissionTextCode()
@@ -438,6 +465,7 @@ func TestFilePermissionConfig_Empty_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by #1 fpCfg.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -480,6 +508,7 @@ func TestFilePermissionConfig_Empty_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   actualTextCode, err := fpCfg.GetPermissionTextCode()
@@ -487,6 +516,7 @@ func TestFilePermissionConfig_Empty_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by #1 fpCfg.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -529,6 +559,7 @@ func TestFilePermissionConfig_Empty_04(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   actualTextCode, err := fpCfg.GetPermissionTextCode()
@@ -536,6 +567,7 @@ func TestFilePermissionConfig_Empty_04(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by #1 fpCfg.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -578,6 +610,7 @@ func TestFilePermissionConfig_Empty_05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   actualTextCode, err := fpCfg.GetPermissionTextCode()
@@ -585,6 +618,7 @@ func TestFilePermissionConfig_Empty_05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by #1 fpCfg.GetPermissionTextCode(). "+
       "Error='%v'", err.Error())
+    return
   }
 
   if textCode != actualTextCode {
@@ -625,6 +659,7 @@ func TestFilePermissionConfig_Equal_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fpCfg2, err := FilePermissionConfig{}.New(textCode)
@@ -632,6 +667,7 @@ func TestFilePermissionConfig_Equal_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg2 = FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   if !fpCfg.Equal(&fpCfg2) {
@@ -649,6 +685,7 @@ func TestFilePermissionConfig_Equal_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg2 = FilePermissionConfig{}.New(textCode2). "+
       "textCode2='%v' Error='%v'", textCode2, err.Error())
+    return
   }
 
   if fpCfg.Equal(&fpCfg2) {
@@ -670,6 +707,7 @@ func TestFilePermissionConfig_Equal_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fpCfg = FilePermissionConfig{}.New(textCode). "+
       "textCode='%v' Error='%v'", textCode, err.Error())
+    return
   }
 
   fpCfg2 := FilePermissionConfig{}
