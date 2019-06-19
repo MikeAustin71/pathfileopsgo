@@ -611,7 +611,13 @@ func (fMgrHlpr *fileMgrHelper) closeFile(
     }
 
     fMgr.isFilePtrOpen = false
-    fMgr.fileAccessStatus.Empty()
+
+    fMgr.fileAccessStatus, err2 = FileAccessControl{}.NewInitialized()
+
+    if err2 != nil {
+      errs = append(errs, err2)
+    }
+
     fMgr.fileBufRdr = nil
     fMgr.fileBufWriter = nil
     fMgr.fileBytesWritten = 0
@@ -622,13 +628,18 @@ func (fMgrHlpr *fileMgrHelper) closeFile(
 
   if fMgr.filePtr == nil {
     fMgr.isFilePtrOpen = false
-    fMgr.fileAccessStatus.Empty()
+    fMgr.fileAccessStatus, err2 = FileAccessControl{}.NewInitialized()
+
+    if err2 != nil {
+      errs = append(errs, err2)
+    }
+
     fMgr.fileBufRdr = nil
     fMgr.fileBufWriter = nil
     fMgr.fileBytesWritten = 0
     fMgr.buffBytesWritten = 0
 
-    return nil // err == nil
+    return fMgrHlpr.consolidateErrors(errs)
   }
 
   // fMgr.filePtr != nil
@@ -790,7 +801,9 @@ func (fMgrHlpr *fileMgrHelper) flushBytesToDisk(
     }
   }
 
-  if fMgr.filePtr != nil {
+  if fMgr.filePtr != nil &&
+    (fMgr.fileBytesWritten > 0 ||
+      fMgr.buffBytesWritten > 0) {
 
     err3 = fMgr.filePtr.Sync()
 

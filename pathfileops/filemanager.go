@@ -168,79 +168,17 @@ func (fMgr *FileMgr) CloseThisFile() error {
 
   ePrefix := "FileMgr.CloseThisFile() "
 
-  err := fMgr.IsFileMgrValid(ePrefix)
+  var err error
 
-  if err != nil {
-    fMgr.filePtr = nil
-    fMgr.isFilePtrOpen = false
-    fMgr.fileAccessStatus.Empty()
-    fMgr.fileBufRdr = nil
-    fMgr.fileBufWriter = nil
-    fMgr.fileBytesWritten = 0
-    fMgr.buffBytesWritten = 0
-    return err
-  }
-
-  if fMgr.filePtr == nil {
-    fMgr.isFilePtrOpen = false
-    fMgr.fileAccessStatus.Empty()
-    fMgr.fileBufRdr = nil
-    fMgr.fileBufWriter = nil
-    fMgr.fileBytesWritten = 0
-    fMgr.buffBytesWritten = 0
-    return nil
-  }
-
-  fileOpenType, err := fMgr.fileAccessStatus.GetFileOpenType()
-
-  if err == nil {
-
-    if fileOpenType == FOpenType.TypeWriteOnly() ||
-      fileOpenType == FOpenType.TypeReadWrite() {
-
-      err = fMgr.FlushBytesToDisk()
-
-      if err != nil {
-
-        _ = fMgr.filePtr.Close()
-
-        fMgr.isFilePtrOpen = false
-        fMgr.fileAccessStatus.Empty()
-        fMgr.fileBufRdr = nil
-        fMgr.fileBufWriter = nil
-        fMgr.fileBytesWritten = 0
-        fMgr.buffBytesWritten = 0
-
-        return fmt.Errorf(ePrefix+
-          "Error returned from fMgr.FlushBytesToDisk().\n"+
-          "Error='%v'\n", err.Error())
-      }
-    }
-  }
+  fMgrHlpr := fileMgrHelper{}
 
   fMgr.dataMutex.Lock()
 
-  err = fMgr.filePtr.Close()
+  err = fMgrHlpr.closeFile(fMgr, ePrefix)
 
   fMgr.dataMutex.Unlock()
 
-  fMgr.isFilePtrOpen = false
-  fMgr.filePtr = nil
-  fMgr.fileAccessStatus.Empty()
-  fMgr.fileBufRdr = nil
-  fMgr.fileBufWriter = nil
-  fMgr.fileBytesWritten = 0
-  fMgr.buffBytesWritten = 0
-
-  if err != nil {
-
-    return fmt.Errorf(ePrefix+
-      "Received Error from fMgr.filePtr.Close().\n"+
-      "fMgr.absolutePathFileName= '%v'\n",
-      fMgr.absolutePathFileName)
-  }
-
-  return nil
+  return err
 }
 
 // CopyFileMgrByIo - Copies the file represented by the current File
