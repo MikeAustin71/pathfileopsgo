@@ -1022,36 +1022,14 @@ func (fMgr *FileMgr) CreateDir() error {
 func (fMgr *FileMgr) CreateDirAndFile() error {
 
   ePrefix := "FileMgr:CreateDirAndFile() "
-
-  fOpenCfg, err := FileOpenConfig{}.New(
-    FOpenType.TypeReadWrite(),
-    FOpenMode.ModeCreate(),
-    FOpenMode.ModeTruncate())
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
-
-  fPermCfg, err := FilePermissionConfig{}.New("-rw-rw-rw-")
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
-
-  fileAccessCfg, err :=
-    FileAccessControl{}.New(fOpenCfg, fPermCfg)
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v\n", err.Error())
-  }
+  var err error
 
   fMgr.dataMutex.Lock()
 
   fMgrHlpr := fileMgrHelper{}
 
-  err = fMgrHlpr.openFile(
+  err = fMgrHlpr.createFile(
     fMgr,
-    fileAccessCfg,
     true,
     ePrefix)
 
@@ -1075,35 +1053,13 @@ func (fMgr *FileMgr) CreateThisFile() error {
 
   ePrefix := "FileMgr:CreateThisFile() "
 
-  //  OpenFile(name, O_RDWR|O_CREATE|O_TRUNC, 0666)
-  fOpenCfg, err := FileOpenConfig{}.New(
-    FOpenType.TypeReadWrite(),
-    FOpenMode.ModeCreate(),
-    FOpenMode.ModeTruncate())
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
-
-  fPermCfg, err := FilePermissionConfig{}.New("-rw-rw-rw-")
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
-
-  fileAccessCfg, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v\n", err.Error())
-  }
-
   fMgrHlpr := fileMgrHelper{}
+  var err error
 
   fMgr.dataMutex.Lock()
 
-  err = fMgrHlpr.openFile(
+  err = fMgrHlpr.createFile(
     fMgr,
-    fileAccessCfg,
     false,
     ePrefix)
 
@@ -2656,7 +2612,11 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
 
   fMgr.dataMutex.Lock()
 
-  err = fMgrHlpr.openFile(fMgr, fileAccessCtrl, true, ePrefix)
+  err = fMgrHlpr.openFile(
+    fMgr,
+    fileAccessCtrl,
+    true,
+    ePrefix)
 
   fMgr.dataMutex.Unlock()
 
@@ -2883,45 +2843,8 @@ func (fMgr *FileMgr) OpenThisFileWriteOnlyAppend() error {
 //
 func (fMgr *FileMgr) OpenThisFileReadWrite() error {
   var err error
-  var filePathDoesExist bool
 
   ePrefix := "FileMgr.OpenThisFileReadWrite() "
-
-  fMgr.dataMutex.Lock()
-
-  fMgrHelpr := fileMgrHelper{}
-  filePathDoesExist,
-    err = fMgrHelpr.doesFileMgrPathFileExist(
-    fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
-
-  fMgr.dataMutex.Unlock()
-
-  if err != nil {
-    return err
-  }
-
-  if fMgr.filePtr != nil {
-    _ = fMgr.CloseThisFile()
-  }
-
-  if !filePathDoesExist {
-
-    err = fMgr.CreateDirAndFile()
-
-    if err != nil {
-      return fmt.Errorf(ePrefix+"%v", err.Error())
-    }
-
-    err = fMgr.CloseThisFile()
-
-    if err != nil {
-      return fmt.Errorf(ePrefix+"%v", err.Error())
-    }
-
-  }
 
   fileOpenCfg, err :=
     FileOpenConfig{}.New(FOpenType.TypeReadWrite(), FOpenMode.ModeNone())
@@ -2942,13 +2865,15 @@ func (fMgr *FileMgr) OpenThisFileReadWrite() error {
     return fmt.Errorf(ePrefix+"%v", err.Error())
   }
 
-  err = fMgr.OpenThisFile(fileAccessCfg)
+  fMgrHlpr := fileMgrHelper{}
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
-  }
+  fMgr.dataMutex.Lock()
 
-  return nil
+  err = fMgrHlpr.openCreateFile(fMgr, fileAccessCfg, ePrefix)
+
+  fMgr.dataMutex.Unlock()
+
+  return err
 }
 
 // ReadAllFile - Reads the file identified by the current FileMgr
