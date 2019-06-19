@@ -2665,7 +2665,7 @@ func (fMgr *FileMgr) OpenThisFileReadOnly() error {
 
   fMgr.dataMutex.Lock()
 
-  err = fMgrHlpr.openFile(fMgr, fileAccessCfg, true, ePrefix)
+  err = fMgrHlpr.openFile(fMgr, fileAccessCfg, false, ePrefix)
 
   fMgr.dataMutex.Unlock()
 

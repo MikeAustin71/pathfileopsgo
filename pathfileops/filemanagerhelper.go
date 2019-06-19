@@ -103,6 +103,7 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
       if os.IsNotExist(err) {
         fileMgr.doesAbsolutePathFileNameExist = false
         fileMgr.actualFileInfo = FileInfoPlus{}
+        fileMgr.fileAccessStatus, _ = FileAccessControl{}.NewInitialized()
         filePathDoesExist = false
         nonPathError = nil
         _ = fileMgr.dMgr.DoesPathExist()
@@ -128,6 +129,13 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
       nonPathError = nil
       fileMgr.doesAbsolutePathFileNameExist = true
       fileMgr.actualFileInfo = FileInfoPlus{}.NewFromFileInfo(info)
+
+      permCode, err := FilePermissionConfig{}.NewByFileMode(fileMgr.actualFileInfo.Mode())
+
+      if err == nil {
+        _ = fileMgr.fileAccessStatus.SetFilePermissionCodes(permCode)
+      }
+
       _ = fileMgr.dMgr.DoesPathExist()
       _ = fileMgr.dMgr.DoesAbsolutePathExist()
 
@@ -135,6 +143,10 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
     }
 
     time.Sleep(30 * time.Millisecond)
+  }
+
+  if !filePathDoesExist {
+    fileMgr.fileAccessStatus, _ = FileAccessControl{}.NewInitialized()
   }
 
   _ = fileMgr.dMgr.DoesPathExist()
@@ -864,8 +876,12 @@ func (fMgrHlpr *fileMgrHelper) flushBytesToDisk(
   return fMgrHlpr.consolidateErrors(errs)
 }
 
-// openCreateFile - Helper method designed to open and a
-// file and created it first if it does not exist.
+// openCreateFile - Helper method designed to open a
+// file. If the file does not currently exist, it
+// will first be created and then opened with the
+// designated access control parameters
+// ('fileAccessCtrl').
+//
 func (fMgrHlpr *fileMgrHelper) openCreateFile(
   fMgr *FileMgr,
   fileAccessCtrl FileAccessControl,
