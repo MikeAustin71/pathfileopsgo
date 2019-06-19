@@ -17,6 +17,53 @@ type FileAccessControl struct {
   fileOpenCodes FileOpenConfig
 }
 
+// NewInitialized - Returns a new FileAccessControl instances with all File Open
+// Codes and File Permission Codes initialized to 'None'.
+func (fAccess FileAccessControl) NewInitialized() (FileAccessControl, error) {
+
+  ePrefix := "FileAccessControl.NewInitialized() "
+  openCodes, err := FileOpenConfig{}.New(FOpenType.TypeNone(), FOpenMode.ModeNone())
+
+  if err != nil {
+    return FileAccessControl{},
+      fmt.Errorf(ePrefix+"Error returned by FileOpenConfig{}.New("+
+        "FOpenType.TypeNone(), FOpenMode.ModeNone())\n"+
+        "Error='%v'\n", err.Error())
+  }
+  entryType, err := OsFilePermissionCode(0).GetNewFromFileMode(OsFilePermCode.ModeNone())
+
+  if err != nil {
+    return FileAccessControl{},
+      fmt.Errorf(ePrefix+
+        "Error returned by OsFilePermCode.GetNewFromFileMode("+
+        "OsFilePermCode.ModeNone()). "+
+        "Error='%v' ", err.Error())
+  }
+
+  permissions, err := FilePermissionConfig{}.NewByComponents(
+    entryType,
+    "---------")
+
+  if err != nil {
+    return FileAccessControl{},
+      fmt.Errorf(ePrefix+
+        "Error returned by FilePermissionConfig{}.NewByComponents("+
+        "entryType, \"---------\")\n"+
+        "entryType='OsFilePermCode.ModeNone()'\n"+
+        "Error='%v'", err.Error())
+  }
+
+  fA2 := FileAccessControl{}
+
+  fA2.fileOpenCodes = openCodes.CopyOut()
+
+  fA2.permissions = permissions.CopyOut()
+
+  fA2.isInitialized = true
+
+  return fA2, nil
+}
+
 // New - Creates and returns a new instance of type FileAccessControl.
 //
 func (fAccess FileAccessControl) New(

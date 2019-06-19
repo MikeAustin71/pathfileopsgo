@@ -47,6 +47,52 @@ func TestFileAccessControl_New_02(t *testing.T) {
 
 }
 
+func TestFileAccessControl_NewInitialized_01(t *testing.T) {
+
+  fAccCtrl, err := FileAccessControl{}.NewInitialized()
+
+  if err != nil {
+    t.Errorf("Error returned by FileAccessControl{}.NewInitialized()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  fOpenCfg, err := fAccCtrl.GetFileOpenConfig()
+
+  if err != nil {
+    t.Errorf("Error returned by fAccCtrl.GetFileOpenConfig()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  if fOpenCfg.fileOpenType != FileOpenType(0).TypeNone() {
+    t.Errorf("Expected fOpenCfg.fileOpenType = FileOpenType(0).TypeNone().\n"+
+      "Instead, fOpenCfg.fileOpenType='%v'", fOpenCfg.fileOpenType.String())
+  }
+
+  fPermCfg, err := fAccCtrl.GetFilePermissionConfig()
+
+  if err != nil {
+    t.Errorf("Error returned by fAccCtrl.GetFilePermissionConfig()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  fMode, err := fPermCfg.GetFileMode()
+
+  if err != nil {
+    t.Errorf("Error returned by fPermCfg.GetFileMode()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  if fMode != OsFilePermCode.ModeNone() {
+    t.Error("Expected fMode = OsFilePermCode.ModeNone().\n" +
+      "It IS NOT EQUAL!\n")
+  }
+
+}
+
 func TestFileAccessControl_SetFileOpenCodes_01(t *testing.T) {
 
   textCode := "-rw-rw-rw-"
