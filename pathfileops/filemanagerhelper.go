@@ -28,7 +28,7 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
   if len(errorPrefix) == 0 {
     errorPrefix = ePrefixCurrMethod
   } else {
-    errorPrefix = errorPrefix + "- " + ePrefixCurrMethod
+    errorPrefix = errorPrefix + "- " + ePrefixCurrMethod + "\n"
   }
 
   if len(filePathTitle) == 0 {
@@ -103,7 +103,7 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
       if os.IsNotExist(err) {
         fileMgr.doesAbsolutePathFileNameExist = false
         fileMgr.actualFileInfo = FileInfoPlus{}
-        fileMgr.fileAccessStatus, _ = FileAccessControl{}.NewInitialized()
+        fileMgr.fileAccessStatus.Empty()
         filePathDoesExist = false
         nonPathError = nil
         _ = fileMgr.dMgr.DoesPathExist()
@@ -146,7 +146,7 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
   }
 
   if !filePathDoesExist {
-    fileMgr.fileAccessStatus, _ = FileAccessControl{}.NewInitialized()
+    fileMgr.fileAccessStatus.Empty()
   }
 
   _ = fileMgr.dMgr.DoesPathExist()
@@ -182,11 +182,9 @@ func (fMgrHlpr *fileMgrHelper) closeFile(
     ePrefix,
     "fMgr.absolutePathFileName")
 
-  if err2 != nil || !fileDoesExist {
+  if err2 != nil {
 
-    if err2 != nil {
-      errs = append(errs, err2)
-    }
+    errs = append(errs, err2)
 
     err2 = fMgrHlpr.flushBytesToDisk(fMgr, ePrefix)
 
@@ -206,7 +204,35 @@ func (fMgrHlpr *fileMgrHelper) closeFile(
 
     fMgr.isFilePtrOpen = false
 
-    fMgr.fileAccessStatus, err2 = FileAccessControl{}.NewInitialized()
+    fMgr.fileAccessStatus.Empty()
+
+    if err2 != nil {
+      errs = append(errs, err2)
+    }
+
+    fMgr.fileBufRdr = nil
+    fMgr.fileBufWriter = nil
+    fMgr.fileBytesWritten = 0
+    fMgr.buffBytesWritten = 0
+
+    return fMgrHlpr.consolidateErrors(errs)
+  }
+
+  if !fileDoesExist {
+
+    err2 = nil
+
+    if fMgr.filePtr != nil {
+      err2 = fMgr.filePtr.Close()
+    }
+
+    if err2 != nil {
+      errs = append(errs, err2)
+    }
+
+    fMgr.filePtr = nil
+    fMgr.isFilePtrOpen = false
+    fMgr.fileAccessStatus.Empty()
 
     if err2 != nil {
       errs = append(errs, err2)
@@ -222,11 +248,7 @@ func (fMgrHlpr *fileMgrHelper) closeFile(
 
   if fMgr.filePtr == nil {
     fMgr.isFilePtrOpen = false
-    fMgr.fileAccessStatus, err2 = FileAccessControl{}.NewInitialized()
-
-    if err2 != nil {
-      errs = append(errs, err2)
-    }
+    fMgr.fileAccessStatus.Empty()
 
     fMgr.fileBufRdr = nil
     fMgr.fileBufWriter = nil
@@ -254,7 +276,7 @@ func (fMgrHlpr *fileMgrHelper) closeFile(
 
   fMgr.filePtr = nil
   fMgr.isFilePtrOpen = false
-  fMgr.fileAccessStatus, _ = FileAccessControl{}.NewInitialized()
+  fMgr.fileAccessStatus.Empty()
   fMgr.fileBufRdr = nil
   fMgr.fileBufWriter = nil
   fMgr.fileBytesWritten = 0
@@ -655,6 +677,12 @@ func (fMgrHlpr *fileMgrHelper) createFile(
     return fmt.Errorf(ePrefix+"%v\n", err.Error())
   }
 
+  err = fMgrHlpr.closeFile(fMgr, ePrefix)
+
+  if err != nil {
+    return err
+  }
+
   err = fMgrHlpr.openFile(
     fMgr,
     fileAccessCfg,
@@ -762,14 +790,26 @@ func (fMgrHlpr *fileMgrHelper) deleteFile(
     return err
   }
 
-  err = os.Remove(fMgr.absolutePathFileName)
+  for i := 0; i < 3; i++ {
+
+    err2 := os.Remove(fMgr.absolutePathFileName)
+
+    if err2 != nil {
+      err = fmt.Errorf(ePrefix+
+        "- os.Remove(fMgr.absolutePathFileName) "+
+        "returned an error.\n"+
+        "absolutePathFileName='%v'\nError='%v'",
+        fMgr.absolutePathFileName, err2.Error())
+    } else {
+      err = nil
+      break
+    }
+
+    time.Sleep(30 * time.Millisecond)
+  }
 
   if err != nil {
-    return fmt.Errorf(ePrefix+
-      "- os.Remove(fMgr.absolutePathFileName) "+
-      "returned an error.\n"+
-      "absolutePathFileName='%v'\nError='%v'",
-      fMgr.absolutePathFileName, err.Error())
+    return err
   }
 
   pathFileNameDoesExist,
@@ -811,7 +851,7 @@ func (fMgrHlpr *fileMgrHelper) emptyFileMgr(
   fMgr.isFileNameExtPopulated = false
   fMgr.filePtr = nil
   fMgr.isFilePtrOpen = false
-  fMgr.fileAccessStatus, _ = FileAccessControl{}.NewInitialized()
+  fMgr.fileAccessStatus.Empty()
   fMgr.actualFileInfo = FileInfoPlus{}
   fMgr.fileBufRdr = nil
   fMgr.fileBufWriter = nil
@@ -876,6 +916,67 @@ func (fMgrHlpr *fileMgrHelper) flushBytesToDisk(
   return fMgrHlpr.consolidateErrors(errs)
 }
 
+// lowLevelOpenFile - Helper method which is designed
+// to open a file. Unlike similar methods, this method
+// does not check for the existence of the file, does
+// not try to close an existing file and will not
+// create the directory path.
+//
+func (fMgrHlpr *fileMgrHelper) lowLevelOpenFile(
+  fMgr *FileMgr,
+  fileAccessCtrl FileAccessControl,
+  ePrefix string) error {
+
+  ePrefixCurrMethod := "fileMgrHelper.lowLevelOpenFile() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod + "\n"
+
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod + "\n"
+  }
+
+  err := fileAccessCtrl.IsValid()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"Parameter 'fileAccessCtrl' is INVALID!\n"+
+      "%v\n", err.Error())
+  }
+
+  fOpenParm, fPermParm, err :=
+    fileAccessCtrl.GetFileOpenAndPermissionCodes()
+
+  if err != nil {
+    fMgr.fileAccessStatus.Empty()
+    return fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  fMgr.fileAccessStatus = fileAccessCtrl.CopyOut()
+
+  fMgr.filePtr, err =
+    os.OpenFile(
+      fMgr.absolutePathFileName,
+      fOpenParm,
+      fPermParm)
+
+  if err != nil {
+
+    fMgr.filePtr = nil
+    fMgr.isFilePtrOpen = false
+    fMgr.fileAccessStatus.Empty()
+    fMgr.fileBufRdr = nil
+    fMgr.fileBufWriter = nil
+    fMgr.fileBytesWritten = 0
+    fMgr.buffBytesWritten = 0
+
+    return fmt.Errorf(ePrefix+
+      "Error opening file from os.OpenFile(): '%v' Error= '%v'\n",
+      fMgr.absolutePathFileName, err.Error())
+  }
+
+  return nil
+}
+
 // openCreateFile - Helper method designed to open a
 // file. If the file does not currently exist, it
 // will first be created and then opened with the
@@ -891,10 +992,9 @@ func (fMgrHlpr *fileMgrHelper) openCreateFile(
 
   if len(ePrefix) == 0 {
     ePrefix = ePrefixCurrMethod
-    //originalEPrefix = ePrefixCurrMethod
 
   } else {
-    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod + "\n"
   }
 
   var err error
@@ -919,9 +1019,7 @@ func (fMgrHlpr *fileMgrHelper) openCreateFile(
     }
   }
 
-  err = fMgrHlpr.openFile(fMgr, fileAccessCtrl, false, ePrefix)
-
-  return err
+  return fMgrHlpr.lowLevelOpenFile(fMgr, fileAccessCtrl, ePrefix)
 }
 
 // openFile - Helper method used to open the file
@@ -930,9 +1028,8 @@ func (fMgrHlpr *fileMgrHelper) openFile(
   fMgr *FileMgr,
   fileAccessCtrl FileAccessControl,
   createTheDirectory bool,
-  ePrefix string) (err error) {
+  ePrefix string) error {
 
-  err = nil
   ePrefixCurrMethod := "fileMgrHelper.openFile() "
 
   //originalEPrefix := ePrefix
@@ -948,7 +1045,7 @@ func (fMgrHlpr *fileMgrHelper) openFile(
   filePathDoesExist := false
 
   filePathDoesExist,
-    err = fMgrHlpr.doesFileMgrPathFileExist(
+    err := fMgrHlpr.doesFileMgrPathFileExist(
     fMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -964,126 +1061,37 @@ func (fMgrHlpr *fileMgrHelper) openFile(
     return err
   }
 
-  err2 := fileAccessCtrl.IsValid()
+  err = fileAccessCtrl.IsValid()
 
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Parameter 'fileAccessCtrl' is INVALID!\n"+
-      "%v\n", err2.Error())
-    return err
+  if err != nil {
+    return fmt.Errorf(ePrefix+"Parameter 'fileAccessCtrl' is INVALID!\n"+
+      "%v\n", err.Error())
   }
 
-  filePathDoesExist, err2 =
-    fMgr.dMgr.DoesThisDirectoryExist()
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+
-      "Non-Path error returned by fMgr.dMgr.DoesThisDirectoryExist()\n"+
-      "dMgr='%v'\nError='%v'\n",
-      fMgr.dMgr.GetAbsolutePath(), err2.Error())
-
-    return err
-  }
+  filePathDoesExist =
+    fMgr.dMgr.doesAbsolutePathExist
 
   if !filePathDoesExist &&
     createTheDirectory {
 
-    err2 = fMgr.dMgr.MakeDir()
+    err = fMgr.dMgr.MakeDir()
 
-    if err2 != nil {
-      err = fmt.Errorf(ePrefix+"%v", err2.Error())
+    if err != nil {
+      err = fmt.Errorf(ePrefix+"%v", err.Error())
       return err
     }
 
   } else if !filePathDoesExist &&
     !createTheDirectory {
 
-    err = fmt.Errorf(ePrefix+
+    return fmt.Errorf(ePrefix+
       "Error: Directory Path DOES NOT EXIST!\n"+
       "DirPath (fMgr.dMgr)='%v'\n",
       fMgr.dMgr.GetAbsolutePath())
-
-    return err
   }
 
-  fMgr.fileAccessStatus = fileAccessCtrl.CopyOut()
-
-  fOpenParm, fPermParm, err := fMgr.fileAccessStatus.GetFileOpenAndPermissionCodes()
-
-  if err != nil {
-    fMgr.fileAccessStatus, _ = FileAccessControl{}.NewInitialized()
-    return fmt.Errorf(ePrefix+"%v\n", err.Error())
-  }
-
-  fMgr.filePtr, err2 =
-    os.OpenFile(
-      fMgr.absolutePathFileName,
-      fOpenParm,
-      fPermParm)
-
-  if err2 != nil {
-    fMgr.filePtr = nil
-    fMgr.isFilePtrOpen = false
-    fMgr.fileAccessStatus, _ = FileAccessControl{}.NewInitialized()
-    fMgr.fileBufRdr = nil
-    fMgr.fileBufWriter = nil
-    fMgr.fileBytesWritten = 0
-    fMgr.buffBytesWritten = 0
-
-    err = fmt.Errorf(ePrefix+
-      "Error opening file from os.OpenFile(): '%v' Error= '%v'\n",
-      fMgr.absolutePathFileName, err2.Error())
-
-  } else {
-    // err2 from os.OpenFile is nil
-
-    filePathDoesExist,
-      err2 = fMgrHlpr.doesFileMgrPathFileExist(
-      fMgr,
-      PreProcPathCode.None(),
-      ePrefix,
-      "fMgr.absolutePathFileName")
-
-    if err2 != nil {
-
-      if fMgr.filePtr != nil {
-        _ = fMgr.filePtr.Close()
-      }
-
-      fMgr.isFilePtrOpen = false
-      fMgr.fileAccessStatus, _ = FileAccessControl{}.NewInitialized()
-      fMgr.fileBufRdr = nil
-      fMgr.fileBufWriter = nil
-      fMgr.fileBytesWritten = 0
-      fMgr.buffBytesWritten = 0
-
-      err = fmt.Errorf("%v", err2.Error())
-
-    } else if !filePathDoesExist {
-
-      if fMgr.filePtr != nil {
-        _ = fMgr.filePtr.Close()
-      }
-
-      fMgr.filePtr = nil
-      fMgr.isFilePtrOpen = false
-      fMgr.fileAccessStatus, _ = FileAccessControl{}.NewInitialized()
-      fMgr.fileBytesWritten = 0
-      fMgr.buffBytesWritten = 0
-      fMgr.fileBufRdr = nil
-      fMgr.fileBufWriter = nil
-
-      err = fmt.Errorf(ePrefix+
-        "Error: Attempted to verify existence of File Manager File.\n"+
-        "File Manager File DOES NOT EXIST!\n"+
-        "File Manager File (FileMgr)='%v'",
-        fMgr.absolutePathFileName)
-
-    } else {
-      // err2 is nil
-      fMgr.isFilePtrOpen = true
-      err = nil
-    }
-  }
-
-  return err
+  return fMgrHlpr.lowLevelOpenFile(
+    fMgr,
+    fileAccessCtrl,
+    ePrefix)
 }

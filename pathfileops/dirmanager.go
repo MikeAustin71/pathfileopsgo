@@ -774,6 +774,22 @@ func (dMgr *DirMgr) CopySubDirectoryTree(
 func (dMgr *DirMgr) DeleteAll() error {
 
   ePrefix := "DirMgr.DeleteAll() "
+  dMgrHlpr := dirMgrHelper{}
+  var err error
+
+  dMgr.dataMutex.Lock()
+
+  err = dMgrHlpr.deleteDirectoryAll(dMgr, ePrefix)
+
+  dMgr.dataMutex.Unlock()
+
+  return err
+}
+
+/*
+func (dMgr *DirMgr) DeleteAll() error {
+
+  ePrefix := "DirMgr.DeleteAll() "
 
   nonPathError := dMgr.IsDirMgrValid(ePrefix)
 
@@ -845,6 +861,7 @@ func (dMgr *DirMgr) DeleteAll() error {
 
   return nil
 }
+*/
 
 // DeleteAllFilesInDir - Deletes all the files in the current
 // directory. ONLY files are deleted NOT directories.
