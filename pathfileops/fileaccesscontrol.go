@@ -99,6 +99,151 @@ func (fAccess FileAccessControl) New(
   return fA2, nil
 }
 
+// NewReadWriteAccess - Returns a FileAccessControl instance configured for
+// Read/Write access.
+func (fAccess FileAccessControl) NewReadWriteAccess() (FileAccessControl, error) {
+
+  ePrefix := "FileAccessControl.NewReadWriteAccess() "
+
+  fileOpenCfg, err :=
+    FileOpenConfig{}.New(FOpenType.TypeReadWrite(), FOpenMode.ModeNone())
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  filePermCfg, err := FilePermissionConfig{}.New("-rw-rw-rw-")
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  fileAccessCfg, err := FileAccessControl{}.New(fileOpenCfg, filePermCfg)
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  return fileAccessCfg, nil
+}
+
+// NewReadWriteCreateTruncateAccess - Returns a FileAccessControl instance
+// configured for Read, Write, Create and Truncate access.
+//
+func (fAccess FileAccessControl) NewReadWriteCreateTruncateAccess() (FileAccessControl, error) {
+
+  ePrefix := "FileAccessControl.NewReadWriteCreateTruncateAccess() "
+
+  //  OpenFile(name, O_RDWR|O_CREATE|O_TRUNC, 0666)
+  fOpenCfg, err := FileOpenConfig{}.New(
+    FOpenType.TypeReadWrite(),
+    FOpenMode.ModeCreate(),
+    FOpenMode.ModeTruncate())
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  fPermCfg, err := FilePermissionConfig{}.New("-rw-rw-rw-")
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  fileAccessCfg, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  return fileAccessCfg, nil
+}
+
+// NewReadOnlyAccess - Returns a FileAccessControl instance configured for
+// Read-Only access.
+//
+func (fAccess FileAccessControl) NewReadOnlyAccess() (FileAccessControl, error) {
+
+  ePrefix := "FileAccessControl.NewReadOnlyAccess() "
+
+  fileOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadOnly(), FOpenMode.ModeNone())
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  filePermCfg, err := FilePermissionConfig{}.New("-r--r--r--")
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  fileAccessCfg, err := FileAccessControl{}.New(fileOpenCfg, filePermCfg)
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  return fileAccessCfg, nil
+}
+
+// NewWriteOnlyAccess - Returns a FileAccessControl instance configured for
+// Write-Only access.
+//
+func (fAccess FileAccessControl) NewWriteOnlyAccess() (FileAccessControl, error) {
+
+  ePrefix := "FileAccessControl.NewWriteOnlyAccess() "
+
+  fileOpenCfg, err :=
+    FileOpenConfig{}.New(FOpenType.TypeWriteOnly(), FOpenMode.ModeNone())
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  filePermCfg, err := FilePermissionConfig{}.New("--w--w--w-")
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  fileAccessCtrl, err := FileAccessControl{}.New(fileOpenCfg, filePermCfg)
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  return fileAccessCtrl, nil
+}
+
+// NewWriteOnlyAppendAccess - Returns a FileAccessControl instance configured for
+// Write/Only - Append access.
+//
+func (fAccess FileAccessControl) NewWriteOnlyAppendAccess() (FileAccessControl, error) {
+
+  ePrefix := "FileAccessControl.NewWriteOnlyAccess() "
+
+  fileOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeWriteOnly(), FOpenMode.ModeAppend())
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  filePermCfg, err := FilePermissionConfig{}.New("--w--w--w-")
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  fileAccessCfg, err := FileAccessControl{}.New(fileOpenCfg, filePermCfg)
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  return fileAccessCfg, nil
+}
+
 // CopyIn - Receives a FileAccessControl instance and copies all the data
 // fields to the current FileAccessControl instance. When complete, both
 // the incoming and current FileAccessControl instances will be identical.

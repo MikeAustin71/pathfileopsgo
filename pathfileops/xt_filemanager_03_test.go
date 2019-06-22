@@ -984,6 +984,13 @@ func TestFileMgr_CreateDirAndFile_01(t *testing.T) {
     return
   }
 
+  err = fileMgr.CloseThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned by fileMgr.CloseThisFile().\n"+
+      "Error='%v'\n", err.Error())
+  }
+
   doesThisFileExist, err = fh.DoesThisFileExist(fileMgr.absolutePathFileName)
 
   if err != nil {
@@ -1005,14 +1012,6 @@ func TestFileMgr_CreateDirAndFile_01(t *testing.T) {
     _ = fh.DeleteDirPathAll(fileMgr.dMgr.absolutePath)
 
     return
-  }
-
-  err = fileMgr.CloseThisFile()
-
-  if err != nil {
-    t.Errorf("Received error from fileMgr.CloseThisFile().\n"+
-      "fileMgr='%v'\nError='%v'\n",
-      fileMgr.absolutePathFileName, err.Error())
   }
 
   s := "Created by File:'xt_filemanger_03_test.go' " +

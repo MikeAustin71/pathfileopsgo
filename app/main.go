@@ -3,6 +3,7 @@ package main
 import (
   pf "../pathfileops"
   "fmt"
+  "strings"
 )
 
 /*
@@ -18,9 +19,313 @@ import (
 
 func main() {
 
-  maintTest75FileMgrGetTimeVal()
+  mainTest76OpenThisFileWriteOnlyAppend()
 
 }
+
+func maintTest77OpenThisFileWriteOnlyAppend() {
+
+  fh := pf.FileHelper{}
+
+  testText1 := "Now is the time for all good men to come to the aid of their country.\n"
+
+  // testText2 := "Damn the torpedoes, full speed ahead!\n"
+
+  filePath := fh.AdjustPathSlash(
+    "D:\\T04\\checkfiles\\checkfiles03\\TestFileMgr_OpenThisFileWriteOnlyAppend_01.txt")
+
+  basePath := fh.AdjustPathSlash("D:\\T04\\checkfiles")
+
+  err := fh.DeleteDirPathAll(basePath)
+
+  if err != nil {
+    fmt.Printf("Error returned by fh.DeleteDirFile(filePath)\n"+
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  fMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    fmt.Printf("Error returned from FileMgr{}.NewFromPathFileNameExtStr"+
+      "(filePath).\nfilePathName='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fMgr.CreateDirAndFile()
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.CreateThisFile().\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.CloseThisFile().\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    return
+  }
+
+  err = fMgr.OpenThisFileWriteOnly()
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.OpenThisFileWriteOnly().\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  bytesToWrite := []byte(testText1)
+  bytesWritten := 0
+  // fMgr.isFilePtrOpen = false
+  bytesWritten, err = fMgr.WriteBytesToFile(bytesToWrite)
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.WriteBytesToFile(bytesToWrite).\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  fmt.Println("bytesWritten: ", bytesWritten)
+
+  /*
+
+    err = fMgr.CloseThisFile()
+
+    if err != nil {
+      fmt.Printf("Error returned by #1 fMgr.CloseThisFile().\n" +
+        "fMgr='%v'\nError='%v'\n",
+        fMgr.GetAbsolutePathFileName(), err.Error())
+      _ = fMgr.DeleteThisFile()
+      return
+    }
+  */
+
+  err = fMgr.DeleteThisFile()
+
+  if err != nil {
+    fmt.Printf("fMgr.DeleteThisFile() FAILED!\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  fmt.Println("      maintTest77OpenThisFileWriteOnlyAppend            ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+
+}
+
+func mainTest76OpenThisFileWriteOnlyAppend() {
+
+  fh := pf.FileHelper{}
+
+  testText1 := "Now is the time for all good men to come to the aid of their country.\n"
+
+  testText2 := "Damn the torpedoes, full speed ahead!\n"
+
+  filePath := fh.AdjustPathSlash(
+    "D:\\T04\\checkfiles\\checkfiles03\\TestFileMgr_OpenThisFileWriteOnlyAppend_01.txt")
+
+  basePath := fh.AdjustPathSlash("D:\\T04\\checkfiles")
+
+  err := fh.DeleteDirPathAll(basePath)
+
+  if err != nil {
+    fmt.Printf("Error returned by fh.DeleteDirFile(filePath)\n"+
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  fMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    fmt.Printf("Error returned from FileMgr{}.NewFromPathFileNameExtStr"+
+      "(filePath).\nfilePathName='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fMgr.CreateDirAndFile()
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.CreateThisFile().\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.CloseThisFile().\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    return
+  }
+
+  err = fMgr.OpenThisFileWriteOnly()
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.OpenThisFileWriteOnly().\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  bytesToWrite := []byte(testText1)
+
+  _, err = fMgr.WriteBytesToFile(bytesToWrite)
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.WriteBytesToFile(bytesToWrite).\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    fmt.Printf("Error returned by #1 fMgr.CloseThisFile().\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  err = fMgr.OpenThisFileWriteOnlyAppend()
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.OpenThisFileWriteOnlyAppend().\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  bytesToWrite = []byte(testText2)
+
+  _, err = fMgr.WriteBytesToFile(bytesToWrite)
+
+  if err != nil {
+    fmt.Printf("Error returned by #2 fMgr.WriteBytesToFile(bytesToWrite).\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    fmt.Printf("Error returned by #1 fMgr.CloseThisFile().\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  bytesRead1, err := fMgr.ReadFileLine('\n')
+
+  if err != nil {
+    fmt.Printf("Error returned by #1 fMgr.ReadFileLine(newline).\n"+
+      "Error='%v'\n\n", err.Error())
+    _ = fMgr.CloseThisFile()
+    return
+  }
+
+  bytesRead2, err := fMgr.ReadFileLine('\n')
+
+  if err != nil {
+    fmt.Printf("Error returned by #2 fMgr.ReadFileLine(newline).\n"+
+      "Error='%v'\n", err.Error())
+    _ = fMgr.CloseThisFile()
+    return
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    fmt.Printf("Error returned by #2 fMgr.CloseThisFile().\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  err = fMgr.DeleteThisFile()
+
+  if err != nil {
+    fmt.Printf("fMgr.DeleteThisFile() FAILED!\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    return
+  }
+
+  stringRead := string(bytesRead1)
+
+  //stringRead = strings.Replace(stringRead, "\r\n", "", -1)
+  stringRead = stringRead[:len(stringRead)-1]
+
+  stringRead1 := stringRead
+
+  // testText1 = strings.Replace(testText1, "\r\n", "", -1)
+  testText1 = testText1[:len(testText1)-1]
+
+  setSuccess := true
+
+  if testText1 != stringRead {
+    fmt.Printf("Error: Expected #1 stringRead='%v'.\n"+
+      "Instead, #1 stringRead='%v'\n",
+      testText1, stringRead)
+    setSuccess = false
+  }
+
+  stringRead = string(bytesRead2)
+
+  stringRead = strings.Replace(stringRead, "\r\n", "", -1)
+
+  testText2 = strings.Replace(testText2, "\r\n", "", -1)
+
+  if testText2 != stringRead {
+    fmt.Printf("Error: Expected #2 stringRead='%v'.\n"+
+      "Instead, #2 stringRead='%v'\n",
+      testText2, stringRead)
+    setSuccess = false
+  }
+
+  if !setSuccess {
+    return
+  }
+
+  fmt.Println("       mainTest76OpenThisFileWriteOnlyAppend            ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println("stringRead1: ", stringRead1)
+  fmt.Println("  testText1: ", testText1)
+
+  return
+}
+
+/*
 
 func maintTest75FileMgrGetTimeVal() {
 
@@ -52,7 +357,6 @@ func maintTest75FileMgrGetTimeVal() {
 
 }
 
-/*
 func mainTest73FileHelperFileExist() {
 
   filePath := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\checkfiles"

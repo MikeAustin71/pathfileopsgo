@@ -893,7 +893,8 @@ func TestDirMgr_IsVolumeNamePopulated_02(t *testing.T) {
   isVolumeNamePopulated := testDMgr.IsVolumeNamePopulated()
 
   if isVolumeNamePopulated != false {
-    t.Error("Error: Expected IsVolumeNamePopulated()='false'. Instead, IsVolumeNamePopulated()='true'.\n")
+    t.Error("Error: Expected IsVolumeNamePopulated()='false'.\n" +
+      "Instead, IsVolumeNamePopulated()='true'.\n")
   }
 
 }

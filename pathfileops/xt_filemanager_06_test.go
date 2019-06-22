@@ -2,7 +2,6 @@ package pathfileops
 
 import (
   "io/ioutil"
-  "strings"
   "testing"
 )
 
@@ -18,7 +17,7 @@ func TestFileMgr_OpenThisFile_01(t *testing.T) {
   err := fh.DeleteDirFile(filePath)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -27,7 +26,7 @@ func TestFileMgr_OpenThisFile_01(t *testing.T) {
   err = fh.CopyFileByIo(setupFile, filePath)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n"+
       "setupFile='%v'\nfilePath='%v'\n",
       setupFile, filePath)
     return
@@ -36,8 +35,8 @@ func TestFileMgr_OpenThisFile_01(t *testing.T) {
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
   if err != nil {
-    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr" +
-      "(filePath).\n" +
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr"+
+      "(filePath).\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -63,7 +62,7 @@ func TestFileMgr_OpenThisFile_02(t *testing.T) {
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
   if err != nil {
-    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr" +
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr"+
       "(filePath).\n"+
       "filePath='%v'\nError='%v'\n", filePath, err.Error())
     return
@@ -119,7 +118,7 @@ func TestFileMgr_OpenThisFile_03(t *testing.T) {
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
   if err != nil {
-    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr" +
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr"+
       "(filePath).\nfilePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -128,7 +127,7 @@ func TestFileMgr_OpenThisFile_03(t *testing.T) {
   err = fMgr.CreateThisFile()
 
   if err != nil {
-    t.Errorf("Error retruned by fMgr.CreateThisFile()\n" +
+    t.Errorf("Error retruned by fMgr.CreateThisFile()\n"+
       "fMgr='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     _ = fMgr.DeleteThisFile()
@@ -207,7 +206,7 @@ func TestFileMgr_OpenThisFile_04(t *testing.T) {
   err := fh.DeleteDirFile(filePath)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -216,7 +215,7 @@ func TestFileMgr_OpenThisFile_04(t *testing.T) {
   err = fh.CopyFileByIo(setupFile, filePath)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n"+
       "setupFile='%v'\nfilePath='%v'\n",
       setupFile, filePath)
     return
@@ -225,7 +224,7 @@ func TestFileMgr_OpenThisFile_04(t *testing.T) {
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
   if err != nil {
-    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr" +
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr"+
       "(filePath).\nfilePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -284,7 +283,7 @@ func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
   err := fh.DeleteDirFile(filePath)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -293,7 +292,7 @@ func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
   err = fh.CopyFileByIo(setupFile, filePath)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n"+
       "setupFile='%v'\nfilePath='%v'\n",
       setupFile, filePath)
     return
@@ -302,7 +301,7 @@ func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
   if err != nil {
-    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr" +
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr"+
       "(filePath).\nfilePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -311,7 +310,7 @@ func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
   err = fMgr.OpenThisFileReadOnly()
 
   if err != nil {
-    t.Errorf("Error returned from fMgr.OpenThisFileReadOnly().\n" +
+    t.Errorf("Error returned from fMgr.OpenThisFileReadOnly().\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -321,7 +320,7 @@ func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
 
   if err != nil {
     _ = fMgr.CloseThisFile()
-    t.Errorf("Error returned from ioutil.ReadAll(fMgr.filePtr).\n" +
+    t.Errorf("Error returned from ioutil.ReadAll(fMgr.filePtr).\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -332,7 +331,7 @@ func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
   expectedStr := "Test Read File. Do NOT alter the contents of this file."
 
   if expectedStr != actualStr {
-    t.Errorf("Expected Read String='%v'.\n" +
+    t.Errorf("Expected Read String='%v'.\n"+
       "Instead, Actual Read String='%v'\n",
       expectedStr, actualStr)
     return
@@ -354,7 +353,7 @@ func TestFileMgr_OpenThisFileReadOnly_02(t *testing.T) {
   err := fh.DeleteDirFile(filePath)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -363,7 +362,7 @@ func TestFileMgr_OpenThisFileReadOnly_02(t *testing.T) {
   err = fh.CopyFileByIo(setupFile, filePath)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n"+
       "setupFile='%v'\nfilePath='%v'\n",
       setupFile, filePath)
     return
@@ -401,7 +400,7 @@ func TestFileMgr_OpenThisFileReadOnly_03(t *testing.T) {
   err := fh.DeleteDirFile(filePath)
 
   if err != nil {
-    t.Errorf("Error returned from fh.DeleteDirFile(filePath)\n" +
+    t.Errorf("Error returned from fh.DeleteDirFile(filePath)\n"+
       "filePath='%v'\nError='%v'\n", filePath, err.Error())
     return
   }
@@ -426,8 +425,8 @@ func TestFileMgr_OpenThisFileReadOnly_03(t *testing.T) {
   }
 
   if fileDoesExist {
-    t.Errorf("ERROR: Test file should NOT exist!.\n" +
-      "However, test file DOES EXIST!\n" +
+    t.Errorf("ERROR: Test file should NOT exist!.\n"+
+      "However, test file DOES EXIST!\n"+
       "test file='%v'", filePath)
     _ = fh.DeleteDirFile(filePath)
     return
@@ -436,7 +435,7 @@ func TestFileMgr_OpenThisFileReadOnly_03(t *testing.T) {
   err = fMgr.CreateThisFile()
 
   if err != nil {
-    t.Errorf("Error returned from fMgr.CreateThisFile().\n" +
+    t.Errorf("Error returned from fMgr.CreateThisFile().\n"+
       "filePath='%v'\nError='%v'\n",
       fMgr.GetAbsolutePath(), err.Error())
     _ = fMgr.DeleteThisFile()
@@ -480,7 +479,7 @@ func TestFileMgr_OpenThisFileReadOnly_04(t *testing.T) {
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
   if err != nil {
-    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr" +
+    t.Errorf("Error returned from common.FileMgr{}.NewFromPathFileNameExtStr"+
       "(filePath).\nfilePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -513,7 +512,7 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
   err := fh.DeleteDirFile(filePath)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -522,7 +521,7 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
   err = fh.CopyFileByIo(setupFile, filePath)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n"+
       "setupFile='%v'\nfilePath='%v'\n",
       setupFile, filePath)
     return
@@ -531,7 +530,7 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath).\n" +
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath).\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -541,7 +540,7 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
 
   if err != nil {
 
-    t.Errorf("Error returned from fMgr.OpenThisFileReadOnly().\n" +
+    t.Errorf("Error returned from fMgr.OpenThisFileReadOnly().\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -551,12 +550,12 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
 
   if err != nil {
 
-    t.Errorf("Error returned from ioutil.ReadAll(fMgr.GetFilePtr())\n" +
+    t.Errorf("Error returned from ioutil.ReadAll(fMgr.GetFilePtr())\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
 
     _ = fMgr.CloseThisFile()
-      return
+    return
   }
 
   actualStr := string(b)
@@ -565,7 +564,7 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
 
   if expectedStr != actualStr {
 
-    t.Errorf("Expected Read String='%v'.\n" +
+    t.Errorf("Expected Read String='%v'.\n"+
       "Instead, Actual Read String='%v'\n",
       expectedStr, actualStr)
   }
@@ -590,7 +589,7 @@ func TestFileMgr_OpenThisFileReadWrite_02(t *testing.T) {
   err := fh.DeleteDirFile(filePath)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -599,7 +598,7 @@ func TestFileMgr_OpenThisFileReadWrite_02(t *testing.T) {
   err = fh.CopyFileByIo(setupFile, filePath)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n" +
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n"+
       "setupFile='%v'\nfilePath='%v'\n",
       setupFile, filePath)
     return
@@ -608,7 +607,7 @@ func TestFileMgr_OpenThisFileReadWrite_02(t *testing.T) {
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath).\n" +
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath).\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -637,8 +636,8 @@ func TestFileMgr_OpenThisFileWriteOnly_01(t *testing.T) {
 
   err := fh.DeleteDirFile(filePath)
 
-  if err !=nil {
-    t.Errorf("Error returned by fh.DeleteDirFile(filePath)\n" +
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirFile(filePath)\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -697,8 +696,8 @@ func TestFileMgr_OpenThisFileWriteOnly_02(t *testing.T) {
 
   err := fh.DeleteDirFile(filePath)
 
-  if err !=nil {
-    t.Errorf("Error returned by fh.DeleteDirFile(filePath)\n" +
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirFile(filePath)\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -726,7 +725,7 @@ func TestFileMgr_OpenThisFileWriteOnly_02(t *testing.T) {
   fileDoesExist, err := fMgr.DoesThisFileExist()
 
   if err != nil {
-    t.Errorf("Non-Path Error returned from fMgr.DoesThisFileExist()\n" +
+    t.Errorf("Non-Path Error returned from fMgr.DoesThisFileExist()\n"+
       "fMgr='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     _ = fMgr.CloseThisFile()
@@ -735,8 +734,8 @@ func TestFileMgr_OpenThisFileWriteOnly_02(t *testing.T) {
   }
 
   if !fileDoesExist {
-    t.Errorf("Error: The test file should have been created.\n" +
-      "However, the test file does NOT exist!\n" +
+    t.Errorf("Error: The test file should have been created.\n"+
+      "However, the test file does NOT exist!\n"+
       "Test File='%v'", fMgr.GetAbsolutePathFileName())
 
     _ = fMgr.CloseThisFile()
@@ -756,7 +755,7 @@ func TestFileMgr_OpenThisFileWriteOnly_02(t *testing.T) {
   }
 
   if numOfBytesWritten < 12 {
-    t.Errorf("Expected at least 12-bytes to be written to file.\n" +
+    t.Errorf("Expected at least 12-bytes to be written to file.\n"+
       "However, only %v-bytes were written.\n", numOfBytesWritten)
   }
 
@@ -778,8 +777,8 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_01(t *testing.T) {
 
   err := fh.DeleteDirFile(filePath)
 
-  if err !=nil {
-    t.Errorf("Error returned by fh.DeleteDirFile(filePath)\n" +
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirFile(filePath)\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -788,7 +787,7 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_01(t *testing.T) {
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr" +
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr"+
       "(filePath).\nfilePathName='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -797,29 +796,7 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_01(t *testing.T) {
   err = fMgr.CreateThisFile()
 
   if err != nil {
-    t.Errorf("Error returned by fMgr.CreateThisFile().\n" +
-      "fMgr='%v'\nError='%v'\n",
-      fMgr.GetAbsolutePathFileName() , err.Error())
-    _ = fMgr.DeleteThisFile()
-    return
-  }
-
-  err = fMgr.OpenThisFileWriteOnly()
-
-  if err != nil {
-    t.Errorf("Error returned by fMgr.OpenThisFileWriteOnly().\n" +
-      "fMgr='%v'\nError='%v'\n",
-      fMgr.GetAbsolutePathFileName() ,err.Error())
-    _ = fMgr.DeleteThisFile()
-    return
-  }
-
-  bytesToWrite := []byte(testText1)
-
-  _, err = fMgr.WriteBytesToFile(bytesToWrite)
-
-  if err != nil {
-    t.Errorf("Error returned by fMgr.WriteBytesToFile(bytesToWrite).\n" +
+    t.Errorf("Error returned by fMgr.CreateThisFile().\n"+
       "fMgr='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     _ = fMgr.DeleteThisFile()
@@ -829,7 +806,38 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_01(t *testing.T) {
   err = fMgr.CloseThisFile()
 
   if err != nil {
-    t.Errorf("Error returned by #1 fMgr.CloseThisFile().\n" +
+    t.Errorf("Error returned by fMgr.CloseThisFile().\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    return
+  }
+
+  err = fMgr.OpenThisFileWriteOnly()
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.OpenThisFileWriteOnly().\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  bytesToWrite := []byte(testText1)
+
+  _, err = fMgr.WriteBytesToFile(bytesToWrite)
+
+  if err != nil {
+    t.Errorf("Error returned by fMgr.WriteBytesToFile(bytesToWrite).\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    t.Errorf("Error returned by #1 fMgr.CloseThisFile().\n"+
       "fMgr='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     _ = fMgr.DeleteThisFile()
@@ -839,7 +847,7 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_01(t *testing.T) {
   err = fMgr.OpenThisFileWriteOnlyAppend()
 
   if err != nil {
-    t.Errorf("Error returned by fMgr.OpenThisFileWriteOnlyAppend().\n" +
+    t.Errorf("Error returned by fMgr.OpenThisFileWriteOnlyAppend().\n"+
       "fMgr='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     _ = fMgr.DeleteThisFile()
@@ -851,7 +859,7 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_01(t *testing.T) {
   _, err = fMgr.WriteBytesToFile(bytesToWrite)
 
   if err != nil {
-    t.Errorf("Error returned by #2 fMgr.WriteBytesToFile(bytesToWrite).\n" +
+    t.Errorf("Error returned by #2 fMgr.WriteBytesToFile(bytesToWrite).\n"+
       "fMgr='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     _ = fMgr.DeleteThisFile()
@@ -861,21 +869,37 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_01(t *testing.T) {
   err = fMgr.CloseThisFile()
 
   if err != nil {
-    t.Errorf("Error returned by #1 fMgr.CloseThisFile().\n" +
+    t.Errorf("Error returned by #1 fMgr.CloseThisFile().\n"+
       "fMgr='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     _ = fMgr.DeleteThisFile()
     return
   }
 
-  bytesRead, err := fMgr.ReadFileLine('\n')
+  bytesRead1, err := fMgr.ReadFileLine('\n')
 
-  bytesRead, err = fMgr.ReadFileLine('\n')
+  if err != nil {
+    t.Errorf("Error returned from #1 fMgr.ReadFileLine('newline')\n"+
+      "Error='%v'\n", err.Error())
+    _ = fMgr.CloseThisFile()
+    _ = fMgr.DeleteThisFile()
+    return
+  }
+
+  bytesRead2, err := fMgr.ReadFileLine('\n')
+
+  if err != nil {
+    t.Errorf("Error returned from #2 fMgr.ReadFileLine('newline')\n"+
+      "Error='%v'\n", err.Error())
+    _ = fMgr.CloseThisFile()
+    _ = fMgr.DeleteThisFile()
+    return
+  }
 
   err = fMgr.CloseThisFile()
 
   if err != nil {
-    t.Errorf("Error returned by #2 fMgr.CloseThisFile().\n" +
+    t.Errorf("Error returned by #2 fMgr.CloseThisFile().\n"+
       "fMgr='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     _ = fMgr.DeleteThisFile()
@@ -885,20 +909,34 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_01(t *testing.T) {
   err = fMgr.DeleteThisFile()
 
   if err != nil {
-    t.Errorf("fMgr.DeleteThisFile() FAILED!\n" +
+    t.Errorf("fMgr.DeleteThisFile() FAILED!\n"+
       "fMgr='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     _ = fMgr.DeleteThisFile()
     return
   }
 
-  stringRead := string(bytesRead)
+  stringRead := string(bytesRead1)
 
-  stringRead = strings.Replace(stringRead, "\r\n", "", -1)
+  stringRead = stringRead[:len(stringRead)-1]
+
+  testText1 = testText1[:len(testText1)-1]
+
+  if testText1 != stringRead {
+    t.Errorf("Error: Expected #1 stringRead='%v'.\n"+
+      "Instead, #1 stringRead='%v'\n",
+      testText1, stringRead)
+  }
+
+  stringRead = string(bytesRead2)
+
+  stringRead = stringRead[:len(stringRead)-1]
+
+  testText2 = testText2[:len(testText1)-1]
 
   if testText2 != stringRead {
-    t.Errorf("Error: Expected stringRead='%v'.\n" +
-      "Instead, stringRead='%v'\n",
+    t.Errorf("Error: Expected #2 stringRead='%v'.\n"+
+      "Instead, #2 stringRead='%v'\n",
       testText2, stringRead)
   }
 
@@ -915,8 +953,8 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_02(t *testing.T) {
 
   err := fh.DeleteDirFile(filePath)
 
-  if err !=nil {
-    t.Errorf("Error returned by fh.DeleteDirFile(filePath)\n" +
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirFile(filePath)\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -925,7 +963,7 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_02(t *testing.T) {
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}." +
+    t.Errorf("Error returned from FileMgr{}."+
       "NewFromPathFileNameExtStr(filePath).\n"+
       "filePath='%v'\nError='%v'",
       filePath, err.Error())
@@ -935,9 +973,9 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_02(t *testing.T) {
   err = fMgr.OpenThisFileWriteOnlyAppend()
 
   if err != nil {
-    t.Errorf("Error returned by fMgr.OpenThisFileWriteOnly().\n" +
+    t.Errorf("Error returned by fMgr.OpenThisFileWriteOnly().\n"+
       "fMgr='%v'\nError='%v'\n",
-      fMgr.GetAbsolutePathFileName() ,err.Error())
+      fMgr.GetAbsolutePathFileName(), err.Error())
     _ = fMgr.CloseThisFile()
     _ = fMgr.DeleteThisFile()
     return
@@ -946,7 +984,7 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_02(t *testing.T) {
   fileDoesExist, err := fMgr.DoesThisFileExist()
 
   if err != nil {
-    t.Errorf("Non-Path Error returned by fMgr.DoesThisFileExist()\n" +
+    t.Errorf("Non-Path Error returned by fMgr.DoesThisFileExist()\n"+
       "fMgr='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     _ = fMgr.CloseThisFile()
@@ -955,7 +993,7 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_02(t *testing.T) {
   }
 
   if !fileDoesExist {
-    t.Errorf("Error: Expected target file to be created.\n" +
+    t.Errorf("Error: Expected target file to be created.\n"+
       "However, File:'%v' "+
       "does NOT exist.", fMgr.GetAbsolutePathFileName())
   }
@@ -974,8 +1012,8 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_03(t *testing.T) {
 
   err := fh.DeleteDirFile(filePath)
 
-  if err !=nil {
-    t.Errorf("Error returned by fh.DeleteDirFile(filePath)\n" +
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirFile(filePath)\n"+
       "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
@@ -984,7 +1022,7 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_03(t *testing.T) {
   fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}." +
+    t.Errorf("Error returned from FileMgr{}."+
       "NewFromPathFileNameExtStr(filePath).\n"+
       "filePathName='%v'\nError='%v'\n",
       filePath, err.Error())
@@ -1007,7 +1045,7 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_03(t *testing.T) {
   fileDoesExist, err := fMgr.DoesThisFileExist()
 
   if err != nil {
-    t.Errorf("Non-Path Error returned by fMgr.DoesThisFileExist()\n" +
+    t.Errorf("Non-Path Error returned by fMgr.DoesThisFileExist()\n"+
       "fMgr='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     _ = fMgr.CloseThisFile()
@@ -1016,7 +1054,7 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_03(t *testing.T) {
   }
 
   if fileDoesExist {
-    t.Errorf("Error: Expected target file WOULD NOT be created.\n" +
+    t.Errorf("Error: Expected target file WOULD NOT be created.\n"+
       "However, target file DOES EXIST!\n"+
       "target file='%v'", fMgr.GetAbsolutePathFileName())
   }

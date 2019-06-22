@@ -23,7 +23,7 @@ func TestFileMgr_GetAbsolutePath(t *testing.T) {
   fileMgr1, err := FileMgr{}.New(filePath1)
 
   if err != nil {
-    t.Errorf("Received Error on FileMgr{}.New(filePath1).\n" +
+    t.Errorf("Received Error on FileMgr{}.New(filePath1).\n"+
       "filePath1='%v'\nError='%v'\n",
       filePath1, err.Error())
     return
@@ -36,7 +36,7 @@ func TestFileMgr_GetAbsolutePath(t *testing.T) {
   actualAbsPath := fileMgr1.GetAbsolutePath()
 
   if expectedAbsPath != actualAbsPath {
-    t.Errorf("Expected absolute path='%v'.\n" +
+    t.Errorf("Expected absolute path='%v'.\n"+
       "Instead, absolute path='%v'\n",
       expectedAbsPath, actualAbsPath)
   }
@@ -59,9 +59,9 @@ func TestFileMgr_GetAbsolutePathFileName_01(t *testing.T) {
   fileMgr1, err := FileMgr{}.New(filePath1)
 
   if err != nil {
-    t.Errorf("Received Error on FileMgr{}.New(filePath1).\n" +
+    t.Errorf("Received Error on FileMgr{}.New(filePath1).\n"+
       "filePath1='%v'\nError='%v'\n",
-      filePath1 ,err.Error())
+      filePath1, err.Error())
     return
   }
 
@@ -70,7 +70,7 @@ func TestFileMgr_GetAbsolutePathFileName_01(t *testing.T) {
   filePath1 = strings.ToLower(filePath1)
 
   if filePath1 != absPathFileName {
-    t.Errorf("Error: Expected absPathFileName='%v'.\n" +
+    t.Errorf("Error: Expected absPathFileName='%v'.\n"+
       "Instead, absPathFileName='%v'\n",
       filePath1, absPathFileName)
   }
@@ -96,7 +96,7 @@ func TestFileMgr_GetBufioReader_01(t *testing.T) {
   srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(" +
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt("+
       "dMgr, expectedFileNameExt).\n"+
       "dMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
       dMgr.absolutePath, adjustedPath, err.Error())
@@ -106,7 +106,7 @@ func TestFileMgr_GetBufioReader_01(t *testing.T) {
   err = srcFMgr.OpenThisFileReadOnly()
 
   if err != nil {
-    t.Errorf("Error returned by srcFMgr.OpenThisFileReadOnly().\n" +
+    t.Errorf("Error returned by srcFMgr.OpenThisFileReadOnly().\n"+
       "FileName:'%v'\nError='%v'\n",
       srcFMgr.GetAbsolutePathFileName(), err.Error())
     return
@@ -145,7 +145,7 @@ func TestFileMgr_GetBufioWriter_01(t *testing.T) {
   srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(" +
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt("+
       "dMgr, expectedFileNameExt).\n"+
       "dMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
       dMgr.absolutePath, adjustedPath, err.Error())
@@ -196,7 +196,7 @@ func TestFileMgr_GetDirMgr_01(t *testing.T) {
   srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(" +
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt("+
       "dMgr, expectedFileNameExt).\n"+
       "dMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
       dMgr.absolutePath, adjustedPath, err.Error())
@@ -210,7 +210,7 @@ func TestFileMgr_GetDirMgr_01(t *testing.T) {
   actualDirMgrPath := strings.ToLower(srcDMgr.GetAbsolutePath())
 
   if expectedDirMgrPath != actualDirMgrPath {
-    t.Errorf("Error: Expected returned directory path='%v'.\n" +
+    t.Errorf("Error: Expected returned directory path='%v'.\n"+
       "Instead, returned directory path='%v'\n",
       expectedDirMgrPath, actualDirMgrPath)
   }
@@ -236,7 +236,7 @@ func TestFileMgr_GetFileExt(t *testing.T) {
   srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(" +
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt("+
       "dMgr, expectedFileNameExt).\n"+
       "dMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
       dMgr.absolutePath, adjustedPath, err.Error())
@@ -248,7 +248,7 @@ func TestFileMgr_GetFileExt(t *testing.T) {
   actualFileExt := srcFMgr.GetFileExt()
 
   if expectedFileExt != actualFileExt {
-    t.Errorf("Error: Expected returned file extension='%v'.\n" +
+    t.Errorf("Error: Expected returned file extension='%v'.\n"+
       "Instead returned file extension='%v'\n",
       expectedFileExt, actualFileExt)
   }
@@ -281,7 +281,7 @@ func TestFileMgr_GetFileInfo_01(t *testing.T) {
   fInfo, err := srcFMgr.GetFileInfo()
 
   if err != nil {
-    t.Errorf("Error returned from srcFMgr.GetFileInfo()\n" +
+    t.Errorf("Error returned from srcFMgr.GetFileInfo()\n"+
       "srcFMgr='%v'\nError='%v'\n",
       srcFMgr.GetAbsolutePathFileName(), err.Error())
     return
@@ -292,7 +292,7 @@ func TestFileMgr_GetFileInfo_01(t *testing.T) {
   actualFileNameExt := strings.ToLower(fInfo.Name())
 
   if expectedFileNameExt != actualFileNameExt {
-    t.Errorf("Error: Expected File Name:='%v'.\n" +
+    t.Errorf("Error: Expected File Name:='%v'.\n"+
       "Instead, File Name='%v'\n",
       expectedFileNameExt, actualFileNameExt)
   }
@@ -511,7 +511,7 @@ func TestFileMgr_GetFileModTime_01(t *testing.T) {
   }
 
   if expectedTimeStr != modTimeStr {
-    t.Errorf("Expected Time String='%v'.\n" +
+    t.Errorf("Expected Time String='%v'.\n"+
       "Instead, Time String='%v'.\n",
       expectedTimeStr, modTimeStr)
   }
@@ -557,7 +557,7 @@ func TestFileMgr_GetFileModTime_02(t *testing.T) {
   }
 
   if expectedTimeStr != modTimeStr {
-    t.Errorf("Expected Time String='%v'.\n" +
+    t.Errorf("Expected Time String='%v'.\n"+
       "Instead, Time String='%v'.\n",
       expectedTimeStr, modTimeStr)
   }
@@ -604,7 +604,7 @@ func TestFileMgr_GetFileModTime_03(t *testing.T) {
   }
 
   if expectedTimeStr != modTimeStr {
-    t.Errorf("Expected Time String='%v'.\n" +
+    t.Errorf("Expected Time String='%v'.\n"+
       "Instead, Time String='%v'.\n",
       expectedTimeStr, modTimeStr)
   }
@@ -689,7 +689,7 @@ func TestFileMgr_GetFileName_01(t *testing.T) {
   actualFileName := srcFMgr.GetFileName()
 
   if expectedFileName != actualFileName {
-    t.Errorf("Error: Expected File Name='%v'.\n" +
+    t.Errorf("Error: Expected File Name='%v'.\n"+
       "Instead, actual File Name='%v'\n",
       expectedFileName, actualFileName)
   }
@@ -722,7 +722,7 @@ func TestFileMgr_GetFileNameExt_01(t *testing.T) {
   actualFileNameExt := srcFMgr.GetFileNameExt()
 
   if expectedFileNameExt != actualFileNameExt {
-    t.Errorf("Error: Expected File Name Ext='%v'.\n" +
+    t.Errorf("Error: Expected File Name Ext='%v'.\n"+
       "Instead, actual File Name Ext='%v'\n",
       expectedFileNameExt, actualFileNameExt)
   }
@@ -757,7 +757,7 @@ func TestFileMgr_GetFileNameExt_02(t *testing.T) {
   actualFileNameExt := srcFMgr.GetFileNameExt()
 
   if expectedFileNameExt != actualFileNameExt {
-    t.Errorf("Error: Expected File Name Ext='%v'.\n" +
+    t.Errorf("Error: Expected File Name Ext='%v'.\n"+
       "Instead, actual File Name Ext='%v'\n",
       expectedFileNameExt, actualFileNameExt)
   }
@@ -786,7 +786,7 @@ func TestFileMgr_GetFilePermissionConfig_01(t *testing.T) {
 
     t.Errorf("Error returned by srcFMgr.OpenThisFileReadWrite().\n"+
       "srcFMgr='%v'\nError='%v' ",
-      srcFMgr.GetAbsolutePathFileName() ,err.Error())
+      srcFMgr.GetAbsolutePathFileName(), err.Error())
 
     return
   }
@@ -797,7 +797,7 @@ func TestFileMgr_GetFilePermissionConfig_01(t *testing.T) {
 
   if err != nil {
     _ = srcFMgr.CloseThisFile()
-    t.Errorf("Error returned by srcFMgr.GetFilePermissionConfig().\n" +
+    t.Errorf("Error returned by srcFMgr.GetFilePermissionConfig().\n"+
       "srcFMgr='%v'\nError='%v'\n",
       srcFMgr.GetAbsolutePathFileName(), err.Error())
 
@@ -823,7 +823,7 @@ func TestFileMgr_GetFilePermissionConfig_01(t *testing.T) {
   }
 
   if expectedPermissionCodes != actualPermissionTextCodes {
-    t.Errorf("Error: Expected Permission Code='%v'.\n" +
+    t.Errorf("Error: Expected Permission Code='%v'.\n"+
       "Instead, Permission Code='%v'\n",
       expectedPermissionCodes, actualPermissionTextCodes)
   }
@@ -903,7 +903,7 @@ func TestFileMgr_GetFilePermissionTextCodes_01(t *testing.T) {
 
     t.Errorf("Error returned by srcFMgr.OpenThisFileReadWrite().\n"+
       "srcFMgr='%v'\nError='%v'\n",
-      srcFMgr.GetAbsolutePathFileName() , err.Error())
+      srcFMgr.GetAbsolutePathFileName(), err.Error())
 
     return
   }
@@ -914,9 +914,9 @@ func TestFileMgr_GetFilePermissionTextCodes_01(t *testing.T) {
 
   if err != nil {
     _ = srcFMgr.CloseThisFile()
-    t.Errorf("Error returned by srcFMgr.GetFilePermissionTextCodes().\n" +
+    t.Errorf("Error returned by srcFMgr.GetFilePermissionTextCodes().\n"+
       "srcFMgr='%v'\nError='%v'\n",
-      srcFMgr.GetAbsolutePathFileName() , err.Error())
+      srcFMgr.GetAbsolutePathFileName(), err.Error())
 
     return
   }
@@ -926,13 +926,13 @@ func TestFileMgr_GetFilePermissionTextCodes_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by #2 srcFMgr.CloseThisFile(). "+
       "srcFMgr='%v'\nError='%v'\n",
-      srcFMgr.GetAbsolutePathFileName() , err.Error())
+      srcFMgr.GetAbsolutePathFileName(), err.Error())
 
     return
   }
 
   if expectedPermissionCodes != actualPermissionTextCodes {
-    t.Errorf("Error: Expected Permission Code='%v'.\n" +
+    t.Errorf("Error: Expected Permission Code='%v'.\n"+
       "Instead, Permission Code='%v'\n",
       expectedPermissionCodes, actualPermissionTextCodes)
   }
@@ -1018,8 +1018,8 @@ func TestFileMgr_GetFilePtr_01(t *testing.T) {
   fPtr := srcFMgr.GetFilePtr()
 
   if fPtr == nil {
-    t.Errorf("Error: Expected a populated file pointer.\n" +
-      "However, the file pointer is nil!\n" +
+    t.Errorf("Error: Expected a populated file pointer.\n"+
+      "However, the file pointer is nil!\n"+
       "srcFMgr='%v'\n", srcFMgr.GetAbsolutePathFileName())
     return
   }
@@ -1027,7 +1027,7 @@ func TestFileMgr_GetFilePtr_01(t *testing.T) {
   err = srcFMgr.CloseThisFile()
 
   if err != nil {
-    t.Errorf("Error returned by final srcFMgr.CloseThisFile().\n" +
+    t.Errorf("Error returned by final srcFMgr.CloseThisFile().\n"+
       "srcFMgr='%v'\nError='%v'\n",
       srcFMgr.GetAbsolutePathFileName(), err.Error())
   }
@@ -1054,7 +1054,7 @@ func TestFileMgr_GetFileSize_01(t *testing.T) {
   expectedFileSize := int64(29)
 
   if expectedFileSize != actualFileSize {
-    t.Errorf("Expected file size='29'.\nInstead, file size='%v'\n" +
+    t.Errorf("Expected file size='29'.\nInstead, file size='%v'\n"+
       "File='%v'",
       actualFileSize, srcFMgr.GetAbsolutePathFileName())
   }
@@ -1081,7 +1081,7 @@ func TestFileMgr_GetFileSize_02(t *testing.T) {
   expectedFileSize := int64(-1)
 
   if expectedFileSize != actualFileSize {
-    t.Errorf("Expected file size='-1'.\nInstead, file size='%v'\n" +
+    t.Errorf("Expected file size='-1'.\nInstead, file size='%v'\n"+
       "File='%v'\n",
       actualFileSize, srcFMgr.GetAbsolutePathFileName())
   }
@@ -1110,7 +1110,7 @@ func TestFileMgr_GetFileSize_03(t *testing.T) {
   expectedFileSize := int64(-1)
 
   if expectedFileSize != actualFileSize {
-    t.Errorf("Expected file size='%v'.\nInstead, file size='%v'\n" +
+    t.Errorf("Expected file size='%v'.\nInstead, file size='%v'\n"+
       "File='%v'\n",
       expectedFileSize, actualFileSize, srcFMgr.GetAbsolutePathFileName())
   }
@@ -1135,7 +1135,7 @@ func TestFileMgr_GetOriginalPathFileName_01(t *testing.T) {
   originalPathFileName := srcFMgr.GetOriginalPathFileName()
 
   if targetFile != originalPathFileName {
-    t.Errorf("Error: Expected Original Path and File Name='%v'.\n" +
+    t.Errorf("Error: Expected Original Path and File Name='%v'.\n"+
       "Instead, Original Path and File Name='%v'\n",
       targetFile, originalPathFileName)
   }
@@ -1161,7 +1161,7 @@ func TestFileMgr_GetReaderBufferSize_01(t *testing.T) {
   readBufSize := srcFMgr.GetReaderBufferSize()
 
   if readBufSize != 0 {
-    t.Errorf("Error: Expected Bufio Read Buffer Size='0'.\n" +
+    t.Errorf("Error: Expected Bufio Read Buffer Size='0'.\n"+
       "Instead, Read Buffer Size ='%v'\n", readBufSize)
   }
 
@@ -1191,7 +1191,7 @@ func TestFileMgr_GetReaderBufferSize_02(t *testing.T) {
   readBufSize := srcFMgr.GetReaderBufferSize()
 
   if expectedBufSize != readBufSize {
-    t.Errorf("Error: Expected Bufio Read Buffer Size='%v'.\n" +
+    t.Errorf("Error: Expected Bufio Read Buffer Size='%v'.\n"+
       "Instead, Read Buffer Size ='%v'\n",
       expectedBufSize, readBufSize)
   }
@@ -1218,9 +1218,9 @@ func TestFileMgr_GetReaderBufferSize_03(t *testing.T) {
 
   if err != nil {
     _ = srcFMgr.CloseThisFile()
-    t.Errorf("Error returned by srcFMgr.OpenThisFileReadOnly().\n" +
+    t.Errorf("Error returned by srcFMgr.OpenThisFileReadOnly().\n"+
       "srcFMgr='%v'\nError='%v'",
-      srcFMgr.GetAbsolutePathFileName() ,err.Error())
+      srcFMgr.GetAbsolutePathFileName(), err.Error())
     return
   }
 
@@ -1230,9 +1230,9 @@ func TestFileMgr_GetReaderBufferSize_03(t *testing.T) {
 
   if err != nil {
     _ = srcFMgr.CloseThisFile()
-    t.Errorf("Error returned by srcFMgr.ReadFileBytes(bytes)." +
+    t.Errorf("Error returned by srcFMgr.ReadFileBytes(bytes)."+
       "srcFMgr='%v'\nError='%v'",
-      srcFMgr.GetAbsolutePathFileName() ,err.Error())
+      srcFMgr.GetAbsolutePathFileName(), err.Error())
     return
   }
 
@@ -1241,7 +1241,7 @@ func TestFileMgr_GetReaderBufferSize_03(t *testing.T) {
   _ = srcFMgr.CloseThisFile()
 
   if readBufSize < 10 {
-    t.Errorf("Error: Expected Bufio Read Buffer Size >10.\n" +
+    t.Errorf("Error: Expected Bufio Read Buffer Size >10.\n"+
       "Instead, Read Buffer Size ='%v' ", readBufSize)
   }
 
@@ -1257,7 +1257,7 @@ func TestFileMgr_GetWriterBufferSize_01(t *testing.T) {
   srcFMgr, err := FileMgr{}.New(targetFile)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.New(targetFile).\n" +
+    t.Errorf("Error returned from FileMgr{}.New(targetFile).\n"+
       "targetFile='%v'\nError='%v'\n",
       targetFile, err.Error())
     return
@@ -1266,7 +1266,7 @@ func TestFileMgr_GetWriterBufferSize_01(t *testing.T) {
   actualWriterBuffSize := srcFMgr.GetWriterBufferSize()
 
   if actualWriterBuffSize != 0 {
-    t.Errorf("Error: Expected Bufio Write Buffer Size='0'.\n" +
+    t.Errorf("Error: Expected Bufio Write Buffer Size='0'.\n"+
       "Instead, Write Buffer Size ='%v'\n", actualWriterBuffSize)
     return
   }
@@ -1295,7 +1295,7 @@ func TestFileMgr_GetWriterBufferSize_02(t *testing.T) {
   actualWriterBuffSize := srcFMgr.GetWriterBufferSize()
 
   if actualWriterBuffSize != expectedWriteBufSize {
-    t.Errorf("Error: Expected Bufio Write Buffer Size='%v'.\n" +
+    t.Errorf("Error: Expected Bufio Write Buffer Size='%v'.\n"+
       "Instead, Write Buffer Size ='%v'\n",
       expectedWriteBufSize, actualWriterBuffSize)
   }
@@ -1309,6 +1309,14 @@ func TestFileMgr_GetWriterBufferSize_03(t *testing.T) {
   targetFile := fh.AdjustPathSlash(
     "../filesfortest/TestFileMgr_GetWriterBufferSize_03.txt")
 
+  err := fh.DeleteDirFile(targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirFile(targetFile).\n"+
+      "targetFile='%v'\n", targetFile)
+    return
+  }
+
   srcFMgr, err := FileMgr{}.New(targetFile)
 
   if err != nil {
@@ -1321,7 +1329,7 @@ func TestFileMgr_GetWriterBufferSize_03(t *testing.T) {
   err = srcFMgr.DeleteThisFile()
 
   if err != nil {
-    t.Errorf("Error returned by srcFMgr.DeleteThisFile().\n" +
+    t.Errorf("Error returned by srcFMgr.DeleteThisFile().\n"+
       "srcFMgr='%v'\nError='%v'\n",
       srcFMgr.GetAbsolutePathFileName(), err.Error())
     return
@@ -1331,7 +1339,7 @@ func TestFileMgr_GetWriterBufferSize_03(t *testing.T) {
 
   if err != nil {
     _ = srcFMgr.CloseThisFile()
-    t.Errorf("Error returned by srcFMgr.CreateThisFile().\n" +
+    t.Errorf("Error returned by srcFMgr.CreateThisFile().\n"+
       "srcFMgr='%v'\nError='%v'\n",
       srcFMgr.GetAbsolutePathFileName(), err.Error())
     return
@@ -1341,7 +1349,7 @@ func TestFileMgr_GetWriterBufferSize_03(t *testing.T) {
 
   if err != nil {
     _ = srcFMgr.CloseThisFile()
-    t.Errorf("Error returned by srcFMgr.OpenThisFileWriteOnly().\n" +
+    t.Errorf("Error returned by srcFMgr.OpenThisFileWriteOnly().\n"+
       "srcFMgr='%v'\nError='%v'\n",
       srcFMgr.GetAbsolutePathFileName(), err.Error())
     return
@@ -1351,7 +1359,7 @@ func TestFileMgr_GetWriterBufferSize_03(t *testing.T) {
 
   if err != nil {
     _ = srcFMgr.CloseThisFile()
-    t.Errorf("Error returned by srcFMgr.WriteStrToFile().\n" +
+    t.Errorf("Error returned by srcFMgr.WriteStrToFile().\n"+
       "srcFMgr='%v'\nError='%v'\n",
       srcFMgr.GetAbsolutePathFileName(), err.Error())
     return
@@ -1362,24 +1370,24 @@ func TestFileMgr_GetWriterBufferSize_03(t *testing.T) {
   err = srcFMgr.CloseThisFile()
 
   if err != nil {
-    t.Errorf("Error returned by srcFMgr.CloseThisFile().\n" +
+    t.Errorf("Error returned by srcFMgr.CloseThisFile().\n"+
       "srcFMgr='%v'\nError='%v'\n",
       srcFMgr.GetAbsolutePathFileName(), err.Error())
-    _  = srcFMgr.DeleteThisFile()
+    _ = srcFMgr.DeleteThisFile()
     return
   }
 
   err = srcFMgr.DeleteThisFile()
 
   if err != nil {
-    t.Errorf("Error returned by srcFMgr.DeleteThisFile().\n" +
+    t.Errorf("Error returned by srcFMgr.DeleteThisFile().\n"+
       "srcFMgr='%v'\nError='%v'\n",
       srcFMgr.GetAbsolutePathFileName(), err.Error())
     return
   }
 
   if actualWriterBuffSize < 10 {
-    t.Errorf("Error: Expected Bufio Write Buffer Size > 10.\n" +
+    t.Errorf("Error: Expected Bufio Write Buffer Size > 10.\n"+
       "Instead, Write Buffer Size ='%v'\n",
       actualWriterBuffSize)
   }
@@ -1537,7 +1545,7 @@ func TestFileMgr_IsFileNameExtPopulated_02(t *testing.T) {
 
   if isFileNamePopulated {
 
-    t.Errorf("Expected srcFMgr.IsFileNameExtPopulated() == 'false'.\n" +
+    t.Errorf("Expected srcFMgr.IsFileNameExtPopulated() == 'false'.\n"+
       "Instead, it is 'true'.\n"+
       "FileName='%v'\nFile Extension='%v'\nLen File Ext='%v'\n",
       srcFMgr.GetFileName(), srcFMgr.GetFileExt(), len(srcFMgr.GetFileExt()))
@@ -1601,7 +1609,7 @@ func TestFileMgr_IsFileNamePopulated_02(t *testing.T) {
   srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dirMgr, targetFile)
 
   if err != nil {
-    t.Errorf("FileMgr{}.NewFromDirMgrFileNameExt(dirMgr, targetFile).\n" +
+    t.Errorf("FileMgr{}.NewFromDirMgrFileNameExt(dirMgr, targetFile).\n"+
       "DirMgr='%v'\ntargetFile='%v'\nError='%v'\n",
       dirMgr.GetAbsolutePath(), targetFile, err.Error())
     return
@@ -1648,9 +1656,9 @@ func TestFileMgr_IsFilePointerOpen_01(t *testing.T) {
 
   if err != nil {
     _ = srcFMgr.CloseThisFile()
-    t.Errorf("Error returned from srcFMgr.OpenThisFileReadOnly().\n" +
+    t.Errorf("Error returned from srcFMgr.OpenThisFileReadOnly().\n"+
       "srcFMgr='%v'\nError='%v'",
-      srcFMgr.GetAbsolutePathFileName() ,err.Error())
+      srcFMgr.GetAbsolutePathFileName(), err.Error())
     return
   }
 
@@ -1661,7 +1669,7 @@ func TestFileMgr_IsFilePointerOpen_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from final srcFMgr.CloseThisFile().\n"+
       "srcFMgr='%v'\nError='%v'",
-      srcFMgr.GetAbsolutePathFileName() ,err.Error())
+      srcFMgr.GetAbsolutePathFileName(), err.Error())
     return
   }
 

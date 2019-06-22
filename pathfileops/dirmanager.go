@@ -771,6 +771,7 @@ func (dMgr *DirMgr) CopySubDirectoryTree(
 //
 //    Only the parent path will remain: "../pathfilego/003_filehelper/testdestdir"
 //
+/*
 func (dMgr *DirMgr) DeleteAll() error {
 
   ePrefix := "DirMgr.DeleteAll() "
@@ -785,8 +786,8 @@ func (dMgr *DirMgr) DeleteAll() error {
 
   return err
 }
+*/
 
-/*
 func (dMgr *DirMgr) DeleteAll() error {
 
   ePrefix := "DirMgr.DeleteAll() "
@@ -861,7 +862,6 @@ func (dMgr *DirMgr) DeleteAll() error {
 
   return nil
 }
-*/
 
 // DeleteAllFilesInDir - Deletes all the files in the current
 // directory. ONLY files are deleted NOT directories.

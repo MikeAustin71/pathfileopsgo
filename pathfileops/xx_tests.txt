@@ -3,7 +3,7 @@
 === RUN   TestDirMgr_ChangeWorkingDir_01
 --- PASS: TestDirMgr_ChangeWorkingDir_01 (0.00s)
 === RUN   TestDirMgr_CopyDirectory_01
---- PASS: TestDirMgr_CopyDirectory_01 (2.32s)
+--- PASS: TestDirMgr_CopyDirectory_01 (0.29s)
 === RUN   TestDirMgr_CopyDirectory_02
 --- PASS: TestDirMgr_CopyDirectory_02 (0.00s)
 === RUN   TestDirMgr_CopyDirectory_03
@@ -13,7 +13,7 @@
 === RUN   TestDirMgr_CopyDirectory_05
 --- PASS: TestDirMgr_CopyDirectory_05 (0.00s)
 === RUN   TestDirMgr_CopyDirectoryTree_01
---- PASS: TestDirMgr_CopyDirectoryTree_01 (0.95s)
+--- PASS: TestDirMgr_CopyDirectoryTree_01 (0.90s)
 === RUN   TestDirMgr_CopyDirectoryTree_02
 --- PASS: TestDirMgr_CopyDirectoryTree_02 (0.00s)
 === RUN   TestDirMgr_CopyDirectoryTree_03
@@ -21,13 +21,13 @@
 === RUN   TestDirMgr_CopyDirectoryTree_04
 --- PASS: TestDirMgr_CopyDirectoryTree_04 (0.00s)
 === RUN   TestDirMgr_CopyDirectoryTree_05
---- PASS: TestDirMgr_CopyDirectoryTree_05 (0.00s)
+--- PASS: TestDirMgr_CopyDirectoryTree_05 (0.01s)
 === RUN   TestDirMgr_CopyIn_01
 --- PASS: TestDirMgr_CopyIn_01 (0.00s)
 === RUN   TestDirMgr_CopyOut_01
 --- PASS: TestDirMgr_CopyOut_01 (0.00s)
 === RUN   TestDirMgr_CopySubDirectoryTree_01
---- PASS: TestDirMgr_CopySubDirectoryTree_01 (1.86s)
+--- PASS: TestDirMgr_CopySubDirectoryTree_01 (1.92s)
 === RUN   TestDirMgr_CopySubDirectoryTree_02
 --- PASS: TestDirMgr_CopySubDirectoryTree_02 (0.00s)
 === RUN   TestDirMgr_CopySubDirectoryTree_03
@@ -35,37 +35,35 @@
 === RUN   TestDirMgr_CopySubDirectoryTree_04
 --- PASS: TestDirMgr_CopySubDirectoryTree_04 (0.00s)
 === RUN   TestDirMgr_CopySubDirectoryTree_05
---- PASS: TestDirMgr_CopySubDirectoryTree_05 (0.15s)
+--- PASS: TestDirMgr_CopySubDirectoryTree_05 (0.18s)
 === RUN   TestDirMgr_CopySubDirectoryTree_06
---- PASS: TestDirMgr_CopySubDirectoryTree_06 (0.13s)
+--- FAIL: TestDirMgr_CopySubDirectoryTree_06 (0.18s)
+    xt_dirmgr_01_test.go:1548: ERROR: Expected 5-directories would be created.
+        Instead, 6-directories were created!
 === RUN   TestDirMgr_DeleteAll_01
---- FAIL: TestDirMgr_DeleteAll_01 (0.01s)
-    xt_dirmgr_02_test.go:30: Expected absolutePath to be deleted. Instead, it Exists!
-        dMgr.absolutePath='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles02\checkfiles03'
+--- PASS: TestDirMgr_DeleteAll_01 (0.01s)
 === RUN   TestDirMgr_DeleteAll_02
---- FAIL: TestDirMgr_DeleteAll_02 (0.00s)
-    xt_dirmgr_02_test.go:58: Expected dMgr.DeleteAll() to return an error because
-        'dMgr' is invalid. However, NO ERROR WAS RETURNED!
+--- PASS: TestDirMgr_DeleteAll_02 (0.00s)
 === RUN   TestDirMgr_DeleteAllFilesInDir_01
 --- PASS: TestDirMgr_DeleteAllFilesInDir_01 (0.00s)
 === RUN   TestDirMgr_DeleteAllFilesInDir_02
 --- PASS: TestDirMgr_DeleteAllFilesInDir_02 (0.00s)
 === RUN   TestDirMgr_DeleteAllFilesInDir_03
---- PASS: TestDirMgr_DeleteAllFilesInDir_03 (0.60s)
+--- PASS: TestDirMgr_DeleteAllFilesInDir_03 (0.46s)
 === RUN   TestDirMgr_DeleteAllSubDirectories_01
---- PASS: TestDirMgr_DeleteAllSubDirectories_01 (0.89s)
+--- PASS: TestDirMgr_DeleteAllSubDirectories_01 (1.18s)
 === RUN   TestDirMgr_DeleteAllSubDirectories_02
 --- PASS: TestDirMgr_DeleteAllSubDirectories_02 (0.00s)
 === RUN   TestDirMgr_DeleteAllSubDirectories_03
 --- PASS: TestDirMgr_DeleteAllSubDirectories_03 (0.00s)
 === RUN   TestDirMgr_DeleteDirectoryTreeFiles_01
---- PASS: TestDirMgr_DeleteDirectoryTreeFiles_01 (0.95s)
+--- PASS: TestDirMgr_DeleteDirectoryTreeFiles_01 (0.97s)
 === RUN   TestDirMgr_DeleteDirectoryTreeFiles_02
 --- PASS: TestDirMgr_DeleteDirectoryTreeFiles_02 (0.00s)
 === RUN   TestDirMgr_DeleteDirectoryTreeFiles_03
 --- PASS: TestDirMgr_DeleteDirectoryTreeFiles_03 (0.00s)
 === RUN   TestDirMgr_DeleteFilesByNamePattern_01
---- PASS: TestDirMgr_DeleteFilesByNamePattern_01 (0.24s)
+--- PASS: TestDirMgr_DeleteFilesByNamePattern_01 (0.23s)
 === RUN   TestDirMgr_DeleteFilesByNamePattern_02
 --- PASS: TestDirMgr_DeleteFilesByNamePattern_02 (0.00s)
 === RUN   TestDirMgr_DeleteFilesByNamePattern_03
@@ -75,13 +73,13 @@
 === RUN   TestDirMgr_DeleteFilesByNamePattern_05
 --- PASS: TestDirMgr_DeleteFilesByNamePattern_05 (0.00s)
 === RUN   TestDirMgr_DeleteFilesByNamePattern_06
---- PASS: TestDirMgr_DeleteFilesByNamePattern_06 (0.47s)
+--- PASS: TestDirMgr_DeleteFilesByNamePattern_06 (0.45s)
 === RUN   TestDirMgr_DeleteFilesBySelectionCriteria_01
---- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_01 (0.34s)
+--- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_01 (0.37s)
 === RUN   TestDirMgr_DeleteFilesBySelectionCriteria_02
---- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_02 (0.72s)
+--- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_02 (0.80s)
 === RUN   TestDirMgr_DeleteFilesBySelectionCriteria_03
---- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_03 (0.76s)
+--- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_03 (0.97s)
 === RUN   TestDirMgr_DeleteFilesBySelectionCriteria_04
 --- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_04 (0.00s)
 === RUN   TestDirMgr_DoesAbsolutePathExist_01
@@ -125,7 +123,7 @@
 === RUN   TestDirMgr_EqualPaths_05
 --- PASS: TestDirMgr_EqualPaths_05 (0.00s)
 === RUN   TestDirMgr_ExecuteDirectoryFileOps_01
---- PASS: TestDirMgr_ExecuteDirectoryFileOps_01 (0.15s)
+--- PASS: TestDirMgr_ExecuteDirectoryFileOps_01 (0.24s)
 === RUN   TestDirMgr_ExecuteDirectoryFileOps_02
 --- PASS: TestDirMgr_ExecuteDirectoryFileOps_02 (0.00s)
 === RUN   TestDirMgr_ExecuteDirectoryFileOps_03
@@ -135,7 +133,7 @@
 === RUN   TestDirMgr_ExecuteDirectoryFileOps_05
 --- PASS: TestDirMgr_ExecuteDirectoryFileOps_05 (0.00s)
 === RUN   TestDirMgr_ExecuteDirectoryTreeOps_01
---- PASS: TestDirMgr_ExecuteDirectoryTreeOps_01 (1.20s)
+--- PASS: TestDirMgr_ExecuteDirectoryTreeOps_01 (1.02s)
 === RUN   TestDirMgr_ExecuteDirectoryTreeOps_02
 --- PASS: TestDirMgr_ExecuteDirectoryTreeOps_02 (0.00s)
 === RUN   TestDirMgr_ExecuteDirectoryTreeOps_03
@@ -145,55 +143,55 @@
 === RUN   TestDirMgr_ExecuteDirectoryTreeOps_05
 --- PASS: TestDirMgr_ExecuteDirectoryTreeOps_05 (0.00s)
 === RUN   TestDirMgr_FindFilesByNamePattern_01
---- PASS: TestDirMgr_FindFilesByNamePattern_01 (0.46s)
+--- PASS: TestDirMgr_FindFilesByNamePattern_01 (0.35s)
 === RUN   TestDirMgr_FindFilesByNamePattern_02
---- PASS: TestDirMgr_FindFilesByNamePattern_02 (0.67s)
+--- PASS: TestDirMgr_FindFilesByNamePattern_02 (0.53s)
 === RUN   TestDirMgr_FindFilesByNamePattern_03
---- PASS: TestDirMgr_FindFilesByNamePattern_03 (0.68s)
+--- PASS: TestDirMgr_FindFilesByNamePattern_03 (0.32s)
 === RUN   TestDirMgr_FindFilesByNamePattern_04
---- PASS: TestDirMgr_FindFilesByNamePattern_04 (0.67s)
+--- PASS: TestDirMgr_FindFilesByNamePattern_04 (0.35s)
 === RUN   TestDirMgr_FindFilesByNamePattern_05
 --- PASS: TestDirMgr_FindFilesByNamePattern_05 (0.00s)
 === RUN   TestDirMgr_FindFilesBySelectCriteria_01
---- PASS: TestDirMgr_FindFilesBySelectCriteria_01 (0.78s)
+--- PASS: TestDirMgr_FindFilesBySelectCriteria_01 (0.66s)
 === RUN   TestDirMgr_FindFilesBySelectCriteria_02
---- PASS: TestDirMgr_FindFilesBySelectCriteria_02 (0.59s)
+--- PASS: TestDirMgr_FindFilesBySelectCriteria_02 (0.68s)
 === RUN   TestDirMgr_FindFilesBySelectCriteria_03
 --- PASS: TestDirMgr_FindFilesBySelectCriteria_03 (0.00s)
 === RUN   TestDirMgr_FindFilesBySelectCriteria_04
 --- PASS: TestDirMgr_FindFilesBySelectCriteria_04 (0.00s)
 === RUN   TestDirMgr_FindWalkDirFiles_01
---- PASS: TestDirMgr_FindWalkDirFiles_01 (0.19s)
+--- PASS: TestDirMgr_FindWalkDirFiles_01 (0.20s)
 === RUN   TestDirMgr_FindWalkDirFiles_02
---- PASS: TestDirMgr_FindWalkDirFiles_02 (4.82s)
+--- PASS: TestDirMgr_FindWalkDirFiles_02 (5.05s)
 === RUN   TestDirMgr_FindWalkDirFiles_03
---- PASS: TestDirMgr_FindWalkDirFiles_03 (0.35s)
+--- PASS: TestDirMgr_FindWalkDirFiles_03 (0.24s)
 === RUN   TestDirMgr_FindWalkDirFiles_04
---- PASS: TestDirMgr_FindWalkDirFiles_04 (0.17s)
+--- PASS: TestDirMgr_FindWalkDirFiles_04 (0.20s)
 === RUN   TestDirMgr_FindWalkDirFiles_05
 --- PASS: TestDirMgr_FindWalkDirFiles_05 (0.00s)
 === RUN   TestDirMgr_FindWalkDirFiles_06
 --- PASS: TestDirMgr_FindWalkDirFiles_06 (0.00s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_01
---- PASS: TestDirMgr_DeleteWalkDirFiles_01 (0.18s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_01 (0.34s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_02
---- PASS: TestDirMgr_DeleteWalkDirFiles_02 (0.19s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_02 (0.25s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_03
 --- PASS: TestDirMgr_DeleteWalkDirFiles_03 (0.17s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_04
---- PASS: TestDirMgr_DeleteWalkDirFiles_04 (0.16s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_04 (0.23s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_05
---- PASS: TestDirMgr_DeleteWalkDirFiles_05 (0.40s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_05 (0.79s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_06
---- PASS: TestDirMgr_DeleteWalkDirFiles_06 (0.17s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_06 (0.37s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_07
---- PASS: TestDirMgr_DeleteWalkDirFiles_07 (0.17s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_07 (0.27s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_08
---- PASS: TestDirMgr_DeleteWalkDirFiles_08 (0.36s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_08 (0.24s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_09
 --- PASS: TestDirMgr_DeleteWalkDirFiles_09 (0.00s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_10
---- PASS: TestDirMgr_DeleteWalkDirFiles_10 (0.38s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_10 (0.28s)
 === RUN   TestDirMgr_GetAbsolutePath_01
 --- PASS: TestDirMgr_GetAbsolutePath_01 (0.00s)
 === RUN   TestDirMgr_GetAbsolutePathElements_01
@@ -275,31 +273,31 @@
 === RUN   TestDirMgr_MakeDirWithPermission_04
 --- PASS: TestDirMgr_MakeDirWithPermission_04 (0.00s)
 === RUN   TestDirMgr_MoveDirectory_01
---- PASS: TestDirMgr_MoveDirectory_01 (0.56s)
+--- PASS: TestDirMgr_MoveDirectory_01 (0.67s)
 === RUN   TestDirMgr_MoveDirectory_02
---- PASS: TestDirMgr_MoveDirectory_02 (0.14s)
+--- PASS: TestDirMgr_MoveDirectory_02 (0.24s)
 === RUN   TestDirMgr_MoveDirectory_03
---- PASS: TestDirMgr_MoveDirectory_03 (0.14s)
+--- PASS: TestDirMgr_MoveDirectory_03 (0.19s)
 === RUN   TestDirMgr_MoveDirectory_04
 --- PASS: TestDirMgr_MoveDirectory_04 (0.00s)
 === RUN   TestDirMgr_MoveDirectory_05
---- PASS: TestDirMgr_MoveDirectory_05 (0.12s)
+--- PASS: TestDirMgr_MoveDirectory_05 (0.39s)
 === RUN   TestDirMgr_MoveDirectory_06
---- PASS: TestDirMgr_MoveDirectory_06 (0.62s)
+--- PASS: TestDirMgr_MoveDirectory_06 (0.95s)
 === RUN   TestDirMgr_MoveDirectoryTree_01
---- PASS: TestDirMgr_MoveDirectoryTree_01 (0.74s)
+--- PASS: TestDirMgr_MoveDirectoryTree_01 (0.83s)
 === RUN   TestDirMgr_MoveDirectoryTree_02
---- PASS: TestDirMgr_MoveDirectoryTree_02 (0.27s)
+--- PASS: TestDirMgr_MoveDirectoryTree_02 (0.36s)
 === RUN   TestDirMgr_MoveDirectoryTree_03
---- PASS: TestDirMgr_MoveDirectoryTree_03 (0.38s)
+--- PASS: TestDirMgr_MoveDirectoryTree_03 (0.29s)
 === RUN   TestDirMgr_MoveDirectoryTree_04
 --- PASS: TestDirMgr_MoveDirectoryTree_04 (0.00s)
 === RUN   TestDirMgr_MoveSubDirectoryTree_01
---- PASS: TestDirMgr_MoveSubDirectoryTree_01 (0.53s)
+--- PASS: TestDirMgr_MoveSubDirectoryTree_01 (0.73s)
 === RUN   TestDirMgr_MoveSubDirectoryTree_02
---- PASS: TestDirMgr_MoveSubDirectoryTree_02 (0.78s)
+--- PASS: TestDirMgr_MoveSubDirectoryTree_02 (0.37s)
 === RUN   TestDirMgr_MoveSubDirectoryTree_03
---- PASS: TestDirMgr_MoveSubDirectoryTree_03 (0.74s)
+--- PASS: TestDirMgr_MoveSubDirectoryTree_03 (0.32s)
 === RUN   TestDirMgr_MoveSubDirectoryTree_04
 --- PASS: TestDirMgr_MoveSubDirectoryTree_04 (0.00s)
 === RUN   TestDirMgr_New_01
@@ -371,7 +369,7 @@
 === RUN   TestDirMgrCollection_PeekDirMgrAtIndex_01
 --- PASS: TestDirMgrCollection_PeekDirMgrAtIndex_01 (0.00s)
 === RUN   TestDirMgrCollection_FindDirectories_01
---- PASS: TestDirMgrCollection_FindDirectories_01 (0.02s)
+--- PASS: TestDirMgrCollection_FindDirectories_01 (0.03s)
 === RUN   TestDirMgrCollection_DeleteAtIndex_01
 --- PASS: TestDirMgrCollection_DeleteAtIndex_01 (0.00s)
 === RUN   TestDirMgrCollection_DeleteAtIndex_02
@@ -493,7 +491,7 @@
 === RUN   TestFileHelper_AreSameFile_01
 --- PASS: TestFileHelper_AreSameFile_01 (0.00s)
 === RUN   TestFileHelper_AreSameFile_02
---- PASS: TestFileHelper_AreSameFile_02 (0.04s)
+--- PASS: TestFileHelper_AreSameFile_02 (0.00s)
 === RUN   TestFileHelper_AreSameFile_03
 --- PASS: TestFileHelper_AreSameFile_03 (0.00s)
 === RUN   TestFileHelper_AreSameFile_04
@@ -525,9 +523,9 @@
 === RUN   TestFileHelper_ChangeFileMode_04
 --- PASS: TestFileHelper_ChangeFileMode_04 (0.00s)
 === RUN   TestFileHelper_ChangeFileMode_05
---- PASS: TestFileHelper_ChangeFileMode_05 (0.10s)
+--- PASS: TestFileHelper_ChangeFileMode_05 (0.07s)
 === RUN   TestFileHelper_ChangeFileMode_06
---- PASS: TestFileHelper_ChangeFileMode_06 (0.04s)
+--- PASS: TestFileHelper_ChangeFileMode_06 (0.03s)
 === RUN   TestFileHelper_ChangeFileTimes_01
 --- PASS: TestFileHelper_ChangeFileTimes_01 (0.04s)
 === RUN   TestFileHelper_ChangeFileTimes_02
@@ -539,9 +537,9 @@
 === RUN   TestFileHelper_ChangeFileTimes_05
 --- PASS: TestFileHelper_ChangeFileTimes_05 (0.00s)
 === RUN   TestFileHelper_ChangeFileTimes_06
---- PASS: TestFileHelper_ChangeFileTimes_06 (0.09s)
+--- PASS: TestFileHelper_ChangeFileTimes_06 (0.07s)
 === RUN   TestFileHelper_ChangeFileTimes_07
---- PASS: TestFileHelper_ChangeFileTimes_07 (0.09s)
+--- PASS: TestFileHelper_ChangeFileTimes_07 (0.06s)
 === RUN   TestFileHelper_ChangeWorkingDir_01
 --- PASS: TestFileHelper_ChangeWorkingDir_01 (0.00s)
 === RUN   TestFileHelper_ChangeWorkingDir_02
@@ -601,11 +599,11 @@
 === RUN   TestFileHelper_CopyFileByIo_01
 --- PASS: TestFileHelper_CopyFileByIo_01 (0.00s)
 === RUN   TestFileHelper_CopyFileByIo_02
---- PASS: TestFileHelper_CopyFileByIo_02 (0.06s)
+--- PASS: TestFileHelper_CopyFileByIo_02 (0.01s)
 === RUN   TestFileHelper_CopyFileByIo_03
 --- PASS: TestFileHelper_CopyFileByIo_03 (0.00s)
 === RUN   TestFileHelper_CopyFileByIo_04
---- PASS: TestFileHelper_CopyFileByIo_04 (0.00s)
+--- PASS: TestFileHelper_CopyFileByIo_04 (0.16s)
 === RUN   TestFileHelper_CopyFileByIo_05
 --- PASS: TestFileHelper_CopyFileByIo_05 (0.00s)
 === RUN   TestFileHelper_CopyFileByIo_06
@@ -615,11 +613,11 @@
 === RUN   TestFileHelper_CopyFileByIo_08
 --- PASS: TestFileHelper_CopyFileByIo_08 (0.00s)
 === RUN   TestFileHelper_CopyFileByIo_09
---- PASS: TestFileHelper_CopyFileByIo_09 (0.07s)
+--- PASS: TestFileHelper_CopyFileByIo_09 (0.03s)
 === RUN   TestFileHelper_CopyFileByIo_10
---- PASS: TestFileHelper_CopyFileByIo_10 (0.10s)
+--- PASS: TestFileHelper_CopyFileByIo_10 (0.08s)
 === RUN   TestFileHelper_CopyFileByIo_11
---- PASS: TestFileHelper_CopyFileByIo_11 (0.27s)
+--- PASS: TestFileHelper_CopyFileByIo_11 (0.15s)
 === RUN   TestFileHelper_CopyFileByLink_01
 --- PASS: TestFileHelper_CopyFileByLink_01 (0.00s)
 === RUN   TestFileHelper_CopyFileByLink_02
@@ -641,7 +639,7 @@
 === RUN   TestFileHelper_CopyFileByLink_10
 --- PASS: TestFileHelper_CopyFileByLink_10 (0.00s)
 === RUN   TestFileHelper_CopyFileByLink_11
---- PASS: TestFileHelper_CopyFileByLink_11 (0.02s)
+--- PASS: TestFileHelper_CopyFileByLink_11 (0.00s)
 === RUN   TestFileHelper_CopyFileByLink_12
 --- PASS: TestFileHelper_CopyFileByLink_12 (0.05s)
 === RUN   TestFileHelper_CopyFileByLink_13
@@ -649,9 +647,9 @@
 === RUN   TestFileHelper_CopyFileByLink_14
 --- PASS: TestFileHelper_CopyFileByLink_14 (0.00s)
 === RUN   TestFileHelper_CreateFile_01
---- PASS: TestFileHelper_CreateFile_01 (0.00s)
+--- PASS: TestFileHelper_CreateFile_01 (0.01s)
 === RUN   TestFileHelper_CreateFile_02
---- PASS: TestFileHelper_CreateFile_02 (0.00s)
+--- PASS: TestFileHelper_CreateFile_02 (0.02s)
 === RUN   TestFileHelper_CreateFile_03
 --- PASS: TestFileHelper_CreateFile_03 (0.00s)
 === RUN   TestFileHelper_CreateFile_04
@@ -673,7 +671,7 @@
 === RUN   TestFileHelper_DeleteDirPathAll_04
 --- PASS: TestFileHelper_DeleteDirPathAll_04 (0.00s)
 === RUN   TestFileHelper_DeleteDirPathAll_05
---- PASS: TestFileHelper_DeleteDirPathAll_05 (0.51s)
+--- PASS: TestFileHelper_DeleteDirPathAll_05 (0.23s)
 === RUN   TestFileHelper_DoesFileExist_01
 --- PASS: TestFileHelper_DoesFileExist_01 (0.00s)
 === RUN   TestFileHelper_DoesFileExist_02
@@ -709,9 +707,9 @@
 === RUN   TestFileHelper_DoesThisFileExist_06
 --- PASS: TestFileHelper_DoesThisFileExist_06 (0.00s)
 === RUN   TestFileHelper_FindFilesInPath_01
---- PASS: TestFileHelper_FindFilesInPath_01 (0.43s)
+--- PASS: TestFileHelper_FindFilesInPath_01 (0.18s)
 === RUN   TestFileHelper_FindFilesInPath_02
---- PASS: TestFileHelper_FindFilesInPath_02 (1.12s)
+--- PASS: TestFileHelper_FindFilesInPath_02 (1.00s)
 === RUN   TestFileHelper_FindFilesInPath_03
 --- PASS: TestFileHelper_FindFilesInPath_03 (0.00s)
 === RUN   TestFileHelper_FindFilesInPath_04
@@ -747,9 +745,9 @@
 === RUN   TestFileHelper_FilterFileName_12
 --- PASS: TestFileHelper_FilterFileName_12 (0.00s)
 === RUN   TestFileHelper_FindFilesWalkDirectory_01
---- PASS: TestFileHelper_FindFilesWalkDirectory_01 (0.06s)
+--- PASS: TestFileHelper_FindFilesWalkDirectory_01 (0.08s)
 === RUN   TestFileHelper_FindFilesWalkDirectory_02
---- PASS: TestFileHelper_FindFilesWalkDirectory_02 (0.04s)
+--- PASS: TestFileHelper_FindFilesWalkDirectory_02 (0.06s)
 === RUN   TestFileHelper_FindFilesWalkDirectory_03
 --- PASS: TestFileHelper_FindFilesWalkDirectory_03 (0.00s)
 === RUN   TestFileHelper_FindFilesWalkDirectory_04
@@ -1015,7 +1013,7 @@
 === RUN   TestFileHelper_MakeDir03
 --- PASS: TestFileHelper_MakeDir03 (0.00s)
 === RUN   TestFileHelper_MoveFile_01
---- PASS: TestFileHelper_MoveFile_01 (0.05s)
+--- PASS: TestFileHelper_MoveFile_01 (0.10s)
 === RUN   TestFileHelper_MoveFile_02
 --- PASS: TestFileHelper_MoveFile_02 (0.00s)
 === RUN   TestFileHelper_MoveFile_03
@@ -1027,11 +1025,11 @@
 === RUN   TestFileHelper_MoveFile_06
 --- PASS: TestFileHelper_MoveFile_06 (0.00s)
 === RUN   TestFileHelper_MoveFile_07
---- PASS: TestFileHelper_MoveFile_07 (0.17s)
+--- PASS: TestFileHelper_MoveFile_07 (0.06s)
 === RUN   TestFileHelper_MoveFile_08
 --- PASS: TestFileHelper_MoveFile_08 (0.00s)
 === RUN   TestFileHelper_MoveFile_09
---- PASS: TestFileHelper_MoveFile_09 (0.15s)
+--- PASS: TestFileHelper_MoveFile_09 (0.03s)
 === RUN   TestFileHelper_OpenDirectory_01
 --- PASS: TestFileHelper_OpenDirectory_01 (0.00s)
 === RUN   TestFileHelper_OpenDirectory_02
@@ -1043,7 +1041,7 @@
 === RUN   TestFileHelper_OpenDirectory_05
 --- PASS: TestFileHelper_OpenDirectory_05 (0.00s)
 === RUN   TestFileHelper_OpenFile_01
---- PASS: TestFileHelper_OpenFile_01 (0.03s)
+--- PASS: TestFileHelper_OpenFile_01 (0.00s)
 === RUN   TestFileHelper_OpenFile_02
 --- PASS: TestFileHelper_OpenFile_02 (0.00s)
 === RUN   TestFileHelper_OpenFile_03
@@ -1055,7 +1053,7 @@
 === RUN   TestFileHelper_OpenFile_06
 --- PASS: TestFileHelper_OpenFile_06 (0.00s)
 === RUN   TestFileHelper_OpenFileReadOnly_01
---- PASS: TestFileHelper_OpenFileReadOnly_01 (0.04s)
+--- PASS: TestFileHelper_OpenFileReadOnly_01 (0.02s)
 === RUN   TestFileHelper_OpenFileReadOnly_02
 --- PASS: TestFileHelper_OpenFileReadOnly_02 (0.00s)
 === RUN   TestFileHelper_OpenFileReadOnly_03
@@ -1063,11 +1061,11 @@
 === RUN   TestFileHelper_OpenFileReadOnly_04
 --- PASS: TestFileHelper_OpenFileReadOnly_04 (0.00s)
 === RUN   TestFileHelper_OpenFileReadOnly_05
---- PASS: TestFileHelper_OpenFileReadOnly_05 (0.17s)
+--- PASS: TestFileHelper_OpenFileReadOnly_05 (0.02s)
 === RUN   TestFileHelper_OpenFileReadWrite_01
 --- PASS: TestFileHelper_OpenFileReadWrite_01 (0.02s)
 === RUN   TestFileHelper_OpenFileReadWrite_02
---- PASS: TestFileHelper_OpenFileReadWrite_02 (0.06s)
+--- PASS: TestFileHelper_OpenFileReadWrite_02 (0.10s)
 === RUN   TestFileHelper_OpenFileReadWrite_03
 --- PASS: TestFileHelper_OpenFileReadWrite_03 (0.00s)
 === RUN   TestFileHelper_OpenFileReadWrite_04
@@ -1075,13 +1073,13 @@
 === RUN   TestFileHelper_OpenFileReadWrite_05
 --- PASS: TestFileHelper_OpenFileReadWrite_05 (0.00s)
 === RUN   TestFileHelper_OpenFileWriteOnly_01
---- PASS: TestFileHelper_OpenFileWriteOnly_01 (0.08s)
+--- PASS: TestFileHelper_OpenFileWriteOnly_01 (0.04s)
 === RUN   TestFileHelper_OpenFileWriteOnly_02
---- PASS: TestFileHelper_OpenFileWriteOnly_02 (0.02s)
+--- PASS: TestFileHelper_OpenFileWriteOnly_02 (0.24s)
 === RUN   TestFileHelper_OpenFileWriteOnly_03
---- PASS: TestFileHelper_OpenFileWriteOnly_03 (0.00s)
+--- PASS: TestFileHelper_OpenFileWriteOnly_03 (0.01s)
 === RUN   TestFileHelper_OpenFileWriteOnly_04
---- PASS: TestFileHelper_OpenFileWriteOnly_04 (0.00s)
+--- PASS: TestFileHelper_OpenFileWriteOnly_04 (0.01s)
 === RUN   TestFileHelper_OpenFileWriteOnly_05
 --- PASS: TestFileHelper_OpenFileWriteOnly_05 (0.00s)
 === RUN   TestFileHelper_OpenFileWriteOnly_06
@@ -1127,7 +1125,7 @@
 === RUN   TestFileHelper_SwapBasePath_11
 --- PASS: TestFileHelper_SwapBasePath_11 (0.00s)
 === RUN   TestFileMgr_ChangePermissionMode_01
---- PASS: TestFileMgr_ChangePermissionMode_01 (0.00s)
+--- PASS: TestFileMgr_ChangePermissionMode_01 (0.03s)
 === RUN   TestFileMgr_ChangePermissionMode_02
 --- PASS: TestFileMgr_ChangePermissionMode_02 (0.00s)
 === RUN   TestFileMgr_ChangePermissionMode_03
@@ -1143,11 +1141,11 @@
 === RUN   TestFileMgr_CopyOut_01
 --- PASS: TestFileMgr_CopyOut_01 (0.00s)
 === RUN   TestFileMgr_CopyFileMgrByIo_01
---- PASS: TestFileMgr_CopyFileMgrByIo_01 (0.05s)
+--- PASS: TestFileMgr_CopyFileMgrByIo_01 (0.08s)
 === RUN   TestFileMgr_CopyFileMgrByIo_02
 --- PASS: TestFileMgr_CopyFileMgrByIo_02 (0.00s)
 === RUN   TestFileMgr_CopyFileMgrByIo_03
---- PASS: TestFileMgr_CopyFileMgrByIo_03 (0.00s)
+--- PASS: TestFileMgr_CopyFileMgrByIo_03 (0.01s)
 === RUN   TestFileMgr_CopyFileMgrByIo_04
 --- PASS: TestFileMgr_CopyFileMgrByIo_04 (0.00s)
 === RUN   TestFileMgr_CopyFileMgrByIo_05
@@ -1155,9 +1153,9 @@
 === RUN   TestFileMgr_CopyFileMgrByIo_06
 --- PASS: TestFileMgr_CopyFileMgrByIo_06 (0.00s)
 === RUN   TestFileMgr_CopyFileMgrByIoByLink_01
---- PASS: TestFileMgr_CopyFileMgrByIoByLink_01 (0.07s)
+--- PASS: TestFileMgr_CopyFileMgrByIoByLink_01 (0.05s)
 === RUN   TestFileMgr_CopyFileMgrByIoByLink_02
---- PASS: TestFileMgr_CopyFileMgrByIoByLink_02 (0.02s)
+--- PASS: TestFileMgr_CopyFileMgrByIoByLink_02 (0.04s)
 === RUN   TestFileMgr_CopyFileMgrByIoByLink_03
 --- PASS: TestFileMgr_CopyFileMgrByIoByLink_03 (0.00s)
 === RUN   TestFileMgr_CopyFileMgrByIoByLink_04
@@ -1169,7 +1167,7 @@
 === RUN   TestFileMgr_CopyFileMgrByIoByLink_07
 --- PASS: TestFileMgr_CopyFileMgrByIoByLink_07 (0.00s)
 === RUN   TestFileMgr_CopyFileMgrByLink_01
---- PASS: TestFileMgr_CopyFileMgrByLink_01 (0.00s)
+--- PASS: TestFileMgr_CopyFileMgrByLink_01 (0.01s)
 === RUN   TestFileMgr_CopyFileMgrByLink_02
 --- PASS: TestFileMgr_CopyFileMgrByLink_02 (0.00s)
 === RUN   TestFileMgr_CopyFileMgrByLink_03
@@ -1179,9 +1177,9 @@
 === RUN   TestFileMgr_CopyFileMgrByLink_05
 --- PASS: TestFileMgr_CopyFileMgrByLink_05 (0.00s)
 === RUN   TestFileMgr_CopyFileMgrByLink_06
---- PASS: TestFileMgr_CopyFileMgrByLink_06 (0.00s)
+--- PASS: TestFileMgr_CopyFileMgrByLink_06 (0.01s)
 === RUN   TestFileMgr_CopyFileMgrByLinkByIo_01
---- PASS: TestFileMgr_CopyFileMgrByLinkByIo_01 (0.00s)
+--- PASS: TestFileMgr_CopyFileMgrByLinkByIo_01 (0.01s)
 === RUN   TestFileMgr_CopyFileMgrByLinkByIo_02
 --- PASS: TestFileMgr_CopyFileMgrByLinkByIo_02 (0.00s)
 === RUN   TestFileMgr_CopyFileMgrByLinkByIo_03
@@ -1191,7 +1189,7 @@
 === RUN   TestFileMgr_CopyFileMgrByLinkByIo_05
 --- PASS: TestFileMgr_CopyFileMgrByLinkByIo_05 (0.00s)
 === RUN   TestFileMgr_CopyFileMgrByLinkByIo_06
---- PASS: TestFileMgr_CopyFileMgrByLinkByIo_06 (0.00s)
+--- PASS: TestFileMgr_CopyFileMgrByLinkByIo_06 (0.01s)
 === RUN   TestFileMgr_CopyFileStrByIo_01
 --- PASS: TestFileMgr_CopyFileStrByIo_01 (0.03s)
 === RUN   TestFileMgr_CopyFileStrByIo_02
@@ -1201,7 +1199,7 @@
 === RUN   TestFileMgr_CopyFileStrByIo_04
 --- PASS: TestFileMgr_CopyFileStrByIo_04 (0.00s)
 === RUN   TestFileMgr_CopyFileStrByIo_05
---- PASS: TestFileMgr_CopyFileStrByIo_05 (0.00s)
+--- PASS: TestFileMgr_CopyFileStrByIo_05 (0.01s)
 === RUN   TestFileMgr_CopyFileStrByIoByLink_01
 --- PASS: TestFileMgr_CopyFileStrByIoByLink_01 (0.02s)
 === RUN   TestFileMgr_CopyFileStrByIoByLink_02
@@ -1223,7 +1221,7 @@
 === RUN   TestFileMgr_CopyFileStrByLink_05
 --- PASS: TestFileMgr_CopyFileStrByLink_05 (0.00s)
 === RUN   TestFileMgr_CopyFileStrByLinkByIo_01
---- PASS: TestFileMgr_CopyFileStrByLinkByIo_01 (0.00s)
+--- PASS: TestFileMgr_CopyFileStrByLinkByIo_01 (0.01s)
 === RUN   TestFileMgr_CopyFileStrByLinkByIo_02
 --- PASS: TestFileMgr_CopyFileStrByLinkByIo_02 (0.00s)
 === RUN   TestFileMgr_CopyFileStrByLinkByIo_03
@@ -1231,47 +1229,47 @@
 === RUN   TestFileMgr_CopyFileStrByLinkByIo_04
 --- PASS: TestFileMgr_CopyFileStrByLinkByIo_04 (0.00s)
 === RUN   TestFileMgr_CopyFileStrByLinkByIo_05
---- PASS: TestFileMgr_CopyFileStrByLinkByIo_05 (0.00s)
+--- PASS: TestFileMgr_CopyFileStrByLinkByIo_05 (0.01s)
 === RUN   TestFileMgr_CopyFileToDirByIo_01
---- PASS: TestFileMgr_CopyFileToDirByIo_01 (0.07s)
+--- PASS: TestFileMgr_CopyFileToDirByIo_01 (0.03s)
 === RUN   TestFileMgr_CopyFileToDirByIo_02
---- PASS: TestFileMgr_CopyFileToDirByIo_02 (0.00s)
+--- PASS: TestFileMgr_CopyFileToDirByIo_02 (0.01s)
 === RUN   TestFileMgr_CopyFileToDirByIo_03
 --- PASS: TestFileMgr_CopyFileToDirByIo_03 (0.00s)
 === RUN   TestFileMgr_CopyFileToDirByIo_04
---- PASS: TestFileMgr_CopyFileToDirByIo_04 (0.00s)
+--- PASS: TestFileMgr_CopyFileToDirByIo_04 (0.01s)
 === RUN   TestFileMgr_CopyFileToDirByIo_05
 --- PASS: TestFileMgr_CopyFileToDirByIo_05 (0.00s)
 === RUN   TestFileMgr_CopyFileToDirByIo_06
---- PASS: TestFileMgr_CopyFileToDirByIo_06 (0.00s)
+--- PASS: TestFileMgr_CopyFileToDirByIo_06 (0.01s)
 === RUN   TestFileMgr_CopyFileToDirByIoByLink_01
---- PASS: TestFileMgr_CopyFileToDirByIoByLink_01 (0.04s)
+--- PASS: TestFileMgr_CopyFileToDirByIoByLink_01 (0.03s)
 === RUN   TestFileMgr_CopyFileToDirByIoByLink_02
 --- PASS: TestFileMgr_CopyFileToDirByIoByLink_02 (0.00s)
 === RUN   TestFileMgr_CopyFileToDirByIoByLink_03
 --- PASS: TestFileMgr_CopyFileToDirByIoByLink_03 (0.00s)
 === RUN   TestFileMgr_CopyFileToDirByIoByLink_04
---- PASS: TestFileMgr_CopyFileToDirByIoByLink_04 (0.00s)
+--- PASS: TestFileMgr_CopyFileToDirByIoByLink_04 (0.01s)
 === RUN   TestFileMgr_CopyFileToDirByIoByLink_05
 --- PASS: TestFileMgr_CopyFileToDirByIoByLink_05 (0.00s)
 === RUN   TestFileMgr_CopyFileToDirByLinkByIo_01
---- PASS: TestFileMgr_CopyFileToDirByLinkByIo_01 (0.01s)
+--- PASS: TestFileMgr_CopyFileToDirByLinkByIo_01 (0.02s)
 === RUN   TestFileMgr_CopyFileToDirByLinkByIo_02
---- PASS: TestFileMgr_CopyFileToDirByLinkByIo_02 (0.00s)
+--- PASS: TestFileMgr_CopyFileToDirByLinkByIo_02 (0.01s)
 === RUN   TestFileMgr_CopyFileToDirByLinkByIo_03
---- PASS: TestFileMgr_CopyFileToDirByLinkByIo_03 (0.00s)
+--- PASS: TestFileMgr_CopyFileToDirByLinkByIo_03 (0.01s)
 === RUN   TestFileMgr_CopyFileToDirByLinkByIo_04
---- PASS: TestFileMgr_CopyFileToDirByLinkByIo_04 (0.00s)
+--- PASS: TestFileMgr_CopyFileToDirByLinkByIo_04 (0.01s)
 === RUN   TestFileMgr_CopyFileToDirByLinkByIo_05
 --- PASS: TestFileMgr_CopyFileToDirByLinkByIo_05 (0.00s)
 === RUN   TestFileMgr_CopyFileToDirByLink_01
 --- PASS: TestFileMgr_CopyFileToDirByLink_01 (0.01s)
 === RUN   TestFileMgr_CopyFileToDirByLink_02
---- PASS: TestFileMgr_CopyFileToDirByLink_02 (0.00s)
+--- PASS: TestFileMgr_CopyFileToDirByLink_02 (0.01s)
 === RUN   TestFileMgr_CopyFileToDirByLink_03
 --- PASS: TestFileMgr_CopyFileToDirByLink_03 (0.00s)
 === RUN   TestFileMgr_CopyFileToDirByLink_04
---- PASS: TestFileMgr_CopyFileToDirByLink_04 (0.00s)
+--- PASS: TestFileMgr_CopyFileToDirByLink_04 (0.01s)
 === RUN   TestFileMgr_CopyFileToDirByLink_05
 --- PASS: TestFileMgr_CopyFileToDirByLink_05 (0.00s)
 === RUN   TestFileMgr_CreateDir_01
@@ -1279,7 +1277,7 @@
 === RUN   TestFileMgr_CreateDir_02
 --- PASS: TestFileMgr_CreateDir_02 (0.00s)
 === RUN   TestFileMgr_CreateDirAndFile_01
---- PASS: TestFileMgr_CreateDirAndFile_01 (0.10s)
+--- PASS: TestFileMgr_CreateDirAndFile_01 (0.03s)
 === RUN   TestFileMgr_CreateDirAndFile_02
 --- PASS: TestFileMgr_CreateDirAndFile_02 (0.00s)
 === RUN   TestFileMgr_CreateThisFile_01
@@ -1289,7 +1287,7 @@
 === RUN   TestFileMgr_DeleteThisFile_01
 --- PASS: TestFileMgr_DeleteThisFile_01 (0.00s)
 === RUN   TestFileMgr_DeleteThisFile_02
---- PASS: TestFileMgr_DeleteThisFile_02 (0.00s)
+--- PASS: TestFileMgr_DeleteThisFile_02 (0.01s)
 === RUN   TestFileMgr_DoesFileExist_01
 --- PASS: TestFileMgr_DoesFileExist_01 (0.00s)
 === RUN   TestFileMgr_DoesFileExist_02
@@ -1375,7 +1373,7 @@
 === RUN   TestFileMgr_GetFileNameExt_02
 --- PASS: TestFileMgr_GetFileNameExt_02 (0.00s)
 === RUN   TestFileMgr_GetFilePermissionConfig_01
---- PASS: TestFileMgr_GetFilePermissionConfig_01 (0.00s)
+--- PASS: TestFileMgr_GetFilePermissionConfig_01 (0.01s)
 === RUN   TestFileMgr_GetFilePermissionConfig_02
 --- PASS: TestFileMgr_GetFilePermissionConfig_02 (0.00s)
 === RUN   TestFileMgr_GetFilePermissionConfig_03
@@ -1401,18 +1399,16 @@
 === RUN   TestFileMgr_GetReaderBufferSize_02
 --- PASS: TestFileMgr_GetReaderBufferSize_02 (0.00s)
 === RUN   TestFileMgr_GetReaderBufferSize_03
---- PASS: TestFileMgr_GetReaderBufferSize_03 (0.00s)
+--- PASS: TestFileMgr_GetReaderBufferSize_03 (0.01s)
 === RUN   TestFileMgr_GetWriterBufferSize_01
 --- PASS: TestFileMgr_GetWriterBufferSize_01 (0.00s)
 === RUN   TestFileMgr_GetWriterBufferSize_02
 --- PASS: TestFileMgr_GetWriterBufferSize_02 (0.00s)
 === RUN   TestFileMgr_GetWriterBufferSize_03
---- FAIL: TestFileMgr_GetWriterBufferSize_03 (0.12s)
-    xt_filemanager_04_test.go:1375: Error returned by srcFMgr.DeleteThisFile().
+--- FAIL: TestFileMgr_GetWriterBufferSize_03 (0.03s)
+    xt_filemanager_04_test.go:1383: Error returned by srcFMgr.DeleteThisFile().
         srcFMgr='D:\gowork\src\MikeAustin71\pathfileopsgo\filesfortest\TestFileMgr_GetWriterBufferSize_03.txt'
-        Error='FileMgr.DeleteThisFile() - fileMgrHelper.deleteFile() - os.Remove(fMgr.absolutePathFileName) returned an error.
-        absolutePathFileName='D:\gowork\src\MikeAustin71\pathfileopsgo\filesfortest\TestFileMgr_GetWriterBufferSize_03.txt'
-        Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\filesfortest\TestFileMgr_GetWriterBufferSize_03.txt: The process cannot access the file because it is being used by another process.''
+        Error='FileMgr.DeleteThisFile() - os.Remove(fMgr.absolutePathFileName) returned an error. absolutePathFileName='D:\gowork\src\MikeAustin71\pathfileopsgo\filesfortest\TestFileMgr_GetWriterBufferSize_03.txt'   Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\filesfortest\TestFileMgr_GetWriterBufferSize_03.txt: The process cannot access the file because it is being used by another process.''
 === RUN   TestFileMgr_IsAbsolutePathFileNamePopulated_01
 --- PASS: TestFileMgr_IsAbsolutePathFileNamePopulated_01 (0.00s)
 === RUN   TestFileMgr_IsAbsolutePathFileNamePopulated_02
@@ -1446,9 +1442,9 @@
 === RUN   TestFileMgr_IsInitialized_03
 --- PASS: TestFileMgr_IsInitialized_03 (0.00s)
 === RUN   TestFileMgr_MoveFileToNewDirMgr_01
---- PASS: TestFileMgr_MoveFileToNewDirMgr_01 (0.04s)
+--- PASS: TestFileMgr_MoveFileToNewDirMgr_01 (0.05s)
 === RUN   TestFileMgr_MoveFileToNewDirMgr_02
---- PASS: TestFileMgr_MoveFileToNewDirMgr_02 (0.02s)
+--- PASS: TestFileMgr_MoveFileToNewDirMgr_02 (0.03s)
 === RUN   TestFileMgr_MoveFileToNewDirMgr_03
 --- PASS: TestFileMgr_MoveFileToNewDirMgr_03 (0.00s)
 === RUN   TestFileMgr_MoveFileToNewDirMgr_04
@@ -1456,9 +1452,9 @@
 === RUN   TestFileMgr_MoveFileToNewDirMgr_05
 --- PASS: TestFileMgr_MoveFileToNewDirMgr_05 (0.00s)
 === RUN   TestFileMgr_MoveFileToNewDir_01
---- PASS: TestFileMgr_MoveFileToNewDir_01 (0.04s)
+--- PASS: TestFileMgr_MoveFileToNewDir_01 (0.16s)
 === RUN   TestFileMgr_MoveFileToNewDir_02
---- PASS: TestFileMgr_MoveFileToNewDir_02 (0.02s)
+--- PASS: TestFileMgr_MoveFileToNewDir_02 (0.03s)
 === RUN   TestFileMgr_MoveFileToNewDir_03
 --- PASS: TestFileMgr_MoveFileToNewDir_03 (0.00s)
 === RUN   TestFileMgr_MoveFileToNewDir_04
@@ -1492,7 +1488,7 @@
 === RUN   TestFileMgr_NewFromFileInfo_04
 --- PASS: TestFileMgr_NewFromFileInfo_04 (0.00s)
 === RUN   TestFileMgr_NewFromDirMgrFileNameExt_01
---- PASS: TestFileMgr_NewFromDirMgrFileNameExt_01 (0.00s)
+--- PASS: TestFileMgr_NewFromDirMgrFileNameExt_01 (0.01s)
 === RUN   TestFileMgr_NewFromDirMgrFileNameExt_02
 --- PASS: TestFileMgr_NewFromDirMgrFileNameExt_02 (0.00s)
 === RUN   TestFileMgr_NewFromDirMgrFileNameExt_03
@@ -1514,128 +1510,151 @@
 === RUN   TestFileMgr_NewFromDirStrFileNameStr_06
 --- PASS: TestFileMgr_NewFromDirStrFileNameStr_06 (0.00s)
 === RUN   TestFileMgr_OpenThisFile_01
---- PASS: TestFileMgr_OpenThisFile_01 (0.02s)
+--- FAIL: TestFileMgr_OpenThisFile_01 (0.00s)
+    xt_filemanager_06_test.go:30: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\testRead2008.txt'
+        filePath='..\checkfiles\checkfiles03\testRead2008.txt'
 === RUN   TestFileMgr_OpenThisFile_02
 --- PASS: TestFileMgr_OpenThisFile_02 (0.00s)
 === RUN   TestFileMgr_OpenThisFile_03
---- PASS: TestFileMgr_OpenThisFile_03 (0.00s)
+--- PASS: TestFileMgr_OpenThisFile_03 (0.01s)
 === RUN   TestFileMgr_OpenThisFile_04
---- PASS: TestFileMgr_OpenThisFile_04 (0.02s)
+--- FAIL: TestFileMgr_OpenThisFile_04 (0.00s)
+    xt_filemanager_06_test.go:219: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\testRead2008.txt'
+        filePath='..\checkfiles\checkfiles03\testRead2008.txt'
 === RUN   TestFileMgr_OpenThisFileReadOnly_01
---- PASS: TestFileMgr_OpenThisFileReadOnly_01 (0.03s)
+--- FAIL: TestFileMgr_OpenThisFileReadOnly_01 (0.00s)
+    xt_filemanager_06_test.go:296: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\testRead2008.txt'
+        filePath='..\checkfiles\checkfiles03\testRead2008.txt'
 === RUN   TestFileMgr_OpenThisFileReadOnly_02
---- PASS: TestFileMgr_OpenThisFileReadOnly_02 (0.01s)
+--- FAIL: TestFileMgr_OpenThisFileReadOnly_02 (0.00s)
+    xt_filemanager_06_test.go:366: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\testRead2008.txt'
+        filePath='..\checkfiles\checkfiles03\testRead2008.txt'
 === RUN   TestFileMgr_OpenThisFileReadOnly_03
---- PASS: TestFileMgr_OpenThisFileReadOnly_03 (0.00s)
+--- PASS: TestFileMgr_OpenThisFileReadOnly_03 (0.01s)
 === RUN   TestFileMgr_OpenThisFileReadOnly_04
 --- PASS: TestFileMgr_OpenThisFileReadOnly_04 (0.00s)
 === RUN   TestFileMgr_OpenThisFileReadWrite_01
---- PASS: TestFileMgr_OpenThisFileReadWrite_01 (0.02s)
+--- FAIL: TestFileMgr_OpenThisFileReadWrite_01 (0.00s)
+    xt_filemanager_06_test.go:525: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\testRead2008.txt'
+        filePath='..\checkfiles\checkfiles03\testRead2008.txt'
 === RUN   TestFileMgr_OpenThisFileReadWrite_02
---- PASS: TestFileMgr_OpenThisFileReadWrite_02 (0.02s)
+--- FAIL: TestFileMgr_OpenThisFileReadWrite_02 (0.00s)
+    xt_filemanager_06_test.go:602: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\testRead2008.txt'
+        filePath='..\checkfiles\checkfiles03\testRead2008.txt'
 === RUN   TestFileMgr_OpenThisFileWriteOnly_01
 --- PASS: TestFileMgr_OpenThisFileWriteOnly_01 (0.00s)
 === RUN   TestFileMgr_OpenThisFileWriteOnly_02
---- PASS: TestFileMgr_OpenThisFileWriteOnly_02 (0.11s)
+--- PASS: TestFileMgr_OpenThisFileWriteOnly_02 (0.04s)
 === RUN   TestFileMgr_OpenThisFileWriteOnlyAppend_01
---- FAIL: TestFileMgr_OpenThisFileWriteOnlyAppend_01 (0.23s)
-    xt_filemanager_06_test.go:888: fMgr.DeleteThisFile() FAILED!
+--- FAIL: TestFileMgr_OpenThisFileWriteOnlyAppend_01 (0.04s)
+    xt_filemanager_06_test.go:897: fMgr.DeleteThisFile() FAILED!
         fMgr='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\TestFileMgr_OpenThisFileWriteOnlyAppend_01.txt'
-        Error='FileMgr.DeleteThisFile() - fileMgrHelper.deleteFile() - os.Remove(fMgr.absolutePathFileName) returned an error.
-        absolutePathFileName='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\TestFileMgr_OpenThisFileWriteOnlyAppend_01.txt'
-        Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\TestFileMgr_OpenThisFileWriteOnlyAppend_01.txt: The process cannot access the file because it is being used by another process.''
+        Error='FileMgr.DeleteThisFile() - os.Remove(fMgr.absolutePathFileName) returned an error. absolutePathFileName='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\TestFileMgr_OpenThisFileWriteOnlyAppend_01.txt'   Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\TestFileMgr_OpenThisFileWriteOnlyAppend_01.txt: The process cannot access the file because it is being used by another process.''
 === RUN   TestFileMgr_OpenThisFileWriteOnlyAppend_02
 --- PASS: TestFileMgr_OpenThisFileWriteOnlyAppend_02 (0.01s)
 === RUN   TestFileMgr_OpenThisFileWriteOnlyAppend_03
 --- PASS: TestFileMgr_OpenThisFileWriteOnlyAppend_03 (0.00s)
 === RUN   TestFileMgr_ReadAllFile_01
---- PASS: TestFileMgr_ReadAllFile_01 (0.09s)
+--- FAIL: TestFileMgr_ReadAllFile_01 (0.02s)
+    xt_filemanager_07_test.go:34: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\checkfiles03_02\testRead857268.txt'
+        filePath='..\checkfiles\checkfiles03\checkfiles03_02\testRead857268.txt'
 === RUN   TestFileMgr_ReadAllFile_02
---- PASS: TestFileMgr_ReadAllFile_02 (0.04s)
+--- FAIL: TestFileMgr_ReadAllFile_02 (0.00s)
+    xt_filemanager_07_test.go:104: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\checkfiles03_02\testRead857268.txt'
+        filePath='..\checkfiles\checkfiles03\checkfiles03_02\testRead857268.txt'
 === RUN   TestFileMgr_ReadAllFile_03
---- PASS: TestFileMgr_ReadAllFile_03 (0.03s)
+--- FAIL: TestFileMgr_ReadAllFile_03 (0.00s)
+    xt_filemanager_07_test.go:160: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\checkfiles03_02\testRead918256.txt'
+        filePath='..\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
 === RUN   TestFileMgr_ReadFileLine_01
 --- FAIL: TestFileMgr_ReadFileLine_01 (0.00s)
-    xt_filemanager_07_test.go:225: Test Setup Error returned by fh.DeleteDirFile(filePath)
+    xt_filemanager_07_test.go:234: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\checkfiles03_02\testRead918256.txt'
         filePath='..\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='FileHelper.DeleteDirFile() Error returned from os.Remove(pathFile).
-        pathFile='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt: The process cannot access the file because it is being used by another process.''
 === RUN   TestFileMgr_ReadFileLine_02
 --- FAIL: TestFileMgr_ReadFileLine_02 (0.00s)
-    xt_filemanager_07_test.go:306: Test Setup Error returned by fh.DeleteDirFile(filePath)
+    xt_filemanager_07_test.go:315: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\checkfiles03_02\testRead918256.txt'
         filePath='..\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='FileHelper.DeleteDirFile() Error returned from os.Remove(pathFile).
-        pathFile='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt: The process cannot access the file because it is being used by another process.''
 === RUN   TestFileMgr_ReadFileLine_03
 --- FAIL: TestFileMgr_ReadFileLine_03 (0.00s)
-    xt_filemanager_07_test.go:367: Test Setup Error returned by fh.DeleteDirFile(filePath)
+    xt_filemanager_07_test.go:376: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\checkfiles03_02\testRead918256.txt'
         filePath='..\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='FileHelper.DeleteDirFile() Error returned from os.Remove(pathFile).
-        pathFile='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt: The process cannot access the file because it is being used by another process.''
 === RUN   TestFileMgr_ReadFileLine_04
 --- FAIL: TestFileMgr_ReadFileLine_04 (0.00s)
-    xt_filemanager_07_test.go:467: Test Setup Error returned by fh.DeleteDirFile(filePath)
+    xt_filemanager_07_test.go:476: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\checkfiles03_02\testRead918256.txt'
         filePath='..\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='FileHelper.DeleteDirFile() Error returned from os.Remove(pathFile).
-        pathFile='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt: The process cannot access the file because it is being used by another process.''
 === RUN   TestFileMgr_ReadFileLine_05
 --- FAIL: TestFileMgr_ReadFileLine_05 (0.00s)
-    xt_filemanager_07_test.go:571: Test Setup Error returned by fh.DeleteDirFile(filePath)
+    xt_filemanager_07_test.go:580: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\checkfiles03_02\testRead918256.txt'
         filePath='..\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='FileHelper.DeleteDirFile() Error returned from os.Remove(pathFile).
-        pathFile='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt: The process cannot access the file because it is being used by another process.''
 === RUN   TestFileMgr_ReadFileBytes_01
---- PASS: TestFileMgr_ReadFileBytes_01 (0.02s)
+--- FAIL: TestFileMgr_ReadFileBytes_01 (0.00s)
+    xt_filemanager_07_test.go:656: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\testRead2008.txt'
+        filePath='..\checkfiles\checkfiles03\testRead2008.txt'
 === RUN   TestFileMgr_ReadFileBytes_02
---- PASS: TestFileMgr_ReadFileBytes_02 (0.02s)
+--- FAIL: TestFileMgr_ReadFileBytes_02 (0.00s)
+    xt_filemanager_07_test.go:753: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\testRead2008.txt'
+        filePath='..\checkfiles\checkfiles03\testRead2008.txt'
 === RUN   TestFileMgr_ReadFileBytes_03
---- PASS: TestFileMgr_ReadFileBytes_03 (0.02s)
+--- FAIL: TestFileMgr_ReadFileBytes_03 (0.00s)
+    xt_filemanager_07_test.go:809: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\testRead2008.txt'
+        filePath='..\checkfiles\checkfiles03\testRead2008.txt'
 === RUN   TestFileMgr_ReadFileString_01
---- PASS: TestFileMgr_ReadFileString_01 (0.02s)
+--- FAIL: TestFileMgr_ReadFileString_01 (0.00s)
+    xt_filemanager_07_test.go:898: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\checkfiles03_02\testRead918256.txt'
+        filePath='..\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
 === RUN   TestFileMgr_ReadFileString_02
---- PASS: TestFileMgr_ReadFileString_02 (0.02s)
+--- FAIL: TestFileMgr_ReadFileString_02 (0.00s)
+    xt_filemanager_07_test.go:974: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\checkfiles03_02\testRead918256.txt'
+        filePath='..\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
 === RUN   TestFileMgr_ReadFileString_03
 --- FAIL: TestFileMgr_ReadFileString_03 (0.00s)
-    xt_filemanager_07_test.go:1078: Test Setup Error returned by fh.DeleteDirFile(filePath)
+    xt_filemanager_07_test.go:1087: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\checkfiles03_02\testRead918256.txt'
         filePath='..\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='FileHelper.DeleteDirFile() Error returned from os.Remove(pathFile).
-        pathFile='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt: The process cannot access the file because it is being used by another process.''
 === RUN   TestFileMgr_ReadFileString_04
 --- FAIL: TestFileMgr_ReadFileString_04 (0.00s)
-    xt_filemanager_07_test.go:1170: Test Setup Error returned by fh.DeleteDirFile(filePath)
+    xt_filemanager_07_test.go:1179: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\checkfiles03_02\testRead918256.txt'
         filePath='..\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='FileHelper.DeleteDirFile() Error returned from os.Remove(pathFile).
-        pathFile='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt: The process cannot access the file because it is being used by another process.''
 === RUN   TestFileMgr_ReadFileString_05
 --- FAIL: TestFileMgr_ReadFileString_05 (0.00s)
-    xt_filemanager_07_test.go:1260: Test Setup Error returned by fh.DeleteDirFile(filePath)
+    xt_filemanager_07_test.go:1269: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\checkfiles03_02\testRead918256.txt'
         filePath='..\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='FileHelper.DeleteDirFile() Error returned from os.Remove(pathFile).
-        pathFile='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt: The process cannot access the file because it is being used by another process.''
 === RUN   TestFileMgr_ReadFileString_06
 --- FAIL: TestFileMgr_ReadFileString_06 (0.00s)
-    xt_filemanager_07_test.go:1352: Test Setup Error returned by fh.DeleteDirFile(filePath)
+    xt_filemanager_07_test.go:1361: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\checkfiles03_02\testRead918256.txt'
         filePath='..\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='FileHelper.DeleteDirFile() Error returned from os.Remove(pathFile).
-        pathFile='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt: The process cannot access the file because it is being used by another process.''
 === RUN   TestFileMgr_ReadFileString_07
 --- FAIL: TestFileMgr_ReadFileString_07 (0.00s)
-    xt_filemanager_07_test.go:1411: Test Setup Error returned by fh.DeleteDirFile(filePath)
+    xt_filemanager_07_test.go:1420: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\checkfiles03_02\testRead918256.txt'
         filePath='..\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='FileHelper.DeleteDirFile() Error returned from os.Remove(pathFile).
-        pathFile='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt'
-        Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\checkfiles03_02\testRead918256.txt: The process cannot access the file because it is being used by another process.''
 === RUN   TestFileMgr_ResetFileInfo_01
---- PASS: TestFileMgr_ResetFileInfo_01 (0.12s)
+--- FAIL: TestFileMgr_ResetFileInfo_01 (0.00s)
+    xt_filemanager_07_test.go:1503: Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)
+        setupFile='..\filesfortest\checkfiles03\testRead2008.txt'
+        filePath='..\checkfiles\checkfiles03\testRead2008.txt'
 === RUN   TestFileMgr_SetFileInfo_01
 --- PASS: TestFileMgr_SetFileInfo_01 (0.00s)
 === RUN   TestFileMgr_SetFileInfo_02
@@ -1667,44 +1686,36 @@
 === RUN   TestFileMgr_SetFileMgrFromPathFileName_05
 --- PASS: TestFileMgr_SetFileMgrFromPathFileName_05 (0.00s)
 === RUN   TestFileMgr_WriteBytesToFile_01
---- FAIL: TestFileMgr_WriteBytesToFile_01 (0.13s)
-    xt_filemanager_08_test.go:683: fMgr.DeleteThisFile() FAILED! Error='FileMgr.DeleteThisFile() - fileMgrHelper.deleteFile() - os.Remove(fMgr.absolutePathFileName) returned an error.
-        absolutePathFileName='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\testWriteXX241289.txt'
-        Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\testWriteXX241289.txt: The process cannot access the file because it is being used by another process.''
+--- FAIL: TestFileMgr_WriteBytesToFile_01 (0.04s)
+    xt_filemanager_08_test.go:683: fMgr.DeleteThisFile() FAILED! Error='FileMgr.DeleteThisFile() - os.Remove(fMgr.absolutePathFileName) returned an error. absolutePathFileName='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\testWriteXX241289.txt'   Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\testWriteXX241289.txt: The process cannot access the file because it is being used by another process.''
 === RUN   TestFileMgr_WriteBytesToFile_02
---- FAIL: TestFileMgr_WriteBytesToFile_02 (0.10s)
-    xt_filemanager_08_test.go:758: Error returned by fMgr2.DeleteThisFile(). Error='FileMgr.DeleteThisFile() - fileMgrHelper.deleteFile() - os.Remove(fMgr.absolutePathFileName) returned an error.
-        absolutePathFileName='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\testWriteXX241289.txt'
-        Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\testWriteXX241289.txt: The process cannot access the file because it is being used by another process.'' 
+--- FAIL: TestFileMgr_WriteBytesToFile_02 (0.01s)
+    xt_filemanager_08_test.go:758: Error returned by fMgr2.DeleteThisFile(). Error='FileMgr.DeleteThisFile() - os.Remove(fMgr.absolutePathFileName) returned an error. absolutePathFileName='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\testWriteXX241289.txt'   Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\testWriteXX241289.txt: The process cannot access the file because it is being used by another process.'' 
 === RUN   TestFileMgr_WriteBytesToFile_03
 --- PASS: TestFileMgr_WriteBytesToFile_03 (0.03s)
 === RUN   TestFileMgr_WriteBytesToFile_04
---- FAIL: TestFileMgr_WriteBytesToFile_04 (0.12s)
+--- FAIL: TestFileMgr_WriteBytesToFile_04 (0.02s)
     xt_filemanager_08_test.go:961: fMgr.DeleteThisFile() FAILED!
-        Error='FileMgr.DeleteThisFile() - fileMgrHelper.deleteFile() - os.Remove(fMgr.absolutePathFileName) returned an error.
-        absolutePathFileName='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\TestFileMgr_WriteBytesToFile_04.txt'
-        Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\TestFileMgr_WriteBytesToFile_04.txt: The process cannot access the file because it is being used by another process.''
+        Error='FileMgr.DeleteThisFile() - os.Remove(fMgr.absolutePathFileName) returned an error. absolutePathFileName='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\TestFileMgr_WriteBytesToFile_04.txt'   Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\TestFileMgr_WriteBytesToFile_04.txt: The process cannot access the file because it is being used by another process.''
 === RUN   TestFileMgr_WriteStrToFile_01
---- FAIL: TestFileMgr_WriteStrToFile_01 (0.11s)
+--- FAIL: TestFileMgr_WriteStrToFile_01 (0.02s)
     xt_filemanager_08_test.go:1079: Error returned from fMgr.DeleteThisFile().
-        Error='FileMgr.DeleteThisFile() - fileMgrHelper.deleteFile() - os.Remove(fMgr.absolutePathFileName) returned an error.
-        absolutePathFileName='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\TestFileMgr_WriteStrToFile_01.txt'
-        Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\TestFileMgr_WriteStrToFile_01.txt: The process cannot access the file because it is being used by another process.''
+        Error='FileMgr.DeleteThisFile() - os.Remove(fMgr.absolutePathFileName) returned an error. absolutePathFileName='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\TestFileMgr_WriteStrToFile_01.txt'   Error='remove D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\TestFileMgr_WriteStrToFile_01.txt: The process cannot access the file because it is being used by another process.''
     xt_filemanager_08_test.go:1086: Error: Failed to DELETE fileNameExt='D:\gowork\src\MikeAustin71\pathfileopsgo\checkfiles\checkfiles03\TestFileMgr_WriteStrToFile_01.txt'
 === RUN   TestFileMgr_WriteStrToFile_02
 --- PASS: TestFileMgr_WriteStrToFile_02 (0.00s)
 === RUN   TestFileMgr_WriteStrToFile_03
---- PASS: TestFileMgr_WriteStrToFile_03 (0.02s)
+--- PASS: TestFileMgr_WriteStrToFile_03 (0.03s)
 === RUN   TestFileMgrCollection_AddFileMgrCollection
---- PASS: TestFileMgrCollection_AddFileMgrCollection (0.02s)
+--- PASS: TestFileMgrCollection_AddFileMgrCollection (0.03s)
 === RUN   TestFileMgrCollection_AddFileMgr_01
 --- PASS: TestFileMgrCollection_AddFileMgr_01 (0.01s)
 === RUN   TestFileMgrCollection_AddFileMgrByPathFile
---- PASS: TestFileMgrCollection_AddFileMgrByPathFile (0.01s)
+--- PASS: TestFileMgrCollection_AddFileMgrByPathFile (0.02s)
 === RUN   TestFileMgrCollection_AddFileInfo_01
---- PASS: TestFileMgrCollection_AddFileInfo_01 (0.01s)
+--- PASS: TestFileMgrCollection_AddFileInfo_01 (0.02s)
 === RUN   TestDirectoryTreeInfo_CopyToDirectoryTree_01
---- PASS: TestDirectoryTreeInfo_CopyToDirectoryTree_01 (3.88s)
+--- PASS: TestDirectoryTreeInfo_CopyToDirectoryTree_01 (4.72s)
 === RUN   TestFileMgrCollection_FindFiles
 --- PASS: TestFileMgrCollection_FindFiles (0.00s)
 === RUN   TestFileMgrCollection_GetFileMgrArray
@@ -2174,7 +2185,7 @@
 === RUN   TestFileOperationCode_Value_07
 --- PASS: TestFileOperationCode_Value_07 (0.00s)
 === RUN   TestFileOpsCollection_AddByPathFileNameExtStrs_01
---- PASS: TestFileOpsCollection_AddByPathFileNameExtStrs_01 (0.02s)
+--- PASS: TestFileOpsCollection_AddByPathFileNameExtStrs_01 (0.01s)
 === RUN   TestFileOpsCollection_AddByDirStrsAndFileNameExtStrs_01
 --- PASS: TestFileOpsCollection_AddByDirStrsAndFileNameExtStrs_01 (0.01s)
 === RUN   TestFileOpsCollection_AddByFileMgrs_01
@@ -2717,4 +2728,4 @@
 --- PASS: TestPreProcessPathCode_ParseString_06 (0.00s)
 FAIL
 exit status 1
-FAIL	MikeAustin71/pathfileopsgo/pathfileops	43.582s
+FAIL	MikeAustin71/pathfileopsgo/pathfileops	40.991s

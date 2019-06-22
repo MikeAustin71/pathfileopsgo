@@ -1,1 +1,0 @@
-Test Read File. Do NOT alter the contents of this file.
