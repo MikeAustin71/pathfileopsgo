@@ -1038,7 +1038,9 @@ func (fMgr *FileMgr) CreateDirAndFile() error {
   return err
 }
 
-// CreateThisFile - Creates the File identified by FileMgr.absolutePathFileName.
+// CreateThisFile - Creates the File identified by FileMgr
+// (FileMgr.absolutePathFileName).
+//
 // If the directory in the path file name designation does not exist, this
 // method will throw an error.
 //

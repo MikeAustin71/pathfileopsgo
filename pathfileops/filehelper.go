@@ -4146,7 +4146,8 @@ func (fh FileHelper) MakeAbsolutePath(relPath string) (string, error) {
 }
 
 // MakeDirAll - creates a directory named path, along with any necessary
-// parent directories.
+// parent directories. In other words, all directories in the path are
+// created.
 //
 // The permission bits 'drwxrwxrwx' are used for all directories that the
 // method creates.

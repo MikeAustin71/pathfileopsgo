@@ -1302,6 +1302,15 @@ func (fMgrHlpr *fileMgrHelper) openFile(
       "%v\n", err.Error())
   }
 
+  filePathDoesExist, err = fMgr.dMgr.DoesThisDirectoryExist()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nNon-Path Error returned from fMgr.dMgr.DoesThisDirectoryExist()\n."+
+      "fMgr.dMgr Directory Path='%v'\n"+
+      "Non-Path Error='%v'\n", err.Error())
+  }
+
   if !filePathDoesExist &&
     createTheDirectory {
 

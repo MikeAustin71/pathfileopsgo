@@ -114,9 +114,10 @@ func TestFileMgr_GetBufioReader_01(t *testing.T) {
 
   bufReader := srcFMgr.GetBufioReader()
 
-  if bufReader != nil {
-    t.Error("Error: Expected pointer return from srcFMgr.GetBufioReader() to be 'NIL'.\n" +
-      "However, POINTER IS POPULATED!\n")
+  if bufReader == nil {
+    t.Error("Error: Expected pointer return from srcFMgr.GetBufioReader() to be populated " +
+      "and NOT 'nil'.\n" +
+      "However, POINTER IS 'nil' and NOT populated!\n")
   }
 
   err = srcFMgr.CloseThisFile()
@@ -163,9 +164,9 @@ func TestFileMgr_GetBufioWriter_01(t *testing.T) {
 
   bufReader := srcFMgr.GetBufioWriter()
 
-  if bufReader != nil {
+  if bufReader == nil {
     t.Error("Error: Expected pointer return from srcFMgr.GetBufioWriter()\n" +
-      "to be 'NIL'.\nHowever, POINTER IS POPULATED!\n")
+      "to be poulated and NOT 'nil.\nHowever, POINTER IS NIL and NOT POPULATED!\n")
   }
 
   err = srcFMgr.CloseThisFile()
@@ -1184,7 +1185,7 @@ func TestFileMgr_GetReaderBufferSize_02(t *testing.T) {
     return
   }
 
-  expectedBufSize := int(20000)
+  expectedBufSize := 20000 // int
 
   srcFMgr.SetReaderBufferSize(expectedBufSize)
 
@@ -1275,7 +1276,7 @@ func TestFileMgr_GetWriterBufferSize_01(t *testing.T) {
 
 func TestFileMgr_GetWriterBufferSize_02(t *testing.T) {
 
-  expectedWriteBufSize := int(20000)
+  expectedWriteBufSize := 20000 // int
 
   fh := FileHelper{}
 
@@ -1307,7 +1308,7 @@ func TestFileMgr_GetWriterBufferSize_03(t *testing.T) {
   fh := FileHelper{}
 
   targetFile := fh.AdjustPathSlash(
-    "../filesfortest/TestFileMgr_GetWriterBufferSize_03.txt")
+    "../checkfiles/TestFileMgr_GetWriterBufferSize_03.txt")
 
   err := fh.DeleteDirFile(targetFile)
 
@@ -1326,20 +1327,11 @@ func TestFileMgr_GetWriterBufferSize_03(t *testing.T) {
     return
   }
 
-  err = srcFMgr.DeleteThisFile()
-
-  if err != nil {
-    t.Errorf("Error returned by srcFMgr.DeleteThisFile().\n"+
-      "srcFMgr='%v'\nError='%v'\n",
-      srcFMgr.GetAbsolutePathFileName(), err.Error())
-    return
-  }
-
-  err = srcFMgr.CreateThisFile()
+  err = srcFMgr.CreateDirAndFile()
 
   if err != nil {
     _ = srcFMgr.CloseThisFile()
-    t.Errorf("Error returned by srcFMgr.CreateThisFile().\n"+
+    t.Errorf("Error returned by srcFMgr.CreateDirAndFile().\n"+
       "srcFMgr='%v'\nError='%v'\n",
       srcFMgr.GetAbsolutePathFileName(), err.Error())
     return

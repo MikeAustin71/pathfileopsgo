@@ -8,13 +8,33 @@ import (
 func TestFileMgr_OpenThisFile_01(t *testing.T) {
   fh := FileHelper{}
 
+  setupFileName := "testRead2008.txt"
+
   setupFile := fh.AdjustPathSlash(
-    "../filesfortest/checkfiles03/testRead2008.txt")
+    "../filesfortest/checkfiles/" + setupFileName)
 
   filePath := fh.AdjustPathSlash(
-    "../checkfiles/checkfiles03/testRead2008.txt")
+    "../checkfiles/checkfiles03/" + setupFileName)
 
-  err := fh.DeleteDirFile(filePath)
+  absBaseFilePath, err := fh.MakeAbsolutePath(
+    "../checkfiles/checkfiles03")
+
+  if err != nil {
+    t.Errorf("Test Setup Error: Error returned by fh.MakeAbsolutePath"+
+      "(\"../checkfiles/checkfiles03\").\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(absBaseFilePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error: Error returned by fh.MakeDirAll(absBaseFilePath).\n"+
+      "absBaseFilePath='%v'\nError='%v'\n", absBaseFilePath, err.Error())
+    return
+  }
+
+  err = fh.DeleteDirFile(filePath)
 
   if err != nil {
     t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n"+
@@ -27,8 +47,8 @@ func TestFileMgr_OpenThisFile_01(t *testing.T) {
 
   if err != nil {
     t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n"+
-      "setupFile='%v'\nfilePath='%v'\n",
-      setupFile, filePath)
+      "setupFile='%v'\nfilePath='%v'\nError='%v'\n",
+      setupFile, filePath, err.Error())
     return
   }
 
@@ -52,6 +72,7 @@ func TestFileMgr_OpenThisFile_01(t *testing.T) {
 
   _ = fMgr.CloseThisFile()
 
+  _ = fMgr.DeleteThisFile()
 }
 
 func TestFileMgr_OpenThisFile_02(t *testing.T) {
@@ -197,13 +218,33 @@ func TestFileMgr_OpenThisFile_03(t *testing.T) {
 func TestFileMgr_OpenThisFile_04(t *testing.T) {
   fh := FileHelper{}
 
+  setupFileName := "testRead2008.txt"
+
   setupFile := fh.AdjustPathSlash(
-    "../filesfortest/checkfiles03/testRead2008.txt")
+    "../filesfortest/checkfiles/" + setupFileName)
 
   filePath := fh.AdjustPathSlash(
-    "../checkfiles/checkfiles03/testRead2008.txt")
+    "../checkfiles/checkfiles03/" + setupFileName)
 
-  err := fh.DeleteDirFile(filePath)
+  absBaseFilePath, err := fh.MakeAbsolutePath(
+    "../checkfiles/checkfiles03")
+
+  if err != nil {
+    t.Errorf("Test Setup Error: Error returned by fh.MakeAbsolutePath"+
+      "(\"../checkfiles/checkfiles03\").\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(absBaseFilePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error: Error returned by fh.MakeDirAll(absBaseFilePath).\n"+
+      "absBaseFilePath='%v'\nError='%v'\n", absBaseFilePath, err.Error())
+    return
+  }
+
+  err = fh.DeleteDirFile(filePath)
 
   if err != nil {
     t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n"+
@@ -272,15 +313,36 @@ func TestFileMgr_OpenThisFile_04(t *testing.T) {
 }
 
 func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
+
   fh := FileHelper{}
 
+  setupFileName := "testRead2008.txt"
+
   setupFile := fh.AdjustPathSlash(
-    "../filesfortest/checkfiles03/testRead2008.txt")
+    "../filesfortest/checkfiles/" + setupFileName)
 
   filePath := fh.AdjustPathSlash(
-    "../checkfiles/checkfiles03/testRead2008.txt")
+    "../checkfiles/checkfiles03/" + setupFileName)
 
-  err := fh.DeleteDirFile(filePath)
+  absBaseFilePath, err := fh.MakeAbsolutePath(
+    "../checkfiles/checkfiles03")
+
+  if err != nil {
+    t.Errorf("Test Setup Error: Error returned by fh.MakeAbsolutePath"+
+      "(\"../checkfiles/checkfiles03\").\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(absBaseFilePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error: Error returned by fh.MakeDirAll(absBaseFilePath).\n"+
+      "absBaseFilePath='%v'\nError='%v'\n", absBaseFilePath, err.Error())
+    return
+  }
+
+  err = fh.DeleteDirFile(filePath)
 
   if err != nil {
     t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n"+
@@ -338,19 +400,41 @@ func TestFileMgr_OpenThisFileReadOnly_01(t *testing.T) {
   }
 
   _ = fMgr.CloseThisFile()
+  _ = fMgr.DeleteThisFile()
+
 }
 
 func TestFileMgr_OpenThisFileReadOnly_02(t *testing.T) {
 
   fh := FileHelper{}
 
+  setupFileName := "testRead2008.txt"
+
   setupFile := fh.AdjustPathSlash(
-    "../filesfortest/checkfiles03/testRead2008.txt")
+    "../filesfortest/checkfiles/" + setupFileName)
 
   filePath := fh.AdjustPathSlash(
-    "../checkfiles/checkfiles03/testRead2008.txt")
+    "../checkfiles/checkfiles03/" + setupFileName)
 
-  err := fh.DeleteDirFile(filePath)
+  absBaseFilePath, err := fh.MakeAbsolutePath(
+    "../checkfiles/checkfiles03")
+
+  if err != nil {
+    t.Errorf("Test Setup Error: Error returned by fh.MakeAbsolutePath"+
+      "(\"../checkfiles/checkfiles03\").\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(absBaseFilePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error: Error returned by fh.MakeDirAll(absBaseFilePath).\n"+
+      "absBaseFilePath='%v'\nError='%v'\n", absBaseFilePath, err.Error())
+    return
+  }
+
+  err = fh.DeleteDirFile(filePath)
 
   if err != nil {
     t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n"+
@@ -503,13 +587,33 @@ func TestFileMgr_OpenThisFileReadOnly_04(t *testing.T) {
 func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
   fh := FileHelper{}
 
+  setupFileName := "testRead2008.txt"
+
   setupFile := fh.AdjustPathSlash(
-    "../filesfortest/checkfiles03/testRead2008.txt")
+    "../filesfortest/checkfiles/" + setupFileName)
 
   filePath := fh.AdjustPathSlash(
-    "../checkfiles/checkfiles03/testRead2008.txt")
+    "../checkfiles/checkfiles03/" + setupFileName)
 
-  err := fh.DeleteDirFile(filePath)
+  absBaseFilePath, err := fh.MakeAbsolutePath(
+    "../checkfiles/checkfiles03")
+
+  if err != nil {
+    t.Errorf("Test Setup Error: Error returned by fh.MakeAbsolutePath"+
+      "(\"../checkfiles/checkfiles03\").\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(absBaseFilePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error: Error returned by fh.MakeDirAll(absBaseFilePath).\n"+
+      "absBaseFilePath='%v'\nError='%v'\n", absBaseFilePath, err.Error())
+    return
+  }
+
+  err = fh.DeleteDirFile(filePath)
 
   if err != nil {
     t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n"+
@@ -575,18 +679,40 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
     t.Errorf("Error returned from final fMgr.CloseThisFile(). Error='%v' ",
       err.Error())
   }
+
+  _ = fMgr.DeleteThisFile()
 }
 
 func TestFileMgr_OpenThisFileReadWrite_02(t *testing.T) {
   fh := FileHelper{}
 
+  setupFileName := "testRead2008.txt"
+
   setupFile := fh.AdjustPathSlash(
-    "../filesfortest/checkfiles03/testRead2008.txt")
+    "../filesfortest/checkfiles/" + setupFileName)
 
   filePath := fh.AdjustPathSlash(
-    "../checkfiles/checkfiles03/testRead2008.txt")
+    "../checkfiles/checkfiles03/" + setupFileName)
 
-  err := fh.DeleteDirFile(filePath)
+  absBaseFilePath, err := fh.MakeAbsolutePath(
+    "../checkfiles/checkfiles03")
+
+  if err != nil {
+    t.Errorf("Test Setup Error: Error returned by fh.MakeAbsolutePath"+
+      "(\"../checkfiles/checkfiles03\").\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(absBaseFilePath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error: Error returned by fh.MakeDirAll(absBaseFilePath).\n"+
+      "absBaseFilePath='%v'\nError='%v'\n", absBaseFilePath, err.Error())
+    return
+  }
+
+  err = fh.DeleteDirFile(filePath)
 
   if err != nil {
     t.Errorf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n"+
@@ -917,8 +1043,14 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_01(t *testing.T) {
   }
 
   stringRead := string(bytesRead1)
+  lBytesRead := len(stringRead)
 
-  stringRead = stringRead[:len(stringRead)-1]
+  if lBytesRead == 0 {
+    t.Error("Error: bytesRead string length is ZERO!\n")
+    return
+  }
+
+  stringRead = stringRead[:lBytesRead-1]
 
   testText1 = testText1[:len(testText1)-1]
 
@@ -929,10 +1061,16 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_01(t *testing.T) {
   }
 
   stringRead = string(bytesRead2)
+  lBytesRead = len(stringRead)
 
-  stringRead = stringRead[:len(stringRead)-1]
+  if lBytesRead == 0 {
+    t.Error("Error: bytesRead2 string length is ZERO!\n")
+    return
+  }
 
-  testText2 = testText2[:len(testText1)-1]
+  stringRead = stringRead[:lBytesRead-1]
+
+  testText2 = testText2[:len(testText2)-1]
 
   if testText2 != stringRead {
     t.Errorf("Error: Expected #2 stringRead='%v'.\n"+

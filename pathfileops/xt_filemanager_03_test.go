@@ -1222,12 +1222,14 @@ func TestFileMgr_DeleteThisFile_02(t *testing.T) {
     return
   }
 
-  err = fileMgr.CreateThisFile()
+  err = fileMgr.CreateDirAndFile()
 
   if err != nil {
-    t.Errorf("Error returned by fileMgr.CreateThisFile().\n"+
+    t.Errorf("Error returned by CreateDirAndFile().\n"+
       "File='%v'\nError='%v'\n",
       fileMgr.GetAbsolutePathFileName(), err.Error())
+    _ = fh.DeleteDirFile(testFile)
+    return
   }
 
   err = fileMgr.DeleteThisFile()

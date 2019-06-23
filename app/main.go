@@ -98,19 +98,6 @@ func maintTest77OpenThisFileWriteOnlyAppend() {
 
   fmt.Println("bytesWritten: ", bytesWritten)
 
-  /*
-
-    err = fMgr.CloseThisFile()
-
-    if err != nil {
-      fmt.Printf("Error returned by #1 fMgr.CloseThisFile().\n" +
-        "fMgr='%v'\nError='%v'\n",
-        fMgr.GetAbsolutePathFileName(), err.Error())
-      _ = fMgr.DeleteThisFile()
-      return
-    }
-  */
-
   err = fMgr.DeleteThisFile()
 
   if err != nil {
@@ -281,12 +268,10 @@ func mainTest76OpenThisFileWriteOnlyAppend() {
 
   stringRead := string(bytesRead1)
 
-  //stringRead = strings.Replace(stringRead, "\r\n", "", -1)
   stringRead = stringRead[:len(stringRead)-1]
 
   stringRead1 := stringRead
 
-  // testText1 = strings.Replace(testText1, "\r\n", "", -1)
   testText1 = testText1[:len(testText1)-1]
 
   setSuccess := true
