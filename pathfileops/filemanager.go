@@ -2797,8 +2797,6 @@ func (fMgr *FileMgr) OpenThisFileWriteOnly() error {
 // method will will create them.
 //
 func (fMgr *FileMgr) OpenThisFileWriteOnlyAppend() error {
-  var err error
-  var filePathDoesExist bool
 
   ePrefix := "FileMgr.OpenThisFileWriteOnlyAppend() "
 
@@ -2808,39 +2806,24 @@ func (fMgr *FileMgr) OpenThisFileWriteOnlyAppend() error {
     return fmt.Errorf(ePrefix+"%v", err.Error())
   }
 
+  fMgrHlpr := fileMgrHelper{}
+
   fMgr.dataMutex.Lock()
 
-  fMgrHelpr := fileMgrHelper{}
-
-  filePathDoesExist,
-    err = fMgrHelpr.doesFileMgrPathFileExist(
+  err = fMgrHlpr.openFileSetup(
     fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
+    true,
+    ePrefix)
 
   if err != nil {
     fMgr.dataMutex.Unlock()
     return err
   }
 
-  if fMgr.filePtr != nil {
-    _ = fMgrHelpr.lowLevelCloseFile(fMgr, ePrefix)
-  }
-
-  if !filePathDoesExist {
-
-    err = fMgrHelpr.createFileAndClose(fMgr, true, ePrefix)
-
-    if err != nil {
-      fMgr.dataMutex.Unlock()
-      return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
-    }
-  }
-
-  err = fMgrHelpr.lowLevelOpenFile(fMgr, fileAccessCfg, ePrefix)
+  err = fMgrHlpr.lowLevelOpenFile(fMgr, fileAccessCfg, ePrefix)
 
   fMgr.dataMutex.Unlock()
+
   return err
 }
 
