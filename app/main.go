@@ -127,7 +127,7 @@ func mainTest81ReadFileLine() {
   if fMgr.GetFilePtr() != nil {
     fmt.Println("ERROR: After fMgr.CloseThisFile(), expected " +
       "fMgr.filePtr==nil.\n" +
-      "However, fMgr.filePtr IS NOT EQUAL TO NIL!\n")
+      "However, fMgr.filePtr IS NOT EQUAL TO NIL!")
     _ = fMgr.CloseThisFile()
     return
   }
@@ -147,7 +147,7 @@ func mainTest81ReadFileLine() {
   if !isErrEOF {
     fmt.Println("ERROR: Expected the last error return from fMgr.ReadFileLine(delim)\n" +
       "to be io.EOF.\n" +
-      "Instead, error WAS NOT equal to io.EOF!\n")
+      "Instead, error WAS NOT equal to io.EOF!")
     isErr = true
   }
 
@@ -165,6 +165,8 @@ func mainTest81ReadFileLine() {
   fmt.Println("********************************************************")
 
 }
+
+/*
 
 func mainTest80FileAccessCtrlDetection() {
 
@@ -199,8 +201,6 @@ func mainTest80FileAccessCtrlDetection() {
   fmt.Println("********************************************************")
   fmt.Println("fNewOpenType: ", fNewOpenType.String())
 }
-
-/*
 
 func maintTest79WriteBytes() {
 
