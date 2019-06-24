@@ -1339,6 +1339,11 @@ func (fMgrHlpr *fileMgrHelper) openFile(
 
 // openFileSetup - Helper method used in opening files.
 //
+// If the file does not exist, it will be created and
+// closed.
+//
+// If the file does exist, it will be closed.
+//
 func (fMgrHlpr *fileMgrHelper) openFileSetup(
   fMgr *FileMgr,
   createTheDirectory bool,
@@ -1372,12 +1377,6 @@ func (fMgrHlpr *fileMgrHelper) openFileSetup(
     return err
   }
 
-  err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
-
-  if err != nil {
-    return err
-  }
-
   directoryPathDoesExist, err =
     fMgr.dMgr.DoesThisDirectoryExist()
 
@@ -1388,20 +1387,42 @@ func (fMgrHlpr *fileMgrHelper) openFileSetup(
       fMgr.dMgr.absolutePath, err.Error())
   }
 
-  if !directoryPathDoesExist || !filePathDoesExist {
+  if !directoryPathDoesExist && createTheDirectory {
 
-    err =
-      fMgrHlpr.createFileAndClose(
-        fMgr,
-        createTheDirectory,
-        ePrefix)
+    err = fMgr.dMgr.MakeDir()
+
+    if err != nil {
+      return fmt.Errorf(ePrefix+
+        "\nError returned by fMgr.dMgr.MakeDir().\n"+
+        "fMgr.dMgr='%v'\nError='%v'\n",
+        fMgr.dMgr.absolutePath, err.Error())
+    }
+
+  } else if !directoryPathDoesExist && !createTheDirectory {
+
+    return fmt.Errorf(ePrefix+
+      "\nError: File Manager Directory Path DOES NOT EXIST!\n"+
+      "fMgr.dMgr='%v'\n", fMgr.dMgr.absolutePath)
+  }
+
+  if !filePathDoesExist {
+
+    createTruncateAccessCtrl, err := FileAccessControl{}.NewReadWriteCreateTruncateAccess()
+
+    if err != nil {
+      return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
+    }
+
+    err = fMgrHlpr.lowLevelOpenFile(fMgr, createTruncateAccessCtrl, ePrefix)
 
     if err != nil {
       return err
     }
-  }
+  } // if !filePathDoesExist
 
-  return nil
+  // At this point, the file exists on disk. Close it!
+
+  return fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
 }
 
 // readFileSetup - Helper method designed to provide

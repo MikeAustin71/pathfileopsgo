@@ -4217,14 +4217,14 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
 
   if !dMgr.isInitialized {
     dMgr.dataMutex.Unlock()
-    return fmt.Errorf(ePrefix + "Error: DirMgr is NOT Initialized.")
+    return fmt.Errorf(ePrefix + "Error: DirMgr is NOT Initialized.\n")
   }
 
   dMgr.isAbsolutePathPopulated = false
 
   if dMgr.absolutePath == "" {
     dMgr.dataMutex.Unlock()
-    return fmt.Errorf(ePrefix + "Error: DirMgr.absolutePath is EMPTY!.")
+    return fmt.Errorf(ePrefix + "Error: DirMgr.absolutePath is EMPTY!.\n")
   }
 
   dMgr.isAbsolutePathPopulated = true
@@ -4233,7 +4233,7 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
 
   if dMgr.path == "" {
     dMgr.dataMutex.Unlock()
-    return fmt.Errorf(ePrefix + "Error: DirMgr.absolutePath is EMPTY!.")
+    return fmt.Errorf(ePrefix + "Error: DirMgr.absolutePath is EMPTY!.\n")
   }
 
   dMgr.isPathPopulated = true
@@ -4377,13 +4377,13 @@ func (dMgr *DirMgr) MakeDirWithPermission(fPermCfg FilePermissionConfig) error {
   err = fPermCfg.IsValid()
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
   }
 
   modePerm, err := fPermCfg.GetCompositePermissionMode()
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
   }
 
   dMgr.dataMutex.Lock()
@@ -4395,7 +4395,7 @@ func (dMgr *DirMgr) MakeDirWithPermission(fPermCfg FilePermissionConfig) error {
   if err != nil {
     return fmt.Errorf(ePrefix+
       "Error returned from os.MkdirAll(dMgr.absolutePath, "+
-      "modePerm) dMgr.absolutePath='%v' modePerm='%v'  Error='%v'",
+      "modePerm)\ndMgr.absolutePath='%v'\nmodePerm='%v'\nError='%v'\n",
       dMgr.absolutePath, modePerm.String(), err.Error())
   }
 
@@ -4436,13 +4436,13 @@ func (dMgr *DirMgr) MakeDir() error {
   fPermCfg, err := FilePermissionConfig{}.New("drwxrwxrwx")
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
   }
 
   err = dMgr.MakeDirWithPermission(fPermCfg)
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
   }
 
   // No errors - directory created.
