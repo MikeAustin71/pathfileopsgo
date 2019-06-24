@@ -1336,3 +1336,179 @@ func (fMgrHlpr *fileMgrHelper) openFile(
     fileAccessCtrl,
     ePrefix)
 }
+
+func (fMgrHlpr *fileMgrHelper) openFileSetup(
+  fMgr *FileMgr,
+  createTheDirectory bool,
+  ePrefix string) error {
+
+  ePrefixCurrMethod := "fileMgrHelper.openFileSetup() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  if fMgr == nil {
+    return fmt.Errorf(ePrefix +
+      "\nError: Input parameter 'fMgr' is a nil pointer!\n")
+  }
+
+  var filePathDoesExist, directoryPathDoesExist bool
+  var err error
+
+  filePathDoesExist,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err != nil {
+    return err
+  }
+
+  err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+
+  if err != nil {
+    return err
+  }
+
+  directoryPathDoesExist, err =
+    fMgr.dMgr.DoesThisDirectoryExist()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nNon-Path error returned by fMgr.dMgr.DoesThisDirectoryExist()\n"+
+      "fMgr.dMgr='%v'\nError='%v'\n",
+      fMgr.dMgr.absolutePath, err.Error())
+  }
+
+  if !directoryPathDoesExist || !filePathDoesExist {
+
+    err =
+      fMgrHlpr.createFileAndClose(
+        fMgr,
+        createTheDirectory,
+        ePrefix)
+
+    if err != nil {
+      return err
+    }
+  }
+
+  return nil
+}
+
+// writeFileSetup - Helper method designed to provide
+// standard setup for methods writing data to the file
+// identified by FileMgr.
+//
+func (fMgrHlpr *fileMgrHelper) writeFileSetup(
+  fMgr *FileMgr,
+  writeAccessCtrl FileAccessControl,
+  createTheDirectory bool,
+  ePrefix string) error {
+
+  var err, err2 error
+  var filePathDoesExist, dirPathDoesExist bool
+  ePrefixCurrMethod := "fileMgrHelper.writeFileSetup() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  if fMgr == nil {
+    return fmt.Errorf(ePrefix +
+      "\nError: Input parameter 'fMgr' is a nil pointer!\n")
+  }
+
+  err = writeAccessCtrl.IsValid()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nError returned by writeAccessCtrl.IsValid()\n"+
+      "Error='%v'\n", err.Error())
+  }
+
+  fMgrHelpr := fileMgrHelper{}
+
+  filePathDoesExist,
+    err = fMgrHelpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err != nil {
+    return err
+  }
+
+  dirPathDoesExist, err =
+    fMgr.dMgr.DoesThisDirectoryExist()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nNon-Path error returned by fMgr.dMgr.DoesThisDirectoryExist()\n"+
+      "fMgr.dMgr='%v'\nError='%v'\n",
+      fMgr.dMgr.absolutePath, err.Error())
+  }
+
+  if !dirPathDoesExist || !filePathDoesExist {
+
+    err =
+      fMgrHelpr.createFileAndClose(
+        fMgr,
+        createTheDirectory,
+        ePrefix)
+
+    if err != nil {
+      return err
+    }
+  }
+
+  invalidAccessType := true
+
+  fOpenType, err2 := fMgr.fileAccessStatus.GetFileOpenType()
+
+  if err2 == nil {
+    if fOpenType == FOpenType.TypeWriteOnly() ||
+      fOpenType == FOpenType.TypeReadWrite() {
+
+      invalidAccessType = false
+    }
+  }
+
+  if !fMgr.isFilePtrOpen ||
+    fMgr.filePtr == nil ||
+    invalidAccessType ||
+    err2 != nil {
+
+    err = fMgrHelpr.lowLevelCloseFile(fMgr, ePrefix)
+
+    if err != nil {
+      return err
+    }
+
+    // The file exists, just open it for read/write
+    // access.
+    err = fMgrHelpr.lowLevelOpenFile(fMgr, writeAccessCtrl, ePrefix)
+
+    if err != nil {
+      return err
+    }
+  }
+
+  if fMgr.fileBufWriter == nil {
+    err = fmt.Errorf(ePrefix +
+      "\nError: fMgr.fileBufWriter == nil\n")
+    return err
+  }
+
+  return nil
+}

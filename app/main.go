@@ -3,7 +3,6 @@ package main
 import (
   pf "../pathfileops"
   "fmt"
-  "strings"
 )
 
 /*
@@ -19,10 +18,262 @@ import (
 
 func main() {
 
-  mainTest76OpenThisFileWriteOnlyAppend()
+  maintTest79WriteBytes()
 
 }
 
+func maintTest79WriteBytes() {
+
+  fh := pf.FileHelper{}
+
+  //testText := "Now is the time for all good men to come to the aid of their country."
+
+  // lenTestText := len(testText)
+
+  filePath := "D:\\T04\\checkfiles\\checkfiles03\\testWriteXX241289.txt"
+
+  absFilePath, err := fh.MakeAbsolutePath(filePath)
+
+  if err != nil {
+    fmt.Printf("Error returned by fh.MakeAbsolutePath(filePath)\n"+
+      "filePath='%v'\nError='%v'\n", filePath, err.Error())
+    return
+  }
+
+  fMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(absFilePath)
+
+  if err != nil {
+    fmt.Printf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePathName='%v'  Error='%v'",
+      filePath, err.Error())
+    return
+  }
+
+  err = fMgr.CreateThisFile()
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.CreateThisFile(). Error='%v' ",
+      err.Error())
+    return
+  }
+
+  err = fMgr.OpenThisFileWriteOnly()
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.OpenThisFileWriteOnly(). Error='%v' ",
+      err.Error())
+    return
+  }
+
+  err = fMgr.DeleteThisFile()
+
+  if err != nil {
+    fmt.Printf("fMgr.DeleteThisFile() FAILED! Error='%v'", err.Error())
+    return
+  }
+
+  /*
+
+    bytesToWrite := []byte(testText)
+
+    _, err = fMgr.WriteBytesToFile(bytesToWrite)
+
+    if err != nil {
+      fmt.Printf("Error returned by fMgr.WriteBytesToFile(bytesToWrite). Error='%v' ",
+        err.Error())
+      return
+    }
+
+
+    err = fMgr.FlushBytesToDisk()
+
+    if err != nil {
+      fmt.Printf("Error returned by fMgr.FlushBytesToDisk(). Error='%v' ",
+        err.Error())
+      return
+    }
+
+    verifyBytesWritten := fMgr.GetFileBytesWritten()
+
+    err = fMgr.CloseThisFile()
+
+    if err != nil {
+      fmt.Printf("Error returned by #1 fMgr.CloseThisFile().")
+      return
+    }
+
+    if verifyBytesWritten != uint64(numBytesWritten) {
+      fmt.Printf("verifyBytesWritten != numBytesWritten\n" +
+        "verifyBytesWritten='%v'\nnumBytesWritten='%v'\n",
+        verifyBytesWritten, uint64(numBytesWritten))
+      return
+    }
+
+    bytesRead := make([]byte, lenTestText+5)
+
+    numBytesRead, err := fMgr.ReadFileBytes(bytesRead)
+
+    if err != nil {
+      fmt.Printf("Error returned by fMgr.ReadFileBytes(bytesRead). Error='%v'",
+        err.Error())
+      return
+    }
+
+    if numBytesRead == 0 {
+      fmt.Printf("Number of bytes read returned by fMgr.ReadFileBytes() is ZERO!\n" +
+        "fMgr='%v'\n",
+        fMgr.GetAbsolutePath())
+    }
+
+    err = fMgr.CloseThisFile()
+
+    if err != nil {
+      fmt.Printf("Error returned by #2 fMgr.CloseThisFile().")
+      return
+    }
+
+    err = fMgr.DeleteThisFile()
+
+    if err != nil {
+      fmt.Printf("fMgr.DeleteThisFile() FAILED! Error='%v'", err.Error())
+      return
+    }
+  */
+
+  fmt.Println("               maintTest78WriteBytes                    ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+
+}
+
+func maintTest78WriteBytes() {
+
+  fh := pf.FileHelper{}
+
+  testText := "Now is the time for all good men to come to the aid of their country."
+
+  lenTestText := len(testText)
+
+  filePath := "D:\\T04\\checkfiles\\checkfiles03\\testWriteXX241289.txt"
+
+  absFilePath, err := fh.MakeAbsolutePath(filePath)
+
+  if err != nil {
+    fmt.Printf("Error returned by fh.MakeAbsolutePath(filePath)\n"+
+      "filePath='%v'\nError='%v'\n", filePath, err.Error())
+    return
+  }
+
+  fMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(absFilePath)
+
+  if err != nil {
+    fmt.Printf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePathName='%v'  Error='%v'",
+      filePath, err.Error())
+    return
+  }
+
+  err = fMgr.CreateThisFile()
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.CreateThisFile(). Error='%v' ",
+      err.Error())
+    return
+  }
+
+  err = fMgr.OpenThisFileWriteOnly()
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.OpenThisFileWriteOnly(). Error='%v' ",
+      err.Error())
+    return
+  }
+
+  bytesToWrite := []byte(testText)
+
+  numBytesWritten, err := fMgr.WriteBytesToFile(bytesToWrite)
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.WriteBytesToFile(bytesToWrite). Error='%v' ",
+      err.Error())
+    return
+  }
+
+  err = fMgr.FlushBytesToDisk()
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.FlushBytesToDisk(). Error='%v' ",
+      err.Error())
+    return
+  }
+
+  verifyBytesWritten := fMgr.GetFileBytesWritten()
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    fmt.Printf("Error returned by #1 fMgr.CloseThisFile().")
+    return
+  }
+
+  bytesRead := make([]byte, lenTestText+5)
+
+  numBytesRead, err := fMgr.ReadFileBytes(bytesRead)
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.ReadFileBytes(bytesRead). Error='%v'",
+      err.Error())
+    return
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    fmt.Printf("Error returned by #2 fMgr.CloseThisFile().")
+    return
+  }
+
+  err = fMgr.DeleteThisFile()
+
+  if err != nil {
+    fmt.Printf("fMgr.DeleteThisFile() FAILED! Error='%v'", err.Error())
+    return
+  }
+
+  stringRead := string(bytesRead)
+
+  stringRead = stringRead[:len(bytesRead)-5]
+
+  if testText != stringRead {
+    fmt.Printf("Error: Expected stringRead='%v'. Instead, stringRead='%v' ",
+      testText, stringRead)
+    return
+  }
+
+  if verifyBytesWritten != uint64(lenTestText) {
+    fmt.Printf("Error: verifyBytesWritten != lenTestText. verifyBytesWritten='%v' "+
+      "lenTestText='%v' ", verifyBytesWritten, lenTestText)
+  }
+
+  if numBytesRead != lenTestText {
+    fmt.Printf("Error: numBytesRead != lenTestText. numBytesRead='%v' "+
+      "lenTestText='%v' ", numBytesRead, lenTestText)
+  }
+
+  if numBytesRead != numBytesWritten {
+    fmt.Printf("Error: numBytesRead != numBytesWritten. numBytesRead='%v' "+
+      "numBytesWritten='%v' ", numBytesRead, numBytesWritten)
+  }
+
+  fmt.Println("               maintTest78WriteBytes                    ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+
+}
+
+/*
 func maintTest77OpenThisFileWriteOnlyAppend() {
 
   fh := pf.FileHelper{}
@@ -310,7 +561,6 @@ func mainTest76OpenThisFileWriteOnlyAppend() {
   return
 }
 
-/*
 
 func maintTest75FileMgrGetTimeVal() {
 
