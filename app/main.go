@@ -3,6 +3,8 @@ package main
 import (
   pf "../pathfileops"
   "fmt"
+  "io"
+  "strings"
 )
 
 /*
@@ -18,17 +20,195 @@ import (
 
 func main() {
 
-  maintTest79WriteBytes()
+  mainTest81ReadFileLine()
 
 }
+
+func mainTest81ReadFileLine() {
+  // TestFileMgr_ReadFileLine_03
+  // xt_filemanager_07_test.go
+
+  fh := pf.FileHelper{}
+
+  setupFileName := "testRead918256.txt"
+
+  setupFile := fh.AdjustPathSlash(
+    "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest\\checkfiles\\" + setupFileName)
+
+  filePath := fh.AdjustPathSlash(
+    "D:\\T04\\checkfiles\\checkfiles03\\" + setupFileName)
+
+  absBaseFilePath, err := fh.MakeAbsolutePath(
+    "D:\\T04\\checkfiles\\checkfiles03")
+
+  if err != nil {
+    fmt.Printf("Test Setup Error: Error returned by fh.MakeAbsolutePath"+
+      "(\"../checkfiles/checkfiles03/checkfiles03_02\").\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(absBaseFilePath)
+
+  if err != nil {
+    fmt.Printf("Test Setup Error: Error returned by fh.MakeDirAll(absBaseFilePath).\n"+
+      "absBaseFilePath='%v'\nError='%v'\n", absBaseFilePath, err.Error())
+    return
+  }
+
+  err = fh.DeleteDirFile(filePath)
+
+  if err != nil {
+    fmt.Printf("Test Setup Error returned by fh.DeleteDirFile(filePath)\n"+
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+    return
+  }
+
+  err = fh.CopyFileByIo(setupFile, filePath)
+
+  if err != nil {
+    fmt.Printf("Test Setup Error returned by fh.CopyFileByIo(setupFile, filePath)\n"+
+      "setupFile='%v'\nfilePath='%v'\nError='%v'\n",
+      setupFile, filePath, err.Error())
+    return
+  }
+
+  fMgr, err := pf.FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    fmt.Printf("Error returned from common.FileMgr{}."+
+      "NewFromPathFileNameExtStr(filePath).\n"+
+      "filePath='%v'\nError='%v'\n",
+      filePath, err.Error())
+
+    return
+  }
+
+  delim := byte('\n')
+
+  bytes := make([]byte, 0, 50)
+
+  for i := 0; i < 4; i++ {
+
+    bytes, err = fMgr.ReadFileLine(delim)
+
+    if err != nil &&
+      err != io.EOF {
+      fmt.Printf("Error returned by fMgr.ReadFileLine(delim) on "+
+        "Line#1.\n"+
+        "fMgr='%v'\nError='%v'\n",
+        fMgr.GetAbsolutePathFileName(), err.Error())
+      _ = fMgr.CloseThisFile()
+      return
+    }
+
+    fmt.Printf("Line-%v: %v\n", i, string(bytes))
+
+  }
+
+  fmt.Println()
+
+  isErrEOF := false
+
+  if err == io.EOF {
+    isErrEOF = true
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.CloseThisFile().\n"+
+      "fMgr='%v'\n Error='%v'",
+      fMgr.GetAbsolutePathFileName(), err.Error())
+    return
+  }
+
+  if fMgr.GetFilePtr() != nil {
+    fmt.Println("ERROR: After fMgr.CloseThisFile(), expected " +
+      "fMgr.filePtr==nil.\n" +
+      "However, fMgr.filePtr IS NOT EQUAL TO NIL!\n")
+    _ = fMgr.CloseThisFile()
+    return
+  }
+
+  actualStr := string(bytes)
+
+  actualStr = strings.Replace(actualStr, "\r\n", "", -1)
+
+  isErr := false
+
+  if "Thank you, for your support." != actualStr {
+    fmt.Printf("Expected line #4 = 'Thank you, for your support.'\n"+
+      "Instead, line #4 = '%v'\n", actualStr)
+    isErr = true
+  }
+
+  if !isErrEOF {
+    fmt.Println("ERROR: Expected the last error return from fMgr.ReadFileLine(delim)\n" +
+      "to be io.EOF.\n" +
+      "Instead, error WAS NOT equal to io.EOF!\n")
+    isErr = true
+  }
+
+  _ = fMgr.CloseThisFile()
+
+  _ = fMgr.DeleteThisFile()
+
+  if isErr {
+    return
+  }
+
+  fmt.Println("             mainTest81ReadFileLine()                   ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+
+}
+
+func mainTest80FileAccessCtrlDetection() {
+
+  fileAccessCtrl, err2 := pf.FileAccessControl{}.NewWriteOnlyAccess()
+
+  if err2 != nil {
+    fmt.Printf(
+      "Error returned by FileAccessControl{}.NewReadWriteAccess().\n"+
+        "Error='%v'\n", err2.Error())
+    return
+  }
+
+  fNewOpenType, err2 := fileAccessCtrl.GetFileOpenType()
+
+  if err2 != nil {
+    fmt.Printf("Error returned by fileAccessCtrl.GetFileOpenType()!\n"+
+      "Error='%v'\n", err2.Error())
+    return
+  }
+
+  if fNewOpenType != pf.FOpenType.TypeReadWrite() &&
+    fNewOpenType != pf.FOpenType.TypeWriteOnly() {
+
+    fmt.Printf("fNewOpenType error!\n"+
+      "fNewOpenType=='%v'\n", fNewOpenType.String())
+    return
+  }
+
+  fmt.Println("         maintTest80FileAccessCtrlDetection()           ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println("fNewOpenType: ", fNewOpenType.String())
+}
+
+/*
 
 func maintTest79WriteBytes() {
 
   fh := pf.FileHelper{}
 
-  //testText := "Now is the time for all good men to come to the aid of their country."
+  testText := "Now is the time for all good men to come to the aid of their country."
 
-  // lenTestText := len(testText)
+  lenTestText := len(testText)
 
   filePath := "D:\\T04\\checkfiles\\checkfiles03\\testWriteXX241289.txt"
 
@@ -65,6 +245,63 @@ func maintTest79WriteBytes() {
     return
   }
 
+  bytesToWrite := []byte(testText)
+
+  numBytesWritten, err := fMgr.WriteBytesToFile(bytesToWrite)
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.WriteBytesToFile(bytesToWrite). Error='%v' ",
+      err.Error())
+    return
+  }
+
+  err = fMgr.FlushBytesToDisk()
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.FlushBytesToDisk(). Error='%v' ",
+      err.Error())
+    return
+  }
+
+  verifyBytesWritten := fMgr.GetFileBytesWritten()
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    fmt.Printf("Error returned by #1 fMgr.CloseThisFile().")
+    return
+  }
+
+  if verifyBytesWritten != uint64(numBytesWritten) {
+    fmt.Printf("verifyBytesWritten != numBytesWritten\n" +
+      "verifyBytesWritten='%v'\nnumBytesWritten='%v'\n",
+      verifyBytesWritten, uint64(numBytesWritten))
+    return
+  }
+
+  bytesRead := make([]byte, lenTestText+5)
+
+  numBytesRead, err := fMgr.ReadFileBytes(bytesRead)
+
+  if err != nil {
+    fmt.Printf("Error returned by fMgr.ReadFileBytes(bytesRead). Error='%v'",
+      err.Error())
+    return
+  }
+
+  if numBytesRead == 0 {
+    fmt.Printf("Number of bytes read returned by fMgr.ReadFileBytes() is ZERO!\n" +
+      "fMgr='%v'\n",
+      fMgr.GetAbsolutePath())
+  }
+
+  err = fMgr.CloseThisFile()
+
+  if err != nil {
+    fmt.Printf("Error returned by #2 fMgr.CloseThisFile().")
+    return
+  }
+
   err = fMgr.DeleteThisFile()
 
   if err != nil {
@@ -72,75 +309,7 @@ func maintTest79WriteBytes() {
     return
   }
 
-  /*
-
-    bytesToWrite := []byte(testText)
-
-    _, err = fMgr.WriteBytesToFile(bytesToWrite)
-
-    if err != nil {
-      fmt.Printf("Error returned by fMgr.WriteBytesToFile(bytesToWrite). Error='%v' ",
-        err.Error())
-      return
-    }
-
-
-    err = fMgr.FlushBytesToDisk()
-
-    if err != nil {
-      fmt.Printf("Error returned by fMgr.FlushBytesToDisk(). Error='%v' ",
-        err.Error())
-      return
-    }
-
-    verifyBytesWritten := fMgr.GetFileBytesWritten()
-
-    err = fMgr.CloseThisFile()
-
-    if err != nil {
-      fmt.Printf("Error returned by #1 fMgr.CloseThisFile().")
-      return
-    }
-
-    if verifyBytesWritten != uint64(numBytesWritten) {
-      fmt.Printf("verifyBytesWritten != numBytesWritten\n" +
-        "verifyBytesWritten='%v'\nnumBytesWritten='%v'\n",
-        verifyBytesWritten, uint64(numBytesWritten))
-      return
-    }
-
-    bytesRead := make([]byte, lenTestText+5)
-
-    numBytesRead, err := fMgr.ReadFileBytes(bytesRead)
-
-    if err != nil {
-      fmt.Printf("Error returned by fMgr.ReadFileBytes(bytesRead). Error='%v'",
-        err.Error())
-      return
-    }
-
-    if numBytesRead == 0 {
-      fmt.Printf("Number of bytes read returned by fMgr.ReadFileBytes() is ZERO!\n" +
-        "fMgr='%v'\n",
-        fMgr.GetAbsolutePath())
-    }
-
-    err = fMgr.CloseThisFile()
-
-    if err != nil {
-      fmt.Printf("Error returned by #2 fMgr.CloseThisFile().")
-      return
-    }
-
-    err = fMgr.DeleteThisFile()
-
-    if err != nil {
-      fmt.Printf("fMgr.DeleteThisFile() FAILED! Error='%v'", err.Error())
-      return
-    }
-  */
-
-  fmt.Println("               maintTest78WriteBytes                    ")
+  fmt.Println("               maintTest79WriteBytes                    ")
   fmt.Println("********************************************************")
   fmt.Println("                    SUCCESS!!!                          ")
   fmt.Println("********************************************************")
@@ -273,7 +442,6 @@ func maintTest78WriteBytes() {
 
 }
 
-/*
 func maintTest77OpenThisFileWriteOnlyAppend() {
 
   fh := pf.FileHelper{}

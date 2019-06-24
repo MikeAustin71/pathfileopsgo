@@ -301,7 +301,9 @@ func (fOpenType FileOpenType) checkInitializeMaps(reInitialize bool) {
 
   s := reflect.TypeOf(t)
 
-  r := reflect.TypeOf(int(0))
+  intZero := 0
+
+  r := reflect.TypeOf(intZero)
   args := [1]reflect.Value{reflect.Zero(s)}
 
   for i := 0; i < s.NumMethod(); i++ {
@@ -324,3 +326,15 @@ func (fOpenType FileOpenType) checkInitializeMaps(reInitialize bool) {
   }
 
 }
+
+// FOpenType - This public global variable allows
+// easy access to the enumerations of the FileOpenType
+// using the dot operator.
+//
+//  Example:
+//
+//     FOpenType.TypeReadOnly()
+//     FOpenType.TypeWriteOnly()
+//     FOpenType.TypeReadWrite()
+//
+var FOpenType = FileOpenType(0)

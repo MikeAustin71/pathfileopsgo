@@ -2892,7 +2892,6 @@ func (fMgr *FileMgr) ReadAllFile() (bytesRead []byte, err error) {
   bytesRead = []byte{}
   err = nil
   var err2 error
-  var filePathDoesExist bool
 
   readWriteAccessCtrl, err2 := FileAccessControl{}.NewReadWriteAccess()
 
@@ -2901,66 +2900,20 @@ func (fMgr *FileMgr) ReadAllFile() (bytesRead []byte, err error) {
     return bytesRead, err
   }
 
+  fMgrHlpr := fileMgrHelper{}
+
   fMgr.dataMutex.Lock()
 
-  fMgrHelpr := fileMgrHelper{}
-  filePathDoesExist,
-    err = fMgrHelpr.doesFileMgrPathFileExist(
+  err = fMgrHlpr.readFileSetup(
     fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
+    readWriteAccessCtrl,
+    false,
+    ePrefix)
 
   if err != nil {
     fMgr.dataMutex.Unlock()
     return bytesRead, err
   }
-
-  if !filePathDoesExist {
-    err = fmt.Errorf(ePrefix+"ERROR: The File Manager (FileMgr) file "+
-      "DOES NOT EXIST!\n"+
-      "Therefore it cannot be opened for 'Reading'\n"+
-      "FileMgr='%v'\n", fMgr.absolutePathFileName)
-    fMgr.dataMutex.Unlock()
-    return bytesRead, err
-  }
-
-  invalidAccessType := true
-
-  fOpenType, err2 := fMgr.fileAccessStatus.GetFileOpenType()
-
-  if err2 == nil {
-    if fOpenType == FOpenType.TypeReadOnly() ||
-      fOpenType == FOpenType.TypeReadWrite() {
-
-      invalidAccessType = false
-    }
-  }
-
-  if !fMgr.isFilePtrOpen ||
-    fMgr.filePtr == nil ||
-    invalidAccessType ||
-    err2 != nil {
-
-    // filePathDoesExist = true
-    err = fMgrHelpr.lowLevelCloseFile(fMgr, ePrefix)
-
-    if err != nil {
-      fMgr.dataMutex.Unlock()
-      return bytesRead, err
-    }
-
-    // The file exists, just open it as for
-    // read/write access.
-    err = fMgrHelpr.lowLevelOpenFile(fMgr, readWriteAccessCtrl, ePrefix)
-
-    if err != nil {
-      fMgr.dataMutex.Unlock()
-      return bytesRead, err
-    }
-  }
-
-  err = nil
 
   bytesRead, err2 = ioutil.ReadAll(fMgr.filePtr)
 
@@ -2992,7 +2945,6 @@ func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (bytesRead int, err error) {
   bytesRead = 0
   err = nil
   var err2 error
-  var filePathDoesExist bool
 
   readWriteAccessCtrl, err2 := FileAccessControl{}.NewReadWriteAccess()
 
@@ -3003,71 +2955,17 @@ func (fMgr *FileMgr) ReadFileBytes(byteBuff []byte) (bytesRead int, err error) {
     return bytesRead, err
   }
 
-  fMgrHelpr := fileMgrHelper{}
+  fMgrHlpr := fileMgrHelper{}
 
   fMgr.dataMutex.Lock()
 
-  filePathDoesExist,
-    err = fMgrHelpr.doesFileMgrPathFileExist(
+  err = fMgrHlpr.readFileSetup(
     fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
+    readWriteAccessCtrl,
+    false,
+    ePrefix)
 
   if err != nil {
-    fMgr.dataMutex.Unlock()
-    return bytesRead, err
-  }
-
-  if !filePathDoesExist {
-
-    err = fmt.Errorf(ePrefix+
-      "The file to be opened for Reading does not Exist!\n"+
-      "(FileMgr) FileName: %v\n",
-      fMgr.absolutePathFileName)
-
-    fMgr.dataMutex.Unlock()
-    return bytesRead, err
-  }
-
-  invalidAccessType := true
-
-  fOpenType, err2 := fMgr.fileAccessStatus.GetFileOpenType()
-
-  if err2 == nil {
-
-    if fOpenType == FOpenType.TypeReadOnly() ||
-      fOpenType == FOpenType.TypeReadWrite() {
-      invalidAccessType = false
-    }
-  }
-
-  if !fMgr.isFilePtrOpen ||
-    fMgr.filePtr == nil ||
-    invalidAccessType ||
-    err2 != nil {
-
-    // filePathDoesExist == true
-    err = fMgrHelpr.lowLevelCloseFile(fMgr, ePrefix)
-
-    if err != nil {
-      fMgr.dataMutex.Unlock()
-      return bytesRead, err
-    }
-
-    // The file exists and is now closed. Open it
-    // for read/write access
-    err = fMgrHelpr.lowLevelOpenFile(fMgr, readWriteAccessCtrl, ePrefix)
-
-    if err != nil {
-      fMgr.dataMutex.Unlock()
-      return bytesRead, err
-    }
-  }
-
-  if fMgr.fileBufRdr == nil {
-    err = fmt.Errorf(ePrefix +
-      "\nError: fMgr.fileBufRdr == nil\n")
     fMgr.dataMutex.Unlock()
     return bytesRead, err
   }
@@ -3105,9 +3003,7 @@ func (fMgr *FileMgr) ReadFileLine(delim byte) (bytesRead []byte, err error) {
   ePrefix := "FileMgr.ReadFileLine() "
   bytesRead = []byte{}
   err = nil
-
   var err2 error
-  var filePathDoesExist bool
 
   readWriteAccessCtrl, err2 := FileAccessControl{}.NewReadWriteAccess()
 
@@ -3118,72 +3014,17 @@ func (fMgr *FileMgr) ReadFileLine(delim byte) (bytesRead []byte, err error) {
     return bytesRead, err
   }
 
-  fMgrHelpr := fileMgrHelper{}
+  fMgrHlpr := fileMgrHelper{}
 
   fMgr.dataMutex.Lock()
 
-  filePathDoesExist,
-    err = fMgrHelpr.doesFileMgrPathFileExist(
+  err = fMgrHlpr.readFileSetup(
     fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
+    readWriteAccessCtrl,
+    false,
+    ePrefix)
 
   if err != nil {
-    fMgr.dataMutex.Unlock()
-    return bytesRead, err
-  }
-
-  if !filePathDoesExist {
-
-    err = fmt.Errorf(ePrefix+
-      "The file to be opened for 'Reading' does not Exist!\n"+
-      "(FileMgr) FileName: %v\n",
-      fMgr.absolutePathFileName)
-
-    fMgr.dataMutex.Unlock()
-    return bytesRead, err
-  }
-
-  invalidAccessType := true
-
-  fOpenType, err2 := fMgr.fileAccessStatus.GetFileOpenType()
-
-  if err2 == nil {
-
-    if fOpenType == FOpenType.TypeReadOnly() ||
-      fOpenType == FOpenType.TypeReadWrite() {
-
-      invalidAccessType = false
-    }
-  }
-
-  if !fMgr.isFilePtrOpen ||
-    fMgr.filePtr == nil ||
-    invalidAccessType ||
-    err2 != nil {
-
-    // filePathDoesExist = true
-    err = fMgrHelpr.lowLevelCloseFile(fMgr, ePrefix)
-
-    if err != nil {
-      fMgr.dataMutex.Unlock()
-      return bytesRead, err
-    }
-
-    // The file exists, just open it as for
-    // read/write access.
-    err = fMgrHelpr.lowLevelOpenFile(fMgr, readWriteAccessCtrl, ePrefix)
-
-    if err != nil {
-      fMgr.dataMutex.Unlock()
-      return bytesRead, err
-    }
-  }
-
-  if fMgr.fileBufRdr == nil {
-    err = errors.New(ePrefix +
-      "System Error: fMgr.fileBufRdr == nil\n")
     fMgr.dataMutex.Unlock()
     return bytesRead, err
   }
@@ -3218,7 +3059,6 @@ func (fMgr *FileMgr) ReadFileString(delim byte) (stringRead string, err error) {
   stringRead = ""
   err = nil
   var err2 error
-  var filePathDoesExist bool
 
   readWriteAccessCtrl, err2 := FileAccessControl{}.NewReadWriteAccess()
 
@@ -3229,70 +3069,17 @@ func (fMgr *FileMgr) ReadFileString(delim byte) (stringRead string, err error) {
     return stringRead, err
   }
 
+  fMgrHlpr := fileMgrHelper{}
+
   fMgr.dataMutex.Lock()
 
-  fMgrHelpr := fileMgrHelper{}
-  filePathDoesExist,
-    err = fMgrHelpr.doesFileMgrPathFileExist(
+  err = fMgrHlpr.readFileSetup(
     fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
+    readWriteAccessCtrl,
+    false,
+    ePrefix)
 
   if err != nil {
-    fMgr.dataMutex.Unlock()
-    return stringRead, err
-  }
-
-  if !filePathDoesExist {
-
-    err = fmt.Errorf(ePrefix+
-      "The file to be opened for 'Reading' does not Exist!\n"+
-      "(FileMgr) FileName: %v\n",
-      fMgr.absolutePathFileName)
-
-    fMgr.dataMutex.Unlock()
-    return stringRead, err
-  }
-
-  invalidAccessType := true
-
-  fOpenType, err2 := fMgr.fileAccessStatus.GetFileOpenType()
-
-  if err2 == nil {
-    if fOpenType == FOpenType.TypeReadOnly() ||
-      fOpenType == FOpenType.TypeReadWrite() {
-
-      invalidAccessType = false
-    }
-  }
-
-  if !fMgr.isFilePtrOpen ||
-    fMgr.filePtr == nil ||
-    invalidAccessType ||
-    err2 != nil {
-
-    // filePathDoesExist = true
-    err = fMgrHelpr.lowLevelCloseFile(fMgr, ePrefix)
-
-    if err != nil {
-      fMgr.dataMutex.Unlock()
-      return stringRead, err
-    }
-
-    // The file exists, just open it as for
-    // read/write access.
-    err = fMgrHelpr.lowLevelOpenFile(fMgr, readWriteAccessCtrl, ePrefix)
-
-    if err != nil {
-      fMgr.dataMutex.Unlock()
-      return stringRead, err
-    }
-  }
-
-  if fMgr.fileBufRdr == nil {
-    err = fmt.Errorf(ePrefix +
-      "\nError: fMgr.fileBufRdr == nil\n")
     fMgr.dataMutex.Unlock()
     return stringRead, err
   }
@@ -3765,9 +3552,12 @@ func (fMgr *FileMgr) WriteBytesToFile(
         "Error returned from fMgr.fileBufWriter.Write(bytes). Output File='%v'. "+
         "Error='%v'",
         fMgr.absolutePathFileName, err2.Error())
-  }
 
-  fMgr.buffBytesWritten += uint64(numBytesWritten)
+  } else {
+
+    fMgr.buffBytesWritten += uint64(numBytesWritten)
+
+  }
 
   fMgr.dataMutex.Unlock()
 
@@ -3790,7 +3580,6 @@ func (fMgr *FileMgr) WriteStrToFile(str string) (numBytesWritten int, err error)
   numBytesWritten = 0
   err = nil
   var err2 error
-  var filePathDoesExist bool
   var readWriteAccessCtrl FileAccessControl
 
   readWriteAccessCtrl, err2 =
@@ -3805,80 +3594,22 @@ func (fMgr *FileMgr) WriteStrToFile(str string) (numBytesWritten int, err error)
     return numBytesWritten, err
   }
 
-  fMgrHelpr := fileMgrHelper{}
+  fMgrHlpr := fileMgrHelper{}
 
   fMgr.dataMutex.Lock()
 
-  filePathDoesExist,
-    err = fMgrHelpr.doesFileMgrPathFileExist(
+  err = fMgrHlpr.writeFileSetup(
     fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
+    readWriteAccessCtrl,
+    true,
+    ePrefix)
 
   if err != nil {
     fMgr.dataMutex.Unlock()
     return numBytesWritten, err
   }
 
-  if !filePathDoesExist {
-
-    err =
-      fMgrHelpr.createFileAndClose(
-        fMgr,
-        true,
-        ePrefix)
-
-    if err != nil {
-      fMgr.dataMutex.Unlock()
-      return numBytesWritten, err
-    }
-  }
-
-  invalidAccessType := true
-
-  fOpenType, err2 := fMgr.fileAccessStatus.GetFileOpenType()
-
-  if err2 == nil {
-    if fOpenType == FOpenType.TypeWriteOnly() ||
-      fOpenType == FOpenType.TypeReadWrite() {
-
-      invalidAccessType = false
-    }
-  }
-
-  if !fMgr.isFilePtrOpen ||
-    fMgr.filePtr == nil ||
-    invalidAccessType ||
-    err2 != nil {
-
-    err = fMgrHelpr.lowLevelCloseFile(fMgr, ePrefix)
-
-    if err != nil {
-      fMgr.dataMutex.Unlock()
-      return numBytesWritten, err
-    }
-
-    // The file exists, just open it for
-    // read/write operations.
-    err = fMgrHelpr.lowLevelOpenFile(fMgr, readWriteAccessCtrl, ePrefix)
-
-    if err != nil {
-      fMgr.dataMutex.Unlock()
-      return numBytesWritten, err
-    }
-  }
-
-  if fMgr.fileBufWriter == nil {
-    err = fmt.Errorf(ePrefix +
-      "\nError: fMgr.fileBufWriter == nil\n")
-    fMgr.dataMutex.Unlock()
-    return numBytesWritten, err
-  }
-
   numBytesWritten, err2 = fMgr.fileBufWriter.WriteString(str)
-
-  fMgr.buffBytesWritten += uint64(numBytesWritten)
 
   if err2 != nil {
     err =
@@ -3886,6 +3617,8 @@ func (fMgr *FileMgr) WriteStrToFile(str string) (numBytesWritten int, err error)
         "Error returned from fMgr.filePtr.WriteString(str). Output File='%v'. "+
         "Error='%v'", fMgr.absolutePathFileName, err2.Error())
 
+  } else {
+    fMgr.buffBytesWritten += uint64(numBytesWritten)
   }
 
   fMgr.dataMutex.Unlock()

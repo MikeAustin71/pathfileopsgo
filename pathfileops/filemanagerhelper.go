@@ -1337,6 +1337,8 @@ func (fMgrHlpr *fileMgrHelper) openFile(
     ePrefix)
 }
 
+// openFileSetup - Helper method used in opening files.
+//
 func (fMgrHlpr *fileMgrHelper) openFileSetup(
   fMgr *FileMgr,
   createTheDirectory bool,
@@ -1402,6 +1404,165 @@ func (fMgrHlpr *fileMgrHelper) openFileSetup(
   return nil
 }
 
+// readFileSetup - Helper method designed to provide
+// standard setup for methods writing data to the file
+// identified by FileMgr.
+//
+func (fMgrHlpr *fileMgrHelper) readFileSetup(
+  fMgr *FileMgr,
+  readAccessCtrl FileAccessControl,
+  createTheDirectory bool,
+  ePrefix string) error {
+
+  var err, err2 error
+  var filePathDoesExist, dirPathDoesExist bool
+  ePrefixCurrMethod := "fileMgrHelper.readFileSetup() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  if fMgr == nil {
+    return fmt.Errorf(ePrefix +
+      "\nError: Input parameter 'fMgr' is a nil pointer!\n")
+  }
+
+  err = readAccessCtrl.IsValid()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nError returned by readAccessCtrl.IsValid()\n"+
+      "Error='%v'\n", err.Error())
+  }
+
+  fNewOpenType, err := readAccessCtrl.GetFileOpenType()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nError returned by readAccessCtrl.GetFileOpenType()\n"+
+      "Error='%v'\n", err.Error())
+  }
+
+  if fNewOpenType != FOpenType.TypeReadWrite() &&
+    fNewOpenType != FOpenType.TypeReadOnly() {
+
+    return fmt.Errorf(ePrefix+
+      "\nError: Input Parameter readAccessCtrl is NOT an "+
+      "open file 'READ' Type.\n"+
+      "readAccessCtrl File Open Type='%v'\n",
+      fNewOpenType.String())
+  }
+
+  filePathDoesExist,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err != nil {
+    return err
+  }
+
+  dirPathDoesExist, err =
+    fMgr.dMgr.DoesThisDirectoryExist()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nNon-Path error returned by fMgr.dMgr.DoesThisDirectoryExist()\n"+
+      "fMgr.dMgr='%v'\nError='%v'\n",
+      fMgr.dMgr.absolutePath, err.Error())
+  }
+
+  if !dirPathDoesExist && createTheDirectory {
+
+    err = fMgr.dMgr.MakeDir()
+
+    if err != nil {
+      return fmt.Errorf(ePrefix+
+        "\nError returned by fMgr.dMgr.MakeDir().\n"+
+        "fMgr.dMgr='%v'\nError='%v'",
+        fMgr.dMgr.absolutePath, err.Error())
+    }
+
+  } else if !dirPathDoesExist && !createTheDirectory {
+
+    return fmt.Errorf(ePrefix+
+      "\nError: File Manager (fMgr) Directory Path DOES NOT EXIST!\n"+
+      "Directory Path (fMgr.dMgr)='%v'\n", fMgr.dMgr.absolutePath)
+  }
+
+  if !filePathDoesExist {
+
+    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+
+    if err != nil {
+      return err
+    }
+
+    createTruncateAccessCtrl, err := FileAccessControl{}.NewReadWriteCreateTruncateAccess()
+
+    if err != nil {
+      return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
+    }
+
+    err = fMgrHlpr.lowLevelOpenFile(fMgr, createTruncateAccessCtrl, ePrefix)
+
+    if err != nil {
+      return err
+    }
+
+    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+
+    if err != nil {
+      return err
+    }
+  }
+
+  invalidAccessType := true
+
+  fOpenType, err2 := fMgr.fileAccessStatus.GetFileOpenType()
+
+  if err2 == nil {
+    if fOpenType == FOpenType.TypeReadWrite() ||
+      fOpenType == FOpenType.TypeReadOnly() {
+
+      invalidAccessType = false
+    }
+  }
+
+  if !fMgr.isFilePtrOpen ||
+    fMgr.filePtr == nil ||
+    invalidAccessType ||
+    err2 != nil {
+
+    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+
+    if err != nil {
+      return err
+    }
+
+    // The file exists, just open it for read/write
+    // access.
+    err = fMgrHlpr.lowLevelOpenFile(fMgr, readAccessCtrl, ePrefix)
+
+    if err != nil {
+      return err
+    }
+  }
+
+  if fMgr.fileBufRdr == nil {
+    err = fmt.Errorf(ePrefix +
+      "\nError: fMgr.fileBufRdr == nil\n")
+    return err
+  }
+
+  return nil
+}
+
 // writeFileSetup - Helper method designed to provide
 // standard setup for methods writing data to the file
 // identified by FileMgr.
@@ -1436,10 +1597,26 @@ func (fMgrHlpr *fileMgrHelper) writeFileSetup(
       "Error='%v'\n", err.Error())
   }
 
-  fMgrHelpr := fileMgrHelper{}
+  fNewOpenType, err := writeAccessCtrl.GetFileOpenType()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nError returned by writeAccessCtrl.GetFileOpenType()\n"+
+      "Error='%v'\n", err.Error())
+  }
+
+  if fNewOpenType != FOpenType.TypeReadWrite() &&
+    fNewOpenType != FOpenType.TypeWriteOnly() {
+
+    return fmt.Errorf(ePrefix+
+      "\nError: Input Parameter writeAccessCtrl is NOT an "+
+      "open file 'WRITE' Type.\n"+
+      "readAccessCtrl File Open Type='%v'\n",
+      fNewOpenType.String())
+  }
 
   filePathDoesExist,
-    err = fMgrHelpr.doesFileMgrPathFileExist(
+    err = fMgrHlpr.doesFileMgrPathFileExist(
     fMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -1459,13 +1636,45 @@ func (fMgrHlpr *fileMgrHelper) writeFileSetup(
       fMgr.dMgr.absolutePath, err.Error())
   }
 
-  if !dirPathDoesExist || !filePathDoesExist {
+  if !dirPathDoesExist && createTheDirectory {
 
-    err =
-      fMgrHelpr.createFileAndClose(
-        fMgr,
-        createTheDirectory,
-        ePrefix)
+    err = fMgr.dMgr.MakeDir()
+
+    if err != nil {
+      return fmt.Errorf(ePrefix+
+        "\nError returned by fMgr.dMgr.MakeDir().\n"+
+        "fMgr.dMgr='%v'\nError='%v'",
+        fMgr.dMgr.absolutePath, err.Error())
+    }
+
+  } else if !dirPathDoesExist && !createTheDirectory {
+
+    return fmt.Errorf(ePrefix+
+      "\nError: File Manager (fMgr) Directory Path DOES NOT EXIST!\n"+
+      "Directory Path (fMgr.dMgr)='%v'\n", fMgr.dMgr.absolutePath)
+  }
+
+  if !filePathDoesExist {
+
+    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+
+    if err != nil {
+      return err
+    }
+
+    createTruncateAccessCtrl, err := FileAccessControl{}.NewReadWriteCreateTruncateAccess()
+
+    if err != nil {
+      return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
+    }
+
+    err = fMgrHlpr.lowLevelOpenFile(fMgr, createTruncateAccessCtrl, ePrefix)
+
+    if err != nil {
+      return err
+    }
+
+    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
 
     if err != nil {
       return err
@@ -1477,8 +1686,8 @@ func (fMgrHlpr *fileMgrHelper) writeFileSetup(
   fOpenType, err2 := fMgr.fileAccessStatus.GetFileOpenType()
 
   if err2 == nil {
-    if fOpenType == FOpenType.TypeWriteOnly() ||
-      fOpenType == FOpenType.TypeReadWrite() {
+    if fOpenType == fOpenType.TypeReadWrite() ||
+      fOpenType == fOpenType.TypeWriteOnly() {
 
       invalidAccessType = false
     }
@@ -1489,7 +1698,7 @@ func (fMgrHlpr *fileMgrHelper) writeFileSetup(
     invalidAccessType ||
     err2 != nil {
 
-    err = fMgrHelpr.lowLevelCloseFile(fMgr, ePrefix)
+    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
 
     if err != nil {
       return err
@@ -1497,7 +1706,7 @@ func (fMgrHlpr *fileMgrHelper) writeFileSetup(
 
     // The file exists, just open it for read/write
     // access.
-    err = fMgrHelpr.lowLevelOpenFile(fMgr, writeAccessCtrl, ePrefix)
+    err = fMgrHlpr.lowLevelOpenFile(fMgr, writeAccessCtrl, ePrefix)
 
     if err != nil {
       return err

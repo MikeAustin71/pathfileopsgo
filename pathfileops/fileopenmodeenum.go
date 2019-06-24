@@ -335,18 +335,6 @@ func (fOpenMode FileOpenMode) checkInitializeMaps(reInitialize bool) {
 
 }
 
-// FOpenType - This public global variable allows
-// easy access to the enumerations of the FileOpenType
-// using the dot operator.
-//
-//  Example:
-//
-//     FOpenType.TypeReadOnly()
-//     FOpenType.TypeWriteOnly()
-//     FOpenType.TypeReadWrite()
-//
-var FOpenType = FileOpenType(0)
-
 // FOpenMode - This public global variable allows
 // easy access to the enumerations of the FileOpenMode
 // using the dot operator.
