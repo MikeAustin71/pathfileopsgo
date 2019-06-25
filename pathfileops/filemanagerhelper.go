@@ -641,6 +641,7 @@ func (fMgrHlpr *fileMgrHelper) createDirectory(
 func (fMgrHlpr *fileMgrHelper) createFile(
   fMgr *FileMgr,
   createDirectory bool,
+  createTheFile bool,
   ePrefix string) error {
 
   ePrefixCurrMethod := "fileMgrHelper.createFile() "
@@ -666,6 +667,7 @@ func (fMgrHlpr *fileMgrHelper) createFile(
     fMgr,
     createTruncateAccessCtrl,
     createDirectory,
+    createTheFile,
     ePrefix)
 
 }
@@ -675,6 +677,17 @@ func (fMgrHlpr *fileMgrHelper) createFile(
 //
 // The file open operation uses create/truncate open
 // codes.
+//
+// If the directory does not previously exist, this method
+// create it provided that the input parameter 'createDirectory'
+// is set equal to 'true'.
+//
+// If the file does not previously exist, this method will
+// create it.
+//
+// If the file DOES previously exist, this method will truncate
+// the file (deleting all pre-existing content) before closing
+// the file pointer.
 //
 func (fMgrHlpr *fileMgrHelper) createFileAndClose(
   fMgr *FileMgr,
@@ -706,6 +719,7 @@ func (fMgrHlpr *fileMgrHelper) createFileAndClose(
     fMgr,
     createFileAccessCfg,
     createDirectory,
+    true,
     ePrefix)
 
   if err != nil {
@@ -1248,110 +1262,29 @@ func (fMgrHlpr *fileMgrHelper) openCreateFile(
   return fMgrHlpr.lowLevelOpenFile(fMgr, fileAccessCtrl, ePrefix)
 }
 
-// openFile - Helper method used to open the file
-// specified by a File Manager.
+// openFile - Helper method used to open files specified
+// by FileMgr.
+//
+// If the directory does not previously exist, it will be
+// created provided that input parameter, 'createTheDirectory',
+// is set equal to 'true'.
+//
+// If the file does not previously exist, it will be created
+// provided that input parameter, 'createTheFile', is set
+// equal to 'true'.
+//
+// If the file does previously exist, it will be closed before
+// being re-opened using the input parameter, 'openFileAccessCtrl',
+// as a file open access specification.
+//
 func (fMgrHlpr *fileMgrHelper) openFile(
-  fMgr *FileMgr,
-  fileAccessCtrl FileAccessControl,
-  createTheDirectory bool,
-  ePrefix string) error {
-
-  ePrefixCurrMethod := "fileMgrHelper.openFile() "
-
-  if len(ePrefix) == 0 {
-    ePrefix = ePrefixCurrMethod
-
-  } else {
-    ePrefix = ePrefix + "- " + ePrefixCurrMethod
-  }
-
-  if fMgr == nil {
-    return fmt.Errorf(ePrefix +
-      "\nError: Input parameter 'fMgr' is a nil pointer!\n")
-  }
-
-  var filePathDoesExist bool
-
-  filePathDoesExist,
-    err := fMgrHlpr.doesFileMgrPathFileExist(
-    fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
-
-  if err != nil {
-
-    if fMgr.filePtr != nil {
-      _ = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
-    }
-
-    return err
-  }
-
-  err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
-
-  if err != nil {
-    return err
-  }
-
-  err = fileAccessCtrl.IsValid()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "\nParameter 'fileAccessCtrl' is INVALID!\n"+
-      "%v\n", err.Error())
-  }
-
-  filePathDoesExist, err = fMgr.dMgr.DoesThisDirectoryExist()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "\nNon-Path Error returned from fMgr.dMgr.DoesThisDirectoryExist()\n."+
-      "fMgr.dMgr Directory Path='%v'\n"+
-      "Non-Path Error='%v'\n", err.Error())
-  }
-
-  if !filePathDoesExist &&
-    createTheDirectory {
-
-    err = fMgr.dMgr.MakeDir()
-
-    if err != nil {
-      err = fmt.Errorf(ePrefix+
-        "\n%v\n", err.Error())
-      return err
-    }
-
-  } else if !filePathDoesExist &&
-    !createTheDirectory {
-
-    return fmt.Errorf(ePrefix+
-      "\nError: Directory Path DOES NOT EXIST!\n"+
-      "DirPath (fMgr.dMgr)='%v'\n",
-      fMgr.dMgr.GetAbsolutePath())
-  }
-
-  return fMgrHlpr.lowLevelOpenFile(
-    fMgr,
-    fileAccessCtrl,
-    ePrefix)
-}
-
-// openThisFile - Helper method used in opening files.
-//
-// If the file does not exist, it will be created and
-// closed.
-//
-// If the file does exist, it will be closed.
-//
-func (fMgrHlpr *fileMgrHelper) openThisFile(
   fMgr *FileMgr,
   openFileAccessCtrl FileAccessControl,
   createTheDirectory bool,
   createTheFile bool,
   ePrefix string) error {
 
-  ePrefixCurrMethod := "fileMgrHelper.openThisFile() "
+  ePrefixCurrMethod := "fileMgrHelper.openFile() "
   var filePathDoesExist, directoryPathDoesExist bool
   var err error
 

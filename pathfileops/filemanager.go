@@ -1031,6 +1031,7 @@ func (fMgr *FileMgr) CreateDirAndFile() error {
   err = fMgrHlpr.createFile(
     fMgr,
     true,
+    true,
     ePrefix)
 
   fMgr.dataMutex.Unlock()
@@ -1063,6 +1064,7 @@ func (fMgr *FileMgr) CreateThisFile() error {
   err = fMgrHlpr.createFile(
     fMgr,
     false,
+    true,
     ePrefix)
 
   fMgr.dataMutex.Unlock()
@@ -2696,7 +2698,7 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
 
   fMgr.dataMutex.Lock()
 
-  err = fMgrHlpr.openThisFile(
+  err = fMgrHlpr.openFile(
     fMgr,
     fileAccessCtrl,
     true,
@@ -2738,7 +2740,7 @@ func (fMgr *FileMgr) OpenThisFileReadOnly() error {
 
   fMgr.dataMutex.Lock()
 
-  err = fMgrHlpr.openThisFile(
+  err = fMgrHlpr.openFile(
     fMgr,
     readOnlyAccessCtrl,
     false,
@@ -2775,7 +2777,7 @@ func (fMgr *FileMgr) OpenThisFileWriteOnly() error {
 
   fMgr.dataMutex.Lock()
 
-  err = fMgrHlpr.openThisFile(
+  err = fMgrHlpr.openFile(
     fMgr,
     writeOnlyAccessCtrl,
     true,
@@ -2808,7 +2810,7 @@ func (fMgr *FileMgr) OpenThisFileWriteOnlyAppend() error {
 
   fMgr.dataMutex.Lock()
 
-  err = fMgrHlpr.openThisFile(
+  err = fMgrHlpr.openFile(
     fMgr,
     writeOnlyFileAccessCfg,
     true,
@@ -2842,7 +2844,7 @@ func (fMgr *FileMgr) OpenThisFileWriteOnlyTruncate() error {
 
   fMgr.dataMutex.Lock()
 
-  err = fMgrHlpr.openThisFile(
+  err = fMgrHlpr.openFile(
     fMgr,
     writeOnlyTruncateAccessCfg,
     true,
@@ -2881,7 +2883,7 @@ func (fMgr *FileMgr) OpenThisFileReadWrite() error {
 
   fMgr.dataMutex.Lock()
 
-  err = fMgrHlpr.openThisFile(
+  err = fMgrHlpr.openFile(
     fMgr,
     readWriteAccessCtrl,
     true,
