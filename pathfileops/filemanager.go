@@ -2405,44 +2405,27 @@ func (fMgr FileMgr) NewFromDirMgrFileNameExt(
 
   ePrefix := "FileMgr.NewFromDirMgrFileNameExt() "
 
-  if len(fileNameExt) == 0 {
-    return FileMgr{},
-      errors.New(ePrefix +
-        "Error: Input Parameter fileNameExt is a zero length string!")
-  }
+  fMgr2 := FileMgr{}
 
-  err := dirMgr.IsDirMgrValid("")
+  fMgrHlpr := fileMgrHelper{}
 
-  if err != nil {
-    return FileMgr{},
-      fmt.Errorf(ePrefix+
-        "Error: Input parameter 'dirMgr' is INVALID! Error='%v' ", err.Error())
-  }
+  var err error
+  var isEmpty bool
 
-  fmgr2 := FileMgr{}
-
-  isEmpty, err := fmgr2.SetFileMgrFromDirMgrFileName(dirMgr, fileNameExt)
-
-  if err != nil {
-    return FileMgr{}, fmt.Errorf(ePrefix+
-      "Error returned by fmgr2.SetFileMgrFromDirMgrFileName(dirMgr, fileNameExt). "+
-      "Error='%v'\n", err.Error())
-  }
+  isEmpty, err = fMgrHlpr.setFileMgrDirMgrFileName(&fMgr2, dirMgr, fileNameExt, ePrefix)
 
   if isEmpty {
-    return FileMgr{}, fmt.Errorf(ePrefix+
-      "Error: Empty FileMgr object returned by fmgr2.SetFileMgrFromDirMgrFileName("+
-      "dirMgr, fileNameExt) dirMgr.path='%v' fileNameExt='%v'", dirMgr.path, fileNameExt)
+
+    fMgr2 = FileMgr{}
+
+    if err == nil {
+      return FileMgr{}, fmt.Errorf(ePrefix+
+        "Error: Empty FileMgr object returned by fmgr2.setFileMgrDirMgrFileName("+
+        "dirMgr, fileNameExt) dirMgr.path='%v' fileNameExt='%v'", dirMgr.path, fileNameExt)
+    }
   }
 
-  err = fmgr2.IsFileMgrValid("")
-
-  if err != nil {
-    return FileMgr{}, fmt.Errorf(ePrefix+
-      "The new File Manager is INVALID! Error='%v' ", err.Error())
-  }
-
-  return fmgr2, nil
+  return fMgr2, err
 }
 
 // NewFromDirStrFileNameStr - Creates a new file manager object (FileMgr) from a directory
