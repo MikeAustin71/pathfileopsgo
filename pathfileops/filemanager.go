@@ -2696,9 +2696,10 @@ func (fMgr *FileMgr) OpenThisFile(fileAccessCtrl FileAccessControl) error {
 
   fMgr.dataMutex.Lock()
 
-  err = fMgrHlpr.openFile(
+  err = fMgrHlpr.openThisFile(
     fMgr,
     fileAccessCtrl,
+    true,
     true,
     ePrefix)
 
@@ -2730,14 +2731,19 @@ func (fMgr *FileMgr) OpenThisFileReadOnly() error {
   readOnlyAccessCtrl, err := FileAccessControl{}.NewReadOnlyAccess()
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
   }
 
   fMgrHlpr := fileMgrHelper{}
 
   fMgr.dataMutex.Lock()
 
-  err = fMgrHlpr.openFile(fMgr, readOnlyAccessCtrl, false, ePrefix)
+  err = fMgrHlpr.openThisFile(
+    fMgr,
+    readOnlyAccessCtrl,
+    false,
+    false,
+    ePrefix)
 
   fMgr.dataMutex.Unlock()
 
@@ -2769,19 +2775,11 @@ func (fMgr *FileMgr) OpenThisFileWriteOnly() error {
 
   fMgr.dataMutex.Lock()
 
-  err = fMgrHlpr.openFileSetup(
-    fMgr,
-    true,
-    ePrefix)
-
-  if err != nil {
-    fMgr.dataMutex.Unlock()
-    return err
-  }
-
-  err = fMgrHlpr.lowLevelOpenFile(
+  err = fMgrHlpr.openThisFile(
     fMgr,
     writeOnlyAccessCtrl,
+    true,
+    true,
     ePrefix)
 
   fMgr.dataMutex.Unlock()
@@ -2794,33 +2792,62 @@ func (fMgr *FileMgr) OpenThisFileWriteOnly() error {
 // will be overwritten.
 //
 // Note: If the 'FileMgr' directory path and file do not exist, this
-// method will will create them.
+// method will will create both the path and file.
 //
 func (fMgr *FileMgr) OpenThisFileWriteOnlyAppend() error {
 
   ePrefix := "FileMgr.OpenThisFileWriteOnlyAppend() "
 
-  fileAccessCfg, err := FileAccessControl{}.NewWriteOnlyAppendAccess()
+  writeOnlyFileAccessCfg, err := FileAccessControl{}.NewWriteOnlyAppendAccess()
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
   }
 
   fMgrHlpr := fileMgrHelper{}
 
   fMgr.dataMutex.Lock()
 
-  err = fMgrHlpr.openFileSetup(
+  err = fMgrHlpr.openThisFile(
     fMgr,
+    writeOnlyFileAccessCfg,
+    true,
     true,
     ePrefix)
 
+  fMgr.dataMutex.Unlock()
+
+  return err
+}
+
+// OpenThisFileWriteOnlyAppend - Opens the current file for 'Write Only'
+// with an 'Truncate' mode. This means that if the file previously exists,
+// all of the existing file content will be deleted before the 'write'
+// operation will begin.
+//
+// Note: If the 'FileMgr' directory path and file do not exist, this
+// method will will create both the path and file.
+//
+func (fMgr *FileMgr) OpenThisFileWriteOnlyTruncate() error {
+
+  ePrefix := "FileMgr.OpenThisFileWriteOnlyTruncate() "
+
+  writeOnlyTruncateAccessCfg, err := FileAccessControl{}.NewWriteOnlyTruncateAccess()
+
   if err != nil {
-    fMgr.dataMutex.Unlock()
-    return err
+    return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
   }
 
-  err = fMgrHlpr.lowLevelOpenFile(fMgr, fileAccessCfg, ePrefix)
+  fMgrHlpr := fileMgrHelper{}
+
+  fMgr.dataMutex.Lock()
+
+  err = fMgrHlpr.openThisFile(
+    fMgr,
+    writeOnlyTruncateAccessCfg,
+    true,
+    true,
+    ePrefix)
 
   fMgr.dataMutex.Unlock()
 
@@ -2847,14 +2874,19 @@ func (fMgr *FileMgr) OpenThisFileReadWrite() error {
   readWriteAccessCtrl, err := FileAccessControl{}.NewReadWriteAccess()
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
   }
 
   fMgrHlpr := fileMgrHelper{}
 
   fMgr.dataMutex.Lock()
 
-  err = fMgrHlpr.openCreateFile(fMgr, readWriteAccessCtrl, ePrefix)
+  err = fMgrHlpr.openThisFile(
+    fMgr,
+    readWriteAccessCtrl,
+    true,
+    true,
+    ePrefix)
 
   fMgr.dataMutex.Unlock()
 

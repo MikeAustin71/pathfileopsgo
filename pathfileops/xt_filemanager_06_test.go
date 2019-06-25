@@ -116,6 +116,8 @@ func TestFileMgr_OpenThisFile_02(t *testing.T) {
     return
   }
 
+  fileAccessCtrl.isInitialized = false
+
   err = fMgr.OpenThisFile(fileAccessCtrl)
 
   if err == nil {

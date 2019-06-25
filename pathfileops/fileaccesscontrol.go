@@ -244,6 +244,37 @@ func (fAccess FileAccessControl) NewWriteOnlyAppendAccess() (FileAccessControl, 
   return fileAccessCfg, nil
 }
 
+// NewWriteOnlyTruncateAccess - Returns a FileAccessControl instance configured for
+// Write/Only - Truncate access.
+//
+// If the file previously exists, it will be truncated before the writing operation
+// commences.
+//
+func (fAccess FileAccessControl) NewWriteOnlyTruncateAccess() (FileAccessControl, error) {
+
+  ePrefix := "FileAccessControl.NewWriteOnlyTruncateAccess() "
+
+  fileOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeWriteOnly(), FOpenMode.ModeTruncate())
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  filePermCfg, err := FilePermissionConfig{}.New("--w--w--w-")
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  fileAccessCfg, err := FileAccessControl{}.New(fileOpenCfg, filePermCfg)
+
+  if err != nil {
+    return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  return fileAccessCfg, nil
+}
+
 // CopyIn - Receives a FileAccessControl instance and copies all the data
 // fields to the current FileAccessControl instance. When complete, both
 // the incoming and current FileAccessControl instances will be identical.

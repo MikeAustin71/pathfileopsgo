@@ -1337,19 +1337,23 @@ func (fMgrHlpr *fileMgrHelper) openFile(
     ePrefix)
 }
 
-// openFileSetup - Helper method used in opening files.
+// openThisFile - Helper method used in opening files.
 //
 // If the file does not exist, it will be created and
 // closed.
 //
 // If the file does exist, it will be closed.
 //
-func (fMgrHlpr *fileMgrHelper) openFileSetup(
+func (fMgrHlpr *fileMgrHelper) openThisFile(
   fMgr *FileMgr,
+  openFileAccessCtrl FileAccessControl,
   createTheDirectory bool,
+  createTheFile bool,
   ePrefix string) error {
 
-  ePrefixCurrMethod := "fileMgrHelper.openFileSetup() "
+  ePrefixCurrMethod := "fileMgrHelper.openThisFile() "
+  var filePathDoesExist, directoryPathDoesExist bool
+  var err error
 
   if len(ePrefix) == 0 {
     ePrefix = ePrefixCurrMethod
@@ -1363,8 +1367,13 @@ func (fMgrHlpr *fileMgrHelper) openFileSetup(
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
   }
 
-  var filePathDoesExist, directoryPathDoesExist bool
-  var err error
+  err = openFileAccessCtrl.IsValid()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nInput Parameter 'openFileAccessCtrl' is INVALID!\n"+
+      "Error='%v'", err.Error())
+  }
 
   filePathDoesExist,
     err = fMgrHlpr.doesFileMgrPathFileExist(
@@ -1405,7 +1414,13 @@ func (fMgrHlpr *fileMgrHelper) openFileSetup(
       "fMgr.dMgr='%v'\n", fMgr.dMgr.absolutePath)
   }
 
-  if !filePathDoesExist {
+  if !filePathDoesExist && !createTheFile {
+
+    return fmt.Errorf(ePrefix+
+      "\nError: The File Manager File (fMgr) DOES NOT EXIST!\n"+
+      "File (fMgr)='%v'\n", fMgr.absolutePathFileName)
+
+  } else if !filePathDoesExist && createTheFile {
 
     createTruncateAccessCtrl, err := FileAccessControl{}.NewReadWriteCreateTruncateAccess()
 
@@ -1418,11 +1433,21 @@ func (fMgrHlpr *fileMgrHelper) openFileSetup(
     if err != nil {
       return err
     }
-  } // if !filePathDoesExist
+  } // if !filePathDoesExist && !createTheFile
 
   // At this point, the file exists on disk. Close it!
 
-  return fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+  err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+
+  if err != nil {
+    return err
+  }
+
+  // Now, open the file with the specified access configuration
+  return fMgrHlpr.lowLevelOpenFile(
+    fMgr,
+    openFileAccessCtrl,
+    ePrefix)
 }
 
 // readFileSetup - Helper method designed to provide
