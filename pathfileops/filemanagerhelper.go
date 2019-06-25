@@ -894,11 +894,24 @@ func (fMgrHlpr *fileMgrHelper) deleteFile(
   return nil
 }
 
+// emptyFileMgr - Helper method designed to "empty" or
+// set the data fields of FileMgr to their zero or initialized
+// values.
 func (fMgrHlpr *fileMgrHelper) emptyFileMgr(
-  fMgr *FileMgr) {
+  fMgr *FileMgr,
+  ePrefix string) error {
+
+  ePrefixCurrMethod := "fileMgrHelper.emptyFileMgr() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
 
   if fMgr == nil {
-    panic("fileMgrHelper.emptyFileMgr() - fMgr is nil pointer!\n")
+    return errors.New(ePrefix +
+      "\nInput parameter 'fMgr' is a nil pointer!\n")
   }
 
   fMgr.isInitialized = false
@@ -924,7 +937,7 @@ func (fMgrHlpr *fileMgrHelper) emptyFileMgr(
   fMgr.fileRdrBufSize = 0
   fMgr.fileWriterBufSize = 0
 
-  return
+  return nil
 }
 
 // flushBytesToDisk - Helper method which is designed
@@ -1540,6 +1553,190 @@ func (fMgrHlpr *fileMgrHelper) readFileSetup(
   }
 
   return nil
+}
+
+// setFileMgrDirMgrFileName - Helper method which configures a
+// a FileMgr instance based on input parameters 'dMgr' and
+// 'fileNameExt'.
+//
+func (fMgrHlpr *fileMgrHelper) setFileMgrDirMgrFileName(
+  fMgr *FileMgr,
+  dMgr DirMgr,
+  fileNameExt string,
+  ePrefix string) (isEmpty bool, err error) {
+
+  ePrefixCurrMethod := "fileMgrHelper.setFileMgrDirMgrFileName() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  isEmpty = true
+  err = nil
+
+  if fMgr == nil {
+    err = fmt.Errorf(ePrefix +
+      "\nError: Input parameter 'fMgr' is a nil pointer!\n")
+    return isEmpty, err
+  }
+
+  err2 := dMgr.IsDirMgrValid("")
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "\nError: Input parameter 'dMgr' is INVALID!\n"+
+      "dMgr.absolutePath='%v'\nError='%v'\n",
+      dMgr.absolutePath, err2.Error())
+    return isEmpty, err
+  }
+
+  fh := FileHelper{}
+
+  errCode, _, fileNameExt := fh.isStringEmptyOrBlank(fileNameExt)
+
+  if errCode == -1 {
+    err = errors.New(ePrefix +
+      "\nError: Input parameter 'fileNameExt' is a Zero length string!\n")
+    return isEmpty, err
+  }
+
+  if errCode == -2 {
+    err = errors.New(ePrefix +
+      "\nError: Input parameter 'fileNameExt' consists entirely of blank spaces!\n")
+    return isEmpty, err
+  }
+
+  adjustedFileNameExt,
+    isFileNameEmpty,
+    err2 :=
+    fh.CleanFileNameExtStr(fileNameExt)
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "\nError returned from fh.CleanFileNameExtStr(fileNameExt).\n"+
+      "fileNameExt='%v'\nError='%v'\n",
+      fileNameExt, err2.Error())
+    return isEmpty, err
+  }
+
+  if isFileNameEmpty {
+    err = fmt.Errorf(ePrefix+
+      "\nError: fileName returned from fh.CleanFileNameExtStr(fileNameExt) "+
+      "is a ZERO length string!\nfileNameExt='%v'\n", fileNameExt)
+    return isEmpty, err
+  }
+
+  err = fMgrHlpr.emptyFileMgr(fMgr, ePrefix)
+
+  if err != nil {
+    return isEmpty, err
+  }
+
+  fMgr.dMgr = dMgr.CopyOut()
+
+  s, fNameIsEmpty, err2 := fh.GetFileNameWithoutExt(adjustedFileNameExt)
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "\nError returned from fh.GetFileNameWithoutExt(adjustedFileNameExt).\n"+
+      "adjustedFileNameExt='%v'\nError='%v'\n ",
+      adjustedFileNameExt, err2.Error())
+    isEmpty = true
+    _ = fMgrHlpr.emptyFileMgr(fMgr, ePrefix)
+    return isEmpty, err
+  }
+
+  if fNameIsEmpty {
+    err = fmt.Errorf(ePrefix+
+      "Error: fileName returned from fh.GetFileNameWithoutExt(adjustedFileNameExt)\n"+
+      "is Zero length string!\n"+
+      "adjustedFileNameExt='%v'\n", adjustedFileNameExt)
+    _ = fMgrHlpr.emptyFileMgr(fMgr, ePrefix)
+    isEmpty = true
+    return isEmpty, err
+  }
+
+  fMgr.isFileNamePopulated = true
+  fMgr.fileName = s
+
+  s, extIsEmpty, err2 := fh.GetFileExtension(adjustedFileNameExt)
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "\nError returned from fh.GetFileExt(fileNameAndExt).\n"+
+      "fileNameAndExt='%v'\nError='%v'\n",
+      adjustedFileNameExt, err2.Error())
+
+    isEmpty = true
+
+    _ = fMgrHlpr.emptyFileMgr(fMgr, ePrefix)
+    return isEmpty, err
+  }
+
+  if !extIsEmpty {
+    fMgr.isFileExtPopulated = true
+    fMgr.fileExt = s
+  }
+
+  if fMgr.isFileNamePopulated {
+    fMgr.isFileNameExtPopulated = true
+    fMgr.fileNameExt = fMgr.fileName + fMgr.fileExt
+  }
+
+  lPath := len(fMgr.dMgr.absolutePath)
+  if lPath == 0 {
+    fMgr.absolutePathFileName = fMgr.fileNameExt
+
+  } else if fMgr.dMgr.absolutePath[lPath-1] == os.PathSeparator {
+    fMgr.absolutePathFileName = fMgr.dMgr.absolutePath + fMgr.fileNameExt
+
+  } else {
+    fMgr.absolutePathFileName =
+      fMgr.dMgr.absolutePath + string(os.PathSeparator) + fMgr.fileNameExt
+
+  }
+
+  lPath = len(fMgr.dMgr.path)
+
+  if lPath == 0 {
+    fMgr.originalPathFileName = fMgr.fileNameExt
+
+  } else if fMgr.dMgr.path[lPath-1] == os.PathSeparator {
+    fMgr.originalPathFileName = fMgr.dMgr.path + fMgr.fileNameExt
+
+  } else {
+    fMgr.originalPathFileName = fMgr.dMgr.path + string(os.PathSeparator) + fMgr.fileNameExt
+  }
+
+  fMgr.isAbsolutePathFileNamePopulated = true
+
+  _,
+    filePathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    fh.doesPathFileExist(
+      fMgr.absolutePathFileName,
+      PreProcPathCode.None(), // Do NOT perform pre-processing on path
+      ePrefix,
+      "fMgr.absolutePathFileName")
+
+  if filePathDoesExist && nonPathError == nil {
+    fMgr.doesAbsolutePathFileNameExist = true
+    fMgr.actualFileInfo = fInfoPlus.CopyOut()
+  } else {
+    fMgr.doesAbsolutePathFileNameExist = false
+    fMgr.actualFileInfo = FileInfoPlus{}
+  }
+
+  fMgr.isInitialized = true
+
+  err = nil
+  isEmpty = false
+
+  return isEmpty, err
 }
 
 // writeFileSetup - Helper method designed to provide

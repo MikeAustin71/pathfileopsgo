@@ -5438,7 +5438,9 @@ func (fh *FileHelper) SearchFileNewerThan(
 //
 func (fh *FileHelper) SearchFileOlderThan(
   info os.FileInfo,
-  fileSelectCriteria FileSelectionCriteria) (isFileOlderThanSet, isFileOlderThanMatch bool, err error) {
+  fileSelectCriteria FileSelectionCriteria) (isFileOlderThanSet,
+  isFileOlderThanMatch bool,
+  err error) {
 
   if fileSelectCriteria.FilesOlderThan.IsZero() {
     isFileOlderThanSet = false

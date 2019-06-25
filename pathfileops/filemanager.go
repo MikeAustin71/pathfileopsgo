@@ -1376,12 +1376,17 @@ func (fMgr *FileMgr) EqualPathFileNameExt(fmgr2 *FileMgr) bool {
 func (fMgr *FileMgr) Empty() {
 
   fMgrHlpr := fileMgrHelper{}
+  var err error
 
   fMgr.dataMutex.Lock()
 
-  fMgrHlpr.emptyFileMgr(fMgr)
+  err = fMgrHlpr.emptyFileMgr(fMgr, "FileMgr.Empty() ")
 
   fMgr.dataMutex.Unlock()
+
+  if err != nil {
+    panic(err.Error())
+  }
 
   return
 }
@@ -3242,155 +3247,11 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
   fileNameExt string) (isEmpty bool, err error) {
 
   ePrefix := "FileMgr.SetFileMgrFromDirMgrFileName() "
-  isEmpty = true
-  err = nil
-  fh := FileHelper{}
 
-  err2 := dMgr.IsDirMgrValid("")
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+
-      "Error: Input parameter 'dMgr' is INVALID! dMgr.path='%v'  Error='%v'",
-      dMgr.path, err2.Error())
-    return
-  }
-
-  errCode, _, fileNameExt := fh.isStringEmptyOrBlank(fileNameExt)
-
-  if errCode == -1 {
-    err = errors.New(ePrefix +
-      "Error: Input parameter 'fileNameExt' is a Zero length string!")
-    return
-  }
-
-  if errCode == -2 {
-    err = errors.New(ePrefix +
-      "Error: Input parameter 'fileNameExt' consists entirely of blank spaces!")
-    return
-  }
-
-  adjustedFileNameExt, isFileNameEmpty, err2 := fh.CleanFileNameExtStr(fileNameExt)
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error returned from fh.CleanFileNameExtStr(fileNameExt). "+
-      "fileNameExt='%v' Error='%v'", fileNameExt, err2.Error())
-    return
-  }
-
-  if isFileNameEmpty {
-    err = fmt.Errorf(ePrefix+
-      "Error: fileName returned from fh.CleanFileNameExtStr(fileNameExt) "+
-      "is a ZERO length string! fileNameExt='%v'", fileNameExt)
-    return
-  }
-
-  fMgr.Empty()
+  fMgrHlpr := fileMgrHelper{}
 
   fMgr.dataMutex.Lock()
-
-  fMgr.dMgr = dMgr.CopyOut()
-
-  s, fNameIsEmpty, err2 := fh.GetFileNameWithoutExt(adjustedFileNameExt)
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+
-      "Error returned from fh.GetFileNameWithoutExt(adjustedFileNameExt).\n"+
-      "adjustedFileNameExt='%v'\nError='%v'\n ",
-      adjustedFileNameExt, err2.Error())
-    fMgr.dataMutex.Unlock()
-    fMgr.Empty()
-    isEmpty = true
-    return
-  }
-
-  if fNameIsEmpty {
-    err = fmt.Errorf(ePrefix+
-      "Error: fileName returned from fh.GetFileNameWithoutExt(adjustedFileNameExt)\n"+
-      "is Zero length string!\n"+
-      "adjustedFileNameExt='%v'\n", adjustedFileNameExt)
-    fMgr.dataMutex.Unlock()
-    fMgr.Empty()
-    isEmpty = true
-    return
-  }
-
-  fMgr.isFileNamePopulated = true
-  fMgr.fileName = s
-
-  s, extIsEmpty, err2 := fh.GetFileExtension(adjustedFileNameExt)
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+
-      "Error returned from fh.GetFileExt(fileNameAndExt).\n"+
-      "fileNameAndExt='%v'\nError='%v'\n",
-      adjustedFileNameExt, err2.Error())
-
-    fMgr.dataMutex.Unlock()
-    fMgr.Empty()
-    isEmpty = true
-    return
-  }
-
-  if !extIsEmpty {
-    fMgr.isFileExtPopulated = true
-    fMgr.fileExt = s
-  }
-
-  if fMgr.isFileNamePopulated {
-    fMgr.isFileNameExtPopulated = true
-    fMgr.fileNameExt = fMgr.fileName + fMgr.fileExt
-  }
-
-  lPath := len(fMgr.dMgr.absolutePath)
-  if lPath == 0 {
-    fMgr.absolutePathFileName = fMgr.fileNameExt
-
-  } else if fMgr.dMgr.absolutePath[lPath-1] == os.PathSeparator {
-    fMgr.absolutePathFileName = fMgr.dMgr.absolutePath + fMgr.fileNameExt
-
-  } else {
-    fMgr.absolutePathFileName =
-      fMgr.dMgr.absolutePath + string(os.PathSeparator) + fMgr.fileNameExt
-
-  }
-
-  lPath = len(fMgr.dMgr.path)
-
-  if lPath == 0 {
-    fMgr.originalPathFileName = fMgr.fileNameExt
-
-  } else if fMgr.dMgr.path[lPath-1] == os.PathSeparator {
-    fMgr.originalPathFileName = fMgr.dMgr.path + fMgr.fileNameExt
-
-  } else {
-    fMgr.originalPathFileName = fMgr.dMgr.path + string(os.PathSeparator) + fMgr.fileNameExt
-  }
-
-  fMgr.isAbsolutePathFileNamePopulated = true
-
-  _,
-    filePathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      fMgr.absolutePathFileName,
-      PreProcPathCode.None(), // Do NOT perform pre-processing on path
-      ePrefix,
-      "fMgr.absolutePathFileName")
-
-  if filePathDoesExist && nonPathError == nil {
-    fMgr.doesAbsolutePathFileNameExist = true
-    fMgr.actualFileInfo = fInfoPlus.CopyOut()
-  } else {
-    fMgr.doesAbsolutePathFileNameExist = false
-    fMgr.actualFileInfo = FileInfoPlus{}
-  }
-
-  fMgr.isInitialized = true
-
-  err = nil
-  isEmpty = false
-
+  isEmpty, err = fMgrHlpr.setFileMgrDirMgrFileName(fMgr, dMgr, fileNameExt, ePrefix)
   fMgr.dataMutex.Unlock()
 
   return isEmpty, err
