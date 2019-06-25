@@ -848,7 +848,11 @@ func (fMgrHlpr *fileMgrHelper) deleteFile(
         break
       }
 
-      time.Sleep(30 * time.Millisecond)
+      time.Sleep(50 * time.Millisecond)
+    }
+
+    if err != nil {
+      return err
     }
   */
 
@@ -872,7 +876,7 @@ func (fMgrHlpr *fileMgrHelper) deleteFile(
   if err != nil {
     return fmt.Errorf(ePrefix+
       "\nNon-Path error returned after file deletion.\n"+
-      "%v", err.Error())
+      "%v\n", err.Error())
   }
 
   if pathFileNameDoesExist {
