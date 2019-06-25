@@ -1031,7 +1031,6 @@ func (fMgr *FileMgr) CreateDirAndFile() error {
   err = fMgrHlpr.createFile(
     fMgr,
     true,
-    true,
     ePrefix)
 
   fMgr.dataMutex.Unlock()
@@ -1064,7 +1063,6 @@ func (fMgr *FileMgr) CreateThisFile() error {
   err = fMgrHlpr.createFile(
     fMgr,
     false,
-    true,
     ePrefix)
 
   fMgr.dataMutex.Unlock()

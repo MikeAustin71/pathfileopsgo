@@ -641,8 +641,7 @@ func (fMgrHlpr *fileMgrHelper) createDirectory(
 //
 func (fMgrHlpr *fileMgrHelper) createFile(
   fMgr *FileMgr,
-  createDirectory bool,
-  createTheFile bool,
+  createTheDirectory bool,
   ePrefix string) error {
 
   ePrefixCurrMethod := "fileMgrHelper.createFile() "
@@ -664,70 +663,62 @@ func (fMgrHlpr *fileMgrHelper) createFile(
     return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
   }
 
-  return fMgrHlpr.openFile(
-    fMgr,
-    createTruncateAccessCtrl,
-    createDirectory,
-    createTheFile,
-    ePrefix)
-
-}
-
-// createFileAndClose - Creates the file identified by 'fMgr'. After
-// file creation the file is immediately closed.
-//
-// The file open operation uses create/truncate open
-// codes.
-//
-// If the directory does not previously exist, this method
-// create it provided that the input parameter 'createDirectory'
-// is set equal to 'true'.
-//
-// If the file does not previously exist, this method will
-// create it.
-//
-// If the file DOES previously exist, this method will truncate
-// the file (deleting all pre-existing content) before closing
-// the file pointer.
-//
-func (fMgrHlpr *fileMgrHelper) createFileAndClose(
-  fMgr *FileMgr,
-  createDirectory bool,
-  ePrefix string) error {
-
-  ePrefixCurrMethod := "fileMgrHelper.createFileAndClose() "
-
-  if len(ePrefix) == 0 {
-    ePrefix = ePrefixCurrMethod
-  } else {
-    ePrefix = ePrefix + "- " + ePrefixCurrMethod
-  }
-
-  if fMgr == nil {
-    return fmt.Errorf(ePrefix +
-      "\nError: Input parameter 'fMgr' is a nil pointer!\n")
-  }
-
-  //  OpenFile(name, O_RDWR|O_CREATE|O_TRUNC, 0666)
-
-  createFileAccessCfg, err := FileAccessControl{}.NewReadWriteCreateTruncateAccess()
+  err = createTruncateAccessCtrl.IsValid()
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
+    return fmt.Errorf(ePrefix+
+      "\nError returned by createTruncateAccessCtrl.IsValid()\n"+
+      "Error='%v'", err.Error())
   }
 
-  err = fMgrHlpr.openFile(
+  var directoryPathDoesExist bool
+
+  _,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
     fMgr,
-    createFileAccessCfg,
-    createDirectory,
-    true,
-    ePrefix)
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
 
   if err != nil {
     return err
   }
 
-  return fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+  directoryPathDoesExist, err =
+    fMgr.dMgr.DoesThisDirectoryExist()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nNon-Path error returned by fMgr.dMgr.DoesThisDirectoryExist()\n"+
+      "fMgr.dMgr='%v'\nError='%v'\n",
+      fMgr.dMgr.absolutePath, err.Error())
+  }
+
+  if !directoryPathDoesExist && createTheDirectory {
+
+    err = fMgr.dMgr.MakeDir()
+
+    if err != nil {
+      return fmt.Errorf(ePrefix+
+        "\nError returned by fMgr.dMgr.MakeDir().\n"+
+        "fMgr.dMgr='%v'\nError='%v'\n",
+        fMgr.dMgr.absolutePath, err.Error())
+    }
+
+  } else if !directoryPathDoesExist && !createTheDirectory {
+
+    return fmt.Errorf(ePrefix+
+      "\nError: File Manager Directory Path DOES NOT EXIST!\n"+
+      "fMgr.dMgr='%v'\n", fMgr.dMgr.absolutePath)
+  }
+
+  err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+
+  if err != nil {
+    return err
+  }
+
+  return fMgrHlpr.lowLevelOpenFile(fMgr, createTruncateAccessCtrl, ePrefix)
 }
 
 // copyFileToFMgrCleanUp - Helper method used to perform
