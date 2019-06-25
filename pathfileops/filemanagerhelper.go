@@ -5,6 +5,7 @@ import (
   "errors"
   "fmt"
   "os"
+  "strings"
   "time"
 )
 
@@ -1735,6 +1736,100 @@ func (fMgrHlpr *fileMgrHelper) setFileMgrDirMgrFileName(
 
   err = nil
   isEmpty = false
+
+  return isEmpty, err
+}
+
+// setFileMgrPathFileName - Helper method which configures a
+// a FileMgr instance based on input parameter 'pathFileNameExt'.
+//
+func (fMgrHlpr *fileMgrHelper) setFileMgrPathFileName(
+  fMgr *FileMgr,
+  pathFileNameExt string,
+  ePrefix string) (isEmpty bool, err error) {
+
+  ePrefixCurrMethod := "fileMgrHelper.setFileMgrPathFileName() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  isEmpty = true
+  err = nil
+
+  if fMgr == nil {
+    err = fmt.Errorf(ePrefix +
+      "\nError: Input parameter 'fMgr' is a nil pointer!\n")
+    return isEmpty, err
+  }
+
+  fh := FileHelper{}
+
+  errCode := 0
+
+  errCode, _, pathFileNameExt = fh.isStringEmptyOrBlank(pathFileNameExt)
+
+  if errCode == -1 {
+    err = errors.New(ePrefix +
+      "\nError: Input parameter 'pathFileNameExt' is a zero length or empty string!\n")
+    return isEmpty, err
+  }
+
+  if errCode == -2 {
+    err = errors.New(ePrefix +
+      "\nError: Input parameter 'pathFileNameExt' consists entirely of blank spaces!\n")
+    return isEmpty, err
+  }
+
+  adjustedPathFileNameExt := fh.AdjustPathSlash(pathFileNameExt)
+
+  adjustedFileNameExt, isEmptyFileName, err2 := fh.CleanFileNameExtStr(adjustedPathFileNameExt)
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "\nError returned from fh.CleanFileNameExtStr(adjustedPathFileNameExt).\n"+
+      "adjustedPathFileNameExt='%v'\nError='%v'\n",
+      adjustedPathFileNameExt, err2.Error())
+    return isEmpty, err
+  }
+
+  if isEmptyFileName {
+    err = fmt.Errorf(ePrefix+
+      "\nError: File Name returned from fh.CleanFileNameExtStr(adjustedPathFileNameExt)\n"+
+      "is a Zero Length String!.\n"+
+      "pathFileNameExt='%v'\n",
+      adjustedPathFileNameExt)
+    return isEmpty, err
+  }
+
+  remainingPathStr := strings.TrimSuffix(adjustedPathFileNameExt, adjustedFileNameExt)
+
+  var dMgr DirMgr
+
+  errCode, _, remainingPathStr = fh.isStringEmptyOrBlank(remainingPathStr)
+
+  if errCode < 0 {
+    dMgr = DirMgr{}
+
+  } else {
+
+    dMgr, err2 = DirMgr{}.New(remainingPathStr)
+
+    if err2 != nil {
+      err = fmt.Errorf(ePrefix+
+        "\nError returned from DirMgr{}.NewFromPathFileNameExtStr("+
+        "remainingPathStr).\n"+
+        "remainingPathStr='%v'\nError='%v'\n",
+        remainingPathStr, err2.Error())
+      return isEmpty, err
+    }
+  }
+
+  isEmpty, err =
+    fMgrHlpr.setFileMgrDirMgrFileName(fMgr, dMgr, adjustedFileNameExt, ePrefix)
 
   return isEmpty, err
 }

@@ -3273,105 +3273,19 @@ func (fMgr *FileMgr) SetFileMgrFromDirMgrFileName(
 //	                this method will return an error Type which contains an appropriate
 //	                error message.
 //
+
 func (fMgr *FileMgr) SetFileMgrFromPathFileName(
   pathFileNameExt string) (isEmpty bool, err error) {
 
   ePrefix := "FileMgr.SetFileMgrFromPathFileName() "
   isEmpty = true
   err = nil
-  fh := FileHelper{}
 
-  errCode := 0
-
-  errCode, _, pathFileNameExt = fh.isStringEmptyOrBlank(pathFileNameExt)
-
-  if errCode == -1 {
-    err = errors.New(ePrefix +
-      "Error: Input parameter 'pathFileNameExt' is a zero length or empty string!\n")
-    return isEmpty, err
-  }
-
-  if errCode == -2 {
-    err = errors.New(ePrefix +
-      "Error: Input parameter 'pathFileNameExt' consists entirely of blank spaces!\n")
-    return
-  }
+  fMgrHlpr := fileMgrHelper{}
 
   fMgr.dataMutex.Lock()
 
-  adjustedPathFileNameExt := fh.AdjustPathSlash(pathFileNameExt)
-
-  adjustedFileNameExt, isEmptyFileName, err2 := fh.CleanFileNameExtStr(adjustedPathFileNameExt)
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+
-      "Error returned from fh.CleanFileNameExtStr(adjustedPathFileNameExt).\n"+
-      "adjustedPathFileNameExt='%v'\nError='%v'\n",
-      adjustedPathFileNameExt, err2.Error())
-    fMgr.dataMutex.Unlock()
-    return isEmpty, err
-  }
-
-  if isEmptyFileName {
-    err = fmt.Errorf(ePrefix+
-      "Error: File Name returned from fh.CleanFileNameExtStr(adjustedPathFileNameExt)\n"+
-      "is a Zero Length String!.\n"+
-      "pathFileNameExt='%v'\n",
-      adjustedPathFileNameExt)
-    fMgr.dataMutex.Unlock()
-    return isEmpty, err
-  }
-
-  remainingPathStr := strings.TrimSuffix(adjustedPathFileNameExt, adjustedFileNameExt)
-
-  var dMgr DirMgr
-
-  errCode, _, remainingPathStr = fh.isStringEmptyOrBlank(remainingPathStr)
-
-  if errCode < 0 {
-    dMgr = DirMgr{}
-  } else {
-
-    dMgr, err2 = DirMgr{}.New(remainingPathStr)
-
-    if err2 != nil {
-      err = fmt.Errorf(ePrefix+
-        "Error returned from DirMgr{}.NewFromPathFileNameExtStr("+
-        "remainingPathStr).\n"+
-        "remainingPathStr='%v'\nError='%v'\n",
-        remainingPathStr, err2.Error())
-      fMgr.dataMutex.Unlock()
-      return isEmpty, err
-    }
-  }
-
-  fMgr.dataMutex.Unlock()
-
-  isEmptyFMgr, err2 :=
-    fMgr.SetFileMgrFromDirMgrFileName(dMgr, adjustedFileNameExt)
-
-  fMgr.dataMutex.Lock()
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+
-      "Error returned from fMgr.SetFileMgrFromDirMgrFileName("+
-      "dMgr, adjustedFileNameExt).\n"+
-      "adjustedFileNameExt='%v'\nError='%v'\n",
-      adjustedFileNameExt, err2.Error())
-    isEmpty = true
-
-  } else if isEmptyFMgr {
-    err = fmt.Errorf(ePrefix+
-      "Error: Empty FileMgr returned from fMgr.SetFileMgrFromDirMgrFileName("+
-      "dMgr, adjustedFileNameExt).\n"+
-      "dMgr='%v'\nadjustedFileNameExt='%v' ",
-      dMgr.absolutePath, adjustedFileNameExt)
-    isEmpty = true
-
-  } else {
-    isEmpty = false
-    err = nil
-  }
+  isEmpty, err = fMgrHlpr.setFileMgrPathFileName(fMgr, pathFileNameExt, ePrefix)
 
   fMgr.dataMutex.Unlock()
 
