@@ -2048,8 +2048,39 @@ func (fMgr *FileMgr) IsInitialized() bool {
 // parameter 'newFMgr'.
 //
 // If input parameter 'dirPth' contains a directory path which does not
-// currently exist, this method will return an error.
+// currently exist, it will be created.
 //
+func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (FileMgr, error) {
+
+  ePrefix := "FileMgr.MoveFileToNewDir() "
+
+  dirMgr, err := DirMgr{}.New(dirPath)
+
+  if err != nil {
+    return FileMgr{},
+      fmt.Errorf(ePrefix+"Error returned by DirMgr{}.New(dirPath).\n"+
+        "dirPath='%v'\nError='%v'\n", dirPath, err.Error())
+  }
+
+  targetFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dirMgr, fMgr.fileNameExt)
+
+  if err != nil {
+    return FileMgr{},
+      fmt.Errorf(ePrefix+"Error returned by FileMgr{}.NewFromDirMgrFileNameExt"+
+        "(dirMgr, fMgr.fileNameExt)\n"+
+        "dirMgr='%v'\n"+
+        "fMgr.fileNameExt='%v'\nError='%v'\n",
+        dirMgr.absolutePath, fMgr.fileNameExt, err.Error())
+  }
+
+  fMgrHlpr := fileMgrHelper{}
+
+  err = fMgrHlpr.moveFile(fMgr, &targetFMgr, ePrefix)
+
+  return targetFMgr, err
+}
+
+/*
 func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (newFMgr FileMgr, err error) {
 
   newFMgr = FileMgr{}
@@ -2172,6 +2203,7 @@ func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (newFMgr FileMgr, err erro
   fMgr.dataMutex.Unlock()
   return newFMgr, err
 }
+*/
 
 // MoveFileToNewDirMgr - This method will move the file identified
 // by the current FileMgr to a new path contained in the input parameter

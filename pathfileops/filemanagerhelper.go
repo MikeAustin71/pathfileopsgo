@@ -4,6 +4,7 @@ import (
   "bufio"
   "errors"
   "fmt"
+  "io"
   "os"
   "strings"
   "time"
@@ -186,7 +187,7 @@ func (fMgrHlpr *fileMgrHelper) closeFile(
   }
 
   if fMgr == nil {
-    return fmt.Errorf(ePrefix +
+    return errors.New(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
   }
 
@@ -300,7 +301,7 @@ func (fMgrHlpr *fileMgrHelper) copyFileToDestFileMgrSetup(
   }
 
   if fMgr == nil {
-    err = fmt.Errorf(ePrefix +
+    err = errors.New(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
     return err
   }
@@ -486,7 +487,7 @@ func (fMgrHlpr *fileMgrHelper) copyFileToDirSetup(
   }
 
   if fMgr == nil {
-    err = fmt.Errorf(ePrefix +
+    err = errors.New(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
     return fMgrDest, err
   }
@@ -542,7 +543,7 @@ func (fMgrHlpr *fileMgrHelper) copyFileToDestStrSetup(
   }
 
   if fMgr == nil {
-    err = fmt.Errorf(ePrefix +
+    err = errors.New(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
     return fMgrDest, err
   }
@@ -608,7 +609,7 @@ func (fMgrHlpr *fileMgrHelper) createDirectory(
   }
 
   if fMgr == nil {
-    return fmt.Errorf(ePrefix +
+    return errors.New(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
   }
 
@@ -653,7 +654,7 @@ func (fMgrHlpr *fileMgrHelper) createFile(
   }
 
   if fMgr == nil {
-    return fmt.Errorf(ePrefix +
+    return errors.New(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
   }
 
@@ -805,7 +806,7 @@ func (fMgrHlpr *fileMgrHelper) deleteFile(
   }
 
   if fMgr == nil {
-    return fmt.Errorf(ePrefix +
+    return errors.New(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
   }
 
@@ -817,7 +818,7 @@ func (fMgrHlpr *fileMgrHelper) deleteFile(
     "fMgr.absolutePathFileName")
 
   if err != nil {
-    _ = fMgrHlpr.closeFile(fMgr, ePrefix)
+    _ = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
     return err
   }
 
@@ -952,7 +953,7 @@ func (fMgrHlpr *fileMgrHelper) flushBytesToDisk(
   }
 
   if fMgr == nil {
-    return fmt.Errorf(ePrefix +
+    return errors.New(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
   }
 
@@ -1018,7 +1019,7 @@ func (fMgrHlpr *fileMgrHelper) lowLevelCloseFile(
   }
 
   if fMgr == nil {
-    return fmt.Errorf(ePrefix +
+    return errors.New(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
   }
 
@@ -1089,7 +1090,7 @@ func (fMgrHlpr *fileMgrHelper) lowLevelOpenFile(
   }
 
   if fMgr == nil {
-    return fmt.Errorf(ePrefix +
+    return errors.New(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
   }
 
@@ -1194,6 +1195,263 @@ func (fMgrHlpr *fileMgrHelper) lowLevelOpenFile(
   return nil
 }
 
+// moveFile - Helper method designed to move a
+// file to a new destination. The operation is
+// performed in two steps. First, the source
+// file is copied to a destination specified
+// by parameter, 'targetFMgr'. Second, if the
+// the copy operation is successful, the source
+// file ('fMgr') will be deleted.
+//
+func (fMgrHlpr *fileMgrHelper) moveFile(
+  fMgr *FileMgr,
+  targetFMgr *FileMgr,
+  ePrefix string) error {
+
+  ePrefixCurrMethod := "fileMgrHelper.openFile() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  if fMgr == nil {
+    return errors.New(ePrefix +
+      "\nError: Input parameter 'fMgr' is a nil pointer!\n")
+  }
+
+  if targetFMgr == nil {
+    return errors.New(ePrefix +
+      "\nError: Input parameter 'targetFMgr' is a nil pointer!\n")
+  }
+
+  var err error
+  filePathDoesExist := false
+
+  filePathDoesExist,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "fMgr.absolutePathFileName")
+
+  if err != nil {
+    return err
+  }
+
+  if !filePathDoesExist {
+    return fmt.Errorf(ePrefix+
+      "\nError: Source File Manager 'fMgr' DOES NOT EXIST!\n"+
+      "fMgr='%v'\n",
+      fMgr.absolutePathFileName)
+  }
+
+  if fMgr.actualFileInfo.Mode().IsDir() {
+    return fmt.Errorf(ePrefix+
+      "\nError: Source File 'fMgr' is NOT A FILE!\n"+
+      "IT IS A DIRECTORY!!\n"+
+      "fMgr='%v'\n", fMgr.absolutePathFileName)
+  }
+
+  if !fMgr.actualFileInfo.Mode().IsRegular() {
+    return fmt.Errorf(ePrefix+
+      "\nError: Source File Invalid. "+
+      "The Source File 'fMgr' IS NOT A REGULAR FILE!\n"+
+      "fMgr='%v'\n", fMgr.absolutePathFileName)
+  }
+
+  filePathDoesExist,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    targetFMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "targetFMgr.absolutePathFileName")
+
+  if err != nil {
+    return err
+  }
+
+  if !filePathDoesExist {
+    err = targetFMgr.dMgr.MakeDir()
+
+    if err != nil {
+      return fmt.Errorf(ePrefix+
+        "\nError returned by targetFMgr."+
+        "dMgr.MakeDir()\n"+
+        "targetFMgr.dMgr='%v'\n"+
+        "Error='%v'\n",
+        targetFMgr.dMgr.absolutePath,
+        err.Error())
+    }
+  }
+
+  if filePathDoesExist {
+
+    err = fMgrHlpr.lowLevelCloseFile(targetFMgr, ePrefix)
+
+    if err != nil {
+      return err
+    }
+
+    err = os.Remove(targetFMgr.absolutePathFileName)
+
+    if err != nil {
+      return fmt.Errorf(ePrefix+
+        "\nos.Remove(targetFMgr.absolutePathFileName) "+
+        "returned an error.\n"+
+        "targetFMgr='%v'\nError='%v'",
+        targetFMgr.absolutePathFileName, err.Error())
+    }
+  }
+
+  // Close the source file
+  err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+
+  if err != nil {
+    return err
+  }
+
+  err = fMgrHlpr.lowLevelCloseFile(targetFMgr, ePrefix)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nError closing targetFMgr\n"+
+      "%v\n", err.Error())
+  }
+
+  // Now, open the source file
+  srcFilePtr, err := os.Open(fMgr.absolutePathFileName)
+
+  if err != nil {
+
+    _ = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+
+    return fmt.Errorf(ePrefix+
+      "Error returned from os.Open(fMgr.absolutePathFileName).\n"+
+      "fMgr='%v'\nError='%v'\n",
+      fMgr.absolutePathFileName, err.Error())
+  }
+
+  // Next, 'Create' the destination file
+  // If the destination file previously exists,
+  // it will be truncated.
+  outFilePtr, err := os.Create(targetFMgr.absolutePathFileName)
+
+  if err != nil {
+
+    _ = srcFilePtr.Close()
+
+    return fmt.Errorf(ePrefix+
+      "\nError returned from os.Create("+
+      "targetFMgr.absolutePathFileName)\n"+
+      "targetFMgr='%v'\nError='%v'\n",
+      targetFMgr.absolutePathFileName, err.Error())
+  }
+
+  bytesToRead := fMgr.actualFileInfo.Size()
+
+  bytesCopied, err := io.Copy(outFilePtr, srcFilePtr)
+
+  if err != nil {
+    _ = srcFilePtr.Close()
+    _ = outFilePtr.Close()
+    return fmt.Errorf(ePrefix+
+      "\nError returned from io.Copy("+
+      "outFilePtr, srcFilePtr).\n"+
+      "outFile='%v'\n"+
+      "srcFile='%v'\n"+
+      "Error='%v'\n",
+      targetFMgr.absolutePathFileName,
+      fMgr.absolutePathFileName,
+      err.Error())
+  }
+
+  errs := make([]error, 0, 10)
+
+  err = outFilePtr.Sync()
+
+  if err != nil {
+    errs = append(errs, fmt.Errorf(ePrefix+
+      "\nError flushing buffers!\n"+
+      "\nError returned from outFilePtr.Sync()\n"+
+      "outFilePtr=targetFMgr='%v'\nError='%v'\n",
+      targetFMgr.absolutePathFileName, err.Error()))
+  }
+
+  err = srcFilePtr.Close()
+
+  if err != nil {
+    errs = append(errs, err)
+  }
+
+  err = outFilePtr.Close()
+
+  if err != nil {
+    errs = append(errs, err)
+  }
+
+  if bytesToRead != bytesCopied {
+    err = fmt.Errorf(ePrefix+
+      "\nError: Bytes copied not equal bytes "+
+      "in source file!\n"+
+      "Bytes To Read='%v'   Bytes Copied='%v'\n"+
+      "Source File 'fMgr'='%v'\n"+
+      "Target File targetFMgr='%v'\n",
+      bytesToRead, bytesCopied,
+      fMgr.absolutePathFileName,
+      targetFMgr.absolutePathFileName)
+    errs = append(errs, err)
+  }
+
+  if len(errs) > 0 {
+    return fMgrHlpr.consolidateErrors(errs)
+  }
+
+  filePathDoesExist,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "#2 fMgr.absolutePathFileName")
+
+  if err != nil {
+    return err
+  }
+
+  errs = make([]error, 0, 10)
+
+  if filePathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "\nError: Move operation failed. Source File was copied, \n"+
+      "but was NOT deleted after copy operation.\n"+
+      "Source File 'fMgr'='%v'", fMgr.absolutePathFileName)
+    errs = append(errs, err)
+  }
+
+  filePathDoesExist,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    targetFMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "#2 targetFMgr.absolutePathFileName")
+
+  if err != nil {
+    errs = append(errs, err)
+    return fMgrHlpr.consolidateErrors(errs)
+  }
+
+  if !filePathDoesExist {
+    return fmt.Errorf(ePrefix+
+      "\nError: The move operation failed!\n"+
+      "The target file DOES NOT EXIST!\n"+
+      "targetFMgr='%v'\n", targetFMgr.absolutePathFileName)
+  }
+
+  return nil
+}
+
 // openCreateFile - Helper method designed to open a
 // file. If the file does not currently exist, it
 // will first be created and then opened with the
@@ -1215,7 +1473,7 @@ func (fMgrHlpr *fileMgrHelper) openCreateFile(
   }
 
   if fMgr == nil {
-    return fmt.Errorf(ePrefix +
+    return errors.New(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
   }
 
@@ -1305,7 +1563,7 @@ func (fMgrHlpr *fileMgrHelper) openFile(
   }
 
   if fMgr == nil {
-    return fmt.Errorf(ePrefix +
+    return errors.New(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
   }
 
@@ -1414,7 +1672,7 @@ func (fMgrHlpr *fileMgrHelper) readFileSetup(
   }
 
   if fMgr == nil {
-    return fmt.Errorf(ePrefix +
+    return errors.New(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
   }
 
@@ -1574,7 +1832,7 @@ func (fMgrHlpr *fileMgrHelper) setFileMgrDirMgrFileName(
   err = nil
 
   if fMgr == nil {
-    err = fmt.Errorf(ePrefix +
+    err = errors.New(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
     return isEmpty, err
   }
@@ -1756,7 +2014,7 @@ func (fMgrHlpr *fileMgrHelper) setFileMgrPathFileName(
   err = nil
 
   if fMgr == nil {
-    err = fmt.Errorf(ePrefix +
+    err = errors.New(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
     return isEmpty, err
   }
@@ -1851,7 +2109,7 @@ func (fMgrHlpr *fileMgrHelper) writeFileSetup(
   }
 
   if fMgr == nil {
-    return fmt.Errorf(ePrefix +
+    return errors.New(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
   }
 

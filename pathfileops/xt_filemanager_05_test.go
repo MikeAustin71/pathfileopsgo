@@ -16,8 +16,8 @@ func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
     err := fh.DeleteDirFile(setupDestFile)
 
     if err != nil {
-      t.Errorf("Error on DeleteDirFile() deleting destination file.\n" +
-        "Destination File='%v'\n" +
+      t.Errorf("Error on DeleteDirFile() deleting destination file.\n"+
+        "Destination File='%v'\n"+
         "Error='%v'\n",
         setupDestFile, err.Error())
       _ = fh.DeleteDirFile(srcFile)
@@ -26,7 +26,7 @@ func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
     }
 
     if fh.DoesFileExist(setupDestFile) {
-      t.Errorf("Error - destination file, STILL EXISTS!\n" +
+      t.Errorf("Error - destination file, STILL EXISTS!\n"+
         "Destination File='%v'\n", setupDestFile)
       _ = fh.DeleteDirFile(srcFile)
       _ = fh.DeleteDirFile(setupDestFile)
@@ -38,7 +38,7 @@ func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
     err := fh.DeleteDirFile(srcFile)
 
     if err != nil {
-      t.Errorf("Error on DeleteDirFile() deleting source file.\n" +
+      t.Errorf("Error on DeleteDirFile() deleting source file.\n"+
         "Source File='%v'\nError:'%v'\n",
         srcFile, err.Error())
       _ = fh.DeleteDirFile(srcFile)
@@ -47,7 +47,7 @@ func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
     }
 
     if fh.DoesFileExist(srcFile) {
-      t.Errorf("Error - Failed to Delete 'srcFile' STILL EXISTS!\n" +
+      t.Errorf("Error - Failed to Delete 'srcFile' STILL EXISTS!\n"+
         "srcFile='%v'\n", srcFile)
       _ = fh.DeleteDirFile(srcFile)
       _ = fh.DeleteDirFile(setupDestFile)
@@ -58,7 +58,7 @@ func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
   err := fh.CopyFileByIo(setupSrcFile, srcFile)
 
   if err != nil {
-    t.Errorf("Error returned by fh.CopyFileByIo(setupSrcFile, srcFile)\n" +
+    t.Errorf("Error returned by fh.CopyFileByIo(setupSrcFile, srcFile)\n"+
       "setupSrcFile='%v'\nsrcFile='%v'\nError='%v'\n",
       setupSrcFile, srcFile, err.Error())
     _ = fh.DeleteDirFile(srcFile)
@@ -67,7 +67,7 @@ func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
   }
 
   if !fh.DoesFileExist(srcFile) {
-    t.Errorf("Test Setup Error: Source File does NOT EXIST!!\n" +
+    t.Errorf("Test Setup Error: Source File does NOT EXIST!!\n"+
       "srcFile='%v'\n", srcFile)
     _ = fh.DeleteDirFile(srcFile)
     _ = fh.DeleteDirFile(setupDestFile)
@@ -77,7 +77,7 @@ func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
   srcFileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(srcFile)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(srcFile).\n" +
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(srcFile).\n"+
       "srcFile='%v'\nError='%v'",
       srcFile, err.Error())
     _ = fh.DeleteDirFile(srcFile)
@@ -88,7 +88,7 @@ func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
   dMgr, err := DirMgr{}.New(destDir)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(destDir).\n" +
+    t.Errorf("Error returned by DirMgr{}.New(destDir).\n"+
       "destDir='%v'\nError='%v'\n",
       destDir, err.Error())
     _ = fh.DeleteDirFile(srcFile)
@@ -99,7 +99,7 @@ func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
   newFMgr, err := srcFileMgr.MoveFileToNewDirMgr(dMgr)
 
   if err != nil {
-    t.Errorf("Error returned by srcFileMgr.MoveFileToNewDirMgr(dMgr).\n" +
+    t.Errorf("Error returned by srcFileMgr.MoveFileToNewDirMgr(dMgr).\n"+
       "dMgr.path='%v'\nError='%v'\n",
       dMgr.path, err.Error())
     _ = fh.DeleteDirFile(srcFile)
@@ -108,7 +108,7 @@ func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
   }
 
   if !fh.DoesFileExist(newFMgr.GetAbsolutePathFileName()) {
-    t.Errorf("Error: NewFromPathFileNameExtStr Destination 'Moved' File DOES NOT EXIST!\n" +
+    t.Errorf("Error: NewFromPathFileNameExtStr Destination 'Moved' File DOES NOT EXIST!\n"+
       "srcFileMgr='%v'\nnewFMgr='%v'",
       srcFileMgr.GetAbsolutePathFileName(),
       newFMgr.GetAbsolutePathFileName())
@@ -120,7 +120,7 @@ func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
   doesExist, err := newFMgr.DoesThisFileExist()
 
   if err != nil {
-    t.Errorf("Non-Path Error returned by newFMgr.DoesThisFileExist().\n" +
+    t.Errorf("Non-Path Error returned by newFMgr.DoesThisFileExist().\n"+
       "newFMgr='%v'\nError='%v'\n",
       newFMgr.absolutePathFileName, err.Error())
     _ = fh.DeleteDirFile(srcFile)
@@ -129,8 +129,8 @@ func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
   }
 
   if !doesExist {
-    t.Errorf("Error: NewFromPathFileNameExtStr Destination 'Moved' File DOES NOT EXIST!\n" +
-      "newFMgr.DoesThisFileExist()=='FALSE'.\n" +
+    t.Errorf("Error: NewFromPathFileNameExtStr Destination 'Moved' File DOES NOT EXIST!\n"+
+      "newFMgr.DoesThisFileExist()=='FALSE'.\n"+
       "newFMgr='%v'", newFMgr.absolutePathFileName)
     _ = fh.DeleteDirFile(srcFile)
     _ = fh.DeleteDirFile(setupDestFile)
@@ -140,8 +140,8 @@ func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
   err = fh.DeleteDirFile(srcFile)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirFile(srcFile)\n" +
-      "srcFile='%v'\n" +
+    t.Errorf("Error returned by fh.DeleteDirFile(srcFile)\n"+
+      "srcFile='%v'\n"+
       "Error='%v'\n",
       srcFile, err.Error())
   }
@@ -149,8 +149,8 @@ func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
   err = fh.DeleteDirFile(setupDestFile)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirFile(setupDestFile)\n" +
-      "setupDestFile='%v'\n" +
+    t.Errorf("Error returned by fh.DeleteDirFile(setupDestFile)\n"+
+      "setupDestFile='%v'\n"+
       "Error='%v'\n",
       setupDestFile, err.Error())
   }
@@ -167,7 +167,7 @@ func TestFileMgr_MoveFileToNewDirMgr_02(t *testing.T) {
     err := fh.DeleteDirFile(setupDestFile)
 
     if err != nil {
-      t.Errorf("Error on DeleteDirFile() deleting destination file\n" +
+      t.Errorf("Error on DeleteDirFile() deleting destination file\n"+
         "setupDestFile='%v'\nError:'%v'",
         setupDestFile, err.Error())
       _ = fh.DeleteDirFile(srcFile)
@@ -176,7 +176,7 @@ func TestFileMgr_MoveFileToNewDirMgr_02(t *testing.T) {
     }
 
     if fh.DoesFileExist(setupDestFile) {
-      t.Errorf("Error - destination file, STILL EXISTS!\n" +
+      t.Errorf("Error - destination file, STILL EXISTS!\n"+
         "setupDestFile='%v'", setupDestFile)
       _ = fh.DeleteDirFile(srcFile)
       _ = fh.DeleteDirFile(setupDestFile)
@@ -188,7 +188,7 @@ func TestFileMgr_MoveFileToNewDirMgr_02(t *testing.T) {
     err := fh.DeleteDirFile(srcFile)
 
     if err != nil {
-      t.Errorf("Error returned by fh.DeleteDirFile(srcFile)\n" +
+      t.Errorf("Error returned by fh.DeleteDirFile(srcFile)\n"+
         "srcFile='%v'\nError='%v'\n",
         srcFile, err.Error())
 
@@ -198,7 +198,7 @@ func TestFileMgr_MoveFileToNewDirMgr_02(t *testing.T) {
     }
 
     if fh.DoesFileExist(srcFile) {
-      t.Errorf("Error - Failed to Delete 'srcFile'. 'srcFile'  STILL EXISTS!!\n" +
+      t.Errorf("Error - Failed to Delete 'srcFile'. 'srcFile'  STILL EXISTS!!\n"+
         "srcFile='%v'", srcFile)
 
       _ = fh.DeleteDirFile(srcFile)
@@ -210,9 +210,9 @@ func TestFileMgr_MoveFileToNewDirMgr_02(t *testing.T) {
   err := fh.CopyFileByIo(setupSrcFile, srcFile)
 
   if err != nil {
-    t.Errorf("Error returned by fh.CopyFileByIo(setupSrcFile, srcFile).\n" +
-      "setupSrcFile='%v'\n" +
-      "srcFile='%v'\n" +
+    t.Errorf("Error returned by fh.CopyFileByIo(setupSrcFile, srcFile).\n"+
+      "setupSrcFile='%v'\n"+
+      "srcFile='%v'\n"+
       "Error='%v'\n", setupSrcFile, srcFile, err.Error())
     _ = fh.DeleteDirFile(srcFile)
     _ = fh.DeleteDirFile(setupDestFile)
@@ -220,7 +220,7 @@ func TestFileMgr_MoveFileToNewDirMgr_02(t *testing.T) {
   }
 
   if !fh.DoesFileExist(srcFile) {
-    t.Errorf("ERROR: Source File does NOT EXIST!!\n" +
+    t.Errorf("ERROR: Source File does NOT EXIST!!\n"+
       "srcFile='%v'\n",
       srcFile)
     _ = fh.DeleteDirFile(srcFile)
@@ -242,7 +242,7 @@ func TestFileMgr_MoveFileToNewDirMgr_02(t *testing.T) {
   dMgr, err := DirMgr{}.New(destDir)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(destDir).\n" +
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(destDir).\n"+
       "destDir='%v'\nError='%v'\n",
       destDir, err.Error())
     _ = fh.DeleteDirFile(srcFile)
@@ -263,8 +263,8 @@ func TestFileMgr_MoveFileToNewDirMgr_02(t *testing.T) {
   err = fh.DeleteDirFile(srcFile)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirFile(srcFile)\n" +
-      "srcFile='%v'\n" +
+    t.Errorf("Error returned by fh.DeleteDirFile(srcFile)\n"+
+      "srcFile='%v'\n"+
       "Error='%v'\n",
       srcFile, err.Error())
   }
@@ -272,8 +272,8 @@ func TestFileMgr_MoveFileToNewDirMgr_02(t *testing.T) {
   err = fh.DeleteDirFile(setupDestFile)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirFile(setupDestFile)\n" +
-      "setupDestFile='%v'\n" +
+    t.Errorf("Error returned by fh.DeleteDirFile(setupDestFile)\n"+
+      "setupDestFile='%v'\n"+
       "Error='%v'\n",
       setupDestFile, err.Error())
   }
@@ -386,7 +386,7 @@ func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
     err := fh.DeleteDirFile(setupDestFile)
 
     if err != nil {
-      t.Errorf("Error returned by fh.DeleteDirFile(setupDestFile).\n" +
+      t.Errorf("Error returned by fh.DeleteDirFile(setupDestFile).\n"+
         "setupDestFile='%v'\nError:'%v'",
         setupDestFile, err.Error())
       _ = fh.DeleteDirFile(srcFile)
@@ -395,8 +395,8 @@ func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
     }
 
     if fh.DoesFileExist(setupDestFile) {
-      t.Errorf("Error: Attempted Deletion Failed!!\n" +
-        "Destination file STILL EXISTS!\n" +
+      t.Errorf("Error: Attempted Deletion Failed!!\n"+
+        "Destination file STILL EXISTS!\n"+
         "setupDestFile='%v'", setupDestFile)
       _ = fh.DeleteDirFile(srcFile)
       _ = fh.DeleteDirFile(setupDestFile)
@@ -408,9 +408,9 @@ func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
     err := fh.DeleteDirFile(srcFile)
 
     if err != nil {
-      t.Errorf("Error: Attempted Deletion Failed!!\n" +
-        "'srcFile' SILL EXISTS!!\n" +
-        "srcFile='%v'\n" +
+      t.Errorf("Error: Attempted Deletion Failed!!\n"+
+        "'srcFile' SILL EXISTS!!\n"+
+        "srcFile='%v'\n"+
         "Error:'%v'\n",
         srcFile, err.Error())
       _ = fh.DeleteDirFile(srcFile)
@@ -419,8 +419,8 @@ func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
     }
 
     if fh.DoesFileExist(srcFile) {
-      t.Errorf("Error: Attempted Deletion Failed!\n" +
-        "'srcFile' STILL EXISTS!\n" +
+      t.Errorf("Error: Attempted Deletion Failed!\n"+
+        "'srcFile' STILL EXISTS!\n"+
         "srcFile='%v'\n", srcFile)
       _ = fh.DeleteDirFile(srcFile)
       _ = fh.DeleteDirFile(setupDestFile)
@@ -431,7 +431,7 @@ func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
   err := fh.CopyFileByIo(setupSrcFile, srcFile)
 
   if err != nil {
-    t.Errorf("Error returned by fh.CopyFileByIo(setupSrcFile, srcFile)\n" +
+    t.Errorf("Error returned by fh.CopyFileByIo(setupSrcFile, srcFile)\n"+
       "setupSrcFile='%v'\nsrcFile='%v'\nError='%v'\n",
       setupSrcFile, srcFile, err.Error())
     _ = fh.DeleteDirFile(srcFile)
@@ -440,8 +440,8 @@ func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
   }
 
   if !fh.DoesFileExist(srcFile) {
-    t.Errorf("Attempt copy operation failed!!\n" +
-      "Source File does NOT EXIST!!\n" +
+    t.Errorf("Attempt copy operation failed!!\n"+
+      "Source File does NOT EXIST!!\n"+
       "srcFile='%v'\n", srcFile)
     _ = fh.DeleteDirFile(srcFile)
     _ = fh.DeleteDirFile(setupDestFile)
@@ -451,7 +451,7 @@ func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
   srcFileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(srcFile)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(srcFile).\n" +
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(srcFile).\n"+
       "srcFile='%v'\nError='%v'\n",
       srcFile, err.Error())
     _ = fh.DeleteDirFile(srcFile)
@@ -462,7 +462,7 @@ func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
   newFMgr, err := srcFileMgr.MoveFileToNewDir(destDir)
 
   if err != nil {
-    t.Errorf("Error returned by srcFileMgr.MoveFileToNewDir(destDir).\n" +
+    t.Errorf("Error returned by srcFileMgr.MoveFileToNewDir(destDir).\n"+
       "destDir='%v'\nError='%v'\n",
       destDir, err.Error())
     _ = fh.DeleteDirFile(srcFile)
@@ -471,7 +471,7 @@ func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
   }
 
   if !fh.DoesFileExist(newFMgr.absolutePathFileName) {
-    t.Errorf("Error: Move Operation Failed!\nDestination File DOES NOT EXIST!\n" +
+    t.Errorf("Error: Move Operation Failed!\nDestination File DOES NOT EXIST!\n"+
       "Destination File (newFMgr)='%v'", newFMgr.absolutePathFileName)
     _ = fh.DeleteDirFile(srcFile)
     _ = fh.DeleteDirFile(setupDestFile)
@@ -481,7 +481,7 @@ func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
   doesExist, err := newFMgr.DoesThisFileExist()
 
   if err != nil {
-    t.Errorf("Non-Path Error returned by newFMgr.DoesThisFileExist().\n" +
+    t.Errorf("Non-Path Error returned by newFMgr.DoesThisFileExist().\n"+
       "newFMgr='%v'\nError='%v'\n",
       newFMgr.absolutePathFileName, err.Error())
     _ = fh.DeleteDirFile(srcFile)
@@ -490,7 +490,7 @@ func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
   }
 
   if !doesExist {
-    t.Errorf("Error: After Move Operation Destination File DOES NOT EXIST!\n" +
+    t.Errorf("Error: After Move Operation Destination File DOES NOT EXIST!\n"+
       "Destination File (newFMgr)='%v'",
       newFMgr.absolutePathFileName)
     _ = fh.DeleteDirFile(srcFile)
@@ -501,8 +501,8 @@ func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
   err = fh.DeleteDirFile(srcFile)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirFile(srcFile)\n" +
-      "srcFile='%v'\n" +
+    t.Errorf("Error returned by fh.DeleteDirFile(srcFile)\n"+
+      "srcFile='%v'\n"+
       "Error='%v'\n",
       srcFile, err.Error())
   }
@@ -510,8 +510,8 @@ func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
   err = fh.DeleteDirFile(setupDestFile)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirFile(setupDestFile)\n" +
-      "setupDestFile='%v'\n" +
+    t.Errorf("Error returned by fh.DeleteDirFile(setupDestFile)\n"+
+      "setupDestFile='%v'\n"+
       "Error='%v'\n",
       setupDestFile, err.Error())
   }
@@ -529,7 +529,7 @@ func TestFileMgr_MoveFileToNewDir_02(t *testing.T) {
     err := fh.DeleteDirFile(setupDestFile)
 
     if err != nil {
-      t.Errorf("Error returned by fh.DeleteDirFile(setupDestFile)\n" +
+      t.Errorf("Error returned by fh.DeleteDirFile(setupDestFile)\n"+
         "setupDestFile='%v'\nError='%v'\n",
         setupDestFile, err.Error())
       _ = fh.DeleteDirFile(srcFile)
@@ -538,7 +538,7 @@ func TestFileMgr_MoveFileToNewDir_02(t *testing.T) {
     }
 
     if fh.DoesFileExist(setupDestFile) {
-      t.Errorf("Error: Destination File STILL EXISTS!\n" +
+      t.Errorf("Error: Destination File STILL EXISTS!\n"+
         "setupDestFile='%v'\n", setupDestFile)
       _ = fh.DeleteDirFile(srcFile)
       _ = fh.DeleteDirFile(setupDestFile)
@@ -551,9 +551,9 @@ func TestFileMgr_MoveFileToNewDir_02(t *testing.T) {
     err := fh.DeleteDirFile(srcFile)
 
     if err != nil {
-      t.Errorf("Error deleting source file\n" +
-        "Error returned by fh.DeleteDirFile(srcFile)\n" +
-        "'srcFile' STILL EXISTS!\n" +
+      t.Errorf("Error deleting source file\n"+
+        "Error returned by fh.DeleteDirFile(srcFile)\n"+
+        "'srcFile' STILL EXISTS!\n"+
         "srcFile='%v'\nError:'%v'\n",
         srcFile, err.Error())
       _ = fh.DeleteDirFile(srcFile)
@@ -562,8 +562,8 @@ func TestFileMgr_MoveFileToNewDir_02(t *testing.T) {
     }
 
     if fh.DoesFileExist(srcFile) {
-      t.Errorf("Error: Attempted Deletion Failed!\n" +
-        "'srcFile'  STILL EXISTS!\n" +
+      t.Errorf("Error: Attempted Deletion Failed!\n"+
+        "'srcFile'  STILL EXISTS!\n"+
         "srcFile='%v'\n", srcFile)
       _ = fh.DeleteDirFile(srcFile)
       _ = fh.DeleteDirFile(setupDestFile)
@@ -574,8 +574,8 @@ func TestFileMgr_MoveFileToNewDir_02(t *testing.T) {
   err := fh.CopyFileByIo(setupSrcFile, srcFile)
 
   if err != nil {
-    t.Errorf("Error returned by fh.CopyFileByIo(setupSrcFile, srcFile)\n" +
-      "setupSrcFile='%v'\n" +
+    t.Errorf("Error returned by fh.CopyFileByIo(setupSrcFile, srcFile)\n"+
+      "setupSrcFile='%v'\n"+
       "srcFile='%v'\n",
       setupSrcFile,
       srcFile)
@@ -585,8 +585,8 @@ func TestFileMgr_MoveFileToNewDir_02(t *testing.T) {
   }
 
   if !fh.DoesFileExist(srcFile) {
-    t.Errorf("Copy operation FAILED!\n" +
-      "Destination file DOES NOT EXIST!!\n" +
+    t.Errorf("Copy operation FAILED!\n"+
+      "Destination file DOES NOT EXIST!!\n"+
       "Destination file='%v'\n", srcFile)
     _ = fh.DeleteDirFile(srcFile)
     _ = fh.DeleteDirFile(setupDestFile)
@@ -596,7 +596,7 @@ func TestFileMgr_MoveFileToNewDir_02(t *testing.T) {
   srcFileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(srcFile)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}." +
+    t.Errorf("Error returned from FileMgr{}."+
       "NewFromPathFileNameExtStr(srcFile).\n"+
       "srcFile='%v'\nError='%v'\n",
       srcFile, err.Error())
@@ -618,8 +618,8 @@ func TestFileMgr_MoveFileToNewDir_02(t *testing.T) {
   err = fh.DeleteDirFile(srcFile)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirFile(srcFile)\n" +
-      "srcFile='%v'\n" +
+    t.Errorf("Error returned by fh.DeleteDirFile(srcFile)\n"+
+      "srcFile='%v'\n"+
       "Error='%v'\n",
       srcFile, err.Error())
   }
@@ -627,8 +627,8 @@ func TestFileMgr_MoveFileToNewDir_02(t *testing.T) {
   err = fh.DeleteDirFile(setupDestFile)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirFile(setupDestFile)\n" +
-      "setupDestFile='%v'\n" +
+    t.Errorf("Error returned by fh.DeleteDirFile(setupDestFile)\n"+
+      "setupDestFile='%v'\n"+
       "Error='%v'\n",
       setupDestFile, err.Error())
   }
@@ -642,7 +642,7 @@ func TestFileMgr_MoveFileToNewDir_03(t *testing.T) {
   srcFileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(srcFile)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}." +
+    t.Errorf("Error returned from FileMgr{}."+
       "NewFromPathFileNameExtStr(srcFile).\n"+
       "srcFile='%v'\nError='%v'\n",
       srcFile, err.Error())
@@ -667,7 +667,7 @@ func TestFileMgr_MoveFileToNewDir_04(t *testing.T) {
   srcFileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(srcFile)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(srcFile).\n" +
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(srcFile).\n"+
       "srcFile='%v'\nError='%v'\n",
       srcFile, err.Error())
     return
@@ -696,14 +696,26 @@ func TestFileMgr_MoveFileToNewDir_05(t *testing.T) {
     return
   }
 
-  _, err = srcFileMgr.MoveFileToNewDir(destDir)
+  targetFMgr, err := srcFileMgr.MoveFileToNewDir(destDir)
 
-  if err == nil {
-    t.Error("Expected error return from  srcFileMgr.MoveFileToNewDir(destDir)\n" +
-      "because destDir does NOT exist.\n" +
-      "However, NO ERROR WAS RETURNED!\n")
+  if err != nil {
+    t.Errorf("Error returned by srcFileMgr.MoveFileToNewDir(destDir)\n"+
+      "destDir='%v'\nError='%v'\n", destDir, err.Error())
+    _ = fh.DeleteDirPathAll(destDir)
+    return
   }
 
+  if !targetFMgr.DoesFileExist() {
+    t.Errorf("Error: After 'move' operation, Target File DOES NOT EXIST!\n"+
+      "destDir='%v'\n", destDir)
+  }
+
+  err = fh.DeleteDirPathAll(destDir)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirPathAll(destDir)\n"+
+      "destDir='%v'\nError='%v'\n", destDir, err.Error())
+  }
 }
 
 func TestFileMgr_MoveFileToNewDir_06(t *testing.T) {
@@ -750,26 +762,26 @@ func TestFileMgr_New_01(t *testing.T) {
   fileMgr, err := FileMgr{}.New(commonDir)
 
   if err != nil {
-    t.Errorf("Received Error on FileMgr{}.New(commonDir)\n" +
+    t.Errorf("Received Error on FileMgr{}.New(commonDir)\n"+
       "Error='%v'\n",
       err.Error())
     return
   }
 
   if fileMgr.fileName != fileName {
-    t.Errorf("Expected File Name='%v'\n" +
+    t.Errorf("Expected File Name='%v'\n"+
       "Instead, File Name='%v'\n",
       fileName, fileMgr.fileName)
   }
 
   if fileMgr.fileExt != extName {
-    t.Errorf("Expected File Extension='%v'\n" +
+    t.Errorf("Expected File Extension='%v'\n"+
       "Instead, File Extension='%v'",
       extName, fileMgr.fileExt)
   }
 
   if fileMgr.fileNameExt != fileNameExt {
-    t.Errorf("Expected File Name + Extension='%v'\n" +
+    t.Errorf("Expected File Name + Extension='%v'\n"+
       "Instead, File Name + Extension='%v'\n",
       fileNameExt, fileMgr.fileNameExt)
   }
@@ -791,7 +803,7 @@ func TestFileMgr_New_01(t *testing.T) {
 
   if !fileMgr.isFileExtPopulated {
     t.Error("Expected fileMgr.isFileExtPopulated=='true'.\n" +
-      "Instead, fileMgr.isFileExtPopulated='false'.\n" )
+      "Instead, fileMgr.isFileExtPopulated='false'.\n")
   }
 
   if !fileMgr.isAbsolutePathFileNamePopulated {
@@ -814,26 +826,26 @@ func TestFileMgr_New_02(t *testing.T) {
   fileMgr, err := FileMgr{}.New(commonDir)
 
   if err != nil {
-    t.Errorf("Error returned by FileMgr{}.New(commonDir)\n" +
+    t.Errorf("Error returned by FileMgr{}.New(commonDir)\n"+
       "commonDir='%v'\nError='%v'\n",
       commonDir, err.Error())
     return
   }
 
   if fileMgr.fileName != fileName {
-    t.Errorf("Expected File Name='%v'.\n" +
+    t.Errorf("Expected File Name='%v'.\n"+
       "Instead, File Name='%v'\n",
       fileName, fileMgr.fileName)
   }
 
   if fileMgr.fileExt != extName {
-    t.Errorf("Expected File Extension='%v'\n" +
+    t.Errorf("Expected File Extension='%v'\n"+
       "Instead, File Extension='%v'\n",
       extName, fileMgr.fileExt)
   }
 
   if fileMgr.fileNameExt != fileNameExt {
-    t.Errorf("Expected File Name + Extension='%v'.\n" +
+    t.Errorf("Expected File Name + Extension='%v'.\n"+
       "Instead, File Name + Extension='%v'.\n",
       fileNameExt, fileMgr.fileNameExt)
   }
@@ -899,26 +911,26 @@ func TestFileMgr_NewFromPathFileNameExtStr_01(t *testing.T) {
   fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(commonDir)
 
   if err != nil {
-    t.Errorf("Error returned by FileMgr{}.NewFromPathFileNameExtStr(commonDir)\n" +
+    t.Errorf("Error returned by FileMgr{}.NewFromPathFileNameExtStr(commonDir)\n"+
       "commonDir='%v'\nError='%v'\n",
       commonDir, err)
     return
   }
 
   if fileMgr.fileName != fileName {
-    t.Errorf("Expected File Name='%v'.\n" +
+    t.Errorf("Expected File Name='%v'.\n"+
       "Instead, File Name='%v'\n",
       fileName, fileMgr.fileName)
 
   }
 
   if fileMgr.fileExt != extName {
-    t.Errorf("Expected File Extension='%v'\n" +
+    t.Errorf("Expected File Extension='%v'\n"+
       "Instead, File Extension='%v'\n", extName, fileMgr.fileExt)
   }
 
   if fileMgr.fileNameExt != fileNameExt {
-    t.Errorf("Expected File Name + Extension='%v'.\n" +
+    t.Errorf("Expected File Name + Extension='%v'.\n"+
       "Instead, File Name + Extension='%v'\n",
       fileNameExt, fileMgr.fileNameExt)
   }
@@ -959,26 +971,26 @@ func TestFileMgr_NewFromPathFileNameExtStr_02(t *testing.T) {
   fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(path)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}." +
+    t.Errorf("Error returned from FileMgr{}."+
       "NewFromPathFileNameExtStr(path)\n"+
       "path=='%v'\nError='%v'",
       path, err)
   }
 
   if eFileNameExt != fileMgr.fileNameExt {
-    t.Errorf("Expected extracted fileNameExt=='%v'.\n" +
+    t.Errorf("Expected extracted fileNameExt=='%v'.\n"+
       "Instead fileNameExt=='%v'\n",
       eFileNameExt, fileMgr.fileNameExt)
   }
 
   if fileMgr.fileName != "filehelperexamples" {
-    t.Errorf("Expected fileMgr.fileName=='filehelperexamples'.\n" +
+    t.Errorf("Expected fileMgr.fileName=='filehelperexamples'.\n"+
       "Instead, fileMgr.fileName== %v\n",
       fileMgr.fileName)
   }
 
   if fileMgr.fileExt != ".go" {
-    t.Errorf("Expected fileMgr.fileExt=='.go'\n" +
+    t.Errorf("Expected fileMgr.fileExt=='.go'\n"+
       "Instead, fileMgr.fileExt== %v",
       fileMgr.fileExt)
   }
@@ -1035,43 +1047,43 @@ func TestFileMgr_NewFromPathFileNameExtStr_04(t *testing.T) {
   }
 
   if eFileNameExt != fileMgr.fileNameExt {
-    t.Errorf("Expected extracted fileNameExt=='%v'\n" +
+    t.Errorf("Expected extracted fileNameExt=='%v'\n"+
       "Instead fileNameExt=='%v'\n",
       eFileNameExt, fileMgr.fileNameExt)
   }
 
   if "filehelperexamples" != fileMgr.fileName {
-    t.Errorf("Expected fileMgr.fileName== '%v'\n" +
+    t.Errorf("Expected fileMgr.fileName== '%v'\n"+
       "Instead fileMgr.fileName== '%v'\n",
       "filehelperexamples", fileMgr.fileName)
   }
 
   if ".go" != fileMgr.fileExt {
-    t.Errorf("Expected fileMgr.fileExt=='.go'\n" +
+    t.Errorf("Expected fileMgr.fileExt=='.go'\n"+
       "Instead, fileMgr.fileExt== %v\n",
       fileMgr.fileExt)
   }
 
   if !fileMgr.dMgr.isPathPopulated {
-    t.Errorf("Expected 'fileMgr.dMgr.isPathPopulated==true'\n" +
+    t.Errorf("Expected 'fileMgr.dMgr.isPathPopulated==true'\n"+
       "Instead, fileMgr.isPathPopulated==%v\n",
       fileMgr.dMgr.isPathPopulated)
   }
 
   if !fileMgr.doesAbsolutePathFileNameExist {
-    t.Errorf("Expected 'fileMgr.doesAbsolutePathFileNameExist==true'\n" +
+    t.Errorf("Expected 'fileMgr.doesAbsolutePathFileNameExist==true'\n"+
       "Instead fileMgr.doesAbsolutePathFileNameExist=='%v'\n",
       fileMgr.dMgr.isPathPopulated)
   }
 
   if !fileMgr.isAbsolutePathFileNamePopulated {
-    t.Errorf("Expected fileMgr.isAbsolutePathFileNamePopulated=='true'.\n" +
+    t.Errorf("Expected fileMgr.isAbsolutePathFileNamePopulated=='true'.\n"+
       "Instead, fileMgr.isAbsolutePathFileNamePopulated=='%v'\n",
       fileMgr.isAbsolutePathFileNamePopulated)
   }
 
   if !fileMgr.dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected fileMgr.doesAbsolutePathExist=='true'\n" +
+    t.Errorf("Expected fileMgr.doesAbsolutePathExist=='true'\n"+
       "Instead, it is '%v'\n",
       fileMgr.dMgr.doesAbsolutePathExist)
   }
@@ -1089,8 +1101,8 @@ func TestFileMgr_NewFromFileInfo_01(t *testing.T) {
   absPath, err := fh.MakeAbsolutePath(adjustedPath)
 
   if err != nil {
-    t.Errorf("Error returned from fh.MakeAbsolutePath(" +
-      "adjustedPath).\n" +
+    t.Errorf("Error returned from fh.MakeAbsolutePath("+
+      "adjustedPath).\n"+
       "adjustedPath='%v'\nError='%v'\n",
       adjustedPath, err.Error())
     return
@@ -1102,7 +1114,7 @@ func TestFileMgr_NewFromFileInfo_01(t *testing.T) {
   info, err := fh.GetFileInfo(absPathFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetFileInfo(absPathFileNameExt).\n" +
+    t.Errorf("Error returned from fh.GetFileInfo(absPathFileNameExt).\n"+
       "absPathFileNameExt='%v'\nError='%v'\n",
       absPathFileNameExt, err.Error())
     return
@@ -1111,39 +1123,39 @@ func TestFileMgr_NewFromFileInfo_01(t *testing.T) {
   fileMgr, err := FileMgr{}.NewFromFileInfo(absPath, info)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromFileInfo(absPath, info).\n" +
+    t.Errorf("Error returned from FileMgr{}.NewFromFileInfo(absPath, info).\n"+
       "absPath='%v'\ninfo.Name()='%v'\nError='%v'\n",
       absPath, info.Name(), err.Error())
     return
   }
 
   if fileMgr.fileNameExt != expectedFileNameExt {
-    t.Errorf("Expected extracted fileMgr.fileNameExt=='%v'\n" +
+    t.Errorf("Expected extracted fileMgr.fileNameExt=='%v'\n"+
       "Instead fileMgr.fileNameExt='%v'\n",
       expectedFileNameExt, fileMgr.fileNameExt)
   }
 
   if fileMgr.fileName != expectedFileName {
-    t.Errorf("Expected fileMgr.fileName=='%v'\n" +
+    t.Errorf("Expected fileMgr.fileName=='%v'\n"+
       "Instead fileMgr.fileName=='%v'\n",
       expectedFileName, fileMgr.fileName)
   }
 
   if fileMgr.fileExt != expectedExt {
-    t.Errorf("Expected fileMgr.fileExt=='%v'\n" +
+    t.Errorf("Expected fileMgr.fileExt=='%v'\n"+
       "Instead fileMgr.fileExt=='%v'\n",
       expectedExt, fileMgr.fileName)
   }
 
   if !fileMgr.dMgr.isPathPopulated {
-    t.Errorf("Expected 'fileMgr.isPathPopulated=='true'\n" +
+    t.Errorf("Expected 'fileMgr.isPathPopulated=='true'\n"+
       "Instead fileMgr.isPathPopulated=='%v'",
       fileMgr.dMgr.isPathPopulated)
   }
 
   if !fileMgr.doesAbsolutePathFileNameExist {
-    t.Errorf("Expected 'fileMgr.doesAbsolutePathFileNameExist" +
-      "==true'\n" +
+    t.Errorf("Expected 'fileMgr.doesAbsolutePathFileNameExist"+
+      "==true'\n"+
       "Instead fileMgr.doesAbsolutePathFileNameExist=='%v'",
       fileMgr.doesAbsolutePathFileNameExist)
   }
@@ -1165,7 +1177,7 @@ func TestFileMgr_NewFromFileInfo_01(t *testing.T) {
   }
 
   if fileMgr.actualFileInfo.Name() != expectedFileNameExt {
-    t.Errorf("ERROR: Expected fileMgr.actualFileInfo.Name()=='%v'.\n" +
+    t.Errorf("ERROR: Expected fileMgr.actualFileInfo.Name()=='%v'.\n"+
       "Instead, fileMgr.actualFileInfo.Name()=='%v'.", expectedFileNameExt, fileMgr.actualFileInfo.Name())
   }
 
@@ -1180,7 +1192,7 @@ func TestFileMgr_NewFromFileInfo_02(t *testing.T) {
   absPath, err := fh.MakeAbsolutePath(adjustedPath)
 
   if err != nil {
-    t.Errorf("Error returned from fh.MakeAbsolutePath(adjustedPath).\n" +
+    t.Errorf("Error returned from fh.MakeAbsolutePath(adjustedPath).\n"+
       "adjustedPath='%v'\nError='%v'\n",
       adjustedPath, err.Error())
     return
@@ -1251,7 +1263,7 @@ func TestFileMgr_NewFromFileInfo_03(t *testing.T) {
   }
 
   if expectedFilePath != nFMgr.GetAbsolutePathFileName() {
-    t.Errorf("ERROR: Expected File Path='%v'.\n" +
+    t.Errorf("ERROR: Expected File Path='%v'.\n"+
       "Instead, File Path='%v'\n",
       expectedFilePath, nFMgr.GetAbsolutePathFileName())
   }
@@ -1281,7 +1293,7 @@ func TestFileMgr_NewFromFileInfo_04(t *testing.T) {
   info, err := fh.GetFileInfo(absPathFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetFileInfo(absPathFileNameExt).\n" +
+    t.Errorf("Error returned from fh.GetFileInfo(absPathFileNameExt).\n"+
       "absPathFileNameExt='%v'\nError='%v'\n",
       absPathFileNameExt, err.Error())
     return
@@ -1310,7 +1322,7 @@ func TestFileMgr_NewFromDirMgrFileNameExt_01(t *testing.T) {
   dMgr, err := DirMgr{}.New(adjustedPath)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr" +
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr"+
       "(adjustedPath).\nadjustedPath='%v'\nError='%v'\n",
       adjustedPath, err.Error())
     return
@@ -1320,7 +1332,7 @@ func TestFileMgr_NewFromDirMgrFileNameExt_01(t *testing.T) {
     FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(" +
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt("+
       "dMgr, expectedFileNameExt).\n"+
       "dMgr='%v'\nrawFileNameExt='%v'\nError='%v'\n",
       dMgr.GetAbsolutePath(), expectedFileNameExt, err.Error())
@@ -1330,7 +1342,7 @@ func TestFileMgr_NewFromDirMgrFileNameExt_01(t *testing.T) {
   absPath, err := fh.MakeAbsolutePath(adjustedPath)
 
   if err != nil {
-    t.Errorf("Error returned from fh.MakeAbsolutePath(adjustedPath).\n" +
+    t.Errorf("Error returned from fh.MakeAbsolutePath(adjustedPath).\n"+
       "adjustedPath='%v'\nError='%v'\n",
       adjustedPath, err.Error())
     return
@@ -1339,7 +1351,7 @@ func TestFileMgr_NewFromDirMgrFileNameExt_01(t *testing.T) {
   expectedAbsPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
 
   if expectedAbsPathFileNameExt != fMgr.absolutePathFileName {
-    t.Errorf("Expected absolutePathFileName='%v'.\n" +
+    t.Errorf("Expected absolutePathFileName='%v'.\n"+
       "Instead, absolutePathFileName='%v'\n",
       expectedAbsPathFileNameExt, fMgr.absolutePathFileName)
   }
@@ -1357,7 +1369,7 @@ func TestFileMgr_NewFromDirMgrFileNameExt_02(t *testing.T) {
   dMgr, err := DirMgr{}.New(adjustedPath)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr" +
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr"+
       "(adjustedPath).\n"+
       "adjustedPath='%v'\nError='%v'\n",
       adjustedPath, err.Error())
@@ -1368,7 +1380,7 @@ func TestFileMgr_NewFromDirMgrFileNameExt_02(t *testing.T) {
     FileMgr{}.NewFromDirMgrFileNameExt(dMgr, rawFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt" +
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt"+
       "(dMgr, rawFileNameExt).\n"+
       "dMgr='%v'\nrawFileNameExt='%v'\nError='%v'\n",
       dMgr.GetAbsolutePath(), rawFileNameExt, err.Error())
@@ -1386,7 +1398,7 @@ func TestFileMgr_NewFromDirMgrFileNameExt_02(t *testing.T) {
     absPath + string(os.PathSeparator) + expectedFileNameExt
 
   if expectedAbsPathFileNameExt != fMgr.absolutePathFileName {
-    t.Errorf("Expected absolutePathFileName='%v'.\n" +
+    t.Errorf("Expected absolutePathFileName='%v'.\n"+
       "Instead, absolutePathFileName='%v'\n",
       expectedAbsPathFileNameExt, fMgr.absolutePathFileName)
   }
@@ -1402,7 +1414,7 @@ func TestFileMgr_NewFromDirMgrFileNameExt_03(t *testing.T) {
   absolutePath, err := fh.MakeAbsolutePath(rawPath)
 
   if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath(rawPath).\n" +
+    t.Errorf("Error returned by fh.MakeAbsolutePath(rawPath).\n"+
       "rawPath='%v'\nError='%v'\n",
       rawPath, err.Error())
   }
@@ -1439,7 +1451,7 @@ func TestFileMgr_NewFromDirMgrFileNameExt_04(t *testing.T) {
   dMgr, err := DirMgr{}.New(adjustedPath)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr" +
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr"+
       "(adjustedPath).\n"+
       "adjustedPath='%v'\nError='%v'\n",
       adjustedPath, err.Error())
@@ -1472,7 +1484,7 @@ func TestFileMgr_NewFromDirMgrFileNameExt_05(t *testing.T) {
   dMgr, err := DirMgr{}.New(adjustedPath)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}." +
+    t.Errorf("Error returned from DirMgr{}."+
       "NewFromPathFileNameExtStr(adjustedPath).\n"+
       "adjustedPath='%v'\nError='%v'\n",
       adjustedPath, err.Error())
@@ -1502,7 +1514,7 @@ func TestFileMgr_NewFromDirStrFileNameStr_01(t *testing.T) {
   expectedAbsPath, err := fh.MakeAbsolutePath(expectedPath)
 
   if err != nil {
-    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPath).\n" +
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPath).\n"+
       "expectedPath='%v'\nError='%v'\n",
       expectedPath, err.Error())
     return
@@ -1512,39 +1524,39 @@ func TestFileMgr_NewFromDirStrFileNameStr_01(t *testing.T) {
     FileMgr{}.NewFromDirStrFileNameStr(rawPath, expectedFileNameExt)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromDirStrFileNameStr(" +
-      "rawPath, expectedFileNameExt).\n" +
+    t.Errorf("Error returned from FileMgr{}.NewFromDirStrFileNameStr("+
+      "rawPath, expectedFileNameExt).\n"+
       "rawPath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
       rawPath, expectedFileNameExt, err.Error())
     return
   }
 
   if fileMgr.fileNameExt != expectedFileNameExt {
-    t.Errorf("Expected extracted fileMgr.fileNameExt==%v.\n" +
+    t.Errorf("Expected extracted fileMgr.fileNameExt==%v.\n"+
       "Instead fileMgr.fileNameExt='%v'\n",
       expectedFileNameExt, fileMgr.fileNameExt)
   }
 
   if fileMgr.fileName != expectedFileName {
-    t.Errorf("Expected fileMgr.fileName== '%v'\n" +
+    t.Errorf("Expected fileMgr.fileName== '%v'\n"+
       "Instead fileMgr.fileName== '%v'\n",
       expectedFileName, fileMgr.fileName)
   }
 
   if fileMgr.fileExt != expectedExt {
-    t.Errorf("Expected fileMgr.fileExt== '%v'\n" +
+    t.Errorf("Expected fileMgr.fileExt== '%v'\n"+
       "Instead got: fileMgr.fileExt=='%v'\n",
       expectedExt, fileMgr.fileName)
   }
 
   if !fileMgr.dMgr.isPathPopulated {
-    t.Errorf("Expected 'fileMgr.isPathPopulated==true'.\n" +
+    t.Errorf("Expected 'fileMgr.isPathPopulated==true'.\n"+
       "Instead fileMgr.isPathPopulated=='%v'\n",
       fileMgr.dMgr.isPathPopulated)
   }
 
   if !fileMgr.doesAbsolutePathFileNameExist {
-    t.Errorf("Expected fileMgr.doesAbsolutePathFileNameExist" +
+    t.Errorf("Expected fileMgr.doesAbsolutePathFileNameExist"+
       "=='true'\nInstead fileMgr.doesAbsolutePathFileNameExist=='%v'\n",
       fileMgr.dMgr.isPathPopulated)
   }
@@ -1565,19 +1577,19 @@ func TestFileMgr_NewFromDirStrFileNameStr_01(t *testing.T) {
   }
 
   if fileMgr.actualFileInfo.Name() != expectedFileNameExt {
-    t.Errorf("Expected fileMgr.actualFileInfo.Name()=='%v'.\n" +
+    t.Errorf("Expected fileMgr.actualFileInfo.Name()=='%v'.\n"+
       "Instead fileMgr.actualFileInfo.Name()=='%v'.\n",
       expectedFileNameExt, fileMgr.actualFileInfo.Name())
   }
 
   if expectedAbsPath != fileMgr.dMgr.absolutePath {
-    t.Errorf("Expected absolutePath='%v'.\n" +
+    t.Errorf("Expected absolutePath='%v'.\n"+
       "Instead, absolutePath='%v'\n",
       expectedAbsPath, fileMgr.dMgr.absolutePath)
   }
 
   if expectedPath != fileMgr.dMgr.path {
-    t.Errorf("Expected path='%v'.\n" +
+    t.Errorf("Expected path='%v'.\n"+
       "Instead, path='%v'\n",
       expectedPath, fileMgr.dMgr.path)
   }
