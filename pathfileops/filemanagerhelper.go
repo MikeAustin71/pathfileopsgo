@@ -833,38 +833,10 @@ func (fMgrHlpr *fileMgrHelper) deleteFile(
     return err
   }
 
-  /*
-    for i := 0; i < 3; i++ {
-
-      err2 := os.Remove(fMgr.absolutePathFileName)
-
-      if err2 != nil {
-        err = fmt.Errorf(ePrefix+
-          "- os.Remove(fMgr.absolutePathFileName) "+
-          "returned an error.\n"+
-          "absolutePathFileName='%v'\nError='%v'",
-          fMgr.absolutePathFileName, err2.Error())
-      } else {
-        err = nil
-        break
-      }
-
-      time.Sleep(50 * time.Millisecond)
-    }
-
-    if err != nil {
-      return err
-    }
-  */
-
-  err = os.Remove(fMgr.absolutePathFileName)
+  err = fMgrHlpr.lowLevelDeleteFile(fMgr, ePrefix)
 
   if err != nil {
-    return fmt.Errorf(ePrefix+
-      "\nos.Remove(fMgr.absolutePathFileName) "+
-      "returned an error.\n"+
-      "absolutePathFileName='%v'\nError='%v'",
-      fMgr.absolutePathFileName, err.Error())
+    return err
   }
 
   pathFileNameDoesExist,
@@ -1067,6 +1039,47 @@ func (fMgrHlpr *fileMgrHelper) lowLevelCloseFile(
   fMgr.buffBytesWritten = 0
 
   return fMgrHlpr.consolidateErrors(errs)
+}
+
+func (fMgrHlpr *fileMgrHelper) lowLevelDeleteFile(
+  fMgr *FileMgr,
+  ePrefix string) error {
+
+  ePrefixCurrMethod := "fileMgrHelper.lowLevelDeleteFile() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  if fMgr == nil {
+    return errors.New(ePrefix +
+      "\nError: Input parameter 'fMgr' is a nil pointer!\n")
+  }
+
+  var err error
+
+  for i := 0; i < 3; i++ {
+
+    err2 := os.Remove(fMgr.absolutePathFileName)
+
+    if err2 != nil {
+      err = fmt.Errorf(ePrefix+
+        "\nError: os.Remove(fMgr.absolutePathFileName) "+
+        "returned an error.\n"+
+        "fMgr='%v'\nError='%v'",
+        fMgr.absolutePathFileName, err2.Error())
+    } else {
+
+      return nil
+    }
+
+    time.Sleep(50 * time.Millisecond)
+  }
+
+  return err
 }
 
 // lowLevelOpenFile - Helper method which is designed
