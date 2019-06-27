@@ -452,7 +452,7 @@ func TestFileMgr_MoveFileToNewDirMgr_04(t *testing.T) {
   _, err = srcFileMgr.MoveFileToNewDirMgr(destDMgr)
 
   if err == nil {
-    t.Error("Expected error return from srcFileMgr.MoveFileToNewDirMgr(dMgr)\n" +
+    t.Error("Expected error return from srcFileMgr.MoveFileToNewDirMgr(destDMgr)\n" +
       "because source file does NOT exist.\n" +
       "However, NO ERROR WAS RETURNED!\n")
   }
@@ -564,13 +564,19 @@ func TestFileMgr_MoveFileToNewDirMgr_05(t *testing.T) {
 
   _, err = srcFileMgr.MoveFileToNewDirMgr(destDMgr)
 
-  if err == nil {
-    t.Error("Expected error return from srcFileMgr.MoveFileToNewDirMgr(destDMgr)\n" +
-      "because dMgr does NOT exist.\n" +
-      "However, NO ERROR WAS RETURNED!\n")
+  if err != nil {
+    t.Errorf("Error returned by srcFileMgr.MoveFileToNewDirMgr(destDMgr)\n"+
+      "destDMgr='%v'\nError='%v'\n", destDMgr.GetAbsolutePath(), err.Error())
   }
 
-  _ = fh.DeleteDirPathAll(destDir)
+  err = fh.DeleteDirPathAll(destDir)
+
+  if err != nil {
+    t.Errorf("Attempted deletion of setup directory Failed!\n"+
+      "Error returned by fh.DeleteDirPathAll(destDir)\n"+
+      "destDir='%v'\nError='%v'\n", destDir, err.Error())
+  }
+
 }
 
 func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
@@ -1035,15 +1041,27 @@ func TestFileMgr_MoveFileToNewDir_04(t *testing.T) {
     t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(srcFile).\n"+
       "srcFile='%v'\nError='%v'\n",
       srcFile, err.Error())
+    _ = fh.DeleteDirFile(srcFile)
+    _ = fh.DeleteDirFile(setupDestFile)
     return
   }
 
-  _, err = srcFileMgr.MoveFileToNewDir(destDir)
+  targetFMgr, err := srcFileMgr.MoveFileToNewDir(destDir)
 
-  if err == nil {
-    t.Error("Expected error return from srcFileMgr.MoveFileToNewDir(destDir)\n" +
-      "because source file does NOT exist.\n" +
-      "However, NO ERROR WAS RETURNED!\n")
+  if err != nil {
+    t.Errorf("Error returned by srcFileMgr.MoveFileToNewDir(destDir)\n"+
+      "destDir='%v'\nError='%v'\n", destDir, err.Error())
+    _ = fh.DeleteDirFile(srcFile)
+    _ = fh.DeleteDirFile(setupDestFile)
+    return
+  }
+
+  if !targetFMgr.DoesFileExist() {
+    t.Errorf("Error: After Move Operation Destination File DOES NOT EXIST!\n"+
+      "Destination File='%v'\n", targetFMgr.GetAbsolutePath())
+    _ = fh.DeleteDirFile(srcFile)
+    _ = fh.DeleteDirFile(setupDestFile)
+    return
   }
 
   err = fh.DeleteDirFile(srcFile)

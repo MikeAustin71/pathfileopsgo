@@ -2093,100 +2093,48 @@ func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (FileMgr, error) {
 // The current file identified by the current FileMgr object will
 // be DELETED!
 //
-// The new file located in the new directory will be returned in the return
-// parameter 'newFMgr'.
+// The new file located in the new directory will be returned as a type
+// 'FileMgr'.
 //
 // If the input parameter 'dMgr' does not contain a path which currently
-// exists, an error will be returned.
+// exists, it will be created.
 //
-func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (newFMgr FileMgr, err error) {
+func (fMgr *FileMgr) MoveFileToNewDirMgr(dMgr DirMgr) (FileMgr, error) {
+
   ePrefix := "FileMgr.MoveFileToNewDirMgr() "
-  newFMgr = FileMgr{}
-  err = nil
+
+  var err error
+  var targetFMgr FileMgr
 
   err2 := dMgr.IsDirMgrValid("")
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error: Input parameter 'dMgr' reports as INVALID! "+
+    return FileMgr{}, fmt.Errorf(ePrefix+"Error: Input parameter 'dMgr' is INVALID! "+
       "Error='%v'", err2.Error())
-    return newFMgr, err
   }
 
   fMgr.dataMutex.Lock()
 
-  fMgrHelpr := fileMgrHelper{}
-  filePathDoesExist := false
+  targetFile := dMgr.GetAbsolutePathWithSeparator() + fMgr.fileNameExt
 
-  filePathDoesExist,
-    err = fMgrHelpr.doesFileMgrPathFileExist(fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
-
-  fMgr.dataMutex.Unlock()
-
-  if err != nil {
-    return newFMgr, err
-  }
-
-  if !filePathDoesExist {
-    err = fmt.Errorf(ePrefix+
-      "Error: The source file identified by the "+
-      "current FileMgr object DOES NOT EXIST!\n"+
-      "source file (FileMgr)='%v'\n",
-      fMgr.absolutePathFileName)
-    return newFMgr, err
-  }
-
-  newFMgr = FileMgr{}
-
-  filePathDoesExist, err = dMgr.DoesThisDirectoryExist()
-
-  if err != nil {
-    return newFMgr, err
-  }
-
-  if !filePathDoesExist {
-
-    err = fmt.Errorf(ePrefix+
-      "Error: Destination (dMgr) path DOES NOT EXIST!.\n"+
-      "dMgr='%v'\n", dMgr.absolutePath)
-    return newFMgr, err
-  }
-
-  destPathFileName := dMgr.GetAbsolutePathWithSeparator() + fMgr.fileNameExt
-
-  fMgr.dataMutex.Lock()
-
-  fh := FileHelper{}
-
-  err2 = fh.MoveFile(fMgr.absolutePathFileName, destPathFileName)
+  targetFMgr, err2 = FileMgr{}.New(targetFile)
 
   if err2 != nil {
-    newFMgr = FileMgr{}
     err = fmt.Errorf(ePrefix+
-      "Error returned from "+
-      "fh.MoveFile(fMgr.absolutePathFileName, destPathFileName).\n"+
-      "fMgr.absolutePathFileName='%v'\ndestPathFileName='%v'\nError='%v'\n",
-      fMgr.absolutePathFileName, destPathFileName, err2.Error())
+      "Error returned by FileMgr{}.New(targetFile)\n"+
+      "targetFile='%v'\nError='%v'\n", targetFile, err2.Error())
 
-  } else {
-
-    newFMgr, err2 = FileMgr{}.NewFromPathFileNameExtStr(destPathFileName)
-
-    if err2 != nil {
-      newFMgr = FileMgr{}
-      err = fmt.Errorf(ePrefix+
-        "Error returned by FileMgr{}.NewFromPathFileNameExtStr(destPathFileName). destPathFileName='%v' "+
-        "Error='%v'", destPathFileName, err2.Error())
-    } else {
-      err = nil
-    }
+    fMgr.dataMutex.Unlock()
+    return FileMgr{}, err
   }
+
+  fMgrHlpr := fileMgrHelper{}
+
+  err = fMgrHlpr.moveFile(fMgr, &targetFMgr, ePrefix)
 
   fMgr.dataMutex.Unlock()
 
-  return newFMgr, err
+  return targetFMgr, err
 }
 
 // New - Creates a new File Manager ('FileMgr') instance. This method receives an
