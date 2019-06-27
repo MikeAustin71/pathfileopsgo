@@ -2035,6 +2035,76 @@ func (fMgr *FileMgr) IsInitialized() bool {
   return fMgr.isInitialized
 }
 
+// MoveFileToFileMgr - This method will move the file identified
+// by the current FileMgr to a new path and file name specified
+// by the input parameter 'destinationFMgr' which is of type
+// 'FileMgr'.
+//
+// IMPORTANT:
+//
+// The file identified by the current FileMgr object will be
+// DELETED!
+//
+// The new file is defined by input parameter 'destinationFMgr'.
+//
+// If the input parameter 'destinationFMgr' contains a directory path
+// which currently does NOT exist, it will be created.
+//
+func (fMgr *FileMgr) MoveFileToFileMgr(destinationFMgr FileMgr) error {
+
+  ePrefix := "FileMgr.MoveFileToFileMgr() "
+  var err error
+
+  fMgrHlpr := fileMgrHelper{}
+
+  fMgr.dataMutex.Lock()
+
+  err = fMgrHlpr.moveFile(fMgr, &destinationFMgr, ePrefix)
+
+  fMgr.dataMutex.Unlock()
+
+  return err
+}
+
+// MoveFileToFileStr - This method will move the file identified
+// by the current FileMgr to a new path and file name contained
+// in the input parameter 'pathFileNameExt' which is of type
+// string.
+//
+// IMPORTANT:
+//
+// The file identified by the current FileMgr object will be
+// DELETED!
+//
+// The new file is defined by input parameter 'pathFileNameExt'.
+//
+// If the input parameter 'pathFileNameExt' contains a directory path
+// which currently does NOT exist, it will be created.
+//
+func (fMgr *FileMgr) MoveFileToFileStr(pathFileNameExt string) (FileMgr, error) {
+
+  ePrefix := "FileMgr.MoveFileToFileStr() "
+  var err error
+
+  targetFMgr, err := FileMgr{}.New(pathFileNameExt)
+
+  if err != nil {
+    return FileMgr{},
+      fmt.Errorf("Error returned by FileMgr{}.New(pathFileNameExt)\n"+
+        "pathFileName='%v'\nError='%v'\n", pathFileNameExt, err.Error())
+  }
+
+  fMgrHlpr := fileMgrHelper{}
+
+  fMgr.dataMutex.Lock()
+
+  err = fMgrHlpr.moveFile(fMgr, &targetFMgr, ePrefix)
+
+  fMgr.dataMutex.Unlock()
+
+  return targetFMgr, err
+}
+
 // MoveFileToNewDir - This method will move the current file
 // identified by this FileMgr object to a new path designated
 // by input parameter string, 'dirPath'.

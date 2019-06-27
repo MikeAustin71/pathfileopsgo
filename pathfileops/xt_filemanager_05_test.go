@@ -5,6 +5,269 @@ import (
   "testing"
 )
 
+func TestFileMgr_MoveFileToFileMgr_01(t *testing.T) {
+  fh := FileHelper{}
+  setupSrcFile := fh.AdjustPathSlash("../logTest/FileMgmnt/TestFile003.txt")
+  srcFile := fh.AdjustPathSlash("../checkfiles/TestFile003.txt")
+  destFile := fh.AdjustPathSlash("../createFilesTest/TestFile003.txt")
+
+  if fh.DoesFileExist(destFile) {
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error on DeleteDirFile() deleting destination file.\n"+
+        "Destination File='%v'\n"+
+        "Error='%v'\n",
+        destFile, err.Error())
+      _ = fh.DeleteDirFile(srcFile)
+      _ = fh.DeleteDirFile(destFile)
+      return
+    }
+
+    if fh.DoesFileExist(destFile) {
+      t.Errorf("Error - destination file, STILL EXISTS!\n"+
+        "Destination File='%v'\n", destFile)
+      _ = fh.DeleteDirFile(srcFile)
+      _ = fh.DeleteDirFile(destFile)
+      return
+    }
+  }
+
+  if fh.DoesFileExist(srcFile) {
+
+    err := fh.DeleteDirFile(srcFile)
+
+    if err != nil {
+      t.Errorf("Error on DeleteDirFile() deleting source file.\n"+
+        "Source File='%v'\nError:'%v'\n",
+        srcFile, err.Error())
+      _ = fh.DeleteDirFile(srcFile)
+      _ = fh.DeleteDirFile(destFile)
+      return
+    }
+
+    if fh.DoesFileExist(srcFile) {
+      t.Errorf("Error - Failed to Delete 'srcFile' STILL EXISTS!\n"+
+        "srcFile='%v'\n", srcFile)
+      _ = fh.DeleteDirFile(srcFile)
+      _ = fh.DeleteDirFile(destFile)
+      return
+    }
+  }
+
+  err := fh.CopyFileByIo(setupSrcFile, srcFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.CopyFileByIo(setupSrcFile, srcFile)\n"+
+      "setupSrcFile='%v'\nsrcFile='%v'\nError='%v'\n",
+      setupSrcFile, srcFile, err.Error())
+    _ = fh.DeleteDirFile(srcFile)
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
+
+  if !fh.DoesFileExist(srcFile) {
+    t.Errorf("Test Setup Error: Source File does NOT EXIST!!\n"+
+      "srcFile='%v'\n", srcFile)
+    _ = fh.DeleteDirFile(srcFile)
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
+
+  srcFileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(srcFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(srcFile).\n"+
+      "srcFile='%v'\nError='%v'",
+      srcFile, err.Error())
+    _ = fh.DeleteDirFile(srcFile)
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
+
+  destFileMgr, err := FileMgr{}.New(destFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(destFile).\n"+
+      "destFile='%v'\nError='%v'",
+      destFile, err.Error())
+    _ = fh.DeleteDirFile(srcFile)
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
+
+  err = srcFileMgr.MoveFileToFileMgr(destFileMgr)
+
+  if err != nil {
+    t.Errorf("Error returned from "+
+      "srcFileMgr.MoveFileToFileMgr(destFileMgr).\n"+
+      "destFileMgr='%v'\nError='%v'",
+      srcFile, err.Error())
+    _ = fh.DeleteDirFile(srcFile)
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
+
+  if !fh.DoesFileExist(destFileMgr.GetAbsolutePathFileName()) {
+    t.Errorf("Error: After 'move' operation, destination file "+
+      "DOES NOT EXIST!\n"+
+      "Destination File='%v'\n",
+      destFileMgr.GetAbsolutePath())
+  }
+
+  if fh.DoesFileExist(srcFileMgr.GetAbsolutePathFileName()) {
+    t.Errorf("Error: After 'move' operation, source file "+
+      "still exists!\n"+
+      "Source File='%v'\n",
+      srcFileMgr.GetAbsolutePath())
+  }
+
+  err = fh.DeleteDirFile(srcFile)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirFile(srcFile)\n"+
+      "srcFile='%v'\nError='%v'\n",
+      srcFile, err.Error())
+  }
+
+  err = fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirFile(destFile)\n"+
+      "destFile='%v'\nError='%v'\n",
+      destFile, err.Error())
+  }
+
+  return
+}
+
+func TestFileMgr_MoveFileToFileMgr_02(t *testing.T) {
+  fh := FileHelper{}
+  setupSrcFile := fh.AdjustPathSlash("../logTest/FileMgmnt/TestFile003.txt")
+  srcFile := fh.AdjustPathSlash("../checkfiles/TestFile003.txt")
+  destFile := fh.AdjustPathSlash("../createFilesTest/TestFile003.txt")
+
+  if fh.DoesFileExist(destFile) {
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error on DeleteDirFile() deleting destination file.\n"+
+        "Destination File='%v'\n"+
+        "Error='%v'\n",
+        destFile, err.Error())
+      _ = fh.DeleteDirFile(srcFile)
+      _ = fh.DeleteDirFile(destFile)
+      return
+    }
+
+    if fh.DoesFileExist(destFile) {
+      t.Errorf("Error - destination file, STILL EXISTS!\n"+
+        "Destination File='%v'\n", destFile)
+      _ = fh.DeleteDirFile(srcFile)
+      _ = fh.DeleteDirFile(destFile)
+      return
+    }
+  }
+
+  if fh.DoesFileExist(srcFile) {
+
+    err := fh.DeleteDirFile(srcFile)
+
+    if err != nil {
+      t.Errorf("Error on DeleteDirFile() deleting source file.\n"+
+        "Source File='%v'\nError:'%v'\n",
+        srcFile, err.Error())
+      _ = fh.DeleteDirFile(srcFile)
+      _ = fh.DeleteDirFile(destFile)
+      return
+    }
+
+    if fh.DoesFileExist(srcFile) {
+      t.Errorf("Error - Failed to Delete 'srcFile' STILL EXISTS!\n"+
+        "srcFile='%v'\n", srcFile)
+      _ = fh.DeleteDirFile(srcFile)
+      _ = fh.DeleteDirFile(destFile)
+      return
+    }
+  }
+
+  err := fh.CopyFileByIo(setupSrcFile, srcFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.CopyFileByIo(setupSrcFile, srcFile)\n"+
+      "setupSrcFile='%v'\nsrcFile='%v'\nError='%v'\n",
+      setupSrcFile, srcFile, err.Error())
+    _ = fh.DeleteDirFile(srcFile)
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
+
+  if !fh.DoesFileExist(srcFile) {
+    t.Errorf("Test Setup Error: Source File does NOT EXIST!!\n"+
+      "srcFile='%v'\n", srcFile)
+    _ = fh.DeleteDirFile(srcFile)
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
+
+  srcFileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(srcFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(srcFile).\n"+
+      "srcFile='%v'\nError='%v'",
+      srcFile, err.Error())
+    _ = fh.DeleteDirFile(srcFile)
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
+
+  destFileMgr, err := FileMgr{}.New(destFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(destFile).\n"+
+      "destFile='%v'\nError='%v'",
+      destFile, err.Error())
+    _ = fh.DeleteDirFile(srcFile)
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
+
+  srcFileMgr.isInitialized = false
+
+  err = srcFileMgr.MoveFileToFileMgr(destFileMgr)
+
+  if err == nil {
+    t.Errorf("Expected an error to be returned by "+
+      "srcFileMgr.MoveFileToFileMgr(destFileMgr) \n"+
+      "because 'srcFileMgr' is INVALID!\n"+
+      "However, NO ERROR WAS RETURNED!\n"+
+      "destFileMgr='%v'\n",
+      srcFile)
+  }
+
+  err = fh.DeleteDirFile(srcFile)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirFile(srcFile)\n"+
+      "srcFile='%v'\nError='%v'\n",
+      srcFile, err.Error())
+  }
+
+  err = fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirFile(destFile)\n"+
+      "destFile='%v'\nError='%v'\n",
+      destFile, err.Error())
+  }
+
+  return
+}
+
 func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
   fh := FileHelper{}
   setupSrcFile := fh.AdjustPathSlash("../logTest/FileMgmnt/TestFile003.txt")
