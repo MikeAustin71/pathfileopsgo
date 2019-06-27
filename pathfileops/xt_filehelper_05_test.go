@@ -523,8 +523,8 @@ func TestFileHelper_MakeDir03(t *testing.T) {
 func TestFileHelper_MoveFile_01(t *testing.T) {
   fh := FileHelper{}
   setupFile := fh.AdjustPathSlash("../logTest/FileMgmnt/TestFile003.txt")
-  srcFile := fh.AdjustPathSlash("../logTest/FileSrc/TestFile003.txt")
-  destFile := fh.AdjustPathSlash("../logTest/scratchTestFileHelper_MoveFile_01.txt")
+  srcFile := fh.AdjustPathSlash("../checkfiles/TestFile003.txt")
+  destFile := fh.AdjustPathSlash("../createFilesTest/scratchTestFileHelper_MoveFile_01.txt")
 
   if fh.DoesFileExist(destFile) {
 
@@ -540,6 +540,24 @@ func TestFileHelper_MoveFile_01(t *testing.T) {
     if fh.DoesFileExist(destFile) {
       t.Errorf("Error on test setup: destination file, STILL EXISTS!\n"+
         "Destination File='%v'", destFile)
+      return
+    }
+  }
+
+  if fh.DoesFileExist(srcFile) {
+
+    err := fh.DeleteDirFile(srcFile)
+
+    if err != nil {
+      t.Errorf("Error during test setup deleting source file.\n"+
+        "Source File='%v'\nError:'%v'\n",
+        srcFile, err)
+      return
+    }
+
+    if fh.DoesFileExist(srcFile) {
+      t.Errorf("Error on test setup: source file, STILL EXISTS!\n"+
+        "Source File='%v'", srcFile)
       return
     }
   }
@@ -575,6 +593,8 @@ func TestFileHelper_MoveFile_01(t *testing.T) {
   }
 
   if !fh.DoesFileExist(destFile) {
+    _ = fh.DeleteDirFile(srcFile)
+    _ = fh.DeleteDirFile(destFile)
     t.Errorf("FileHelper:MoveFile() FAILED! Destination File DOES NOT EXIST!\n"+
       "Destination File='%v'\n", destFile)
     return
@@ -587,6 +607,15 @@ func TestFileHelper_MoveFile_01(t *testing.T) {
       "file FAILED!\nDestination File still exists!\nDestination File='%v'",
       destFile)
   }
+
+  err = fh.DeleteDirFile(srcFile)
+
+  if err != nil {
+    t.Errorf("Error during test clean-up: Deletion of source file "+
+      "FAILED!\nSource File='%v'\nError='%v'\n",
+      srcFile, err.Error())
+  }
+
 }
 
 func TestFileHelper_MoveFile_02(t *testing.T) {
@@ -594,70 +623,182 @@ func TestFileHelper_MoveFile_02(t *testing.T) {
   srcFile := ""
   destFile := fh.AdjustPathSlash("../logTest/scratchTestFileHelper_MoveFile_02.txt")
 
-  err := fh.MoveFile(srcFile, destFile)
+  err := fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Error during test start-up: Deletion of destination file "+
+      "FAILED!\nDestination File='%v'\nError='%v'\n",
+      destFile, err.Error())
+    return
+  }
+
+  err = fh.MoveFile(srcFile, destFile)
 
   if err == nil {
     t.Error("Expected an error return from fh.MoveFile(srcFile, destFile)\n" +
       "because srcFile is an empty string. However, NO ERROR WAS RETURNED!\n")
+  }
+
+  err = fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Error during test clean-up: Deletion of destination file "+
+      "FAILED!\nDestination File='%v'\nError='%v'\n",
+      destFile, err.Error())
   }
 }
 
 func TestFileHelper_MoveFile_03(t *testing.T) {
   fh := FileHelper{}
   srcFile := "   "
-  destFile := fh.AdjustPathSlash("../logTest/scratchTestFileHelper_MoveFile_02.txt")
+  destFile := fh.AdjustPathSlash("../logTest/scratchTestFileHelper_MoveFile_03.txt")
 
-  err := fh.MoveFile(srcFile, destFile)
+  err := fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Error during test start-up: Deletion of destination file "+
+      "FAILED!\nDestination File='%v'\nError='%v'\n",
+      destFile, err.Error())
+    return
+  }
+
+  err = fh.MoveFile(srcFile, destFile)
 
   if err == nil {
     t.Error("Expected an error return from fh.MoveFile(srcFile, destFile)\n" +
       "because srcFile consists entirely of blank spaces.\nHowever, NO ERROR WAS RETURNED!\n")
   }
+
+  err = fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Error during test clean-up: Deletion of destination file "+
+      "FAILED!\nDestination File='%v'\nError='%v'\n",
+      destFile, err.Error())
+  }
+
 }
 
 func TestFileHelper_MoveFile_04(t *testing.T) {
 
   fh := FileHelper{}
-  srcFile := fh.AdjustPathSlash("../logTest/FileMgmnt/TestFile003.txt")
+  setupFile := fh.AdjustPathSlash("../logTest/FileMgmnt/TestFile003.txt")
+  srcFile := fh.AdjustPathSlash("../checkfiles/TestFile003.txt")
   destFile := "    "
 
-  err := fh.MoveFile(srcFile, destFile)
+  if fh.DoesFileExist(srcFile) {
+
+    err := fh.DeleteDirFile(srcFile)
+
+    if err != nil {
+      t.Errorf("Error during test setup deleting source file.\n"+
+        "Source File='%v'\nError:'%v'\n",
+        srcFile, err)
+      return
+    }
+
+    if fh.DoesFileExist(srcFile) {
+      t.Errorf("Error on test setup: source file, STILL EXISTS!\n"+
+        "Source File='%v'", srcFile)
+      return
+    }
+  }
+
+  err := fh.CopyFileByIo(setupFile, srcFile)
+
+  if err != nil {
+    t.Errorf("Received error copying 'setupFile' to 'srcFile'.\n"+
+      "Test Setup FAILED! 'srcFile' does NOT Exist. \n"+
+      "setupFile='%v'\nsrcFile='%v'\nError='%v'\n",
+      setupFile, srcFile, err.Error())
+    return
+  }
+
+  err = fh.MoveFile(srcFile, destFile)
 
   if err == nil {
     t.Error("Expected an error return from fh.MoveFile(srcFile, destFile)\n" +
       "because destFile consists entirely of blank spaces.\nHowever, NO ERROR WAS RETURNED!\n")
   }
 
-  _, err = os.Stat(srcFile)
+  fileDoesExist, err := fh.DoesThisFileExist(srcFile)
 
   if err != nil {
-    t.Errorf("Error: Expected that source file would NOT be deleted with an error\n"+
-      "return from MoveFile(). However, the source file WAS DELETED!\nSource File='%v'\n",
-      srcFile)
+    t.Errorf("Non-Path Error fh.DoesThisFileExist(srcFile)\n"+
+      "Error='%v'\n", err)
+    _ = fh.DeleteDirFile(srcFile)
+    return
   }
+
+  if !fileDoesExist {
+    t.Errorf("Error: Source file should NOT have been deleted "+
+      "during the move operation\n"+
+      "because there was an error (dest is an empty string).\n"+
+      "Instead the source file WAS DELETED!\n"+
+      "srcFile='%v'", srcFile)
+  }
+
+  _ = fh.DeleteDirFile(srcFile)
 
 }
 
 func TestFileHelper_MoveFile_05(t *testing.T) {
 
   fh := FileHelper{}
-  srcFile := fh.AdjustPathSlash("../logTest/FileMgmnt/TestFile003.txt")
+  setupFile := fh.AdjustPathSlash("../logTest/FileMgmnt/TestFile003.txt")
+  srcFile := fh.AdjustPathSlash("../checkfiles/TestFile003.txt")
   destFile := ""
 
-  err := fh.MoveFile(srcFile, destFile)
+  if fh.DoesFileExist(srcFile) {
+
+    err := fh.DeleteDirFile(srcFile)
+
+    if err != nil {
+      t.Errorf("Error during test setup deleting source file.\n"+
+        "Source File='%v'\nError:'%v'\n",
+        srcFile, err)
+      return
+    }
+
+    if fh.DoesFileExist(srcFile) {
+      t.Errorf("Error on test setup: source file, STILL EXISTS!\n"+
+        "Source File='%v'", srcFile)
+      return
+    }
+  }
+
+  err := fh.CopyFileByIo(setupFile, srcFile)
+
+  if err != nil {
+    t.Errorf("Received error copying 'setupFile' to 'srcFile'.\n"+
+      "Test Setup FAILED! 'srcFile' does NOT Exist. \n"+
+      "setupFile='%v'\nsrcFile='%v'\nError='%v'\n",
+      setupFile, srcFile, err.Error())
+    _ = fh.DeleteDirFile(srcFile)
+    return
+  }
+
+  if !fh.DoesFileExist(srcFile) {
+    t.Errorf("Test Setup FAILED! Source File does NOT EXIST!!\n"+
+      "srcFile='%v'", srcFile)
+    return
+  }
+
+  err = fh.MoveFile(srcFile, destFile)
 
   if err == nil {
     t.Error("Expected an error return from fh.MoveFile(srcFile, destFile)\n" +
       "because 'destFile' is an empty string.\nHowever, NO ERROR WAS RETURNED!\n")
   }
 
-  _, err = os.Stat(srcFile)
+  err = fh.DeleteDirFile(srcFile)
 
   if err != nil {
-    t.Errorf("Error: Expected that source file would NOT be deleted with an error\n"+
-      "return from MoveFile(). However, the source file WAS DELETED!\nSource File='%v'\n",
-      srcFile)
+    t.Errorf("Error during test clean-up: Deletion of source file "+
+      "FAILED!\nSource File='%v'\nError='%v'\n",
+      srcFile, err.Error())
   }
+
 }
 
 func TestFileHelper_MoveFile_06(t *testing.T) {
@@ -666,20 +807,37 @@ func TestFileHelper_MoveFile_06(t *testing.T) {
   srcFile := fh.AdjustPathSlash("../logTest/FileMgmnt/iDoNotExist.txt")
   destFile := "../logTest/FileMgmnt/scratchTestFileHelper_MoveFile_06.txt"
 
-  err := fh.MoveFile(srcFile, destFile)
+  err := fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Error during test set-up: Deletion of destination file "+
+      "FAILED!\nDestination File='%v'\nError='%v'\n",
+      destFile, err.Error())
+  }
+
+  err = fh.MoveFile(srcFile, destFile)
 
   if err == nil {
     t.Error("Expected an error return from fh.MoveFile(srcFile, destFile)\n" +
       "because 'srcFile' DOES NOT EXIST!.\nHowever, NO ERROR WAS RETURNED!\n")
   }
+
+  err = fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Error during test clean-up: Deletion of destination file "+
+      "FAILED!\nDestination File='%v'\nError='%v'\n",
+      destFile, err.Error())
+  }
+
 }
 
 func TestFileHelper_MoveFile_07(t *testing.T) {
   fh := FileHelper{}
   setupDestFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_0_0_test.txt")
-  srcFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_0_3_test.txt")
-  setupSrcFile := fh.AdjustPathSlash("../checkfiles/setuplevel_0_3_test.txt")
-  destFile := fh.AdjustPathSlash("../logTest/scratchTestFileHelper_MoveFile_07.txt")
+  setupSrcFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_0_3_test.txt")
+  srcFile := fh.AdjustPathSlash("../checkfiles/setuplevel_0_3_test.txt")
+  destFile := fh.AdjustPathSlash("../createFilesTest/scratchTestFileHelper_MoveFile_07.txt")
 
   if fh.DoesFileExist(destFile) {
 
@@ -699,6 +857,24 @@ func TestFileHelper_MoveFile_07(t *testing.T) {
     }
   }
 
+  if fh.DoesFileExist(srcFile) {
+
+    err := fh.DeleteDirFile(srcFile)
+
+    if err != nil {
+      t.Errorf("Error during test setup deleting source file.\n"+
+        "Source File='%v'\nError:'%v'\n",
+        srcFile, err)
+      return
+    }
+
+    if fh.DoesFileExist(srcFile) {
+      t.Errorf("Error on test setup: srcFile file, STILL EXISTS!\n"+
+        "Source File='%v'", srcFile)
+      return
+    }
+  }
+
   err := fh.CopyFileByIo(setupDestFile, destFile)
 
   if err != nil {
@@ -710,30 +886,50 @@ func TestFileHelper_MoveFile_07(t *testing.T) {
     return
   }
 
-  err = fh.CopyFileByIo(srcFile, setupSrcFile)
+  err = fh.CopyFileByIo(setupSrcFile, srcFile)
 
   if err != nil {
-    t.Errorf("Error returned from fh.CopyFileByIo(srcFile, setupSrcFile).\n"+
+    t.Errorf("Error returned from fh.CopyFileByIo(setupSrcFile, srcFile).\n"+
       "Test Setup for source file FAILED!\n"+
       "setupSrcFile='%v'\nsrcFile='%v'\nError='%v'\n",
-      srcFile, setupSrcFile, err.Error())
+      setupSrcFile, srcFile, err.Error())
     _ = os.Remove(destFile)
     return
   }
 
-  if !fh.DoesFileExist(setupSrcFile) {
-    t.Errorf("Test Setup FAILED! Setup Source File does NOT EXIST!!\n"+
-      "setupSrcFile='%v'", setupSrcFile)
+  if !fh.DoesFileExist(srcFile) {
+    t.Errorf("Test Setup FAILED! Source File does NOT EXIST!!\n"+
+      "Source File='%v'", srcFile)
     _ = os.Remove(destFile)
     return
   }
 
-  err = fh.MoveFile(setupSrcFile, destFile)
+  srcFileInfo, err := os.Stat(srcFile)
+
+  if err != nil {
+    t.Errorf("Unexpected Error returned from os.Stat(srcFile).\n"+
+      "Source File does NOT exist!\n"+
+      "srcFile='%v'\nError='%v'\n",
+      srcFile, err.Error())
+    _ = os.Remove(destFile)
+    return
+  }
+
+  err = fh.MoveFile(srcFile, destFile)
 
   if err != nil {
     t.Errorf("Error returned by fh.MoveFile(setupSrcFile, destFile)\n"+
       "setupSrcFile='%v'\ndestFile='%v'\nError='%v'\n",
       setupSrcFile, destFile, err.Error())
+    _ = os.Remove(srcFile)
+    _ = os.Remove(destFile)
+    return
+  }
+
+  if !fh.DoesFileExist(destFile) {
+    t.Errorf("Error: MoveFile() did NOT create the destFile!\n"+
+      "Destination File='%v'\n", destFile)
+    _ = os.Remove(srcFile)
     _ = os.Remove(destFile)
     return
   }
@@ -741,23 +937,11 @@ func TestFileHelper_MoveFile_07(t *testing.T) {
   destFileInfo, err := os.Stat(destFile)
 
   if err != nil {
-    t.Errorf("Error: MoveFile() did NOT create the destFile!\n"+
-      "Destination File='%v'\n", destFile)
-    return
-  }
-
-  srcFileInfo, err := os.Stat(srcFile)
-
-  if err != nil {
-    if os.IsNotExist(err) {
-      t.Errorf("os.IsNotExist() Error returned by os.Stat(srcFile).\n" +
-        "'srcFile' DOES NOT EXIST!\n" +
-        "srcFile='%v'\nError='%v'", srcFile, err.Error())
-    } else {
-      t.Errorf("Non-Path Error returned by os.Stat(srcFile).\n" +
-        "srcFile='%v'\nError='%v'\n", srcFile, err.Error())
-    }
-
+    t.Errorf("Unexpected Error returned by os.Stat(destFile).\n"+
+      "Destination File DOES NOT EXIST!\n"+
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
+    _ = os.Remove(srcFile)
+    _ = os.Remove(destFile)
     return
   }
 
@@ -768,7 +952,27 @@ func TestFileHelper_MoveFile_07(t *testing.T) {
       srcFileInfo.Size(), destFileInfo.Size())
   }
 
-  _ = os.Remove(destFile)
+  if fh.DoesFileExist(srcFile) {
+    t.Errorf("Error: MoveFile() did NOT delete the source file!\n"+
+      "Source File='%v'\n", srcFile)
+  }
+
+  err = fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Error deleting destFile.\n"+
+      "Error returned by fh.DeleteDirFile(destFile)\n"+
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
+  }
+
+  err = fh.DeleteDirFile(srcFile)
+
+  if err != nil {
+    t.Errorf("Error deleting srcFile.\n"+
+      "Error returned by fh.DeleteDirFile(srcFile)\n"+
+      "srcFile='%v'\nError='%v'\n", srcFile, err.Error())
+  }
+
 }
 
 func TestFileHelper_MoveFile_08(t *testing.T) {
@@ -776,7 +980,7 @@ func TestFileHelper_MoveFile_08(t *testing.T) {
 
   newSrcBaseDir := "../TestFileHelper_MoveFile_08_Source"
 
-  newSrcDir :=  newSrcBaseDir + "/dir1"
+  newSrcDir := newSrcBaseDir + "/dir1"
 
   newSrcBaseDir = fh.AdjustPathSlash(newSrcBaseDir)
   newSrcDir = fh.AdjustPathSlash(newSrcDir)
@@ -784,13 +988,13 @@ func TestFileHelper_MoveFile_08(t *testing.T) {
   err := fh.MakeDirAll(newSrcDir)
 
   if err != nil {
-    t.Errorf("Test Setup ERROR returned by fh.MakeDirAll(newSrcDir).\n" +
+    t.Errorf("Test Setup ERROR returned by fh.MakeDirAll(newSrcDir).\n"+
       "newSrcDir='%v'\nError='%v'\n", newSrcDir, err.Error())
     return
   }
 
   newBaseTargDir := "../TestFileHelper_MoveFile_08Dest"
-  newTargDir := newBaseTargDir +  "/dirX1"
+  newTargDir := newBaseTargDir + "/dirX1"
 
   newBaseTargDir = fh.AdjustPathSlash(newBaseTargDir)
   newTargDir = fh.AdjustPathSlash(newTargDir)
@@ -806,50 +1010,67 @@ func TestFileHelper_MoveFile_08(t *testing.T) {
   err = fh.DeleteDirPathAll(newSrcBaseDir)
 
   if err != nil {
-    t.Errorf("Test File Clean-Up ERROR: fh.DeleteDirPathAll(newSrcBaseDir).\n" +
-    "newSrcBaseDir='%v'\nError='%v'\n", newSrcBaseDir, err.Error())
+    t.Errorf("Test File Clean-Up ERROR: fh.DeleteDirPathAll(newSrcBaseDir).\n"+
+      "newSrcBaseDir='%v'\nError='%v'\n", newSrcBaseDir, err.Error())
   }
 
   err = fh.DeleteDirPathAll(newBaseTargDir)
 
   if err != nil {
-    t.Errorf("Test File Clean-Up ERROR: fh.DeleteDirPathAll(newBaseTargDir).\n" +
-    "newBaseTargDir='%v'\nError='%v'\n", newBaseTargDir, err.Error())
+    t.Errorf("Test File Clean-Up ERROR: fh.DeleteDirPathAll(newBaseTargDir).\n"+
+      "newBaseTargDir='%v'\nError='%v'\n", newBaseTargDir, err.Error())
   }
 
 }
 
 func TestFileHelper_MoveFile_09(t *testing.T) {
   fh := FileHelper{}
-  setupFile := fh.AdjustPathSlash("../logTest/FileMgmnt/TestFile003.txt")
+  setupSrcFile := fh.AdjustPathSlash("../logTest/FileMgmnt/TestFile003.txt")
   srcFile := fh.AdjustPathSlash("../checkfiles/TestFile003.txt")
 
-  destDir := "../logTest/TestFileHelper_MoveFile_09"
+  destDir := "../createFilesTest/TestFileHelper_MoveFile_09"
   destFile := fh.AdjustPathSlash(destDir + "/scratchTestFileHelper_MoveFile_09.txt")
 
+  if fh.DoesFileExist(srcFile) {
+
+    err := fh.DeleteDirFile(srcFile)
+
+    if err != nil {
+      t.Errorf("Error during test setup deleting source file.\n"+
+        "Source File='%v'\nError:'%v'\n",
+        srcFile, err)
+      return
+    }
+
+    if fh.DoesFileExist(srcFile) {
+      t.Errorf("Error on test setup: source file, STILL EXISTS!\n"+
+        "Source File='%v'", srcFile)
+      return
+    }
+  }
 
   err := fh.DeleteDirPathAll(destDir)
 
   if err != nil {
     t.Errorf("Test Setup Error deleting destination directory.\n"+
-      "fh.DeleteDirPathAll(destDir)" +
+      "fh.DeleteDirPathAll(destDir)"+
       "destDir='%v'\nError:'%v'\n",
       destDir, err)
     return
   }
 
-  err = fh.CopyFileByIo(setupFile, srcFile)
+  err = fh.CopyFileByIo(setupSrcFile, srcFile)
 
   if err != nil {
-    t.Errorf("Test Setup Error copying 'setupFile' to 'srcFile'.\n"+
+    t.Errorf("Test Setup Error copying 'setupSrcFile' to 'srcFile'.\n"+
       "Test Setup FAILED! 'srcFile' does NOT Exist. \n"+
-      "setupFile='%v'\nsrcFile='%v'\nError='%v'\n",
-      setupFile, srcFile, err.Error())
+      "setupSrcFile='%v'\nsrcFile='%v'\nError='%v'\n",
+      setupSrcFile, srcFile, err.Error())
     return
   }
 
   if !fh.DoesFileExist(srcFile) {
-    t.Errorf("Test Setup Error: Source File does NOT exist!\n" +
+    t.Errorf("Test Setup Error: Source File does NOT exist!\n"+
       "Source File='%v'\n", srcFile)
     return
   }
@@ -857,17 +1078,16 @@ func TestFileHelper_MoveFile_09(t *testing.T) {
   err = fh.MoveFile(srcFile, destFile)
 
   if err == nil {
-    t.Error("Expected an error return from fh.MoveFile(srcFile, destFile)\n"+
+    t.Error("Expected an error return from fh.MoveFile(srcFile, destFile)\n" +
       "because destFile directory DOES NOT EXIST!\n" +
       "However, NO ERROR WAS RETURNED!")
   }
-
 
   err = fh.DeleteDirPathAll(destDir)
 
   if err != nil {
     t.Errorf("Test Clean-Up Error deleting destination directory.\n"+
-      "fh.DeleteDirPathAll(destDir)" +
+      "fh.DeleteDirPathAll(destDir)"+
       "destDir='%v'\nError:'%v'\n",
       destDir, err)
     return
@@ -877,7 +1097,7 @@ func TestFileHelper_MoveFile_09(t *testing.T) {
 
   if err != nil {
     t.Errorf("Test Clean-Up Error: Attempted deletion of source file "+
-      "file FAILED!\nfh.DeleteDirFile(srcFile)\n" +
+      "file FAILED!\nfh.DeleteDirFile(srcFile)\n"+
       "Source File='%v'", srcFile)
   }
 
@@ -940,14 +1160,14 @@ func TestFileHelper_OpenDirectory_03(t *testing.T) {
     err := fh.DeleteDirPathAll(basePath)
 
     if err != nil {
-      t.Errorf("Test Setup ERROR: fh.DeleteDirPathAll(basePath) failed!\n" +
+      t.Errorf("Test Setup ERROR: fh.DeleteDirPathAll(basePath) failed!\n"+
         "Returned Error='%v'\n", err.Error())
       return
     }
 
     if fh.DoesFileExist(basePath) {
-      t.Errorf("Test Setup ERROR: 'basePath' still exists. Attempted deletion FAILED!\n" +
-      "basePath='%v'", basePath)
+      t.Errorf("Test Setup ERROR: 'basePath' still exists. Attempted deletion FAILED!\n"+
+        "basePath='%v'", basePath)
       return
     }
   }
@@ -969,7 +1189,7 @@ func TestFileHelper_OpenDirectory_03(t *testing.T) {
   err = fh.DeleteDirPathAll(basePath)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(basePath).\n" +
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(basePath).\n"+
       "basePath='%v'\nError='%v'", basePath, err.Error())
   }
 
@@ -988,7 +1208,7 @@ func TestFileHelper_OpenDirectory_04(t *testing.T) {
   err := fh.DeleteDirPathAll(basePath)
 
   if err != nil {
-    t.Errorf("Test Setup ERROR: fh.DeleteDirPathAll(basePath) failed!\n" +
+    t.Errorf("Test Setup ERROR: fh.DeleteDirPathAll(basePath) failed!\n"+
       "Returned Error='%v'\n", err.Error())
     return
   }
@@ -996,7 +1216,7 @@ func TestFileHelper_OpenDirectory_04(t *testing.T) {
   fPtr, err := fh.OpenDirectory(directoryPath, true)
 
   if err != nil {
-    t.Errorf("Error returned by fh.OpenDirectory((directoryPath, true)\n" +
+    t.Errorf("Error returned by fh.OpenDirectory((directoryPath, true)\n"+
       "directoryPath='%v'\nError='%v'\n", directoryPath, err.Error())
   }
 
@@ -1009,7 +1229,7 @@ func TestFileHelper_OpenDirectory_04(t *testing.T) {
     err = fPtr.Close()
 
     if err != nil {
-      t.Errorf("Test Clean-Up ERROR: Error returned by fPtr.Close().\n" +
+      t.Errorf("Test Clean-Up ERROR: Error returned by fPtr.Close().\n"+
         "Error='%v'\n", err.Error())
     }
 
@@ -1018,7 +1238,7 @@ func TestFileHelper_OpenDirectory_04(t *testing.T) {
   err = fh.DeleteDirPathAll(basePath)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(basePath).\n" +
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(basePath).\n"+
       "basePath='%v'\nError='%v'\n", basePath, err.Error())
   }
 }
@@ -1036,7 +1256,7 @@ func TestFileHelper_OpenDirectory_05(t *testing.T) {
   err := fh.DeleteDirPathAll(basePath)
 
   if err != nil {
-    t.Errorf("Test Setup ERROR: fh.DeleteDirPathAll(basePath) failed!\n" +
+    t.Errorf("Test Setup ERROR: fh.DeleteDirPathAll(basePath) failed!\n"+
       "Returned Error='%v'\n", err.Error())
     return
   }
@@ -1044,16 +1264,15 @@ func TestFileHelper_OpenDirectory_05(t *testing.T) {
   err = fh.MakeDirAll(directoryPath)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.MakeDirAll(directoryPath)\n" +
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(directoryPath)\n"+
       "directoryPath='%v'\nError='%v'\n", directoryPath, err.Error())
     return
   }
 
-
   fPtr, err := fh.OpenDirectory(directoryPath, false)
 
   if err != nil {
-    t.Errorf("Error returned by fh.OpenDirectory((directoryPath, true)\n" +
+    t.Errorf("Error returned by fh.OpenDirectory((directoryPath, true)\n"+
       "directoryPath='%v'\nError='%v'\n", directoryPath, err.Error())
   }
 
@@ -1062,13 +1281,12 @@ func TestFileHelper_OpenDirectory_05(t *testing.T) {
     t.Error("Expected valid file pointer to be returned by fh.OpenDirectory(...).\n" +
       "However, the file pointer is nil!")
 
-
   } else {
 
     err = fPtr.Close()
 
     if err != nil {
-      t.Errorf("Test Clean-Up ERROR: Error returned by fPtr.Close().\n" +
+      t.Errorf("Test Clean-Up ERROR: Error returned by fPtr.Close().\n"+
         "Error='%v'\n", err.Error())
     }
 
@@ -1077,7 +1295,7 @@ func TestFileHelper_OpenDirectory_05(t *testing.T) {
   err = fh.DeleteDirPathAll(basePath)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(basePath).\n" +
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(basePath).\n"+
       "basePath='%v'\nError='%v'\n", basePath, err.Error())
   }
 }
@@ -1377,7 +1595,7 @@ func TestFileHelper_OpenFile_06(t *testing.T) {
     FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n"+
       "Error='%v'\n", err.Error())
     return
   }
@@ -1412,7 +1630,7 @@ func TestFileHelper_OpenFile_06(t *testing.T) {
     t.Error("Expected an error return from fh.OpenFile(targetFile, fOpCfg, fPermCfg)\n" +
       "because targetFile does NOT exist.\n" +
       "However, NO ERROR WAS RETURNED!")
- }
+  }
 
   if fPtr != nil {
     _ = fPtr.Close()

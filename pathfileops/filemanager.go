@@ -2075,135 +2075,14 @@ func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (FileMgr, error) {
 
   fMgrHlpr := fileMgrHelper{}
 
+  fMgr.dataMutex.Lock()
+
   err = fMgrHlpr.moveFile(fMgr, &targetFMgr, ePrefix)
+
+  fMgr.dataMutex.Unlock()
 
   return targetFMgr, err
 }
-
-/*
-func (fMgr *FileMgr) MoveFileToNewDir(dirPath string) (newFMgr FileMgr, err error) {
-
-  newFMgr = FileMgr{}
-  err = nil
-
-  ePrefix := "FileMgr.MoveFileToNewDir() "
-  errCode := 0
-
-  errCode, _, dirPath =
-    FileHelper{}.isStringEmptyOrBlank(dirPath)
-
-  if errCode < 0 {
-    err = errors.New(ePrefix +
-      "Error: Input parameter 'dirPath' is a Zero length string!")
-    return newFMgr, err
-  }
-
-  fMgr.dataMutex.Lock()
-
-  fMgrHelpr := fileMgrHelper{}
-  filePathDoesExist := false
-
-  filePathDoesExist,
-    err = fMgrHelpr.doesFileMgrPathFileExist(fMgr,
-    PreProcPathCode.None(),
-    ePrefix,
-    "fMgr.absolutePathFileName")
-
-  fMgr.dataMutex.Unlock()
-
-  if err != nil {
-    return newFMgr, err
-  }
-
-  if !filePathDoesExist {
-    err = fmt.Errorf(ePrefix+
-      "Error: The source files does NOT exist.\n"+
-      "srcFile (FileMgr)='%v' ",
-      fMgr.absolutePathFileName)
-    return newFMgr, err
-  }
-
-  dMgr, err2 := DirMgr{}.New(dirPath)
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+
-      "Error returned from DirMgr{}.NewFromPathFileNameExtStr(dirPath). dirPath='%v'  Error='%v'",
-      dirPath, err2.Error())
-    return newFMgr, err
-  }
-
-  err2 = dMgr.IsDirMgrValid("")
-
-  if err2 != nil {
-
-    err = fmt.Errorf(ePrefix+
-      "Error: Input parameter 'dirPath' "+
-      "generated an INVALID DirMgr.\n"+
-      "dirPath='%v'\nError='%v'\n",
-      dirPath, err2)
-
-    return newFMgr, err
-  }
-
-  pathExists, err2 := dMgr.DoesThisDirectoryExist()
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+
-      "Error: dMgr.DoesThisDirectoryExist() "+
-      "returned a non-path error.\n"+
-      "dirPath='%v'\nError='%v'\n",
-      dirPath, err2)
-
-    return newFMgr, err
-  }
-
-  if !pathExists {
-    err = fmt.Errorf(ePrefix+
-      "Error: Target Destination path DOES NOT EXIST!\n"+
-      "dirPath='%v'",
-      dirPath)
-    return newFMgr, err
-  }
-
-  targetFile := dMgr.GetAbsolutePathWithSeparator() +
-    fMgr.fileNameExt
-
-  fMgr.dataMutex.Lock()
-
-  err2 = FileHelper{}.MoveFile(
-    fMgr.absolutePathFileName, targetFile)
-
-  if err2 != nil {
-    newFMgr = FileMgr{}
-    err = fmt.Errorf(ePrefix+
-      "Error returned by FileHelper{}.MoveFile("+
-      "fMgr.absolutePathFileName, newFMgr.absolutePathFileName)\n"+
-      "fMgr.absolutePathFileName='%v'\n"+
-      "newFMgr.absolutePathFileName='%v'\nError='%v'",
-      fMgr.absolutePathFileName, newFMgr.absolutePathFileName, err2.Error())
-
-  } else {
-
-    newFMgr, err2 = FileMgr{}.New(targetFile)
-
-    if err2 != nil {
-      err = fmt.Errorf(ePrefix+
-        "Error creating new File Manager!\n"+
-        "File was NOT Moved!\n"+
-        "Error returned by FileMgr{}.New(targetFile)\n"+
-        "targetFile='%v'\nError='%v'",
-        targetFile, err2.Error())
-
-      newFMgr = FileMgr{}
-    } else {
-      err = nil
-    }
-  }
-
-  fMgr.dataMutex.Unlock()
-  return newFMgr, err
-}
-*/
 
 // MoveFileToNewDirMgr - This method will move the file identified
 // by the current FileMgr to a new path contained in the input parameter

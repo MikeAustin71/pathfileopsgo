@@ -210,7 +210,7 @@ func (fMgrHlpr *fileMgrHelper) closeFile(
     err2 = nil
 
     if fMgr.filePtr != nil {
-      err2 = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+      err2 = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
     }
 
     if err2 != nil {
@@ -252,7 +252,7 @@ func (fMgrHlpr *fileMgrHelper) closeFile(
   }
 
   // fileDoesExist == true
-  return fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+  return fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
 }
 
 // consolidateErrors - Receives an array of errors and converts them
@@ -713,7 +713,7 @@ func (fMgrHlpr *fileMgrHelper) createFile(
       "fMgr.dMgr='%v'\n", fMgr.dMgr.absolutePath)
   }
 
-  err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+  err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
 
   if err != nil {
     return err
@@ -818,22 +818,22 @@ func (fMgrHlpr *fileMgrHelper) deleteFile(
     "fMgr.absolutePathFileName")
 
   if err != nil {
-    _ = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+    _ = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
     return err
   }
 
   if !pathFileNameDoesExist {
-    _ = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+    _ = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
     return nil
   }
 
-  err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+  err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
 
   if err != nil {
     return err
   }
 
-  err = fMgrHlpr.lowLevelDeleteFile(fMgr, ePrefix)
+  err = fMgrHlpr.lowLevelDeleteFile(fMgr, ePrefix, "fMgr")
 
   if err != nil {
     return err
@@ -979,7 +979,8 @@ func (fMgrHlpr *fileMgrHelper) flushBytesToDisk(
 //
 func (fMgrHlpr *fileMgrHelper) lowLevelCloseFile(
   fMgr *FileMgr,
-  ePrefix string) error {
+  ePrefix string,
+  fMgrLabel string) error {
 
   ePrefixCurrMethod := "fileMgrHelper.lowLevelCloseFile() "
 
@@ -991,8 +992,9 @@ func (fMgrHlpr *fileMgrHelper) lowLevelCloseFile(
   }
 
   if fMgr == nil {
-    return errors.New(ePrefix +
-      "\nError: Input parameter 'fMgr' is a nil pointer!\n")
+    return fmt.Errorf(ePrefix+
+      "\nError: Input parameter '%v' is a nil pointer!\n",
+      fMgrLabel)
   }
 
   errs := make([]error, 0)
@@ -1024,8 +1026,8 @@ func (fMgrHlpr *fileMgrHelper) lowLevelCloseFile(
 
     if err3 != nil {
       err2 = fmt.Errorf(ePrefix+
-        "\nError returned by fMgr.filePtr.Close()\n"+
-        "Error='%v'\n", err3.Error())
+        "\nError returned by %v.filePtr.Close()\n"+
+        "Error='%v'\n", fMgrLabel, err3.Error())
       errs = append(errs, err2)
     }
   }
@@ -1041,9 +1043,16 @@ func (fMgrHlpr *fileMgrHelper) lowLevelCloseFile(
   return fMgrHlpr.consolidateErrors(errs)
 }
 
+// lowLevelDeleteFile - Helper method which is designed
+// to delete the file identified by input parameter, 'fMgr'.
+//
+// This method performs no validation on 'fMgr' and does
+// not verify existence of the 'fMgr' file.
+//
 func (fMgrHlpr *fileMgrHelper) lowLevelDeleteFile(
   fMgr *FileMgr,
-  ePrefix string) error {
+  ePrefix string,
+  targetFileLabel string) error {
 
   ePrefixCurrMethod := "fileMgrHelper.lowLevelDeleteFile() "
 
@@ -1067,10 +1076,14 @@ func (fMgrHlpr *fileMgrHelper) lowLevelDeleteFile(
 
     if err2 != nil {
       err = fmt.Errorf(ePrefix+
-        "\nError: os.Remove(fMgr.absolutePathFileName) "+
+        "\nError: os.Remove(%v.absolutePathFileName) "+
         "returned an error.\n"+
-        "fMgr='%v'\nError='%v'",
-        fMgr.absolutePathFileName, err2.Error())
+        "%v='%v'\nError='%v'",
+        targetFileLabel,
+        targetFileLabel,
+        fMgr.absolutePathFileName,
+        err2.Error())
+
     } else {
 
       return nil
@@ -1221,7 +1234,7 @@ func (fMgrHlpr *fileMgrHelper) moveFile(
   targetFMgr *FileMgr,
   ePrefix string) error {
 
-  ePrefixCurrMethod := "fileMgrHelper.openFile() "
+  ePrefixCurrMethod := "fileMgrHelper.moveFile() "
 
   if len(ePrefix) == 0 {
     ePrefix = ePrefixCurrMethod
@@ -1241,9 +1254,9 @@ func (fMgrHlpr *fileMgrHelper) moveFile(
   }
 
   var err error
-  filePathDoesExist := false
+  var sourceFilePathDoesExist, targetFilePathDoesExist bool
 
-  filePathDoesExist,
+  sourceFilePathDoesExist,
     err = fMgrHlpr.doesFileMgrPathFileExist(
     fMgr,
     PreProcPathCode.None(),
@@ -1254,7 +1267,13 @@ func (fMgrHlpr *fileMgrHelper) moveFile(
     return err
   }
 
-  if !filePathDoesExist {
+  err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
+
+  if err != nil {
+    return err
+  }
+
+  if !sourceFilePathDoesExist {
     return fmt.Errorf(ePrefix+
       "\nError: Source File Manager 'fMgr' DOES NOT EXIST!\n"+
       "fMgr='%v'\n",
@@ -1275,7 +1294,7 @@ func (fMgrHlpr *fileMgrHelper) moveFile(
       "fMgr='%v'\n", fMgr.absolutePathFileName)
   }
 
-  filePathDoesExist,
+  targetFilePathDoesExist,
     err = fMgrHlpr.doesFileMgrPathFileExist(
     targetFMgr,
     PreProcPathCode.None(),
@@ -1286,7 +1305,14 @@ func (fMgrHlpr *fileMgrHelper) moveFile(
     return err
   }
 
-  if !filePathDoesExist {
+  err = fMgrHlpr.lowLevelCloseFile(targetFMgr, ePrefix, "targetFMgr")
+
+  if err != nil {
+    return err
+  }
+
+  if !targetFilePathDoesExist {
+
     err = targetFMgr.dMgr.MakeDir()
 
     if err != nil {
@@ -1298,48 +1324,34 @@ func (fMgrHlpr *fileMgrHelper) moveFile(
         targetFMgr.dMgr.absolutePath,
         err.Error())
     }
-  }
 
-  if filePathDoesExist {
-
-    err = fMgrHlpr.lowLevelCloseFile(targetFMgr, ePrefix)
+  } else {
+    // targetFilePathDoesExist == true
+    err = fMgrHlpr.lowLevelDeleteFile(targetFMgr, ePrefix, "targetFMgr")
 
     if err != nil {
       return err
     }
 
-    err = os.Remove(targetFMgr.absolutePathFileName)
-
-    if err != nil {
-      return fmt.Errorf(ePrefix+
-        "\nos.Remove(targetFMgr.absolutePathFileName) "+
-        "returned an error.\n"+
-        "targetFMgr='%v'\nError='%v'",
-        targetFMgr.absolutePathFileName, err.Error())
-    }
   }
 
   // Close the source file
-  err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+  err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
 
   if err != nil {
     return err
   }
 
-  err = fMgrHlpr.lowLevelCloseFile(targetFMgr, ePrefix)
+  err = fMgrHlpr.lowLevelCloseFile(targetFMgr, ePrefix, "targetFMgr")
 
   if err != nil {
-    return fmt.Errorf(ePrefix+
-      "\nError closing targetFMgr\n"+
-      "%v\n", err.Error())
+    return err
   }
 
   // Now, open the source file
   srcFilePtr, err := os.Open(fMgr.absolutePathFileName)
 
   if err != nil {
-
-    _ = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
 
     return fmt.Errorf(ePrefix+
       "Error returned from os.Open(fMgr.absolutePathFileName).\n"+
@@ -1422,7 +1434,13 @@ func (fMgrHlpr *fileMgrHelper) moveFile(
     return fMgrHlpr.consolidateErrors(errs)
   }
 
-  filePathDoesExist,
+  err = fMgrHlpr.lowLevelDeleteFile(fMgr, ePrefix, "fMgr")
+
+  if err != nil {
+    return err
+  }
+
+  sourceFilePathDoesExist,
     err = fMgrHlpr.doesFileMgrPathFileExist(
     fMgr,
     PreProcPathCode.None(),
@@ -1435,7 +1453,7 @@ func (fMgrHlpr *fileMgrHelper) moveFile(
 
   errs = make([]error, 0, 10)
 
-  if filePathDoesExist {
+  if sourceFilePathDoesExist {
     err = fmt.Errorf(ePrefix+
       "\nError: Move operation failed. Source File was copied, \n"+
       "but was NOT deleted after copy operation.\n"+
@@ -1443,7 +1461,7 @@ func (fMgrHlpr *fileMgrHelper) moveFile(
     errs = append(errs, err)
   }
 
-  filePathDoesExist,
+  targetFilePathDoesExist,
     err = fMgrHlpr.doesFileMgrPathFileExist(
     targetFMgr,
     PreProcPathCode.None(),
@@ -1455,14 +1473,15 @@ func (fMgrHlpr *fileMgrHelper) moveFile(
     return fMgrHlpr.consolidateErrors(errs)
   }
 
-  if !filePathDoesExist {
-    return fmt.Errorf(ePrefix+
+  if !targetFilePathDoesExist {
+    err = fmt.Errorf(ePrefix+
       "\nError: The move operation failed!\n"+
       "The target file DOES NOT EXIST!\n"+
       "targetFMgr='%v'\n", targetFMgr.absolutePathFileName)
+    errs = append(errs, err)
   }
 
-  return nil
+  return fMgrHlpr.consolidateErrors(errs)
 }
 
 // openCreateFile - Helper method designed to open a
@@ -1532,7 +1551,7 @@ func (fMgrHlpr *fileMgrHelper) openCreateFile(
       return err
     }
 
-    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
 
     if err != nil {
       return err
@@ -1650,7 +1669,7 @@ func (fMgrHlpr *fileMgrHelper) openFile(
 
   // At this point, the file exists on disk. Close it!
 
-  err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+  err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
 
   if err != nil {
     return err
@@ -1756,7 +1775,7 @@ func (fMgrHlpr *fileMgrHelper) readFileSetup(
 
   if !filePathDoesExist {
 
-    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
 
     if err != nil {
       return err
@@ -1774,7 +1793,7 @@ func (fMgrHlpr *fileMgrHelper) readFileSetup(
       return err
     }
 
-    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
 
     if err != nil {
       return err
@@ -1798,7 +1817,7 @@ func (fMgrHlpr *fileMgrHelper) readFileSetup(
     invalidAccessType ||
     err2 != nil {
 
-    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
 
     if err != nil {
       return err
@@ -2193,7 +2212,7 @@ func (fMgrHlpr *fileMgrHelper) writeFileSetup(
 
   if !filePathDoesExist {
 
-    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
 
     if err != nil {
       return err
@@ -2211,7 +2230,7 @@ func (fMgrHlpr *fileMgrHelper) writeFileSetup(
       return err
     }
 
-    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
 
     if err != nil {
       return err
@@ -2235,7 +2254,7 @@ func (fMgrHlpr *fileMgrHelper) writeFileSetup(
     invalidAccessType ||
     err2 != nil {
 
-    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix)
+    err = fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
 
     if err != nil {
       return err

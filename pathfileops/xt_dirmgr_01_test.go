@@ -91,7 +91,7 @@ func TestDirMgr_CopyDirectory_01(t *testing.T) {
   targetDMgr, err := DirMgr{}.New(targetDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n" +
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n"+
       "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
     return
   }
@@ -101,7 +101,7 @@ func TestDirMgr_CopyDirectory_01(t *testing.T) {
   srcDMgr, err := DirMgr{}.New(srcDir1)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir1).\n" +
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir1).\n"+
       "srcDir1='%v'\nError='%v'\n", srcDir1, err.Error())
     return
   }
@@ -111,8 +111,8 @@ func TestDirMgr_CopyDirectory_01(t *testing.T) {
   errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
 
   if len(errs) > 0 {
-    for i:=0; i < len(errs); i++ {
-      t.Errorf("Error returned from srcDMgr.CopyDirectory(targetDMgr, fsc)\n" +
+    for i := 0; i < len(errs); i++ {
+      t.Errorf("Error returned from srcDMgr.CopyDirectory(targetDMgr, fsc)\n"+
         "targetDir='%v'\nError='%v'\n\n", targetDMgr.GetAbsolutePath(), errs[i].Error())
     }
 
@@ -123,19 +123,18 @@ func TestDirMgr_CopyDirectory_01(t *testing.T) {
   }
   // 5 txt src Files
   /*
-    "../filesfortest/levelfilesfortest/level_0_0_test.txt"
-    "../filesfortest/levelfilesfortest/level_0_1_test.txt"
-    "../filesfortest/levelfilesfortest/level_0_2_test.txt"
-    "../filesfortest/levelfilesfortest/level_0_3_test.txt"
-    "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+     "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+     "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+     "../filesfortest/levelfilesfortest/level_0_2_test.txt"
+     "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+     "../filesfortest/levelfilesfortest/level_0_4_test.txt"
   */
 
   fileNames := []string{"level_0_0_test.txt",
     "level_0_1_test.txt",
     "level_0_2_test.txt",
     "level_0_3_test.txt",
-    "level_0_4_test.txt" }
-
+    "level_0_4_test.txt"}
 
   fsc = FileSelectionCriteria{}
 
@@ -160,12 +159,12 @@ func TestDirMgr_CopyDirectory_01(t *testing.T) {
 
   }
 
-  for i:=0; i < fMgrCollection.GetNumOfFileMgrs(); i++ {
+  for i := 0; i < fMgrCollection.GetNumOfFileMgrs(); i++ {
 
     fMgr, err := fMgrCollection.GetFileMgrAtIndex(i)
 
     if err != nil {
-      t.Errorf("Error returned by fMgrCollection.GetFileMgrAtIndex(%v)\n" +
+      t.Errorf("Error returned by fMgrCollection.GetFileMgrAtIndex(%v)\n"+
         "Error='%v'\n", i, err.Error())
 
       _ = fh.DeleteDirPathAll(targetDir)
@@ -175,15 +174,15 @@ func TestDirMgr_CopyDirectory_01(t *testing.T) {
 
     fileName := fMgr.GetFileNameExt()
     foundFile := false
-    for k:=0;k < len(fileNames); k++ {
+    for k := 0; k < len(fileNames); k++ {
       if fileNames[k] == fileName {
         foundFile = true
       }
     }
 
     if foundFile == false {
-      t.Errorf("Error: File NOT Found. Expected to find specfic file Name.\n" +
-        "However, it WAS NOT FOUND!\nFileName='%v'", fileName )
+      t.Errorf("Error: File NOT Found. Expected to find specfic file Name.\n"+
+        "However, it WAS NOT FOUND!\nFileName='%v'", fileName)
     }
 
   }
@@ -215,7 +214,7 @@ func TestDirMgr_CopyDirectory_02(t *testing.T) {
   targetDMgr, err := DirMgr{}.New(targetDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n" +
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n"+
       "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
     return
   }
@@ -225,7 +224,7 @@ func TestDirMgr_CopyDirectory_02(t *testing.T) {
   srcDMgr, err := DirMgr{}.New(srcDir1)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir1).\n" +
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir1).\n"+
       "srcDir1='%v'\nError='%v'\n", srcDir1, err.Error())
     return
   }
@@ -267,7 +266,7 @@ func TestDirMgr_CopyDirectory_03(t *testing.T) {
   targetDMgr, err := DirMgr{}.New(targetDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n" +
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n"+
       "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
     return
   }
@@ -277,7 +276,7 @@ func TestDirMgr_CopyDirectory_03(t *testing.T) {
   srcDMgr, err := DirMgr{}.New(srcDir1)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir1).\n" +
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir1).\n"+
       "srcDir1='%v'\nError='%v'\n", srcDir1, err.Error())
     return
   }
@@ -323,7 +322,7 @@ func TestDirMgr_CopyDirectory_04(t *testing.T) {
   targetDMgr, err := DirMgr{}.New(targetDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n" +
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n"+
       "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
     return
   }
@@ -333,7 +332,7 @@ func TestDirMgr_CopyDirectory_04(t *testing.T) {
   srcDMgr, err := DirMgr{}.New(srcDir1)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir1).\n" +
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir1).\n"+
       "srcDir1='%v'\nError='%v'\n", srcDir1, err.Error())
     return
   }
@@ -379,7 +378,7 @@ func TestDirMgr_CopyDirectory_05(t *testing.T) {
   targetDMgr, err := DirMgr{}.New(targetDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n" +
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n"+
       "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
     return
   }
@@ -389,7 +388,7 @@ func TestDirMgr_CopyDirectory_05(t *testing.T) {
   srcDMgr, err := DirMgr{}.New(srcDir1)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir1).\n" +
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir1).\n"+
       "srcDir1='%v'\nError='%v'\n", srcDir1, err.Error())
     return
   }
@@ -401,10 +400,10 @@ func TestDirMgr_CopyDirectory_05(t *testing.T) {
   errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
 
   if len(errs) > 0 {
-    t.Errorf("Errors returned from srcDMgr.CopyDirectory(targetDMgr, fsc)\n" +
+    t.Errorf("Errors returned from srcDMgr.CopyDirectory(targetDMgr, fsc)\n"+
       "targetDir='%v'\n\n", targetDMgr.GetAbsolutePath())
 
-    for i:=0; i < len(errs); i++ {
+    for i := 0; i < len(errs); i++ {
       t.Errorf("%v", errs[i])
     }
 
@@ -459,11 +458,10 @@ func TestDirMgr_CopyDirectoryTree_01(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDir)
 
   if err != nil {
-    t.Errorf("Error returned from fh.DeleteDirPathAll(targetDir)\n" +
+    t.Errorf("Error returned from fh.DeleteDirPathAll(targetDir)\n"+
       "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
     return
   }
-
 
   targetDMgr, err := DirMgr{}.New(targetDir)
 
@@ -473,14 +471,13 @@ func TestDirMgr_CopyDirectoryTree_01(t *testing.T) {
     return
   }
 
-
   fsc := FileSelectionCriteria{}
 
   errs := srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)
 
   if len(errs) > 0 {
-    t.Errorf("Errors returned by srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)\n" +
-      "targetDMgr='%v'\nErrors:\n",  targetDMgr.GetAbsolutePath())
+    t.Errorf("Errors returned by srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)\n"+
+      "targetDMgr='%v'\nErrors:\n", targetDMgr.GetAbsolutePath())
 
     for i := 0; i < len(errs); i++ {
       t.Errorf("'%v'\n\n", errs[i].Error())
@@ -491,7 +488,7 @@ func TestDirMgr_CopyDirectoryTree_01(t *testing.T) {
     return
   }
 
-  if ! targetDMgr.DoesAbsolutePathExist() {
+  if !targetDMgr.DoesAbsolutePathExist() {
     t.Error("ERROR: The target directory path DOES NOT EXIST!!\n")
 
     return
@@ -500,7 +497,7 @@ func TestDirMgr_CopyDirectoryTree_01(t *testing.T) {
   srcDTreeInfo, err := srcDMgr.FindWalkDirFiles(fsc)
 
   if err != nil {
-    t.Errorf("Test Verification Error returned by srcDMgr.FindWalkDirFiles(fsc).\n" +
+    t.Errorf("Test Verification Error returned by srcDMgr.FindWalkDirFiles(fsc).\n"+
       "source directory='%v'\nError='%v'", srcDMgr.GetAbsolutePath(), err.Error())
 
     _ = fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath())
@@ -511,7 +508,7 @@ func TestDirMgr_CopyDirectoryTree_01(t *testing.T) {
   targetDTreeInfo, err := targetDMgr.FindWalkDirFiles(fsc)
 
   if err != nil {
-    t.Errorf("Test Verification Error returned by targetDMgr.FindWalkDirFiles(fsc).\n" +
+    t.Errorf("Test Verification Error returned by targetDMgr.FindWalkDirFiles(fsc).\n"+
       "target directory='%v'\nError='%v'", targetDMgr.GetAbsolutePath(), err.Error())
 
     _ = fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath())
@@ -536,7 +533,7 @@ func TestDirMgr_CopyDirectoryTree_01(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath())
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath()\n" +
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath()\n"+
       "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
   }
 
@@ -560,7 +557,7 @@ func TestDirMgr_CopyDirectoryTree_02(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDir)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirPathAll(targetDir).\n" +
+    t.Errorf("Error returned by fh.DeleteDirPathAll(targetDir).\n"+
       "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
     return
   }
@@ -588,7 +585,7 @@ func TestDirMgr_CopyDirectoryTree_02(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath())
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath()\n" +
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath()\n"+
       "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
   }
 
@@ -613,7 +610,7 @@ func TestDirMgr_CopyDirectoryTree_03(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDir)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirPathAll(targetDir)\n" +
+    t.Errorf("Error returned by fh.DeleteDirPathAll(targetDir)\n"+
       "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
     return
   }
@@ -643,7 +640,7 @@ func TestDirMgr_CopyDirectoryTree_03(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath())
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath()\n" +
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath()\n"+
       "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
   }
 
@@ -667,7 +664,7 @@ func TestDirMgr_CopyDirectoryTree_04(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDir)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirPathAll(targetDir).\n" +
+    t.Errorf("Error returned by fh.DeleteDirPathAll(targetDir).\n"+
       "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
     return
   }
@@ -693,7 +690,7 @@ func TestDirMgr_CopyDirectoryTree_04(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath())
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath()\n" +
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath()\n"+
       "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
   }
 
@@ -719,7 +716,7 @@ func TestDirMgr_CopyDirectoryTree_05(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDir)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirPathAll(targetDir).\n" +
+    t.Errorf("Error returned by fh.DeleteDirPathAll(targetDir).\n"+
       "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
     return
   }
@@ -738,8 +735,8 @@ func TestDirMgr_CopyDirectoryTree_05(t *testing.T) {
   errs := srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)
 
   if len(errs) > 0 {
-    t.Errorf("Errors returned by srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)\n" +
-      "targetDMgr='%v'\nErrors:\n",  targetDMgr.GetAbsolutePath())
+    t.Errorf("Errors returned by srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)\n"+
+      "targetDMgr='%v'\nErrors:\n", targetDMgr.GetAbsolutePath())
 
     for i := 0; i < len(errs); i++ {
       t.Errorf("'%v'\n\n", errs[i].Error())
@@ -760,7 +757,7 @@ func TestDirMgr_CopyDirectoryTree_05(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath())
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath()\n" +
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath()\n"+
       "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
   }
 
@@ -776,7 +773,7 @@ func TestDirMgr_CopyIn_01(t *testing.T) {
   err := fh.DeleteDirPathAll(origDir)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirPathAll(origDir).\n" +
+    t.Errorf("Error returned by fh.DeleteDirPathAll(origDir).\n"+
       "origDir='%v'\nError='%v'\n", origDir, err.Error())
     return
   }
@@ -784,7 +781,7 @@ func TestDirMgr_CopyIn_01(t *testing.T) {
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.New(origDir).\n" +
+    t.Errorf("Error returned from DirMgr{}.New(origDir).\n"+
       "origDir=='%v'\nError='%v'\n", origDir, err.Error())
     return
   }
@@ -794,7 +791,7 @@ func TestDirMgr_CopyIn_01(t *testing.T) {
   err = fh.DeleteDirPathAll(origDir2)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirPathAll(origDir2).\n" +
+    t.Errorf("Error returned by fh.DeleteDirPathAll(origDir2).\n"+
       "origDir2='%v'\nError='%v'\n", origDir2, err.Error())
     return
   }
@@ -802,7 +799,7 @@ func TestDirMgr_CopyIn_01(t *testing.T) {
   dMgr2, err := DirMgr{}.New(origDir2)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.New(origDir2).\n" +
+    t.Errorf("Error returned from DirMgr{}.New(origDir2).\n"+
       "origDir2=='%v'\nError='%v'\n", origDir2, err.Error())
 
     _ = fh.DeleteDirPathAll(origDir)
@@ -811,7 +808,7 @@ func TestDirMgr_CopyIn_01(t *testing.T) {
   }
 
   if dMgr2.path != origDir2 {
-    t.Errorf("Expected original dMgr2.path='%v'.\n" +
+    t.Errorf("Expected original dMgr2.path='%v'.\n"+
       "Instead, dMgr2.path='%v'\n", origDir2, dMgr2.path)
     _ = fh.DeleteDirPathAll(origDir)
     _ = fh.DeleteDirPathAll(origDir2)
@@ -821,77 +818,77 @@ func TestDirMgr_CopyIn_01(t *testing.T) {
   dMgr2.CopyIn(&dMgr)
 
   if dMgr2.isInitialized != dMgr.isInitialized {
-    t.Errorf("After CopyIn(), expected dMgr2.IsFInfoInitialized='%v'.\n" +
+    t.Errorf("After CopyIn(), expected dMgr2.IsFInfoInitialized='%v'.\n"+
       "Instead, dMgr2.IsFInfoInitialized='%v'.\n",
       dMgr.isInitialized, dMgr2.isInitialized)
   }
 
   if dMgr2.isInitialized != dMgr.isInitialized {
-    t.Errorf("After CopyIn(), expected dMgr2.IsFInfoInitialized='%v'.\n" +
+    t.Errorf("After CopyIn(), expected dMgr2.IsFInfoInitialized='%v'.\n"+
       "Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.isInitialized, dMgr2.isInitialized)
   }
 
   if dMgr2.originalPath != dMgr.originalPath {
-    t.Errorf("After CopyIn(), expected dMgr2.originalPath='%v'.\n" +
+    t.Errorf("After CopyIn(), expected dMgr2.originalPath='%v'.\n"+
       "Instead, dMgr2.originalPath='%v'.", dMgr.originalPath, dMgr2.originalPath)
   }
 
   if dMgr2.path != dMgr.path {
-    t.Errorf("After CopyIn(), expected dMgr2.path='%v'.\n" +
+    t.Errorf("After CopyIn(), expected dMgr2.path='%v'.\n"+
       "Instead, dMgr2.path='%v'.", dMgr.path, dMgr2.path)
   }
 
   if dMgr2.isPathPopulated != dMgr.isPathPopulated {
-    t.Errorf("After CopyIn(), expected dMgr2.isPathPopulated='%v'.\n" +
+    t.Errorf("After CopyIn(), expected dMgr2.isPathPopulated='%v'.\n"+
       "Instead, dMgr2.isPathPopulated='%v'.", dMgr.isPathPopulated, dMgr2.isPathPopulated)
   }
 
   if dMgr2.doesPathExist != dMgr.doesPathExist {
-    t.Errorf("After CopyIn(), expected dMgr2.doesPathExist='%v'.\n" +
+    t.Errorf("After CopyIn(), expected dMgr2.doesPathExist='%v'.\n"+
       "Instead, dMgr2.doesPathExist='%v'.", dMgr.doesPathExist, dMgr2.doesPathExist)
   }
 
   if dMgr2.parentPath != dMgr.parentPath {
-    t.Errorf("After CopyIn(), expected dMgr2.parentPath='%v'.\n" +
+    t.Errorf("After CopyIn(), expected dMgr2.parentPath='%v'.\n"+
       "Instead, dMgr2.parentPath='%v'.", dMgr.parentPath, dMgr2.parentPath)
   }
 
   if dMgr2.isParentPathPopulated != dMgr.isParentPathPopulated {
-    t.Errorf("After CopyIn(), expected dMgr2.isParentPathPopulated='%v'.\n" +
+    t.Errorf("After CopyIn(), expected dMgr2.isParentPathPopulated='%v'.\n"+
       "Instead, dMgr2.isParentPathPopulated='%v'.",
       dMgr.isParentPathPopulated, dMgr2.isParentPathPopulated)
   }
 
   if dMgr2.absolutePath != dMgr.absolutePath {
-    t.Errorf("After CopyIn(), expected dMgr2.absolutePath='%v'.\n" +
+    t.Errorf("After CopyIn(), expected dMgr2.absolutePath='%v'.\n"+
       "Instead, dMgr2.absolutePath='%v'.", dMgr.absolutePath, dMgr2.absolutePath)
   }
 
   if dMgr2.isAbsolutePathPopulated != dMgr.isAbsolutePathPopulated {
-    t.Errorf("After CopyIn(), expected dMgr2.isAbsolutePathPopulated='%v'.\n" +
+    t.Errorf("After CopyIn(), expected dMgr2.isAbsolutePathPopulated='%v'.\n"+
       "Instead, dMgr2.isAbsolutePathPopulated='%v'.",
       dMgr.isAbsolutePathPopulated, dMgr2.isAbsolutePathPopulated)
   }
 
   if dMgr2.doesAbsolutePathExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("After CopyIn(), expected dMgr2.doesAbsolutePathExist='%v'.\n" +
+    t.Errorf("After CopyIn(), expected dMgr2.doesAbsolutePathExist='%v'.\n"+
       "Instead, dMgr2.doesAbsolutePathExist='%v'.",
       dMgr.doesAbsolutePathExist, dMgr2.doesAbsolutePathExist)
   }
 
   if dMgr2.isAbsolutePathDifferentFromPath != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("After CopyIn(), expected dMgr2.isAbsolutePathDifferentFromPath='%v'.\n" +
+    t.Errorf("After CopyIn(), expected dMgr2.isAbsolutePathDifferentFromPath='%v'.\n"+
       "Instead, dMgr2.isAbsolutePathDifferentFromPath='%v'.",
       dMgr.isAbsolutePathDifferentFromPath, dMgr2.isAbsolutePathDifferentFromPath)
   }
 
   if dMgr2.volumeName != dMgr.volumeName {
-    t.Errorf("After CopyIn(), expected dMgr2.volumeName='%v'.\n" +
+    t.Errorf("After CopyIn(), expected dMgr2.volumeName='%v'.\n"+
       "Instead, dMgr2.volumeName='%v'.", dMgr.volumeName, dMgr2.volumeName)
   }
 
   if dMgr2.isVolumePopulated != dMgr.isVolumePopulated {
-    t.Errorf("After CopyIn(), expected dMgr2.isVolumePopulated='%v'.\n" +
+    t.Errorf("After CopyIn(), expected dMgr2.isVolumePopulated='%v'.\n"+
       "Instead, dMgr2.isVolumePopulated='%v'.", dMgr.isVolumePopulated, dMgr2.isVolumePopulated)
   }
 
@@ -902,14 +899,14 @@ func TestDirMgr_CopyIn_01(t *testing.T) {
   err = fh.DeleteDirPathAll(origDir)
 
   if err != nil {
-    t.Errorf("Test Clean-up Error returned by fh.DeleteDirPathAll(origDir).\n" +
+    t.Errorf("Test Clean-up Error returned by fh.DeleteDirPathAll(origDir).\n"+
       "origDir='%v'\nError='%v'\n", origDir, err.Error())
   }
 
   err = fh.DeleteDirPathAll(origDir2)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(origDir2).\n" +
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(origDir2).\n"+
       "origDir2='%v'\nError='%v'\n", origDir2, err.Error())
   }
 
@@ -925,7 +922,7 @@ func TestDirMgr_CopyOut_01(t *testing.T) {
   err := fh.DeleteDirPathAll(origDir)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirPathAll(origDir).\n" +
+    t.Errorf("Error returned by fh.DeleteDirPathAll(origDir).\n"+
       "origDir='%v'\nError='%v'\n", origDir, err.Error())
     return
   }
@@ -933,8 +930,8 @@ func TestDirMgr_CopyOut_01(t *testing.T) {
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.New(origDir).\n" +
-      "origDir=='%v'\n" +
+    t.Errorf("Error returned from DirMgr{}.New(origDir).\n"+
+      "origDir=='%v'\n"+
       "Error='%v'", origDir, err.Error())
     return
   }
@@ -944,7 +941,7 @@ func TestDirMgr_CopyOut_01(t *testing.T) {
   err = fh.DeleteDirPathAll(origDir2)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirPathAll(origDir2).\n" +
+    t.Errorf("Error returned by fh.DeleteDirPathAll(origDir2).\n"+
       "origDir2='%v'\nError='%v'\n", origDir2, err.Error())
     return
   }
@@ -952,7 +949,7 @@ func TestDirMgr_CopyOut_01(t *testing.T) {
   dMgr2, err := DirMgr{}.New(origDir2)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir2).\n" +
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir2).\n"+
       "origDir2=='%v'\nError='%v'", origDir2, err.Error())
 
     _ = fh.DeleteDirPathAll(origDir)
@@ -961,7 +958,7 @@ func TestDirMgr_CopyOut_01(t *testing.T) {
   }
 
   if dMgr2.path != origDir2 {
-    t.Errorf("Expected original dMgr2.path='%v'.\n" +
+    t.Errorf("Expected original dMgr2.path='%v'.\n"+
       "Instead, dMgr2.path='%v'",
       origDir2, dMgr2.path)
     _ = fh.DeleteDirPathAll(origDir)
@@ -972,83 +969,83 @@ func TestDirMgr_CopyOut_01(t *testing.T) {
   dMgr2 = dMgr.CopyOut()
 
   if dMgr2.isInitialized != dMgr.isInitialized {
-    t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.\n"+
       "Instead, dMgr2.IsFInfoInitialized='%v'.",
       dMgr.isInitialized, dMgr2.isInitialized)
   }
 
   if dMgr2.isInitialized != dMgr.isInitialized {
-    t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.\n"+
       "Instead, dMgr2.IsFInfoInitialized='%v'.",
       dMgr.isInitialized, dMgr2.isInitialized)
   }
 
   if dMgr2.originalPath != dMgr.originalPath {
-    t.Errorf("After CopyOut(), expected dMgr2.originalPath='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.originalPath='%v'.\n"+
       "Instead, dMgr2.originalPath='%v'.",
       dMgr.originalPath, dMgr2.originalPath)
   }
 
   if dMgr2.path != dMgr.path {
-    t.Errorf("After CopyOut(), expected dMgr2.path='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.path='%v'.\n"+
       "Instead, dMgr2.path='%v'.",
       dMgr.path, dMgr2.path)
   }
 
   if dMgr2.isPathPopulated != dMgr.isPathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isPathPopulated='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.isPathPopulated='%v'.\n"+
       "Instead, dMgr2.isPathPopulated='%v'.",
       dMgr.isPathPopulated, dMgr2.isPathPopulated)
   }
 
   if dMgr2.doesPathExist != dMgr.doesPathExist {
-    t.Errorf("After CopyOut(), expected dMgr2.doesPathExist='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.doesPathExist='%v'.\n"+
       "Instead, dMgr2.doesPathExist='%v'.",
       dMgr.doesPathExist, dMgr2.doesPathExist)
   }
 
   if dMgr2.parentPath != dMgr.parentPath {
-    t.Errorf("After CopyOut(), expected dMgr2.parentPath='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.parentPath='%v'.\n"+
       "Instead, dMgr2.parentPath='%v'.", dMgr.parentPath, dMgr2.parentPath)
   }
 
   if dMgr2.isParentPathPopulated != dMgr.isParentPathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isParentPathPopulated='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.isParentPathPopulated='%v'.\n"+
       "Instead, dMgr2.isParentPathPopulated='%v'.",
       dMgr.isParentPathPopulated, dMgr2.isParentPathPopulated)
   }
 
   if dMgr2.absolutePath != dMgr.absolutePath {
-    t.Errorf("After CopyOut(), expected dMgr2.absolutePath='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.absolutePath='%v'.\n"+
       "Instead, dMgr2.absolutePath='%v'.", dMgr.absolutePath, dMgr2.absolutePath)
   }
 
   if dMgr2.isAbsolutePathPopulated != dMgr.isAbsolutePathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathPopulated='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathPopulated='%v'.\n"+
       "Instead, dMgr2.isAbsolutePathPopulated='%v'.",
       dMgr.isAbsolutePathPopulated, dMgr2.isAbsolutePathPopulated)
   }
 
   if dMgr2.doesAbsolutePathExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("After CopyOut(), expected dMgr2.doesAbsolutePathExist='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.doesAbsolutePathExist='%v'.\n"+
       "Instead, dMgr2.doesAbsolutePathExist='%v'.",
       dMgr.doesAbsolutePathExist, dMgr2.doesAbsolutePathExist)
   }
 
   if dMgr2.isAbsolutePathDifferentFromPath != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathDifferentFromPath='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathDifferentFromPath='%v'.\n"+
       "Instead, dMgr2.isAbsolutePathDifferentFromPath='%v'.",
       dMgr.isAbsolutePathDifferentFromPath, dMgr2.isAbsolutePathDifferentFromPath)
   }
 
   if dMgr2.volumeName != dMgr.volumeName {
-    t.Errorf("After CopyOut(), expected dMgr2.volumeName='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.volumeName='%v'.\n"+
       "Instead, dMgr2.volumeName='%v'.",
       dMgr.volumeName, dMgr2.volumeName)
   }
 
   if dMgr2.isVolumePopulated != dMgr.isVolumePopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isVolumePopulated='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.isVolumePopulated='%v'.\n"+
       "Instead, dMgr2.isVolumePopulated='%v'.",
       dMgr.isVolumePopulated, dMgr2.isVolumePopulated)
   }
@@ -1060,7 +1057,7 @@ func TestDirMgr_CopyOut_01(t *testing.T) {
   err = fh.DeleteDirPathAll(origDir)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirPathAll(origDir).\n" +
+    t.Errorf("Error returned by fh.DeleteDirPathAll(origDir).\n"+
       "origDir='%v'\nError='%v'\n", origDir, err.Error())
     return
   }
@@ -1068,7 +1065,7 @@ func TestDirMgr_CopyOut_01(t *testing.T) {
   err = fh.DeleteDirPathAll(origDir2)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirPathAll(origDir2).\n" +
+    t.Errorf("Error returned by fh.DeleteDirPathAll(origDir2).\n"+
       "origDir2='%v'\nError='%v'\n", origDir2, err.Error())
     return
   }
@@ -1094,7 +1091,7 @@ func TestDirMgr_CopySubDirectoryTree_01(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDir)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirPathAll(targetDir).\n" +
+    t.Errorf("Error returned by fh.DeleteDirPathAll(targetDir).\n"+
       "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
   }
 
@@ -1110,10 +1107,9 @@ func TestDirMgr_CopySubDirectoryTree_01(t *testing.T) {
 
   errs := srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)
 
-
   if len(errs) > 0 {
-    t.Errorf("Errors returned by srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n" +
-      "targetDMgr='%v'\nErrors:\n",  targetDMgr.GetAbsolutePath())
+    t.Errorf("Errors returned by srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n"+
+      "targetDMgr='%v'\nErrors:\n", targetDMgr.GetAbsolutePath())
 
     for i := 0; i < len(errs); i++ {
       t.Errorf("'%v'\n\n", errs[i].Error())
@@ -1124,8 +1120,7 @@ func TestDirMgr_CopySubDirectoryTree_01(t *testing.T) {
     return
   }
 
-
-  if ! targetDMgr.DoesAbsolutePathExist() {
+  if !targetDMgr.DoesAbsolutePathExist() {
     t.Error("ERROR: The target directory path DOES NOT EXIST!!\n")
 
     return
@@ -1134,7 +1129,7 @@ func TestDirMgr_CopySubDirectoryTree_01(t *testing.T) {
   srcDTreeInfo, err := srcDMgr.FindWalkDirFiles(fsc)
 
   if err != nil {
-    t.Errorf("Test Verification Error returned by srcDMgr.FindWalkDirFiles(fsc).\n" +
+    t.Errorf("Test Verification Error returned by srcDMgr.FindWalkDirFiles(fsc).\n"+
       "source directory='%v'\nError='%v'", srcDMgr.GetAbsolutePath(), err.Error())
 
     _ = targetDMgr.DeleteAll()
@@ -1145,7 +1140,7 @@ func TestDirMgr_CopySubDirectoryTree_01(t *testing.T) {
   targetDTreeInfo, err := targetDMgr.FindWalkDirFiles(fsc)
 
   if err != nil {
-    t.Errorf("Test Verification Error returned by targetDMgr.FindWalkDirFiles(fsc).\n" +
+    t.Errorf("Test Verification Error returned by targetDMgr.FindWalkDirFiles(fsc).\n"+
       "target directory='%v'\nError='%v'", targetDMgr.GetAbsolutePath(), err.Error())
 
     _ = targetDMgr.DeleteAll()
@@ -1170,7 +1165,7 @@ func TestDirMgr_CopySubDirectoryTree_01(t *testing.T) {
   err = targetDMgr.DeleteAll()
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n" +
+    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n"+
       "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
   }
 
@@ -1196,7 +1191,7 @@ func TestDirMgr_CopySubDirectoryTree_02(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDir).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDir).\n"+
       "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
   }
 
@@ -1216,7 +1211,7 @@ func TestDirMgr_CopySubDirectoryTree_02(t *testing.T) {
 
   if len(errs) == 0 {
     t.Error("Expected Errors to be returned from srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n" +
-      "because 'srcDMgr' is INVALID!\n"+
+      "because 'srcDMgr' is INVALID!\n" +
       "However - NO ERRORS WERE RETURNED!!!\n")
 
   }
@@ -1226,7 +1221,7 @@ func TestDirMgr_CopySubDirectoryTree_02(t *testing.T) {
   err = targetDMgr.DeleteAll()
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n" +
+    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n"+
       "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
   }
 
@@ -1251,7 +1246,7 @@ func TestDirMgr_CopySubDirectoryTree_03(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDir).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDir).\n"+
       "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
     return
   }
@@ -1272,7 +1267,7 @@ func TestDirMgr_CopySubDirectoryTree_03(t *testing.T) {
 
   if len(errs) == 0 {
     t.Error("Expected Errors to be returned from srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n" +
-      "because 'targetDMgr' is INVALID!\n"+
+      "because 'targetDMgr' is INVALID!\n" +
       "However - NO ERRORS WERE RETURNED!!!\n")
 
   }
@@ -1282,13 +1277,12 @@ func TestDirMgr_CopySubDirectoryTree_03(t *testing.T) {
   err = targetDMgr.DeleteAll()
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n" +
+    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n"+
       "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
   }
 
   return
 }
-
 
 func TestDirMgr_CopySubDirectoryTree_04(t *testing.T) {
 
@@ -1308,7 +1302,7 @@ func TestDirMgr_CopySubDirectoryTree_04(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDir).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDir).\n"+
       "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
   }
 
@@ -1327,7 +1321,7 @@ func TestDirMgr_CopySubDirectoryTree_04(t *testing.T) {
   if len(errs) == 0 {
     t.Error("Expected Errors to be returned from " +
       "srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n" +
-      "because 'srcDMgr' DOES NOT EXIST !\n"+
+      "because 'srcDMgr' DOES NOT EXIST !\n" +
       "However - NO ERRORS WERE RETURNED!!!\n")
 
   }
@@ -1335,7 +1329,7 @@ func TestDirMgr_CopySubDirectoryTree_04(t *testing.T) {
   err = targetDMgr.DeleteAll()
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n" +
+    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n"+
       "Target Directory Absolute Path='%v'\nError='%v'\n",
       targetDMgr.GetAbsolutePath(), err.Error())
   }
@@ -1375,8 +1369,8 @@ func TestDirMgr_CopySubDirectoryTree_05(t *testing.T) {
   errs := srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) > 0 {
-    t.Errorf("Errors returned by srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n" +
-      "targetDMgr='%v'\nErrors:\n",  targetDMgr.GetAbsolutePath())
+    t.Errorf("Errors returned by srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n"+
+      "targetDMgr='%v'\nErrors:\n", targetDMgr.GetAbsolutePath())
 
     for i := 0; i < len(errs); i++ {
       t.Errorf("'%v'\n\n", errs[i].Error())
@@ -1398,7 +1392,7 @@ func TestDirMgr_CopySubDirectoryTree_05(t *testing.T) {
   srcDTreeInfo, err := srcDMgr.FindWalkDirFiles(fsc)
 
   if err != nil {
-    t.Errorf("Test Verification Error returned by srcDMgr.FindWalkDirFiles(fsc).\n" +
+    t.Errorf("Test Verification Error returned by srcDMgr.FindWalkDirFiles(fsc).\n"+
       "source directory='%v'\nError='%v'", srcDMgr.GetAbsolutePath(), err.Error())
 
     _ = targetDMgr.DeleteAll()
@@ -1411,7 +1405,7 @@ func TestDirMgr_CopySubDirectoryTree_05(t *testing.T) {
   targetDTreeInfo, err := targetDMgr.FindWalkDirFiles(fsc)
 
   if err != nil {
-    t.Errorf("Test Verification Error returned by targetDMgr.FindWalkDirFiles(fsc).\n" +
+    t.Errorf("Test Verification Error returned by targetDMgr.FindWalkDirFiles(fsc).\n"+
       "target directory='%v'\nError='%v'", targetDMgr.GetAbsolutePath(), err.Error())
 
     _ = targetDMgr.DeleteAll()
@@ -1425,8 +1419,8 @@ func TestDirMgr_CopySubDirectoryTree_05(t *testing.T) {
   targetDirs := targetDTreeInfo.Directories.GetNumOfDirs()
   targetDirs-- // Discount top level directories. Only count subdirectories
 
-  if srcDirs != targetDirs   {
-    t.Errorf("ERROR: Expected %v-directories would be created.\n" +
+  if srcDirs != targetDirs {
+    t.Errorf("ERROR: Expected %v-directories would be created.\n"+
       "Instead, %v-directories were created!\n",
       srcDirs, targetDirs)
 
@@ -1438,15 +1432,15 @@ func TestDirMgr_CopySubDirectoryTree_05(t *testing.T) {
   tFileInfo, err := targetDMgr.FindFilesBySelectCriteria(fsc)
 
   if err != nil {
-    t.Errorf("Error returned by targetDMgr.FindFilesBySelectCriteria(fsc).\n" +
-      "targetDMgr='%v'\nError='%v'\n",targetDMgr.GetAbsolutePath(), err.Error())
+    t.Errorf("Error returned by targetDMgr.FindFilesBySelectCriteria(fsc).\n"+
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
     _ = targetDMgr.DeleteAll()
 
     return
   }
 
   if tFileInfo.GetNumOfFileMgrs() > 0 {
-    t.Errorf("ERROR: Expected ZERO files in top level target directory.\n" +
+    t.Errorf("ERROR: Expected ZERO files in top level target directory.\n"+
       "Instead, the top level target directory had %v-files.\nTarget Directory='%v'\n",
       tFileInfo.GetNumOfFileMgrs(), targetDMgr.GetAbsolutePath())
   }
@@ -1454,7 +1448,7 @@ func TestDirMgr_CopySubDirectoryTree_05(t *testing.T) {
   err = targetDMgr.DeleteAll()
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n" +
+    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n"+
       "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
   }
 
@@ -1493,8 +1487,8 @@ func TestDirMgr_CopySubDirectoryTree_06(t *testing.T) {
   errs := srcDMgr.CopySubDirectoryTree(targetDMgr, false, fsc)
 
   if len(errs) > 0 {
-    t.Errorf("Errors returned by srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n" +
-      "targetDMgr='%v'\nErrors:\n",  targetDMgr.GetAbsolutePath())
+    t.Errorf("Errors returned by srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n"+
+      "targetDMgr='%v'\nErrors:\n", targetDMgr.GetAbsolutePath())
 
     for i := 0; i < len(errs); i++ {
       t.Errorf("'%v'\n\n", errs[i].Error())
@@ -1516,7 +1510,7 @@ func TestDirMgr_CopySubDirectoryTree_06(t *testing.T) {
   srcDTreeInfo, err := srcDMgr.FindWalkDirFiles(fsc)
 
   if err != nil {
-    t.Errorf("Test Verification Error returned by srcDMgr.FindWalkDirFiles(fsc).\n" +
+    t.Errorf("Test Verification Error returned by srcDMgr.FindWalkDirFiles(fsc).\n"+
       "source directory='%v'\nError='%v'", srcDMgr.GetAbsolutePath(), err.Error())
 
     _ = targetDMgr.DeleteAll()
@@ -1529,7 +1523,7 @@ func TestDirMgr_CopySubDirectoryTree_06(t *testing.T) {
   targetDTreeInfo, err := targetDMgr.FindWalkDirFiles(fsc)
 
   if err != nil {
-    t.Errorf("Test Verification Error returned by targetDMgr.FindWalkDirFiles(fsc).\n" +
+    t.Errorf("Test Verification Error returned by targetDMgr.FindWalkDirFiles(fsc).\n"+
       "target directory='%v'\nError='%v'", targetDMgr.GetAbsolutePath(), err.Error())
 
     _ = targetDMgr.DeleteAll()
@@ -1538,14 +1532,14 @@ func TestDirMgr_CopySubDirectoryTree_06(t *testing.T) {
   }
 
   srcDirs := srcDTreeInfo.Directories.GetNumOfDirs()
-  srcDirs-- // Discount top level directories. Only count subdirectories
-  srcDirs -= 2 // Eliminate the two empty directories.
+  srcDirs--    // Discount top level directories. Only count subdirectories
+  srcDirs -= 1 // Eliminate the single empty directory.
 
   targetDirs := targetDTreeInfo.Directories.GetNumOfDirs()
   targetDirs-- // Discount top level directories. Only count subdirectories
 
-  if srcDirs != targetDirs   {
-    t.Errorf("ERROR: Expected %v-directories would be created.\n" +
+  if srcDirs != targetDirs {
+    t.Errorf("ERROR: Expected %v-directories would be created.\n"+
       "Instead, %v-directories were created!\n",
       srcDirs, targetDirs)
 
@@ -1557,15 +1551,15 @@ func TestDirMgr_CopySubDirectoryTree_06(t *testing.T) {
   tFileInfo, err := targetDMgr.FindFilesBySelectCriteria(fsc)
 
   if err != nil {
-    t.Errorf("Error returned by targetDMgr.FindFilesBySelectCriteria(fsc).\n" +
-      "targetDMgr='%v'\nError='%v'\n",targetDMgr.GetAbsolutePath(), err.Error())
+    t.Errorf("Error returned by targetDMgr.FindFilesBySelectCriteria(fsc).\n"+
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
     _ = targetDMgr.DeleteAll()
 
     return
   }
 
   if tFileInfo.GetNumOfFileMgrs() > 0 {
-    t.Errorf("ERROR: Expected ZERO files in top level target directory.\n" +
+    t.Errorf("ERROR: Expected ZERO files in top level target directory.\n"+
       "Instead, the top level target directory had %v-files.\nTarget Directory='%v'\n",
       tFileInfo.GetNumOfFileMgrs(), targetDMgr.GetAbsolutePath())
   }
@@ -1573,7 +1567,7 @@ func TestDirMgr_CopySubDirectoryTree_06(t *testing.T) {
   err = targetDMgr.DeleteAll()
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n" +
+    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n"+
       "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
   }
 

@@ -340,7 +340,7 @@ func TestFileHelper_CopyFileByLink_12(t *testing.T) {
   }
 
   if !fh.DoesFileExist(destFile) {
-    t.Errorf("Error: The copy by link operation failed! " +
+    t.Errorf("Error: The copy by link operation failed! "+
       "The destination file does NOT exist.\n"+
       "destFile='%v'\n",
       destFile)
@@ -351,22 +351,22 @@ func TestFileHelper_CopyFileByLink_12(t *testing.T) {
   finfoSrc, err := os.Stat(srcFile)
 
   if err != nil {
-    t.Errorf("Error returned by os.Stat(srcFile).\n" +
+    t.Errorf("Error returned by os.Stat(srcFile).\n"+
       "srcFile='%v'\nError='%v'", srcFile, err.Error())
   }
 
   finfoDest, err := os.Stat(destFile)
 
-  if err !=nil {
-    t.Errorf("Error returned by os.Stat(destFile).\n" +
+  if err != nil {
+    t.Errorf("Error returned by os.Stat(destFile).\n"+
       "destFile='%v'\nError='%v'", destFile, err.Error())
     return
   }
 
   if finfoSrc.Size() != finfoDest.Size() {
-    t.Errorf("Error: Size of source file does NOT match " +
+    t.Errorf("Error: Size of source file does NOT match "+
       "size of destination file.\nSourceFileSize='%v' DestinationFileSize='%v'\n",
-      finfoSrc.Size(), finfoDest.Size(),)
+      finfoSrc.Size(), finfoDest.Size())
   }
 
   err = fh.DeleteDirFile(destFile)
@@ -431,8 +431,9 @@ func TestFileHelper_CreateFile_01(t *testing.T) {
 
 func TestFileHelper_CreateFile_02(t *testing.T) {
   // Uses 'Create' to overwrite existing file
-  tstFile := "..//logTest//testoverwrite//TestOverwrite001.txt"
   fh := FileHelper{}
+
+  tstFile := fh.AdjustPathSlash("../checkfiles/TestOverwrite001.txt")
 
   if fh.DoesFileExist(tstFile) {
     err := fh.DeleteDirFile(tstFile)
@@ -442,7 +443,7 @@ func TestFileHelper_CreateFile_02(t *testing.T) {
   }
 
   if fh.DoesFileExist(tstFile) {
-    t.Error(fmt.Sprintf("Error: Deletion Failed!\n" +
+    t.Error(fmt.Sprintf("Error: Deletion Failed!\n"+
       "File %v should not exist!",
       tstFile))
     _ = fh.DeleteDirFile(tstFile)
@@ -574,7 +575,7 @@ func TestFileHelper_CreateFile_06(t *testing.T) {
   fPtr, err := fh.CreateFile(testFilePath)
 
   if err != nil {
-    t.Errorf("Error returned from fh.CreateFile(testFilePath).\n" +
+    t.Errorf("Error returned from fh.CreateFile(testFilePath).\n"+
       "testFilePath='%v'\nError='%v'\n", testFilePath, err.Error())
 
   }
@@ -590,8 +591,8 @@ func TestFileHelper_CreateFile_06(t *testing.T) {
   err = fh.DeleteDirFile(testFilePath)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirFile(testFilePath).\n" +
-      "testFilePath='%v'\nError='%v'\n",testFilePath, err.Error())
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirFile(testFilePath).\n"+
+      "testFilePath='%v'\nError='%v'\n", testFilePath, err.Error())
   }
 
 }
@@ -671,7 +672,7 @@ func TestFileHelper_DeleteDirPathAll_04(t *testing.T) {
   err := os.RemoveAll(targetPath)
 
   if err != nil {
-    t.Errorf("Test Setup Error: os.RemoveAll(targetPath) FAILED!\n" +
+    t.Errorf("Test Setup Error: os.RemoveAll(targetPath) FAILED!\n"+
       "targetPath='%v'\nError='%v'\n",
       targetPath, err.Error())
     return
@@ -680,7 +681,7 @@ func TestFileHelper_DeleteDirPathAll_04(t *testing.T) {
   err = fh.MakeDirAll(targetPath)
 
   if err != nil {
-    t.Errorf("Test Setup Error: fh.MakeDirAll(targetPath) FAILED!\n" +
+    t.Errorf("Test Setup Error: fh.MakeDirAll(targetPath) FAILED!\n"+
       "targetPath='%v'\nError='%v'\n",
       targetPath, err.Error())
 
@@ -690,7 +691,7 @@ func TestFileHelper_DeleteDirPathAll_04(t *testing.T) {
   err = fh.DeleteDirPathAll(basePath)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirPathAll(basePath).\n" +
+    t.Errorf("Error returned by fh.DeleteDirPathAll(basePath).\n"+
       "basePath='%v'\nError='%v'\n", basePath, err.Error())
   }
 
@@ -713,44 +714,43 @@ func TestFileHelper_DeleteDirPathAll_05(t *testing.T) {
   destAry := make([]string, 0, 50)
 
   srcAry = append(srcAry,
-    fh.AdjustPathSlash(sourcePath + "/" + "level_0_0_test.txt"))
+    fh.AdjustPathSlash(sourcePath+"/"+"level_0_0_test.txt"))
 
   destAry = append(destAry,
-    fh.AdjustPathSlash( targetPath + "/" + "level_0_0_test.txt"))
+    fh.AdjustPathSlash(targetPath+"/"+"level_0_0_test.txt"))
 
   srcAry = append(srcAry,
-    fh.AdjustPathSlash(sourcePath + "/" + "level_0_1_test.txt"))
+    fh.AdjustPathSlash(sourcePath+"/"+"level_0_1_test.txt"))
 
   destAry = append(destAry,
-    fh.AdjustPathSlash( targetPath + "/" + "level_0_1_test.txt"))
+    fh.AdjustPathSlash(targetPath+"/"+"level_0_1_test.txt"))
 
   srcAry = append(srcAry,
-    fh.AdjustPathSlash(sourcePath + "/" + "level_0_2_test.txt"))
+    fh.AdjustPathSlash(sourcePath+"/"+"level_0_2_test.txt"))
 
   destAry = append(destAry,
-    fh.AdjustPathSlash( targetPath + "/" + "level_0_2_test.txt"))
+    fh.AdjustPathSlash(targetPath+"/"+"level_0_2_test.txt"))
 
   srcAry = append(srcAry,
-    fh.AdjustPathSlash(sourcePath + "/" + "level_0_3_test.txt"))
+    fh.AdjustPathSlash(sourcePath+"/"+"level_0_3_test.txt"))
 
   destAry = append(destAry,
-    fh.AdjustPathSlash( targetPath + "/" + "level_0_3_test.txt"))
+    fh.AdjustPathSlash(targetPath+"/"+"level_0_3_test.txt"))
 
   srcAry = append(srcAry,
-    fh.AdjustPathSlash(sourcePath + "/" + "level_0_4_test.txt"))
+    fh.AdjustPathSlash(sourcePath+"/"+"level_0_4_test.txt"))
 
   destAry = append(destAry,
-    fh.AdjustPathSlash( targetPath + "/" + "level_0_4_test.txt"))
+    fh.AdjustPathSlash(targetPath+"/"+"level_0_4_test.txt"))
 
   targetPath = fh.AdjustPathSlash(targetPath)
-
 
   targetPath = fh.AdjustPathSlash(targetPath)
 
   err := os.RemoveAll(basePath)
 
   if err != nil {
-    t.Errorf("Test Setup Error: os.RemoveAll(basePath) FAILED!\n" +
+    t.Errorf("Test Setup Error: os.RemoveAll(basePath) FAILED!\n"+
       "basePath='%v'\nError='%v'\n",
       basePath, err.Error())
     return
@@ -759,27 +759,26 @@ func TestFileHelper_DeleteDirPathAll_05(t *testing.T) {
   err = fh.MakeDirAll(targetPath)
 
   if err != nil {
-    t.Errorf("Test Setup Error: fh.MakeDirAll(targetPath) FAILED!\n" +
+    t.Errorf("Test Setup Error: fh.MakeDirAll(targetPath) FAILED!\n"+
       "targetPath='%v'\nError='%v'\n",
       targetPath, err.Error())
 
     return
   }
 
+  for i := 0; i < len(srcAry); i++ {
 
-  for i:=0; i < len(srcAry); i++ {
-
-    err := fh.CopyFileByIo(srcAry[i],destAry[i])
+    err := fh.CopyFileByIo(srcAry[i], destAry[i])
 
     if err != nil {
-      t.Errorf("Error returned by fh.CopyFileByIo(srcAry[%v],destAry[%v]). \n" +
+      t.Errorf("Error returned by fh.CopyFileByIo(srcAry[%v],destAry[%v]). \n"+
         "srcAry='%v'\ndestAry='%v'\nError='%v'", i, i, srcAry[i], destAry[i], err.Error())
 
       err = os.RemoveAll(basePath)
 
       if err != nil {
 
-        t.Errorf("Secondary Clean-Up Error returned by os.RemoveAll(basePath).\n" +
+        t.Errorf("Secondary Clean-Up Error returned by os.RemoveAll(basePath).\n"+
           "basePath='%v'\nError='%v'\n", basePath, err.Error())
       }
 
@@ -789,13 +788,13 @@ func TestFileHelper_DeleteDirPathAll_05(t *testing.T) {
   }
 
   if !fh.DoesFileExist(testFile) {
-    t.Errorf("Test Setup FAILED! Test Files DO NOT EXIST!\n" +
+    t.Errorf("Test Setup FAILED! Test Files DO NOT EXIST!\n"+
       "testfile='%v'", testFile)
 
     err = os.RemoveAll(basePath)
 
     if err != nil {
-      t.Errorf("Secondary Clean-Up Error returned by os.RemoveAll(basePath).\n" +
+      t.Errorf("Secondary Clean-Up Error returned by os.RemoveAll(basePath).\n"+
         "basePath='%v'\nError='%v'\n", basePath, err.Error())
     }
 
@@ -805,7 +804,7 @@ func TestFileHelper_DeleteDirPathAll_05(t *testing.T) {
   err = fh.DeleteDirPathAll(basePath)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirPathAll(basePath).\n" +
+    t.Errorf("Error returned by fh.DeleteDirPathAll(basePath).\n"+
       "basePath='%v'\nError='%v'\n", basePath, err.Error())
   }
 
@@ -934,7 +933,7 @@ func TestFileHelper_DoesFileInfoExist_04(t *testing.T) {
   doesFileExist, fInfo, err := fh.DoesFileInfoExist(testFile)
 
   if err != nil {
-    t.Error("Error return from fh.DoesFileInfoExist(testFile).\n" +
+    t.Error("Error return from fh.DoesFileInfoExist(testFile).\n"+
       "testFile='%v'\nError='%v'\n",
       testFile, err.Error())
   }
@@ -1040,14 +1039,14 @@ func TestFileHelper_DoesThisFileExist_01(t *testing.T) {
   pathFileDoesExist, err := fh.DoesThisFileExist(testDirStr)
 
   if err != nil {
-    t.Errorf("Error: Non-Path Error returned from fh.DoesThisFileExist(testDirStr)\n" +
+    t.Errorf("Error: Non-Path Error returned from fh.DoesThisFileExist(testDirStr)\n"+
       "testDirStr='%v'\nError='%v'\n", testDirStr, err.Error())
     return
   }
 
   if pathFileDoesExist {
-    t.Errorf("Error: Expected result from exitence test = 'File Does NOT Exist!\n" +
-      "Instead, existence test= 'File DOES Exist!\n" +
+    t.Errorf("Error: Expected result from exitence test = 'File Does NOT Exist!\n"+
+      "Instead, existence test= 'File DOES Exist!\n"+
       "testDirStr='%v'", testDirStr)
   }
 
@@ -1063,7 +1062,7 @@ func TestFileHelper_DoesThisFileExist_02(t *testing.T) {
   if err == nil {
     t.Error("Expected an error return from fh.DoesThisFileExist(testDirStr)\n" +
       "because input parameter 'testDirStr' is an empty string!\n" +
-      "However, NO ERROR WAS RETURNED!!!" )
+      "However, NO ERROR WAS RETURNED!!!")
   }
 }
 
@@ -1077,7 +1076,7 @@ func TestFileHelper_DoesThisFileExist_03(t *testing.T) {
   if err == nil {
     t.Error("Expected an error return from fh.DoesThisFileExist(testDirStr)\n" +
       "because input parameter 'testDirStr' consists entirely of empty spaces!\n" +
-      "However, NO ERROR WAS RETURNED!!!" )
+      "However, NO ERROR WAS RETURNED!!!")
   }
 }
 
@@ -1089,14 +1088,14 @@ func TestFileHelper_DoesThisFileExist_04(t *testing.T) {
   pathFileDoesExist, err := fh.DoesThisFileExist(testDirStr)
 
   if err != nil {
-    t.Errorf("Error: Error returned from fh.DoesThisFileExist(testDirStr)\n" +
+    t.Errorf("Error: Error returned from fh.DoesThisFileExist(testDirStr)\n"+
       "testDirStr='%v'\nError='%v'\n", testDirStr, err.Error())
     return
   }
 
   if !pathFileDoesExist {
-    t.Errorf("Error: Expected result from exitence test = 'File DOES Exist!\n" +
-      "Instead, existence test= 'File Does NOT Exist!\n" +
+    t.Errorf("Error: Expected result from exitence test = 'File DOES Exist!\n"+
+      "Instead, existence test= 'File Does NOT Exist!\n"+
       "testDirStr='%v'", testDirStr)
   }
 
@@ -1110,14 +1109,14 @@ func TestFileHelper_DoesThisFileExist_05(t *testing.T) {
   pathFileDoesExist, err := fh.DoesThisFileExist(testDirStr)
 
   if err != nil {
-    t.Errorf("Error: Error returned from fh.DoesThisFileExist(testDirStr)\n" +
+    t.Errorf("Error: Error returned from fh.DoesThisFileExist(testDirStr)\n"+
       "testDirStr='%v'\nError='%v'\n", testDirStr, err.Error())
     return
   }
 
   if !pathFileDoesExist {
-    t.Errorf("Error: Expected result from exitence test = 'Directory DOES Exist!\n" +
-      "Instead, existence test= 'Directory Does NOT Exist!\n" +
+    t.Errorf("Error: Expected result from exitence test = 'Directory DOES Exist!\n"+
+      "Instead, existence test= 'Directory Does NOT Exist!\n"+
       "testDirStr='%v'", testDirStr)
   }
 
@@ -1131,14 +1130,14 @@ func TestFileHelper_DoesThisFileExist_06(t *testing.T) {
   pathFileDoesExist, err := fh.DoesThisFileExist(testDirStr)
 
   if err != nil {
-    t.Errorf("Error: Error returned from fh.DoesThisFileExist(testDirStr)\n" +
+    t.Errorf("Error: Error returned from fh.DoesThisFileExist(testDirStr)\n"+
       "testDirStr='%v'\nError='%v'\n", testDirStr, err.Error())
     return
   }
 
   if pathFileDoesExist {
-    t.Errorf("Error: Expected result from exitence test = 'Directory DOES NOT Exist!\n" +
-      "Instead, existence test= 'Directory DOES Exist!\n" +
+    t.Errorf("Error: Expected result from exitence test = 'Directory DOES NOT Exist!\n"+
+      "Instead, existence test= 'Directory DOES Exist!\n"+
       "testDirStr='%v'", testDirStr)
   }
 }
@@ -1307,7 +1306,6 @@ func TestFileHelper_FindFilesInPath_02(t *testing.T) {
 
 }
 
-
 func TestFileHelper_FindFilesInPath_03(t *testing.T) {
   fh := FileHelper{}
 
@@ -1474,7 +1472,7 @@ func TestFileHelper_FilterFileName_02(t *testing.T) {
   fModTime, err := time.Parse(fmtstr, fModTimeStr)
 
   if err != nil {
-    t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr).\n" +
+    t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr).\n"+
       "fmtstr='%v'  fModTimeStr='%v'\nError='%v'\n",
       fmtstr, fModTimeStr, err.Error())
   }
@@ -1508,7 +1506,7 @@ func TestFileHelper_FilterFileName_02(t *testing.T) {
   isFound, err := fh.FilterFileName(fia, fsc)
 
   if !isFound {
-    t.Errorf("File was NOT found. File should have been found.\n" +
+    t.Errorf("File was NOT found. File should have been found.\n"+
       "fia.Name()='%v fia.ModTime()='%v'\n",
       fia.Name(), fia.ModTime().Format(fmtstr))
   }
@@ -1526,7 +1524,7 @@ func TestFileHelper_FilterFileName_03(t *testing.T) {
   fModTime, err := time.Parse(fmtstr, fModTimeStr)
 
   if err != nil {
-    t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr).\n" +
+    t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr).\n"+
       "fmtstr='%v' fModTimeStr='%v'\nError='%v'", fmtstr, fModTimeStr, err.Error())
   }
 
@@ -1573,7 +1571,7 @@ func TestFileHelper_FilterFileName_04(t *testing.T) {
   fModTime, err := time.Parse(fmtstr, fModTimeStr)
 
   if err != nil {
-    t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr).\n" +
+    t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr).\n"+
       "fmtstr='%v' fModTimeStr='%v'\nError='%v'\n",
       fmtstr, fModTimeStr, err.Error())
   }
@@ -1718,7 +1716,7 @@ func TestFileHelper_FilterFileName_07(t *testing.T) {
   fModTime, err := time.Parse(fmtstr, fModTimeStr)
 
   if err != nil {
-    t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr).\n" +
+    t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr).\n"+
       "fmtstr='%v' fModTimeStr='%v'\nError='%v'\n",
       fmtstr, fModTimeStr, err.Error())
   }
