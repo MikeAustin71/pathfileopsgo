@@ -967,9 +967,17 @@ func (fMgrHlpr *fileMgrHelper) flushBytesToDisk(
   return fMgrHlpr.consolidateErrors(errs)
 }
 
+// lowLevelCopyByIO - Helper method which implements
+// the copy by input/output operation. If the input
+// parameter 'localBufferSize' is greater than zero,
+// the copy operation will be implemented using a local
+// buffer of type []byte. The size of this []byte array
+// is therefore specified by 'localBufferSize'.
+//
 func (fMgrHlpr *fileMgrHelper) lowLevelCopyByIO(
   fMgr *FileMgr,
   targetFMgr *FileMgr,
+  localBufferSize int,
   createTargetDir bool,
   ePrefix string,
   fMgrLabel string,
@@ -1070,37 +1078,58 @@ func (fMgrHlpr *fileMgrHelper) lowLevelCopyByIO(
     return err
   }
 
-  targetFMgrFileDoesExist, err = targetFMgr.dMgr.DoesThisDirectoryExist()
+  if targetFMgrFileDoesExist {
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "\nError returned by %v.dMgr.DoesThisDirectoryExist()\n"+
-      "%v='%v'\nError='%v'\n",
-      targetFMgrLabel, targetFMgrLabel, targetFMgr.absolutePathFileName, err.Error())
-  }
+    if targetFMgr.actualFileInfo.Mode().IsDir() {
+      return fmt.Errorf(ePrefix+
+        "\nError: %v is NOT A FILE! IT IS A DIRECTORY!!\n"+
+        "%v='%v'\n",
+        targetFMgrLabel, targetFMgrLabel, targetFMgr.absolutePathFileName)
+    }
 
-  if !targetFMgrFileDoesExist && createTargetDir {
+    if !targetFMgr.actualFileInfo.Mode().IsRegular() {
 
-    err = targetFMgr.dMgr.MakeDir()
+      return fmt.Errorf(ePrefix+
+        "\nError: %v exists and is NOT a 'regular' file.\n"+
+        "%v='%v'\n",
+        targetFMgrLabel, targetFMgrLabel, targetFMgr.absolutePathFileName)
+
+    }
+
+  } else {
+
+    targetFMgrFileDoesExist, err = targetFMgr.dMgr.DoesThisDirectoryExist()
 
     if err != nil {
       return fmt.Errorf(ePrefix+
-        "\nError returned by %v.dMgr.MakeDir()\n"+
-        "%v.dMgr='%v'\n"+
-        "Error='%v'\n",
+        "\nError returned by %v.dMgr.DoesThisDirectoryExist()\n"+
+        "%v='%v'\nError='%v'\n",
         targetFMgrLabel, targetFMgrLabel, targetFMgr.absolutePathFileName, err.Error())
     }
 
-  } else if !targetFMgrFileDoesExist && !createTargetDir {
+    if !targetFMgrFileDoesExist && createTargetDir {
 
-    return fmt.Errorf(ePrefix+
-      "\nError: %v directory DOES NOT EXIST!\n"+
-      "%v='%v'\n",
-      targetFMgrLabel, targetFMgrLabel, targetFMgr.absolutePathFileName)
+      err = targetFMgr.dMgr.MakeDir()
+
+      if err != nil {
+        return fmt.Errorf(ePrefix+
+          "\nError returned by %v.dMgr.MakeDir()\n"+
+          "%v.dMgr='%v'\n"+
+          "Error='%v'\n",
+          targetFMgrLabel, targetFMgrLabel, targetFMgr.absolutePathFileName, err.Error())
+      }
+
+    } else if !targetFMgrFileDoesExist && !createTargetDir {
+
+      return fmt.Errorf(ePrefix+
+        "\nError: %v directory DOES NOT EXIST!\n"+
+        "%v='%v'\n",
+        targetFMgrLabel, targetFMgrLabel, targetFMgr.absolutePathFileName)
+    }
   }
 
   // First, open the source file
-  inPtr, err := os.Open(fMgr.absolutePathFileName)
+  srcPtr, err := os.Open(fMgr.absolutePathFileName)
 
   if err != nil {
     return fmt.Errorf(ePrefix+
@@ -1109,7 +1138,7 @@ func (fMgrHlpr *fileMgrHelper) lowLevelCopyByIO(
       fMgrLabel, fMgrLabel, fMgr.absolutePathFileName)
   }
 
-  outPtr, err2 := os.Create(targetFMgr.absolutePathFileName)
+  destPtr, err2 := os.Create(targetFMgr.absolutePathFileName)
 
   if err2 != nil {
 
@@ -1119,13 +1148,18 @@ func (fMgrHlpr *fileMgrHelper) lowLevelCopyByIO(
       targetFMgrLabel, targetFMgrLabel,
       targetFMgr.absolutePathFileName, err2.Error())
 
-    _ = inPtr.Close()
+    _ = srcPtr.Close()
 
     return err
   }
 
-  // TODO use io.CopyBuffer
-  bytesCopied, err2 := io.Copy(outPtr, inPtr)
+  var byteBuff []byte
+
+  if localBufferSize > 0 {
+    byteBuff = make([]byte, localBufferSize)
+  }
+
+  bytesCopied, err2 := io.CopyBuffer(destPtr, srcPtr, byteBuff)
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
@@ -1135,36 +1169,99 @@ func (fMgrHlpr *fileMgrHelper) lowLevelCopyByIO(
       fMgrLabel, fMgr.absolutePathFileName,
       targetFMgrLabel, targetFMgr.absolutePathFileName,
       err2.Error())
-    _ = inPtr.Close()
-    _ = outPtr.Close()
+    byteBuff = nil
+    _ = srcPtr.Close()
+    _ = destPtr.Close()
     return err
   }
 
-  err2 = outPtr.Sync()
+  errs := make([]error, 0, 5)
 
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+
+  err = destPtr.Sync()
+
+  if err != nil {
+    errs = append(errs, fmt.Errorf(ePrefix+
       "\nError returned by %v.Sync()\n"+
       "%v='%v'\nError='%v'\n",
       targetFMgrLabel,
       targetFMgrLabel, targetFMgr.absolutePathFileName,
-      err2.Error())
-    _ = inPtr.Close()
-    _ = outPtr.Close()
-    return err
+      err.Error()))
   }
 
-  if bytesCopied != fMgr.actualFileInfo.Size() {
+  byteBuff = nil
+
+  err = srcPtr.Close()
+
+  if err != nil {
+    errs = append(errs, fmt.Errorf(ePrefix+
+      "\nError returned by srcPtr.Close()\n"+
+      "srcPtr=%v='%v'\nError='%v'\n",
+      fMgrLabel, fMgr.absolutePathFileName,
+      err.Error()))
+  }
+
+  srcPtr = nil
+
+  err = destPtr.Close()
+
+  if err != nil {
+    errs = append(errs, fmt.Errorf(ePrefix+
+      "\nError returned by destPtr.Close()\n"+
+      "destPtr=%v='%v'\nError='%v'\n",
+      targetFMgrLabel, targetFMgr.absolutePathFileName,
+      err.Error()))
+  }
+
+  destPtr = nil
+
+  if len(errs) > 0 {
+    return fMgrHlpr.consolidateErrors(errs)
+  }
+
+  targetFMgrFileDoesExist,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    targetFMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    targetFMgrLabel+".absolutePathFileName")
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nAfter Copy IO operation, %v "+
+      "generated non-path error!\n"+
+      "%v", targetFMgrLabel, err.Error())
+  }
+
+  if !targetFMgrFileDoesExist {
+    return fmt.Errorf(ePrefix+
+      "\nERROR: After Copy IO operation, the destination file DOES NOT EXIST!\n"+
+      "Destination File = %v='%v'\n",
+      targetFMgrLabel, targetFMgr.absolutePathFileName)
+  }
+
+  srcFileSize := fMgr.actualFileInfo.Size()
+
+  if bytesCopied != srcFileSize {
     err = fmt.Errorf(ePrefix+
       "\nError: Bytes Copied does NOT equal bytes "+
       "in source file!\n"+
       "Source File Bytes='%v'   Bytes Coped='%v'\n"+
-      "%v='%v'\n%v='%v'\n",
-      fMgr.actualFileInfo.Size(), bytesCopied,
+      "Source File=%v='%v'\nDestination File=%v='%v'\n",
+      srcFileSize, bytesCopied,
       fMgrLabel, fMgr.absolutePathFileName,
       targetFMgrLabel, targetFMgr.absolutePathFileName)
-    _ = inPtr.Close()
-    _ = outPtr.Close()
+    return err
+  }
+
+  if targetFMgr.actualFileInfo.Size() != srcFileSize {
+    err = fmt.Errorf(ePrefix+
+      "\nError: Bytes is source file do NOT equal bytes "+
+      "in destination file!\n"+
+      "Source File Bytes='%v'   Destination File Bytes='%v'\n"+
+      "Source File=%v='%v'\nDestination File=%v='%v'\n",
+      srcFileSize, targetFMgr.actualFileInfo.Size(),
+      fMgrLabel, fMgr.absolutePathFileName,
+      targetFMgrLabel, targetFMgr.absolutePathFileName)
     return err
   }
 

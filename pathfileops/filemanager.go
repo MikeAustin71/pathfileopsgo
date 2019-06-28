@@ -202,6 +202,31 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
 
   ePrefix := "FileMgr.CopyFileMgrByIo() "
 
+  fMgrHlpr := fileMgrHelper{}
+
+  var err error
+
+  fMgr.dataMutex.Lock()
+
+  err = fMgrHlpr.lowLevelCopyByIO(
+    fMgr,
+    fMgrDest,
+    0,
+    true,
+    ePrefix,
+    "fMgr",
+    "fMgrDest")
+
+  fMgr.dataMutex.Unlock()
+
+  return err
+}
+
+/*
+func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
+
+  ePrefix := "FileMgr.CopyFileMgrByIo() "
+
   fMgr.dataMutex.Lock()
 
   fMgrHlpr := fileMgrHelper{}
@@ -233,6 +258,7 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
     ePrefix,
     "Copy File By IO")
 }
+*/
 
 // CopyFileMgrByIoByLink - Copies the file represented by the current
 // File Manager instance to a location specified by a destination input

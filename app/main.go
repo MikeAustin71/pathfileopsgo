@@ -3,8 +3,6 @@ package main
 import (
   pf "../pathfileops"
   "fmt"
-  "io"
-  "strings"
 )
 
 /*
@@ -20,9 +18,105 @@ import (
 
 func main() {
 
-  mainTest81ReadFileLine()
+  mainTest82CopyByIO()
 
 }
+
+func mainTest82CopyByIO() {
+
+  fh := pf.FileHelper{}
+
+  setupFileName := "testRead918256.txt"
+
+  sourceFile := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest\\levelfilesfortest\\level_0_3_test.txt"
+
+  /*
+    sourceFile := fh.AdjustPathSlash(
+      "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest\\checkfiles\\" + setupFileName)
+  */
+
+  destFile := fh.AdjustPathSlash(
+    "D:\\T04\\checkfiles\\checkfiles03\\" + setupFileName)
+
+  fileDoesExist, err := fh.DoesThisFileExist(sourceFile)
+
+  if err != nil {
+    fmt.Printf("Error returned by fh.DoesThisFileExist(sourceFile)\n"+
+      "sourceFile='%v'\nError='%v'\n", sourceFile, err.Error())
+    return
+  }
+
+  if !fileDoesExist {
+    fmt.Printf("Test Setup Error: Source File DOES NOT EXIST!\n"+
+      "sourceFile='%v'\n", sourceFile)
+    return
+  }
+
+  /*
+    absBaseFilePath, err := fh.MakeAbsolutePath(
+      "D:\\T04\\checkfiles\\checkfiles03")
+
+    if err != nil {
+      fmt.Printf("Test Setup Error: Error returned by fh.MakeAbsolutePath"+
+        "(\"../checkfiles/checkfiles03/checkfiles03_02\").\n"+
+        "Error='%v'\n", err.Error())
+      return
+    }
+  */
+
+  sourceFMgr, err := pf.FileMgr{}.New(sourceFile)
+
+  if err != nil {
+    fmt.Printf("Error returned by pf.FileMgr{}.New(sourceFile).\n"+
+      "sourceFile='%v'\nError='%v'\n",
+      sourceFile, err.Error())
+    return
+  }
+
+  destFMgr, err := pf.FileMgr{}.New(destFile)
+
+  if err != nil {
+    fmt.Printf("Error returned by pf.FileMgr{}.New(destFile).\n"+
+      "destFile='%v'\nError='%v'\n",
+      destFile, err.Error())
+    return
+  }
+
+  err = sourceFMgr.CopyFileMgrByIo(&destFMgr)
+
+  if err != nil {
+    fmt.Printf("Error returned by fh.CopyFileByIo(sourceFile, destFile)\n"+
+      "sourceFile='%v'\ndestFile='%v'\nError='%v'\n",
+      sourceFile, destFile, err.Error())
+    return
+  }
+
+  fileDoesExist, err = fh.DoesThisFileExist(destFile)
+
+  if err != nil {
+    fmt.Printf("Error returned by fh.DoesThisFileExist(destFile)\n"+
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
+    return
+  }
+
+  if !fileDoesExist {
+    fmt.Printf("Error: After the copy operation, the Destination File\n"+
+      "DOES NOT EXIST!\n"+
+      "destFile='%v'\n", destFile)
+    return
+  }
+
+  fmt.Println("               mainTest82CopyByIO()                     ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println(" Copied Source File: ", sourceFile)
+  fmt.Println()
+  fmt.Println("To Destination File: ", destFile)
+
+}
+
+/*
 
 func mainTest81ReadFileLine() {
   // TestFileMgr_ReadFileLine_03
@@ -165,8 +259,6 @@ func mainTest81ReadFileLine() {
   fmt.Println("********************************************************")
 
 }
-
-/*
 
 func mainTest80FileAccessCtrlDetection() {
 
