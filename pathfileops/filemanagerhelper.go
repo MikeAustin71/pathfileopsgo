@@ -1159,6 +1159,8 @@ func (fMgrHlpr *fileMgrHelper) flushBytesToDisk(
 //
 // The best practice is to call fileMgrHelper.copyFileSetup()
 // or similar method first, before calling this method.
+//   Reference:
+//     https://golang.org/pkg/io/#Copy
 //
 func (fMgrHlpr *fileMgrHelper) lowLevelCopyByIO(
   srcFMgr *FileMgr,
