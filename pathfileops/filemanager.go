@@ -560,40 +560,44 @@ func (fMgr *FileMgr) CopyFileStrByIo(dstPathFileNameExt string) error {
 
   ePrefix := "FileMgr.CopyFileStrByIo() "
 
-  fMgr.dataMutex.Lock()
+  fMgrDest, err := FileMgr{}.New(dstPathFileNameExt)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"Invalid input parameter 'dstPathFileNameExt'\n"+
+      "Error returned by FileMgr{}.New(dstPathFileNameExt)\n"+
+      "dstPathFileNameExt='%v'\nError='%v'\n",
+      dstPathFileNameExt, err.Error())
+  }
 
   fMgrHlpr := fileMgrHelper{}
 
-  fMgrDest,
-    err := fMgrHlpr.copyFileToDestStrSetup(
+  fMgr.dataMutex.Lock()
+
+  err = fMgrHlpr.copyFileSetup(
     fMgr,
-    dstPathFileNameExt,
-    ePrefix)
+    &fMgrDest,
+    true,  // create destination directory
+    false, // delete destination file if it exists
+    ePrefix,
+    "fMgrSource",
+    "fMgrDest")
 
   if err != nil {
     fMgr.dataMutex.Unlock()
     return err
   }
 
-  // See Reference:
-  // https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
-
-  err = FileHelper{}.CopyFileByIo(fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+  err = fMgrHlpr.lowLevelCopyByIO(
+    fMgr,
+    &fMgrDest,
+    0,
+    ePrefix,
+    "fMgrSource",
+    "fMgrDest")
 
   fMgr.dataMutex.Unlock()
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned by fh.CopyFileByIo(fMgr.absolutePathFileName, "+
-      "fMgrDest.absolutePathFileName) fMgr.absolutePathFileName='%v' "+
-      "fMgrDest.absolutePathFileName='%v' Error='%v'",
-      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName, err.Error())
-  }
-
-  return fMgrHlpr.copyFileToFMgrCleanUp(
-    &fMgrDest,
-    ePrefix,
-    "Copy File By IO")
+  return err
 }
 
 // CopyFileStrByIoByLink - Copies the file represented by the current
