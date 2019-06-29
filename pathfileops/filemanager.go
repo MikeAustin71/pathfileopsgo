@@ -208,11 +208,23 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
 
   fMgr.dataMutex.Lock()
 
+  err = fMgrHlpr.copyFileByIOSetup(
+    fMgr,
+    fMgrDest,
+    true,
+    ePrefix,
+    "fMgr",
+    "fMgrDest")
+
+  if err != nil {
+    fMgr.dataMutex.Unlock()
+    return err
+  }
+
   err = fMgrHlpr.lowLevelCopyByIO(
     fMgr,
     fMgrDest,
     0,
-    true,
     ePrefix,
     "fMgr",
     "fMgrDest")
@@ -221,44 +233,6 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
 
   return err
 }
-
-/*
-func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
-
-  ePrefix := "FileMgr.CopyFileMgrByIo() "
-
-  fMgr.dataMutex.Lock()
-
-  fMgrHlpr := fileMgrHelper{}
-
-  err := fMgrHlpr.copyFileToDestFileMgrSetup(fMgr, fMgrDest, ePrefix)
-
-  if err != nil {
-    fMgr.dataMutex.Unlock()
-    return err
-  }
-
-  // See Reference:
-  // https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
-
-  err = FileHelper{}.CopyFileByIo(fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
-
-  fMgr.dataMutex.Unlock()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned by fh.CopyFileByIo(fMgr.absolutePathFileName, "+
-      "fMgrDest.absolutePathFileName) fMgr.absolutePathFileName='%v' "+
-      "fMgrDest.absolutePathFileName='%v' Error='%v'",
-      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName, err.Error())
-  }
-
-  return fMgrHlpr.copyFileToFMgrCleanUp(
-    fMgrDest,
-    ePrefix,
-    "Copy File By IO")
-}
-*/
 
 // CopyFileMgrByIoByLink - Copies the file represented by the current
 // File Manager instance to a location specified by a destination input
