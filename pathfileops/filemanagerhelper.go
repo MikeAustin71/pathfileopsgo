@@ -292,6 +292,7 @@ func (fMgrHlpr *fileMgrHelper) copyFileByIOSetup(
   fMgr *FileMgr,
   targetFMgr *FileMgr,
   createTargetDir bool,
+  deleteExistingTarget bool,
   ePrefix string,
   fMgrLabel string,
   targetFMgrLabel string) error {
@@ -413,6 +414,15 @@ func (fMgrHlpr *fileMgrHelper) copyFileByIOSetup(
         "%v='%v'\n",
         targetFMgrLabel, targetFMgrLabel, targetFMgr.absolutePathFileName)
 
+    }
+
+    if deleteExistingTarget {
+
+      err = fMgrHlpr.lowLevelDeleteFile(targetFMgr, ePrefix, targetFMgrLabel)
+
+      if err != nil {
+        return err
+      }
     }
 
   } else {
@@ -1702,7 +1712,7 @@ func (fMgrHlpr *fileMgrHelper) lowLevelCloseFile(
 // not verify existence of the 'fMgr' file.
 //
 func (fMgrHlpr *fileMgrHelper) lowLevelDeleteFile(
-  fMgr *FileMgr,
+  targetFMgr *FileMgr,
   ePrefix string,
   targetFileLabel string) error {
 
@@ -1715,16 +1725,16 @@ func (fMgrHlpr *fileMgrHelper) lowLevelDeleteFile(
     ePrefix = ePrefix + "- " + ePrefixCurrMethod
   }
 
-  if fMgr == nil {
+  if targetFMgr == nil {
     return errors.New(ePrefix +
-      "\nError: Input parameter 'fMgr' is a nil pointer!\n")
+      "\nError: Input parameter 'targetFMgr' is a nil pointer!\n")
   }
 
   var err error
 
   for i := 0; i < 3; i++ {
 
-    err2 := os.Remove(fMgr.absolutePathFileName)
+    err2 := os.Remove(targetFMgr.absolutePathFileName)
 
     if err2 != nil {
       err = fmt.Errorf(ePrefix+
@@ -1733,7 +1743,7 @@ func (fMgrHlpr *fileMgrHelper) lowLevelDeleteFile(
         "%v='%v'\nError='%v'",
         targetFileLabel,
         targetFileLabel,
-        fMgr.absolutePathFileName,
+        targetFMgr.absolutePathFileName,
         err2.Error())
 
     } else {

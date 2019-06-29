@@ -235,7 +235,8 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
   err = fMgrHlpr.copyFileByIOSetup(
     fMgr,
     fMgrDest,
-    true,
+    true,  // create target/destination directory if it does not exist
+    false, // delete existing target/destination file
     ePrefix,
     "fMgr",
     "fMgrDest")
@@ -381,7 +382,8 @@ func (fMgr *FileMgr) CopyFileMgrByIoWithBuffer(
   err = fMgrHlpr.copyFileByIOSetup(
     fMgr,
     fMgrDest,
-    true,
+    true,  // create target/destination directory if it does not exist
+    false, // delete target/destination file if it exists
     ePrefix,
     "fMgr",
     "fMgrDest")
