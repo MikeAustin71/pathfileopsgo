@@ -779,44 +779,57 @@ func (fMgr *FileMgr) CopyFileStrByLinkByIo(dstPathFileNameExt string) error {
 
   ePrefix := "FileMgr.CopyFileStrByLinkByIo() "
 
-  fMgr.dataMutex.Lock()
+  fMgrDest, err := FileMgr{}.New(dstPathFileNameExt)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"Invalid input parameter 'dstPathFileNameExt'\n"+
+      "Error returned by FileMgr{}.New(dstPathFileNameExt)\n"+
+      "dstPathFileNameExt='%v'\nError='%v'\n",
+      dstPathFileNameExt, err.Error())
+  }
+
+  fMgrSourceLabel := "fMgrSource"
+
+  fMgrDestLabel := "fMgrDest"
 
   fMgrHlpr := fileMgrHelper{}
 
-  fMgrDest,
-    err := fMgrHlpr.copyFileToDestStrSetup(
+  fMgr.dataMutex.Lock()
+
+  err = fMgrHlpr.copyFileSetup(
     fMgr,
-    dstPathFileNameExt,
-    ePrefix)
+    &fMgrDest,
+    true, // Create Destination Directory
+    true, // Delete Destination File if it exists
+    ePrefix,
+    fMgrSourceLabel,
+    fMgrDestLabel)
 
   if err != nil {
     fMgr.dataMutex.Unlock()
     return err
   }
 
-  // See Reference:
-  // https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+  err = fMgrHlpr.lowLevelCopyByLink(
+    fMgr,
+    &fMgrDest,
+    ePrefix,
+    fMgrSourceLabel,
+    fMgrDestLabel)
 
-  err = FileHelper{}.CopyFileByLinkByIo(
-    fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+  if err != nil {
+    err = fMgrHlpr.lowLevelCopyByIO(
+      fMgr,
+      &fMgrDest,
+      0,
+      ePrefix,
+      fMgrSourceLabel,
+      fMgrDestLabel)
+  }
 
   fMgr.dataMutex.Unlock()
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned from FileHelper{}.CopyFileByLinkByIo("+
-      "fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)\n"+
-      "fMgr.absolutePathFileName='%v'\n"+
-      "fMgrDest.absolutePathFileName='%v'\n"+
-      "Error='%v'\n",
-      fMgr.absolutePathFileName,
-      fMgrDest.absolutePathFileName, err.Error())
-  }
-
-  return fMgrHlpr.copyFileToFMgrCleanUp(
-    &fMgrDest,
-    ePrefix,
-    "Copy File By Link By IO")
+  return err
 }
 
 // CopyFileToDirByIo - Copies the file identified by the current File Manager
