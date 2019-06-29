@@ -934,6 +934,115 @@ func TestFileMgr_CopyFileMgrByIoByLink_07(t *testing.T) {
 
 }
 
+func TestFileMgr_CopyFileMgrByIoWithBuffer_01(t *testing.T) {
+
+  setupFile := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+
+  fh := FileHelper{}
+
+  setupFile = fh.AdjustPathSlash(setupFile)
+
+  sourceFile := "../createFilesTest/level_0_3_test.txt"
+
+  sourceFile = fh.AdjustPathSlash(sourceFile)
+
+  err := fh.CopyFileByIo(setupFile, sourceFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, sourceFile)\n"+
+      "setupFile='%v'\nsourceFile='%v'\nError='%v'\n",
+      setupFile, sourceFile, err.Error())
+    return
+  }
+
+  destFile := "../createFilesTest/TestFileMgr_CopyFileMgrByIoWithBuffer_01.txt"
+
+  destFile = fh.AdjustPathSlash(destFile)
+
+  srcFMgr, err := FileMgr{}.New(sourceFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileMgr{}.New(sourceFile).\n"+
+      "sourceFile='%v'\nError='%v'\n", sourceFile, err.Error())
+    return
+  }
+
+  destFMgr, err := FileMgr{}.New(destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileMgr{}.New(destFile).\n"+
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
+    return
+  }
+
+  err = srcFMgr.CopyFileMgrByIoWithBuffer(&destFMgr, 15000)
+
+  if err != nil {
+    t.Errorf("Error returned by srcFMgr.CopyFileMgrByIoWithBuffer(&destFMgr, 15000)\n"+
+      "srcFMgr='%v'\nError='%v'\n", srcFMgr.absolutePathFileName, err.Error())
+    _ = fh.DeleteDirFile(sourceFile)
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
+
+  if !fh.DoesFileExist(destFile) {
+    t.Errorf("Error: After Copy Operation, the destination file DOES NOT EXIST!\n"+
+      "destFile='%v'\n", destFile)
+  }
+
+  _ = fh.DeleteDirFile(sourceFile)
+  _ = fh.DeleteDirFile(destFile)
+  return
+}
+
+func TestFileMgr_CopyFileMgrByIoWithBuffer_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  sourceDir := "../iDoNotExist"
+
+  sourceDir = fh.AdjustPathSlash(sourceDir)
+
+  sourceFile := "../iDoNotExist/iDoNotExist.txt"
+
+  sourceFile = fh.AdjustPathSlash(sourceFile)
+
+  destFile := "../createFilesTest/TestFileMgr_CopyFileMgrByIoWithBuffer_02.txt"
+
+  destFile = fh.AdjustPathSlash(destFile)
+
+  srcFMgr, err := FileMgr{}.New(sourceFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileMgr{}.New(sourceFile).\n"+
+      "sourceFile='%v'\nError='%v'\n", sourceFile, err.Error())
+    return
+  }
+
+  destFMgr, err := FileMgr{}.New(destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileMgr{}.New(destFile).\n"+
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
+    return
+  }
+
+  err = srcFMgr.CopyFileMgrByIoWithBuffer(&destFMgr, 15000)
+
+  if err == nil {
+    t.Errorf("Expected an error returned by srcFMgr.CopyFileMgrByIoWithBuffer(&destFMgr, 15000)\n"+
+      "because srcFMgr DOES NOT EXIST!\n"+
+      "However, NO ERROR WAS RETURNED!\nsrcFMgr='%v'\n", srcFMgr.absolutePathFileName)
+    _ = fh.DeleteDirPathAll(sourceDir)
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
+
+  _ = fh.DeleteDirPathAll(sourceDir)
+  _ = fh.DeleteDirFile(destFile)
+  return
+}
+
 func TestFileMgr_CopyFileMgrByLink_01(t *testing.T) {
 
   sourceFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
