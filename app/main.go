@@ -26,17 +26,21 @@ func mainTest82CopyByIO() {
 
   fh := pf.FileHelper{}
 
-  setupFileName := "testRead918256.txt"
+  // setupFileName := "testRead918256.txt"
 
-  sourceFile := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest\\levelfilesfortest\\level_0_3_test.txt"
+  //sourceFile := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest\\levelfilesfortest\\level_0_3_test.txt"
+
+  sourceFile := "D:\\T03\\ppc_6800_gsg.pdf"
 
   /*
     sourceFile := fh.AdjustPathSlash(
       "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest\\checkfiles\\" + setupFileName)
   */
 
+  sourceFile = fh.AdjustPathSlash(sourceFile)
+
   destFile := fh.AdjustPathSlash(
-    "D:\\T04\\checkfiles\\checkfiles03\\" + setupFileName)
+    "D:\\T04\\checkfiles\\checkfiles03\\ppc_6800_gsg.pdf")
 
   fileDoesExist, err := fh.DoesThisFileExist(sourceFile)
 
@@ -82,7 +86,7 @@ func mainTest82CopyByIO() {
     return
   }
 
-  err = sourceFMgr.CopyFileMgrByIo(&destFMgr)
+  err = sourceFMgr.CopyFileMgrByIoWithBuffer(&destFMgr, 0)
 
   if err != nil {
     fmt.Printf("Error returned by fh.CopyFileByIo(sourceFile, destFile)\n"+
