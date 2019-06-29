@@ -232,7 +232,7 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
 
   fMgr.dataMutex.Lock()
 
-  err = fMgrHlpr.copyFileByIOSetup(
+  err = fMgrHlpr.copyFileSetup(
     fMgr,
     fMgrDest,
     true,  // create target/destination directory if it does not exist
@@ -284,12 +284,18 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
 func (fMgr *FileMgr) CopyFileMgrByIoByLink(fMgrDest *FileMgr) error {
 
   ePrefix := "FileMgr.CopyFileMgrByIoByLink() "
+  fMgrHlpr := fileMgrHelper{}
 
   fMgr.dataMutex.Lock()
 
-  fMgrHlpr := fileMgrHelper{}
-
-  err := fMgrHlpr.copyFileToDestFileMgrSetup(fMgr, fMgrDest, ePrefix)
+  err := fMgrHlpr.copyFileSetup(
+    fMgr,
+    fMgrDest,
+    true, //create destination directory
+    true,
+    ePrefix,
+    "fMgrSource",
+    "fMgrDest")
 
   if err != nil {
     fMgr.dataMutex.Unlock()
@@ -299,24 +305,26 @@ func (fMgr *FileMgr) CopyFileMgrByIoByLink(fMgrDest *FileMgr) error {
   // See Reference:
   // https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
 
-  err = FileHelper{}.CopyFileByIoByLink(
-    fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+  err = fMgrHlpr.lowLevelCopyByIO(
+    fMgr,
+    fMgrDest,
+    0, // local buffer size - take default
+    ePrefix,
+    "fMgrSource",
+    "fMgrDest")
+
+  if err != nil {
+    err = fMgrHlpr.lowLevelCopyByLink(
+      fMgr,
+      fMgrDest,
+      ePrefix,
+      "fMgrSource",
+      "fMgrDest")
+  }
 
   fMgr.dataMutex.Unlock()
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned by fh.CopyFileByIoByLink(fMgr.absolutePathFileName, "+
-      "fMgrDest.absolutePathFileName)\n"+
-      "Mgr.absolutePathFileName='%v'\n"+
-      "fMgrDest.absolutePathFileName='%v'\nError='%v'\n",
-      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName, err.Error())
-  }
-
-  return fMgrHlpr.copyFileToFMgrCleanUp(
-    fMgrDest,
-    ePrefix,
-    "Copy File By IO By Link")
+  return err
 }
 
 // CopyFileMgrByIo - Copies the file represented by the current File
@@ -379,7 +387,7 @@ func (fMgr *FileMgr) CopyFileMgrByIoWithBuffer(
 
   fMgr.dataMutex.Lock()
 
-  err = fMgrHlpr.copyFileByIOSetup(
+  err = fMgrHlpr.copyFileSetup(
     fMgr,
     fMgrDest,
     true,  // create target/destination directory if it does not exist
@@ -418,46 +426,51 @@ func (fMgr *FileMgr) CopyFileMgrByIoWithBuffer(
 // utilize a hard symbolic link to the existing source file in order to create
 // the destination file.
 //
+// By creating a 'linked' file, changing the contents of one file will be
+// reflected in the second. The two linked files are 'mirrors' of each
+// other.
+//
+// Consider using FileMgr.CopyFileMgrByIo() if the 'mirror' feature causes
+// problems.
+//
 // If the 'Hard Link' copy operation fails, and error will be returned.
 //
-// Reference:
-// https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//   Reference:
+//    https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//    https://golang.org/pkg/os/#Link
 //
 func (fMgr *FileMgr) CopyFileMgrByLink(fMgrDest *FileMgr) error {
 
   ePrefix := "FileMgr.CopyFileMgrByLink() "
 
-  fMgr.dataMutex.Lock()
-
   fMgrHlpr := fileMgrHelper{}
 
-  err := fMgrHlpr.copyFileToDestFileMgrSetup(fMgr, fMgrDest, ePrefix)
+  fMgr.dataMutex.Lock()
+
+  err := fMgrHlpr.copyFileSetup(
+    fMgr,
+    fMgrDest,
+    true, // create target/destination directory
+    true, // delete existing target/destination file
+    ePrefix,
+    "sourceFMgr",
+    "destFMgr")
 
   if err != nil {
     fMgr.dataMutex.Unlock()
     return err
   }
 
-  // See Reference:
-  // https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
-
-  err = FileHelper{}.CopyFileByLink(fMgr.absolutePathFileName, fMgrDest.absolutePathFileName)
+  err = fMgrHlpr.lowLevelCopyByLink(
+    fMgr,
+    fMgrDest,
+    ePrefix,
+    "sourceFMgr",
+    "destFMgr")
 
   fMgr.dataMutex.Unlock()
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned by fh.CopyFileByLink(fMgr.absolutePathFileName, "+
-      "fMgrDest.absolutePathFileName)\n"+
-      "fMgr.absolutePathFileName='%v'\n"+
-      "fMgrDest.absolutePathFileName='%v'\nError='%v'\n",
-      fMgr.absolutePathFileName, fMgrDest.absolutePathFileName, err.Error())
-  }
-
-  return fMgrHlpr.copyFileToFMgrCleanUp(
-    fMgrDest,
-    ePrefix,
-    "Copy File By Link")
+  return err
 }
 
 // CopyFileMgrByLinkByIo - Copies the file represented by the current
