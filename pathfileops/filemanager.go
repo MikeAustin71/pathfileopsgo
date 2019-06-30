@@ -549,6 +549,87 @@ func (fMgr *FileMgr) CopyFileMgrByLinkByIo(fMgrDest *FileMgr) error {
   return err
 }
 
+// CopyFileMgrWithBuffer - Performs a Copy By IO operation which copies
+// the file identified by the current File Manager to the file specified
+// by the input parameter 'fMgrDest'. 'fMgrDest' is another instance of
+// 'FileMgr'.
+//
+// This method differs from a similar method, 'FileMgr.CopyFileMgrByIo()'
+// in that the calling function must supply a local copy buffer of type
+// []byte. The copy operation stages through the provided buffer (if one
+// is required) rather than allocating a temporary internal buffer. This
+// approach can be useful when copying a series of large files.
+//
+// Internally, this method calls io.CopyBuffer().
+//
+//   Reference:
+//     https://golang.org/pkg/io/#CopyBuffer
+//     https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+// ----------------------------------------------------------------------------------
+//
+// Input Parameter:
+//
+//  fMgrDest       FileMgr - An instance of FileMgr which identifies the destination
+//                           file to which the source file identified by the current
+//                           FileMgr will be copied.
+//
+//  localCopyBuffer []byte - A byte array which will be used as an internal buffer through
+//                           which to stage the copy operation. If this buffer is 'nil' or
+//                           if this is a zero length byte array, an error will be returned.
+//
+// ------------------------------------------------------------------------------------------
+//
+// Return Value:
+//
+//  error - If this method completes successfully, the returned 'error'
+//	        Type is set equal to 'nil'. If an error condition is encountered,
+//	        this method will return an 'error' Type which contains an
+//	        appropriate error message.
+//
+//          Note: an error will be returned if the source file identified by
+//          the current FileMgr instance does NOT exist. Likewise, an error
+//          will also be triggered if input parameter 'localCopyBuffer' is
+//          'nil' or if it is a zero length byte array.
+//
+func (fMgr *FileMgr) CopyFileMgrWithBuffer(
+  fMgrDest *FileMgr,
+  localCopyBuffer []byte) error {
+
+  ePrefix := "FileMgr.CopyFileMgrWithBuffer() "
+
+  fMgrHlpr := fileMgrHelper{}
+
+  var err error
+  sourceFMgrLabel := "fMgrSource"
+  destFMgrLabel := "fMgrDest"
+
+  fMgr.dataMutex.Lock()
+
+  err = fMgrHlpr.copyFileSetup(
+    fMgr,
+    fMgrDest,
+    true,  // create target/destination directory if it does not exist
+    false, // delete existing target/destination file
+    ePrefix,
+    sourceFMgrLabel,
+    destFMgrLabel)
+
+  if err == nil {
+    err = fMgrHlpr.lowLevelCopyByIOBuffer(
+      fMgr,
+      fMgrDest,
+      localCopyBuffer,
+      ePrefix,
+      sourceFMgrLabel,
+      destFMgrLabel)
+  }
+
+  fMgr.dataMutex.Unlock()
+
+  return err
+}
+
 // CopyFileStrByIo - Copies the file represented by the current File
 // Manager instance to a location specified by a destination input
 // parameter. The destination input parameter, 'dstPathFileNameExt' is
@@ -1187,7 +1268,7 @@ func (fMgr *FileMgr) CopyFileToDirByLinkByIo(dir DirMgr) error {
 //  destFMgr FileMgr - If successful, this method returns a File Manager instance which
 //                     identifies the destination file used in the copy operation.
 //
-//	err        error - If this method completes successfully, the returned 'error'
+//  err        error - If this method completes successfully, the returned 'error'
 //	                   Type is set equal to 'nil'. If an error condition is encountered,
 //	                   this method will return an 'error' Type which contains an
 //	                   appropriate error message.
