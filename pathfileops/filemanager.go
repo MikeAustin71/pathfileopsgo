@@ -198,6 +198,7 @@ func (fMgr *FileMgr) CloseThisFile() error {
 //
 // Reference:
 // https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+// https://golang.org/pkg/io/#Copy
 //
 // ----------------------------------------------------------------------------------
 //
@@ -243,18 +244,15 @@ func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
     sourceFMgrLabel,
     destFMgrLabel)
 
-  if err != nil {
-    fMgr.dataMutex.Unlock()
-    return err
+  if err == nil {
+    err = fMgrHlpr.lowLevelCopyByIO(
+      fMgr,
+      fMgrDest,
+      0,
+      ePrefix,
+      sourceFMgrLabel,
+      destFMgrLabel)
   }
-
-  err = fMgrHlpr.lowLevelCopyByIO(
-    fMgr,
-    fMgrDest,
-    0,
-    ePrefix,
-    sourceFMgrLabel,
-    destFMgrLabel)
 
   fMgr.dataMutex.Unlock()
 
@@ -1155,6 +1153,123 @@ func (fMgr *FileMgr) CopyFileToDirByLinkByIo(dir DirMgr) error {
   fMgr.dataMutex.Unlock()
 
   return err
+}
+
+// CopyFromStrings - Copies a source file to a destination file. The source and
+// destination files are identified by two strings specifying path, file name,
+// and file extensions. The copy operation employs the 'Copy By IO' technique
+// (a.k.a. 'io.Copy').
+//
+// Reference:
+// https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+// https://golang.org/pkg/io/#Copy
+//
+// ----------------------------------------------------------------------------------
+//
+// Input Parameter:
+//
+// sourcePathFileNameExt  string - A text string which identifies the path, file name
+//                                 and file extension of the source file which will be
+//                                 used in the copy operation.
+//
+// destPathFileNameExt    string - A text string which identifies the path, file name
+//                                 and file extension of the destination file which will
+//                                 be used in the copy operation.
+//
+//
+// ------------------------------------------------------------------------------------------
+//
+// Return Values:
+//
+//  srcFMgr  FileMgr - If successful, this method returns a File Manager instance which
+//                     identifies the source file used in the copy operation.
+//
+//  destFMgr FileMgr - If successful, this method returns a File Manager instance which
+//                     identifies the destination file used in the copy operation.
+//
+//	err        error - If this method completes successfully, the returned 'error'
+//	                   Type is set equal to 'nil'. If an error condition is encountered,
+//	                   this method will return an 'error' Type which contains an
+//	                   appropriate error message.
+//
+//                     Note: an error will be returned if the file identified by the
+//                     input parameter 'sourcePathFileNameExt' does NOT exist.
+//
+// ------------------------------------------------------------------------------------------
+//
+// Example Usage:
+//
+//     srcFileMgr, destFileMgr, err := FileMgr{}.CopyFromStrings(
+//                                     "../Dir1/srcFile",
+//                                     "../Dir2/destFile")
+//
+func (fMgr FileMgr) CopyFromStrings(
+  sourcePathFileNameExt,
+  destPathFileNameExt string) (fMgrSrc, fMgrDest FileMgr, err error) {
+
+  ePrefix := "FileMgr.CopyFromStrings() "
+  fMgrDest = FileMgr{}
+  var err2 error
+
+  fMgrSrc, err2 = FileMgr{}.New(sourcePathFileNameExt)
+
+  if err2 != nil {
+    fMgrSrc = FileMgr{}
+
+    err = fmt.Errorf(ePrefix+
+      "Error returned by FileMgr{}.New(sourcePathFileNameExt)\n"+
+      "sourcePathFileNameExt='%v'\nError='%v'\n",
+      sourcePathFileNameExt, err2.Error())
+
+    return fMgrSrc, fMgrDest, err
+  }
+
+  fMgrDest, err2 = FileMgr{}.New(destPathFileNameExt)
+
+  if err2 != nil {
+    fMgrSrc = FileMgr{}
+    fMgrDest = FileMgr{}
+    err = fmt.Errorf(ePrefix+
+      "Error returned by FileMgr{}.New(destPathFileNameExt)\n"+
+      "destPathFileNameExt='%v'\nError='%v'\n",
+      destPathFileNameExt, err2.Error())
+    return fMgrSrc, fMgrDest, err
+  }
+
+  fMgrHlpr := fileMgrHelper{}
+
+  sourceFMgrLabel := "fMgrSource"
+  destFMgrLabel := "fMgrDest"
+
+  fMgr.dataMutex.Lock()
+
+  err = fMgrHlpr.copyFileSetup(
+    &fMgrSrc,
+    &fMgrDest,
+    true,  // create target/destination directory if it does not exist
+    false, // delete existing target/destination file
+    ePrefix,
+    sourceFMgrLabel,
+    destFMgrLabel)
+
+  if err == nil {
+    err = fMgrHlpr.lowLevelCopyByIO(
+      &fMgrSrc,
+      &fMgrDest,
+      0,
+      ePrefix,
+      sourceFMgrLabel,
+      destFMgrLabel)
+  }
+
+  if err != nil {
+    fMgrSrc = FileMgr{}
+    fMgrDest = FileMgr{}
+  }
+
+  fMgr.dataMutex.Unlock()
+
+  return fMgrSrc, fMgrDest, err
 }
 
 // CopyIn - Copies data from an incoming FileMgr object
