@@ -2902,6 +2902,8 @@ func (fMgr FileMgr) NewFromPathFileNameExtStr(pathFileNameExt string) (FileMgr, 
 
   ePrefix := "FileMgr.NewFromPathFileNameExtStr() "
 
+  fMgr.dataMutex.Lock()
+
   fMgr2 := FileMgr{}
 
   fMgrHlpr := fileMgrHelper{}
@@ -2919,6 +2921,8 @@ func (fMgr FileMgr) NewFromPathFileNameExtStr(pathFileNameExt string) (FileMgr, 
         pathFileNameExt)
     }
   }
+
+  fMgr.dataMutex.Unlock()
 
   return fMgr2, err
 }
