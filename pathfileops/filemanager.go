@@ -2848,13 +2848,13 @@ func (fMgr FileMgr) NewFromFileInfo(dirPathStr string, info os.FileInfo) (FileMg
         "Error='%v' ", err.Error())
   }
 
+  fMgr.dataMutex.Lock()
+
   fMgr2 := FileMgr{}
 
   fMgrHlpr := fileMgrHelper{}
 
-  var isEmpty bool
-
-  isEmpty, err = fMgrHlpr.setFileMgrDirMgrFileName(&fMgr2, dirMgr, fileName, ePrefix)
+  isEmpty, err := fMgrHlpr.setFileMgrDirMgrFileName(&fMgr2, dirMgr, fileName, ePrefix)
 
   if isEmpty {
 
@@ -2868,6 +2868,8 @@ func (fMgr FileMgr) NewFromFileInfo(dirPathStr string, info os.FileInfo) (FileMg
         dirPathStr, fileName)
     }
   }
+
+  fMgr.dataMutex.Unlock()
 
   return fMgr2, err
 }
