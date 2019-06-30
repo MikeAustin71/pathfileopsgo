@@ -1,6 +1,9 @@
 package pathfileops
 
-import "testing"
+import (
+  "strings"
+  "testing"
+)
 
 func TestFileMgr_CopyFileToDirByLinkByIo_01(t *testing.T) {
 
@@ -812,6 +815,219 @@ func TestFileMgr_CopyFileToDirByLink_05(t *testing.T) {
       "However, NO ERROR WAS RETURNED!\n")
   }
 
+}
+
+func TestFileMgr_CopyFromStrings_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  sourceFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+
+  sourceFile = fh.AdjustPathSlash(sourceFile)
+
+  destFile := "../createFilesTest/TestFileMgr_CopyFromStrings_01.txt"
+
+  destFile = fh.AdjustPathSlash(destFile)
+
+  err := fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(destFile)\n"+
+      "destFile='%v'\nError='%v'\n",
+      destFile, err.Error())
+    return
+  }
+
+  fMgrSrc, fMgrDest, err := FileMgr{}.CopyFromStrings(sourceFile, destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileMgr{}."+
+      "CopyFromStrings(sourceFile, destFile)\n"+
+      "sourceFile='%v'\ndestFile='%v'\nError='%v'",
+      sourceFile, destFile, err.Error())
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
+
+  absSourcePath, err := fh.MakeAbsolutePath(sourceFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh."+
+      "MakeAbsolutePath(sourceFile)\n"+
+      "sourceFile='%v',Error='%v'\n",
+      sourceFile, err.Error())
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
+
+  absSourcePath = strings.ToLower(absSourcePath)
+
+  if absSourcePath != strings.ToLower(fMgrSrc.absolutePathFileName) {
+    t.Errorf("Error: Expected source path and file name are NOT EQUAL\n"+
+      "to actual source path and file name!\n"+
+      "Expected source file='%v'\n"+
+      "Actual source file='%v'\n",
+      absSourcePath, strings.ToLower(fMgrSrc.absolutePathFileName))
+  }
+
+  absDestPath, err := fh.MakeAbsolutePath(destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh."+
+      "MakeAbsolutePath(destFile)\n"+
+      "destFile='%v',Error='%v'\n",
+      destFile, err.Error())
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
+
+  absDestPath = strings.ToLower(absDestPath)
+
+  if absDestPath != strings.ToLower(fMgrDest.absolutePathFileName) {
+    t.Errorf("Error: Expected destination path and file name are NOT EQUAL\n"+
+      "to actual destination path and file name!\n"+
+      "Expected destination file='%v'\n"+
+      "Actual destination file='%v'\n",
+      absDestPath, strings.ToLower(fMgrDest.absolutePathFileName))
+  }
+
+  if !fh.DoesFileExist(absSourcePath) {
+    t.Errorf("Error: Source File DOES NOT EXIST!\n"+
+      "Source File='%v'\n", absSourcePath)
+    _ = fh.DeleteDirFile(absDestPath)
+    return
+  }
+
+  if !fh.DoesFileExist(absDestPath) {
+    t.Errorf("Error: After Copy Operation Destination "+
+      "File DOES NOT EXIST!\n"+
+      "Destination File='%v'\n", absDestPath)
+    return
+  }
+
+  if !fMgrSrc.DoesFileExist() {
+    t.Errorf("Error returned by fMgrSrc.DoesFileExist()\n"+
+      "Source File DOES NOT EXIST!\n"+
+      "Source File='%v'", fMgrSrc.absolutePathFileName)
+  }
+
+  if !fMgrDest.DoesFileExist() {
+    t.Errorf("Error returned by fMgrDest.DoesFileExist()\n"+
+      "Destination File DOES NOT EXIST!\n"+
+      "Destination File='%v'", fMgrDest.absolutePathFileName)
+  }
+
+  err = fh.DeleteDirFile(absDestPath)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirFile(absDestPath)\n"+
+      "absDestPath='%v'\nError='%v'\n",
+      absDestPath, err.Error())
+  }
+
+}
+
+func TestFileMgr_CopyFromStrings_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  sourceFile := "../checkfiles/iDoNotExist.txt"
+
+  sourceFile = fh.AdjustPathSlash(sourceFile)
+
+  destFile := "../createFilesTest/TestFileMgr_CopyFromStrings_02.txt"
+
+  destFile = fh.AdjustPathSlash(destFile)
+
+  err := fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(destFile)\n"+
+      "destFile='%v'\nError='%v'\n",
+      destFile, err.Error())
+    return
+  }
+
+  _, _, err = FileMgr{}.CopyFromStrings(sourceFile, destFile)
+
+  if err == nil {
+    t.Error("Expected Error return from FileMgr{}." +
+      "CopyFromStrings(sourceFile, destFile)\n" +
+      "because 'sourceFile' DOES NOT EXIST!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+
+  err = fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirFile(destFile)\n"+
+      "destFile='%v'\nError='%v'\n",
+      destFile, err.Error())
+  }
+
+}
+
+func TestFileMgr_CopyFromStrings_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  sourceFile := ""
+
+  destFile := "../createFilesTest/TestFileMgr_CopyFromStrings_03.txt"
+
+  destFile = fh.AdjustPathSlash(destFile)
+
+  err := fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(destFile)\n"+
+      "destFile='%v'\nError='%v'\n",
+      destFile, err.Error())
+    return
+  }
+
+  _, _, err = FileMgr{}.CopyFromStrings(sourceFile, destFile)
+
+  if err == nil {
+    t.Error("Expected Error return from FileMgr{}." +
+      "CopyFromStrings(sourceFile, destFile)\n" +
+      "because 'sourceFile' is an empty string!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+
+  err = fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirFile(destFile)\n"+
+      "destFile='%v'\nError='%v'\n",
+      destFile, err.Error())
+  }
+}
+
+func TestFileMgr_CopyFromStrings_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  sourceFile := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+
+  sourceFile = fh.AdjustPathSlash(sourceFile)
+
+  destFile := ""
+
+  _, _, err := FileMgr{}.CopyFromStrings(sourceFile, destFile)
+
+  if err == nil {
+    t.Error("Expected Error return from FileMgr{}." +
+      "CopyFromStrings(sourceFile, destFile)\n" +
+      "because 'destFile' is an empty string!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+
+  if !fh.DoesFileExist(sourceFile) {
+    t.Errorf("Error: Source File DOES NOT EXIST!\n"+
+      "sourceFile='%v'\n",
+      sourceFile)
+  }
 }
 
 func TestFileMgr_CreateDir_01(t *testing.T) {
