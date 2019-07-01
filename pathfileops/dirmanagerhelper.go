@@ -28,7 +28,8 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryAll(
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
-      ePrefix)
+      ePrefix,
+      "dMgr")
 
   if err != nil {
     return err
@@ -68,7 +69,8 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryAll(
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
-      ePrefix)
+      ePrefix,
+      "dMgr")
 
   if err != nil {
     return fmt.Errorf(ePrefix+
@@ -85,13 +87,122 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryAll(
 
   return nil
 }
-
 func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
   dMgr *DirMgr,
   preProcessCode PreProcessPathCode,
-  ePrefix string) (dirPathDoesExist bool,
-  fInfo FileInfoPlus,
-  err error) {
+  ePrefix string,
+  dMgrLabel string) (dirPathDoesExist bool, fInfo FileInfoPlus, err error) {
+
+  ePrefixCurrMethod := "dirMgrHelper.doesDirectoryExist() "
+
+  dirPathDoesExist = false
+  fInfo = FileInfoPlus{}
+  err = nil
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  if !dMgr.isInitialized {
+    err = fmt.Errorf(ePrefix +
+      "Error: DirMgr is NOT Initialized.\n")
+    return dirPathDoesExist, fInfo, err
+  }
+
+  var absFInfo os.FileInfo
+  _,
+    dMgr.doesAbsolutePathExist,
+    absFInfo,
+    err = dMgrHlpr.lowLevelDoesDirectoryExist(
+    dMgr.absolutePath,
+    PreProcPathCode.None(),
+    ePrefix,
+    "dMgr.absolutePath")
+
+  if err != nil {
+    dMgr.doesAbsolutePathExist = false
+    dMgr.doesPathExist = false
+    dMgr.actualDirFileInfo = FileInfoPlus{}
+    dirPathDoesExist = false
+    return dirPathDoesExist, fInfo, err
+  }
+
+  if !dMgr.doesAbsolutePathExist {
+    dMgr.doesAbsolutePathExist = false
+    dMgr.doesPathExist = false
+    dMgr.actualDirFileInfo = FileInfoPlus{}
+    dirPathDoesExist = false
+    err = nil
+    return dirPathDoesExist, fInfo, err
+  }
+
+  if !absFInfo.Mode().IsDir() {
+    dMgr.doesAbsolutePathExist = false
+    dMgr.doesPathExist = false
+    dMgr.actualDirFileInfo = FileInfoPlus{}
+    err = fmt.Errorf(ePrefix+
+      "Error: Directory path exists, but "+
+      "it is a file - NOT A DIRECTORY!\n"+
+      "DirMgr='%v'\n",
+      dMgr.absolutePath)
+    dirPathDoesExist = false
+    return dirPathDoesExist, fInfo, err
+  }
+
+  _,
+    dMgr.doesPathExist,
+    _,
+    err = dMgrHlpr.lowLevelDoesDirectoryExist(
+    dMgr.path,
+    PreProcPathCode.None(),
+    ePrefix,
+    "dMgr.path")
+
+  if err != nil {
+    dMgr.doesAbsolutePathExist = false
+    dMgr.doesPathExist = false
+    dMgr.actualDirFileInfo = FileInfoPlus{}
+    dirPathDoesExist = false
+    return dirPathDoesExist, fInfo, err
+  }
+
+  if !dMgr.doesPathExist {
+    err = fmt.Errorf(ePrefix+
+      "Error: Directory absolute path exists, "+
+      "but Directory original 'path' DOES NOT "+
+      "EXIST!\n"+
+      "dMgr.absolutePath='%v'\n"+
+      "dMgr.path='%v'\n",
+      dMgr.absolutePath, dMgr.path)
+    dMgr.doesAbsolutePathExist = false
+    dMgr.doesPathExist = false
+    dMgr.actualDirFileInfo = FileInfoPlus{}
+    dirPathDoesExist = false
+    return dirPathDoesExist, fInfo, err
+  }
+
+  // both dMgr.path and dMgr.doesAbsolutePathExist
+  // exist. And, there are no errors
+
+  dMgr.doesAbsolutePathExist = true
+  dMgr.doesPathExist = true
+  dMgr.actualDirFileInfo = FileInfoPlus{}.NewFromFileInfo(absFInfo)
+  fInfo = dMgr.actualDirFileInfo.CopyOut()
+  dirPathDoesExist = false
+  err = nil
+  return dirPathDoesExist, fInfo, err
+}
+
+/*
+func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
+  dMgr *DirMgr,
+  preProcessCode PreProcessPathCode,
+  ePrefix string,
+  dMgrLabel string) ( dirPathDoesExist bool,
+                      fInfo FileInfoPlus,
+                      err error) {
 
   ePrefixCurrMethod := "dirMgrHelper.doesDirectoryExist() "
 
@@ -214,6 +325,7 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
   err = nil
   return dirPathDoesExist, fInfo, err
 }
+*/
 
 func (dMgrHlpr *dirMgrHelper) lowLevelDoesDirectoryExist(
   dirPath string,
@@ -234,7 +346,7 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDoesDirectoryExist(
   if len(ePrefix) == 0 {
     ePrefix = ePrefixCurrMethod
   } else {
-    ePrefix = ePrefix + "- " + ePrefixCurrMethod + "\n"
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
   }
 
   if len(filePathTitle) == 0 {

@@ -63,7 +63,6 @@ type FileSelectionCriteria struct {
   // Note: os.FileMode is an uint32 type.
   SelectByFileMode FilePermissionConfig
 
-
   // SelectCriterionMode - Can be one of three values:
   //
   // FileSelectMode.None()      = No Operation - No File Select Criterion
@@ -124,13 +123,13 @@ type FileInfoPlus struct {
   // Date time at which this instance of Type 'FileInfoPlus' was initialized
   CreateTimeStamp time.Time
 
-  dirPath  string      // Not part of FileInfo interface. Directory path associated with file name
-  fName    string      // FileInfo.Name() base name of the file
-  fSize    int64       // FileInfo.Size() length in bytes for regular files; system-dependent for others
-  fMode    os.FileMode // FileInfo.Mode() file mode bits
-  fModTime time.Time   // FileInfo.ModTime() file modification time
-  isDir    bool        // FileInfo.IsDir() 'true'= this is a directory not a file
-  dataSrc  interface{} // FileInfo.Sys() underlying data source (can return nil)
+  dirPath      string      // Not part of FileInfo interface. Directory path associated with file name
+  fName        string      // FileInfo.Name() base name of the file
+  fSize        int64       // FileInfo.Size() length in bytes for regular files; system-dependent for others
+  fMode        os.FileMode // FileInfo.Mode() file mode bits
+  fModTime     time.Time   // FileInfo.ModTime() file modification time
+  isDir        bool        // FileInfo.IsDir() 'true'= this is a directory not a file
+  dataSrc      interface{} // FileInfo.Sys() underlying data source (can return nil)
   origFileInfo os.FileInfo
 }
 
@@ -234,6 +233,8 @@ func (fip *FileInfoPlus) CopyOut() FileInfoPlus {
   newInfo.IsFInfoInitialized = fip.IsFInfoInitialized
   newInfo.IsDirPathInitialized = fip.IsDirPathInitialized
   newInfo.CreateTimeStamp = fip.CreateTimeStamp
+  newInfo.origFileInfo = fip.origFileInfo
+
   return newInfo
 }
 
