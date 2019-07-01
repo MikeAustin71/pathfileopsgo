@@ -27,7 +27,6 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryAll(
     err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
-      PreProcPathCode.None(),
       ePrefix,
       "dMgr")
 
@@ -68,7 +67,6 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryAll(
     err =
     dMgrHlpr.doesDirectoryExist(
       dMgr,
-      PreProcPathCode.None(),
       ePrefix,
       "dMgr")
 
@@ -89,7 +87,6 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryAll(
 }
 func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
   dMgr *DirMgr,
-  preProcessCode PreProcessPathCode,
   ePrefix string,
   dMgrLabel string) (dirPathDoesExist bool, fInfo FileInfoPlus, err error) {
 

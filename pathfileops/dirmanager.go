@@ -4211,78 +4211,25 @@ func (dMgr *DirMgr) GetVolumeName() string {
 // returned.
 func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
 
-  ePrefix := strings.TrimRight(errPrefixStr, " ") + " DirMgr.IsDirMgrValid() "
+  ePrefix := strings.TrimLeft(strings.TrimRight(errPrefixStr, " "), " ")
+
+  if len(ePrefix) == 0 {
+    ePrefix = "DirMgr.IsDirMgrValid() "
+  } else {
+    ePrefix = ePrefix + " "
+  }
+
+  dMgrHlpr := dirMgrHelper{}
 
   dMgr.dataMutex.Lock()
 
-  if !dMgr.isInitialized {
-    dMgr.dataMutex.Unlock()
-    return fmt.Errorf(ePrefix + "Error: DirMgr is NOT Initialized.\n")
-  }
-
-  dMgr.isAbsolutePathPopulated = false
-
-  if dMgr.absolutePath == "" {
-    dMgr.dataMutex.Unlock()
-    return fmt.Errorf(ePrefix + "Error: DirMgr.absolutePath is EMPTY!.\n")
-  }
-
-  dMgr.isAbsolutePathPopulated = true
-
-  dMgr.isPathPopulated = false
-
-  if dMgr.path == "" {
-    dMgr.dataMutex.Unlock()
-    return fmt.Errorf(ePrefix + "Error: DirMgr.absolutePath is EMPTY!.\n")
-  }
-
-  dMgr.isPathPopulated = true
   _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
-      PreProcPathCode.None(),
-      "",
-      "dMgr.absolutePath")
-
-  if nonPathError != nil {
-    dMgr.dataMutex.Unlock()
-    return nonPathError
-  }
-
-  if !dirPathDoesExist {
-    dMgr.doesAbsolutePathExist = false
-    dMgr.actualDirFileInfo = FileInfoPlus{}
-  } else {
-    dMgr.doesAbsolutePathExist = true
-    dMgr.actualDirFileInfo = fInfoPlus.CopyOut()
-  }
-
-  _,
-    dirPathDoesExist,
     _,
-    nonPathError =
-    FileHelper{}.doesPathFileExist(
-      dMgr.path,
-      PreProcPathCode.None(),
-      "",
-      "dMgr.path")
-
-  if nonPathError != nil {
-    dMgr.dataMutex.Unlock()
-    return nonPathError
-  }
-
-  if !dirPathDoesExist {
-    dMgr.doesPathExist = false
-  } else {
-    dMgr.doesPathExist = true
-  }
+    err := dMgrHlpr.doesDirectoryExist(dMgr, ePrefix, "dMgr")
 
   dMgr.dataMutex.Unlock()
-  return nil
+
+  return err
 }
 
 // IsInitialized - Returns a boolean value indicating
