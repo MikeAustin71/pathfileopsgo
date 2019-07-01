@@ -220,8 +220,8 @@ func (fMgr *FileMgr) CloseThisFile() error {
 //	                this method will return an 'error' Type which contains an
 //	                appropriate error message.
 //
-//                  Note: an error will be returned if the file identified by the
-//                  current source File Manager instance does NOT exist.
+//	                Note: an error will be returned if the file identified by the
+//	                current source File Manager instance does NOT exist.
 //
 func (fMgr *FileMgr) CopyFileMgrByIo(fMgrDest *FileMgr) error {
 
@@ -373,8 +373,8 @@ func (fMgr *FileMgr) CopyFileMgrByIoByLink(fMgrDest *FileMgr) error {
 //	                this method will return an 'error' Type which contains an
 //	                appropriate error message.
 //
-//                  Note: an error will be returned if the file identified by the
-//                  current source File Manager instance does NOT exist.
+//	                Note: an error will be returned if the file identified by the
+//	                current source File Manager instance does NOT exist.
 //
 func (fMgr *FileMgr) CopyFileMgrByIoWithBuffer(
   fMgrDest *FileMgr, bufferSize int) error {
@@ -583,9 +583,9 @@ func (fMgr *FileMgr) CopyFileMgrByLinkByIo(fMgrDest *FileMgr) error {
 // Return Value:
 //
 //  error - If this method completes successfully, the returned 'error'
-//	        Type is set equal to 'nil'. If an error condition is encountered,
-//	        this method will return an 'error' Type which contains an
-//	        appropriate error message.
+//          Type is set equal to 'nil'. If an error condition is encountered,
+//          this method will return an 'error' Type which contains an
+//          appropriate error message.
 //
 //          Note: an error will be returned if the source file identified by
 //          the current FileMgr instance does NOT exist. Likewise, an error
@@ -1269,16 +1269,16 @@ func (fMgr *FileMgr) CopyFileToDirByLinkByIo(dir DirMgr) error {
 //                     identifies the destination file used in the copy operation.
 //
 //  err        error - If this method completes successfully, the returned 'error'
-//	                   Type is set equal to 'nil'. If an error condition is encountered,
-//	                   this method will return an 'error' Type which contains an
-//	                   appropriate error message.
+//                     Type is set equal to 'nil'. If an error condition is encountered,
+//                     this method will return an 'error' Type which contains an
+//                     appropriate error message.
 //
 //                     Note: an error will be returned if the file identified by the
 //                     input parameter 'sourcePathFileNameExt' does NOT exist.
 //
 // ------------------------------------------------------------------------------------------
 //
-// Example Usage:
+// Usage:
 //
 //     srcFileMgr, destFileMgr, err := FileMgr{}.CopyFromStrings(
 //                                     "../Dir1/srcFile",
@@ -1853,14 +1853,14 @@ func (fMgr *FileMgr) GetFileExt() string {
 //
 // An error will be triggered if the file path does NOT exist!
 //
-// type FileInfo interface {
-// 	Name() string       // base name of the file
-// 	Size() int64        // length in bytes for regular files; system-dependent for others
-// 	Mode() FileMode     // file mode bits
-// 	ModTime() time.Time // modification time
-// 	IsDir() bool        // abbreviation for Mode().IsDir()
-// 	Sys() interface{}   // underlying data source (can return nil)
-// }
+//  type FileInfo interface {
+// 	 Name() string       // base name of the file
+// 	 Size() int64        // length in bytes for regular files; system-dependent for others
+// 	 Mode() FileMode     // file mode bits
+// 	 ModTime() time.Time // modification time
+// 	 IsDir() bool        // abbreviation for Mode().IsDir()
+// 	 Sys() interface{}   // underlying data source (can return nil)
+//  }
 func (fMgr *FileMgr) GetFileInfo() (fInfo os.FileInfo, err error) {
 
   fMgr.dataMutex.Lock()
@@ -1993,17 +1993,17 @@ func (fMgr *FileMgr) GetFileModTime() (time.Time, error) {
 //
 //	string        - The time at which the current file was last modified formatted
 //	                as a string. The time format is determined by input parameter
-//                  'timeFormat'. If 'timeFormat' is empty or if 'timeFormat' is an
-//                  an invalid format, the default format "2019-03-12 21:49:00:00"
-//                  will be substituted.
+//	                'timeFormat'. If 'timeFormat' is empty or if 'timeFormat' is an
+//	                invalid format, the default format "2019-03-12 21:49:00:00" will
+//	                be substituted.
 //
-//	error         - If this method completes successfully, the returned error
-//	                Type is set equal to 'nil'. If an error condition is encountered,
-//	                this method will return an error Type which contains an appropriate
+//	error         - If this method completes successfully, the returned error Type is
+//	                set equal to 'nil'. If an error condition is encountered, this
+//	                method will return an error Type which contains an appropriate
 //	                error message.
 //
-//                  Note: an error will be returned if the file identified by the current
-//                  File Manager instance does NOT exist.
+//	                Note: an error will be returned if the file identified by the current
+//	                File Manager instance does NOT exist.
 //
 func (fMgr *FileMgr) GetFileModTimeStr(timeFormat string) (string, error) {
 
@@ -3474,7 +3474,7 @@ func (fMgr *FileMgr) SetFileInfo(info os.FileInfo) error {
 // Return Values:
 //
 //	isEmpty       - This value is set to 'false' if, and only if, all internal
-//                  values are set to valid legitimate values.
+//	                values are set to valid legitimate values.
 //
 //	error         - If this method completes successfully, the returned error
 //	                Type is set equal to 'nil'. If an error condition is encountered,
