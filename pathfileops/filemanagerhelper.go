@@ -15,7 +15,9 @@ type fileMgrHelper struct {
 }
 
 // fMgrDoesPathFileExist - Used by FileMgr type to test
-// for the existence of a file path.
+// for the existence of a path and file name. In addition,
+// this method performs validation on the 'FileMgr' instance.
+//
 func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
   fileMgr *FileMgr,
   preProcessCode PreProcessPathCode,

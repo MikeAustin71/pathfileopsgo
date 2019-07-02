@@ -18,10 +18,41 @@ import (
 
 func main() {
 
-  mainTest82CopyByIO()
+  mainTest83DmgrDeleteDirAll()
 
 }
 
+func mainTest83DmgrDeleteDirAll() {
+
+  //srcDir := "D:\\T04\\checkfiles\\checkfiles03\\dir01\\dir02\\dir03"
+  srcDir := "D:\\T04\\checkfiles\\checkfiles03\\dir01"
+
+  dMgr, err := pf.DirMgr{}.New(srcDir)
+
+  if err != nil {
+    fmt.Printf("Error returned by pf.DirMgr{}.New(srcDir)\n"+
+      "srcDir='%v'\nError='%v'\n", srcDir, err.Error())
+    return
+  }
+
+  err = dMgr.DeleteAll()
+
+  if err != nil {
+    fmt.Printf("Error returned by dMgr.DeleteAll()\n"+
+      "dMgr='%v'\nError='%v'\n",
+      dMgr.GetAbsolutePath(), err.Error())
+    return
+  }
+
+  fmt.Println("           mainTest83DmgrDeleteDirAll()                 ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+
+}
+
+/*
 func mainTest82CopyByIO() {
 
   fh := pf.FileHelper{}
@@ -32,10 +63,8 @@ func mainTest82CopyByIO() {
 
   sourceFile := "D:\\T03\\ppc_6800_gsg.pdf"
 
-  /*
-    sourceFile := fh.AdjustPathSlash(
-      "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest\\checkfiles\\" + setupFileName)
-  */
+  //		sourceFile := fh.AdjustPathSlash(
+  //		"D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest\\checkfiles\\" + setupFileName)
 
   sourceFile = fh.AdjustPathSlash(sourceFile)
 
@@ -55,18 +84,6 @@ func mainTest82CopyByIO() {
       "sourceFile='%v'\n", sourceFile)
     return
   }
-
-  /*
-    absBaseFilePath, err := fh.MakeAbsolutePath(
-      "D:\\T04\\checkfiles\\checkfiles03")
-
-    if err != nil {
-      fmt.Printf("Test Setup Error: Error returned by fh.MakeAbsolutePath"+
-        "(\"../checkfiles/checkfiles03/checkfiles03_02\").\n"+
-        "Error='%v'\n", err.Error())
-      return
-    }
-  */
 
   sourceFMgr, err := pf.FileMgr{}.New(sourceFile)
 
@@ -120,7 +137,6 @@ func mainTest82CopyByIO() {
 
 }
 
-/*
 
 func mainTest81ReadFileLine() {
   // TestFileMgr_ReadFileLine_03

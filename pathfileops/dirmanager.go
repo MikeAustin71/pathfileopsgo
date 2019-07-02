@@ -792,75 +792,20 @@ func (dMgr *DirMgr) DeleteAll() error {
 
   ePrefix := "DirMgr.DeleteAll() "
 
-  nonPathError := dMgr.IsDirMgrValid(ePrefix)
+  dMgrHlpr := dirMgrHelper{}
 
-  if nonPathError != nil {
-    return nonPathError
-  }
-
-  _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(dMgr.absolutePath,
-      PreProcPathCode.None(),
-      ePrefix,
-      "dMgr.absolutePath")
-
-  if nonPathError != nil {
-    return nonPathError
-  }
-
-  if dirPathDoesExist && !fInfoPlus.IsDir() {
-    return fmt.Errorf(ePrefix+
-      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
-      "DMgr='%v'\n", dMgr.absolutePath)
-  }
+  var err error
 
   dMgr.dataMutex.Lock()
 
-  if dirPathDoesExist {
-
-    err2 := os.RemoveAll(dMgr.absolutePath)
-
-    if err2 != nil {
-      nonPathError = fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(dMgr.absolutePath) "+
-        "returned error. dMgr.absolutePath='%v' Error='%v' ", dMgr.absolutePath, err2.Error())
-
-      dMgr.dataMutex.Unlock()
-      return nonPathError
-    }
-
-  }
+  err = dMgrHlpr.deleteDirectoryAll(
+    dMgr,
+    ePrefix,
+    "dMgr")
 
   dMgr.dataMutex.Unlock()
 
-  _,
-    dirPathDoesExist,
-    _,
-    nonPathError =
-    FileHelper{}.doesPathFileExist(dMgr.absolutePath,
-      PreProcPathCode.None(),
-      ePrefix,
-      "dMgr.absolutePath")
-
-  if nonPathError != nil {
-    return fmt.Errorf(ePrefix+
-      "ERROR: After attempted directory deletion, a non-path error was returned.\n"+
-      "Directory Path='%v'\nError='%v'\n",
-      dMgr.absolutePath, nonPathError)
-  }
-
-  if dirPathDoesExist {
-    return fmt.Errorf(ePrefix+
-      "Error: FAILED TO DELETE DIRECTORY!!\n"+
-      "\nDirectory Path='%v'\n", dMgr.absolutePath)
-  }
-
-  _ = dMgr.DoesPathExist()
-  _ = dMgr.DoesAbsolutePathExist()
-
-  return nil
+  return err
 }
 
 // DeleteAllFilesInDir - Deletes all the files in the current
@@ -4225,7 +4170,11 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
 
   _,
     _,
-    err := dMgrHlpr.doesDirectoryExist(dMgr, ePrefix, "dMgr")
+    err := dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "dMgr")
 
   dMgr.dataMutex.Unlock()
 
