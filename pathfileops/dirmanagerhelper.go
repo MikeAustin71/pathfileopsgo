@@ -2,12 +2,211 @@ package pathfileops
 
 import (
   "fmt"
+  "io"
   "os"
   "time"
 )
 
 type dirMgrHelper struct {
   dMgr DirMgr
+}
+
+// copyDirectory - Helper method used by DirMgr. This method copies
+// files from the directory identified by by DirMgr to a target
+// directory. The files to be copied are selected according to
+// file selection criteria specified by input parameter,
+// 'fileSelectCriteria'.
+//
+func (dMgrHlpr *dirMgrHelper) copyDirectory(
+  dMgr *DirMgr,
+  targetDMgr *DirMgr,
+  fileSelectCriteria FileSelectionCriteria,
+  ePrefix string,
+  dMgrLabel string,
+  targetDMgrLabel string) (errs []error) {
+
+  errs = make([]error, 0, 300)
+  ePrefixCurrMethod := "dirMgrHelper.copyDirectory() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  var err, err2, err3 error
+  var dirPathDoesExist, targetPathDoesExist bool
+
+  dirPathDoesExist,
+    _,
+    err =
+    dMgrHlpr.doesDirectoryExist(
+      dMgr,
+      PreProcPathCode.None(),
+      ePrefix,
+      dMgrLabel)
+
+  if err != nil {
+
+    errs = append(errs, err)
+    return errs
+  }
+
+  if !dirPathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "\nThe current DirMgr path DOES NOT EXIST!\n"+
+      "%v.absolutePath='%v'\n",
+      dMgrLabel, dMgr.absolutePath)
+
+    errs = append(errs, err)
+    return errs
+  }
+
+  targetPathDoesExist,
+    _,
+    err =
+    dMgrHlpr.doesDirectoryExist(
+      targetDMgr,
+      PreProcPathCode.None(),
+      ePrefix,
+      targetDMgrLabel)
+
+  if err != nil {
+
+    errs = append(errs, err)
+    return errs
+  }
+
+  dirPtr, err := os.Open(dMgr.absolutePath)
+
+  if err != nil {
+
+    err2 = fmt.Errorf(ePrefix+
+      "\nError return by os.Open(%v.absolutePath).\n"+
+      "%v.absolutePath='%v'\nError='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath, err.Error())
+
+    errs = append(errs, err2)
+
+    return errs
+  }
+
+  osPathSeparatorStr := string(os.PathSeparator)
+
+  var src, target string
+  var isMatch bool
+  var nameFileInfos []os.FileInfo
+  err3 = nil
+
+  fh := FileHelper{}
+
+  for err3 != io.EOF {
+
+    nameFileInfos, err3 = dirPtr.Readdir(1000)
+
+    if err3 != nil && err3 != io.EOF {
+      _ = dirPtr.Close()
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by dirPtr.Readdirnames(1000).\n"+
+        "%v.absolutePath='%v'\nError='%v'\n",
+        dMgrLabel,
+        dMgr.absolutePath, err3.Error())
+
+      errs = append(errs, err2)
+      return errs
+    }
+
+    for _, nameFInfo := range nameFileInfos {
+
+      if nameFInfo.IsDir() {
+        // We don't care about sub-directories
+        continue
+
+      }
+
+      // This is not a directory. It is a file.
+      // Determine if it matches the find file criteria.
+      isMatch, err =
+        fh.FilterFileName(nameFInfo, fileSelectCriteria)
+
+      if err != nil {
+
+        err2 =
+          fmt.Errorf("\n"+ePrefix+
+            "\nError returned by fh.FilterFileName(nameFInfo, fileSelectCriteria).\n"+
+            "%v directorySearched='%v'\nfileName='%v'\nError='%v'\n",
+            dMgrLabel, dMgr.absolutePath, nameFInfo.Name(), err.Error())
+
+        errs = append(errs, err2)
+
+        continue
+      }
+
+      if !isMatch {
+
+        continue
+
+      } else {
+
+        // We have a match
+
+        // Create Directory if needed
+        if !targetPathDoesExist {
+
+          err = targetDMgr.MakeDir()
+
+          if err != nil {
+            err2 = fmt.Errorf("\n"+ePrefix+
+              "\nError creating target directory!\n"+
+              "%v Directory='%v'\nError='%v'\n",
+              targetDMgrLabel,
+              targetDMgr.absolutePath, err.Error())
+
+            errs = append(errs, err2)
+            err3 = io.EOF
+            break
+          }
+
+          targetPathDoesExist = true
+        }
+
+        src = dMgr.absolutePath +
+          osPathSeparatorStr + nameFInfo.Name()
+
+        target = targetDMgr.absolutePath +
+          osPathSeparatorStr + nameFInfo.Name()
+
+        err = fh.CopyFileByIo(src, target)
+
+        if err != nil {
+          err2 = fmt.Errorf("\n"+ePrefix+
+            "\nERROR: fh.CopyFileByIo(src, target)\n"+
+            "src='%v'\ntarget='%v'\nError='%v'\n\n",
+            src, target, err.Error())
+
+          errs = append(errs, err2)
+        }
+      }
+    }
+  }
+
+  if dirPtr != nil {
+
+    err = dirPtr.Close()
+
+    if err != nil {
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by %v dirPtr.Close().\n"+
+        "%v='%v'\nError='%v'\n",
+        dMgrLabel, dMgrLabel,
+        dMgr.absolutePath, err.Error())
+
+      errs = append(errs, err2)
+    }
+  }
+
+  return errs
 }
 
 func (dMgrHlpr *dirMgrHelper) deleteDirectoryAll(
@@ -293,6 +492,12 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
   return dirPathDoesExist, fInfo, err
 }
 
+// lowLevelDeleteDirectoryAll - Helper method designed for use by DirMgr.
+// This method will delete the designated directory ('dMgr') and all
+// subsidiary directories and files.
+//
+// This method will not perform validation services.
+//
 func (dMgrHlpr *dirMgrHelper) lowLevelDeleteDirectoryAll(
   dMgr *DirMgr,
   ePrefix string,
