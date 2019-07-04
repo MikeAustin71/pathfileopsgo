@@ -4022,70 +4022,21 @@ func (dMgr *DirMgr) IsVolumeNamePopulated() bool {
 //
 func (dMgr *DirMgr) MakeDirWithPermission(fPermCfg FilePermissionConfig) error {
 
-  ePrefix := "DirMgr.MakeDir() "
+  ePrefix := "DirMgr.MakeDirWithPermission() "
   var err error
-
-  err = dMgr.IsDirMgrValid(ePrefix)
-
-  if err != nil {
-    return err
-  }
-
-  _,
-    dirPathDoesExist,
-    _,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
-      PreProcPathCode.None(),
-      ePrefix,
-      "dMgr.absolutePath")
-
-  if nonPathError != nil {
-    return nonPathError
-  }
-
-  if dirPathDoesExist {
-    // nothing to do. Exit!
-    return nil
-  }
-
-  err = fPermCfg.IsValid()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
-  }
-
-  modePerm, err := fPermCfg.GetCompositePermissionMode()
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
-  }
+  dMgrHlpr := dirMgrHelper{}
 
   dMgr.dataMutex.Lock()
 
-  err = os.MkdirAll(dMgr.absolutePath, modePerm)
+  err = dMgrHlpr.lowLevelMakeDirWithPermission(
+    dMgr,
+    fPermCfg,
+    ePrefix,
+    "dMgr")
 
   dMgr.dataMutex.Unlock()
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned from os.MkdirAll(dMgr.absolutePath, "+
-      "modePerm)\ndMgr.absolutePath='%v'\nmodePerm='%v'\nError='%v'\n",
-      dMgr.absolutePath, modePerm.String(), err.Error())
-  }
-
-  dMgr.DoesPathExist()
-  dMgr.DoesAbsolutePathExist()
-
-  if !dMgr.doesAbsolutePathExist {
-    return fmt.Errorf(ePrefix+
-      "Error: FAILED TO CREATE DIRECTORY!!\n"+
-      "\nDirectory Path='%v'\n", dMgr.absolutePath)
-  }
-
-  // No errors - directory created.
-  return nil
+  return err
 }
 
 // MakeDir - If the directory path identified by the current DirMgr
@@ -4102,27 +4053,19 @@ func (dMgr *DirMgr) MakeDir() error {
 
   ePrefix := "DirMgr.MakeDir() "
   var err error
+  dMgrHlpr := dirMgrHelper{}
 
-  err = dMgr.IsDirMgrValid(ePrefix)
+  dMgr.dataMutex.Lock()
 
-  if err != nil {
-    return err
-  }
+  err = dMgrHlpr.lowLevelMakeDir(
+    dMgr,
+    ePrefix,
+    "dMgr")
 
-  fPermCfg, err := FilePermissionConfig{}.New("drwxrwxrwx")
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
-  }
-
-  err = dMgr.MakeDirWithPermission(fPermCfg)
-
-  if err != nil {
-    return fmt.Errorf(ePrefix+"\n%v\n", err.Error())
-  }
+  dMgr.dataMutex.Unlock()
 
   // No errors - directory created.
-  return nil
+  return err
 }
 
 // MoveDirectory - Moves files from the source directory identified

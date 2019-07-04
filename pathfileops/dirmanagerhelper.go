@@ -1080,6 +1080,31 @@ func (dMgrHlpr *dirMgrHelper) lowLevelMakeDir(
       "Error='%v'\n", err.Error())
   }
 
+  dMgrPathDoesExist,
+    _,
+    err =
+    dMgrHlpr.doesDirectoryExist(
+      dMgr,
+      PreProcPathCode.None(),
+      ePrefix,
+      dMgrLabel)
+
+  if err != nil {
+    return fmt.Errorf("Error: After attempted directory creation, "+
+      "a non-path error was generated!\n"+
+      "%v.absolutePath='%v'\n"+
+      "Error='%v'\n",
+      dMgrLabel,
+      dMgr.absolutePath,
+      err.Error())
+  }
+
+  if !dMgrPathDoesExist {
+    return fmt.Errorf("Error: After attempted directory creation,\n"+
+      "the directory DOES NOT EXIST!\n"+
+      "%v=%v\n", dMgrLabel, dMgr.absolutePath)
+  }
+
   return nil
 }
 
@@ -1143,7 +1168,33 @@ func (dMgrHlpr *dirMgrHelper) lowLevelMakeDirWithPermission(
     return fmt.Errorf(ePrefix+
       "\nError returned by os.MkdirAll(%v.absolutePath, modePerm).\n"+
       "%v.absolutePath='%v'\nmodePerm=\"drwxrwxrwx\"\n"+
-      "Error='%v'\n", err.Error())
+      "Error='%v'\n",
+      dMgrLabel, dMgr.absolutePath, err.Error())
+  }
+
+  dMgrPathDoesExist,
+    _,
+    err =
+    dMgrHlpr.doesDirectoryExist(
+      dMgr,
+      PreProcPathCode.None(),
+      ePrefix,
+      dMgrLabel)
+
+  if err != nil {
+    return fmt.Errorf("Error: After attempted directory creation, "+
+      "a non-path error was generated!\n"+
+      "%v.absolutePath='%v'\n"+
+      "Error='%v'\n",
+      dMgrLabel,
+      dMgr.absolutePath,
+      err.Error())
+  }
+
+  if !dMgrPathDoesExist {
+    return fmt.Errorf("Error: After attempted directory creation,\n"+
+      "the directory DOES NOT EXIST!\n"+
+      "%v=%v\n", dMgrLabel, dMgr.absolutePath)
   }
 
   return nil
