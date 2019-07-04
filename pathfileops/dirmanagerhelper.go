@@ -154,7 +154,10 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
         // Create Directory if needed
         if !targetPathDoesExist {
 
-          err = targetDMgr.MakeDir()
+          err = dMgrHlpr.lowLevelMakeDir(
+            targetDMgr,
+            ePrefix,
+            "targetDMgr")
 
           if err != nil {
             err2 = fmt.Errorf("\n"+ePrefix+
@@ -214,7 +217,6 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
 func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   dMgr *DirMgr,
   targetDMgr *DirMgr,
-  createTargetDir bool,
   copyEmptyDirectories bool,
   skipTopLevelDirectory bool,
   fileSelectCriteria FileSelectionCriteria,
@@ -417,17 +419,24 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
       !skipTopLevelDirectory &&
       copyEmptyDirectories {
 
-      err = fh.MakeDirAll(nextTargetDMgr.absolutePath)
+      err = dMgrHlpr.lowLevelMakeDir(
+        &nextTargetDMgr,
+        ePrefix,
+        "1-nextTargetDMgr")
 
     } else if !isTopLevelDir && copyEmptyDirectories {
 
-      err = fh.MakeDirAll(nextTargetDMgr.absolutePath)
+      err = dMgrHlpr.lowLevelMakeDir(
+        &nextTargetDMgr,
+        ePrefix,
+        "2-nextTargetDMgr")
 
     } else {
       err = nil
     }
 
     if err != nil {
+
       err2 = fmt.Errorf("\n"+ePrefix+
         "\nError creating target directory!\n"+
         "Target Next Directory='%v'\nError='%v'\n",
@@ -546,7 +555,10 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
             // Create Directory if needed
             if !dMgrPathDoesExist {
 
-              err = fh.MakeDirAll(nextTargetDMgr.absolutePath)
+              err = dMgrHlpr.lowLevelMakeDir(
+                &nextTargetDMgr,
+                ePrefix,
+                "3-nextTargetDMgr")
 
               if err != nil {
                 err2 = fmt.Errorf("\n"+ePrefix+
@@ -1006,4 +1018,133 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDoesDirectoryExist(
   }
 
   return dirPathDoesExist, fInfo, err
+}
+
+// lowLevelMakeDir - Helper Method used by 'DirMgr'. This method will create
+// the directory path including parent directories for the path specified by
+// 'dMgr'.
+func (dMgrHlpr *dirMgrHelper) lowLevelMakeDir(
+  dMgr *DirMgr,
+  ePrefix string,
+  dMgrLabel string) error {
+
+  ePrefixCurrMethod := "dirMgrHelper.lowLevelMakeDir() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  dMgrPathDoesExist,
+    _,
+    err :=
+    dMgrHlpr.doesDirectoryExist(
+      dMgr,
+      PreProcPathCode.None(),
+      ePrefix,
+      dMgrLabel)
+
+  if err != nil {
+    return err
+  }
+
+  if dMgrPathDoesExist {
+    // The directory exists
+    // Nothing to do.
+    return nil
+  }
+
+  fPermCfg, err := FilePermissionConfig{}.New("drwxrwxrwx")
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nError returned by FilePermissionConfig{}.New(\"drwxrwxrwx\")\n"+
+      "Error='%v'\n", err.Error())
+  }
+
+  modePerm, err := fPermCfg.GetCompositePermissionMode()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nError returned by fPermCfg.GetCompositePermissionMode().\n"+
+      "Error='%v\n", err.Error())
+  }
+
+  err = os.MkdirAll(dMgr.absolutePath, modePerm)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nError returned by os.MkdirAll(%v.absolutePath, modePerm).\n"+
+      "%v.absolutePath='%v'\nmodePerm=\"drwxrwxrwx\"\n"+
+      "Error='%v'\n", err.Error())
+  }
+
+  return nil
+}
+
+// lowLevelMakeDirWithPermission - Helper Method used by 'DirMgr'. This method
+// will create the directory path including parent directories for the path
+// specified by 'dMgr'. The permission used to create the directory path is
+// specified by input parameter
+//
+func (dMgrHlpr *dirMgrHelper) lowLevelMakeDirWithPermission(
+  dMgr *DirMgr,
+  fPermCfg FilePermissionConfig,
+  ePrefix string,
+  dMgrLabel string) error {
+
+  ePrefixCurrMethod := "dirMgrHelper.lowLevelMakeDir() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  dMgrPathDoesExist,
+    _,
+    err :=
+    dMgrHlpr.doesDirectoryExist(
+      dMgr,
+      PreProcPathCode.None(),
+      ePrefix,
+      dMgrLabel)
+
+  if err != nil {
+    return err
+  }
+
+  if dMgrPathDoesExist {
+    // The directory exists
+    // Nothing to do.
+    return nil
+  }
+
+  err = fPermCfg.IsValid()
+
+  if err != nil {
+    return fmt.Errorf("Input Parameter 'fPermCfg' is INVALID!\n"+
+      "Error returned by fPermCfg.IsValid().\n"+
+      "Error='%v'\n", err.Error())
+  }
+
+  modePerm, err := fPermCfg.GetCompositePermissionMode()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nError returned by fPermCfg.GetCompositePermissionMode().\n"+
+      "Error='%v\n", err.Error())
+  }
+
+  err = os.MkdirAll(dMgr.absolutePath, modePerm)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nError returned by os.MkdirAll(%v.absolutePath, modePerm).\n"+
+      "%v.absolutePath='%v'\nmodePerm=\"drwxrwxrwx\"\n"+
+      "Error='%v'\n", err.Error())
+  }
+
+  return nil
 }

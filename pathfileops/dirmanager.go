@@ -411,7 +411,6 @@ func (dMgr *DirMgr) CopyDirectoryTree(
   errs = dMgrHlpr.copyDirectoryTree(
     dMgr,
     &targetDMgr,
-    true, // createTargetDir
     copyEmptyDirectories,
     false, // skipTopLevelDirectory
     fileSelectCriteria,
