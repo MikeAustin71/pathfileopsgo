@@ -1276,9 +1276,9 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   ePrefix := "FileHelper.CopyFileByIo() "
   err = nil
 
-  var err2 error
-  var srcFileDoesExist bool
-  var srcFInfo FileInfoPlus
+  var err2, err3 error
+  var srcFileDoesExist, dstFileDoesExist bool
+  var srcFInfo, dstFileInfo FileInfoPlus
 
   src,
     srcFileDoesExist,
@@ -1299,8 +1299,8 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   }
 
   dst,
-    _,
-    _,
+    dstFileDoesExist,
+    dstFileInfo,
     err = fh.doesPathFileExist(dst,
     PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
     ePrefix,
@@ -1342,6 +1342,20 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
     return err
   }
 
+  if dstFileDoesExist && dstFileInfo.Mode().IsDir() {
+    err = fmt.Errorf(ePrefix+
+      "Error: 'dst' is a Directory and NOT a File!\n"+
+      "dst='%v'", dst)
+    return err
+  }
+
+  if dstFileDoesExist && !dstFileInfo.Mode().IsRegular() {
+    err = fmt.Errorf(ePrefix+
+      "Error: 'dst' is NOT a 'Regular' File!\n"+
+      "dst='%v'\n", dst)
+    return err
+  }
+
   // If the destination file does NOT exist, this is not a problem
   // since it will be created later. If the destination 'Path' does
   // not exist, an error return will be triggered.
@@ -1350,7 +1364,7 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   // file contents to the destination file.
 
   // First, open the source file
-  in, err2 := os.Open(src)
+  inSrcPtr, err2 := os.Open(src)
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
@@ -1362,7 +1376,7 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   // Next, 'Create' the destination file
   // If the destination file previously exists,
   // it will be truncated.
-  out, err2 := os.Create(dst)
+  outDestPtr, err2 := os.Create(dst)
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
@@ -1370,55 +1384,113 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
       "destinationFile='%v'\nError='%v'\n",
       dst, err2.Error())
 
-    _ = in.Close()
+    _ = inSrcPtr.Close()
 
     return err
   }
 
-  if _, err2 = io.Copy(out, in); err2 != nil {
-    _ = in.Close()
-    _ = out.Close()
+  bytesCopied, err2 := io.Copy(outDestPtr, inSrcPtr)
+
+  if err2 != nil {
+    _ = inSrcPtr.Close()
+    _ = outDestPtr.Close()
     err = fmt.Errorf(ePrefix+
       "Error returned from io.Copy(destination, source) \n"+
       "destination='%v'\n"+
       "source='%v'\nError='%v'\n",
       dst, src, err2.Error())
-    return
+    return err
   }
 
-  // flush file buffers in memory
-  err2 = out.Sync()
+  errs := make([]error, 0)
+
+  // flush file buffers inSrcPtr memory
+  err2 = outDestPtr.Sync()
 
   if err2 != nil {
-    _ = in.Close()
-    _ = out.Close()
-    err = fmt.Errorf(ePrefix+
-      "Error returned from out.Sync()\n"+
-      "out=destination='%v'\nError='%v'\n",
+    err3 = fmt.Errorf(ePrefix+
+      "Error returned from outDestPtr.Sync()\n"+
+      "outDestPtr=destination='%v'\nError='%v'\n",
       dst, err2.Error())
-    return
+    errs = append(errs, err3)
   }
 
-  err2 = in.Close()
+  err2 = inSrcPtr.Close()
 
   if err2 != nil {
-    _ = out.Close()
-
-    err = fmt.Errorf(ePrefix+
-      "Error returned from in.Close()\nin=source='%v'\nError='%v'\n",
+    err3 = fmt.Errorf(ePrefix+
+      "Error returned from inSrcPtr.Close()\ninSrcPtr=source='%v'\nError='%v'\n",
       src, err2.Error())
+
+    errs = append(errs, err3)
+  }
+
+  inSrcPtr = nil
+
+  err2 = outDestPtr.Close()
+
+  if err2 != nil {
+
+    err3 = fmt.Errorf(ePrefix+
+      "Error returned from outDestPtr.Close()\noutDestPtr=destination='%v'\nError='%v'\n",
+      dst, err2.Error())
+
+    errs = append(errs, err3)
+  }
+
+  outDestPtr = nil
+
+  if len(errs) > 0 {
+    return fh.consolidateErrors(errs)
+  }
+
+  _,
+    dstFileDoesExist,
+    dstFileInfo,
+    err2 = fh.doesPathFileExist(dst,
+    PreProcPathCode.None(), // Do NOT alter path
+    ePrefix,
+    "dst")
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "Error: After Copy IO operation, dst "+
+      "generated non-path error!\n"+
+      "dst='%v'\nError='%v'\n",
+      dst, err2.Error())
+    return err
+  }
+
+  if !dstFileDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "ERROR: After Copy IO operation, the destination file DOES NOT EXIST!\n"+
+      "Destination File = 'dst' = '%v'\n", dst)
 
     return err
   }
 
-  err2 = out.Close()
+  srcFileSize := srcFInfo.Size()
 
-  if err2 != nil {
-
+  if bytesCopied != srcFileSize {
     err = fmt.Errorf(ePrefix+
-      "Error returned from out.Close()\nout=destination='%v'\nError='%v'\n",
-      dst, err2.Error())
+      "Error: Bytes Copied does NOT equal bytes "+
+      "in source file!\n"+
+      "Source File Bytes='%v'   Bytes Coped='%v'\n"+
+      "Source File=src='%v'\nDestination File=dst='%v'\n",
+      srcFileSize, bytesCopied,
+      src, dst)
 
+    return err
+  }
+
+  if dstFileInfo.Size() != srcFileSize {
+    err = fmt.Errorf(ePrefix+
+      "\nError: Bytes is source file do NOT equal bytes "+
+      "in destination file!\n"+
+      "Source File Bytes='%v'   Destination File Bytes='%v'\n"+
+      "Source File=src='%v'\nDestination File=dst='%v'\n",
+      srcFileSize, dstFileInfo.Size(),
+      src, dst)
     return err
   }
 
@@ -5615,6 +5687,34 @@ func (fh FileHelper) SwapBasePath(
 /*
   FileHelper private methods
 */
+
+// consolidateErrors - Receives an array of errors and converts them
+// to a single error which is returned to the caller. Multiple errors
+// are separated by a new line character.
+//
+// If the length of the error array is zero, this method returns nil.
+//
+func (fh FileHelper) consolidateErrors(errs []error) error {
+
+  lErrs := len(errs)
+
+  if lErrs == 0 {
+    return nil
+  }
+
+  errStr := ""
+
+  for i := 0; i < lErrs; i++ {
+
+    if i == (lErrs - 1) {
+      errStr += fmt.Sprintf("%v", errs[i].Error())
+    } else {
+      errStr += fmt.Sprintf("%v\n", errs[i].Error())
+    }
+  }
+
+  return fmt.Errorf("%v", errStr)
+}
 
 // doesPathFileExist - A helper method which public methods use to determine whether a
 // path and file does or does not exist.
