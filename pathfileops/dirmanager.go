@@ -408,6 +408,8 @@ func (dMgr *DirMgr) CopyDirectoryTree(
 
   dMgrHlpr := dirMgrHelper{}
 
+  dMgr.dataMutex.Lock()
+
   errs = dMgrHlpr.copyDirectoryTree(
     dMgr,
     &targetDMgr,
@@ -417,6 +419,8 @@ func (dMgr *DirMgr) CopyDirectoryTree(
     ePrefix,
     "dMgr",
     "targetDMgr")
+
+  dMgr.dataMutex.Unlock()
 
   return errs
 }
