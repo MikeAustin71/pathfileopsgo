@@ -499,6 +499,33 @@ func (dMgr *DirMgr) CopySubDirectoryTree(
   fileSelectCriteria FileSelectionCriteria) (errs []error) {
 
   ePrefix := "DirMgr.CopySubDirectoryTree() "
+  errs = nil
+  dMgrHlpr := dirMgrHelper{}
+
+  dMgr.dataMutex.Lock()
+
+  errs = dMgrHlpr.copyDirectoryTree(
+    dMgr,
+    &targetDMgr,
+    copyEmptyDirectories,
+    true,
+    fileSelectCriteria,
+    ePrefix,
+    "dMgr",
+    "targetDMgr")
+
+  dMgr.dataMutex.Unlock()
+
+  return errs
+}
+
+/*
+func (dMgr *DirMgr) CopySubDirectoryTree(
+  targetDMgr DirMgr,
+  copyEmptyDirectories bool,
+  fileSelectCriteria FileSelectionCriteria) (errs []error) {
+
+  ePrefix := "DirMgr.CopySubDirectoryTree() "
   var err, err2 error
 
   err = dMgr.IsDirMgrValid(ePrefix)
@@ -559,6 +586,7 @@ func (dMgr *DirMgr) CopySubDirectoryTree(
     ePrefix,
     fileSelectCriteria)
 }
+*/
 
 // DeleteAll - BE CAREFUL!!! - This method will remove the directory identified by
 // this DirMgr object. It will also delete all child directories and files in the
