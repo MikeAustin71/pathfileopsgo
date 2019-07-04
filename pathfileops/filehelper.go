@@ -1051,9 +1051,9 @@ func (fh FileHelper) CopyFileByIoByLink(src, dst string) (err error) {
 
   if errX != nil {
     err = fmt.Errorf(ePrefix+
-      "Error: After Copy By IO Failed and error was returned "+
+      "Error: After Copy By IO failed, an error was returned "+
       "by fh.CopyFileByLink(src, dst)\n"+
-      "Error='%v'", errX)
+      "src='%v'\ndst='%v'\nError='%v'\n", src, dst, errX)
     return err
   }
 
@@ -1095,7 +1095,10 @@ func (fh FileHelper) CopyFileByLinkByIo(src, dst string) (err error) {
   errX := fh.CopyFileByIo(src, dst)
 
   if errX != nil {
-    err = fmt.Errorf(ePrefix+"%v", errX)
+    err = fmt.Errorf(ePrefix+
+      "Error: After Copy By Link failed, an error was returned by fh.CopyFileByIo(src, dst).\n"+
+      "src='%v'\ndst='%v'\nError='%v'\n",
+      src, dst, errX)
     return err
   }
 
