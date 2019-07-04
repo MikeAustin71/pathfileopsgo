@@ -1050,7 +1050,10 @@ func (fh FileHelper) CopyFileByIoByLink(src, dst string) (err error) {
   errX := fh.CopyFileByLink(src, dst)
 
   if errX != nil {
-    err = fmt.Errorf(ePrefix+"%v", errX)
+    err = fmt.Errorf(ePrefix+
+      "Error: After Copy By IO Failed and error was returned "+
+      "by fh.CopyFileByLink(src, dst)\n"+
+      "Error='%v'", errX)
     return err
   }
 
@@ -1234,7 +1237,6 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
         "destination file='%v' ", dst)
       return err
     }
-
   }
 
   err2 = os.Link(src, dst)
@@ -1243,6 +1245,28 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
     err = fmt.Errorf(ePrefix+"- os.Link(src, dst) FAILED!\n"+
       "src='%v'\ndst='%v'\nError='%v'\n",
       src, dst, err2.Error())
+    return err
+  }
+
+  dst,
+    dstFileDoesExist,
+    _,
+    err2 = fh.doesPathFileExist(dst,
+    PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
+    ePrefix,
+    "dst")
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "Error: After Copy By Link Operation, a non-path error was returned on 'dst'.\n"+
+      "Error='%v'", err2.Error())
+    return err
+  }
+
+  if !dstFileDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "Error: After Copy By Link Operation, the destination file DOES NOT EXIST!\n"+
+      "Destination File= dst = %v", dst)
     return err
   }
 
