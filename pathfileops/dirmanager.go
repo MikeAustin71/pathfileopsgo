@@ -909,166 +909,18 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 
   ePrefix := "DirMgr.DeleteFilesByNamePattern() "
 
-  errs = make([]error, 0, 300)
-
-  var err2, err, err3 error
-
-  err = dMgr.IsDirMgrValid(ePrefix)
-
-  if err != nil {
-    errs = append(errs, err)
-    return errs
-  }
-
-  _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
-      PreProcPathCode.None(),
-      ePrefix,
-      "dMgr.absolutePath")
-
-  if nonPathError != nil {
-    errs = append(errs, nonPathError)
-    return errs
-  }
-
-  if !dirPathDoesExist {
-    err2 =
-      fmt.Errorf(ePrefix+
-        "ERROR: Directory DOES NOT EXIST!\n"+
-        "DirMgr Directory='%v'\n", dMgr.absolutePath)
-
-    errs = append(errs, err2)
-    return errs
-  }
-
-  if !fInfoPlus.IsDir() {
-    err2 = fmt.Errorf(ePrefix+
-      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
-      "DMgr='%v'\n", dMgr.absolutePath)
-
-    errs = append(errs, err2)
-    return errs
-  }
-
-  fh := FileHelper{}
-
-  errCode := 0
-
-  errCode, _, fileSearchPattern = fh.isStringEmptyOrBlank(fileSearchPattern)
-
-  if errCode == -1 {
-    err2 = errors.New(ePrefix +
-      "Error: Input parameter 'fileSearchPattern' is an empty string!")
-
-    errs = append(errs, err2)
-    return errs
-  }
-
-  if errCode == -2 {
-    err2 = errors.New(ePrefix +
-      "Error: Input parameter 'fileSearchPattern' consists of blank spaces!")
-    errs = append(errs, err2)
-    return errs
-  }
+  dMgrHlpr := dirMgrHelper{}
 
   dMgr.dataMutex.Lock()
 
-  dir, err := os.Open(dMgr.absolutePath)
+  errs = dMgrHlpr.deleteFilesByNamePattern(
+    dMgr,
+    fileSearchPattern,
+    ePrefix,
+    "dMgr",
+    "fileSearchPattern")
 
   dMgr.dataMutex.Unlock()
-
-  if err != nil {
-
-    err2 = fmt.Errorf(ePrefix+
-      "Error return by os.Open(dMgr.absolutePath). "+
-      "dMgr.absolutePath='%v' Error='%v' ",
-      dMgr.absolutePath, err.Error())
-    errs = append(errs, err2)
-    return errs
-  }
-
-  err3 = nil
-  var nameFileInfos []os.FileInfo
-  osPathSepStr := string(os.PathSeparator)
-  var isMatch bool
-
-  for err3 != io.EOF {
-
-    nameFileInfos, err3 = dir.Readdir(1000)
-
-    if err3 != nil && err3 != io.EOF {
-
-      _ = dir.Close()
-      err2 = fmt.Errorf(ePrefix+
-        "Error returned by dir.Readdirnames(-1). "+
-        "dMgr.absolutePath='%v' Error='%v' ",
-        dMgr.absolutePath, err3.Error())
-
-      errs = append(errs, err2)
-      return errs
-    }
-
-    for _, nameFInfo := range nameFileInfos {
-
-      if nameFInfo.IsDir() {
-
-        continue
-
-      } else {
-
-        isMatch, err = fp.Match(fileSearchPattern, nameFInfo.Name())
-
-        if err != nil {
-
-          err2 = fmt.Errorf(ePrefix+
-            "Error returned by fp.Match(fileSearchPattern, fileName).\n"+
-            "directorySearched='%v'\nfileSearchPattern='%v' fileName='%v'\nError='%v'\n",
-            dMgr.absolutePath, fileSearchPattern, nameFInfo.Name(), err.Error())
-
-          errs = append(errs, err2)
-          continue
-        }
-
-        if !isMatch {
-
-          continue
-
-        } else {
-
-          dMgr.dataMutex.Lock()
-
-          err = os.Remove(dMgr.absolutePath + osPathSepStr + nameFInfo.Name())
-
-          dMgr.dataMutex.Unlock()
-
-          if err != nil {
-            err2 = fmt.Errorf(ePrefix+
-              "Error returned by os.Remove(pathFileName).\n"+
-              "pathFileName='%v'\nError='%v'\n\n",
-              dMgr.absolutePath+osPathSepStr+nameFInfo.Name(),
-              err.Error())
-
-            errs = append(errs, err2)
-            continue
-          }
-        }
-      }
-    }
-  }
-
-  err = dir.Close()
-
-  if err != nil {
-    err2 = fmt.Errorf(ePrefix+
-      "Error returned by dir.Close().\n"+
-      "dir='%v'\nError='%v'\n",
-      dMgr.absolutePath, err.Error())
-    errs = append(errs, err2)
-  }
 
   return errs
 }

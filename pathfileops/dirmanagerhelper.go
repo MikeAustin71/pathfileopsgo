@@ -4,6 +4,7 @@ import (
   "fmt"
   "io"
   "os"
+  pf "path/filepath"
   "time"
 )
 
@@ -1283,6 +1284,187 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeFiles(
     numOfRemainingFiles,
     numOfDeletedFiles,
     errs
+}
+
+// deleteFilesByNamePattern - Receives a string defining a pattern to
+// use in searching file names for all files in the directory identified
+// by the input parameter 'dMgr'.
+//
+// If a file name matches the pattern specified by input parameter,
+// 'fileSearchPattern', it will be deleted.
+//
+func (dMgrHlpr *dirMgrHelper) deleteFilesByNamePattern(
+  dMgr *DirMgr,
+  fileSearchPattern string,
+  ePrefix string,
+  dMgrLabel string,
+  fileSearchLabel string) (errs []error) {
+
+  ePrefixCurrMethod := "dirMgrHelper.deleteFilesByNamePattern() "
+
+  errs = make([]error, 0, 300)
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  dirPathDoesExist,
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+    errs = append(errs, err)
+    return errs
+  }
+
+  if !dirPathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: %v Directory Path DOES NOT EXIST!\n"+
+      "%v='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath)
+
+    errs = append(errs, err)
+
+    return errs
+  }
+
+  var err2, err3 error
+
+  fh := FileHelper{}
+
+  errCode := 0
+
+  errCode, _, fileSearchPattern = fh.isStringEmptyOrBlank(fileSearchPattern)
+
+  if errCode == -1 {
+    err2 = fmt.Errorf(ePrefix+
+      "\nError: Input parameter '%v' is an empty string!\n",
+      fileSearchLabel)
+
+    errs = append(errs, err2)
+    return errs
+  }
+
+  if errCode == -2 {
+    err2 = fmt.Errorf(ePrefix+
+      "\nError: Input parameter '%v' consists of blank spaces!\n",
+      fileSearchLabel)
+
+    errs = append(errs, err2)
+    return errs
+  }
+
+  dirPtr, err := os.Open(dMgr.absolutePath)
+
+  if err != nil {
+
+    err2 = fmt.Errorf(ePrefix+
+      "\nError return by os.Open(%v.absolutePath).\n"+
+      "%v.absolutePath='%v'\nError='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath, err.Error())
+
+    errs = append(errs, err2)
+    return errs
+  }
+
+  err3 = nil
+  var nameFileInfos []os.FileInfo
+  osPathSepStr := string(os.PathSeparator)
+  var isMatch bool
+
+  for err3 != io.EOF {
+
+    nameFileInfos, err3 = dirPtr.Readdir(1000)
+
+    if err3 != nil && err3 != io.EOF {
+
+      if dirPtr != nil {
+        _ = dirPtr.Close()
+      }
+
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by dirPtr.Readdirnames(-1).\n"+
+        "#v.absolutePath='%v'\nError='%v'\n",
+        dMgrLabel,
+        dMgr.absolutePath, err3.Error())
+
+      errs = append(errs, err2)
+      return errs
+    }
+
+    for _, nameFInfo := range nameFileInfos {
+
+      if nameFInfo.IsDir() {
+
+        continue
+
+      } else {
+
+        isMatch, err = pf.Match(fileSearchPattern, nameFInfo.Name())
+
+        if err != nil {
+
+          err2 = fmt.Errorf(ePrefix+
+            "\nError returned by (path/filepath) pf.Match(%v, fileName).\n"+
+            "\n%v Directory Searched='%v'\n%v='%v' fileName='%v'\nError='%v'\n\n",
+            fileSearchLabel,
+            dMgrLabel,
+            dMgr.absolutePath,
+            fileSearchLabel,
+            fileSearchPattern,
+            nameFInfo.Name(),
+            err.Error())
+
+          errs = append(errs, err2)
+          continue
+        }
+
+        if !isMatch {
+
+          continue
+
+        } else {
+
+          err = os.Remove(dMgr.absolutePath + osPathSepStr + nameFInfo.Name())
+
+          if err != nil {
+            err2 = fmt.Errorf(ePrefix+
+              "\nError returned by os.Remove(pathFileName).\n"+
+              "pathFileName='%v'\nError='%v'\n\n",
+              dMgr.absolutePath+osPathSepStr+nameFInfo.Name(),
+              err.Error())
+
+            errs = append(errs, err2)
+            continue
+          }
+        }
+      }
+    }
+  }
+
+  if dirPtr != nil {
+
+    err = dirPtr.Close()
+
+    if err != nil {
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by dirPtr.Close().\n"+
+        "%v='%v'\nError='%v'\n\n",
+        dMgrLabel,
+        dMgr.absolutePath, err.Error())
+      errs = append(errs, err2)
+    }
+  }
+
+  return errs
 }
 
 // doesDirectoryExist - Helper method used by DirMgr to test for
