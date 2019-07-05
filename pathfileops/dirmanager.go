@@ -589,7 +589,7 @@ func (dMgr *DirMgr) CopySubDirectoryTree(
 */
 
 // DeleteAll - BE CAREFUL!!! - This method will remove the directory identified by
-// this DirMgr object. It will also delete all child directories and files in the
+// this DirMgr instance. It will also delete all child directories and files in the
 // directory tree.
 //
 // Example:
@@ -853,73 +853,21 @@ func (dMgr *DirMgr) DeleteDirectoryTreeFiles(
   errs []error) {
   ePrefix := "DirMgr.DeleteDirectoryTreeFiles() "
 
-  numOfSubDirectories = 0
-  numOfRemainingFiles = 0
-  numOfDeletedFiles = 0
-  errs = make([]error, 0, 300)
+  dMgrHlpr := dirMgrHelper{}
 
-  nonPathError := dMgr.IsDirMgrValid(ePrefix)
-
-  if nonPathError != nil {
-    errs = append(errs, nonPathError)
-
-    return numOfSubDirectories,
-      numOfRemainingFiles,
-      numOfDeletedFiles,
-      errs
-  }
-  _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
-      PreProcPathCode.None(),
-      ePrefix,
-      "dMgr.absolutePath")
-
-  if nonPathError != nil {
-
-    errs = append(errs, nonPathError)
-
-    return numOfSubDirectories,
-      numOfRemainingFiles,
-      numOfDeletedFiles,
-      errs
-  }
-
-  if !dirPathDoesExist {
-    nonPathError = fmt.Errorf(ePrefix+
-      "Error: Source DirMgr Path DOES NOT EXIST!\n"+
-      "DirMgr Path='%v'", dMgr.absolutePath)
-    errs = append(errs, nonPathError)
-
-    return numOfSubDirectories,
-      numOfRemainingFiles,
-      numOfDeletedFiles,
-      errs
-  }
-
-  if !fInfoPlus.IsDir() {
-    nonPathError = fmt.Errorf(ePrefix+
-      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
-      "DMgr='%v'\n", dMgr.absolutePath)
-
-    errs = append(errs, nonPathError)
-
-    return numOfSubDirectories,
-      numOfRemainingFiles,
-      numOfDeletedFiles,
-      errs
-  }
+  dMgr.dataMutex.Lock()
 
   numOfSubDirectories,
     numOfRemainingFiles,
     numOfDeletedFiles,
-    errs = dMgr.deleteDirectoryTreeFiles(
-    true,
+    errs = dMgrHlpr.deleteDirectoryTreeFiles(
+    dMgr,
+    true, // scan sub-directories
+    deleteFileSelectionCriteria,
     ePrefix,
-    deleteFileSelectionCriteria)
+    "dMgr")
+
+  dMgr.dataMutex.Unlock()
 
   return numOfSubDirectories,
     numOfRemainingFiles,
