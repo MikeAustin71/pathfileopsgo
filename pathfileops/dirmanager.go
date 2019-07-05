@@ -1389,23 +1389,29 @@ func (dMgr *DirMgr) DoesDirectoryExist() (doesPathExist, doesAbsolutePathExist b
 // updates the DirMgr field DirMgr.doesPathExist field.
 //
 func (dMgr *DirMgr) DoesPathExist() bool {
-  _,
-    dirPathDoesExist,
+
+  dMgrHlpr := dirMgrHelper{}
+  dirPathDoesExist := false
+  var err error
+
+  dMgr.dataMutex.Lock()
+
+  dirPathDoesExist,
     _,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.path,
+    err =
+    dMgrHlpr.doesDirectoryExist(
+      dMgr,
       PreProcPathCode.None(),
       "",
-      "dMgr.path")
+      "dMgr")
 
-  if nonPathError != nil || !dirPathDoesExist {
-    dMgr.doesPathExist = false
-  } else {
-    dMgr.doesPathExist = true
+  if err != nil {
+    dirPathDoesExist = false
   }
 
-  return dMgr.doesPathExist
+  dMgr.dataMutex.Unlock()
+
+  return dirPathDoesExist
 }
 
 // DoesThisDirectoryExist - Returns a boolean value of true if the directory identified
