@@ -1569,6 +1569,34 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
   return dirPathDoesExist, fInfo, err
 }
 
+func (dMgrHlpr *dirMgrHelper) empty(
+  dMgr *DirMgr,
+  ePrefix string,
+  dMgrLabel string) error {
+
+  var err error
+
+  err = nil
+
+  dMgr.isInitialized = false
+  dMgr.originalPath = ""
+  dMgr.path = ""
+  dMgr.isPathPopulated = false
+  dMgr.doesPathExist = false
+  dMgr.parentPath = ""
+  dMgr.isParentPathPopulated = false
+  dMgr.absolutePath = ""
+  dMgr.isAbsolutePathPopulated = false
+  dMgr.doesAbsolutePathExist = false
+  dMgr.isAbsolutePathDifferentFromPath = false
+  dMgr.directoryName = ""
+  dMgr.volumeName = ""
+  dMgr.isVolumePopulated = false
+  dMgr.actualDirFileInfo = FileInfoPlus{}
+
+  return err
+}
+
 // lowLevelDeleteDirectoryAll - Helper method designed for use by DirMgr.
 // This method will delete the designated directory ('dMgr') and all
 // subsidiary directories and files.

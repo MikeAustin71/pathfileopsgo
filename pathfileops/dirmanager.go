@@ -1454,25 +1454,14 @@ func (dMgr *DirMgr) DoesThisDirectoryExist() (directoryDoesExist bool, nonPathEr
 // or original zero values.
 func (dMgr *DirMgr) Empty() {
 
+  dMgrHlpr := dirMgrHelper{}
+
   dMgr.dataMutex.Lock()
 
-  dMgr.isInitialized = false
-  dMgr.originalPath = ""
-  dMgr.path = ""
-  dMgr.isPathPopulated = false
-  dMgr.doesPathExist = false
-  dMgr.parentPath = ""
-  dMgr.isParentPathPopulated = false
-  dMgr.absolutePath = ""
-  dMgr.isAbsolutePathPopulated = false
-  dMgr.doesAbsolutePathExist = false
-  dMgr.isAbsolutePathDifferentFromPath = false
-  dMgr.directoryName = ""
-  dMgr.volumeName = ""
-  dMgr.isVolumePopulated = false
-  dMgr.actualDirFileInfo = FileInfoPlus{}
+  _ = dMgrHlpr.empty(dMgr, "DirMgr.Empty() ", "dMgr")
 
   dMgr.dataMutex.Unlock()
+
 }
 
 // Equal - Compares two DirMgr objects to determine if
