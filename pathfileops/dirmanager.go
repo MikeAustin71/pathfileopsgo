@@ -1318,68 +1318,6 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(
   return deleteFilesInfo, err
 }
 
-/*
-func (dMgr *DirMgr) DeleteWalkDirFiles(
-  deleteFileSelectionCriteria FileSelectionCriteria) (DirectoryDeleteFileInfo, error) {
-
-  ePrefix := "DirMgr.DeleteWalkDirFiles() "
-  deleteFilesInfo := DirectoryDeleteFileInfo{}
-
-  err := dMgr.IsDirMgrValid(ePrefix)
-
-  if err != nil {
-    return deleteFilesInfo, err
-  }
-
-  _,
-  dirPathDoesExist,
-  fInfoPlus,
-  nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
-      PreProcPathCode.None(),
-      ePrefix,
-      "dMgr.absolutePath")
-
-  if nonPathError != nil {
-    return deleteFilesInfo, nonPathError
-  }
-
-  if !dirPathDoesExist {
-    return deleteFilesInfo,
-      fmt.Errorf(ePrefix+
-        "ERROR: DirMgr Path DOES NOT EXIST!\n"+
-        "DirMgr Path='%v'\n", dMgr.absolutePath)
-  }
-
-  if !fInfoPlus.IsDir() {
-    nonPathError = fmt.Errorf(ePrefix+
-      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
-      "DMgr='%v'\n", dMgr.absolutePath)
-
-    return deleteFilesInfo, nonPathError
-  }
-
-  deleteFilesInfo.StartPath = dMgr.absolutePath
-
-  deleteFilesInfo.DeleteFileSelectCriteria = deleteFileSelectionCriteria
-
-  fh := FileHelper{}
-
-  err = fp.Walk(deleteFilesInfo.StartPath, fh.makeFileHelperWalkDirDeleteFilesFunc(&deleteFilesInfo))
-
-  if err != nil {
-    return deleteFilesInfo,
-      fmt.Errorf(ePrefix+"Error returned by FileHelper."+
-        "makeFileHelperWalkDirDeleteFilesFunc(&dWalkInfo). "+
-        "dWalkInfo.StartPath='%v' Error='%v' ", deleteFilesInfo.StartPath, err.Error())
-  }
-
-  return deleteFilesInfo, nil
-
-}
-*/
-
 // DoesAbsolutePathExist - Performs two operations.
 // First the method determine whether the directory
 // path indicated by the DirMgr.absolutePath field
@@ -1390,25 +1328,28 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(
 //
 func (dMgr *DirMgr) DoesAbsolutePathExist() bool {
 
-  _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
+  dMgrHlpr := dirMgrHelper{}
+  dirPathDoesExist := false
+  var err error
+
+  dMgr.dataMutex.Lock()
+
+  dirPathDoesExist,
+    _,
+    err =
+    dMgrHlpr.doesDirectoryExist(
+      dMgr,
       PreProcPathCode.None(),
       "",
-      "dMgr.absolutePath")
+      "dMgr")
 
-  if nonPathError != nil || !dirPathDoesExist {
-    dMgr.doesAbsolutePathExist = false
-    dMgr.actualDirFileInfo = FileInfoPlus{}
-  } else {
-    dMgr.doesAbsolutePathExist = true
-    dMgr.actualDirFileInfo = fInfoPlus.CopyOut()
+  if err != nil {
+    dirPathDoesExist = false
   }
 
-  return dMgr.doesAbsolutePathExist
+  dMgr.dataMutex.Unlock()
+
+  return dirPathDoesExist
 }
 
 // DoesDirectoryExist - Returns two boolean values indicating whether or not the
