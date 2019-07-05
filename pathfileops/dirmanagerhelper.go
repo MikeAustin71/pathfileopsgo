@@ -851,6 +851,143 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
   return errs
 }
 
+// deleteAllSubDirectories - The directory identified by the input
+// parameter 'dMgr' instance is treated as the parent directory.
+// This method will then proceed to delete all directories and files
+// which are are subsidiary to this parent directory. Essentially,
+// all sub-directories which are subordinate to the the 'dMgr'
+// directory will be deleted along with their constituent files.
+//
+func (dMgrHlpr *dirMgrHelper) deleteAllSubDirectories(
+  dMgr *DirMgr,
+  ePrefix string,
+  dMgrLabel string) (errs []error) {
+
+  ePrefixCurrMethod := "dirMgrHelper.doesDirectoryExist() "
+
+  errs = make([]error, 0, 300)
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  dirPathDoesExist,
+    dMgrFInfo,
+    err := dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+    errs = append(errs, err)
+    return errs
+  }
+
+  if !dirPathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: %v Directory Path DOES NOT EXIST!\n"+
+      "%v='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath)
+    errs = append(errs, err)
+    return errs
+  }
+
+  if !dMgrFInfo.IsDir() {
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: %v Directory Path exists, but IT IS NOT A DIRECTORY!\n"+
+      "%v='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath)
+    errs = append(errs, err)
+    return errs
+  }
+
+  if dMgrFInfo.Mode().IsRegular() {
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: %v Directory Path exists, but it is classified as a 'Regular' File!\n"+
+      "%v='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath)
+    errs = append(errs, err)
+    return errs
+  }
+
+  var err2, err3 error
+
+  dirMgrPtr, err := os.Open(dMgr.absolutePath)
+
+  if err != nil {
+
+    err2 = fmt.Errorf(ePrefix+
+      "Error return by os.Open(dMgr.absolutePath). "+
+      "dMgr.absolutePath='%v' Error='%v' ",
+      dMgr.absolutePath, err.Error())
+
+    errs = append(errs, err2)
+
+    return errs
+  }
+
+  var nameFileInfos []os.FileInfo
+  err3 = nil
+  osPathSeparatorStr := string(os.PathSeparator)
+
+  for err3 != io.EOF {
+
+    nameFileInfos, err3 = dirMgrPtr.Readdir(1000)
+
+    if err3 != nil && err3 != io.EOF {
+      _ = dirMgrPtr.Close()
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by dirMgrPtr.Readdirnames(1000).\n"+
+        "dMgr.absolutePath='%v'\nError='%v'\n\n",
+        dMgr.absolutePath, err3.Error())
+
+      errs = append(errs, err2)
+    }
+
+    for _, nameFInfo := range nameFileInfos {
+
+      if nameFInfo.IsDir() {
+
+        err = os.RemoveAll(dMgr.absolutePath + osPathSeparatorStr + nameFInfo.Name())
+
+        if err != nil {
+          err2 = fmt.Errorf(ePrefix+
+            "\nError returned by os.RemoveAll(subDir)\n"+
+            "subDir='%v'\nError='%v'\n\n",
+            dMgr.absolutePath+osPathSeparatorStr+nameFInfo.Name(), err.Error())
+
+          errs = append(errs, err2)
+
+          continue
+        }
+      }
+    }
+  }
+
+  if dirMgrPtr != nil {
+
+    err = dirMgrPtr.Close()
+
+    if err != nil {
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by %vPtr.Close().\n"+
+        "%v='%v'\nError='%v'\n",
+        dMgrLabel, dMgrLabel,
+        dMgr.absolutePath, err.Error())
+
+      errs = append(errs, err2)
+    }
+  }
+
+  return errs
+}
+
 // doesDirectoryExist - Helper method used by DirMgr to test for
 // existence of directory path. In addition, this method performs
 // validation on the 'DirMgr' instance.

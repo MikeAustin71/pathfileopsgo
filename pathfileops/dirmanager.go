@@ -684,122 +684,20 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
 //             d:\parentdirectory\file2.txt
 //
 func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
+  ePrefix := "DirMgr.CopyDirectory() "
 
   errs = make([]error, 0, 300)
 
-  ePrefix := "DirMgr.CopyDirectory() "
-  var err, err2, err3 error
-
-  err = dMgr.IsDirMgrValid(ePrefix)
-
-  if err != nil {
-    errs = append(errs, err)
-    return errs
-  }
-
-  _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
-      PreProcPathCode.None(),
-      ePrefix,
-      "dMgr.absolutePath")
-
-  if nonPathError != nil {
-    errs = append(errs, nonPathError)
-    return errs
-  }
-
-  if !dirPathDoesExist {
-
-    err2 = fmt.Errorf(ePrefix+"The current DirMgr path DOES NOT EXIST!\n"+
-      "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
-
-    errs = append(errs, err2)
-    return errs
-  }
-
-  if !fInfoPlus.IsDir() {
-    err2 = fmt.Errorf(ePrefix+
-      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
-      "DMgr='%v'\n", dMgr.absolutePath)
-
-    errs = append(errs, err2)
-    return errs
-  }
+  dMgrHlpr := dirMgrHelper{}
 
   dMgr.dataMutex.Lock()
 
-  dir, err := os.Open(dMgr.absolutePath)
+  errs = dMgrHlpr.deleteAllSubDirectories(
+    dMgr,
+    ePrefix,
+    "dMgr")
 
   dMgr.dataMutex.Unlock()
-
-  if err != nil {
-
-    err2 = fmt.Errorf(ePrefix+
-      "Error return by os.Open(dMgr.absolutePath). "+
-      "dMgr.absolutePath='%v' Error='%v' ",
-      dMgr.absolutePath, err.Error())
-
-    errs = append(errs, err2)
-
-    return errs
-  }
-
-  var nameFileInfos []os.FileInfo
-  err3 = nil
-  osPathSeparatorStr := string(os.PathSeparator)
-
-  for err3 != io.EOF {
-
-    nameFileInfos, err3 = dir.Readdir(1000)
-
-    if err3 != nil && err3 != io.EOF {
-      _ = dir.Close()
-      err2 = fmt.Errorf(ePrefix+
-        "Error returned by dir.Readdirnames(1000). "+
-        "dMgr.absolutePath='%v'\nError='%v'\n\n",
-        dMgr.absolutePath, err3.Error())
-
-      errs = append(errs, err2)
-    }
-
-    for _, nameFInfo := range nameFileInfos {
-
-      if nameFInfo.IsDir() {
-
-        dMgr.dataMutex.Lock()
-
-        err = os.RemoveAll(dMgr.absolutePath + osPathSeparatorStr + nameFInfo.Name())
-
-        dMgr.dataMutex.Unlock()
-
-        if err != nil {
-          err2 = fmt.Errorf(ePrefix+
-            "Error returned by os.RemoveAll(subDir)\n"+
-            "subDir='%v'\nError='%v'\n",
-            dMgr.absolutePath+osPathSeparatorStr+nameFInfo.Name(), err.Error())
-
-          errs = append(errs, err2)
-
-          continue
-        }
-      }
-    }
-  }
-
-  err = dir.Close()
-
-  if err != nil {
-    err2 = fmt.Errorf(ePrefix+
-      "Error returned by dir.Close(). "+
-      "dir='%v' Error='%v' ",
-      dMgr.absolutePath, err.Error())
-
-    errs = append(errs, err2)
-  }
 
   return errs
 }
