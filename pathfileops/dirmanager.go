@@ -620,10 +620,9 @@ func (dMgr *DirMgr) DeleteAll() error {
   return err
 }
 
-// DeleteAllFilesInDir - Deletes all the files in the current
-// directory. ONLY files are deleted NOT directories.
-//
-// Files in subdirectories are NOT deleted.
+// DeleteAllFilesInDir - Deletes all the files in the current directory.
+// ONLY files in the current directory are deleted. Sub-directories are
+// NOT deleted and files in sub-directories are NOT deleted.
 //
 // Reference:
 // https://stackoverflow.com/questions/33450980/golang-remove-all-contents-of-a-directory
@@ -642,126 +641,17 @@ func (dMgr *DirMgr) DeleteAll() error {
 func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
 
   ePrefix := "DirMgr.DeleteAllFilesInDir() "
-
-  errs = make([]error, 0, 300)
-  var err, err2, err3 error
-  osPathSepStr := string(os.PathSeparator)
-
-  err = dMgr.IsDirMgrValid(ePrefix)
-
-  if err != nil {
-    errs = append(errs, err)
-    return errs
-  }
-
-  _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
-      PreProcPathCode.None(),
-      ePrefix,
-      "dMgr.absolutePath")
-
-  if nonPathError != nil {
-    errs = append(errs, nonPathError)
-    return errs
-  }
-
-  if !dirPathDoesExist {
-    err2 =
-      fmt.Errorf(ePrefix+
-        "ERROR: DirMgr Path DOES NOT EXIST!\n"+
-        "DirMgr Path='%v'\n", dMgr.absolutePath)
-    errs = append(errs, err2)
-    return errs
-  }
-
-  if !fInfoPlus.IsDir() {
-    err2 = fmt.Errorf(ePrefix+
-      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
-      "DMgr='%v'\n", dMgr.absolutePath)
-
-    errs = append(errs, err2)
-    return errs
-  }
+  dMgrHlpr := dirMgrHelper{}
+  errs = nil
 
   dMgr.dataMutex.Lock()
 
-  dir, err := os.Open(dMgr.absolutePath)
+  errs = dMgrHlpr.deleteAllFilesInDirectory(
+    dMgr,
+    ePrefix,
+    "dMgr")
 
   dMgr.dataMutex.Unlock()
-
-  if err != nil {
-    err2 = fmt.Errorf(ePrefix+
-      "Error return by os.Open(dMgr.absolutePath).\n"+
-      "dMgr.absolutePath='%v'\nError='%v'\n",
-      dMgr.absolutePath, err.Error())
-
-    errs = append(errs, err2)
-    return errs
-  }
-
-  err3 = nil
-  var nameFileInfos []os.FileInfo
-
-  for err3 != io.EOF {
-
-    nameFileInfos, err3 = dir.Readdir(1000)
-
-    if err3 != nil && err3 != io.EOF {
-
-      _ = dir.Close()
-      err2 = fmt.Errorf(ePrefix+
-        "Error returned by dir.Readdirnames(-1).\n"+
-        "dMgr.absolutePath='%v'\nError='%v'\n",
-        dMgr.absolutePath, err3.Error())
-
-      errs = append(errs, err2)
-      return errs
-    }
-
-    for _, nameFInfo := range nameFileInfos {
-
-      if nameFInfo.IsDir() {
-        continue
-
-      } else {
-
-        dMgr.dataMutex.Lock()
-
-        err = os.Remove(dMgr.absolutePath + osPathSepStr + nameFInfo.Name())
-
-        dMgr.dataMutex.Unlock()
-
-        if err != nil {
-          err2 = fmt.Errorf(ePrefix+
-            "Error returned by os.Remove(fileName).\n"+
-            "dMgr.absolutePath='%v'\nfileName='%v'\nError='%v'\n",
-            dMgr.absolutePath,
-            dMgr.absolutePath+osPathSepStr+nameFInfo.Name(),
-            err.Error())
-
-          errs = append(errs, err2)
-        }
-      }
-    }
-  }
-
-  if dir != nil {
-
-    err = dir.Close()
-
-    if err != nil {
-      err2 = fmt.Errorf(ePrefix+
-        "Error returned by dir.Close(). An attempt to close the os.File pointer to the current\n"+
-        "DirMgr path has FAILED!\n"+
-        "dMgr.absolutePath='%v'\nError='%v'\n",
-        dMgr.absolutePath, err.Error())
-      errs = append(errs, err2)
-    }
-  }
 
   return errs
 }

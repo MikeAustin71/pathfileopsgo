@@ -690,6 +690,167 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryAll(
   return nil
 }
 
+// deleteAllFilesInDirectory - Helper method used by DirMgr. This
+// method deletes all the files in the current directory. ONLY files
+// are deleted NOT sub-directories.
+//
+func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
+  dMgr *DirMgr,
+  ePrefix string,
+  dMgrLabel string) (errs []error) {
+
+  ePrefixCurrMethod := "dirMgrHelper.deleteAllFilesInDirectory() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  errs = make([]error, 0, 300)
+  var err2, err3 error
+  osPathSepStr := string(os.PathSeparator)
+
+  dirPathDoesExist,
+    dMgrFInfo,
+    err := dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "dMgr")
+
+  if err != nil {
+    errs = append(errs, err)
+    return errs
+  }
+
+  if !dirPathDoesExist {
+    err =
+      fmt.Errorf(ePrefix+
+        "\nERROR: %v Path DOES NOT EXIST!\n"+
+        "%v Path='%v'\n",
+        dMgrLabel,
+        dMgrLabel,
+        dMgr.absolutePath)
+
+    errs = append(errs, err)
+    return errs
+  }
+
+  if !dMgrFInfo.IsDir() {
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: %v path exists, but it is a File - NOT a directory!\n"+
+      "%v='%v'\n",
+      dMgrLabel,
+      dMgrLabel,
+      dMgr.absolutePath)
+
+    errs = append(errs, err)
+    return errs
+  }
+
+  if dMgrFInfo.Mode().IsRegular() {
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: %v path exists, but it is classified as a 'Regular' file!\n"+
+      "%v='%v'\n",
+      dMgrLabel,
+      dMgrLabel,
+      dMgr.absolutePath)
+
+    errs = append(errs, err)
+    return errs
+  }
+
+  dMgrPtr, err := os.Open(dMgr.absolutePath)
+
+  if err != nil {
+    err2 = fmt.Errorf(ePrefix+
+      "\nError return by os.Open(%v.absolutePath).\n"+
+      "%v.absolutePath='%v'\nError='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath, err.Error())
+
+    errs = append(errs, err2)
+    return errs
+  }
+
+  err3 = nil
+  var nameFileInfos []os.FileInfo
+
+  for err3 != io.EOF {
+
+    nameFileInfos, err3 = dMgrPtr.Readdir(1000)
+
+    if err3 != nil && err3 != io.EOF {
+
+      if dMgrPtr != nil {
+        _ = dMgrPtr.Close()
+      }
+
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by dMgrPtr.Readdirnames(-1).\n"+
+        "%v.absolutePath='%v'\nError='%v'\n",
+        dMgrLabel,
+        dMgr.absolutePath,
+        err3.Error())
+
+      errs = append(errs, err2)
+      return errs
+    }
+
+    for _, nameFInfo := range nameFileInfos {
+
+      if nameFInfo.IsDir() {
+        continue
+
+      } else {
+
+        if !nameFInfo.Mode().IsRegular() {
+          err2 = fmt.Errorf(ePrefix+
+            "\nError: fileName is NOT classified as a 'Regular' File!\n"+
+            "fileName='%v'",
+            dMgr.absolutePath+osPathSepStr+nameFInfo.Name())
+          errs = append(errs, err2)
+        }
+
+        // This is a file
+        err = os.Remove(dMgr.absolutePath + osPathSepStr + nameFInfo.Name())
+
+        if err != nil {
+          err2 = fmt.Errorf(ePrefix+
+            "\nError returned by os.Remove(fileName).\n"+
+            "An attempt to delete 'fileName' as Failed!\n"+
+            "%v.absolutePath='%v'\nfileName='%v'\nError='%v'\n\n",
+            dMgrLabel,
+            dMgr.absolutePath,
+            dMgr.absolutePath+osPathSepStr+nameFInfo.Name(),
+            err.Error())
+
+          errs = append(errs, err2)
+        }
+      }
+    }
+  }
+
+  if dMgrPtr != nil {
+
+    err = dMgrPtr.Close()
+
+    if err != nil {
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by dMgrPtr.Close().\n"+
+        "An attempt to close the os.File pointer to the current\n"+
+        "%v path has FAILED!\n"+
+        "%v.absolutePath='%v'\nError='%v'\n",
+        dMgrLabel, dMgrLabel,
+        dMgr.absolutePath, err.Error())
+      errs = append(errs, err2)
+    }
+  }
+
+  return errs
+}
+
 // doesDirectoryExist - Helper method used by DirMgr to test for
 // existence of directory path. In addition, this method performs
 // validation on the 'DirMgr' instance.
