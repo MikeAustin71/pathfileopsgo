@@ -1432,29 +1432,20 @@ func (dMgr *DirMgr) DoesThisDirectoryExist() (directoryDoesExist bool, nonPathEr
   directoryDoesExist = false
   nonPathError = nil
 
-  fInfoPlus := FileInfoPlus{}
-  _,
-    directoryDoesExist,
-    fInfoPlus,
+  dMgrHlpr := dirMgrHelper{}
+
+  dMgr.dataMutex.Lock()
+
+  directoryDoesExist,
+    _,
     nonPathError =
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
+    dMgrHlpr.doesDirectoryExist(
+      dMgr,
       PreProcPathCode.None(),
       ePrefix,
-      "dMgr.absolutePath")
+      "dMgr")
 
-  if nonPathError != nil {
-    directoryDoesExist = false
-    return directoryDoesExist, nonPathError
-  }
-
-  if !directoryDoesExist {
-    dMgr.doesAbsolutePathExist = false
-    dMgr.actualDirFileInfo = FileInfoPlus{}
-  } else {
-    dMgr.doesAbsolutePathExist = true
-    dMgr.actualDirFileInfo = fInfoPlus.CopyOut()
-  }
+  dMgr.dataMutex.Unlock()
 
   return directoryDoesExist, nonPathError
 }
