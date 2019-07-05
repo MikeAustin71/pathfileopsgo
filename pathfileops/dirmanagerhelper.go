@@ -236,7 +236,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   }
 
   dMgrPathDoesExist,
-    dMgrFInfo,
+    _,
     err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
@@ -258,32 +258,10 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
     return errs
   }
 
-  if !dMgrFInfo.Mode().IsDir() {
-    err = fmt.Errorf(ePrefix+
-      "\nError: %v path is NOT A DIRECTORY!\n"+
-      "%v.absolutepath='%v'\n",
-      dMgrLabel, dMgr.absolutePath)
-
-    errs = append(errs, err)
-    return errs
-  }
-
-  if dMgrFInfo.Mode().IsRegular() {
-    err = fmt.Errorf(ePrefix+
-      "\nError: %v path is classified as a 'Regular' file!\n"+
-      "%v.absolutepath='%v'\n",
-      dMgrLabel, dMgr.absolutePath)
-
-    errs = append(errs, err)
-    return errs
-  }
-
-  var targetDirDoesExist bool
-  var targetFInfo FileInfoPlus
   var err2, err3 error
 
-  targetDirDoesExist,
-    targetFInfo,
+  _,
+    _,
     err =
     dMgrHlpr.doesDirectoryExist(
       targetDMgr,
@@ -294,28 +272,6 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   if err != nil {
     errs = append(errs, err)
     return errs
-  }
-
-  if targetDirDoesExist {
-    if !targetFInfo.Mode().IsDir() {
-      err = fmt.Errorf(ePrefix+
-        "\nError: %v path is NOT A DIRECTORY!\n"+
-        "%v.absolutepath='%v'\n",
-        targetDMgrLabel, targetDMgrLabel, targetDMgr.absolutePath)
-
-      errs = append(errs, err)
-      return errs
-    }
-
-    if targetFInfo.Mode().IsRegular() {
-      err = fmt.Errorf(ePrefix+
-        "\nError: %v path is classified as a 'Regular' file!\n"+
-        "%v.absolutepath='%v'\n",
-        targetDMgrLabel, targetDMgr.absolutePath)
-
-      errs = append(errs, err)
-      return errs
-    }
   }
 
   fh := FileHelper{}
@@ -649,7 +605,7 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
   osPathSepStr := string(os.PathSeparator)
 
   dirPathDoesExist,
-    dMgrFInfo,
+    _,
     err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
@@ -669,30 +625,6 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
         dMgrLabel,
         dMgrLabel,
         dMgr.absolutePath)
-
-    errs = append(errs, err)
-    return errs
-  }
-
-  if !dMgrFInfo.IsDir() {
-    err = fmt.Errorf(ePrefix+
-      "\nERROR: %v path exists, but it is a File - NOT a directory!\n"+
-      "%v='%v'\n",
-      dMgrLabel,
-      dMgrLabel,
-      dMgr.absolutePath)
-
-    errs = append(errs, err)
-    return errs
-  }
-
-  if dMgrFInfo.Mode().IsRegular() {
-    err = fmt.Errorf(ePrefix+
-      "\nERROR: %v path exists, but it is classified as a 'Regular' file!\n"+
-      "%v='%v'\n",
-      dMgrLabel,
-      dMgrLabel,
-      dMgr.absolutePath)
 
     errs = append(errs, err)
     return errs
@@ -811,7 +743,7 @@ func (dMgrHlpr *dirMgrHelper) deleteAllSubDirectories(
   }
 
   dirPathDoesExist,
-    dMgrFInfo,
+    _,
     err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
@@ -826,26 +758,6 @@ func (dMgrHlpr *dirMgrHelper) deleteAllSubDirectories(
   if !dirPathDoesExist {
     err = fmt.Errorf(ePrefix+
       "\nERROR: %v Directory Path DOES NOT EXIST!\n"+
-      "%v='%v'\n",
-      dMgrLabel, dMgrLabel,
-      dMgr.absolutePath)
-    errs = append(errs, err)
-    return errs
-  }
-
-  if !dMgrFInfo.IsDir() {
-    err = fmt.Errorf(ePrefix+
-      "\nERROR: %v Directory Path exists, but IT IS NOT A DIRECTORY!\n"+
-      "%v='%v'\n",
-      dMgrLabel, dMgrLabel,
-      dMgr.absolutePath)
-    errs = append(errs, err)
-    return errs
-  }
-
-  if dMgrFInfo.Mode().IsRegular() {
-    err = fmt.Errorf(ePrefix+
-      "\nERROR: %v Directory Path exists, but it is classified as a 'Regular' File!\n"+
       "%v='%v'\n",
       dMgrLabel, dMgrLabel,
       dMgr.absolutePath)
@@ -1005,7 +917,8 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeFiles(
   scanSubDirectories bool,
   deleteFileSelectionCriteria FileSelectionCriteria,
   ePrefix string,
-  dMgrLabel string) (numOfSubDirectories,
+  dMgrLabel string,
+  deleteSelectionLabel string) (numOfSubDirectories,
   numOfRemainingFiles,
   numOfDeletedFiles int,
   errs []error) {
@@ -1021,7 +934,7 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeFiles(
   }
 
   dirPathDoesExist,
-    dMgrFInfo,
+    _,
     err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
@@ -1039,36 +952,6 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeFiles(
   if !dirPathDoesExist {
     err = fmt.Errorf(ePrefix+
       "\nERROR: %v Directory Path DOES NOT EXIST!\n"+
-      "%v='%v'\n",
-      dMgrLabel, dMgrLabel,
-      dMgr.absolutePath)
-
-    errs = append(errs, err)
-
-    return numOfSubDirectories,
-      numOfRemainingFiles,
-      numOfDeletedFiles,
-      errs
-  }
-
-  if !dMgrFInfo.IsDir() {
-    err = fmt.Errorf(ePrefix+
-      "\nERROR: %v Directory Path exists, but IT IS NOT A DIRECTORY!\n"+
-      "%v='%v'\n",
-      dMgrLabel, dMgrLabel,
-      dMgr.absolutePath)
-
-    errs = append(errs, err)
-
-    return numOfSubDirectories,
-      numOfRemainingFiles,
-      numOfDeletedFiles,
-      errs
-  }
-
-  if dMgrFInfo.Mode().IsRegular() {
-    err = fmt.Errorf(ePrefix+
-      "\nERROR: %v Directory Path exists, but it is classified as a 'Regular' File!\n"+
       "%v='%v'\n",
       dMgrLabel, dMgrLabel,
       dMgr.absolutePath)
@@ -1203,9 +1086,9 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeFiles(
 
             err2 =
               fmt.Errorf(ePrefix+
-                "\nError returned by fh.FilterFileName(nameFInfo, fileSelectCriteria).\n"+
+                "\nError returned by fh.FilterFileName(nameFInfo, %v).\n"+
                 "%v directory searched='%v'\nfileName='%v'\nError='%v'\n\n",
-                dMgrLabel,
+                deleteSelectionLabel, dMgrLabel,
                 dMgr.absolutePath, nameFInfo.Name(), err.Error())
 
             errs = append(errs, err2)
