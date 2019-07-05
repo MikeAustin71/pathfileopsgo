@@ -1357,20 +1357,28 @@ func (dMgr *DirMgr) DoesAbsolutePathExist() bool {
 //
 func (dMgr *DirMgr) DoesDirectoryExist() (doesPathExist, doesAbsolutePathExist bool) {
 
-  doesPathExist = false
-  doesAbsolutePathExist = false
+  dMgrHlpr := dirMgrHelper{}
+  dirPathDoesExist := false
+  var err error
 
-  nonPathError := dMgr.IsDirMgrValid("")
+  dMgr.dataMutex.Lock()
 
-  if nonPathError != nil {
-    return doesPathExist, doesAbsolutePathExist
+  dirPathDoesExist,
+    _,
+    err =
+    dMgrHlpr.doesDirectoryExist(
+      dMgr,
+      PreProcPathCode.None(),
+      "",
+      "dMgr")
+
+  if err != nil {
+    dirPathDoesExist = false
   }
 
-  doesPathExist = dMgr.doesPathExist
+  dMgr.dataMutex.Unlock()
 
-  doesAbsolutePathExist = dMgr.doesAbsolutePathExist
-
-  return doesPathExist, doesAbsolutePathExist
+  return dirPathDoesExist, dirPathDoesExist
 }
 
 // DoesPathExist - Performs two operations.
