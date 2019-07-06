@@ -1446,31 +1446,20 @@ func (dMgr *DirMgr) Empty() {
 
 // Equal - Compares two DirMgr objects to determine if
 // they are equal.
-func (dMgr *DirMgr) Equal(dmgr2 *DirMgr) bool {
+func (dMgr *DirMgr) Equal(dMgr2 *DirMgr) bool {
 
-  if dMgr.isInitialized != dmgr2.isInitialized ||
-    dMgr.originalPath != dmgr2.originalPath ||
-    dMgr.path != dmgr2.path ||
-    dMgr.isPathPopulated != dmgr2.isPathPopulated ||
-    dMgr.doesPathExist != dmgr2.doesPathExist ||
-    dMgr.parentPath != dmgr2.parentPath ||
-    dMgr.isParentPathPopulated != dmgr2.isParentPathPopulated ||
-    dMgr.absolutePath != dmgr2.absolutePath ||
-    dMgr.isAbsolutePathPopulated != dmgr2.isAbsolutePathPopulated ||
-    dMgr.doesAbsolutePathExist != dmgr2.doesAbsolutePathExist ||
-    dMgr.isAbsolutePathDifferentFromPath != dmgr2.isAbsolutePathDifferentFromPath ||
-    dMgr.directoryName != dmgr2.directoryName ||
-    dMgr.volumeName != dmgr2.volumeName ||
-    dMgr.isVolumePopulated != dmgr2.isVolumePopulated {
+  dMgrHlpr := dirMgrHelper{}
+  isEqual := false
 
-    return false
-  }
+  dMgr2.dataMutex.Lock()
+  dMgr.dataMutex.Lock()
 
-  if !dMgr.actualDirFileInfo.Equal(&dmgr2.actualDirFileInfo) {
-    return false
-  }
+  isEqual = dMgrHlpr.equal(dMgr, dMgr2)
 
-  return true
+  dMgr2.dataMutex.Unlock()
+  dMgr.dataMutex.Unlock()
+
+  return isEqual
 }
 
 // EqualAbsPaths - compares the absolute paths for the current

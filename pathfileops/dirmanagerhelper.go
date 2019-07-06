@@ -1681,6 +1681,39 @@ func (dMgrHlpr *dirMgrHelper) empty(
   return err
 }
 
+// equal - Compares two DirMgr objects to determine if
+// they are equal.
+//
+func (dMgrHlpr *dirMgrHelper) equal(
+  dMgr *DirMgr,
+  dMgr2 *DirMgr) bool {
+
+  if dMgr.isInitialized != dMgr2.isInitialized ||
+    dMgr.originalPath != dMgr2.originalPath ||
+    dMgr.path != dMgr2.path ||
+    dMgr.isPathPopulated != dMgr2.isPathPopulated ||
+    dMgr.doesPathExist != dMgr2.doesPathExist ||
+    dMgr.parentPath != dMgr2.parentPath ||
+    dMgr.isParentPathPopulated != dMgr2.isParentPathPopulated ||
+    dMgr.absolutePath != dMgr2.absolutePath ||
+    dMgr.isAbsolutePathPopulated != dMgr2.isAbsolutePathPopulated ||
+    dMgr.doesAbsolutePathExist != dMgr2.doesAbsolutePathExist ||
+    dMgr.isAbsolutePathDifferentFromPath != dMgr2.isAbsolutePathDifferentFromPath ||
+    dMgr.directoryName != dMgr2.directoryName ||
+    dMgr.volumeName != dMgr2.volumeName ||
+    dMgr.isVolumePopulated != dMgr2.isVolumePopulated {
+
+    return false
+  }
+
+  if !dMgr.actualDirFileInfo.Equal(&dMgr2.actualDirFileInfo) {
+    return false
+  }
+
+  return true
+
+}
+
 // executeDirectoryFileOps - Performs a a file operation on specified 'selected' files
 // in the current directory ONLY. This function does NOT perform operations on the
 // sub directories (a.k.a. the directory tree).
