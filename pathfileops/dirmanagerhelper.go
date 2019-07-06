@@ -611,6 +611,35 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   return errs
 }
 
+// CopyIn - Receives a pointer to a incoming DirMgr object
+// ('dMgrIn') as an input parameter and copies the values from
+// the incoming object to the input parameter, 'dMgr'.
+//
+// When the copy operation is the 'dMgr' object is a duplicate
+// of the incoming DirMgr object ('dMgrIn').
+//
+func (dMgrHlpr *dirMgrHelper) copyIn(
+  dMgr *DirMgr,
+  dMgrIn *DirMgr) {
+
+  dMgr.isInitialized = dMgrIn.isInitialized
+  dMgr.originalPath = dMgrIn.originalPath
+  dMgr.path = dMgrIn.path
+  dMgr.isPathPopulated = dMgrIn.isPathPopulated
+  dMgr.doesPathExist = dMgrIn.doesPathExist
+  dMgr.parentPath = dMgrIn.parentPath
+  dMgr.isParentPathPopulated = dMgrIn.isParentPathPopulated
+  dMgr.absolutePath = dMgrIn.absolutePath
+  dMgr.isAbsolutePathPopulated = dMgrIn.isAbsolutePathPopulated
+  dMgr.doesAbsolutePathExist = dMgrIn.doesAbsolutePathExist
+  dMgr.isAbsolutePathDifferentFromPath = dMgrIn.isAbsolutePathDifferentFromPath
+  dMgr.directoryName = dMgrIn.directoryName
+  dMgr.volumeName = dMgrIn.volumeName
+  dMgr.isVolumePopulated = dMgrIn.isVolumePopulated
+  dMgr.actualDirFileInfo = dMgrIn.actualDirFileInfo.CopyOut()
+
+}
+
 // copyOut - Makes a duplicate copy of input parameter
 // 'dMgr' values and returns them as a new DirMgr object.
 //

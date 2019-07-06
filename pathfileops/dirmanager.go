@@ -425,30 +425,21 @@ func (dMgr *DirMgr) CopyDirectoryTree(
   return errs
 }
 
-// CopyIn - Receives a pointer to a DirMgr object as an
-// input parameter and copies the values from the incoming
+// CopyIn - Receives a pointer to an incoming DirMgr object as
+// an input parameter and copies the values from the incoming
 // object to the current DirMgr object. When the copy operation
 // is completed, the current DirMgr object is a duplicate of the
 // incoming DirMgr object.
-func (dMgr *DirMgr) CopyIn(dmgrIn *DirMgr) {
-  dmgrIn.dataMutex.Lock()
+func (dMgr *DirMgr) CopyIn(dMgrIn *DirMgr) {
+
+  dMgrHlpr := dirMgrHelper{}
+
+  dMgrIn.dataMutex.Lock()
   dMgr.dataMutex.Lock()
-  dMgr.isInitialized = dmgrIn.isInitialized
-  dMgr.originalPath = dmgrIn.originalPath
-  dMgr.path = dmgrIn.path
-  dMgr.isPathPopulated = dmgrIn.isPathPopulated
-  dMgr.doesPathExist = dmgrIn.doesPathExist
-  dMgr.parentPath = dmgrIn.parentPath
-  dMgr.isParentPathPopulated = dmgrIn.isParentPathPopulated
-  dMgr.absolutePath = dmgrIn.absolutePath
-  dMgr.isAbsolutePathPopulated = dmgrIn.isAbsolutePathPopulated
-  dMgr.doesAbsolutePathExist = dmgrIn.doesAbsolutePathExist
-  dMgr.isAbsolutePathDifferentFromPath = dmgrIn.isAbsolutePathDifferentFromPath
-  dMgr.directoryName = dmgrIn.directoryName
-  dMgr.volumeName = dmgrIn.volumeName
-  dMgr.isVolumePopulated = dmgrIn.isVolumePopulated
-  dMgr.actualDirFileInfo = dmgrIn.actualDirFileInfo.CopyOut()
-  dmgrIn.dataMutex.Unlock()
+
+  dMgrHlpr.copyIn(dMgr, dMgrIn)
+
+  dMgrIn.dataMutex.Unlock()
   dMgr.dataMutex.Unlock()
 }
 
