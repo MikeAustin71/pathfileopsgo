@@ -12,6 +12,34 @@ type dirMgrHelper struct {
   dMgr DirMgr
 }
 
+// consolidateErrors - Receives an array of errors and converts them
+// to a single error which is returned to the caller. Multiple errors
+// are separated by a new line character.
+//
+// If the length of the error array is zero, this method returns nil.
+//
+func (dMgrHlpr *dirMgrHelper) consolidateErrors(errs []error) error {
+
+  lErrs := len(errs)
+
+  if lErrs == 0 {
+    return nil
+  }
+
+  errStr := ""
+
+  for i := 0; i < lErrs; i++ {
+
+    if i == (lErrs - 1) {
+      errStr += fmt.Sprintf("%v", errs[i].Error())
+    } else {
+      errStr += fmt.Sprintf("%v\n", errs[i].Error())
+    }
+  }
+
+  return fmt.Errorf("%v", errStr)
+}
+
 // copyDirectory - Helper method used by DirMgr. This method copies
 // files from the directory identified by by DirMgr to a target
 // directory. The files to be copied are selected according to
@@ -2063,6 +2091,166 @@ func (dMgrHlpr *dirMgrHelper) findFilesByNamePattern(
   error) {
 
   fileMgrCol := FileMgrCollection{}.New()
+  var err, err2, err3 error
+
+  ePrefixCurrMethod := "dirMgrHelper.findFilesByNamePattern() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  var dMgrPathDoesExist bool
+
+  dMgrPathDoesExist,
+    _,
+    err = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+    return fileMgrCol, err
+  }
+
+  if !dMgrPathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: %v Directory Path DOES NOT EXIST!\n"+
+      "%v='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath)
+
+    return fileMgrCol, err
+  }
+
+  fh := FileHelper{}
+
+  errCode := 0
+
+  errCode, _, fileSearchPattern = fh.isStringEmptyOrBlank(fileSearchPattern)
+
+  if errCode < 0 {
+    return fileMgrCol,
+      fmt.Errorf(ePrefix+
+        "\nInput parameter '%v' is INVALID!\n"+
+        "'%v' is an EMPTY STRING!\n",
+        fileSearchLabel,
+        fileSearchLabel)
+  }
+
+  dirPtr, err := os.Open(dMgr.absolutePath)
+
+  if err != nil {
+    return fileMgrCol,
+      fmt.Errorf(ePrefix+
+        "\nError return by os.Open(%v.absolutePath).\n"+
+        "%v.absolutePath='%v'\nError='%v'\n",
+        dMgrLabel,
+        dMgrLabel,
+        dMgr.absolutePath,
+        err.Error())
+  }
+
+  err3 = nil
+  var isMatch bool
+  var nameFileInfos []os.FileInfo
+  errs := make([]error, 0, 300)
+
+  for err3 != io.EOF {
+
+    nameFileInfos, err3 = dirPtr.Readdir(1000)
+
+    if err3 != nil && err3 != io.EOF {
+
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by dirPtr.Readdirnames(-1).\n"+
+        "%v.absolutePath='%v'\nError='%v'\n",
+        dMgrLabel,
+        dMgr.absolutePath,
+        err3.Error())
+
+      errs = append(errs, err2)
+      break
+    }
+
+    for _, nameFInfo := range nameFileInfos {
+
+      if nameFInfo.IsDir() {
+        continue
+
+      } else {
+        // This is a file. Check for pattern match.
+        isMatch, err = pf.Match(fileSearchPattern, nameFInfo.Name())
+
+        if err != nil {
+
+          err2 = fmt.Errorf(ePrefix+
+            "\nError returned by fp.Match(%v, fileName).\n"+
+            "directorySearched='%v' %v='%v' fileName='%v' Error='%v' ",
+            fileSearchLabel,
+            dMgr.absolutePath,
+            fileSearchLabel,
+            fileSearchPattern,
+            nameFInfo.Name(),
+            err.Error())
+
+          errs = append(errs, err2)
+          continue
+        }
+
+        if !isMatch {
+          continue
+        } else {
+
+          err = fileMgrCol.AddFileMgrByFileInfo(dMgr.absolutePath, nameFInfo)
+
+          if err != nil {
+
+            err2 = fmt.Errorf(ePrefix+
+              "\nError returned by fileMgrCol.AddFileMgrByFileInfo(%v.absolutePath, nameFInfo).\n"+
+              "Directory='%v'\nFileName='%v'\nError='%v'\n",
+              dMgrLabel,
+              dMgr.absolutePath,
+              nameFInfo.Name(),
+              err.Error())
+
+            errs = append(errs, err2)
+            err3 = io.EOF
+            break
+          }
+        }
+      }
+    }
+  }
+
+  if dirPtr != nil {
+
+    err = dirPtr.Close()
+
+    if err != nil {
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by dirPtr.Close().\n"+
+        "dirPtr Path='%v'\nError='%v'\n",
+        dMgr.absolutePath, err.Error())
+      errs = append(errs, err2)
+    }
+  }
+
+  return fileMgrCol, dMgrHlpr.consolidateErrors(errs)
+}
+
+/*
+func (dMgrHlpr *dirMgrHelper) findFilesByNamePattern(
+  dMgr *DirMgr,
+  fileSearchPattern string,
+  ePrefix string,
+  dMgrLabel string,
+  fileSearchLabel string) (FileMgrCollection,
+  error) {
+
+  fileMgrCol := FileMgrCollection{}.New()
   var err error
 
   ePrefixCurrMethod := "dirMgrHelper.findFilesByNamePattern() "
@@ -2210,6 +2398,7 @@ func (dMgrHlpr *dirMgrHelper) findFilesByNamePattern(
 
   return fileMgrCol, nil
 }
+*/
 
 // lowLevelDeleteDirectoryAll - Helper method designed for use by DirMgr.
 // This method will delete the designated directory ('dMgr') and all
