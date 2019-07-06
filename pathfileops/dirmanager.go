@@ -2385,16 +2385,16 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
   return fileMgrCol, err
 }
 
-// FindWalkDirFiles - This method returns file information on files residing in a specific
-// directory tree identified by the current DirMgr object.
+// FindWalkDirFiles - This method returns file information on files residing in a
+// specific directory tree identified by the current DirMgr object.
 //
-// This method 'walks the directory tree' locating all files in the directory tree which match
-// the file selection criteria submitted as input parameter, 'fileSelectCriteria'.
+// This method 'walks the directory tree' locating all files in the directory tree which
+// match the file selection criteria submitted as input parameter, 'fileSelectCriteria'.
 //
 // If a file matches the File Selection Criteria, it is included in the returned field,
-// 'DirectoryTreeInfo.FoundFiles'. By the way, if ALL the file selection criterion are set to
-// zero values or 'Inactive', then ALL FILES in the directory are selected and returned in the field,
-// 'DirectoryTreeInfo.FoundFiles'.
+// 'DirectoryTreeInfo.FoundFiles'. If ALL the file selection criterion are set to zero
+// values or 'Inactive', then ALL FILES in the directory are selected and returned in
+// the field, 'DirectoryTreeInfo.FoundFiles'.
 //
 // ------------------------------------------------------------------------
 //
@@ -2562,56 +2562,21 @@ func (dMgr *DirMgr) FindWalkDirFiles(
 
   ePrefix := "DirMgr.GetWalkDirInfo() "
   findFilesInfo := DirectoryTreeInfo{}
+  var err error
+  dMgrHlpr := dirMgrHelper{}
 
-  err := dMgr.IsDirMgrValid(ePrefix)
+  dMgr.dataMutex.Lock()
 
-  if err != nil {
-    return findFilesInfo, err
-  }
+  findFilesInfo,
+    err = dMgrHlpr.findFilesWalkDirectory(
+    dMgr,
+    fileSelectCriteria,
+    ePrefix,
+    "dMgr")
 
-  _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
-      PreProcPathCode.None(),
-      ePrefix,
-      "dMgr.absolutePath")
+  dMgr.dataMutex.Unlock()
 
-  if nonPathError != nil {
-    return findFilesInfo, nonPathError
-  }
-
-  if !dirPathDoesExist {
-    return findFilesInfo,
-      fmt.Errorf(ePrefix+
-        "DirMgr Path DOES NOT EXIST!\n"+
-        "DirMgr Path ='%v'\n", dMgr.absolutePath)
-  }
-
-  if !fInfoPlus.IsDir() {
-    return findFilesInfo,
-      fmt.Errorf(ePrefix+
-        "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
-        "DMgr='%v'\n", dMgr.absolutePath)
-  }
-
-  findFilesInfo.StartPath = dMgr.absolutePath
-
-  findFilesInfo.FileSelectCriteria = fileSelectCriteria
-
-  fh := FileHelper{}
-
-  err = fp.Walk(findFilesInfo.StartPath, fh.makeFileHelperWalkDirFindFilesFunc(&findFilesInfo))
-
-  if err != nil {
-    return findFilesInfo, fmt.Errorf(ePrefix+
-      "Error returned by FileHelper.FindFilesWalkDirectory(&dWalkInfo).\n"+
-      "dWalkInfo.StartPath='%v'\nError='%v'\n", findFilesInfo.StartPath, err.Error())
-  }
-
-  return findFilesInfo, nil
+  return findFilesInfo, err
 }
 
 // GetAbsolutePath - Returns a string containing the

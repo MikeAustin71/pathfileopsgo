@@ -2402,6 +2402,79 @@ func (dMgrHlpr *dirMgrHelper) findFilesBySelectCriteria(
   return fileMgrCol, dMgrHlpr.consolidateErrors(errs)
 }
 
+// findFilesWalkDirectory - This helper method returns file information on
+// files residing in a specific directory tree identified by the input
+// parameter, 'dMgr'.
+//
+// This method 'walks the directory tree' locating all files in the directory
+// tree which match the file selection criteria submitted as input parameter,
+// 'fileSelectCriteria'.
+//
+// If a file matches the File Selection Criteria, it is included in the returned,
+// 'DirectoryTreeInfo.FoundFiles'. If ALL the file selection criterion are set to
+// zero values or 'Inactive', then ALL FILES in the directory are selected and
+// returned in, 'DirectoryTreeInfo.FoundFiles'.
+//
+func (dMgrHlpr *dirMgrHelper) findFilesWalkDirectory(
+  dMgr *DirMgr,
+  fileSelectCriteria FileSelectionCriteria,
+  ePrefix string,
+  dMgrLabel string) (DirectoryTreeInfo, error) {
+
+  var err error
+  findFilesInfo := DirectoryTreeInfo{}
+
+  ePrefixCurrMethod := "dirMgrHelper.findFilesWalkDirectory() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  var dMgrPathDoesExist bool
+
+  dMgrPathDoesExist,
+    _,
+    err = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+    return findFilesInfo, err
+  }
+
+  if !dMgrPathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: %v Directory Path DOES NOT EXIST!\n"+
+      "%v='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath)
+
+    return findFilesInfo, err
+  }
+
+  findFilesInfo.StartPath = dMgr.absolutePath
+
+  findFilesInfo.FileSelectCriteria = fileSelectCriteria
+
+  fh := FileHelper{}
+
+  err = pf.Walk(findFilesInfo.StartPath, fh.makeFileHelperWalkDirFindFilesFunc(&findFilesInfo))
+
+  if err != nil {
+    return findFilesInfo, fmt.Errorf(ePrefix+
+      "Error returned by pf.Walk(findFilesInfo.StartPath, "+
+      "fh.makeFileHelperWalkDirFindFilesFunc(&findFilesInfo)).\n"+
+      "dWalkInfo.StartPath='%v'\nError='%v'\n",
+      findFilesInfo.StartPath, err.Error())
+  }
+
+  return findFilesInfo, nil
+}
+
 // lowLevelDeleteDirectoryAll - Helper method designed for use by DirMgr.
 // This method will delete the designated directory ('dMgr') and all
 // subsidiary directories and files.
