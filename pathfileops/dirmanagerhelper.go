@@ -1597,6 +1597,214 @@ func (dMgrHlpr *dirMgrHelper) empty(
   return err
 }
 
+// executeDirectoryFileOps - Performs a a file operation on specified 'selected' files
+// in the current directory ONLY. This function does NOT perform operations on the
+// sub directories (a.k.a. the directory tree).
+//
+func (dMgrHlpr *dirMgrHelper) executeDirectoryFileOps(
+  dMgr *DirMgr,
+  fileSelectCriteria FileSelectionCriteria,
+  fileOps []FileOperationCode,
+  targetBaseDir *DirMgr,
+  ePrefix string,
+  dMgrLabel string,
+  targetDirLabel string,
+  fileSelectLabel string,
+  fileOpsLabel string) (errs []error) {
+
+  ePrefixCurrMethod := "dirMgrHelper.executeDirectoryFileOps() "
+
+  errs = make([]error, 0, 300)
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  dMgrPathDoesExist,
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+    errs = append(errs, err)
+    return errs
+  }
+
+  if !dMgrPathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: %v Directory Path DOES NOT EXIST!\n"+
+      "%v='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath)
+
+    errs = append(errs, err)
+
+    return errs
+  }
+
+  _,
+    _,
+    err2 := dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    dMgrLabel)
+
+  if err2 != nil {
+    errs = append(errs, err2)
+    return errs
+  }
+
+  if len(fileOps) == 0 {
+
+    err2 = fmt.Errorf(ePrefix+
+      "\nError: The input parameter '%v' is a ZERO LENGTH ARRAY!\n",
+      fileOpsLabel)
+
+    errs = append(errs, err2)
+    return errs
+  }
+
+  dirPtr, err := os.Open(dMgr.absolutePath)
+
+  if err != nil {
+    err2 := fmt.Errorf(ePrefix+
+      "\nError return by os.Open(%v.absolutePath).\n"+
+      "%v.absolutePath='%v'\nError='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath, err.Error())
+
+    errs = append(errs, err2)
+    return errs
+  }
+
+  nameFileInfos, err := dirPtr.Readdir(-1)
+
+  if err != nil {
+    if dirPtr != nil {
+      _ = dirPtr.Close()
+    }
+
+    err2 = fmt.Errorf(ePrefix+
+      "\nError returned by dirPtr.Readdirnames(-1).\n"+
+      "%v.absolutePath='%v'\nError='%v'\n",
+      dMgrLabel,
+      dMgr.absolutePath, err.Error())
+
+    errs = append(errs, err2)
+    return errs
+  }
+
+  fh := FileHelper{}
+  var isMatch bool
+  var fileOp FileOps
+
+  for _, nameFInfo := range nameFileInfos {
+
+    if nameFInfo.IsDir() {
+      continue
+    }
+
+    // Must be a file - process it!
+
+    // This is not a directory. It is a file.
+    // Determine if it matches the find file criteria.
+    isMatch, err = fh.FilterFileName(nameFInfo, fileSelectCriteria)
+
+    if err != nil {
+
+      if dirPtr != nil {
+        _ = dirPtr.Close()
+      }
+
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by FileHelper{}.FilterFileName(nameFInfo, fileSelectCriteria).\n"+
+        "%v Directory Searched='%v'\nfileName='%v'\nError='%v'\n",
+        dMgrLabel,
+        dMgr.absolutePath, nameFInfo.Name(), err.Error())
+
+      errs = append(errs, err2)
+      return errs
+    }
+
+    if !isMatch {
+
+      continue
+
+    }
+
+    // Must be a match - this is a 'selected' file!
+    srcFileNameExt := nameFInfo.Name()
+
+    fileOp, err = FileOps{}.NewByDirStrsAndFileNameExtStrs(
+      dMgr.GetAbsolutePath(),
+      srcFileNameExt,
+      targetBaseDir.GetAbsolutePath(),
+      srcFileNameExt)
+
+    if err != nil {
+
+      if dirPtr != nil {
+        _ = dirPtr.Close()
+      }
+
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by FileOps{}.NewByDirStrsAndFileNameExtStrs()\n"+
+        "%v Source Path='%v'\nsrcFileNameExt='%v'\n"+
+        "%v Destination Directory='%v'\nDestination File='%v'\nError='%v'\n",
+        dMgrLabel,
+        dMgr.GetAbsolutePath(),
+        srcFileNameExt,
+        targetDirLabel,
+        targetBaseDir.GetAbsolutePath(),
+        srcFileNameExt,
+        err.Error())
+
+      errs = append(errs, err2)
+      return errs
+    }
+
+    for i := 0; i < len(fileOps); i++ {
+
+      err = fileOp.ExecuteFileOperation(fileOps[i])
+
+      if err != nil {
+        err2 = fmt.Errorf(ePrefix+
+          "\nError returned by fileOp.ExecuteFileOperation(fileOps[%v]). "+
+          "FileOps='%v'\nError='%v'\n\n",
+          i, fileOps[i].String(), err.Error())
+
+        // Store the error and continue processing
+        // file operations.
+        errs = append(errs, err2)
+      }
+    }
+
+    // finished applying file operations to this file.
+    // Get another one and continue...
+  }
+
+  if dirPtr != nil {
+
+    err = dirPtr.Close()
+
+    if err != nil {
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by dirPtr.Close().\n"+
+        "Error='%v'\n", err.Error())
+
+      errs = append(errs, err2)
+    }
+  }
+
+  return errs
+}
+
 // lowLevelDeleteDirectoryAll - Helper method designed for use by DirMgr.
 // This method will delete the designated directory ('dMgr') and all
 // subsidiary directories and files.

@@ -1830,182 +1830,20 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
   fileOps []FileOperationCode,
   targetBaseDir DirMgr) (errs []error) {
 
-  errs = make([]error, 0, 500)
-
   ePrefix := "DirMgr.ExecuteDirectoryFileOps() "
 
-  err := dMgr.IsDirMgrValid(ePrefix)
+  dMgrHlpr := dirMgrHelper{}
 
-  if err != nil {
-    err2 := fmt.Errorf("%v ", err.Error())
-    errs = append(errs, err2)
-    return errs
-  }
-
-  err = targetBaseDir.IsDirMgrValid("")
-
-  if err != nil {
-
-    err2 := fmt.Errorf(ePrefix+
-      "Input parameter 'targetBaseDir' is INVALID!. Error='%v' ",
-      err.Error())
-
-    errs = append(errs, err2)
-
-    return errs
-  }
-
-  if len(fileOps) == 0 {
-
-    err2 := errors.New(ePrefix +
-      "Error: The input parameter 'fileOps' is a ZERO LENGTH ARRAY!")
-
-    errs = append(errs, err2)
-
-    return errs
-  }
-
-  _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
-      PreProcPathCode.None(),
-      ePrefix,
-      "dMgr.absolutePath")
-
-  if nonPathError != nil {
-    errs = append(errs, nonPathError)
-    return errs
-  }
-
-  if !dirPathDoesExist {
-
-    nonPathError = fmt.Errorf(ePrefix+"The current DirMgr path DOES NOT EXIST!\n"+
-      "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
-
-    errs = append(errs, nonPathError)
-    return errs
-  }
-
-  if !fInfoPlus.IsDir() {
-    nonPathError = fmt.Errorf(ePrefix+
-      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
-      "DMgr='%v'\n", dMgr.absolutePath)
-
-    errs = append(errs, nonPathError)
-    return errs
-  }
-
-  dMgr.dataMutex.Lock()
-
-  dir, err := os.Open(dMgr.absolutePath)
-
-  dMgr.dataMutex.Unlock()
-
-  if err != nil {
-    err2 := fmt.Errorf(ePrefix+
-      "Error return by os.Open(dMgr.absolutePath). "+
-      "dMgr.absolutePath='%v' Error='%v' ",
-      dMgr.absolutePath, err.Error())
-
-    errs = append(errs, err2)
-    return errs
-  }
-
-  nameFileInfos, err := dir.Readdir(-1)
-
-  if err != nil {
-    _ = dir.Close()
-    err2 := fmt.Errorf(ePrefix+
-      "Error returned by dir.Readdirnames(-1). "+
-      "dMgr.absolutePath='%v' Error='%v' ",
-      dMgr.absolutePath, err.Error())
-
-    errs = append(errs, err2)
-    return errs
-  }
-
-  fh := FileHelper{}
-
-  for _, nameFInfo := range nameFileInfos {
-
-    if nameFInfo.IsDir() {
-      continue
-    }
-
-    // Must be a file - process it!
-
-    // This is not a directory. It is a file.
-    // Determine if it matches the find file criteria.
-    isMatch, err := fh.FilterFileName(nameFInfo, fileSelectCriteria)
-
-    if err != nil {
-
-      _ = dir.Close()
-
-      err2 := fmt.Errorf(ePrefix+
-        "Error returned by fh.FilterFileName(nameFInfo, fileSelectCriteria).\n"+
-        "directorySearched='%v'\nfileName='%v'\nError='%v'\n",
-        dMgr.absolutePath, nameFInfo.Name(), err.Error())
-
-      errs = append(errs, err2)
-      return errs
-    }
-
-    if !isMatch {
-
-      continue
-
-    }
-
-    // Must be a match - this is a 'selected' file!
-
-    srcFileNameExt := nameFInfo.Name()
-
-    fileOp, err := FileOps{}.NewByDirStrsAndFileNameExtStrs(
-      dMgr.GetAbsolutePath(),
-      nameFInfo.Name(),
-      targetBaseDir.GetAbsolutePath(),
-      srcFileNameExt)
-
-    if err != nil {
-
-      _ = dir.Close()
-
-      err2 := fmt.Errorf(ePrefix+
-        "Error returned by FileOps{}.NewByDirStrsAndFileNameExtStrs()\n"+
-        "sourcePath='%v'\nsrcFileNameExt='%v'\ndestDir='%v'\nError='%v'\n",
-        dMgr.GetAbsolutePath(), srcFileNameExt, targetBaseDir.GetAbsolutePath(),
-        err.Error())
-      errs = append(errs, err2)
-      return errs
-    }
-
-    maxOps := len(fileOps)
-
-    for i := 0; i < maxOps; i++ {
-
-      err = fileOp.ExecuteFileOperation(fileOps[i])
-
-      if err != nil {
-        err2 := fmt.Errorf(ePrefix+
-          "Error returned by fileOp.ExecuteFileOperation(fileOps[%v]). "+
-          "FileOps='%v'\nError='%v'\n\n",
-          i, fileOps[i].String(), err.Error())
-
-        // Store the error and continue processing
-        // file operations.
-        errs = append(errs, err2)
-      }
-    }
-
-    // finished applying file operations to this file.
-    // Get another one and continue...
-  }
-
-  _ = dir.Close()
+  errs = dMgrHlpr.executeDirectoryFileOps(
+    dMgr,
+    fileSelectCriteria,
+    fileOps,
+    &targetBaseDir,
+    ePrefix,
+    "dMgr",
+    "targetBaseDir",
+    "fileSelectCriteria",
+    "fileOps")
 
   return errs
 }
