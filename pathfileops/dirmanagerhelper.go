@@ -2050,6 +2050,167 @@ func (dMgrHlpr *dirMgrHelper) executeFileOpsOnFoundFiles(dirOp *DirTreeOp) func(
   }
 }
 
+// findFilesByNamePattern - Searches files in the current directory ONLY. An attempt
+// will be made to match the file name with the specified search pattern string.
+// All matched files will be returned in a FileMgrCollection.
+//
+func (dMgrHlpr *dirMgrHelper) findFilesByNamePattern(
+  dMgr *DirMgr,
+  fileSearchPattern string,
+  ePrefix string,
+  dMgrLabel string,
+  fileSearchLabel string) (FileMgrCollection,
+  error) {
+
+  fileMgrCol := FileMgrCollection{}.New()
+  var err error
+
+  ePrefixCurrMethod := "dirMgrHelper.findFilesByNamePattern() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  var dMgrPathDoesExist bool
+
+  dMgrPathDoesExist,
+    _,
+    err = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+    return fileMgrCol, err
+  }
+
+  if !dMgrPathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: %v Directory Path DOES NOT EXIST!\n"+
+      "%v='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath)
+
+    return fileMgrCol, err
+  }
+
+  fh := FileHelper{}
+
+  errCode := 0
+
+  errCode, _, fileSearchPattern = fh.isStringEmptyOrBlank(fileSearchPattern)
+
+  if errCode < 0 {
+    return fileMgrCol,
+      fmt.Errorf(ePrefix+
+        "\nInput parameter '%v' is INVALID!\n"+
+        "'%v' is an EMPTY STRING!\n",
+        fileSearchLabel,
+        fileSearchLabel)
+  }
+
+  dirPtr, err := os.Open(dMgr.absolutePath)
+
+  if err != nil {
+    return fileMgrCol,
+      fmt.Errorf(ePrefix+
+        "\nError return by os.Open(%v.absolutePath).\n"+
+        "%v.absolutePath='%v'\nError='%v'\n",
+        dMgrLabel,
+        dMgrLabel,
+        dMgr.absolutePath, err.Error())
+  }
+
+  nameFileInfos, err := dirPtr.Readdir(-1)
+
+  if err != nil {
+
+    if dirPtr != nil {
+      _ = dirPtr.Close()
+    }
+
+    return fileMgrCol,
+      fmt.Errorf(ePrefix+
+        "\nError returned by dirPtr.Readdirnames(-1).\n"+
+        "%v.absolutePath='%v'\nError='%v'\n",
+        dMgrLabel,
+        dMgr.absolutePath,
+        err.Error())
+  }
+
+  var isMatch bool
+
+  for _, nameFInfo := range nameFileInfos {
+
+    if nameFInfo.IsDir() {
+      continue
+
+    } else {
+
+      isMatch, err = pf.Match(fileSearchPattern, nameFInfo.Name())
+
+      if err != nil {
+
+        if dirPtr != nil {
+          _ = dirPtr.Close()
+        }
+
+        return FileMgrCollection{},
+          fmt.Errorf(ePrefix+
+            "\nError returned by fp.Match(%v, fileName).\n"+
+            "directorySearched='%v' %v='%v' fileName='%v' Error='%v' ",
+            fileSearchLabel,
+            dMgr.absolutePath,
+            fileSearchLabel,
+            fileSearchPattern,
+            nameFInfo.Name(),
+            err.Error())
+      }
+
+      if !isMatch {
+        continue
+      } else {
+
+        err = fileMgrCol.AddFileMgrByFileInfo(dMgr.absolutePath, nameFInfo)
+
+        if err != nil {
+
+          if dirPtr != nil {
+            _ = dirPtr.Close()
+          }
+
+          return FileMgrCollection{},
+            fmt.Errorf(ePrefix+
+              "\nError returned by fileMgrCol.AddFileMgrByFileInfo(%v.absolutePath, nameFInfo).\n"+
+              "Directory='%v'\nFileName='%v'\nError='%v'\n",
+              dMgrLabel,
+              dMgr.absolutePath,
+              nameFInfo.Name(),
+              err.Error())
+        }
+      }
+    }
+  }
+
+  if dirPtr != nil {
+
+    err = dirPtr.Close()
+
+    if err != nil {
+      return FileMgrCollection{},
+        fmt.Errorf(ePrefix+
+          "\nError returned by dirPtr.Close().\n"+
+          "dirPtr Path='%v'\nError='%v'\n",
+          dMgr.absolutePath, err.Error())
+    }
+  }
+
+  return fileMgrCol, nil
+}
+
 // lowLevelDeleteDirectoryAll - Helper method designed for use by DirMgr.
 // This method will delete the designated directory ('dMgr') and all
 // subsidiary directories and files.

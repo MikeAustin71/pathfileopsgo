@@ -2144,9 +2144,6 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
   return errs
 }
 
-// FindFilesByNamePattern - Searches files in the current directory ONLY. An attempt
-// will be made to match the file name with the specified search pattern string.
-// All matched files will be returned in a FileMgrCollection.
 //
 // Regardless of the search pattern used, this method will never return sub-directories
 // of the target search directory.
@@ -2195,128 +2192,23 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
 
   ePrefix := "DirMgr.FindFilesByNamePattern() "
 
-  nonPathError := dMgr.IsDirMgrValid(ePrefix)
-
-  if nonPathError != nil {
-    return FileMgrCollection{}, nonPathError
-  }
-
-  errCode := 0
-
-  errCode, _, fileSearchPattern = FileHelper{}.isStringEmptyOrBlank(fileSearchPattern)
-
-  if errCode < 0 {
-    return FileMgrCollection{},
-      errors.New(ePrefix + "Input parameter 'fileSearchPattern' is INVALID!\n" +
-        "'fileSearchPattern' is an EMPTY STRING!\n")
-  }
-
-  _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
-      PreProcPathCode.None(),
-      ePrefix,
-      "dMgr.absolutePath")
-
-  if nonPathError != nil {
-    return FileMgrCollection{}, nonPathError
-  }
-
-  if !dirPathDoesExist {
-    return FileMgrCollection{},
-      fmt.Errorf(ePrefix+
-        "DirMgr Path DOES NOT EXIST!\n"+
-        "DirMgr Path ='%v'\n", dMgr.absolutePath)
-  }
-
-  if !fInfoPlus.IsDir() {
-    return FileMgrCollection{},
-      fmt.Errorf(ePrefix+
-        "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
-        "DMgr='%v'\n", dMgr.absolutePath)
-  }
+  dMgrHlpr := dirMgrHelper{}
+  fileMgrCol := FileMgrCollection{}.New()
+  var err error
 
   dMgr.dataMutex.Lock()
 
-  dir, err := os.Open(dMgr.absolutePath)
+  fileMgrCol,
+    err = dMgrHlpr.findFilesByNamePattern(
+    dMgr,
+    fileSearchPattern,
+    ePrefix,
+    "dMgr",
+    "fileSearchPattern")
 
   dMgr.dataMutex.Unlock()
 
-  if err != nil {
-    return FileMgrCollection{},
-      fmt.Errorf(ePrefix+
-        "Error return by os.Open(dMgr.absolutePath). "+
-        "dMgr.absolutePath='%v' Error='%v' ",
-        dMgr.absolutePath, err.Error())
-  }
-
-  nameFileInfos, err := dir.Readdir(-1)
-
-  if err != nil {
-    _ = dir.Close()
-    return FileMgrCollection{},
-      fmt.Errorf(ePrefix+
-        "Error returned by dir.Readdirnames(-1). "+
-        "dMgr.absolutePath='%v' Error='%v' ",
-        dMgr.absolutePath, err.Error())
-  }
-
-  fMgrCol := FileMgrCollection{}
-
-  for _, nameFInfo := range nameFileInfos {
-
-    if nameFInfo.IsDir() {
-      continue
-
-    } else {
-
-      fName := nameFInfo.Name()
-
-      isMatch, err := fp.Match(fileSearchPattern, fName)
-
-      if err != nil {
-
-        _ = dir.Close()
-
-        return FileMgrCollection{},
-          fmt.Errorf(ePrefix+
-            "Error returned by fp.Match(fileSearchPattern, fileName). "+
-            "directorySearched='%v' fileSearchPattern='%v' fileName='%v' Error='%v' ",
-            dMgr.absolutePath, fileSearchPattern, fName, err.Error())
-      }
-
-      if !isMatch {
-        continue
-      } else {
-
-        err = fMgrCol.AddFileMgrByFileInfo(dMgr.absolutePath, nameFInfo)
-
-        if err != nil {
-          _ = dir.Close()
-          return FileMgrCollection{},
-            fmt.Errorf(ePrefix+
-              "Error returned by fMgrCol.AddFileMgrByFileInfo(dMgr.absolutePath, nameFInfo). "+
-              "Directory='%v' FileName='%v' Error='%v' ",
-              dMgr.absolutePath, fName, err.Error())
-        }
-      }
-    }
-  }
-
-  err = dir.Close()
-
-  if err != nil {
-    return FileMgrCollection{},
-      fmt.Errorf(ePrefix+
-        "Error returned by dir.Close(). "+
-        "dir='%v' Error='%v' ",
-        dMgr.absolutePath, err.Error())
-  }
-
-  return fMgrCol, nil
+  return fileMgrCol, err
 }
 
 // FindFilesBySelectCriteria - Conducts a file search in the directory

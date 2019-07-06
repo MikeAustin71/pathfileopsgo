@@ -319,7 +319,7 @@ func (fMgrs *FileMgrCollection) FindFiles(
 
     }
 
-    if isMatchedFile  {
+    if isMatchedFile {
       fMgrs2.AddFileMgr(fMgr)
     }
 
@@ -450,7 +450,7 @@ func (fMgrs *FileMgrCollection) InsertFileMgrAtIndex(fMgr FileMgr, index int) er
   return nil
 }
 
-// New - Creates and returns a new, properly initialized
+// New - Creates and returns a new, empty and properly initialized
 // File Manager Collection ('FileMgrCollection').
 func (fMgrs FileMgrCollection) New() FileMgrCollection {
 
@@ -686,4 +686,3 @@ func (fMgrs *FileMgrCollection) PeekLastFileMgr() (FileMgr, error) {
 
   return fMgrs.fileMgrs[arrayLen-1].CopyOut(), nil
 }
-
