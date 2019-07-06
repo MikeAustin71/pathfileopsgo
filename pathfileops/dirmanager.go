@@ -2125,90 +2125,23 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 
   ePrefix := "DirMgr.ExecuteDirectoryTreeOps() "
 
-  dirOp := DirTreeOp{}.New()
-  dirOp.CallingFunc = ePrefix
-  errs = make([]error, 0, 300)
+  dMgrHlpr := dirMgrHelper{}
 
-  err := dMgr.IsDirMgrValid(ePrefix)
+  dMgr.dataMutex.Lock()
 
-  if err != nil {
-    err2 := fmt.Errorf("%v ", err.Error())
-    errs = append(errs, err2)
-    return errs
-  }
+  errs = dMgrHlpr.executeDirectoryTreeOps(
+    dMgr,
+    fileSelectCriteria,
+    fileOps,
+    &targetBaseDir,
+    ePrefix,
+    "dMgr",
+    "targetBaseDir",
+    "fileOps")
 
-  err = targetBaseDir.IsDirMgrValid("")
+  dMgr.dataMutex.Unlock()
 
-  if err != nil {
-
-    err2 := fmt.Errorf(ePrefix+
-      "Input parameter 'targetBaseDir' is INVALID!. Error='%v' ",
-      err.Error())
-
-    errs = append(errs, err2)
-
-    return errs
-  }
-
-  if len(fileOps) == 0 {
-
-    err2 := errors.New(ePrefix +
-      "Error: The input parameter 'fileOps' is a ZERO LENGTH ARRAY!\n")
-
-    errs = append(errs, err2)
-
-    return errs
-  }
-
-  _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
-      PreProcPathCode.None(),
-      ePrefix,
-      "dMgr.absolutePath")
-
-  if nonPathError != nil {
-    errs = append(errs, nonPathError)
-    return errs
-  }
-
-  if !dirPathDoesExist {
-
-    err = fmt.Errorf(ePrefix+"The current DirMgr path DOES NOT EXIST!\n"+
-      "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
-
-    errs = append(errs, err)
-    return errs
-  }
-
-  if !fInfoPlus.IsDir() {
-    err = fmt.Errorf(ePrefix+
-      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
-      "DMgr='%v'\n", dMgr.absolutePath)
-
-    errs = append(errs, err)
-    return errs
-  }
-
-  dirOp.FileOps = append(dirOp.FileOps, fileOps...)
-  dirOp.TargetBaseDir = targetBaseDir.CopyOut()
-  dirOp.SourceBaseDir = dMgr.CopyOut()
-  dirOp.FileSelectCriteria = fileSelectCriteria
-
-  err = fp.Walk(dMgr.GetAbsolutePath(), dMgr.executeFileOpsOnFoundFiles(&dirOp))
-
-  if err != nil {
-    err2 := fmt.Errorf(ePrefix+
-      "Error returned by fp.Walk(). Error='%v' ", err.Error())
-    errs = append(errs, dirOp.ErrReturns...)
-    errs = append(errs, err2)
-    return errs
-  }
-
-  return dirOp.ErrReturns
+  return errs
 }
 
 // FindFilesByNamePattern - Searches files in the current directory ONLY. An attempt
@@ -4897,108 +4830,4 @@ func (dMgr *DirMgr) copyDirectoryTree(
   }
 
   return errs
-}
-
-// executeFileOpsOnFoundFiles - This function is designed to work in conjunction
-// with a walk directory function like FindWalkDirFiles. It will process
-// files extracted from a 'Directory Walk' operation initiated by the
-// 'filepath.Walk' method.
-//
-// Thereafter, file operations will be performed on files in the directory
-// tree as specified by the 'dirOp' parameter.
-//
-func (dMgr *DirMgr) executeFileOpsOnFoundFiles(dirOp *DirTreeOp) func(string, os.FileInfo, error) error {
-  return func(pathFile string, info os.FileInfo, erIn error) error {
-
-    ePrefix := "DirMgr.executeFileOpsOnFoundFiles() "
-    var err2 error
-
-    if erIn != nil {
-      err2 = fmt.Errorf(ePrefix+
-        "Error returned from directory walk function. "+
-        "pathFile= '%v' Error='%v'", pathFile, erIn.Error())
-      dirOp.ErrReturns = append(dirOp.ErrReturns, err2)
-      return nil
-    }
-
-    if info.IsDir() {
-      return nil
-    }
-
-    fh := FileHelper{}
-
-    // This is not a directory. It is a file.
-    // Determine if it matches the find file criteria.
-    isFoundFile, err := fh.FilterFileName(info, dirOp.FileSelectCriteria)
-
-    if err != nil {
-
-      err2 = fmt.Errorf(ePrefix+
-        "Error returned from dMgr.FilterFileName(info, dInfo.FileSelectCriteria) "+
-        "pathFile='%v' info.Name()='%v' Error='%v' ",
-        pathFile, info.Name(), err.Error())
-
-      dirOp.ErrReturns = append(dirOp.ErrReturns, err2)
-      return nil
-    }
-
-    if !isFoundFile {
-      return nil
-    }
-
-    srcFileNameExt := info.Name()
-
-    destDir, err := fh.SwapBasePath(
-      dirOp.SourceBaseDir.GetAbsolutePath(),
-      dirOp.TargetBaseDir.GetAbsolutePath(),
-      pathFile)
-
-    if err != nil {
-      err2 = fmt.Errorf(ePrefix+
-        "Error returned by fh.SwapBasePath(dirOp.SourceBaseDir, "+
-        "dirOp.TargetBaseDir, pathFile). dirOp.SourceBaseDir='%v' "+
-        "dirOp.TargetBaseDir='%v' pathFile='%v' Error='%v' ",
-        dirOp.SourceBaseDir.GetAbsolutePath(),
-        dirOp.TargetBaseDir.GetAbsolutePath(),
-        pathFile,
-        err.Error())
-
-      dirOp.ErrReturns = append(dirOp.ErrReturns, err2)
-      return nil
-
-    }
-
-    fileOp, err := FileOps{}.NewByDirStrsAndFileNameExtStrs(
-      pathFile, srcFileNameExt, destDir, srcFileNameExt)
-
-    if err != nil {
-      err2 = fmt.Errorf(ePrefix+
-        "Error returned by FileOps{}.NewByDirStrsAndFileNameExtStrs() "+
-        "pathFile='%v' srcFileNameExt='%v' destDir='%v' Error='%v' ",
-        pathFile, srcFileNameExt, destDir, err.Error())
-
-      dirOp.ErrReturns = append(dirOp.ErrReturns, err2)
-      return nil
-    }
-
-    maxOps := len(dirOp.FileOps)
-
-    for i := 0; i < maxOps; i++ {
-
-      err = fileOp.ExecuteFileOperation(dirOp.FileOps[i])
-
-      if err != nil {
-        err2 = fmt.Errorf(ePrefix+
-          "Error returned by fileOp.ExecuteFileOperation(dirOp.FileOps[i]). "+
-          "i='%v' FileOps='%v' Error='%v' ",
-          i, dirOp.FileOps[i].String(), err.Error())
-
-        dirOp.ErrReturns = append(dirOp.ErrReturns, err2)
-
-      }
-    }
-
-    return nil
-  }
-
 }
