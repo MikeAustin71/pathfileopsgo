@@ -2364,121 +2364,25 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 
   ePrefix := "DirMgr.FindFilesBySelectCriteria() "
 
-  err := dMgr.IsDirMgrValid(ePrefix)
+  fileMgrCol := FileMgrCollection{}.New()
 
-  if err != nil {
-    return FileMgrCollection{}, err
-  }
+  var err error
 
-  _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
-      PreProcPathCode.None(),
-      ePrefix,
-      "dMgr.absolutePath")
-
-  if nonPathError != nil {
-    return FileMgrCollection{}, nonPathError
-  }
-
-  if !dirPathDoesExist {
-    return FileMgrCollection{},
-      fmt.Errorf(ePrefix+
-        "DirMgr Path DOES NOT EXIST!\n"+
-        "DirMgr Path ='%v'\n", dMgr.absolutePath)
-  }
-
-  if !fInfoPlus.IsDir() {
-    return FileMgrCollection{},
-      fmt.Errorf(ePrefix+
-        "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
-        "DMgr='%v'\n", dMgr.absolutePath)
-  }
+  dMgrHlpr := dirMgrHelper{}
 
   dMgr.dataMutex.Lock()
 
-  dir, err := os.Open(dMgr.absolutePath)
+  fileMgrCol,
+    err = dMgrHlpr.findFilesBySelectCriteria(
+    dMgr,
+    fileSelectCriteria,
+    ePrefix,
+    "dMgr",
+    "fileSelectCriteria")
 
   dMgr.dataMutex.Unlock()
 
-  if err != nil {
-    return FileMgrCollection{},
-      fmt.Errorf(ePrefix+
-        "Error return by os.Open(dMgr.absolutePath). "+
-        "dMgr.absolutePath='%v' Error='%v' ",
-        dMgr.absolutePath, err.Error())
-  }
-
-  nameFileInfos, err := dir.Readdir(-1)
-
-  if err != nil {
-    _ = dir.Close()
-    return FileMgrCollection{},
-      fmt.Errorf(ePrefix+
-        "Error returned by dir.Readdirnames(-1). "+
-        "dMgr.absolutePath='%v' Error='%v' ",
-        dMgr.absolutePath, err.Error())
-  }
-
-  fMgrCol := FileMgrCollection{}
-  fh := FileHelper{}
-
-  for _, nameFInfo := range nameFileInfos {
-
-    if nameFInfo.IsDir() {
-      continue
-
-    } else {
-
-      // This is not a directory. It is a file.
-      // Determine if it matches the find file criteria.
-      isMatch, err := fh.FilterFileName(nameFInfo, fileSelectCriteria)
-
-      if err != nil {
-
-        _ = dir.Close()
-
-        return FileMgrCollection{},
-          fmt.Errorf(ePrefix+
-            "Error returned by fh.FilterFileName(nameFInfo, fileSelectCriteria). "+
-            "directorySearched='%v'  fileName='%v' Error='%v' ",
-            dMgr.absolutePath, nameFInfo.Name(), err.Error())
-      }
-
-      if !isMatch {
-
-        continue
-
-      } else {
-
-        err = fMgrCol.AddFileMgrByFileInfo(dMgr.absolutePath, nameFInfo)
-
-        if err != nil {
-          _ = dir.Close()
-          return FileMgrCollection{},
-            fmt.Errorf(ePrefix+
-              "Error returned by fMgrCol.AddFileMgrByFileInfo(dMgr.absolutePath, nameFInfo). "+
-              "Directory='%v' FileName='%v' Error='%v' ",
-              dMgr.absolutePath, nameFInfo.Name(), err.Error())
-        }
-      }
-    }
-  }
-
-  err = dir.Close()
-
-  if err != nil {
-    return FileMgrCollection{},
-      fmt.Errorf(ePrefix+
-        "Error returned by dir.Close(). "+
-        "dir='%v' Error='%v' ",
-        dMgr.absolutePath, err.Error())
-  }
-
-  return fMgrCol, nil
+  return fileMgrCol, err
 }
 
 // FindWalkDirFiles - This method returns file information on files residing in a specific
