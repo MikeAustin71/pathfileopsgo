@@ -2586,13 +2586,28 @@ func (dMgr *DirMgr) FindWalkDirFiles(
 //
 func (dMgr *DirMgr) GetAbsolutePath() string {
 
-  err := dMgr.IsDirMgrValid("")
+  dMgrHlpr := dirMgrHelper{}
+  absolutePath := ""
+
+  dMgr.dataMutex.Lock()
+
+  _,
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    "",
+    "")
 
   if err != nil {
-    return ""
+    absolutePath = ""
+  } else {
+    absolutePath = dMgr.absolutePath
   }
 
-  return dMgr.absolutePath
+  dMgr.dataMutex.Unlock()
+
+  return absolutePath
 }
 
 // GetAbsolutePathElements - Returns all of the directories and drive
