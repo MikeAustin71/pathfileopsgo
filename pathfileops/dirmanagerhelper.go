@@ -611,6 +611,33 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   return errs
 }
 
+// copyOut - Makes a duplicate copy of input parameter
+// 'dMgr' values and returns them as a new DirMgr object.
+//
+func (dMgrHlpr *dirMgrHelper) copyOut(
+  dMgr *DirMgr) DirMgr {
+
+  dOut := DirMgr{}
+
+  dOut.isInitialized = dMgr.isInitialized
+  dOut.originalPath = dMgr.originalPath
+  dOut.path = dMgr.path
+  dOut.isPathPopulated = dMgr.isPathPopulated
+  dOut.doesPathExist = dMgr.doesPathExist
+  dOut.parentPath = dMgr.parentPath
+  dOut.isParentPathPopulated = dMgr.isParentPathPopulated
+  dOut.absolutePath = dMgr.absolutePath
+  dOut.isAbsolutePathPopulated = dMgr.isAbsolutePathPopulated
+  dOut.doesAbsolutePathExist = dMgr.doesAbsolutePathExist
+  dOut.isAbsolutePathDifferentFromPath = dMgr.isAbsolutePathDifferentFromPath
+  dOut.directoryName = dMgr.directoryName
+  dOut.volumeName = dMgr.volumeName
+  dOut.isVolumePopulated = dMgr.isVolumePopulated
+  dOut.actualDirFileInfo = dMgr.actualDirFileInfo.CopyOut()
+
+  return dOut
+}
+
 // deleteAllFilesInDirectory - Helper method used by DirMgr. This
 // method deletes all the files in the current directory. ONLY files
 // are deleted NOT sub-directories.

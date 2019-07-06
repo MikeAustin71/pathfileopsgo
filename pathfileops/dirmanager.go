@@ -457,25 +457,14 @@ func (dMgr *DirMgr) CopyIn(dmgrIn *DirMgr) {
 func (dMgr *DirMgr) CopyOut() DirMgr {
 
   dOut := DirMgr{}
+  dMgrHlpr := dirMgrHelper{}
+
   dMgr.dataMutex.Lock()
 
-  dOut.isInitialized = dMgr.isInitialized
-  dOut.originalPath = dMgr.originalPath
-  dOut.path = dMgr.path
-  dOut.isPathPopulated = dMgr.isPathPopulated
-  dOut.doesPathExist = dMgr.doesPathExist
-  dOut.parentPath = dMgr.parentPath
-  dOut.isParentPathPopulated = dMgr.isParentPathPopulated
-  dOut.absolutePath = dMgr.absolutePath
-  dOut.isAbsolutePathPopulated = dMgr.isAbsolutePathPopulated
-  dOut.doesAbsolutePathExist = dMgr.doesAbsolutePathExist
-  dOut.isAbsolutePathDifferentFromPath = dMgr.isAbsolutePathDifferentFromPath
-  dOut.directoryName = dMgr.directoryName
-  dOut.volumeName = dMgr.volumeName
-  dOut.isVolumePopulated = dMgr.isVolumePopulated
-  dOut.actualDirFileInfo = dMgr.actualDirFileInfo.CopyOut()
+  dOut = dMgrHlpr.copyOut(dMgr)
 
   dMgr.dataMutex.Unlock()
+
   return dOut
 }
 
@@ -2665,17 +2654,40 @@ func (dMgr *DirMgr) GetAbsolutePathElements() (pathElements []string) {
 // DirMgr.absolutePath with a trailing os.PathSeparator
 // character.
 func (dMgr *DirMgr) GetAbsolutePathWithSeparator() string {
-  lPath := len(dMgr.absolutePath)
+
+  dMgrHlpr := dirMgrHelper{}
+
+  absolutePath := ""
+
+  dMgr.dataMutex.Lock()
+
+  _,
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    "",
+    "")
+
+  if err != nil {
+    absolutePath = ""
+  } else {
+    absolutePath = dMgr.absolutePath
+  }
+
+  dMgr.dataMutex.Unlock()
+
+  lPath := len(absolutePath)
 
   if lPath == 0 {
     return ""
   }
 
-  if dMgr.absolutePath[lPath-1] != os.PathSeparator {
-    return dMgr.absolutePath + string(os.PathSeparator)
+  if absolutePath[lPath-1] != os.PathSeparator {
+    return absolutePath + string(os.PathSeparator)
   }
 
-  return dMgr.absolutePath
+  return absolutePath
 }
 
 // GetDirectoryTree - Returns a DirMgrCollection containing all
