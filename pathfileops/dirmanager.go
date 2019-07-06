@@ -2628,16 +2628,35 @@ func (dMgr *DirMgr) GetAbsolutePath() string {
 func (dMgr *DirMgr) GetAbsolutePathElements() (pathElements []string) {
 
   pathElements = make([]string, 0, 50)
+  dMgrHlpr := dirMgrHelper{}
 
-  pathStr := dMgr.GetAbsolutePath()
+  absolutePath := ""
 
-  if len(pathStr) == 0 {
+  dMgr.dataMutex.Lock()
+
+  _,
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    "",
+    "")
+
+  if err != nil {
+    absolutePath = ""
+  } else {
+    absolutePath = dMgr.absolutePath
+  }
+
+  dMgr.dataMutex.Unlock()
+
+  if len(absolutePath) == 0 {
     return pathElements
   }
 
-  pathStr = strings.Replace(pathStr, "\\", "/", -1)
+  absolutePath = strings.Replace(absolutePath, "\\", "/", -1)
 
-  pathElements = strings.Split(pathStr, "/")
+  pathElements = strings.Split(absolutePath, "/")
 
   return pathElements
 }
