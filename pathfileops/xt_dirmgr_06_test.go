@@ -746,7 +746,7 @@ func TestDirMgr_IsDirMgrValid_01(t *testing.T) {
     return
   }
 
-  sourceDMgr.path = ""
+  sourceDMgr.absolutePath = ""
 
   err = sourceDMgr.IsDirMgrValid("")
 

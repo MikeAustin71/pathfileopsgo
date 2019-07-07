@@ -2700,7 +2700,25 @@ func (dMgr *DirMgr) GetDirectoryTree() (dirMgrs DirMgrCollection, errs []error) 
 // of the directory without out the parent path.
 //
 func (dMgr *DirMgr) GetDirectoryName() string {
-  return dMgr.directoryName
+
+  directoryName := ""
+  dMgrHlpr := dirMgrHelper{}
+
+  dMgr.dataMutex.Lock()
+
+  _,
+    _,
+    _ = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    "",
+    "dMgr")
+
+  directoryName = dMgr.directoryName
+
+  dMgr.dataMutex.Unlock()
+
+  return directoryName
 }
 
 // GetFileInfoPlus - Returns a FileInfoPlus instance detailing file

@@ -5,6 +5,7 @@ import (
   "io"
   "os"
   pf "path/filepath"
+  "strings"
   "time"
 )
 
@@ -1512,7 +1513,56 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
         "%v.absolutePath='%v'\nError='%v'", dMgrLabel, dMgrLabel, err2.Error())
       return dirPathDoesExist, fInfo, err
     }
+  }
 
+  errCode, _, dMgr.path =
+    fh.isStringEmptyOrBlank(dMgr.path)
+
+  if errCode < 0 {
+    dMgr.path = dMgr.absolutePath
+  }
+
+  dMgr.isPathPopulated = true
+
+  strAry := strings.Split(dMgr.absolutePath, string(os.PathSeparator))
+  lStr := len(strAry)
+  idxStr := strAry[lStr-1]
+
+  idx := strings.Index(dMgr.absolutePath, idxStr)
+
+  dMgr.parentPath = fh.RemovePathSeparatorFromEndOfPathString(dMgr.absolutePath[0:idx])
+
+  dMgr.isParentPathPopulated = true
+
+  if dMgr.parentPath == "" {
+    dMgr.isParentPathPopulated = false
+  }
+
+  if idxStr != "" {
+    dMgr.directoryName = idxStr
+  } else {
+    dMgr.directoryName = dMgr.absolutePath
+  }
+
+  errCode, _, dMgr.path =
+    fh.isStringEmptyOrBlank(dMgr.path)
+
+  if dMgr.path != dMgr.absolutePath {
+    dMgr.isAbsolutePathDifferentFromPath = true
+  }
+
+  var vn string
+  if dMgr.isAbsolutePathPopulated {
+    vn = pf.VolumeName(dMgr.absolutePath)
+  } else if dMgr.isPathPopulated {
+    vn = pf.VolumeName(dMgr.path)
+  }
+
+  dMgr.isVolumePopulated = false
+
+  if vn != "" {
+    dMgr.isVolumePopulated = true
+    dMgr.volumeName = vn
   }
 
   var absFInfo, pathFInfo os.FileInfo
@@ -1646,7 +1696,8 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
 
   dMgr.doesAbsolutePathExist = true
   dMgr.doesPathExist = true
-  dMgr.actualDirFileInfo = FileInfoPlus{}.NewFromFileInfo(absFInfo)
+  dMgr.actualDirFileInfo =
+    FileInfoPlus{}.NewFromFileInfo(absFInfo)
   fInfo = dMgr.actualDirFileInfo.CopyOut()
   dirPathDoesExist = true
   err = nil

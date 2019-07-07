@@ -15,7 +15,7 @@ func TestDirMgr_DeleteAll_01(t *testing.T) {
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir).\n" +
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origDir).\n"+
       "origDir='%v'\nError='%v'\n", origDir, err.Error())
     return
   }
@@ -1685,6 +1685,7 @@ func TestDirMgr_DoesPathExist_01(t *testing.T) {
   }
 
   dMgr.path = " "
+  dMgr.absolutePath = " "
 
   result := dMgr.DoesPathExist()
 
@@ -1722,22 +1723,22 @@ func TestDirMgr_DoesThisDirectoryExist_01(t *testing.T) {
   testDMgr, err := DirMgr{}.New(testDirStr)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(testDirStr)\n" +
-      "testDirStr='%v'\nError='%v'\n", testDirStr, err.Error()  )
+    t.Errorf("Error returned by DirMgr{}.New(testDirStr)\n"+
+      "testDirStr='%v'\nError='%v'\n", testDirStr, err.Error())
     return
   }
 
   dirPathDoesExist, err := testDMgr.DoesThisDirectoryExist()
 
   if err != nil {
-    t.Errorf("Error returned by testDMgr.DoesThisDirectoryExist()\n" +
+    t.Errorf("Error returned by testDMgr.DoesThisDirectoryExist()\n"+
       "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
     return
   }
 
   if !dirPathDoesExist {
-    t.Errorf("Error: Expected that result would be directory 'Does Exist'.\n" +
-      "Instead, result was directory 'Does NOT Exist'!\n" +
+    t.Errorf("Error: Expected that result would be directory 'Does Exist'.\n"+
+      "Instead, result was directory 'Does NOT Exist'!\n"+
       "testDMgr='%v'", testDMgr.GetAbsolutePath())
   }
 
@@ -1749,22 +1750,22 @@ func TestDirMgr_DoesThisDirectoryExist_02(t *testing.T) {
   testDMgr, err := DirMgr{}.New(testDirStr)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.New(testDirStr)\n" +
-      "testDirStr='%v'\nError='%v'\n", testDirStr, err.Error()  )
+    t.Errorf("Error returned by DirMgr{}.New(testDirStr)\n"+
+      "testDirStr='%v'\nError='%v'\n", testDirStr, err.Error())
     return
   }
 
   dirPathDoesExist, err := testDMgr.DoesThisDirectoryExist()
 
   if err != nil {
-    t.Errorf("Error returned by testDMgr.DoesThisDirectoryExist()\n" +
+    t.Errorf("Error returned by testDMgr.DoesThisDirectoryExist()\n"+
       "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
     return
   }
 
   if dirPathDoesExist {
-    t.Errorf("Error: Expected that result would be directory 'Does Not Exist'.\n" +
-      "Instead, result was directory 'Does Exist'!\n" +
+    t.Errorf("Error: Expected that result would be directory 'Does Not Exist'.\n"+
+      "Instead, result was directory 'Does Exist'!\n"+
       "testDMgr='%v'", testDMgr.GetAbsolutePath())
   }
 
