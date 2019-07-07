@@ -2564,6 +2564,149 @@ func (dMgrHlpr *dirMgrHelper) findFilesWalkDirectory(
   return findFilesInfo, nil
 }
 
+// getDirectoryTree - Returns a DirMgrCollection containing all
+// the sub-directories in the path of the parent directory identified
+// by the input parameter 'dMgr'.
+//
+// The returned DirMgrCollection will always contain the parent directory
+// at the top of the array (index=0). Therefore, if no errors are encountered,
+// the returned DirMgrCollection will always consist of at least one directory.
+// If sub-directories are found, then the returned DirMgrCollection will
+// contain more than one directory.
+//
+func (dMgrHlpr *dirMgrHelper) getDirectoryTree(
+  dMgr *DirMgr,
+  ePrefix string,
+  dMgrLabel string) (dirMgrs DirMgrCollection, errs []error) {
+
+  ePrefixCurrMethod := "dirMgrHelper.getDirectoryTree() "
+
+  dirMgrs = DirMgrCollection{}.New()
+
+  errs = make([]error, 0, 100)
+
+  var err, err2, err3 error
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  var dMgrPathDoesExist bool
+
+  dMgrPathDoesExist,
+    _,
+    err = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+
+    errs = append(errs, err)
+
+    return dirMgrs, errs
+  }
+
+  if !dMgrPathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: %v Directory Path DOES NOT EXIST!\n"+
+      "%v='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath)
+
+    errs = append(errs, err)
+
+    return dirMgrs, errs
+  }
+
+  dirMgrs.AddDirMgr(dMgrHlpr.copyOut(dMgr))
+
+  fh := FileHelper{}
+
+  maxLen := dirMgrs.GetNumOfDirs()
+
+  var dirPtr *os.File
+  var nameFileInfos []os.FileInfo
+
+  for i := 0; i < maxLen; i++ {
+
+    dirPtr, err = os.Open(dirMgrs.dirMgrs[i].absolutePath)
+
+    if err != nil {
+      err2 = fmt.Errorf(ePrefix+
+        "\nError return by os.Open(dirMgrs.dirMgrs[%v].absolutePath). "+
+        "dMgr.absolutePath='%v'\nError='%v'\n\n",
+        i, dirMgrs.dirMgrs[i].absolutePath, err.Error())
+
+      errs = append(errs, err2)
+      continue
+    }
+
+    err3 = nil
+
+    for err3 != io.EOF {
+
+      nameFileInfos, err3 = dirPtr.Readdir(1000)
+
+      if err3 != nil && err3 != io.EOF {
+
+        err2 = fmt.Errorf("\n"+ePrefix+
+          "Error returned by dirPtr.Readdirnames(-1).\n"+
+          "dMgr.absolutePath='%v'\nError='%v'\n",
+          dMgr.absolutePath, err3.Error())
+
+        errs = append(errs, err2)
+        break
+      }
+
+      for _, nameFInfo := range nameFileInfos {
+
+        if nameFInfo.IsDir() {
+
+          newDirPathFileName :=
+            fh.JoinPathsAdjustSeparators(dirMgrs.dirMgrs[i].absolutePath, nameFInfo.Name())
+
+          err = dirMgrs.AddDirMgrByPathNameStr(newDirPathFileName)
+
+          if err != nil {
+
+            err2 =
+              fmt.Errorf("\n"+ePrefix+
+                "Error returned by dirMgrs.AddDirMgrByPathNameStr(newDirPathFileName). "+
+                "dirPtr='%v' Error='%v' ",
+                newDirPathFileName, err.Error())
+
+            errs = append(errs, err2)
+            continue
+          }
+
+          maxLen = dirMgrs.GetNumOfDirs()
+        }
+      }
+    }
+
+    if dirPtr != nil {
+
+      err = dirPtr.Close()
+
+      if err != nil {
+
+        err2 = fmt.Errorf("\n"+ePrefix+
+          "Error returned by dirPtr.Close().\n"+
+          "dirPtr='%v'\nError='%v'\n",
+          dMgr.absolutePath, err.Error())
+
+        errs = append(errs, err2)
+      }
+    }
+  }
+
+  return dirMgrs, errs
+}
+
 // lowLevelDeleteDirectoryAll - Helper method designed for use by DirMgr.
 // This method will delete the designated directory ('dMgr') and all
 // subsidiary directories and files.
