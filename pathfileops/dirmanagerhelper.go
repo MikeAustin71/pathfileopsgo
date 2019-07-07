@@ -1765,6 +1765,106 @@ func (dMgrHlpr *dirMgrHelper) equal(
 
 }
 
+// EqualAbsPaths - compares the absolute paths for the input
+// parameter 'dMgr' and the input parameter ('dMgr2').
+//
+// If the two absolute paths are equal, the method returns 'true'.
+// If the two absolute paths are NOT equal, the method returns 'false'.
+// The comparison is NOT case sensitive. In other words, both paths
+// are converted to lower case before making the comparision.
+//
+// If either the input parameter ('dMgr') or the input parameter
+// 'dMgr2' are uninitialized, a value of 'false' is returned.
+//
+func (dMgrHlpr *dirMgrHelper) equalAbsolutePaths(
+  dMgr *DirMgr,
+  dMgr2 *DirMgr) bool {
+
+  if !dMgr.isInitialized || !dMgr2.isInitialized {
+    return false
+  }
+
+  _,
+    _,
+    _ = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    "",
+    "")
+
+  lcDMgrPath := strings.ToLower(dMgr.absolutePath)
+
+  _,
+    _,
+    _ = dMgrHlpr.doesDirectoryExist(
+    dMgr2,
+    PreProcPathCode.None(),
+    "",
+    "")
+
+  lcDMgr2Path := strings.ToLower(dMgr2.absolutePath)
+
+  if lcDMgrPath != lcDMgr2Path {
+    return false
+  }
+
+  return true
+}
+
+// equalPaths - Compares two DirMgr objects to determine
+// if their paths are equal. Both Directory Path and
+// absolute path must be equivalent.
+//
+// If the compared paths are equal, the method returns 'true'.
+// If the paths are NOT equal, the method returns 'false'.
+// The comparisons are NOT case sensitive. In other words, all paths
+// are converted to lower case before making the comparisons.
+//
+// If either the current DirMgr ('dMgr') or the input parameter
+// 'dMgr2' are uninitialized, a value of 'false' is returned.
+//
+func (dMgrHlpr *dirMgrHelper) equalPaths(
+  dMgr *DirMgr,
+  dMgr2 *DirMgr) bool {
+
+  if !dMgr.isInitialized || !dMgr2.isInitialized {
+    return false
+  }
+
+  _,
+    _,
+    _ = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    "",
+    "")
+
+  lcDMgrPath := strings.ToLower(dMgr.absolutePath)
+
+  _,
+    _,
+    _ = dMgrHlpr.doesDirectoryExist(
+    dMgr2,
+    PreProcPathCode.None(),
+    "",
+    "")
+
+  lcDMgr2Path := strings.ToLower(dMgr2.absolutePath)
+
+  if lcDMgrPath != lcDMgr2Path {
+    return false
+  }
+
+  lcDMgrPath = strings.ToLower(dMgr.path)
+  lcDMgr2Path = strings.ToLower(dMgr2.path)
+
+  if lcDMgrPath != lcDMgr2Path {
+    return false
+  }
+
+  return true
+}
+
 // executeDirectoryFileOps - Performs a a file operation on specified 'selected' files
 // in the current directory ONLY. This function does NOT perform operations on the
 // sub directories (a.k.a. the directory tree).

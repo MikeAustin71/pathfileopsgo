@@ -1474,18 +1474,18 @@ func (dMgr *DirMgr) Equal(dMgr2 *DirMgr) bool {
 //
 func (dMgr *DirMgr) EqualAbsPaths(dMgr2 *DirMgr) bool {
 
-  if !dMgr.isInitialized || !dMgr2.isInitialized {
-    return false
-  }
+  dMgrHlpr := dirMgrHelper{}
+  isEqual := false
 
-  lcDMgrPath := strings.ToLower(dMgr.absolutePath)
-  lcDMgr2Path := strings.ToLower(dMgr2.absolutePath)
+  dMgr.dataMutex.Lock()
+  dMgr2.dataMutex.Lock()
+  isEqual = dMgrHlpr.equalAbsolutePaths(
+    dMgr,
+    dMgr2)
+  dMgr2.dataMutex.Unlock()
+  dMgr.dataMutex.Unlock()
 
-  if lcDMgrPath != lcDMgr2Path {
-    return false
-  }
-
-  return true
+  return isEqual
 }
 
 // EqualPaths - Compares two DirMgr objects to determine
@@ -1502,25 +1502,18 @@ func (dMgr *DirMgr) EqualAbsPaths(dMgr2 *DirMgr) bool {
 //
 func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 
-  if !dMgr.isInitialized || !dMgr2.isInitialized {
-    return false
-  }
+  dMgrHlpr := dirMgrHelper{}
+  isEqual := false
 
-  lcDMgrPath := strings.ToLower(dMgr.absolutePath)
-  lcDMgr2Path := strings.ToLower(dMgr2.absolutePath)
+  dMgr.dataMutex.Lock()
+  dMgr2.dataMutex.Lock()
+  isEqual = dMgrHlpr.equalPaths(
+    dMgr,
+    dMgr2)
+  dMgr2.dataMutex.Unlock()
+  dMgr.dataMutex.Unlock()
 
-  if lcDMgrPath != lcDMgr2Path {
-    return false
-  }
-
-  lcDMgrPath = strings.ToLower(dMgr.path)
-  lcDMgr2Path = strings.ToLower(dMgr2.path)
-
-  if lcDMgrPath != lcDMgr2Path {
-    return false
-  }
-
-  return true
+  return isEqual
 }
 
 // ExecuteDirectoryFileOps - Performs a a file operation on specified 'selected' files
