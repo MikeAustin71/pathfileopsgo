@@ -2728,45 +2728,30 @@ func (dMgr *DirMgr) GetDirectoryName() string {
 func (dMgr *DirMgr) GetFileInfoPlus() (FileInfoPlus, error) {
 
   ePrefix := "DirMgr.GetFileInfoPlus() "
-
+  fileInfoPlus := FileInfoPlus{}
   var err error
+  var dirDoesExist bool
+  dMgrHlpr := dirMgrHelper{}
 
-  err = dMgr.IsDirMgrValid(ePrefix)
+  dMgr.dataMutex.Lock()
 
-  if err != nil {
-    return FileInfoPlus{}, err
+  dirDoesExist,
+    fileInfoPlus,
+    err = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "dMgr")
+
+  if err == nil && !dirDoesExist {
+    fileInfoPlus = FileInfoPlus{}
+    err = fmt.Errorf(ePrefix+"DirMgr Path DOES NOT EXIST!\n"+
+      "DirMgr Path='%v'\n", dMgr.absolutePath)
   }
 
-  _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
-      PreProcPathCode.None(),
-      ePrefix,
-      "dMgr.absolutePath")
+  dMgr.dataMutex.Unlock()
 
-  if nonPathError != nil {
-    return FileInfoPlus{}, nonPathError
-  }
-
-  if !dirPathDoesExist {
-    return FileInfoPlus{},
-      fmt.Errorf(ePrefix+"DirMgr Path DOES NOT EXIST!\n"+
-        "DirMgr Path='%v'\n", dMgr.absolutePath)
-  }
-
-  if !fInfoPlus.IsDir() {
-    return FileInfoPlus{},
-      fmt.Errorf(ePrefix+
-        "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
-        "DMgr='%v'\n", dMgr.absolutePath)
-  }
-
-  dMgr.actualDirFileInfo = fInfoPlus.CopyOut()
-
-  return dMgr.actualDirFileInfo.CopyOut(), nil
+  return fileInfoPlus, err
 }
 
 // GetDirPermissionCodes - If the current directory exists on disk,
