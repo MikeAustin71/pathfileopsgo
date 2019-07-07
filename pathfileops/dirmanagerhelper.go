@@ -3022,6 +3022,9 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDeleteDirectoryAll(
   return err
 }
 
+// lowLevelDoesDirectoryExist - This helper method tests for the existence
+// of directory path.
+//
 func (dMgrHlpr *dirMgrHelper) lowLevelDoesDirectoryExist(
   dirPath string,
   ePrefix,
@@ -3317,7 +3320,7 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
   dMgrDirWasDeleted bool,
   errs []error) {
 
-  ePrefixCurrMethod := "dirMgrHelper.deleteFilesByNamePattern() "
+  ePrefixCurrMethod := "dirMgrHelper.moveDirectory() "
 
   numOfSrcFilesMoved = 0
   numOfSrcFilesRemaining = 0
@@ -3573,8 +3576,10 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
       dMgrDirWasDeleted = false
     } else {
       dMgrDirWasDeleted = true
+      dMgr.doesAbsolutePathExist = false
+      dMgr.doesPathExist = false
+      dMgr.actualDirFileInfo = FileInfoPlus{}
     }
-
   }
 
   return numOfSrcFilesMoved,
@@ -3582,5 +3587,91 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
     numOfSubDirectories,
     dMgrDirWasDeleted,
     errs
+}
 
+// moveDirectoryTree - Moves all sub-directories and files plus files in
+// the parent 'dMgr' directory to a target directory tree specified by
+// input parameter 'targetDMgr'. If successful, the parent directory,
+// 'dMgr, will be deleted along with the entire sub-directory tree.
+//
+// --------------------------------------------------------------------
+//
+// !!!! BE CAREFUL !!!! This method will delete the entire directory
+// tree identified by 'dMgr' along with ALL the files in that
+// directory tree!
+//
+// --------------------------------------------------------------------
+//
+func (dMgrHlpr *dirMgrHelper) moveDirectoryTree(
+  dMgr *DirMgr,
+  targetDMgr *DirMgr,
+  ePrefix string,
+  dMgrLabel string,
+  targetDMgrLabel string) (numOfSrcFilesMoved int,
+  numOfSrcDirectoriesMoved int,
+  errs []error) {
+
+  ePrefixCurrMethod := "dirMgrHelper.moveDirectoryTree() "
+
+  numOfSrcFilesMoved = 0
+  numOfSrcDirectoriesMoved = 0
+  errs = make([]error, 0, 300)
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  var err, err2 error
+
+  fileSelectCriteria := FileSelectionCriteria{}
+  errs2 :=
+    dMgrHlpr.copyDirectoryTree(
+      dMgr,
+      targetDMgr,
+      true,
+      false,
+      fileSelectCriteria,
+      ePrefix,
+      "dMgr",
+      "targetDMgr")
+
+  if len(errs2) > 0 {
+    err2 = fmt.Errorf(ePrefix+
+      "\nErrors occurred while copying directory tree to target directory.\n"+
+      "The source directory WAS NOT DELETED!\n"+
+      "%v Source Directory='%v'\n%v Target Directory='%v'\nErrors Follow:\n\n",
+      dMgrLabel,
+      dMgr.GetAbsolutePath(),
+      targetDMgrLabel,
+      targetDMgr.GetAbsolutePath())
+    errs = append(errs, err2)
+    errs = append(errs, errs2...)
+
+    return numOfSrcFilesMoved,
+      numOfSrcDirectoriesMoved,
+      errs
+  }
+
+  err = dMgrHlpr.lowLevelDeleteDirectoryAll(
+    dMgr,
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+    err2 = fmt.Errorf(ePrefix+
+      "\nFiles were copied successfuly to target directory.\n"+
+      "However, errors occurred while deleting the source directory tree.\n"+
+      "%v.absolutePath='%v'\nError='%v'\n\n",
+      dMgrLabel,
+      dMgr.absolutePath,
+      err.Error())
+
+    errs = append(errs, err2)
+  }
+
+  return numOfSrcFilesMoved,
+    numOfSrcDirectoriesMoved,
+    errs
 }

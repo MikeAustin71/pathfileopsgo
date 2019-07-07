@@ -1236,8 +1236,9 @@ func TestDirMgr_MoveDirectoryTree_01(t *testing.T) {
 
     return
   }
-
-  errs = srcDirMgr.MoveDirectoryTree(targetDMgr)
+  _,
+    _,
+    errs = srcDirMgr.MoveDirectoryTree(targetDMgr)
 
   if len(errs) > 0 {
     for i := 0; i < len(errs); i++ {
@@ -1363,7 +1364,9 @@ func TestDirMgr_MoveDirectoryTree_02(t *testing.T) {
 
   srcDirMgr.isInitialized = false
 
-  errs = srcDirMgr.MoveDirectoryTree(targetDMgr)
+  _,
+    _,
+    errs = srcDirMgr.MoveDirectoryTree(targetDMgr)
 
   if len(errs) == 0 {
     t.Error("Expected an error return by srcDirMgr.MoveDirectoryTree(targetDMgr) because\n" +
@@ -1446,7 +1449,9 @@ func TestDirMgr_MoveDirectoryTree_03(t *testing.T) {
 
   targetDMgr.isInitialized = false
 
-  errs = srcDirMgr.MoveDirectoryTree(targetDMgr)
+  _,
+    _,
+    errs = srcDirMgr.MoveDirectoryTree(targetDMgr)
 
   if len(errs) == 0 {
     t.Error("Expected an error return by srcDirMgr.MoveDirectoryTree(targetDMgr) because\n" +
@@ -1500,7 +1505,9 @@ func TestDirMgr_MoveDirectoryTree_04(t *testing.T) {
     return
   }
 
-  errs := srcDirMgr.MoveDirectoryTree(targetDMgr)
+  _,
+    _,
+    errs := srcDirMgr.MoveDirectoryTree(targetDMgr)
 
   if len(errs) == 0 {
     t.Error("Expected an error return by srcDirMgr.MoveDirectoryTree(targetDMgr) because\n" +
