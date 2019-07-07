@@ -3382,6 +3382,42 @@ func (dMgr *DirMgr) MakeDir() error {
 //
 func (dMgr *DirMgr) MoveDirectory(
   targetDMgr DirMgr,
+  fileSelectCriteria FileSelectionCriteria) (numOfSrcFilesMoved int,
+  numOfSrcFilesRemaining int,
+  numOfSubDirectories int,
+  dMgrDirWasDeleted bool,
+  errs []error) {
+
+  ePrefix := "DirMgr.MoveDirectory() "
+  dMgrHlpr := dirMgrHelper{}
+
+  dMgr.dataMutex.Lock()
+
+  numOfSrcFilesMoved,
+    numOfSrcFilesRemaining,
+    numOfSubDirectories,
+    dMgrDirWasDeleted,
+    errs = dMgrHlpr.moveDirectory(
+    dMgr,
+    &targetDMgr,
+    fileSelectCriteria,
+    ePrefix,
+    "dMgr",
+    "targetDMgr",
+    "fileSelectCriteria")
+
+  dMgr.dataMutex.Unlock()
+
+  return numOfSrcFilesMoved,
+    numOfSrcFilesRemaining,
+    numOfSubDirectories,
+    dMgrDirWasDeleted,
+    errs
+}
+
+/*
+func (dMgr *DirMgr) MoveDirectory(
+  targetDMgr DirMgr,
   fileSelectCriteria FileSelectionCriteria) (errs []error) {
 
   errs = make([]error, 0, 300)
@@ -3406,9 +3442,9 @@ func (dMgr *DirMgr) MoveDirectory(
   }
 
   _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
+  dirPathDoesExist,
+  fInfoPlus,
+  nonPathError :=
     FileHelper{}.doesPathFileExist(
       dMgr.absolutePath,
       PreProcPathCode.None(),
@@ -3574,6 +3610,7 @@ func (dMgr *DirMgr) MoveDirectory(
 
   return errs
 }
+*/
 
 // MoveDirectoryTree - Moves all sub-directories and files plus files in
 // the parent DirMgr directory to a target directory tree specified by

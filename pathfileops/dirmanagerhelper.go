@@ -3268,3 +3268,319 @@ func (dMgrHlpr *dirMgrHelper) lowLevelMakeDirWithPermission(
 
   return nil
 }
+
+// moveDirectory - Moves files from the source directory identified
+// by input parameter 'dMgr' to a target directory identified by input
+// parameter 'targetDMgr'. The 'move' operation is accomplished
+// in three steps. First, the files to be copied are selected according
+// to file selection criteria specified by input parameter,'fileSelectCriteria'.
+// Second, the selected files are copied to target directory identified
+// by the input parameter, 'targetDMgr'. Finally, after verifying the copy,
+// the files are deleted from the source directory ('dMgr').
+//
+// If, at the conclusion of the 'move' operation, there are no files or
+// sub-directories remaining in the source directory (dMgr), the source
+// directory will be delete.
+//
+// The selected files are copied using Copy IO operation. For information
+// on the Copy IO procedure see FileHelper{}.CopyFileByIo() method and
+// reference:
+//   https://stackoverflow.com/questions/21060945/simple-way-to-copy-a-file-in-golang
+//
+// If the target directory ('targetDMgr') does not previously exist, this method
+// will attempt to create the target directory, provided, that files are selected
+// for movement to that directory. If no files match the file selection criteria,
+// the target directory will NOT be created.
+//
+// NOTE: This method ONLY moves files from the source directory identified by
+// 'dMgr'. It does NOT move files from subdirectories.
+//
+// This method is optimized to support the movement of large numbers of files.
+//
+// ------------------------------------------------------------------------------
+//
+// IMPORTANT!!!!
+// This method will delete files in the current DirMgr path!  If all files have
+// been moved out of the directory and there are no sub-Directories remaining,
+// the source directory, 'dMgr', will likewise be deleted.
+//
+func (dMgrHlpr *dirMgrHelper) moveDirectory(
+  dMgr *DirMgr,
+  targetDMgr *DirMgr,
+  fileSelectCriteria FileSelectionCriteria,
+  ePrefix string,
+  dMgrLabel string,
+  targetDMgrLabel string,
+  fileSelectLabel string) (numOfSrcFilesMoved int,
+  numOfSrcFilesRemaining int,
+  numOfSubDirectories int,
+  dMgrDirWasDeleted bool,
+  errs []error) {
+
+  ePrefixCurrMethod := "dirMgrHelper.deleteFilesByNamePattern() "
+
+  numOfSrcFilesMoved = 0
+  numOfSrcFilesRemaining = 0
+  numOfSubDirectories = 0
+  dMgrDirWasDeleted = false
+  errs = make([]error, 0, 300)
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  var err, err2, err3 error
+  var dMgrPathDoesExist, targetDMgrPathDoesExist bool
+
+  dMgrPathDoesExist,
+    _,
+    err = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+
+    errs = append(errs, err)
+
+    return numOfSrcFilesMoved,
+      numOfSrcFilesRemaining,
+      numOfSubDirectories,
+      dMgrDirWasDeleted,
+      errs
+  }
+
+  if !dMgrPathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: %v Directory Path DOES NOT EXIST!\n"+
+      "%v='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath)
+
+    errs = append(errs, err)
+
+    return numOfSrcFilesMoved,
+      numOfSrcFilesRemaining,
+      numOfSubDirectories,
+      dMgrDirWasDeleted,
+      errs
+  }
+
+  targetDMgrPathDoesExist,
+    _,
+    err = dMgrHlpr.doesDirectoryExist(
+    targetDMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    targetDMgrLabel)
+
+  if err != nil {
+
+    errs = append(errs, err)
+
+    return numOfSrcFilesMoved,
+      numOfSrcFilesRemaining,
+      numOfSubDirectories,
+      dMgrDirWasDeleted,
+      errs
+  }
+
+  fh := FileHelper{}
+
+  dir, err := os.Open(dMgr.absolutePath)
+
+  if err != nil {
+
+    err2 = fmt.Errorf(ePrefix+
+      "\nError return by os.Open(%v.absolutePath).\n"+
+      "%v.absolutePath='%v'\nError='%v'\n",
+      dMgrLabel,
+      dMgrLabel,
+      dMgr.absolutePath,
+      err.Error())
+
+    errs = append(errs, err2)
+
+    return numOfSrcFilesMoved,
+      numOfSrcFilesRemaining,
+      numOfSubDirectories,
+      dMgrDirWasDeleted,
+      errs
+  }
+
+  osPathSeparatorStr := string(os.PathSeparator)
+
+  var src, target string
+  var isMatch bool
+  var nameFileInfos []os.FileInfo
+  numOfSrcFiles := 0
+  err3 = nil
+
+  for err3 != io.EOF {
+
+    nameFileInfos, err3 = dir.Readdir(1000)
+
+    if err3 != nil && err3 != io.EOF {
+
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by dir.Readdirnames(1000).\n"+
+        "%v.absolutePath='%v'\nError='%v'\n\n",
+        dMgrLabel,
+        dMgr.absolutePath,
+        err3.Error())
+
+      errs = append(errs, err2)
+      err3 = io.EOF
+      break
+    }
+
+    for _, nameFInfo := range nameFileInfos {
+
+      if nameFInfo.IsDir() {
+        numOfSubDirectories++
+        continue
+
+      }
+
+      // This is not a directory. It is a file.
+      // Determine if it matches the find file criteria.
+      numOfSrcFiles++
+
+      isMatch, err =
+        fh.FilterFileName(nameFInfo, fileSelectCriteria)
+
+      if err != nil {
+
+        err2 =
+          fmt.Errorf(ePrefix+
+            "\nError returned by fh.FilterFileName(nameFInfo, %v). "+
+            "%v Directory Searched='%v'\nfileName='%v'\nError='%v'\n\n",
+            fileSelectLabel,
+            dMgrLabel,
+            dMgr.absolutePath,
+            nameFInfo.Name(),
+            err.Error())
+
+        errs = append(errs, err2)
+
+        continue
+      }
+
+      if !isMatch {
+
+        continue
+
+      } else {
+        // We have a match
+
+        // Create Directory if needed
+        if !targetDMgrPathDoesExist {
+
+          err = dMgrHlpr.lowLevelMakeDir(
+            targetDMgr,
+            ePrefix,
+            targetDMgrLabel)
+
+          if err != nil {
+            err2 = fmt.Errorf(ePrefix+
+              "\nError creating target directory!\n"+
+              "%v Directory='%v'\nError='%v'\n\n",
+              targetDMgrLabel,
+              targetDMgr.absolutePath,
+              err.Error())
+
+            errs = append(errs, err2)
+
+            break
+          }
+
+          targetDMgrPathDoesExist = true
+        }
+
+        src = dMgr.absolutePath +
+          osPathSeparatorStr + nameFInfo.Name()
+
+        target = targetDMgr.absolutePath +
+          osPathSeparatorStr + nameFInfo.Name()
+
+        err = fh.MoveFile(src, target)
+
+        if err != nil {
+          err2 = fmt.Errorf("\n"+ePrefix+
+            "ERROR: fh.MoveFile(src, target)\n"+
+            "src='%v'\ntarget='%v'\nError='%v'\n\n",
+            src, target, err.Error())
+
+          errs = append(errs, err2)
+          continue
+
+        }
+
+        numOfSrcFilesMoved++
+      }
+    }
+  }
+
+  if dir != nil {
+    err = dir.Close()
+
+    if err != nil {
+      err2 = fmt.Errorf(ePrefix+
+        "Error returned by dir.Close(). "+
+        "dir='%v' Error='%v' ",
+        dMgr.absolutePath, err.Error())
+
+      errs = append(errs, err2)
+    }
+
+  }
+
+  numOfSrcFilesRemaining =
+    numOfSrcFiles - numOfSrcFilesMoved
+
+  if numOfSrcFilesRemaining < 0 {
+    err = fmt.Errorf(ePrefix+
+      "Counting Error: Number of files moved exceeds number of\n"+
+      "original source files in %v directory.\n"+
+      "Total Source Files in %v Directory='%v'\n"+
+      "Number of files moved='%v'\n"+
+      "Number of files remaining='%v'\n\n",
+      dMgrLabel,
+      dMgrLabel,
+      numOfSrcFiles,
+      numOfSrcFilesMoved,
+      numOfSrcFilesRemaining)
+
+    errs = append(errs, err)
+
+  }
+
+  // If all the source files have been moved and
+  // there are no sub-directories, DELETE the
+  // directory (dMgr).
+  if numOfSrcFilesRemaining == 0 && numOfSubDirectories == 0 {
+
+    err = dMgrHlpr.lowLevelDeleteDirectoryAll(
+      dMgr,
+      ePrefix,
+      dMgrLabel)
+
+    if err != nil {
+      errs = append(errs, err)
+      dMgrDirWasDeleted = false
+    } else {
+      dMgrDirWasDeleted = true
+    }
+
+  }
+
+  return numOfSrcFilesMoved,
+    numOfSrcFilesRemaining,
+    numOfSubDirectories,
+    dMgrDirWasDeleted,
+    errs
+
+}

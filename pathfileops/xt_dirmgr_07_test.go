@@ -300,6 +300,14 @@ func TestDirMgr_MoveDirectory_01(t *testing.T) {
 
   targetDir := baseDir + "/target"
 
+  fileNames := []string{"level_0_0_test.txt",
+    "level_0_1_test.txt",
+    "level_0_2_test.txt",
+    "level_0_3_test.txt",
+    "level_0_4_test.txt"}
+
+  expectedNumOfSrcDirFiles := len(fileNames)
+
   fh := FileHelper{}
 
   err := fh.DeleteDirPathAll(baseDir)
@@ -366,17 +374,23 @@ func TestDirMgr_MoveDirectory_01(t *testing.T) {
     return
   }
 
-  if fMgrCollection.GetNumOfFileMgrs() != 5 {
-    t.Errorf("Test Setup Error: Expected to find 5-files in 'sourceDir'.\n"+
+  if fMgrCollection.GetNumOfFileMgrs() != expectedNumOfSrcDirFiles {
+    t.Errorf("Test Setup Error: Expected to find %v-files in 'sourceDir'.\n"+
       "Instead, %v-files were found.\nSource Dir='%v'\n",
-      fMgrCollection.GetNumOfFileMgrs(), srcDirMgr.GetAbsolutePath())
+      expectedNumOfSrcDirFiles,
+      fMgrCollection.GetNumOfFileMgrs(),
+      srcDirMgr.GetAbsolutePath())
 
     _ = fh.DeleteDirPathAll(baseDir)
 
     return
   }
 
-  errs = srcDirMgr.MoveDirectory(targetDMgr, fsc)
+  numOfSrcFilesMoved,
+    numOfSrcFilesRemaining,
+    numOfSubDirectories,
+    dMgrDirWasDeleted,
+    errs := srcDirMgr.MoveDirectory(targetDMgr, fsc)
 
   if len(errs) > 0 {
     for i := 0; i < len(errs); i++ {
@@ -387,12 +401,6 @@ func TestDirMgr_MoveDirectory_01(t *testing.T) {
     _ = fh.DeleteDirPathAll(baseDir)
     return
   }
-
-  fileNames := []string{"level_0_0_test.txt",
-    "level_0_1_test.txt",
-    "level_0_2_test.txt",
-    "level_0_3_test.txt",
-    "level_0_4_test.txt"}
 
   fsc = FileSelectionCriteria{}
 
@@ -407,9 +415,11 @@ func TestDirMgr_MoveDirectory_01(t *testing.T) {
     return
   }
 
-  if fMgrCollection.GetNumOfFileMgrs() != 5 {
-    t.Errorf("Test Setup Error: Expected to find 5-files in 'targetDir'.\n"+
-      "Instead, %v-files were found.", fMgrCollection.GetNumOfFileMgrs())
+  if fMgrCollection.GetNumOfFileMgrs() != expectedNumOfSrcDirFiles {
+    t.Errorf("Test Setup Error: Expected to find %v-files in 'targetDir'.\n"+
+      "Instead, %v-files were found.",
+      expectedNumOfSrcDirFiles,
+      fMgrCollection.GetNumOfFileMgrs())
 
     _ = fh.DeleteDirPathAll(baseDir)
 
@@ -457,6 +467,29 @@ func TestDirMgr_MoveDirectory_01(t *testing.T) {
     t.Errorf("Test Clean-Up Error returned by "+
       "fh.DeleteDirPathAll(baseDir)\baseDir='%v'\n"+
       "Error='%v'\n", baseDir, err.Error())
+  }
+
+  if numOfSrcFilesRemaining != 0 {
+    t.Errorf("Error: Expected that number of source files remaining would be zero!\n"+
+      "Instead, number of source files remaining='%v'\n", numOfSrcFilesRemaining)
+  }
+
+  if numOfSrcFilesMoved != expectedNumOfSrcDirFiles {
+    t.Errorf("Error: Expected that the number of source files moved\n"+
+      "to target directory would equal '%v'.\n"+
+      "Instead, the number of source files moved='%v'\n",
+      expectedNumOfSrcDirFiles, numOfSrcFilesMoved)
+  }
+
+  if numOfSubDirectories != 0 {
+    t.Errorf("Error: Expected that the number of sub-directories counted would equal zero.\n"+
+      "Instead, the number of sub-directories='%v' .\n",
+      numOfSubDirectories)
+  }
+
+  if !dMgrDirWasDeleted {
+    t.Error("Error: Expected dMgrDirWasDeleted='true'.\n" +
+      "Instead, dMgrDirWasDeleted='false'!\n")
   }
 
   return
@@ -548,7 +581,11 @@ func TestDirMgr_MoveDirectory_02(t *testing.T) {
 
   srcDirMgr.isInitialized = false
 
-  errs = srcDirMgr.MoveDirectory(targetDMgr, fsc)
+  _,
+    _,
+    _,
+    _,
+    errs = srcDirMgr.MoveDirectory(targetDMgr, fsc)
 
   if len(errs) == 0 {
     t.Error("Expected an error return from srcDirMgr.MoveDirectory(targetDMgr, fsc)\n" +
@@ -653,7 +690,11 @@ func TestDirMgr_MoveDirectory_03(t *testing.T) {
 
   targetDMgr.isInitialized = false
 
-  errs = srcDirMgr.MoveDirectory(targetDMgr, fsc)
+  _,
+    _,
+    _,
+    _,
+    errs = srcDirMgr.MoveDirectory(targetDMgr, fsc)
 
   if len(errs) == 0 {
     t.Error("Expected an error return from srcDirMgr.MoveDirectory(targetDMgr, fsc)\n" +
@@ -714,7 +755,11 @@ func TestDirMgr_MoveDirectory_04(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := srcDirMgr.MoveDirectory(targetDMgr, fsc)
+  _,
+    _,
+    _,
+    _,
+    errs := srcDirMgr.MoveDirectory(targetDMgr, fsc)
 
   if len(errs) == 0 {
     t.Error("Expected an error return from srcDirMgr.MoveDirectory(targetDMgr, fsc)\n" +
@@ -834,7 +879,11 @@ func TestDirMgr_MoveDirectory_05(t *testing.T) {
 
   fsc.FileNamePatterns = []string{"*.htm"}
 
-  errs = srcDirMgr.MoveDirectory(targetDMgr, fsc)
+  _,
+    _,
+    _,
+    _,
+    errs = srcDirMgr.MoveDirectory(targetDMgr, fsc)
 
   if len(errs) > 0 {
     for i := 0; i < len(errs); i++ {
@@ -885,6 +934,16 @@ func TestDirMgr_MoveDirectory_06(t *testing.T) {
   srcDir := baseDir + "/source"
 
   targetDir := baseDir + "/target"
+
+  fileNames := []string{"level_0_0_test.txt",
+    "level_0_1_test.txt",
+    "level_0_2_test.txt",
+    "level_0_3_test.txt",
+    "level_0_4_test.txt"}
+
+  expectedNumOfSrcDirFilesMoved := len(fileNames)
+  expectedTotalNumOfSrcDirFiles := 8
+  expectedNumOfSrcDirFilesRemaining := 3
 
   fh := FileHelper{}
 
@@ -979,10 +1038,12 @@ func TestDirMgr_MoveDirectory_06(t *testing.T) {
     return
   }
 
-  if fMgrCollection.GetNumOfFileMgrs() != 8 {
-    t.Errorf("Test Setup Error: Expected to find 8-files in 'sourceDir'.\n"+
+  if fMgrCollection.GetNumOfFileMgrs() != expectedTotalNumOfSrcDirFiles {
+    t.Errorf("Test Setup Error: Expected to find %v-files in 'sourceDir'.\n"+
       "Instead, %v-files were found.\nSource Dir='%v'\n",
-      fMgrCollection.GetNumOfFileMgrs(), srcDirMgr.GetAbsolutePath())
+      expectedTotalNumOfSrcDirFiles,
+      fMgrCollection.GetNumOfFileMgrs(),
+      srcDirMgr.GetAbsolutePath())
 
     _ = fh.DeleteDirPathAll(baseDir)
 
@@ -992,7 +1053,11 @@ func TestDirMgr_MoveDirectory_06(t *testing.T) {
   fsc = FileSelectionCriteria{}
   fsc.FileNamePatterns = []string{"*.txt"}
 
-  errs = srcDirMgr.MoveDirectory(targetDMgr, fsc)
+  numOfSrcFilesMoved,
+    numOfSrcFilesRemaining,
+    numOfSubDirectories,
+    dMgrDirWasDeleted,
+    errs := srcDirMgr.MoveDirectory(targetDMgr, fsc)
 
   if len(errs) > 0 {
     for i := 0; i < len(errs); i++ {
@@ -1003,12 +1068,6 @@ func TestDirMgr_MoveDirectory_06(t *testing.T) {
     _ = fh.DeleteDirPathAll(baseDir)
     return
   }
-
-  fileNames := []string{"level_0_0_test.txt",
-    "level_0_1_test.txt",
-    "level_0_2_test.txt",
-    "level_0_3_test.txt",
-    "level_0_4_test.txt"}
 
   fsc = FileSelectionCriteria{}
 
@@ -1023,9 +1082,11 @@ func TestDirMgr_MoveDirectory_06(t *testing.T) {
     return
   }
 
-  if fMgrCollection.GetNumOfFileMgrs() != 5 {
-    t.Errorf("Test Setup Error: Expected to find 5-files in 'targetDir'.\n"+
-      "Instead, %v-files were found.", fMgrCollection.GetNumOfFileMgrs())
+  if fMgrCollection.GetNumOfFileMgrs() != expectedNumOfSrcDirFilesMoved {
+    t.Errorf("Test Setup Error: Expected to find %v-files in 'targetDir'.\n"+
+      "Instead, %v-files were found.",
+      expectedNumOfSrcDirFilesMoved,
+      fMgrCollection.GetNumOfFileMgrs())
 
     _ = fh.DeleteDirPathAll(baseDir)
 
@@ -1073,6 +1134,30 @@ func TestDirMgr_MoveDirectory_06(t *testing.T) {
     t.Errorf("Test Clean-Up Error returned by "+
       "fh.DeleteDirPathAll(baseDir)\baseDir='%v'\n"+
       "Error='%v'\n", baseDir, err.Error())
+  }
+  if numOfSrcFilesRemaining != expectedNumOfSrcDirFilesRemaining {
+    t.Errorf("Error: Expected that number of source files remaining would be %v.\n"+
+      "Instead, number of source files remaining='%v'\n",
+      expectedNumOfSrcDirFilesRemaining,
+      numOfSrcFilesRemaining)
+  }
+
+  if numOfSrcFilesMoved != expectedNumOfSrcDirFilesMoved {
+    t.Errorf("Error: Expected that the number of source files moved\n"+
+      "to target directory would equal '%v'.\n"+
+      "Instead, the number of source files moved='%v'\n",
+      expectedNumOfSrcDirFilesMoved, numOfSrcFilesMoved)
+  }
+
+  if numOfSubDirectories != 0 {
+    t.Errorf("Error: Expected that the number of sub-directories counted would equal zero.\n"+
+      "Instead, the number of sub-directories='%v' .\n",
+      numOfSubDirectories)
+  }
+
+  if dMgrDirWasDeleted {
+    t.Error("Error: Expected dMgrDirWasDeleted='false'.\n" +
+      "Instead, dMgrDirWasDeleted='true'!\n")
   }
 
   return
