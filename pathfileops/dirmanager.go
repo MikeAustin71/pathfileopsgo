@@ -2685,7 +2685,15 @@ func (dMgr *DirMgr) GetDirectoryName() string {
     "",
     "dMgr")
 
-  directoryName = dMgr.directoryName
+  if !dMgr.isInitialized {
+
+    directoryName = ""
+
+  } else {
+
+    directoryName = dMgr.directoryName
+
+  }
 
   dMgr.dataMutex.Unlock()
 
@@ -2792,7 +2800,17 @@ func (dMgr *DirMgr) GetOriginalPath() string {
   originalPath := ""
 
   dMgr.dataMutex.Lock()
-  originalPath = dMgr.originalPath
+
+  if !dMgr.isInitialized {
+
+    originalPath = ""
+
+  } else {
+
+    originalPath = dMgr.originalPath
+
+  }
+
   dMgr.dataMutex.Unlock()
 
   return originalPath
@@ -2849,6 +2867,7 @@ func (dMgr *DirMgr) GetParentPath() string {
   ePrefix := "DirMgr.GetParentDirMgr() "
   dMgrHlpr := dirMgrHelper{}
   dirMgrOut := DirMgr{}
+  parentPath := ""
   var err error
 
   dMgr.dataMutex.Lock()
@@ -2860,13 +2879,16 @@ func (dMgr *DirMgr) GetParentPath() string {
     ePrefix,
     "dMgr")
 
-  dMgr.dataMutex.Unlock()
-
-  if err != nil {
-    return ""
+  if err != nil ||
+    !dMgr.isInitialized {
+    parentPath = ""
+  } else {
+    parentPath = dirMgrOut.absolutePath
   }
 
-  return dirMgrOut.absolutePath
+  dMgr.dataMutex.Unlock()
+
+  return parentPath
 }
 
 // GetPath - Returns the path used to configure this
@@ -2889,7 +2911,8 @@ func (dMgr *DirMgr) GetPath() string {
     "",
     "dMgr")
 
-  if !dMgr.isInitialized {
+  if len(dMgr.path) == 0 ||
+    !dMgr.isInitialized {
     dPath = ""
   } else {
     dPath = dMgr.path
@@ -2917,9 +2940,13 @@ func (dMgr *DirMgr) GetPathWithSeparator() string {
     "",
     "dMgr")
 
-  if !dMgr.isInitialized {
+  if len(dMgr.path) == 0 ||
+    !dMgr.isInitialized {
+
     dPath = ""
+
   } else {
+
     dPath = dMgr.path
   }
 
@@ -2943,7 +2970,34 @@ func (dMgr *DirMgr) GetPathWithSeparator() string {
 // instance.
 //
 func (dMgr *DirMgr) GetVolumeName() string {
-  return dMgr.volumeName
+
+  volumeName := ""
+  dMgrHlpr := dirMgrHelper{}
+
+  dMgr.dataMutex.Lock()
+
+  _,
+    _,
+    _ = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    "",
+    "dMgr")
+
+  if len(dMgr.volumeName) == 0 ||
+    !dMgr.isInitialized {
+
+    volumeName = ""
+
+  } else {
+
+    volumeName = dMgr.volumeName
+
+  }
+
+  dMgr.dataMutex.Unlock()
+
+  return volumeName
 }
 
 // IsDirMgrValid - This method examines the current DirMgr object
@@ -2966,7 +3020,6 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
   dMgrHlpr := dirMgrHelper{}
 
   dMgr.dataMutex.Lock()
-
   _,
     _,
     err := dMgrHlpr.doesDirectoryExist(
@@ -2985,8 +3038,25 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
 //
 func (dMgr *DirMgr) IsInitialized() bool {
 
-  return dMgr.isInitialized
+  isInitialized := false
 
+  dMgrHlpr := dirMgrHelper{}
+
+  dMgr.dataMutex.Lock()
+
+  _,
+    _,
+    _ = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    "",
+    "dMgr")
+
+  isInitialized = dMgr.isInitialized
+
+  dMgr.dataMutex.Unlock()
+
+  return isInitialized
 }
 
 // IsParentPathPopulated - Returns a boolean value
@@ -2995,13 +3065,28 @@ func (dMgr *DirMgr) IsInitialized() bool {
 //
 func (dMgr *DirMgr) IsParentPathPopulated() bool {
 
-  if len(dMgr.parentPath) == 0 {
-    dMgr.isPathPopulated = false
+  dMgrHlpr := dirMgrHelper{}
+  isParentPathPopulated := false
+
+  dMgr.dataMutex.Lock()
+
+  _,
+    _,
+    _ = dMgrHlpr.getParentDirMgr(
+    dMgr,
+    "",
+    "dMgr")
+
+  if len(dMgr.parentPath) == 0 ||
+    !dMgr.isInitialized {
+    isParentPathPopulated = false
   } else {
-    dMgr.isPathPopulated = true
+    isParentPathPopulated = true
   }
 
-  return dMgr.isPathPopulated
+  dMgr.dataMutex.Unlock()
+
+  return isParentPathPopulated
 }
 
 // IsPathPopulated - Returns a boolean value indicating
@@ -3010,13 +3095,28 @@ func (dMgr *DirMgr) IsParentPathPopulated() bool {
 //
 func (dMgr *DirMgr) IsPathPopulated() bool {
 
-  if len(dMgr.path) == 0 {
-    dMgr.isPathPopulated = false
+  dMgrHlpr := dirMgrHelper{}
+  isDMgrPathPopulated := false
+
+  dMgr.dataMutex.Lock()
+
+  _,
+    _,
+    _ = dMgrHlpr.getParentDirMgr(
+    dMgr,
+    "",
+    "dMgr")
+
+  if len(dMgr.path) == 0 ||
+    !dMgr.isInitialized {
+    isDMgrPathPopulated = false
   } else {
-    dMgr.isPathPopulated = true
+    isDMgrPathPopulated = true
   }
 
-  return dMgr.isPathPopulated
+  dMgr.dataMutex.Unlock()
+
+  return isDMgrPathPopulated
 }
 
 // IsVolumeNamePopulated - Returns a boolean value indicating
@@ -3025,13 +3125,33 @@ func (dMgr *DirMgr) IsPathPopulated() bool {
 //
 func (dMgr *DirMgr) IsVolumeNamePopulated() bool {
 
-  if len(dMgr.volumeName) == 0 {
-    dMgr.isVolumePopulated = false
+  dMgrHlpr := dirMgrHelper{}
+  isDMgrVolumePopulated := false
+
+  dMgr.dataMutex.Lock()
+
+  _,
+    _,
+    _ = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    "",
+    "dMgr")
+
+  if len(dMgr.volumeName) == 0 ||
+    !dMgr.isInitialized {
+
+    isDMgrVolumePopulated = false
+
   } else {
-    dMgr.isVolumePopulated = true
+
+    isDMgrVolumePopulated = true
+
   }
 
-  return dMgr.isVolumePopulated
+  dMgr.dataMutex.Unlock()
+
+  return isDMgrVolumePopulated
 }
 
 // MakeDir - If the directory path identified by the current DirMgr

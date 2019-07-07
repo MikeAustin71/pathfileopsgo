@@ -842,12 +842,14 @@ func TestDirMgr_IsParentPathPopulated_02(t *testing.T) {
     return
   }
 
-  testDMgr.parentPath = ""
+  testDMgr.isInitialized = false
 
   isParentPopulated := testDMgr.IsParentPathPopulated()
 
   if isParentPopulated != false {
-    t.Error("Error: Expected IsParentPathPopulated()='false'. Instead, IsParentPathPopulated()='true'.\n")
+    t.Error("Error: Expected testDMgr.IsParentPathPopulated()='false' \n" +
+      "because testDMgr is INVALID!\n" +
+      "Instead, IsParentPathPopulated()='true'.\n")
   }
 
 }
@@ -862,12 +864,14 @@ func TestDirMgr_IsPathPopulated_01(t *testing.T) {
     return
   }
 
-  testDMgr.path = ""
+  testDMgr.isInitialized = false
 
   isParentPopulated := testDMgr.IsPathPopulated()
 
   if isParentPopulated != false {
-    t.Error("Error: Expected IsPathPopulated()='false'. Instead, IsPathPopulated()='true'.\n")
+    t.Error("Error: Expected testDMgr.IsPathPopulated()='false' " +
+      "because testDMgr is INVALID!\n" +
+      "Instead, IsPathPopulated()='true'.\n")
   }
 }
 
@@ -916,12 +920,13 @@ func TestDirMgr_IsVolumeNamePopulated_02(t *testing.T) {
     return
   }
 
-  testDMgr.volumeName = ""
+  testDMgr.isInitialized = false
 
   isVolumeNamePopulated := testDMgr.IsVolumeNamePopulated()
 
   if isVolumeNamePopulated != false {
-    t.Error("Error: Expected IsVolumeNamePopulated()='false'.\n" +
+    t.Error("Error: Expected testDMgr.IsVolumeNamePopulated()='false'\n" +
+      "because testDMgr is INVALID!\n" +
       "Instead, IsVolumeNamePopulated()='true'.\n")
   }
 
