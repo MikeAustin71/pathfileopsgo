@@ -2615,6 +2615,53 @@ func (dMgrHlpr *dirMgrHelper) findFilesWalkDirectory(
   return findFilesInfo, nil
 }
 
+// getAbsolutePathElements - Returns all of the directories and drive
+// specifications as an array of strings.
+//
+// Example
+//
+// Path = "D:\ADir\BDir\CDir\EDir"
+//
+// Returned pathElements string array:
+//   pathElements[0] = "D:"
+//   pathElements[1] = "ADir"
+//   pathElements[2] = "BDir"
+//   pathElements[3] = "CDir"
+//   pathElements[4] = "DDir"
+//   pathElements[4] = "EDir"
+//
+func (dMgrHlpr *dirMgrHelper) getAbsolutePathElements(
+  dMgr *DirMgr,
+  ePrefix string,
+  dMgrLabel string) (pathElements []string, err error) {
+
+  pathElements = make([]string, 0, 50)
+  err = nil
+  absolutePath := ""
+
+  _,
+    _,
+    err = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+
+    return pathElements, err
+
+  }
+
+  absolutePath = dMgr.absolutePath
+
+  absolutePath = strings.Replace(absolutePath, "\\", "/", -1)
+
+  pathElements = strings.Split(absolutePath, "/")
+
+  return pathElements, err
+}
+
 // getDirectoryTree - Returns a DirMgrCollection containing all
 // the sub-directories in the path of the parent directory identified
 // by the input parameter 'dMgr'.

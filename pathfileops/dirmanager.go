@@ -2599,33 +2599,11 @@ func (dMgr *DirMgr) GetAbsolutePathElements() (pathElements []string) {
   pathElements = make([]string, 0, 50)
   dMgrHlpr := dirMgrHelper{}
 
-  absolutePath := ""
-
   dMgr.dataMutex.Lock()
 
-  _,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
-    dMgr,
-    PreProcPathCode.None(),
-    "",
-    "")
-
-  if err != nil {
-    absolutePath = ""
-  } else {
-    absolutePath = dMgr.absolutePath
-  }
+  pathElements, _ = dMgrHlpr.getAbsolutePathElements(dMgr, "", "")
 
   dMgr.dataMutex.Unlock()
-
-  if len(absolutePath) == 0 {
-    return pathElements
-  }
-
-  absolutePath = strings.Replace(absolutePath, "\\", "/", -1)
-
-  pathElements = strings.Split(absolutePath, "/")
 
   return pathElements
 }
@@ -2764,54 +2742,37 @@ func (dMgr *DirMgr) GetFileInfoPlus() (FileInfoPlus, error) {
 func (dMgr *DirMgr) GetDirPermissionCodes() (FilePermissionConfig, error) {
 
   ePrefix := "GetDirPermissionCodes() "
+  fileInfoPlus := FileInfoPlus{}
+  var err error
+  var dirDoesExist bool
+  dMgrHlpr := dirMgrHelper{}
+  fPermCfg := FilePermissionConfig{}
 
-  var nonPathError error
+  dMgr.dataMutex.Lock()
 
-  nonPathError = dMgr.IsDirMgrValid(ePrefix)
+  dirDoesExist,
+    fileInfoPlus,
+    err = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "dMgr")
 
-  if nonPathError != nil {
-    return FilePermissionConfig{}, nonPathError
+  if err == nil && !dirDoesExist {
+
+    err = fmt.Errorf(ePrefix+
+      "DirMgr Path DOES NOT EXIST!\n"+
+      "DirMgr Path='%v'\n",
+      dMgr.absolutePath)
+
+  } else if err == nil && dirDoesExist {
+
+    fPermCfg, err = FilePermissionConfig{}.NewByFileMode(fileInfoPlus.Mode())
   }
 
-  _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
-      PreProcPathCode.None(),
-      ePrefix,
-      "dMgr.absolutePath")
+  dMgr.dataMutex.Unlock()
 
-  if nonPathError != nil {
-    return FilePermissionConfig{}, nonPathError
-  }
-
-  if !dirPathDoesExist {
-    return FilePermissionConfig{},
-      fmt.Errorf(ePrefix+"DirMgr Path DOES NOT EXIST!\n"+
-        "DirMgr Path='%v'\n", dMgr.absolutePath)
-  }
-
-  if !fInfoPlus.IsDir() {
-    return FilePermissionConfig{},
-      fmt.Errorf(ePrefix+
-        "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
-        "DMgr='%v'\n", dMgr.absolutePath)
-  }
-
-  dMgr.actualDirFileInfo = fInfoPlus.CopyOut()
-
-  fPerm, nonPathError := FilePermissionConfig{}.NewByFileMode(dMgr.actualDirFileInfo.Mode())
-
-  if nonPathError != nil {
-    return FilePermissionConfig{},
-      fmt.Errorf(ePrefix+
-        "Error creating File Permission Configuration\nError='%v'\n",
-        nonPathError.Error())
-  }
-
-  return fPerm, nil
+  return fPermCfg, err
 }
 
 // GetNumberOfAbsPathElements - Returns the number of elements
@@ -2819,7 +2780,14 @@ func (dMgr *DirMgr) GetDirPermissionCodes() (FilePermissionConfig, error) {
 // Directory Manager instance.
 func (dMgr *DirMgr) GetNumberOfAbsPathElements() int {
 
-  pathElements := dMgr.GetAbsolutePathElements()
+  pathElements := make([]string, 0, 50)
+  dMgrHlpr := dirMgrHelper{}
+
+  dMgr.dataMutex.Lock()
+
+  pathElements, _ = dMgrHlpr.getAbsolutePathElements(dMgr, "", "")
+
+  dMgr.dataMutex.Unlock()
 
   return len(pathElements)
 }
