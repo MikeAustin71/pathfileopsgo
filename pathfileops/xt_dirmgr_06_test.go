@@ -692,11 +692,39 @@ func TestDirMgr_GetPathWithSeparator_02(t *testing.T) {
   sourceDir = sourceDir + string(os.PathSeparator)
 
   dMgr.path = ""
+  dMgr.absolutePath = ""
 
   dirPath := dMgr.GetPathWithSeparator()
 
   if dirPath != "" {
     t.Errorf("ERROR: Expected dMgr.GetPath() would return an empty string.\nInstead, dMgr.GetPath()='%v'.\n",
+      dirPath)
+  }
+}
+
+func TestDirMgr_GetPathWithSeparator_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  sourceDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+
+  dMgr, err := DirMgr{}.New(sourceDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(sourceDir).\n"+
+      "sourceDir='%v'\nError='%v'\n", sourceDir, err.Error())
+    return
+  }
+
+  sourceDir = sourceDir + string(os.PathSeparator)
+
+  dMgr.isInitialized = false
+
+  dirPath := dMgr.GetPathWithSeparator()
+
+  if dirPath != "" {
+    t.Errorf("ERROR: Expected dMgr.GetPath() would return an empty string \n"+
+      "becased dMgr is NOT initialized!!\nInstead, dMgr.GetPath()='%v'.\n",
       dirPath)
   }
 }

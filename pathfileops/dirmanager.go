@@ -2789,7 +2789,13 @@ func (dMgr *DirMgr) GetNumberOfAbsPathElements() int {
 // this Directory Manager instance.
 //
 func (dMgr *DirMgr) GetOriginalPath() string {
-  return dMgr.originalPath
+  originalPath := ""
+
+  dMgr.dataMutex.Lock()
+  originalPath = dMgr.originalPath
+  dMgr.dataMutex.Unlock()
+
+  return originalPath
 }
 
 // GetParentDirMgr - Returns a new Directory Manager instance
@@ -2814,41 +2820,23 @@ func (dMgr *DirMgr) GetOriginalPath() string {
 //
 //	                  If 'hasParent' is 'false', no error will be returned.
 //
-func (dMgr *DirMgr) GetParentDirMgr() (dirMgr DirMgr, hasParent bool, err error) {
+func (dMgr *DirMgr) GetParentDirMgr() (dirMgrOut DirMgr, hasParent bool, err error) {
 
-  ePrefix := "DirMgr.GetParentDirMgr() Error: "
-  dirMgr = DirMgr{}
-  hasParent = true
-  err = nil
+  ePrefix := "DirMgr.GetParentDirMgr() "
+  dMgrHlpr := dirMgrHelper{}
 
-  err = dMgr.IsDirMgrValid(ePrefix)
+  dMgr.dataMutex.Lock()
 
-  if err != nil {
-    hasParent = false
-    return dirMgr, hasParent, err
-  }
+  dirMgrOut,
+    hasParent,
+    err = dMgrHlpr.getParentDirMgr(
+    dMgr,
+    ePrefix,
+    "dMgr")
 
-  if len(dMgr.parentPath) == 0 {
+  dMgr.dataMutex.Unlock()
 
-    return dMgr.CopyOut(), false, nil
-
-  }
-
-  var err2 error
-
-  dirMgr, err2 = DirMgr{}.New(dMgr.parentPath)
-
-  if err2 != nil {
-
-    err = fmt.Errorf(ePrefix+"%v", err2.Error())
-    hasParent = true
-    dirMgr = DirMgr{}
-    return dirMgr, hasParent, err
-  }
-
-  err = nil
-
-  return dirMgr, hasParent, err
+  return dirMgrOut, hasParent, err
 }
 
 // GetParentPath - Returns a string containing the
@@ -2857,7 +2845,28 @@ func (dMgr *DirMgr) GetParentDirMgr() (dirMgr DirMgr, hasParent bool, err error)
 // a trailing path separator.
 //
 func (dMgr *DirMgr) GetParentPath() string {
-  return dMgr.parentPath
+
+  ePrefix := "DirMgr.GetParentDirMgr() "
+  dMgrHlpr := dirMgrHelper{}
+  dirMgrOut := DirMgr{}
+  var err error
+
+  dMgr.dataMutex.Lock()
+
+  dirMgrOut,
+    _,
+    err = dMgrHlpr.getParentDirMgr(
+    dMgr,
+    ePrefix,
+    "dMgr")
+
+  dMgr.dataMutex.Unlock()
+
+  if err != nil {
+    return ""
+  }
+
+  return dirMgrOut.absolutePath
 }
 
 // GetPath - Returns the path used to configure this
@@ -2866,24 +2875,67 @@ func (dMgr *DirMgr) GetParentPath() string {
 // absolute path.
 //
 func (dMgr *DirMgr) GetPath() string {
-  return dMgr.path
+
+  dMgrHlpr := dirMgrHelper{}
+  dPath := ""
+
+  dMgr.dataMutex.Lock()
+
+  _,
+    _,
+    _ = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    "",
+    "dMgr")
+
+  if !dMgr.isInitialized {
+    dPath = ""
+  } else {
+    dPath = dMgr.path
+  }
+
+  dMgr.dataMutex.Unlock()
+
+  return dPath
 }
 
 // GetPathWithSeparator - Returns the current
 // DirMgr.absolutePath with a trailing os.PathSeparator
 // character.
 func (dMgr *DirMgr) GetPathWithSeparator() string {
-  lPath := len(dMgr.path)
+  dMgrHlpr := dirMgrHelper{}
+  dPath := ""
+
+  dMgr.dataMutex.Lock()
+
+  _,
+    _,
+    _ = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    "",
+    "dMgr")
+
+  if !dMgr.isInitialized {
+    dPath = ""
+  } else {
+    dPath = dMgr.path
+  }
+
+  dMgr.dataMutex.Unlock()
+
+  lPath := len(dPath)
 
   if lPath == 0 {
     return ""
   }
 
-  if dMgr.path[lPath-1] != os.PathSeparator {
-    return dMgr.path + string(os.PathSeparator)
+  if dPath[lPath-1] != os.PathSeparator {
+    return dPath + string(os.PathSeparator)
   }
 
-  return dMgr.path
+  return dPath
 }
 
 // GetVolumeName - Returns a string containing the volume name

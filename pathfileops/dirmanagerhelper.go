@@ -1471,6 +1471,7 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
     fh.isStringEmptyOrBlank(dMgr.absolutePath)
 
   if errCode == -1 {
+    dMgr.isInitialized = false
     dMgr.absolutePath = ""
     dMgr.path = ""
     dMgr.doesAbsolutePathExist = false
@@ -1484,6 +1485,7 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
   }
 
   if errCode == -2 {
+    dMgr.isInitialized = false
     dMgr.absolutePath = ""
     dMgr.path = ""
     dMgr.doesAbsolutePathExist = false
@@ -2903,6 +2905,77 @@ func (dMgrHlpr *dirMgrHelper) getDirectoryTree(
   }
 
   return dirMgrs, errs
+}
+
+// getParentDirMgr - Returns a new Directory Manager instance
+// which represents the the parent path for the input Directory
+// Manager, 'dMgr'. The 'dMgr' absolute path is used in extracting
+// the parent Directory Manager.
+//
+func (dMgrHlpr *dirMgrHelper) getParentDirMgr(
+  dMgr *DirMgr,
+  ePrefix string,
+  dMgrLabel string) (dirMgrOut DirMgr, hasParent bool, err error) {
+
+  dirMgrOut = DirMgr{}
+  hasParent = false
+  err = nil
+  var err2 error
+  ePrefixCurrMethod := "dirMgrHelper.lowLevelDeleteDirectoryAll() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  _,
+    _,
+    err = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil && !dMgr.isInitialized {
+
+    dirMgrOut = DirMgr{}
+    hasParent = false
+    return dirMgrOut, hasParent, err
+  }
+
+  err = nil
+
+  if len(dMgr.parentPath) == 0 {
+
+    dirMgrOut = dMgrHlpr.copyOut(dMgr)
+    hasParent = false
+    err = nil
+
+    return dirMgrOut, hasParent, err
+
+  } else {
+    hasParent = true
+  }
+
+  dirMgrOut, err2 = DirMgr{}.New(dMgr.parentPath)
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "\nError returned by DirMgr{}.New(%v.parentPath).\n"+
+      "%v.parentPath=%v\nError='%v'\n",
+      dMgrLabel,
+      dMgrLabel,
+      dMgr.parentPath,
+      err2.Error())
+    hasParent = true
+    dirMgrOut = DirMgr{}
+    return dirMgrOut, hasParent, err
+  }
+
+  err = nil
+
+  return dirMgrOut, hasParent, err
 }
 
 // lowLevelDeleteDirectoryAll - Helper method designed for use by DirMgr.
