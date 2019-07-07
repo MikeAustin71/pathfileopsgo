@@ -410,7 +410,10 @@ func (dMgr *DirMgr) CopyDirectoryTree(
 
   dMgr.dataMutex.Lock()
 
-  errs = dMgrHlpr.copyDirectoryTree(
+  _,
+    _,
+    _,
+    errs = dMgrHlpr.copyDirectoryTree(
     dMgr,
     &targetDMgr,
     copyEmptyDirectories,
@@ -484,7 +487,10 @@ func (dMgr *DirMgr) CopySubDirectoryTree(
 
   dMgr.dataMutex.Lock()
 
-  errs = dMgrHlpr.copyDirectoryTree(
+  _,
+    _,
+    _,
+    errs = dMgrHlpr.copyDirectoryTree(
     dMgr,
     &targetDMgr,
     copyEmptyDirectories,
@@ -498,75 +504,6 @@ func (dMgr *DirMgr) CopySubDirectoryTree(
 
   return errs
 }
-
-/*
-func (dMgr *DirMgr) CopySubDirectoryTree(
-  targetDMgr DirMgr,
-  copyEmptyDirectories bool,
-  fileSelectCriteria FileSelectionCriteria) (errs []error) {
-
-  ePrefix := "DirMgr.CopySubDirectoryTree() "
-  var err, err2 error
-
-  err = dMgr.IsDirMgrValid(ePrefix)
-
-  if err != nil {
-    errs = append(errs, err)
-    return errs
-  }
-
-  err = targetDMgr.IsDirMgrValid(ePrefix)
-
-  if err != nil {
-    err2 = fmt.Errorf("Input parameter 'targetDMgr' is INVALID!\n"+
-      "Error='%v'\n", err.Error())
-    errs = append(errs, err2)
-    return errs
-  }
-
-  _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
-      PreProcPathCode.None(),
-      ePrefix,
-      "dMgr.absolutePath")
-
-  if nonPathError != nil {
-    errs = append(errs, nonPathError)
-    return errs
-  }
-
-  if !dirPathDoesExist {
-
-    err2 = fmt.Errorf(ePrefix+"The current DirMgr path DOES NOT EXIST!\n"+
-      "dMgr.absolutePath='%v'\n", dMgr.absolutePath)
-
-    errs = append(errs, err2)
-    return errs
-  }
-
-  if !fInfoPlus.IsDir() {
-    err2 = fmt.Errorf(ePrefix+
-      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
-      "DMgr='%v'\n", dMgr.absolutePath)
-
-    errs = append(errs, err2)
-    return errs
-  }
-
-  // dMgr.absolutePath DOES EXIST!
-
-  return dMgr.copyDirectoryTree(
-    targetDMgr,
-    copyEmptyDirectories,
-    true,
-    ePrefix,
-    fileSelectCriteria)
-}
-*/
 
 // DeleteAll - BE CAREFUL!!! - This method will remove the directory identified by
 // this DirMgr instance. It will also delete all child directories and files in the
@@ -3457,7 +3394,7 @@ func (dMgr *DirMgr) MoveDirectory(
 //
 //                      If errors are encountered they are stored in the error
 //                      array and returned to the caller.
-
+//
 func (dMgr *DirMgr) MoveDirectoryTree(
   targetDMgr DirMgr) (numOfSrcFilesMoved int,
   numOfSrcDirectoriesMoved int,
@@ -3467,6 +3404,8 @@ func (dMgr *DirMgr) MoveDirectoryTree(
 
   dMgrHlpr := dirMgrHelper{}
 
+  dMgr.dataMutex.Lock()
+
   numOfSrcFilesMoved,
     numOfSrcDirectoriesMoved,
     errs = dMgrHlpr.moveDirectoryTree(
@@ -3475,6 +3414,8 @@ func (dMgr *DirMgr) MoveDirectoryTree(
     ePrefix,
     "dMgr",
     "targetDMgr")
+
+  dMgr.dataMutex.Unlock()
 
   return numOfSrcFilesMoved,
     numOfSrcDirectoriesMoved,

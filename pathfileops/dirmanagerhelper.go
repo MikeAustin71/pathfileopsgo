@@ -252,9 +252,17 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   fileSelectCriteria FileSelectionCriteria,
   ePrefix string,
   dMgrLabel string,
-  targetDMgrLabel string) (errs []error) {
+  targetDMgrLabel string) (numberOfFilesCopied int,
+  numberOfFilesNotCopied int,
+  numberOfDirectoriesCopied int,
+  errs []error) {
 
   ePrefixCurrMethod := "dirMgrHelper.copyDirectoryTree() "
+
+  numberOfFilesCopied = 0
+  numberOfFilesNotCopied = 0
+  numberOfDirectoriesCopied = 0
+  numberOfTotalFiles := 0
 
   errs = make([]error, 0, 300)
 
@@ -275,7 +283,11 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
 
   if err != nil {
     errs = append(errs, err)
-    return errs
+
+    return numberOfFilesCopied,
+      numberOfFilesNotCopied,
+      numberOfDirectoriesCopied,
+      errs
   }
 
   if !dMgrPathDoesExist {
@@ -284,11 +296,14 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
       dMgrLabel)
 
     errs = append(errs, err)
-    return errs
+
+    return numberOfFilesCopied,
+      numberOfFilesNotCopied,
+      numberOfDirectoriesCopied,
+      errs
   }
 
   var err2, err3 error
-
   _,
     _,
     err =
@@ -300,7 +315,11 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
 
   if err != nil {
     errs = append(errs, err)
-    return errs
+
+    return numberOfFilesCopied,
+      numberOfFilesNotCopied,
+      numberOfDirectoriesCopied,
+      errs
   }
 
   fh := FileHelper{}
@@ -313,19 +332,8 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   var nextTargetDMgr DirMgr
   var isMatch, isTopLevelDir bool
   var srcFile, targetFile string
-  var nextDir DirMgr
 
-  nextDir, err = DirMgr{}.New(dMgr.absolutePath)
-
-  if err != nil {
-    err = fmt.Errorf(ePrefix+
-      "\nError returned by DirMgr{}.New(%v.absolutePath).\n"+
-      "%v.absolutePath='%v'",
-      dMgrLabel, dMgrLabel, dMgr.absolutePath)
-
-    errs = append(errs, err)
-    return errs
-  }
+  nextDir := dMgrHlpr.copyOut(dMgr)
 
   for nextDir.isInitialized {
 
@@ -359,15 +367,15 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
     }
 
     nextTargetDMgr, err = DirMgr{}.New(
-      targetDMgr.GetAbsolutePath() +
+      targetDMgr.absolutePath +
         nextDir.absolutePath[baseDirLen:])
 
     if err != nil {
 
       err2 = fmt.Errorf(ePrefix+
-        "\nError return by DirMgr{}.New(%v.GetAbsolutePath() + "+
+        "\nError return by DirMgr{}.New(%v.absolutePath + "+
         "nextDir.absolutePath[baseDirLen:])\n"+
-        "%v.GetAbsolutePath()='%v'\n"+
+        "%v.absolutePath='%v'\n"+
         "nextDir.absolutePath[baseDirLen:]='%v'\n"+
         "Error='%v'\n\n",
         targetDMgrLabel, targetDMgrLabel,
@@ -395,7 +403,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
       continue
     }
 
-    if baseDirLen == len(nextDir.GetAbsolutePath()) {
+    if baseDirLen == len(nextDir.absolutePath) {
       isTopLevelDir = true
     } else {
       isTopLevelDir = false
@@ -450,6 +458,8 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
 
     err3 = nil
 
+    numberOfDirectoriesCopied++
+
     for err3 != io.EOF {
 
       nameFileInfos, err3 = dirPtr.Readdir(1000)
@@ -494,7 +504,9 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
           continue
 
         } else {
+
           // This is a file which is eligible for processing
+          numberOfTotalFiles++
 
           // This is not a directory. It is a file.
           // Determine if it matches the find file criteria.
@@ -517,6 +529,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
 
           if !isMatch {
 
+            numberOfFilesNotCopied++
             continue
 
           } else {
@@ -573,6 +586,8 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
                 srcFile, targetFile, err.Error())
 
               errs = append(errs, err2)
+            } else {
+              numberOfFilesNotCopied++
             }
           }
         }
@@ -600,16 +615,36 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
         "Error='%v'\n", err.Error())
 
       errs = append(errs, err2)
-      return
+
+      err = io.EOF
+      break
 
     } else if err != nil {
 
       break
     }
 
+  } // end of for nextDir.isInitialized
+
+  if numberOfTotalFiles !=
+    numberOfFilesCopied+numberOfFilesNotCopied {
+
+    err2 = fmt.Errorf(ePrefix+
+      "\nFile Counting Error: Number of Total Files Processed\n"+
+      "NOT EQUAL to Number of Files Copied Plus Number of Files NOT copied!\n"+
+      "Total Number of Files Processed='%v'\n"+
+      "         Number of Files Copied='%v'\n"+
+      "     Number of Files NOT Copied='%v'\n\n",
+      numberOfTotalFiles,
+      numberOfFilesCopied,
+      numberOfFilesNotCopied)
+    errs = append(errs, err2)
   }
 
-  return errs
+  return numberOfFilesCopied,
+    numberOfFilesNotCopied,
+    numberOfDirectoriesCopied,
+    errs
 }
 
 // CopyIn - Receives a pointer to a incoming DirMgr object
@@ -2014,9 +2049,9 @@ func (dMgrHlpr *dirMgrHelper) executeDirectoryFileOps(
     srcFileNameExt = nameFInfo.Name()
 
     fileOp, err = FileOps{}.NewByDirStrsAndFileNameExtStrs(
-      dMgr.GetAbsolutePath(),
+      dMgr.absolutePath,
       srcFileNameExt,
-      targetBaseDir.GetAbsolutePath(),
+      targetBaseDir.absolutePath,
       srcFileNameExt)
 
     if err != nil {
@@ -2030,10 +2065,10 @@ func (dMgrHlpr *dirMgrHelper) executeDirectoryFileOps(
         "%v Source Path='%v'\nsrcFileNameExt='%v'\n"+
         "%v Destination Directory='%v'\nDestination File='%v'\nError='%v'\n",
         dMgrLabel,
-        dMgr.GetAbsolutePath(),
+        dMgr.absolutePath,
         srcFileNameExt,
         targetDirLabel,
-        targetBaseDir.GetAbsolutePath(),
+        targetBaseDir.absolutePath,
         srcFileNameExt,
         err.Error())
 
@@ -3626,7 +3661,16 @@ func (dMgrHlpr *dirMgrHelper) moveDirectoryTree(
   var err, err2 error
 
   fileSelectCriteria := FileSelectionCriteria{}
-  errs2 :=
+  /*
+    numberOfFilesCopied,
+      numberOfFilesNotCopied,
+      numberOfDirectoriesCopied,
+
+  */
+  _,
+    _,
+    _,
+    errs2 :=
     dMgrHlpr.copyDirectoryTree(
       dMgr,
       targetDMgr,
@@ -3643,9 +3687,9 @@ func (dMgrHlpr *dirMgrHelper) moveDirectoryTree(
       "The source directory WAS NOT DELETED!\n"+
       "%v Source Directory='%v'\n%v Target Directory='%v'\nErrors Follow:\n\n",
       dMgrLabel,
-      dMgr.GetAbsolutePath(),
+      dMgr.absolutePath,
       targetDMgrLabel,
-      targetDMgr.GetAbsolutePath())
+      targetDMgr.absolutePath)
     errs = append(errs, err2)
     errs = append(errs, errs2...)
 
