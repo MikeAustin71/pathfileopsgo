@@ -32,9 +32,9 @@ func (dMgrHlpr *dirMgrHelper) consolidateErrors(errs []error) error {
   for i := 0; i < lErrs; i++ {
 
     if i == (lErrs - 1) {
-      errStr += fmt.Sprintf("%v", errs[i].Error())
-    } else {
       errStr += fmt.Sprintf("%v\n", errs[i].Error())
+    } else {
+      errStr += fmt.Sprintf("%v\n\n", errs[i].Error())
     }
   }
 
@@ -625,6 +625,31 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
     }
 
   } // end of for nextDir.isInitialized
+
+  if numberOfFilesCopied > 0 {
+
+    dMgrPathDoesExist,
+      _,
+      err = dMgrHlpr.lowLevelDoesDirectoryExist(
+      targetDMgr.absolutePath,
+      ePrefix,
+      "targetDMgr")
+
+    if err != nil {
+      err2 = fmt.Errorf(ePrefix+
+        "\nAfter Copy Operation 'targetDMgr' path returned non-path error!\n"+
+        "Error='%v'\n\n", err.Error())
+
+      errs = append(errs, err2)
+
+    } else if !dMgrPathDoesExist {
+      err2 = fmt.Errorf("ERROR: The copy operation failed to create\n"+
+        "the 'targetDMgr' path. 'targetDMgr' path DOES NOT EXIST!\n"+
+        "targetDMgr Path='%v'\n\n",
+        targetDMgr.absolutePath)
+      errs = append(errs, err2)
+    }
+  }
 
   if numberOfTotalFiles !=
     numberOfFilesCopied+numberOfFilesNotCopied {

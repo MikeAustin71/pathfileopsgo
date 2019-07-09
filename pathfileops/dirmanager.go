@@ -53,6 +53,15 @@ type DirMgr struct {
   dataMutex                       sync.Mutex // Used internally to ensure thread safe operations
 }
 
+// ConsolidateErrors - Consolidates an array of errors into a
+// single error.
+func (dMgr DirMgr) ConsolidateErrors(errors []error) error {
+
+  dMgrHlpr := dirMgrHelper{}
+
+  return dMgrHlpr.consolidateErrors(errors)
+}
+
 // CopyDirectory - Copies files from the directory identified by
 // by DirMgr to a target directory. The files to be copied are selected
 // according to file selection criteria specified by input parameter,
