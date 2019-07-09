@@ -587,7 +587,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
 
               errs = append(errs, err2)
             } else {
-              numberOfFilesNotCopied++
+              numberOfFilesCopied++
             }
           }
         }
@@ -3661,15 +3661,10 @@ func (dMgrHlpr *dirMgrHelper) moveDirectoryTree(
   var err, err2 error
 
   fileSelectCriteria := FileSelectionCriteria{}
-  /*
-    numberOfFilesCopied,
-      numberOfFilesNotCopied,
-      numberOfDirectoriesCopied,
 
-  */
-  _,
-    _,
-    _,
+  numberOfFilesCopied,
+    numberOfFilesNotCopied,
+    numberOfDirectoriesCopied,
     errs2 :=
     dMgrHlpr.copyDirectoryTree(
       dMgr,
@@ -3697,6 +3692,25 @@ func (dMgrHlpr *dirMgrHelper) moveDirectoryTree(
       numOfSrcDirectoriesMoved,
       errs
   }
+
+  if numberOfFilesNotCopied > 0 {
+    err2 = fmt.Errorf(ePrefix+
+      "\nError: Some of the files designated to be moved to the target directory, were NOT copied!\n"+
+      "Therefore the source directory WILL NOT BE DELETED!\n"+
+      "Number of Files NOT Copied='%v'\n",
+      "%v Source Directory='%v'\n%v Target Directory='%v'\n\n",
+      numberOfFilesNotCopied,
+      dMgrLabel, dMgr.absolutePath,
+      targetDMgrLabel, targetDMgr.absolutePath)
+    errs = append(errs, err2)
+
+    return numOfSrcFilesMoved,
+      numOfSrcDirectoriesMoved,
+      errs
+  }
+
+  numOfSrcFilesMoved = numberOfFilesCopied
+  numOfSrcDirectoriesMoved = numberOfDirectoriesCopied
 
   err = dMgrHlpr.lowLevelDeleteDirectoryAll(
     dMgr,

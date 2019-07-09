@@ -441,6 +441,8 @@ func TestDirMgr_CopyDirectory_05(t *testing.T) {
 
 func TestDirMgr_CopyDirectoryTree_01(t *testing.T) {
 
+  expectedNumOfDirectories := 5
+
   srcDir := "../filesfortest/levelfilesfortest"
 
   srcDMgr, err := DirMgr{}.New(srcDir)
@@ -473,7 +475,10 @@ func TestDirMgr_CopyDirectoryTree_01(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)
+  numberOfFilesCopied,
+    numberOfFilesNotCopied,
+    numberOfDirectoriesCopied,
+    errs := srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)
 
   if len(errs) > 0 {
     t.Errorf("Errors returned by srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)\n"+
@@ -537,6 +542,24 @@ func TestDirMgr_CopyDirectoryTree_01(t *testing.T) {
       "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
   }
 
+  if srcDTreeInfo.FoundFiles.GetNumOfFileMgrs() != numberOfFilesCopied {
+    t.Errorf("Expected %v-files would be copied.\n"+
+      "Instead, numberOfFilesCopied='%v'!",
+      srcDTreeInfo.FoundFiles.GetNumOfFileMgrs(), numberOfFilesCopied)
+  }
+
+  if numberOfFilesNotCopied != 0 {
+    t.Errorf("Expected that numberOfFilesNotCopied='0'.\n"+
+      "Instead, numberOfFilesNotCopied='%v'!",
+      numberOfFilesNotCopied)
+  }
+
+  if expectedNumOfDirectories != numberOfDirectoriesCopied {
+    t.Errorf("Expected that %v-directories would be copied.\n"+
+      "Instead, %v-directories were copied.",
+      expectedNumOfDirectories, numberOfDirectoriesCopied)
+  }
+
   return
 }
 
@@ -574,7 +597,10 @@ func TestDirMgr_CopyDirectoryTree_02(t *testing.T) {
 
   srcDMgr.isInitialized = false
 
-  errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
+  _,
+    _,
+    _,
+    errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) == 0 {
     t.Error("Expected an error from srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)\n" +
@@ -627,7 +653,10 @@ func TestDirMgr_CopyDirectoryTree_03(t *testing.T) {
 
   targetDMgr.isInitialized = false
 
-  errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
+  _,
+    _,
+    _,
+    errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) == 0 {
     t.Error("Expected an error from srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)\n" +
@@ -678,8 +707,10 @@ func TestDirMgr_CopyDirectoryTree_04(t *testing.T) {
   }
 
   fsc := FileSelectionCriteria{}
-
-  errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
+  _,
+    _,
+    _,
+    errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) == 0 {
     t.Error("Expected an error from srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)\n" +
@@ -709,6 +740,17 @@ func TestDirMgr_CopyDirectoryTree_05(t *testing.T) {
     return
   }
 
+  fsc := FileSelectionCriteria{}
+
+  srcDTreeInfo, err := srcDMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by srcDMgr.FindWalkDirFiles(fsc).\n"+
+      "source directory='%v'\nError='%v'", srcDMgr.GetAbsolutePath(), err.Error())
+
+    return
+  }
+
   targetDir := "../dirmgrtests/levelfilesfortest"
 
   fh := FileHelper{}
@@ -729,10 +771,12 @@ func TestDirMgr_CopyDirectoryTree_05(t *testing.T) {
     return
   }
 
-  fsc := FileSelectionCriteria{}
   fsc.FileNamePatterns = []string{"*.htm"}
 
-  errs := srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)
+  _,
+    numberOfFilesNotCopied,
+    _,
+    errs := srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)
 
   if len(errs) > 0 {
     t.Errorf("Errors returned by srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)\n"+
@@ -752,6 +796,19 @@ func TestDirMgr_CopyDirectoryTree_05(t *testing.T) {
       "The target directory should NOT have been created because none of the files\n" +
       "is the source directory matched the file selection criteria.\n" +
       "However, the target directory DOES EXIST! ERROR!!!!\n")
+  }
+
+  err = fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath())
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath()\n"+
+      "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
+  }
+
+  if numberOfFilesNotCopied != srcDTreeInfo.FoundFiles.GetNumOfFileMgrs() {
+    t.Errorf("ERROR: Expected numberOfFilesNotCopied='%v'\n"+
+      "Instead, numberOfFilesNotCopied='%v'\n",
+      srcDTreeInfo.FoundFiles.GetNumOfFileMgrs(), numberOfFilesNotCopied)
   }
 
   err = fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath())

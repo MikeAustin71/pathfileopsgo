@@ -1209,7 +1209,10 @@ func TestDirMgr_MoveDirectoryTree_01(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
+  _,
+    _,
+    _,
+    errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
 
   if len(errs) > 0 {
     for i := 0; i < len(errs); i++ {
@@ -1347,7 +1350,10 @@ func TestDirMgr_MoveDirectoryTree_02(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
+  _,
+    _,
+    _,
+    errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
 
   if len(errs) > 0 {
     for i := 0; i < len(errs); i++ {
@@ -1432,7 +1438,10 @@ func TestDirMgr_MoveDirectoryTree_03(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
+  _,
+    _,
+    _,
+    errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
 
   if len(errs) > 0 {
     for i := 0; i < len(errs); i++ {
@@ -1571,7 +1580,10 @@ func TestDirMgr_MoveSubDirectoryTree_01(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
+  _,
+    _,
+    _,
+    errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
 
   if len(errs) > 0 {
     for i := 0; i < len(errs); i++ {
@@ -1759,7 +1771,10 @@ func TestDirMgr_MoveSubDirectoryTree_02(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
+  _,
+    _,
+    _,
+    errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
 
   if len(errs) > 0 {
     for i := 0; i < len(errs); i++ {
@@ -1843,7 +1858,10 @@ func TestDirMgr_MoveSubDirectoryTree_03(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
+  _,
+    _,
+    _,
+    errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
 
   if len(errs) > 0 {
     for i := 0; i < len(errs); i++ {

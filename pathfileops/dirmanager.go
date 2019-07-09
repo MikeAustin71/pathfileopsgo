@@ -401,7 +401,10 @@ func (dMgr *DirMgr) CopyDirectory(
 func (dMgr *DirMgr) CopyDirectoryTree(
   targetDMgr DirMgr,
   copyEmptyDirectories bool,
-  fileSelectCriteria FileSelectionCriteria) (errs []error) {
+  fileSelectCriteria FileSelectionCriteria) (numberOfFilesCopied int,
+  numberOfFilesNotCopied int,
+  numberOfDirectoriesCopied int,
+  errs []error) {
 
   ePrefix := "DirMgr.CopyDirectoryTree() "
   errs = nil
@@ -410,9 +413,9 @@ func (dMgr *DirMgr) CopyDirectoryTree(
 
   dMgr.dataMutex.Lock()
 
-  _,
-    _,
-    _,
+  numberOfFilesCopied,
+    numberOfFilesNotCopied,
+    numberOfDirectoriesCopied,
     errs = dMgrHlpr.copyDirectoryTree(
     dMgr,
     &targetDMgr,
@@ -425,7 +428,10 @@ func (dMgr *DirMgr) CopyDirectoryTree(
 
   dMgr.dataMutex.Unlock()
 
-  return errs
+  return numberOfFilesCopied,
+    numberOfFilesNotCopied,
+    numberOfDirectoriesCopied,
+    errs
 }
 
 // CopyIn - Receives a pointer to an incoming DirMgr object as
