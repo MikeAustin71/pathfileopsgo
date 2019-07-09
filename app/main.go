@@ -18,9 +18,70 @@ import (
 
 func main() {
 
-  mainTest83DmgrDeleteDirAll()
+  mainTest84CopyDirTree()
 
 }
+
+func mainTest84CopyDirTree() {
+
+  src := "D:\\T05\\levelfilesfortest"
+
+  dst := "D:\\T06\\levelfilesfortest"
+
+  srcDMgr, err := pf.DirMgr{}.New(src)
+
+  if err != nil {
+    fmt.Printf("Error returned by pf.DirMgr{}.New(src)\n"+
+      "src='%v'\nError='%v'\n", src, err.Error())
+    return
+  }
+
+  targetDMgr, err := pf.DirMgr{}.New(dst)
+
+  if err != nil {
+    fmt.Printf("Error returned by pf.DirMgr{}.New(dst)\n"+
+      "dst='%v'\nError='%v'\n", dst, err.Error())
+    return
+  }
+
+  fsc := pf.FileSelectionCriteria{}
+  //fsc.FileNamePatterns = []string{"*.txt"}
+  var copyEmptyDirectories bool
+  copyEmptyDirectories = false
+
+  dtreeStats,
+    errs := srcDMgr.CopyDirectoryTree(targetDMgr, copyEmptyDirectories, fsc)
+
+  if len(errs) > 0 {
+    fmt.Printf("Errors returned by srcDMgr.CopyDirectoryTree("+
+      "targetDMgr, true, fsc)\n"+
+      "targetDMgr='%v'\n"+
+      "Errors Follow:\n%v",
+      targetDMgr.GetAbsolutePath(),
+      srcDMgr.ConsolidateErrors(errs))
+    return
+  }
+
+  if dtreeStats.ComputeError != nil {
+    fmt.Printf("Error returned by dtreeStats.ComputeError\n"+
+      "Error='%v'\n", dtreeStats.ComputeError.Error())
+  }
+
+  fmt.Println("             mainTest84CopyDirTree()                    ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("Total Directories Processed: ", dtreeStats.TotalDirsProcessed)
+  fmt.Println("         Directories Copied: ", dtreeStats.DirsCopied)
+  fmt.Println("      Total Files Processed: ", dtreeStats.TotalFilesProcessed)
+  fmt.Println("               Files Copied: ", dtreeStats.FilesCopied)
+  fmt.Println("           Files Not Copied: ", dtreeStats.FilesNotCopied)
+  fmt.Println("Copy Empty Directories Flag: ", copyEmptyDirectories)
+
+}
+
+/*
 
 func mainTest83DmgrDeleteDirAll() {
 
@@ -52,7 +113,6 @@ func mainTest83DmgrDeleteDirAll() {
 
 }
 
-/*
 func mainTest82CopyByIO() {
 
   fh := pf.FileHelper{}

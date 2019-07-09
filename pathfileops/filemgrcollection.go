@@ -405,6 +405,21 @@ func (fMgrs *FileMgrCollection) GetNumOfFileMgrs() int {
   return len(fMgrs.fileMgrs)
 }
 
+// GetNumOfFiles - returns the array length of the
+// of the File Manager Collection, 'FileMgrCollection'.
+// Effectively the returned integer is a count of the
+// number of files or File Managers (FileMgr's) in the
+// Collection.
+//
+func (fMgrs *FileMgrCollection) GetNumOfFiles() int {
+
+  if fMgrs.fileMgrs == nil {
+    fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+  }
+
+  return len(fMgrs.fileMgrs)
+}
+
 // InsertFileMgrAtIndex - Inserts a new File Manager into the collection at
 // array 'index'. The new File Manager is passed as input parameter 'fMgr'.
 //

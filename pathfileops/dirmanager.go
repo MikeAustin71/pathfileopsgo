@@ -400,6 +400,8 @@ func (dMgr *DirMgr) CopyDirectory(
 //
 // Return Value:
 //
+//
+//
 //  errs     []error  - An array of errors is returned. If the method completes
 //                      successfully with no errors, a ZERO-length array is
 //                      is returned.
@@ -410,9 +412,7 @@ func (dMgr *DirMgr) CopyDirectory(
 func (dMgr *DirMgr) CopyDirectoryTree(
   targetDMgr DirMgr,
   copyEmptyDirectories bool,
-  fileSelectCriteria FileSelectionCriteria) (numberOfFilesCopied int,
-  numberOfFilesNotCopied int,
-  numberOfDirectoriesCopied int,
+  fileSelectCriteria FileSelectionCriteria) (dTreeCopyStats DirTreeCopyStats,
   errs []error) {
 
   ePrefix := "DirMgr.CopyDirectoryTree() "
@@ -422,9 +422,7 @@ func (dMgr *DirMgr) CopyDirectoryTree(
 
   dMgr.dataMutex.Lock()
 
-  numberOfFilesCopied,
-    numberOfFilesNotCopied,
-    numberOfDirectoriesCopied,
+  dTreeCopyStats,
     errs = dMgrHlpr.copyDirectoryTree(
     dMgr,
     &targetDMgr,
@@ -437,9 +435,7 @@ func (dMgr *DirMgr) CopyDirectoryTree(
 
   dMgr.dataMutex.Unlock()
 
-  return numberOfFilesCopied,
-    numberOfFilesNotCopied,
-    numberOfDirectoriesCopied,
+  return dTreeCopyStats,
     errs
 }
 
@@ -503,8 +499,6 @@ func (dMgr *DirMgr) CopySubDirectoryTree(
   dMgr.dataMutex.Lock()
 
   _,
-    _,
-    _,
     errs = dMgrHlpr.copyDirectoryTree(
     dMgr,
     &targetDMgr,
@@ -3411,8 +3405,8 @@ func (dMgr *DirMgr) MoveDirectory(
 //                      array and returned to the caller.
 //
 func (dMgr *DirMgr) MoveDirectoryTree(
-  targetDMgr DirMgr) (numOfSrcFilesMoved int,
-  numOfSrcDirectoriesMoved int,
+  targetDMgr DirMgr) (numOfSrcFilesMoved uint64,
+  numOfSrcDirectoriesMoved uint64,
   errs []error) {
 
   ePrefix := "DirMgr.MoveDirectoryTree() "

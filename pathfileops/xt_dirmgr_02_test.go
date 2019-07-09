@@ -378,18 +378,13 @@ func TestDirMgr_DeleteAllSubDirectories_01(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  numberOfFilesCopied,
-    numberOfFilesNotCopied,
-    numberOfDirectoriesCopied,
+  dtreeCopyStats,
     errs := setupDMgr.CopyDirectoryTree(testDMgr, true, fsc)
 
   if len(errs) > 0 {
     t.Errorf("Errors returned by setupDMgr.CopyDirectoryTree(testDMgr,true, fsc)\n"+
-      "testDMgr='%v'\nErrors:'\n\n", testDMgr.GetAbsolutePath())
-
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("%v\n\n", errs[i].Error())
-    }
+      "testDMgr='%v'\nErrors Follow:'\n%v",
+      testDMgr.GetAbsolutePath(), testDMgr.ConsolidateErrors(errs))
 
     _ = testDMgr.DeleteAll()
 
@@ -431,33 +426,33 @@ func TestDirMgr_DeleteAllSubDirectories_01(t *testing.T) {
     return
   }
 
-  if expectedNumOfDirectories != numberOfDirectoriesCopied {
+  if uint64(expectedNumOfDirectories) != dtreeCopyStats.DirsCopied {
     t.Errorf("ERROR: Expected %v-directories would be copied.\n"+
-      "Instead, numberOfDirectoriesCopied='%v'",
-      expectedNumOfDirectories, numberOfDirectoriesCopied)
+      "Instead, dtreeCopyStats.DirsCopied='%v'",
+      expectedNumOfDirectories, dtreeCopyStats.DirsCopied)
     _ = testDMgr.DeleteAll()
 
     return
   }
 
-  if testDInfo.Directories.GetNumOfDirs() != numberOfDirectoriesCopied {
-    t.Errorf("ERROR: testDInfo.Directories.GetNumOfDirs() != numberOfDirectoriesCopied\n"+
+  if uint64(testDInfo.Directories.GetNumOfDirs()) != dtreeCopyStats.DirsCopied {
+    t.Errorf("ERROR: testDInfo.Directories.GetNumOfDirs() != dtreeCopyStats.DirsCopied\n"+
       "testDInfo.Directories.GetNumOfDirs()='%v'\n"+
-      "numberOfDirectoriesCopied='%v'\n",
+      "dtreeCopyStats.DirsCopied='%v'\n",
       testDInfo.Directories.GetNumOfDirs(),
-      numberOfDirectoriesCopied)
+      dtreeCopyStats.DirsCopied)
   }
 
-  if numberOfFilesCopied != testDInfo.FoundFiles.GetNumOfFileMgrs() {
-    t.Errorf("ERROR: numberOfFilesCopied='%v'.\n"+
+  if dtreeCopyStats.FilesCopied != uint64(testDInfo.FoundFiles.GetNumOfFileMgrs()) {
+    t.Errorf("ERROR: dtreeCopyStats.FilesCopied='%v'.\n"+
       "However, testDInfo.FoundFiles.GetNumOfFileMgrs()='%v'\n",
-      numberOfFilesCopied, testDInfo.FoundFiles.GetNumOfFileMgrs())
+      dtreeCopyStats.FilesCopied, testDInfo.FoundFiles.GetNumOfFileMgrs())
   }
 
-  if numberOfFilesNotCopied != 0 {
-    t.Errorf("Expected that numberOfFilesNotCopied='0'.\n"+
-      "Instead, numberOfFilesNotCopied='%v'!",
-      numberOfFilesNotCopied)
+  if dtreeCopyStats.FilesNotCopied != 0 {
+    t.Errorf("Expected that dtreeCopyStats.FilesNotCopied='0'.\n"+
+      "Instead, dtreeCopyStats.FilesNotCopied='%v'!",
+      dtreeCopyStats.FilesNotCopied)
   }
 
   errs = testDMgr.DeleteAllSubDirectories()
@@ -616,30 +611,24 @@ func TestDirMgr_DeleteDirectoryTreeFiles_01(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    _,
-    _,
     errs := sourceDMgr1.CopyDirectoryTree(testDMgr, true, fsc)
 
   if len(errs) != 0 {
     t.Errorf("Setup Errors returned by sourceDMgr1.CopyDirectoryTree(testDMgr, true, fsc)\n"+
-      "sourceDMgr1='%v'\ntestDMgr='%v'\nErrors Follow:\n\n",
-      sourceDMgr1.GetAbsolutePath(), testDMgr.GetAbsolutePath())
-
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("%v\n", errs[i])
-    }
+      "sourceDMgr1='%v'\ntestDMgr='%v'\nErrors Follow:\n\n%v",
+      sourceDMgr1.GetAbsolutePath(),
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
   }
 
   errs = sourceDMgr2.CopyDirectory(testDMgr, fsc)
 
   if len(errs) != 0 {
     t.Errorf("Setup Errors returned by sourceDMgr2.CopyDirectoryTree(testDMgr, true, fsc)\n"+
-      "sourceDMgr2='%v'\ntestDMgr='%v'\nErrors Follow:\n\n",
-      sourceDMgr2.GetAbsolutePath(), testDMgr.GetAbsolutePath())
-
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("%v\n", errs[i])
-    }
+      "sourceDMgr2='%v'\ntestDMgr='%v'\nErrors Follow:\n\n%v",
+      sourceDMgr2.GetAbsolutePath(),
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
   }
 
   testDtreeInfo, err := testDMgr.FindWalkDirFiles(fsc)
@@ -662,12 +651,10 @@ func TestDirMgr_DeleteDirectoryTreeFiles_01(t *testing.T) {
 
   if len(errs) != 0 {
     t.Errorf("Setup Errors returned by testDMgr.DeleteDirectoryTreeFiles(fsc)\n"+
-      "sourceDMgr2='%v'\ntestDMgr='%v'\nErrors Follow:\n\n",
-      sourceDMgr2.GetAbsolutePath(), testDMgr.GetAbsolutePath())
-
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("%v\n", errs[i])
-    }
+      "sourceDMgr2='%v'\ntestDMgr='%v'\nErrors Follow:\n\n%v",
+      sourceDMgr2.GetAbsolutePath(),
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
   }
 
   if expectedNumOfDirectories != numOfSubDirectories {
@@ -1461,18 +1448,14 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_02(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    _,
-    _,
     errs := sourceDMgr1.CopyDirectoryTree(testDMgr, true, fsc)
 
   if len(errs) != 0 {
     t.Errorf("Setup Errors returned by sourceDMgr1.CopyDirectoryTree(testDMgr, true, fsc)\n"+
-      "sourceDMgr1='%v'\ntestDMgr='%v'\nErrors Follow:\n\n",
-      sourceDMgr1.GetAbsolutePath(), testDMgr.GetAbsolutePath())
-
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("%v\n", errs[i])
-    }
+      "sourceDMgr1='%v'\ntestDMgr='%v'\nErrors Follow:\n\n%v",
+      sourceDMgr1.GetAbsolutePath(),
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(testDir)
 
@@ -1602,18 +1585,14 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_03(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
   _,
-    _,
-    _,
     errs := sourceDMgr1.CopyDirectoryTree(testDMgr, true, fsc)
 
   if len(errs) != 0 {
     t.Errorf("Setup Errors returned by sourceDMgr1.CopyDirectoryTree(testDMgr, true, fsc)\n"+
-      "sourceDMgr1='%v'\ntestDMgr='%v'\nErrors Follow:\n\n",
-      sourceDMgr1.GetAbsolutePath(), testDMgr.GetAbsolutePath())
-
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("%v\n", errs[i])
-    }
+      "sourceDMgr1='%v'\ntestDMgr='%v'\nErrors Follow:\n\n%v",
+      sourceDMgr1.GetAbsolutePath(),
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(testDir)
 

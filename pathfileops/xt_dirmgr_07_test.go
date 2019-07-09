@@ -1210,8 +1210,6 @@ func TestDirMgr_MoveDirectoryTree_01(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    _,
-    _,
     errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
 
   if len(errs) > 0 {
@@ -1351,17 +1349,14 @@ func TestDirMgr_MoveDirectoryTree_02(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    _,
-    _,
     errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
 
   if len(errs) > 0 {
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("Test Setup Error returned from origSrcDMgr."+
-        "CopyDirectoryTree(srcDirMgr, fsc)\n"+
-        "srcDirMgr='%v'\nError='%v'\n\n",
-        srcDirMgr.GetAbsolutePath(), errs[i].Error())
-    }
+    t.Errorf("Test Setup Error returned from origSrcDMgr."+
+      "CopyDirectoryTree(srcDirMgr, fsc)\n"+
+      "srcDirMgr='%v'\nErrors Follow:\n\n'%v'",
+      srcDirMgr.GetAbsolutePath(),
+      srcDirMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(baseDir)
 
@@ -1439,17 +1434,14 @@ func TestDirMgr_MoveDirectoryTree_03(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    _,
-    _,
     errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
 
   if len(errs) > 0 {
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("Test Setup Error returned from origSrcDMgr."+
-        "CopyDirectoryTree(srcDirMgr, fsc)\n"+
-        "srcDirMgr='%v'\nError='%v'\n\n",
-        srcDirMgr.GetAbsolutePath(), errs[i].Error())
-    }
+    t.Errorf("Test Setup Error returned from origSrcDMgr."+
+      "CopyDirectoryTree(srcDirMgr, fsc)\n"+
+      "srcDirMgr='%v'\nErrors Follow:\n\n'%v'",
+      srcDirMgr.GetAbsolutePath(),
+      srcDirMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(baseDir)
 
@@ -1581,16 +1573,15 @@ func TestDirMgr_MoveSubDirectoryTree_01(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    _,
-    _,
     errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
 
   if len(errs) > 0 {
     for i := 0; i < len(errs); i++ {
       t.Errorf("Test Setup Error returned from origSrcDMgr."+
         "CopyDirectoryTree(srcDirMgr, fsc)\n"+
-        "srcDirMgr='%v'\nError='%v'\n\n",
-        srcDirMgr.GetAbsolutePath(), errs[i].Error())
+        "srcDirMgr='%v'\nErrors Follow:\n\n'%v'",
+        srcDirMgr.GetAbsolutePath(),
+        srcDirMgr.ConsolidateErrors(errs))
     }
 
     _ = fh.DeleteDirPathAll(baseDir)
@@ -1772,16 +1763,15 @@ func TestDirMgr_MoveSubDirectoryTree_02(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    _,
-    _,
     errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
 
   if len(errs) > 0 {
     for i := 0; i < len(errs); i++ {
       t.Errorf("Test Setup Error returned from origSrcDMgr."+
         "CopyDirectoryTree(srcDirMgr, fsc)\n"+
-        "srcDirMgr='%v'\nError='%v'\n\n",
-        srcDirMgr.GetAbsolutePath(), errs[i].Error())
+        "srcDirMgr='%v'\nErrors Follow:\n\n'%v'",
+        srcDirMgr.GetAbsolutePath(),
+        srcDirMgr.ConsolidateErrors(errs))
     }
 
     _ = fh.DeleteDirPathAll(baseDir)
@@ -1859,16 +1849,15 @@ func TestDirMgr_MoveSubDirectoryTree_03(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    _,
-    _,
     errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
 
   if len(errs) > 0 {
     for i := 0; i < len(errs); i++ {
       t.Errorf("Test Setup Error returned from origSrcDMgr."+
         "CopyDirectoryTree(srcDirMgr, fsc)\n"+
-        "srcDirMgr='%v'\nError='%v'\n\n",
-        srcDirMgr.GetAbsolutePath(), errs[i].Error())
+        "srcDirMgr='%v'\nErrors Follow:\n\n'%v'",
+        srcDirMgr.GetAbsolutePath(),
+        srcDirMgr.ConsolidateErrors(errs))
     }
 
     _ = fh.DeleteDirPathAll(baseDir)

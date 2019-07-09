@@ -475,18 +475,14 @@ func TestDirMgr_CopyDirectoryTree_01(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  numberOfFilesCopied,
-    numberOfFilesNotCopied,
-    numberOfDirectoriesCopied,
+  dtreeCopyStats,
     errs := srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)
 
   if len(errs) > 0 {
     t.Errorf("Errors returned by srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)\n"+
-      "targetDMgr='%v'\nErrors:\n", targetDMgr.GetAbsolutePath())
-
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("'%v'\n\n", errs[i].Error())
-    }
+      "targetDMgr='%v'\nErrors Follow:\n%v",
+      targetDMgr.GetAbsolutePath(),
+      targetDMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath())
 
@@ -542,22 +538,22 @@ func TestDirMgr_CopyDirectoryTree_01(t *testing.T) {
       "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
   }
 
-  if srcDTreeInfo.FoundFiles.GetNumOfFileMgrs() != numberOfFilesCopied {
+  if uint64(srcDTreeInfo.FoundFiles.GetNumOfFileMgrs()) != dtreeCopyStats.FilesCopied {
     t.Errorf("Expected %v-files would be copied.\n"+
       "Instead, numberOfFilesCopied='%v'!",
-      srcDTreeInfo.FoundFiles.GetNumOfFileMgrs(), numberOfFilesCopied)
+      srcDTreeInfo.FoundFiles.GetNumOfFileMgrs(), dtreeCopyStats.FilesCopied)
   }
 
-  if numberOfFilesNotCopied != 0 {
+  if dtreeCopyStats.FilesNotCopied != 0 {
     t.Errorf("Expected that numberOfFilesNotCopied='0'.\n"+
       "Instead, numberOfFilesNotCopied='%v'!",
-      numberOfFilesNotCopied)
+      dtreeCopyStats.FilesNotCopied)
   }
 
-  if expectedNumOfDirectories != numberOfDirectoriesCopied {
+  if uint64(expectedNumOfDirectories) != dtreeCopyStats.DirsCopied {
     t.Errorf("Expected that %v-directories would be copied.\n"+
       "Instead, %v-directories were copied.",
-      expectedNumOfDirectories, numberOfDirectoriesCopied)
+      expectedNumOfDirectories, dtreeCopyStats.DirsCopied)
   }
 
   return
@@ -598,8 +594,6 @@ func TestDirMgr_CopyDirectoryTree_02(t *testing.T) {
   srcDMgr.isInitialized = false
 
   _,
-    _,
-    _,
     errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) == 0 {
@@ -654,8 +648,6 @@ func TestDirMgr_CopyDirectoryTree_03(t *testing.T) {
   targetDMgr.isInitialized = false
 
   _,
-    _,
-    _,
     errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) == 0 {
@@ -708,8 +700,6 @@ func TestDirMgr_CopyDirectoryTree_04(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
   _,
-    _,
-    _,
     errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) == 0 {
@@ -773,9 +763,7 @@ func TestDirMgr_CopyDirectoryTree_05(t *testing.T) {
 
   fsc.FileNamePatterns = []string{"*.htm"}
 
-  _,
-    numberOfFilesNotCopied,
-    _,
+  dtreeCopyStats,
     errs := srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)
 
   if len(errs) > 0 {
@@ -805,10 +793,10 @@ func TestDirMgr_CopyDirectoryTree_05(t *testing.T) {
       "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
   }
 
-  if numberOfFilesNotCopied != srcDTreeInfo.FoundFiles.GetNumOfFileMgrs() {
+  if uint64(srcDTreeInfo.FoundFiles.GetNumOfFileMgrs()) != dtreeCopyStats.FilesNotCopied {
     t.Errorf("ERROR: Expected numberOfFilesNotCopied='%v'\n"+
       "Instead, numberOfFilesNotCopied='%v'\n",
-      srcDTreeInfo.FoundFiles.GetNumOfFileMgrs(), numberOfFilesNotCopied)
+      srcDTreeInfo.FoundFiles.GetNumOfFileMgrs(), dtreeCopyStats.FilesNotCopied)
   }
 
   err = fh.DeleteDirPathAll(targetDMgr.GetAbsolutePath())
@@ -858,8 +846,6 @@ func TestDirMgr_CopyDirectoryTree_06(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    _,
-    _,
     errs := setUpDMgr1.CopyDirectoryTree(srcDMgr, false, fsc)
 
   if len(errs) > 0 {
@@ -915,9 +901,7 @@ func TestDirMgr_CopyDirectoryTree_06(t *testing.T) {
   fsc.FileNamePatterns = []string{"*.txt"}
 
   // Copy '.txt' files only to targetDMgr
-  numberOfFilesCopied,
-    numberOfFilesNotCopied,
-    numberOfDirectoriesCopied,
+  dtreeCopyStats,
     errs := srcDMgr.CopyDirectoryTree(
     targetDMgr,
     false,
@@ -937,7 +921,7 @@ func TestDirMgr_CopyDirectoryTree_06(t *testing.T) {
 
   if !targetDMgr.DoesAbsolutePathExist() {
     t.Errorf("ERROR: The target directory path DOES NOT EXIST!!\n"+
-      "numberOfFilesCopied='%v'\n", numberOfFilesCopied)
+      "Number Of FilesCopied='%v'\n", dtreeCopyStats.FilesCopied)
 
     _ = fh.DeleteDirPathAll(targetDir)
     _ = fh.DeleteDirPathAll(srcDir)
@@ -1004,22 +988,22 @@ func TestDirMgr_CopyDirectoryTree_06(t *testing.T) {
 
   }
 
-  if expectedNumOfCopiedFiles != numberOfFilesCopied {
+  if uint64(expectedNumOfCopiedFiles) != dtreeCopyStats.FilesCopied {
     t.Errorf("Expected %v-files would be copied.\n"+
       "Instead, numberOfFilesCopied-'%v'\n",
-      expectedNumOfCopiedFiles, numberOfFilesCopied)
+      expectedNumOfCopiedFiles, dtreeCopyStats.FilesCopied)
   }
 
-  if expectedNumOfFilesNotCopied != numberOfFilesNotCopied {
+  if uint64(expectedNumOfFilesNotCopied) != dtreeCopyStats.FilesNotCopied {
     t.Errorf("Expected %v-files would NOT be copied.\n"+
       "Instead, numberOfFilesNotCopied='%v'!",
-      expectedNumOfFilesNotCopied, numberOfFilesNotCopied)
+      expectedNumOfFilesNotCopied, dtreeCopyStats.FilesNotCopied)
   }
 
-  if expectedNumOfDirectoriesCopied != numberOfDirectoriesCopied {
+  if uint64(expectedNumOfDirectoriesCopied) != dtreeCopyStats.DirsCopied {
     t.Errorf("Expected that %v-directories would be copied.\n"+
       "Instead, %v-directories were copied.",
-      expectedNumOfDirectoriesCopied, numberOfDirectoriesCopied)
+      expectedNumOfDirectoriesCopied, dtreeCopyStats.DirsCopied)
   }
 
   err = fh.DeleteDirPathAll(targetDir)
