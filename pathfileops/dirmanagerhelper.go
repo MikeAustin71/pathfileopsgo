@@ -63,7 +63,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
   dMgr *DirMgr,
   targetDMgr *DirMgr,
   fileSelectCriteria FileSelectionCriteria,
-  copyEmptyDirectories bool,
+  copyEmptyDirectory bool,
   ePrefix string,
   dMgrLabel string,
   targetDMgrLabel string) (dirCopyStats DirectoryCopyStats,
@@ -80,7 +80,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
   }
 
   var err, err2, err3 error
-  var dirPathDoesExist, targetPathDoesExist bool
+  var dirPathDoesExist, targetPathDoesExist, dirCreated bool
 
   dirPathDoesExist,
     _,
@@ -122,6 +122,26 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
     return dirCopyStats, errs
   }
 
+  if !targetPathDoesExist && copyEmptyDirectory {
+
+    dirCreated,
+      err = dMgrHlpr.lowLevelMakeDir(
+      targetDMgr,
+      ePrefix,
+      "targetDMgr")
+
+    if err != nil {
+      errs = append(errs, err)
+      return dirCopyStats, errs
+    }
+
+    if dirCreated {
+      dirCopyStats.DirCreated++
+    }
+
+    targetPathDoesExist = true
+  }
+
   dirPtr, err := os.Open(dMgr.absolutePath)
 
   if err != nil {
@@ -140,7 +160,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
   osPathSeparatorStr := string(os.PathSeparator)
 
   var src, target string
-  var isMatch, dirCreated bool
+  var isMatch bool
   var nameFileInfos []os.FileInfo
   err3 = nil
 
@@ -218,10 +238,10 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
           }
 
           targetPathDoesExist = true
+
           if dirCreated {
             dirCopyStats.DirCreated++
           }
-
         }
 
         src = dMgr.absolutePath +

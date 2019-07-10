@@ -212,7 +212,22 @@ func (dMgr DirMgr) ConsolidateErrors(errors []error) error {
 //
 // ---------------------------------------------------------------------------
 //
+// Input Parameters (Continued):
+//
+//  copyEmptyDirectory bool - If set to 'true' the target directory will be
+//                            created regardless of whether any files are
+//                            copied to that directory. Remember that files
+//                            are only copied to the target directory if
+//                            they meet file selection criteria specified
+//                            by input parameter 'fileSelectCriteria'.
+//
+//
+// ---------------------------------------------------------------------------
+//
 // Return Value:
+//
+//  dirCopyStats DirectoryCopyStats - This type is used to return data on the
+//                                    copy operation.
 //
 //  errs     []error  - An array of errors is returned. If the method completes
 //                      successfully with no errors, a ZERO-length array is
@@ -223,7 +238,8 @@ func (dMgr DirMgr) ConsolidateErrors(errors []error) error {
 //
 func (dMgr *DirMgr) CopyDirectory(
   targetDMgr DirMgr,
-  fileSelectCriteria FileSelectionCriteria) (dirCopyStats DirectoryCopyStats,
+  fileSelectCriteria FileSelectionCriteria,
+  copyEmptyDirectory bool) (dirCopyStats DirectoryCopyStats,
   errs []error) {
 
   ePrefix := "DirMgr.CopyDirectory() "
@@ -236,7 +252,7 @@ func (dMgr *DirMgr) CopyDirectory(
     dMgr,
     &targetDMgr,
     fileSelectCriteria,
-    false,
+    copyEmptyDirectory,
     ePrefix,
     "dMgr",
     "targetDMgr")

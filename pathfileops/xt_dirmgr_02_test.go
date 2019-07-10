@@ -622,7 +622,7 @@ func TestDirMgr_DeleteDirectoryTreeFiles_01(t *testing.T) {
   }
 
   _,
-    errs = sourceDMgr2.CopyDirectory(testDMgr, fsc)
+    errs = sourceDMgr2.CopyDirectory(testDMgr, fsc, false)
 
   if len(errs) != 0 {
     t.Errorf("Setup Errors returned by sourceDMgr2.CopyDirectoryTree(testDMgr, true, fsc)\n"+
@@ -1311,7 +1311,7 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_01(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    errs := sourceDMgr1.CopyDirectory(testDMgr, fsc)
+    errs := sourceDMgr1.CopyDirectory(testDMgr, fsc, false)
 
   if len(errs) != 0 {
     t.Errorf("Setup Errors returned by sourceDMgr1.CopyDirectory(testDMgr, fsc)\n"+
@@ -1327,7 +1327,7 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_01(t *testing.T) {
   }
 
   _,
-    errs = sourceDMgr2.CopyDirectory(testDMgr, fsc)
+    errs = sourceDMgr2.CopyDirectory(testDMgr, fsc, false)
 
   if len(errs) != 0 {
     t.Errorf("Setup Errors returned by sourceDMgr2.CopyDirectoryTree(testDMgr, true, fsc)\n"+
@@ -1466,7 +1466,7 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_02(t *testing.T) {
   }
 
   _,
-    errs = sourceDMgr2.CopyDirectory(testDMgr2, fsc)
+    errs = sourceDMgr2.CopyDirectory(testDMgr2, fsc, false)
 
   if len(errs) != 0 {
 

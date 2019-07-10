@@ -109,7 +109,7 @@ func TestDirMgr_CopyDirectory_01(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   dirCopyStats,
-    errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
+    errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
 
   if len(errs) > 0 {
 
@@ -242,7 +242,7 @@ func TestDirMgr_CopyDirectory_02(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
+    errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
 
   if len(errs) == 0 {
     t.Error("Expected an error return from srcDMgr.CopyDirectory(targetDMgr, fsc)\n" +
@@ -297,7 +297,7 @@ func TestDirMgr_CopyDirectory_03(t *testing.T) {
   srcDMgr.isInitialized = false
 
   _,
-    errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
+    errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
 
   if len(errs) == 0 {
     t.Error("Expected an error return from srcDMgr.CopyDirectory(targetDMgr, fsc)\n" +
@@ -354,7 +354,7 @@ func TestDirMgr_CopyDirectory_04(t *testing.T) {
   targetDMgr.isInitialized = false
 
   _,
-    errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
+    errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
 
   if len(errs) == 0 {
     t.Error("Expected an error return from srcDMgr.CopyDirectory(targetDMgr, fsc)\n" +
@@ -411,7 +411,7 @@ func TestDirMgr_CopyDirectory_05(t *testing.T) {
   fsc.FileNamePatterns = []string{"*.htm"}
 
   dirCopyStats,
-    errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
+    errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
 
   if len(errs) > 0 {
 
@@ -886,7 +886,7 @@ func TestDirMgr_CopyDirectoryTree_06(t *testing.T) {
   fsc = FileSelectionCriteria{}
 
   _,
-    errs = setUpDMgr2.CopyDirectory(srcHtmlDMgr, fsc)
+    errs = setUpDMgr2.CopyDirectory(srcHtmlDMgr, fsc, false)
 
   if len(errs) > 0 {
     t.Errorf("Test Setup Errors returned by setUpDMgr2.CopyDirectory(srcHtmlDMgr, fsc).\n"+

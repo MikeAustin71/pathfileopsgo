@@ -347,7 +347,7 @@ func TestDirMgr_MoveDirectory_01(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
+    errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc, false)
 
   if len(errs) > 0 {
 
@@ -539,7 +539,7 @@ func TestDirMgr_MoveDirectory_02(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
+    errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc, false)
 
   if len(errs) > 0 {
     t.Errorf("Test Setup Error returned from origSrcDMgr."+
@@ -645,7 +645,7 @@ func TestDirMgr_MoveDirectory_03(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
+    errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc, false)
 
   if len(errs) > 0 {
 
@@ -826,7 +826,7 @@ func TestDirMgr_MoveDirectory_05(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
+    errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc, false)
 
   if len(errs) > 0 {
 
@@ -972,7 +972,7 @@ func TestDirMgr_MoveDirectory_06(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
+    errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc, false)
 
   if len(errs) > 0 {
     t.Errorf("Test Setup Error returned from origSrcDMgr."+
@@ -999,7 +999,7 @@ func TestDirMgr_MoveDirectory_06(t *testing.T) {
   fsc = FileSelectionCriteria{}
 
   _,
-    errs = origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
+    errs = origSrcDMgr.CopyDirectory(srcDirMgr, fsc, false)
 
   if len(errs) > 0 {
 
