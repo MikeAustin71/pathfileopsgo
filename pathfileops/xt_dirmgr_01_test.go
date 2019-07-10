@@ -457,6 +457,318 @@ func TestDirMgr_CopyDirectory_05(t *testing.T) {
   return
 }
 
+func TestDirMgr_CopyDirectory_06(t *testing.T) {
+
+  targetDir := "../checkfiles/TestDirMgr_CopyFilesToDirectory_06"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDir).\n"+
+      "testDir='%v'\nError='%v'\n", targetDir, err.Error())
+    return
+  }
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n"+
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
+    return
+  }
+
+  srcDir1 := "../filesfortest/levelfilesfortest"
+
+  srcDMgr, err := DirMgr{}.New(srcDir1)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir1).\n"+
+      "srcDir1='%v'\nError='%v'\n", srcDir1, err.Error())
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  dirCopyStats,
+    errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
+
+  if len(errs) > 0 {
+
+    t.Errorf("Error returned from srcDMgr.CopyDirectory(targetDMgr, fsc)\n"+
+      "targetDir='%v'\nErrors Follow:\n\n%v",
+      targetDMgr.GetAbsolutePath(),
+      targetDMgr.ConsolidateErrors(errs))
+
+    _ = fh.DeleteDirPathAll(targetDir)
+
+    return
+
+  }
+  // 5 txt src Files
+  /*
+     "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+     "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+     "../filesfortest/levelfilesfortest/level_0_2_test.txt"
+     "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+     "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+  */
+
+  fileNames := []string{"level_0_0_test.txt",
+    "level_0_1_test.txt",
+    "level_0_2_test.txt",
+    "level_0_3_test.txt",
+    "level_0_4_test.txt"}
+
+  fsc = FileSelectionCriteria{}
+
+  fMgrCollection, err := targetDMgr.FindFilesBySelectCriteria(fsc)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by targetDMgr.FindFilesBySelectCriteria(fsc).\n"+
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
+
+    _ = fh.DeleteDirPathAll(targetDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 5 {
+    t.Errorf("Error: Expected to find 5-files in 'targetDir'.\n"+
+      "Instead, %v-files were found.", fMgrCollection.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(targetDir)
+
+    return
+
+  }
+
+  if 5 != dirCopyStats.FilesCopied {
+    t.Errorf("Error: Expected that dirCopyStats.FilesCopied='5'.\n"+
+      "Instead, dirCopyStats.FilesCopied='%v'.\n",
+      dirCopyStats.FilesCopied)
+
+    return
+  }
+
+  if 0 != dirCopyStats.FilesNotCopied {
+    t.Errorf("Error: Expected that dirCopyStats.FilesNotCopied='0'.\n"+
+      "Instead, dirCopyStats.FilesNotCopied='%v'.\n",
+      dirCopyStats.FilesNotCopied)
+
+    return
+  }
+
+  if 5 != dirCopyStats.TotalFilesProcessed {
+    t.Errorf("Error: Expected that dirCopyStats.TotalFilesProcessed='5'.\n"+
+      "Instead, dirCopyStats.TotalFilesProcessed='%v'.\n",
+      dirCopyStats.TotalFilesProcessed)
+
+    return
+  }
+
+  if 1 != dirCopyStats.DirCreated {
+    t.Errorf("Error: Expected that dirCopyStats.DirCreated='1'.\n"+
+      "Instead, dirCopyStats.TotalFilesProcessed='%v'.\n",
+      dirCopyStats.DirCreated)
+
+    return
+  }
+
+  if dirCopyStats.ComputeError != nil {
+    t.Errorf("Error: Expected that dirCopyStats.ComputeError='nil'.\n"+
+      "Instead, dirCopyStats.ComputeError='%v'.\n",
+      dirCopyStats.ComputeError.Error())
+
+    return
+  }
+
+  for i := 0; i < fMgrCollection.GetNumOfFileMgrs(); i++ {
+
+    fMgr, err := fMgrCollection.GetFileMgrAtIndex(i)
+
+    if err != nil {
+      t.Errorf("Error returned by fMgrCollection.GetFileMgrAtIndex(%v)\n"+
+        "Error='%v'\n", i, err.Error())
+
+      _ = fh.DeleteDirPathAll(targetDir)
+
+      return
+    }
+
+    fileName := fMgr.GetFileNameExt()
+    foundFile := false
+    for k := 0; k < len(fileNames); k++ {
+      if fileNames[k] == fileName {
+        foundFile = true
+      }
+    }
+
+    if foundFile == false {
+      t.Errorf("Error: File NOT Found. Expected to find specfic file Name.\n"+
+        "However, it WAS NOT FOUND!\nFileName='%v'", fileName)
+    }
+
+  }
+
+  err = fh.DeleteDirPathAll(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(targetDir)\targetDir='%v'\n"+
+      "Error='%v'\n", targetDir, err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_CopyDirectory_07(t *testing.T) {
+
+  targetDir := "../checkfiles/TestDirMgr_CopyFilesToDirectory_07"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDir).\n"+
+      "testDir='%v'\nError='%v'\n", targetDir, err.Error())
+    return
+  }
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(targetDMgr).\n"+
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr, err.Error())
+    return
+  }
+
+  srcDir1 := "../filesfortest/levelfilesfortest"
+
+  srcDMgr, err := DirMgr{}.New(srcDir1)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned from DirMgr{}.New(srcDir1).\n"+
+      "srcDir1='%v'\nError='%v'\n", srcDir1, err.Error())
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+  fsc.FileNamePatterns = []string{"*.xxx"}
+
+  dirCopyStats,
+    errs := srcDMgr.CopyDirectory(targetDMgr, fsc, true)
+
+  if len(errs) > 0 {
+
+    t.Errorf("Error returned from srcDMgr.CopyDirectory(targetDMgr, fsc)\n"+
+      "targetDir='%v'\nErrors Follow:\n\n%v",
+      targetDMgr.GetAbsolutePath(),
+      targetDMgr.ConsolidateErrors(errs))
+
+    _ = fh.DeleteDirPathAll(targetDir)
+
+    return
+
+  }
+
+  if !targetDMgr.DoesPathExist() {
+
+    t.Errorf("Error: CopyDirectory() was called with parameter, 'copyEmptyDirectory' = 'true'.\n"+
+      "Therefore, the target directory should have been created even though no files were\n"+
+      "copied to the target director. However, the target directory was NOT created and DOES NOT EXIST!\n"+
+      "targetDir='%v'\n",
+      targetDMgr.GetAbsolutePath())
+    return
+
+  }
+
+  fsc = FileSelectionCriteria{}
+
+  fMgrCollection, err := targetDMgr.FindFilesBySelectCriteria(fsc)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by targetDMgr.FindFilesBySelectCriteria(fsc).\n"+
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
+
+    _ = fh.DeleteDirPathAll(targetDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 0 {
+    t.Errorf("Error: Expected to find 0-files in 'targetDir'.\n"+
+      "Instead, %v-files were found.", fMgrCollection.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(targetDir)
+
+    return
+
+  }
+
+  if 0 != dirCopyStats.FilesCopied {
+    t.Errorf("Error: Expected that dirCopyStats.FilesCopied='0'.\n"+
+      "Instead, dirCopyStats.FilesCopied='%v'.\n",
+      dirCopyStats.FilesCopied)
+
+    _ = fh.DeleteDirPathAll(targetDir)
+
+    return
+  }
+
+  if 5 != dirCopyStats.TotalFilesProcessed {
+    t.Errorf("Error: Expected that dirCopyStats.TotalFilesProcessed='5'.\n"+
+      "Instead, dirCopyStats.TotalFilesProcessed='%v'.\n",
+      dirCopyStats.TotalFilesProcessed)
+
+    _ = fh.DeleteDirPathAll(targetDir)
+
+    return
+  }
+
+  if 5 != dirCopyStats.FilesNotCopied {
+    t.Errorf("Error: Expected that dirCopyStats.FilesNotCopied='5'.\n"+
+      "Instead, dirCopyStats.FilesNotCopied='%v'.\n",
+      dirCopyStats.FilesNotCopied)
+
+    _ = fh.DeleteDirPathAll(targetDir)
+
+    return
+  }
+
+  if 1 != dirCopyStats.DirCreated {
+    t.Errorf("Error: Expected that dirCopyStats.DirCreated='1'.\n"+
+      "Instead, dirCopyStats.TotalFilesProcessed='%v'.\n",
+      dirCopyStats.DirCreated)
+
+    _ = fh.DeleteDirPathAll(targetDir)
+
+    return
+  }
+
+  if dirCopyStats.ComputeError != nil {
+    t.Errorf("Error: Expected that dirCopyStats.ComputeError='nil'.\n"+
+      "Instead, dirCopyStats.ComputeError='%v'.\n",
+      dirCopyStats.ComputeError.Error())
+
+    _ = fh.DeleteDirPathAll(targetDir)
+
+    return
+  }
+
+  err = fh.DeleteDirPathAll(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(targetDir)\targetDir='%v'\n"+
+      "Error='%v'\n", targetDir, err.Error())
+  }
+
+  return
+}
+
 func TestDirMgr_CopyDirectoryTree_01(t *testing.T) {
 
   expectedNumOfDirectories := 5

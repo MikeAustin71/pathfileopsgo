@@ -190,6 +190,8 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
 
       }
 
+      dirCopyStats.TotalFilesProcessed++
+
       // This is not a directory. It is a file.
       // Determine if it matches the find file criteria.
       isMatch, err =
