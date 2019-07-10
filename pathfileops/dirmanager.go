@@ -223,25 +223,27 @@ func (dMgr DirMgr) ConsolidateErrors(errors []error) error {
 //
 func (dMgr *DirMgr) CopyDirectory(
   targetDMgr DirMgr,
-  fileSelectCriteria FileSelectionCriteria) []error {
+  fileSelectCriteria FileSelectionCriteria) (dirCopyStats DirectoryCopyStats,
+  errs []error) {
 
   ePrefix := "DirMgr.CopyDirectory() "
   dMgrHlpr := dirMgrHelper{}
-  var errs []error
 
   dMgr.dataMutex.Lock()
 
-  errs = dMgrHlpr.copyDirectory(
+  dirCopyStats,
+    errs = dMgrHlpr.copyDirectory(
     dMgr,
     &targetDMgr,
     fileSelectCriteria,
+    false,
     ePrefix,
     "dMgr",
     "targetDMgr")
 
   dMgr.dataMutex.Unlock()
 
-  return errs
+  return dirCopyStats, errs
 }
 
 // CopyDirectoryTree - Copies all selected files in the directory tree to
@@ -3113,7 +3115,8 @@ func (dMgr *DirMgr) MakeDirWithPermission(fPermCfg FilePermissionConfig) error {
 
   dMgr.dataMutex.Lock()
 
-  err = dMgrHlpr.lowLevelMakeDirWithPermission(
+  _,
+    err = dMgrHlpr.lowLevelMakeDirWithPermission(
     dMgr,
     fPermCfg,
     ePrefix,
@@ -3142,7 +3145,8 @@ func (dMgr *DirMgr) MakeDir() error {
 
   dMgr.dataMutex.Lock()
 
-  err = dMgrHlpr.lowLevelMakeDir(
+  _,
+    err = dMgrHlpr.lowLevelMakeDir(
     dMgr,
     ePrefix,
     "dMgr")
@@ -3339,10 +3343,7 @@ func (dMgr *DirMgr) MakeDir() error {
 //
 func (dMgr *DirMgr) MoveDirectory(
   targetDMgr DirMgr,
-  fileSelectCriteria FileSelectionCriteria) (numOfSrcFilesMoved int,
-  numOfSrcFilesRemaining int,
-  numOfSubDirectories int,
-  dMgrDirWasDeleted bool,
+  fileSelectCriteria FileSelectionCriteria) (dirMoveStats DirectoryMoveStats,
   errs []error) {
 
   ePrefix := "DirMgr.MoveDirectory() "
@@ -3350,10 +3351,7 @@ func (dMgr *DirMgr) MoveDirectory(
 
   dMgr.dataMutex.Lock()
 
-  numOfSrcFilesMoved,
-    numOfSrcFilesRemaining,
-    numOfSubDirectories,
-    dMgrDirWasDeleted,
+  dirMoveStats,
     errs = dMgrHlpr.moveDirectory(
     dMgr,
     &targetDMgr,
@@ -3365,11 +3363,7 @@ func (dMgr *DirMgr) MoveDirectory(
 
   dMgr.dataMutex.Unlock()
 
-  return numOfSrcFilesMoved,
-    numOfSrcFilesRemaining,
-    numOfSubDirectories,
-    dMgrDirWasDeleted,
-    errs
+  return dirMoveStats, errs
 }
 
 // MoveDirectoryTree - Moves all sub-directories and files plus files in

@@ -621,7 +621,8 @@ func TestDirMgr_DeleteDirectoryTreeFiles_01(t *testing.T) {
       testDMgr.ConsolidateErrors(errs))
   }
 
-  errs = sourceDMgr2.CopyDirectory(testDMgr, fsc)
+  _,
+    errs = sourceDMgr2.CopyDirectory(testDMgr, fsc)
 
   if len(errs) != 0 {
     t.Errorf("Setup Errors returned by sourceDMgr2.CopyDirectoryTree(testDMgr, true, fsc)\n"+
@@ -1309,7 +1310,8 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_01(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := sourceDMgr1.CopyDirectory(testDMgr, fsc)
+  _,
+    errs := sourceDMgr1.CopyDirectory(testDMgr, fsc)
 
   if len(errs) != 0 {
     t.Errorf("Setup Errors returned by sourceDMgr1.CopyDirectory(testDMgr, fsc)\n"+
@@ -1324,7 +1326,8 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_01(t *testing.T) {
     return
   }
 
-  errs = sourceDMgr2.CopyDirectory(testDMgr, fsc)
+  _,
+    errs = sourceDMgr2.CopyDirectory(testDMgr, fsc)
 
   if len(errs) != 0 {
     t.Errorf("Setup Errors returned by sourceDMgr2.CopyDirectoryTree(testDMgr, true, fsc)\n"+
@@ -1462,16 +1465,16 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_02(t *testing.T) {
     return
   }
 
-  errs = sourceDMgr2.CopyDirectory(testDMgr2, fsc)
+  _,
+    errs = sourceDMgr2.CopyDirectory(testDMgr2, fsc)
 
   if len(errs) != 0 {
-    t.Errorf("Setup Errors returned by sourceDMgr2.CopyDirectoryTree(testDMgr2, true, fsc)\n"+
-      "sourceDMgr2='%v'\ntestDMgr2='%v'\nErrors Follow:\n\n",
-      sourceDMgr2.GetAbsolutePath(), testDMgr2.GetAbsolutePath())
 
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("%v\n", errs[i])
-    }
+    t.Errorf("Setup Errors returned by sourceDMgr2.CopyDirectoryTree(testDMgr2, true, fsc)\n"+
+      "sourceDMgr2='%v'\ntestDMgr2='%v'\nErrors Follow:\n\n%v",
+      sourceDMgr2.GetAbsolutePath(),
+      testDMgr2.GetAbsolutePath(),
+      testDMgr2.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(testDir)
 

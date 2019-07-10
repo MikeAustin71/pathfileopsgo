@@ -346,15 +346,16 @@ func TestDirMgr_MoveDirectory_01(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
+  _,
+    errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
 
   if len(errs) > 0 {
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("Test Setup Error returned from origSrcDMgr."+
-        "CopyDirectory(srcDirMgr, fsc)\n"+
-        "srcDirMgr='%v'\nError='%v'\n\n",
-        srcDirMgr.GetAbsolutePath(), errs[i].Error())
-    }
+
+    t.Errorf("Test Setup Error returned from origSrcDMgr."+
+      "CopyDirectory(srcDirMgr, fsc)\n"+
+      "srcDirMgr='%v'\nErrors Follow:\n\n%v",
+      srcDirMgr.GetAbsolutePath(),
+      srcDirMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(baseDir)
 
@@ -386,19 +387,15 @@ func TestDirMgr_MoveDirectory_01(t *testing.T) {
     return
   }
 
-  numOfSrcFilesMoved,
-    numOfSrcFilesRemaining,
-    numOfSubDirectories,
-    dMgrDirWasDeleted,
+  fsc = FileSelectionCriteria{}
+
+  dirMoveStats,
     errs := srcDirMgr.MoveDirectory(targetDMgr, fsc)
 
   if len(errs) > 0 {
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("Error returned from srcDirMgr.MoveDirectory(targetDMgr, fsc)\n"+
-        "targetDir='%v'\nError='%v'\n\n", targetDMgr.GetAbsolutePath(), errs[0].Error())
-    }
-
-    _ = fh.DeleteDirPathAll(baseDir)
+    t.Errorf("Error returned from srcDirMgr.MoveDirectory(targetDMgr, fsc)\n"+
+      "targetDir='%v'\nErrors Follow:\n\n%v",
+      targetDMgr.GetAbsolutePath(), targetDMgr.ConsolidateErrors(errs))
     return
   }
 
@@ -469,27 +466,27 @@ func TestDirMgr_MoveDirectory_01(t *testing.T) {
       "Error='%v'\n", baseDir, err.Error())
   }
 
-  if numOfSrcFilesRemaining != 0 {
+  if dirMoveStats.SourceFilesRemaining != 0 {
     t.Errorf("Error: Expected that number of source files remaining would be zero!\n"+
-      "Instead, number of source files remaining='%v'\n", numOfSrcFilesRemaining)
+      "Instead, number of source files remaining='%v'\n", dirMoveStats.SourceFilesRemaining)
   }
 
-  if numOfSrcFilesMoved != expectedNumOfSrcDirFiles {
+  if uint64(expectedNumOfSrcDirFiles) != dirMoveStats.SourceFilesMoved {
     t.Errorf("Error: Expected that the number of source files moved\n"+
       "to target directory would equal '%v'.\n"+
       "Instead, the number of source files moved='%v'\n",
-      expectedNumOfSrcDirFiles, numOfSrcFilesMoved)
+      expectedNumOfSrcDirFiles, dirMoveStats.SourceFilesMoved)
   }
 
-  if numOfSubDirectories != 0 {
+  if dirMoveStats.NumOfSubDirectories != 0 {
     t.Errorf("Error: Expected that the number of sub-directories counted would equal zero.\n"+
       "Instead, the number of sub-directories='%v' .\n",
-      numOfSubDirectories)
+      dirMoveStats.NumOfSubDirectories)
   }
 
-  if !dMgrDirWasDeleted {
-    t.Error("Error: Expected dMgrDirWasDeleted='true'.\n" +
-      "Instead, dMgrDirWasDeleted='false'!\n")
+  if !dirMoveStats.SourceDirWasDeleted {
+    t.Error("Error: Expected dirMoveStats.SourceDirWasDeleted='true'.\n" +
+      "Instead, dirMoveStats.SourceDirWasDeleted='false'!\n")
   }
 
   return
@@ -541,15 +538,15 @@ func TestDirMgr_MoveDirectory_02(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
+  _,
+    errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
 
   if len(errs) > 0 {
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("Test Setup Error returned from origSrcDMgr."+
-        "CopyDirectory(srcDirMgr, fsc)\n"+
-        "srcDirMgr='%v'\nError='%v'\n\n",
-        srcDirMgr.GetAbsolutePath(), errs[i].Error())
-    }
+    t.Errorf("Test Setup Error returned from origSrcDMgr."+
+      "CopyDirectory(srcDirMgr, fsc)\n"+
+      "srcDirMgr='%v'\nErrors Follow:\n\n%v",
+      srcDirMgr.GetAbsolutePath(),
+      srcDirMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(baseDir)
 
@@ -582,9 +579,6 @@ func TestDirMgr_MoveDirectory_02(t *testing.T) {
   srcDirMgr.isInitialized = false
 
   _,
-    _,
-    _,
-    _,
     errs = srcDirMgr.MoveDirectory(targetDMgr, fsc)
 
   if len(errs) == 0 {
@@ -650,15 +644,16 @@ func TestDirMgr_MoveDirectory_03(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
+  _,
+    errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
 
   if len(errs) > 0 {
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("Test Setup Error returned from origSrcDMgr."+
-        "CopyDirectory(srcDirMgr, fsc)\n"+
-        "srcDirMgr='%v'\nError='%v'\n\n",
-        targetDMgr.GetAbsolutePath(), errs[i].Error())
-    }
+
+    t.Errorf("Test Setup Error returned from origSrcDMgr."+
+      "CopyDirectory(srcDirMgr, fsc)\n"+
+      "srcDirMgr='%v'\nErrors Follow:\n\n%v",
+      targetDMgr.GetAbsolutePath(),
+      targetDMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(baseDir)
 
@@ -691,9 +686,6 @@ func TestDirMgr_MoveDirectory_03(t *testing.T) {
   targetDMgr.isInitialized = false
 
   _,
-    _,
-    _,
-    _,
     errs = srcDirMgr.MoveDirectory(targetDMgr, fsc)
 
   if len(errs) == 0 {
@@ -756,9 +748,6 @@ func TestDirMgr_MoveDirectory_04(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    _,
-    _,
-    _,
     errs := srcDirMgr.MoveDirectory(targetDMgr, fsc)
 
   if len(errs) == 0 {
@@ -836,15 +825,16 @@ func TestDirMgr_MoveDirectory_05(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
+  _,
+    errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
 
   if len(errs) > 0 {
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("Test Setup Error returned from origSrcDMgr."+
-        "CopyDirectory(srcDirMgr, fsc)\n"+
-        "srcDirMgr='%v'\nError='%v'\n\n",
-        srcDirMgr.GetAbsolutePath(), errs[i].Error())
-    }
+
+    t.Errorf("Test Setup Error returned from origSrcDMgr."+
+      "CopyDirectory(srcDirMgr, fsc)\n"+
+      "srcDirMgr='%v'\nErrors Follow:\n\n%v",
+      srcDirMgr.GetAbsolutePath(),
+      srcDirMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(srcDir)
     _ = fh.DeleteDirPathAll(targetDir)
@@ -880,16 +870,14 @@ func TestDirMgr_MoveDirectory_05(t *testing.T) {
   fsc.FileNamePatterns = []string{"*.htm"}
 
   _,
-    _,
-    _,
-    _,
     errs = srcDirMgr.MoveDirectory(targetDMgr, fsc)
 
   if len(errs) > 0 {
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("Error returned from srcDirMgr.MoveDirectory(targetDMgr, fsc)\n"+
-        "targetDir='%v'\nError='%v'\n\n", targetDMgr.GetAbsolutePath(), errs[0].Error())
-    }
+
+    t.Errorf("Error returned from srcDirMgr.MoveDirectory(targetDMgr, fsc)\n"+
+      "targetDir='%v'\nErrors Follow:\n\n%v",
+      targetDMgr.GetAbsolutePath(),
+      targetDMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(srcDir)
     _ = fh.DeleteDirPathAll(targetDir)
@@ -983,15 +971,15 @@ func TestDirMgr_MoveDirectory_06(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
+  _,
+    errs := origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
 
   if len(errs) > 0 {
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("Test Setup Error returned from origSrcDMgr."+
-        "CopyDirectory(srcDirMgr, fsc)\n"+
-        "srcDirMgr='%v'\nError='%v'\n\n",
-        targetDMgr.GetAbsolutePath(), errs[i].Error())
-    }
+    t.Errorf("Test Setup Error returned from origSrcDMgr."+
+      "CopyDirectory(srcDirMgr, fsc)\n"+
+      "srcDirMgr='%v'\nErrors Follow:\n\n%v",
+      targetDMgr.GetAbsolutePath(),
+      targetDMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(baseDir)
 
@@ -1010,15 +998,16 @@ func TestDirMgr_MoveDirectory_06(t *testing.T) {
 
   fsc = FileSelectionCriteria{}
 
-  errs = origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
+  _,
+    errs = origSrcDMgr.CopyDirectory(srcDirMgr, fsc)
 
   if len(errs) > 0 {
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("Test Setup Error returned from origSrcDMgr2 'html' files."+
-        "CopyDirectory(srcDirMgr, fsc)\n"+
-        "srcDirMgr='%v'\nError='%v'\n\n",
-        srcDirMgr.GetAbsolutePath(), errs[i].Error())
-    }
+
+    t.Errorf("Test Setup Error returned from origSrcDMgr2 'html' files."+
+      "CopyDirectory(srcDirMgr, fsc)\n"+
+      "srcDirMgr='%v'\nErrors Follow:\n\n%v",
+      srcDirMgr.GetAbsolutePath(),
+      srcDirMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(baseDir)
 
@@ -1053,17 +1042,15 @@ func TestDirMgr_MoveDirectory_06(t *testing.T) {
   fsc = FileSelectionCriteria{}
   fsc.FileNamePatterns = []string{"*.txt"}
 
-  numOfSrcFilesMoved,
-    numOfSrcFilesRemaining,
-    numOfSubDirectories,
-    dMgrDirWasDeleted,
+  dirMoveStats,
     errs := srcDirMgr.MoveDirectory(targetDMgr, fsc)
 
   if len(errs) > 0 {
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("Error returned from srcDirMgr.MoveDirectory(targetDMgr, fsc)\n"+
-        "targetDir='%v'\nError='%v'\n\n", targetDMgr.GetAbsolutePath(), errs[0].Error())
-    }
+
+    t.Errorf("Error returned from srcDirMgr.MoveDirectory(targetDMgr, fsc)\n"+
+      "targetDir='%v'\nErrors Follow:\n\n%v",
+      targetDMgr.GetAbsolutePath(),
+      targetDMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(baseDir)
     return
@@ -1135,27 +1122,28 @@ func TestDirMgr_MoveDirectory_06(t *testing.T) {
       "fh.DeleteDirPathAll(baseDir)\baseDir='%v'\n"+
       "Error='%v'\n", baseDir, err.Error())
   }
-  if numOfSrcFilesRemaining != expectedNumOfSrcDirFilesRemaining {
+
+  if uint64(expectedNumOfSrcDirFilesRemaining) != dirMoveStats.SourceFilesRemaining {
     t.Errorf("Error: Expected that number of source files remaining would be %v.\n"+
       "Instead, number of source files remaining='%v'\n",
       expectedNumOfSrcDirFilesRemaining,
-      numOfSrcFilesRemaining)
+      dirMoveStats.SourceFilesRemaining)
   }
 
-  if numOfSrcFilesMoved != expectedNumOfSrcDirFilesMoved {
+  if uint64(expectedNumOfSrcDirFilesMoved) != dirMoveStats.SourceFilesMoved {
     t.Errorf("Error: Expected that the number of source files moved\n"+
       "to target directory would equal '%v'.\n"+
       "Instead, the number of source files moved='%v'\n",
-      expectedNumOfSrcDirFilesMoved, numOfSrcFilesMoved)
+      expectedNumOfSrcDirFilesMoved, dirMoveStats.SourceFilesMoved)
   }
 
-  if numOfSubDirectories != 0 {
+  if dirMoveStats.NumOfSubDirectories != 0 {
     t.Errorf("Error: Expected that the number of sub-directories counted would equal zero.\n"+
       "Instead, the number of sub-directories='%v' .\n",
-      numOfSubDirectories)
+      dirMoveStats.NumOfSubDirectories)
   }
 
-  if dMgrDirWasDeleted {
+  if dirMoveStats.SourceDirWasDeleted {
     t.Error("Error: Expected dMgrDirWasDeleted='false'.\n" +
       "Instead, dMgrDirWasDeleted='true'!\n")
   }

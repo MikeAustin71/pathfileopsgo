@@ -63,11 +63,14 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
   dMgr *DirMgr,
   targetDMgr *DirMgr,
   fileSelectCriteria FileSelectionCriteria,
+  copyEmptyDirectories bool,
   ePrefix string,
   dMgrLabel string,
-  targetDMgrLabel string) (errs []error) {
+  targetDMgrLabel string) (dirCopyStats DirectoryCopyStats,
+  errs []error) {
 
   errs = make([]error, 0, 300)
+
   ePrefixCurrMethod := "dirMgrHelper.copyDirectory() "
 
   if len(ePrefix) == 0 {
@@ -91,7 +94,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
   if err != nil {
 
     errs = append(errs, err)
-    return errs
+    return dirCopyStats, errs
   }
 
   if !dirPathDoesExist {
@@ -101,7 +104,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
       dMgrLabel, dMgr.absolutePath)
 
     errs = append(errs, err)
-    return errs
+    return dirCopyStats, errs
   }
 
   targetPathDoesExist,
@@ -116,7 +119,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
   if err != nil {
 
     errs = append(errs, err)
-    return errs
+    return dirCopyStats, errs
   }
 
   dirPtr, err := os.Open(dMgr.absolutePath)
@@ -131,13 +134,13 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
 
     errs = append(errs, err2)
 
-    return errs
+    return dirCopyStats, errs
   }
 
   osPathSeparatorStr := string(os.PathSeparator)
 
   var src, target string
-  var isMatch bool
+  var isMatch, dirCreated bool
   var nameFileInfos []os.FileInfo
   err3 = nil
 
@@ -156,7 +159,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
         dMgr.absolutePath, err3.Error())
 
       errs = append(errs, err2)
-      return errs
+      return dirCopyStats, errs
     }
 
     for _, nameFInfo := range nameFileInfos {
@@ -186,7 +189,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
       }
 
       if !isMatch {
-
+        dirCopyStats.FilesNotCopied++
         continue
 
       } else {
@@ -196,7 +199,8 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
         // Create Directory if needed
         if !targetPathDoesExist {
 
-          err = dMgrHlpr.lowLevelMakeDir(
+          dirCreated,
+            err = dMgrHlpr.lowLevelMakeDir(
             targetDMgr,
             ePrefix,
             "targetDMgr")
@@ -214,6 +218,10 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
           }
 
           targetPathDoesExist = true
+          if dirCreated {
+            dirCopyStats.DirCreated++
+          }
+
         }
 
         src = dMgr.absolutePath +
@@ -231,6 +239,8 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
             src, target, err.Error())
 
           errs = append(errs, err2)
+        } else {
+          dirCopyStats.FilesCopied++
         }
       }
     }
@@ -251,7 +261,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
     }
   }
 
-  return errs
+  return dirCopyStats, errs
 }
 
 // copyDirectoryTree - Helper method for 'DirMgr'. This method is
@@ -330,7 +340,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   dirs := DirMgrCollection{}
   var dirPtr *os.File
   var nextTargetDMgr DirMgr
-  var isMatch, isTopLevelDir, isNewDir bool
+  var isMatch, isTopLevelDir, isNewDir, dirCreated bool
   var srcFile, targetFile string
 
   nextDir := dMgrHlpr.copyOut(dMgr)
@@ -411,13 +421,16 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
       isTopLevelDir = false
     }
 
+    dirCreated = false
+
     if isTopLevelDir &&
       !skipTopLevelDirectory &&
       copyEmptyDirectories {
 
       dTreeCopyStats.DirsCopied++
 
-      err = dMgrHlpr.lowLevelMakeDir(
+      dirCreated,
+        err = dMgrHlpr.lowLevelMakeDir(
         &nextTargetDMgr,
         ePrefix,
         "1-nextTargetDMgr")
@@ -426,7 +439,8 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
 
       dTreeCopyStats.DirsCopied++
 
-      err = dMgrHlpr.lowLevelMakeDir(
+      dirCreated,
+        err = dMgrHlpr.lowLevelMakeDir(
         &nextTargetDMgr,
         ePrefix,
         "2-nextTargetDMgr")
@@ -462,6 +476,9 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
       }
 
       continue
+    } else if dirCreated {
+      dTreeCopyStats.DirsCreated++
+      dirCreated = false
     }
 
     err3 = nil
@@ -543,6 +560,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
           } else {
 
             // We have a match
+            dirCreated = false
 
             dMgrPathDoesExist,
               _,
@@ -562,7 +580,8 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
             // Create Directory if needed
             if !dMgrPathDoesExist {
 
-              err = dMgrHlpr.lowLevelMakeDir(
+              dirCreated,
+                err = dMgrHlpr.lowLevelMakeDir(
                 &nextTargetDMgr,
                 ePrefix,
                 "3-nextTargetDMgr")
@@ -576,6 +595,8 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
                 errs = append(errs, err2)
                 err3 = io.EOF
                 break
+              } else if dirCreated {
+                dTreeCopyStats.DirsCreated++
               }
             }
 
@@ -3591,9 +3612,11 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDoesDirectoryExist(
 func (dMgrHlpr *dirMgrHelper) lowLevelMakeDir(
   dMgr *DirMgr,
   ePrefix string,
-  dMgrLabel string) error {
+  dMgrLabel string) (dirCreated bool, err error) {
 
   ePrefixCurrMethod := "dirMgrHelper.lowLevelMakeDir() "
+  dirCreated = false
+  err = nil
 
   if len(ePrefix) == 0 {
     ePrefix = ePrefixCurrMethod
@@ -3611,66 +3634,77 @@ func (dMgrHlpr *dirMgrHelper) lowLevelMakeDir(
       dMgrLabel)
 
   if err != nil {
-    return err
+    return dirCreated, err
   }
 
   if dMgrPathDoesExist {
     // The directory exists
     // Nothing to do.
-    return nil
+    return dirCreated, err
   }
 
-  fPermCfg, err := FilePermissionConfig{}.New("drwxrwxrwx")
+  fPermCfg, err2 := FilePermissionConfig{}.New("drwxrwxrwx")
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
       "\nError returned by FilePermissionConfig{}.New(\"drwxrwxrwx\")\n"+
-      "Error='%v'\n", err.Error())
+      "Error='%v'\n", err2.Error())
+
+    return dirCreated, err
   }
 
-  modePerm, err := fPermCfg.GetCompositePermissionMode()
+  modePerm, err2 := fPermCfg.GetCompositePermissionMode()
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
       "\nError returned by fPermCfg.GetCompositePermissionMode().\n"+
-      "Error='%v\n", err.Error())
+      "Error='%v\n", err2.Error())
+    return dirCreated, err
   }
 
-  err = os.MkdirAll(dMgr.absolutePath, modePerm)
+  err2 = os.MkdirAll(dMgr.absolutePath, modePerm)
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
       "\nError returned by os.MkdirAll(%v.absolutePath, modePerm).\n"+
       "%v.absolutePath='%v'\nmodePerm=\"drwxrwxrwx\"\n"+
-      "Error='%v'\n", err.Error())
+      "Error='%v'\n", err2.Error())
+
+    return dirCreated, err
   }
 
   dMgrPathDoesExist,
     _,
-    err =
+    err2 =
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
       ePrefix,
       dMgrLabel)
 
-  if err != nil {
-    return fmt.Errorf("Error: After attempted directory creation, "+
+  if err2 != nil {
+    err = fmt.Errorf("Error: After attempted directory creation, "+
       "a non-path error was generated!\n"+
       "%v.absolutePath='%v'\n"+
       "Error='%v'\n",
       dMgrLabel,
       dMgr.absolutePath,
-      err.Error())
+      err2.Error())
+    return dirCreated, err
   }
 
   if !dMgrPathDoesExist {
-    return fmt.Errorf("Error: After attempted directory creation,\n"+
+    err = fmt.Errorf("Error: After attempted directory creation,\n"+
       "the directory DOES NOT EXIST!\n"+
       "%v=%v\n", dMgrLabel, dMgr.absolutePath)
+
+    return dirCreated, err
   }
 
-  return nil
+  dirCreated = true
+  err = nil
+
+  return dirCreated, err
 }
 
 // lowLevelMakeDirWithPermission - Helper Method used by 'DirMgr'. This method
@@ -3682,7 +3716,10 @@ func (dMgrHlpr *dirMgrHelper) lowLevelMakeDirWithPermission(
   dMgr *DirMgr,
   fPermCfg FilePermissionConfig,
   ePrefix string,
-  dMgrLabel string) error {
+  dMgrLabel string) (dirCreated bool, err error) {
+
+  dirCreated = false
+  err = nil
 
   ePrefixCurrMethod := "dirMgrHelper.lowLevelMakeDir() "
 
@@ -3702,67 +3739,78 @@ func (dMgrHlpr *dirMgrHelper) lowLevelMakeDirWithPermission(
       dMgrLabel)
 
   if err != nil {
-    return err
+    return dirCreated, err
   }
 
   if dMgrPathDoesExist {
     // The directory exists
     // Nothing to do.
-    return nil
+    return dirCreated, err
   }
 
-  err = fPermCfg.IsValid()
+  err2 := fPermCfg.IsValid()
 
-  if err != nil {
-    return fmt.Errorf("Input Parameter 'fPermCfg' is INVALID!\n"+
+  if err2 != nil {
+    err = fmt.Errorf("Input Parameter 'fPermCfg' is INVALID!\n"+
       "Error returned by fPermCfg.IsValid().\n"+
-      "Error='%v'\n", err.Error())
+      "Error='%v'\n", err2.Error())
+
+    return dirCreated, err
   }
 
-  modePerm, err := fPermCfg.GetCompositePermissionMode()
+  modePerm, err2 := fPermCfg.GetCompositePermissionMode()
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
       "\nError returned by fPermCfg.GetCompositePermissionMode().\n"+
-      "Error='%v\n", err.Error())
+      "Error='%v\n", err2.Error())
+
+    return dirCreated, err
   }
 
-  err = os.MkdirAll(dMgr.absolutePath, modePerm)
+  err2 = os.MkdirAll(dMgr.absolutePath, modePerm)
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
       "\nError returned by os.MkdirAll(%v.absolutePath, modePerm).\n"+
       "%v.absolutePath='%v'\nmodePerm=\"drwxrwxrwx\"\n"+
       "Error='%v'\n",
-      dMgrLabel, dMgr.absolutePath, err.Error())
+      dMgrLabel, dMgr.absolutePath, err2.Error())
+
+    return dirCreated, err
   }
 
   dMgrPathDoesExist,
     _,
-    err =
+    err2 =
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
       ePrefix,
       dMgrLabel)
 
-  if err != nil {
-    return fmt.Errorf("Error: After attempted directory creation, "+
+  if err2 != nil {
+    err = fmt.Errorf("Error: After attempted directory creation, "+
       "a non-path error was generated!\n"+
       "%v.absolutePath='%v'\n"+
       "Error='%v'\n",
       dMgrLabel,
       dMgr.absolutePath,
-      err.Error())
+      err2.Error())
+    return dirCreated, err
   }
 
   if !dMgrPathDoesExist {
-    return fmt.Errorf("Error: After attempted directory creation,\n"+
+    err = fmt.Errorf("Error: After attempted directory creation,\n"+
       "the directory DOES NOT EXIST!\n"+
       "%v=%v\n", dMgrLabel, dMgr.absolutePath)
+    return dirCreated, err
   }
 
-  return nil
+  dirCreated = true
+  err = nil
+
+  return dirCreated, err
 }
 
 // moveDirectory - Moves files from the source directory identified
@@ -3807,18 +3855,11 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
   ePrefix string,
   dMgrLabel string,
   targetDMgrLabel string,
-  fileSelectLabel string) (numOfSrcFilesMoved int,
-  numOfSrcFilesRemaining int,
-  numOfSubDirectories int,
-  dMgrDirWasDeleted bool,
+  fileSelectLabel string) (dirMoveStats DirectoryMoveStats,
   errs []error) {
 
   ePrefixCurrMethod := "dirMgrHelper.moveDirectory() "
 
-  numOfSrcFilesMoved = 0
-  numOfSrcFilesRemaining = 0
-  numOfSubDirectories = 0
-  dMgrDirWasDeleted = false
   errs = make([]error, 0, 300)
 
   if len(ePrefix) == 0 {
@@ -3842,11 +3883,7 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
 
     errs = append(errs, err)
 
-    return numOfSrcFilesMoved,
-      numOfSrcFilesRemaining,
-      numOfSubDirectories,
-      dMgrDirWasDeleted,
-      errs
+    return dirMoveStats, errs
   }
 
   if !dMgrPathDoesExist {
@@ -3858,11 +3895,7 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
 
     errs = append(errs, err)
 
-    return numOfSrcFilesMoved,
-      numOfSrcFilesRemaining,
-      numOfSubDirectories,
-      dMgrDirWasDeleted,
-      errs
+    return dirMoveStats, errs
   }
 
   targetDMgrPathDoesExist,
@@ -3877,11 +3910,7 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
 
     errs = append(errs, err)
 
-    return numOfSrcFilesMoved,
-      numOfSrcFilesRemaining,
-      numOfSubDirectories,
-      dMgrDirWasDeleted,
-      errs
+    return dirMoveStats, errs
   }
 
   fh := FileHelper{}
@@ -3900,19 +3929,14 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
 
     errs = append(errs, err2)
 
-    return numOfSrcFilesMoved,
-      numOfSrcFilesRemaining,
-      numOfSubDirectories,
-      dMgrDirWasDeleted,
-      errs
+    return dirMoveStats, errs
   }
 
   osPathSeparatorStr := string(os.PathSeparator)
 
   var src, target string
-  var isMatch bool
+  var isMatch, dirCreated bool
   var nameFileInfos []os.FileInfo
-  numOfSrcFiles := 0
   err3 = nil
 
   for err3 != io.EOF {
@@ -3936,14 +3960,14 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
     for _, nameFInfo := range nameFileInfos {
 
       if nameFInfo.IsDir() {
-        numOfSubDirectories++
+        dirMoveStats.NumOfSubDirectories++
         continue
 
       }
 
       // This is not a directory. It is a file.
       // Determine if it matches the find file criteria.
-      numOfSrcFiles++
+      dirMoveStats.TotalSrcFilesProcessed++
 
       isMatch, err =
         fh.FilterFileName(nameFInfo, fileSelectCriteria)
@@ -3966,16 +3990,17 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
       }
 
       if !isMatch {
-
+        dirMoveStats.SourceFilesRemaining++
         continue
 
       } else {
         // We have a match
-
+        dirCreated = false
         // Create Directory if needed
         if !targetDMgrPathDoesExist {
 
-          err = dMgrHlpr.lowLevelMakeDir(
+          dirCreated,
+            err = dMgrHlpr.lowLevelMakeDir(
             targetDMgr,
             ePrefix,
             targetDMgrLabel)
@@ -3993,6 +4018,11 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
             break
           }
 
+          if dirCreated {
+            dirMoveStats.DirCreated++
+          }
+
+          dirMoveStats.DirCreated++
           targetDMgrPathDoesExist = true
         }
 
@@ -4015,7 +4045,7 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
 
         }
 
-        numOfSrcFilesMoved++
+        dirMoveStats.SourceFilesMoved++
       }
     }
   }
@@ -4034,21 +4064,21 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
 
   }
 
-  numOfSrcFilesRemaining =
-    numOfSrcFiles - numOfSrcFilesMoved
+  if dirMoveStats.TotalSrcFilesProcessed !=
+    dirMoveStats.SourceFilesMoved+dirMoveStats.SourceFilesRemaining {
 
-  if numOfSrcFilesRemaining < 0 {
     err = fmt.Errorf(ePrefix+
-      "Counting Error: Number of files moved exceeds number of\n"+
-      "original source files in %v directory.\n"+
+      "Counting Error: Total Number of Files processed is NOT EQUAL to\n"+
+      "the number of source moved plus the number of source files remaining.\n"+
+      "Source Directory= %v.absolutePath='%v'\n"+
       "Total Source Files in %v Directory='%v'\n"+
-      "Number of files moved='%v'\n"+
-      "Number of files remaining='%v'\n\n",
+      "Number of source files moved='%v'\n"+
+      "Number of source files remaining='%v'\n\n",
       dMgrLabel,
-      dMgrLabel,
-      numOfSrcFiles,
-      numOfSrcFilesMoved,
-      numOfSrcFilesRemaining)
+      dMgr.absolutePath,
+      dirMoveStats.TotalSrcFilesProcessed,
+      dirMoveStats.SourceFilesMoved,
+      dirMoveStats.SourceFilesRemaining)
 
     errs = append(errs, err)
 
@@ -4057,7 +4087,8 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
   // If all the source files have been moved and
   // there are no sub-directories, DELETE the
   // directory (dMgr).
-  if numOfSrcFilesRemaining == 0 && numOfSubDirectories == 0 {
+  if dirMoveStats.SourceFilesRemaining == 0 &&
+    dirMoveStats.NumOfSubDirectories == 0 {
 
     err = dMgrHlpr.lowLevelDeleteDirectoryAll(
       dMgr,
@@ -4066,20 +4097,16 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
 
     if err != nil {
       errs = append(errs, err)
-      dMgrDirWasDeleted = false
+      dirMoveStats.SourceDirWasDeleted = false
     } else {
-      dMgrDirWasDeleted = true
+      dirMoveStats.SourceDirWasDeleted = true
       dMgr.doesAbsolutePathExist = false
       dMgr.doesPathExist = false
       dMgr.actualDirFileInfo = FileInfoPlus{}
     }
   }
 
-  return numOfSrcFilesMoved,
-    numOfSrcFilesRemaining,
-    numOfSubDirectories,
-    dMgrDirWasDeleted,
-    errs
+  return dirMoveStats, errs
 }
 
 // moveDirectoryTree - Moves all sub-directories and files plus files in

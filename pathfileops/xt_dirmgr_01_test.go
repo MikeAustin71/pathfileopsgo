@@ -108,13 +108,15 @@ func TestDirMgr_CopyDirectory_01(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
+  dirCopyStats,
+    errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
 
   if len(errs) > 0 {
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("Error returned from srcDMgr.CopyDirectory(targetDMgr, fsc)\n"+
-        "targetDir='%v'\nError='%v'\n\n", targetDMgr.GetAbsolutePath(), errs[i].Error())
-    }
+
+    t.Errorf("Error returned from srcDMgr.CopyDirectory(targetDMgr, fsc)\n"+
+      "targetDir='%v'\nErrors Follow:\n\n%v",
+      targetDMgr.GetAbsolutePath(),
+      targetDMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(targetDir)
 
@@ -157,6 +159,14 @@ func TestDirMgr_CopyDirectory_01(t *testing.T) {
 
     return
 
+  }
+
+  if 5 != dirCopyStats.FilesCopied {
+    t.Errorf("Test Setup Error: Expected that dirCopyStats.FilesCopied='5'.\n"+
+      "Instead, dirCopyStats.FilesCopied='%v'.\n",
+      dirCopyStats.FilesCopied)
+
+    return
   }
 
   for i := 0; i < fMgrCollection.GetNumOfFileMgrs(); i++ {
@@ -231,7 +241,8 @@ func TestDirMgr_CopyDirectory_02(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
+  _,
+    errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
 
   if len(errs) == 0 {
     t.Error("Expected an error return from srcDMgr.CopyDirectory(targetDMgr, fsc)\n" +
@@ -285,7 +296,8 @@ func TestDirMgr_CopyDirectory_03(t *testing.T) {
 
   srcDMgr.isInitialized = false
 
-  errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
+  _,
+    errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
 
   if len(errs) == 0 {
     t.Error("Expected an error return from srcDMgr.CopyDirectory(targetDMgr, fsc)\n" +
@@ -341,7 +353,8 @@ func TestDirMgr_CopyDirectory_04(t *testing.T) {
 
   targetDMgr.isInitialized = false
 
-  errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
+  _,
+    errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
 
   if len(errs) == 0 {
     t.Error("Expected an error return from srcDMgr.CopyDirectory(targetDMgr, fsc)\n" +
@@ -397,15 +410,15 @@ func TestDirMgr_CopyDirectory_05(t *testing.T) {
 
   fsc.FileNamePatterns = []string{"*.htm"}
 
-  errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
+  dirCopyStats,
+    errs := srcDMgr.CopyDirectory(targetDMgr, fsc)
 
   if len(errs) > 0 {
-    t.Errorf("Errors returned from srcDMgr.CopyDirectory(targetDMgr, fsc)\n"+
-      "targetDir='%v'\n\n", targetDMgr.GetAbsolutePath())
 
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("%v", errs[i])
-    }
+    t.Errorf("Errors returned from srcDMgr.CopyDirectory(targetDMgr, fsc)\n"+
+      "targetDir='%v'\nErrors Follow:\n\n%v",
+      targetDMgr.GetAbsolutePath(),
+      targetDMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(targetDir)
 
@@ -426,6 +439,11 @@ func TestDirMgr_CopyDirectory_05(t *testing.T) {
     t.Errorf("Error: Expected that target directory would not exist because\n" +
       "none of the source files matched the search criteria.\n" +
       "However, the target directory DOES EXIST!!!")
+  }
+
+  if dirCopyStats.FilesCopied != 0 {
+    t.Errorf("Expected that dirCopyStats.FilesCopied='0'.\n"+
+      "Instead, dirCopyStats.FilesCopied='%v'", dirCopyStats.FilesCopied)
   }
 
   err = fh.DeleteDirPathAll(targetDir)
@@ -867,7 +885,8 @@ func TestDirMgr_CopyDirectoryTree_06(t *testing.T) {
 
   fsc = FileSelectionCriteria{}
 
-  errs = setUpDMgr2.CopyDirectory(srcHtmlDMgr, fsc)
+  _,
+    errs = setUpDMgr2.CopyDirectory(srcHtmlDMgr, fsc)
 
   if len(errs) > 0 {
     t.Errorf("Test Setup Errors returned by setUpDMgr2.CopyDirectory(srcHtmlDMgr, fsc).\n"+
