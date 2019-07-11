@@ -645,9 +645,7 @@ func TestDirMgr_DeleteDirectoryTreeFiles_01(t *testing.T) {
 
   expectedNumOfDeletedFiles := testDtreeInfo.FoundFiles.GetNumOfFileMgrs()
 
-  numOfSubDirectories,
-    numOfRemainingFiles,
-    numOfDeletedFiles,
+  deleteDirStats,
     errs := testDMgr.DeleteDirectoryTreeFiles(fsc)
 
   if len(errs) != 0 {
@@ -658,19 +656,19 @@ func TestDirMgr_DeleteDirectoryTreeFiles_01(t *testing.T) {
       testDMgr.ConsolidateErrors(errs))
   }
 
-  if expectedNumOfDirectories != numOfSubDirectories {
+  if uint64(expectedNumOfDirectories) != deleteDirStats.TotalSubDirectories {
     t.Errorf("Expected numOfSubDirectories='%v'\nInstead, numOfSubDirectories='%v'\n",
-      expectedNumOfDirectories, numOfSubDirectories)
+      expectedNumOfDirectories, deleteDirStats.TotalSubDirectories)
   }
 
-  if expectedNumOfDeletedFiles != numOfDeletedFiles {
+  if uint64(expectedNumOfDeletedFiles) != deleteDirStats.FilesDeleted {
     t.Errorf("Expected numOfDeletedFiles='%v'\nInstead, numOfDeletedFiles='%v'\n",
-      expectedNumOfDeletedFiles, numOfDeletedFiles)
+      expectedNumOfDeletedFiles, deleteDirStats.FilesDeleted)
   }
 
-  if numOfRemainingFiles != 0 {
+  if deleteDirStats.FilesRemaining != 0 {
     t.Errorf("Expected numOfRemainingFiles='0'.\nInstead, numOfRemainingFiles='%v'\n",
-      numOfRemainingFiles)
+      deleteDirStats.FilesRemaining)
   }
 
   err = testDMgr.DeleteAll()
@@ -704,8 +702,6 @@ func TestDirMgr_DeleteDirectoryTreeFiles_02(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    _,
-    _,
     errs := testDMgr.DeleteDirectoryTreeFiles(fsc)
 
   if len(errs) == 0 {
@@ -739,8 +735,6 @@ func TestDirMgr_DeleteDirectoryTreeFiles_03(t *testing.T) {
   testDMgr.isInitialized = false
 
   _,
-    _,
-    _,
     errs := testDMgr.DeleteDirectoryTreeFiles(fsc)
 
   if len(errs) == 0 {
@@ -1355,8 +1349,7 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_01(t *testing.T) {
 
   expectedNumOfDeletedFiles := testFileMgrInfo.GetNumOfFileMgrs()
 
-  numOfRemainingFiles,
-    numOfDeletedFiles,
+  deleteDirStats,
     errs := testDMgr.DeleteFilesBySelectionCriteria(fsc)
 
   if len(errs) != 0 {
@@ -1373,15 +1366,15 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_01(t *testing.T) {
     return
   }
 
-  if expectedNumOfDeletedFiles != numOfDeletedFiles {
+  if uint64(expectedNumOfDeletedFiles) != deleteDirStats.FilesDeleted {
     t.Errorf("Error: Expected numOfDeletedFiles='%v'.\nInstead, numOfDeletedFils='%v'\n",
-      expectedNumOfDeletedFiles, numOfDeletedFiles)
+      expectedNumOfDeletedFiles, deleteDirStats.FilesDeleted)
   }
 
-  if numOfRemainingFiles != 0 {
+  if deleteDirStats.FilesRemaining != 0 {
     t.Errorf("Error: Expected numOfRemainingFiles=0.\n"+
       "Instead, numOfRemainingFiles='%v'\n",
-      numOfRemainingFiles)
+      deleteDirStats.FilesRemaining)
   }
 
   err = fh.DeleteDirPathAll(testDir)
@@ -1519,8 +1512,7 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_02(t *testing.T) {
 
   fsc.FileNamePatterns = []string{"*.txt"}
 
-  numOfRemainingFiles,
-    numOfDeletedFiles,
+  deleteDirStats,
     errs := testDMgr.DeleteFilesBySelectionCriteria(fsc)
 
   if len(errs) != 0 {
@@ -1537,15 +1529,15 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_02(t *testing.T) {
     return
   }
 
-  if expectedNumOfDeletedFiles != numOfDeletedFiles {
+  if uint64(expectedNumOfDeletedFiles) != deleteDirStats.FilesDeleted {
     t.Errorf("Error: Expected numOfDeletedFiles='%v'.\nInstead, numOfDeletedFils='%v'\n",
-      expectedNumOfDeletedFiles, numOfDeletedFiles)
+      expectedNumOfDeletedFiles, deleteDirStats.FilesDeleted)
   }
 
-  if numOfRemainingFiles != expectedNumOfRemainingFiles {
+  if deleteDirStats.FilesRemaining != uint64(expectedNumOfRemainingFiles) {
     t.Errorf("Error: Expected numOfRemainingFiles='%v'.\n"+
       "Instead, numOfRemainingFiles='%v'\n",
-      expectedNumOfRemainingFiles, numOfRemainingFiles)
+      expectedNumOfRemainingFiles, deleteDirStats.FilesRemaining)
   }
 
   err = fh.DeleteDirPathAll(testDir)
@@ -1605,7 +1597,6 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_03(t *testing.T) {
   testDMgr.isInitialized = false
 
   _,
-    _,
     errs = testDMgr.DeleteFilesBySelectionCriteria(fsc)
 
   if len(errs) == 0 {
@@ -1619,7 +1610,6 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_03(t *testing.T) {
     t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(testDir)\n"+
       "testDir='%v'\nError='%v'\n", testDir, err.Error())
   }
-
 }
 
 func TestDirMgr_DeleteFilesBySelectionCriteria_04(t *testing.T) {
@@ -1640,8 +1630,8 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_04(t *testing.T) {
   }
 
   fsc := FileSelectionCriteria{}
+
   _,
-    _,
     errs := testDMgr.DeleteFilesBySelectionCriteria(fsc)
 
   if len(errs) == 0 {

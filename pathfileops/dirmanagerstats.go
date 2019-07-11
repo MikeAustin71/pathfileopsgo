@@ -28,3 +28,14 @@ type DirectoryMoveStats struct {
   SourceDirWasDeleted    bool
   ComputeError           error
 }
+
+type DeleteDirFilesStats struct {
+  TotalFilesProcessed  uint64
+  FilesDeleted         uint64
+  FilesRemaining       uint64
+  TotalDirsProcessed   uint64
+  TotalSubDirectories  uint64
+  TotalDirsScanned     uint64
+  DirectoriesDeleted   uint64
+  DirectoriesRemaining uint64
+}
