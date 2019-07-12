@@ -239,8 +239,7 @@ func (dMgr DirMgr) ConsolidateErrors(errors []error) error {
 func (dMgr *DirMgr) CopyDirectory(
   targetDMgr DirMgr,
   fileSelectCriteria FileSelectionCriteria,
-  copyEmptyDirectory bool) (dirCopyStats DirectoryCopyStats,
-  errs []error) {
+  copyEmptyDirectory bool) (dirCopyStats DirectoryCopyStats, errs []error) {
 
   ePrefix := "DirMgr.CopyDirectory() "
   dMgrHlpr := dirMgrHelper{}
@@ -430,8 +429,7 @@ func (dMgr *DirMgr) CopyDirectory(
 func (dMgr *DirMgr) CopyDirectoryTree(
   targetDMgr DirMgr,
   copyEmptyDirectories bool,
-  fileSelectCriteria FileSelectionCriteria) (dTreeCopyStats DirTreeCopyStats,
-  errs []error) {
+  fileSelectCriteria FileSelectionCriteria) (dTreeCopyStats DirTreeCopyStats, errs []error) {
 
   ePrefix := "DirMgr.CopyDirectoryTree() "
   errs = nil
@@ -508,7 +506,7 @@ func (dMgr *DirMgr) CopyOut() DirMgr {
 func (dMgr *DirMgr) CopySubDirectoryTree(
   targetDMgr DirMgr,
   copyEmptyDirectories bool,
-  fileSelectCriteria FileSelectionCriteria) (errs []error) {
+  fileSelectCriteria FileSelectionCriteria) (dTreeCopyStats DirTreeCopyStats, errs []error) {
 
   ePrefix := "DirMgr.CopySubDirectoryTree() "
   errs = nil
@@ -516,12 +514,12 @@ func (dMgr *DirMgr) CopySubDirectoryTree(
 
   dMgr.dataMutex.Lock()
 
-  _,
+  dTreeCopyStats,
     errs = dMgrHlpr.copyDirectoryTree(
     dMgr,
     &targetDMgr,
     copyEmptyDirectories,
-    true,
+    true, // skipTopLevelDirectory
     fileSelectCriteria,
     ePrefix,
     "dMgr",
@@ -529,7 +527,7 @@ func (dMgr *DirMgr) CopySubDirectoryTree(
 
   dMgr.dataMutex.Unlock()
 
-  return errs
+  return dTreeCopyStats, errs
 }
 
 // DeleteAll - BE CAREFUL!!! - This method will remove the directory identified by
@@ -1017,8 +1015,7 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(
 //                      array and returned to the caller.
 //
 func (dMgr *DirMgr) DeleteFilesBySelectionCriteria(
-  deleteFileSelectionCriteria FileSelectionCriteria) (deleteDirStats DeleteDirFilesStats,
-  errs []error) {
+  deleteFileSelectionCriteria FileSelectionCriteria) (deleteDirStats DeleteDirFilesStats, errs []error) {
 
   ePrefix := "DirMgr.DeleteDirectoryTreeFiles() "
 

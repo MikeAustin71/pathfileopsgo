@@ -232,7 +232,7 @@ func PrintDirMgrFields(dMgr pathFileOps.DirMgr) {
     return
   }
 
-  if actualDirFileInfo.IsFInfoInitialized {
+  if actualDirFileInfo.IsFileInfoInitialized() {
     fmt.Println("            File Info IsDir(): ", actualDirFileInfo.IsDir())
     fmt.Println("             File Info Name(): ", actualDirFileInfo.Name())
     fmt.Println("             File Info Size(): ", actualDirFileInfo.Size())
@@ -240,7 +240,7 @@ func PrintDirMgrFields(dMgr pathFileOps.DirMgr) {
       actualDirFileInfo.ModTime()))
     fmt.Println("             File Info Mode(): ", actualDirFileInfo.Mode())
     fmt.Println("          File Info     Sys(): ", actualDirFileInfo.Sys())
-    if actualDirFileInfo.IsDirPathInitialized {
+    if actualDirFileInfo.IsDirectoryPathInitialized() {
       fmt.Println("                   Dir path: ", actualDirFileInfo.DirPath())
     }
   } else {
