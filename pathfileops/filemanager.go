@@ -3457,7 +3457,7 @@ func (fMgr *FileMgr) SetFileInfo(info os.FileInfo) error {
 
   fMgr.dataMutex.Unlock()
 
-  if !fMgr.actualFileInfo.IsFInfoInitialized {
+  if !fMgr.actualFileInfo.isFInfoInitialized {
     return fmt.Errorf(ePrefix+
       "Error: Failed to initialize fMgr.actualFileInfo object.\n"+
       "info.Name()='%v'", info.Name())

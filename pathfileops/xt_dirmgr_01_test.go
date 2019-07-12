@@ -1408,14 +1408,14 @@ func TestDirMgr_CopyIn_01(t *testing.T) {
   dMgr2.CopyIn(&dMgr)
 
   if dMgr2.isInitialized != dMgr.isInitialized {
-    t.Errorf("After CopyIn(), expected dMgr2.IsFInfoInitialized='%v'.\n"+
-      "Instead, dMgr2.IsFInfoInitialized='%v'.\n",
+    t.Errorf("After CopyIn(), expected dMgr2.isFInfoInitialized='%v'.\n"+
+      "Instead, dMgr2.isFInfoInitialized='%v'.\n",
       dMgr.isInitialized, dMgr2.isInitialized)
   }
 
   if dMgr2.isInitialized != dMgr.isInitialized {
-    t.Errorf("After CopyIn(), expected dMgr2.IsFInfoInitialized='%v'.\n"+
-      "Instead, dMgr2.IsFInfoInitialized='%v'.", dMgr.isInitialized, dMgr2.isInitialized)
+    t.Errorf("After CopyIn(), expected dMgr2.isFInfoInitialized='%v'.\n"+
+      "Instead, dMgr2.isFInfoInitialized='%v'.", dMgr.isInitialized, dMgr2.isInitialized)
   }
 
   if dMgr2.originalPath != dMgr.originalPath {
@@ -1559,14 +1559,14 @@ func TestDirMgr_CopyOut_01(t *testing.T) {
   dMgr2 = dMgr.CopyOut()
 
   if dMgr2.isInitialized != dMgr.isInitialized {
-    t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.\n"+
-      "Instead, dMgr2.IsFInfoInitialized='%v'.",
+    t.Errorf("After CopyOut(), expected dMgr2.isFInfoInitialized='%v'.\n"+
+      "Instead, dMgr2.isFInfoInitialized='%v'.",
       dMgr.isInitialized, dMgr2.isInitialized)
   }
 
   if dMgr2.isInitialized != dMgr.isInitialized {
-    t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.\n"+
-      "Instead, dMgr2.IsFInfoInitialized='%v'.",
+    t.Errorf("After CopyOut(), expected dMgr2.isFInfoInitialized='%v'.\n"+
+      "Instead, dMgr2.isFInfoInitialized='%v'.",
       dMgr.isInitialized, dMgr2.isInitialized)
   }
 

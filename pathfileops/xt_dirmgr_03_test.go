@@ -13,7 +13,7 @@ func TestDirMgr_Equal_01(t *testing.T) {
   err := fh.DeleteDirPathAll(origDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(origDir).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(origDir).\n"+
       "origDir='%v'\nError='%v'\n", origDir, err.Error())
     return
   }
@@ -21,7 +21,7 @@ func TestDirMgr_Equal_01(t *testing.T) {
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.New(origDir).\n" +
+    t.Errorf("Error returned from DirMgr{}.New(origDir).\n"+
       "origDir=='%v'\nError='%v'", origDir, err.Error())
     return
   }
@@ -31,7 +31,7 @@ func TestDirMgr_Equal_01(t *testing.T) {
   err = fh.DeleteDirPathAll(origDir2)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(origDir2).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(origDir2).\n"+
       "origDir2='%v'\nError='%v'\n", origDir2, err.Error())
     return
   }
@@ -39,13 +39,13 @@ func TestDirMgr_Equal_01(t *testing.T) {
   dMgr2, err := DirMgr{}.New(origDir2)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.New(origDir2).\n" +
+    t.Errorf("Error returned from DirMgr{}.New(origDir2).\n"+
       "origDir2=='%v'\nError='%v'", origDir2, err.Error())
     return
   }
 
   if dMgr2.path != origDir2 {
-    t.Errorf("Expected original dMgr2.path='%v'.\n" +
+    t.Errorf("Expected original dMgr2.path='%v'.\n"+
       "Instead, dMgr2.path='%v'\n", origDir2, dMgr2.path)
     return
   }
@@ -53,84 +53,84 @@ func TestDirMgr_Equal_01(t *testing.T) {
   dMgr2 = dMgr.CopyOut()
 
   if dMgr2.isInitialized != dMgr.isInitialized {
-    t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.\n" +
-      "Instead, dMgr2.IsFInfoInitialized='%v'.\n",
+    t.Errorf("After CopyOut(), expected dMgr2.isFInfoInitialized='%v'.\n"+
+      "Instead, dMgr2.isFInfoInitialized='%v'.\n",
       dMgr.isInitialized, dMgr2.isInitialized)
   }
 
   if dMgr2.isInitialized != dMgr.isInitialized {
-    t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.\n" +
-      "Instead, dMgr2.IsFInfoInitialized='%v'.",
+    t.Errorf("After CopyOut(), expected dMgr2.isFInfoInitialized='%v'.\n"+
+      "Instead, dMgr2.isFInfoInitialized='%v'.",
       dMgr.isInitialized, dMgr2.isInitialized)
   }
 
   if dMgr2.originalPath != dMgr.originalPath {
-    t.Errorf("After CopyOut(), expected dMgr2.originalPath='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.originalPath='%v'.\n"+
       "Instead, dMgr2.originalPath='%v'.",
       dMgr.originalPath, dMgr2.originalPath)
   }
 
   if dMgr2.path != dMgr.path {
-    t.Errorf("After CopyOut(), expected dMgr2.path='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.path='%v'.\n"+
       "Instead, dMgr2.path='%v'.",
       dMgr.path, dMgr2.path)
   }
 
   if dMgr2.isPathPopulated != dMgr.isPathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isPathPopulated='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.isPathPopulated='%v'.\n"+
       "Instead, dMgr2.isPathPopulated='%v'.",
       dMgr.isPathPopulated, dMgr2.isPathPopulated)
   }
 
   if dMgr2.doesPathExist != dMgr.doesPathExist {
-    t.Errorf("After CopyOut(), expected dMgr2.doesPathExist='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.doesPathExist='%v'.\n"+
       "Instead, dMgr2.doesPathExist='%v'.",
       dMgr.doesPathExist, dMgr2.doesPathExist)
   }
 
   if dMgr2.parentPath != dMgr.parentPath {
-    t.Errorf("After CopyOut(), expected dMgr2.parentPath='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.parentPath='%v'.\n"+
       "Instead, dMgr2.parentPath='%v'.",
       dMgr.parentPath, dMgr2.parentPath)
   }
 
   if dMgr2.isParentPathPopulated != dMgr.isParentPathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isParentPathPopulated='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.isParentPathPopulated='%v'.\n"+
       "Instead, dMgr2.isParentPathPopulated='%v'.",
       dMgr.isParentPathPopulated, dMgr2.isParentPathPopulated)
   }
 
   if dMgr2.absolutePath != dMgr.absolutePath {
-    t.Errorf("After CopyOut(), expected dMgr2.absolutePath='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.absolutePath='%v'.\n"+
       "Instead, dMgr2.absolutePath='%v'.",
       dMgr.absolutePath, dMgr2.absolutePath)
   }
 
   if dMgr2.isAbsolutePathPopulated != dMgr.isAbsolutePathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathPopulated='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathPopulated='%v'.\n"+
       "Instead, dMgr2.isAbsolutePathPopulated='%v'.",
       dMgr.isAbsolutePathPopulated, dMgr2.isAbsolutePathPopulated)
   }
 
   if dMgr2.doesAbsolutePathExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("After CopyOut(), expected dMgr2.doesAbsolutePathExist='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.doesAbsolutePathExist='%v'.\n"+
       "Instead, dMgr2.doesAbsolutePathExist='%v'.",
       dMgr.doesAbsolutePathExist, dMgr2.doesAbsolutePathExist)
   }
 
   if dMgr2.isAbsolutePathDifferentFromPath != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathDifferentFromPath='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathDifferentFromPath='%v'.\n"+
       "Instead, dMgr2.isAbsolutePathDifferentFromPath='%v'.",
       dMgr.isAbsolutePathDifferentFromPath, dMgr2.isAbsolutePathDifferentFromPath)
   }
 
   if dMgr2.volumeName != dMgr.volumeName {
-    t.Errorf("After CopyOut(), expected dMgr2.volumeName='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.volumeName='%v'.\n"+
       "Instead, dMgr2.volumeName='%v'.", dMgr.volumeName, dMgr2.volumeName)
   }
 
   if dMgr2.isVolumePopulated != dMgr.isVolumePopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isVolumePopulated='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.isVolumePopulated='%v'.\n"+
       "Instead, dMgr2.isVolumePopulated='%v'.",
       dMgr.isVolumePopulated, dMgr2.isVolumePopulated)
   }
@@ -146,7 +146,7 @@ func TestDirMgr_Equal_01(t *testing.T) {
   err = fh.DeleteDirPathAll(origDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(origDir).\n" +
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(origDir).\n"+
       "origDir='%v'\nError='%v'\n", origDir, err.Error())
     return
   }
@@ -154,7 +154,7 @@ func TestDirMgr_Equal_01(t *testing.T) {
   err = fh.DeleteDirPathAll(origDir2)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(origDir2).\n" +
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(origDir2).\n"+
       "origDir2='%v'\nError='%v'\n", origDir2, err.Error())
     return
   }
@@ -170,7 +170,7 @@ func TestDirMgr_Equal_02(t *testing.T) {
   err := fh.DeleteDirPathAll(origDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(origDir).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(origDir).\n"+
       "origDir='%v'\nError='%v'\n", origDir, err.Error())
     return
   }
@@ -178,7 +178,7 @@ func TestDirMgr_Equal_02(t *testing.T) {
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.New(origDir).\n" +
+    t.Errorf("Error returned from DirMgr{}.New(origDir).\n"+
       "origDir=='%v'\nError='%v'", origDir, err.Error())
     return
   }
@@ -188,7 +188,7 @@ func TestDirMgr_Equal_02(t *testing.T) {
   err = fh.DeleteDirPathAll(origDir2)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(origDir2).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(origDir2).\n"+
       "origDir2='%v'\nError='%v'\n", origDir2, err.Error())
     return
   }
@@ -196,14 +196,14 @@ func TestDirMgr_Equal_02(t *testing.T) {
   dMgr2, err := DirMgr{}.New(origDir2)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.New(origDir2).\n" +
+    t.Errorf("Error returned from DirMgr{}.New(origDir2).\n"+
       "origDir2=='%v'\nError='%v'", origDir2, err.Error())
     _ = fh.DeleteDirPathAll(origDir)
     return
   }
 
   if dMgr2.path != origDir2 {
-    t.Errorf("Expected original dMgr2.path='%v'.\n" +
+    t.Errorf("Expected original dMgr2.path='%v'.\n"+
       "Instead, dMgr2.path='%v'", origDir2, dMgr2.path)
   }
 
@@ -213,49 +213,49 @@ func TestDirMgr_Equal_02(t *testing.T) {
   dMgr2.absolutePath = dMgr2.absolutePath + "x"
 
   if dMgr2.isInitialized != dMgr.isInitialized {
-    t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.\n" +
-      "Instead, dMgr2.IsFInfoInitialized='%v'.",
+    t.Errorf("After CopyOut(), expected dMgr2.isFInfoInitialized='%v'.\n"+
+      "Instead, dMgr2.isFInfoInitialized='%v'.",
       dMgr.isInitialized, dMgr2.isInitialized)
   }
 
   if dMgr2.isInitialized != dMgr.isInitialized {
-    t.Errorf("After CopyOut(), expected dMgr2.IsFInfoInitialized='%v'.\n" +
-      "Instead, dMgr2.IsFInfoInitialized='%v'.",
+    t.Errorf("After CopyOut(), expected dMgr2.isFInfoInitialized='%v'.\n"+
+      "Instead, dMgr2.isFInfoInitialized='%v'.",
       dMgr.isInitialized, dMgr2.isInitialized)
   }
 
   if dMgr2.originalPath != dMgr.originalPath {
-    t.Errorf("After CopyOut(), expected dMgr2.originalPath='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.originalPath='%v'.\n"+
       "Instead, dMgr2.originalPath='%v'.",
       dMgr.originalPath, dMgr2.originalPath)
   }
 
   if dMgr2.path != dMgr.path {
-    t.Errorf("After CopyOut(), expected dMgr2.path='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.path='%v'.\n"+
       "Instead, dMgr2.path='%v'.",
       dMgr.path, dMgr2.path)
   }
 
   if dMgr2.isPathPopulated != dMgr.isPathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isPathPopulated='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.isPathPopulated='%v'.\n"+
       "Instead, dMgr2.isPathPopulated='%v'.",
       dMgr.isPathPopulated, dMgr2.isPathPopulated)
   }
 
   if dMgr2.doesPathExist != dMgr.doesPathExist {
-    t.Errorf("After CopyOut(), expected dMgr2.doesPathExist='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.doesPathExist='%v'.\n"+
       "Instead, dMgr2.doesPathExist='%v'.",
       dMgr.doesPathExist, dMgr2.doesPathExist)
   }
 
   if dMgr2.parentPath != dMgr.parentPath {
-    t.Errorf("After CopyOut(), expected dMgr2.parentPath='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.parentPath='%v'.\n"+
       "Instead, dMgr2.parentPath='%v'.",
       dMgr.parentPath, dMgr2.parentPath)
   }
 
   if dMgr2.isParentPathPopulated != dMgr.isParentPathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isParentPathPopulated='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.isParentPathPopulated='%v'.\n"+
       "Instead, dMgr2.isParentPathPopulated='%v'.",
       dMgr.isParentPathPopulated, dMgr2.isParentPathPopulated)
   }
@@ -267,31 +267,31 @@ func TestDirMgr_Equal_02(t *testing.T) {
   }
 
   if dMgr2.isAbsolutePathPopulated != dMgr.isAbsolutePathPopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathPopulated='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathPopulated='%v'.\n"+
       "Instead, dMgr2.isAbsolutePathPopulated='%v'.",
       dMgr.isAbsolutePathPopulated, dMgr2.isAbsolutePathPopulated)
   }
 
   if dMgr2.doesAbsolutePathExist != dMgr.doesAbsolutePathExist {
-    t.Errorf("After CopyOut(), expected dMgr2.doesAbsolutePathExist='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.doesAbsolutePathExist='%v'.\n"+
       "Instead, dMgr2.doesAbsolutePathExist='%v'.",
       dMgr.doesAbsolutePathExist, dMgr2.doesAbsolutePathExist)
   }
 
   if dMgr2.isAbsolutePathDifferentFromPath != dMgr.isAbsolutePathDifferentFromPath {
-    t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathDifferentFromPath='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.isAbsolutePathDifferentFromPath='%v'.\n"+
       "Instead, dMgr2.isAbsolutePathDifferentFromPath='%v'.",
       dMgr.isAbsolutePathDifferentFromPath, dMgr2.isAbsolutePathDifferentFromPath)
   }
 
   if dMgr2.volumeName != dMgr.volumeName {
-    t.Errorf("After CopyOut(), expected dMgr2.volumeName='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.volumeName='%v'.\n"+
       "Instead, dMgr2.volumeName='%v'.",
       dMgr.volumeName, dMgr2.volumeName)
   }
 
   if dMgr2.isVolumePopulated != dMgr.isVolumePopulated {
-    t.Errorf("After CopyOut(), expected dMgr2.isVolumePopulated='%v'.\n" +
+    t.Errorf("After CopyOut(), expected dMgr2.isVolumePopulated='%v'.\n"+
       "Instead, dMgr2.isVolumePopulated='%v'.",
       dMgr.isVolumePopulated, dMgr2.isVolumePopulated)
   }
@@ -309,7 +309,7 @@ func TestDirMgr_Equal_02(t *testing.T) {
   err = fh.DeleteDirPathAll(origDir)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(origDir).\n" +
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(origDir).\n"+
       "origDir='%v'\nError='%v'\n", origDir, err.Error())
     return
   }
@@ -317,7 +317,7 @@ func TestDirMgr_Equal_02(t *testing.T) {
   err = fh.DeleteDirPathAll(origDir2)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(origDir2).\n" +
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(origDir2).\n"+
       "origDir2='%v'\nError='%v'\n", origDir2, err.Error())
     return
   }
@@ -339,7 +339,7 @@ func TestDirMgr_EqualAbsPaths_01(t *testing.T) {
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir).\n" +
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir).\n"+
       "origDir=='%v'  Error='%v'", origDir, err.Error())
   }
 
@@ -381,7 +381,7 @@ func TestDirMgr_EqualAbsPaths_02(t *testing.T) {
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from  DirMgr{}.New(origDir).\n" +
+    t.Errorf("Error returned from  DirMgr{}.New(origDir).\n"+
       "origDir=='%v'  Error='%v'", origDir, err.Error())
   }
 
@@ -429,7 +429,7 @@ func TestDirMgr_EqualAbsPaths_03(t *testing.T) {
   dMgr, err := DirMgr{}.New(origDir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.New(origDir).\n" +
+    t.Errorf("Error returned from DirMgr{}.New(origDir).\n"+
       "origDir=='%v'  Error='%v'", origDir, err.Error())
   }
 
@@ -712,7 +712,7 @@ func TestDirMgr_ExecuteDirectoryFileOps_01(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDirStr)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n"+
       "targetDirStr='%v'\nError='%v'\n", targetDirStr, err.Error())
     return
   }
@@ -828,7 +828,7 @@ func TestDirMgr_ExecuteDirectoryFileOps_02(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fh.MakeAbsolutePath(targetRawStr).\n"+
-      "targetRawStr='%v'\nError='%v'\n",targetRawStr, err.Error())
+      "targetRawStr='%v'\nError='%v'\n", targetRawStr, err.Error())
     _ = fh.DeleteDirPathAll(targetRawStr)
     return
   }
@@ -836,7 +836,7 @@ func TestDirMgr_ExecuteDirectoryFileOps_02(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDirStr)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n"+
       "targetDirStr='%v'\nError='%v'\n", targetDirStr, err.Error())
     return
   }
@@ -929,7 +929,7 @@ func TestDirMgr_ExecuteDirectoryFileOps_03(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDirStr)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n"+
       "targetDirStr='%v'\nError='%v'\n", targetDirStr, err.Error())
     return
   }
@@ -1022,7 +1022,7 @@ func TestDirMgr_ExecuteDirectoryFileOps_04(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDirStr)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n"+
       "targetDirStr='%v'\nError='%v'\n", targetDirStr, err.Error())
     return
   }
@@ -1113,7 +1113,7 @@ func TestDirMgr_ExecuteDirectoryFileOps_05(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDirStr)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n"+
       "targetDirStr='%v'\nError='%v'\n", targetDirStr, err.Error())
     return
   }
@@ -1200,7 +1200,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_01(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDirStr)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n"+
       "targetDirStr='%v'\nError='%v'\n", targetDirStr, err.Error())
     return
   }
@@ -1302,7 +1302,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_01(t *testing.T) {
   err = targetDir.DeleteAll()
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by targetDir.DeleteAll().\n" +
+    t.Errorf("Test Clean-Up Error returned by targetDir.DeleteAll().\n"+
       "Error='%v'\n", err.Error())
   }
 }
@@ -1325,7 +1325,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_02(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDirStr)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n"+
       "targetDirStr='%v'\nError='%v'\n", targetDirStr, err.Error())
     return
   }
@@ -1393,7 +1393,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_02(t *testing.T) {
   err = targetDir.DeleteAll()
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by targetDir.DeleteAll().\n" +
+    t.Errorf("Test Clean-Up Error returned by targetDir.DeleteAll().\n"+
       "Error='%v'\n", err.Error())
   }
 }
@@ -1416,7 +1416,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_03(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDirStr)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n"+
       "targetDirStr='%v'\nError='%v'\n", targetDirStr, err.Error())
     return
   }
@@ -1485,7 +1485,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_03(t *testing.T) {
   err = targetDir.DeleteAll()
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by targetDir.DeleteAll().\n" +
+    t.Errorf("Test Clean-Up Error returned by targetDir.DeleteAll().\n"+
       "Error='%v'\n", err.Error())
   }
 }
@@ -1508,7 +1508,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_04(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDirStr)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n"+
       "targetDirStr='%v'\nError='%v'\n", targetDirStr, err.Error())
     return
   }
@@ -1574,7 +1574,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_04(t *testing.T) {
   err = targetDir.DeleteAll()
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by targetDir.DeleteAll().\n" +
+    t.Errorf("Test Clean-Up Error returned by targetDir.DeleteAll().\n"+
       "Error='%v'\n", err.Error())
   }
 }
@@ -1596,7 +1596,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_05(t *testing.T) {
   err = fh.DeleteDirPathAll(targetDirStr)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(targetDirStr).\n"+
       "targetDirStr='%v'\nError='%v'\n", targetDirStr, err.Error())
     return
   }
@@ -1659,7 +1659,7 @@ func TestDirMgr_ExecuteDirectoryTreeOps_05(t *testing.T) {
   err = targetDir.DeleteAll()
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by targetDir.DeleteAll().\n" +
+    t.Errorf("Test Clean-Up Error returned by targetDir.DeleteAll().\n"+
       "Error='%v'\n", err.Error())
   }
 }

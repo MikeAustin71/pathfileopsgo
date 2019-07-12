@@ -1205,13 +1205,14 @@ func (dMgrHlpr *dirMgrHelper) copyOut(
 }
 
 // deleteAllFilesInDirectory - Helper method used by DirMgr. This
-// method deletes all the files in the current directory. ONLY files
-// are deleted NOT sub-directories.
+// method deletes ALL files in the current directory. ONLY files
+// in the current directory are deleted. Files in sub-directories
+// are NOT deleted.
 //
 func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
   dMgr *DirMgr,
   ePrefix string,
-  dMgrLabel string) (errs []error) {
+  dMgrLabel string) (deleteDirStats DeleteDirFilesStats, errs []error) {
 
   ePrefixCurrMethod := "dirMgrHelper.deleteAllFilesInDirectory() "
 
@@ -1235,7 +1236,7 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
 
   if err != nil {
     errs = append(errs, err)
-    return errs
+    return deleteDirStats, errs
   }
 
   if !dirPathDoesExist {
@@ -1248,7 +1249,7 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
         dMgr.absolutePath)
 
     errs = append(errs, err)
-    return errs
+    return deleteDirStats, errs
   }
 
   dMgrPtr, err := os.Open(dMgr.absolutePath)
@@ -1261,11 +1262,14 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
       dMgr.absolutePath, err.Error())
 
     errs = append(errs, err2)
-    return errs
+    return deleteDirStats, errs
   }
 
   err3 = nil
   var nameFileInfos []os.FileInfo
+
+  deleteDirStats.TotalDirsProcessed++
+  deleteDirStats.TotalDirsScanned++
 
   for err3 != io.EOF {
 
@@ -1285,12 +1289,16 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
         err3.Error())
 
       errs = append(errs, err2)
-      return errs
+      return deleteDirStats, errs
     }
 
     for _, nameFInfo := range nameFileInfos {
 
       if nameFInfo.IsDir() {
+
+        deleteDirStats.TotalSubDirectories++
+        deleteDirStats.TotalDirsProcessed++
+
         continue
 
       } else {
@@ -1301,6 +1309,9 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
             "fileName='%v'",
             dMgr.absolutePath+osPathSepStr+nameFInfo.Name())
           errs = append(errs, err2)
+          deleteDirStats.FilesRemaining++
+          deleteDirStats.FilesRemainingBytes += uint64(nameFInfo.Size())
+          continue
         }
 
         // This is a file
@@ -1316,7 +1327,14 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
             dMgr.absolutePath+osPathSepStr+nameFInfo.Name(),
             err.Error())
 
+          deleteDirStats.FilesRemaining++
+          deleteDirStats.FilesRemainingBytes += uint64(nameFInfo.Size())
+
           errs = append(errs, err2)
+        } else {
+
+          deleteDirStats.FilesDeleted++
+          deleteDirStats.FilesDeletedBytes += uint64(nameFInfo.Size())
         }
       }
     }
@@ -1338,7 +1356,7 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
     }
   }
 
-  return errs
+  return deleteDirStats, errs
 }
 
 // deleteAllSubDirectories - The directory identified by the input
@@ -1539,8 +1557,7 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeFiles(
   deleteFileSelectionCriteria FileSelectionCriteria,
   ePrefix string,
   dMgrLabel string,
-  deleteSelectionLabel string) (deleteDirStats DeleteDirFilesStats,
-  errs []error) {
+  deleteSelectionLabel string) (deleteDirStats DeleteDirFilesStats, errs []error) {
 
   ePrefixCurrMethod := "dirMgrHelper.deleteDirectoryTreeFiles() "
 
@@ -1709,6 +1726,7 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeFiles(
           if !isMatch {
 
             deleteDirStats.FilesRemaining++
+            deleteDirStats.FilesRemainingBytes += uint64(nameFInfo.Size())
 
             continue
 
@@ -1725,11 +1743,15 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeFiles(
                 nextDir.absolutePath+osPathSepStr+nameFInfo.Name(),
                 err.Error())
 
+              deleteDirStats.FilesRemaining++
+              deleteDirStats.FilesRemainingBytes += uint64(nameFInfo.Size())
+
               errs = append(errs, err2)
 
+            } else {
+              deleteDirStats.FilesDeleted++
+              deleteDirStats.FilesDeletedBytes += uint64(nameFInfo.Size())
             }
-
-            deleteDirStats.FilesDeleted++
           }
         }
       }
@@ -1783,7 +1805,7 @@ func (dMgrHlpr *dirMgrHelper) deleteFilesByNamePattern(
   fileSearchPattern string,
   ePrefix string,
   dMgrLabel string,
-  fileSearchLabel string) (errs []error) {
+  fileSearchLabel string) (deleteDirStats DeleteDirFilesStats, errs []error) {
 
   ePrefixCurrMethod := "dirMgrHelper.deleteFilesByNamePattern() "
 
@@ -1805,7 +1827,7 @@ func (dMgrHlpr *dirMgrHelper) deleteFilesByNamePattern(
 
   if err != nil {
     errs = append(errs, err)
-    return errs
+    return deleteDirStats, errs
   }
 
   if !dirPathDoesExist {
@@ -1817,7 +1839,7 @@ func (dMgrHlpr *dirMgrHelper) deleteFilesByNamePattern(
 
     errs = append(errs, err)
 
-    return errs
+    return deleteDirStats, errs
   }
 
   var err2, err3 error
@@ -1834,7 +1856,7 @@ func (dMgrHlpr *dirMgrHelper) deleteFilesByNamePattern(
       fileSearchLabel)
 
     errs = append(errs, err2)
-    return errs
+    return deleteDirStats, errs
   }
 
   if errCode == -2 {
@@ -1843,7 +1865,7 @@ func (dMgrHlpr *dirMgrHelper) deleteFilesByNamePattern(
       fileSearchLabel)
 
     errs = append(errs, err2)
-    return errs
+    return deleteDirStats, errs
   }
 
   dirPtr, err := os.Open(dMgr.absolutePath)
@@ -1857,8 +1879,11 @@ func (dMgrHlpr *dirMgrHelper) deleteFilesByNamePattern(
       dMgr.absolutePath, err.Error())
 
     errs = append(errs, err2)
-    return errs
+    return deleteDirStats, errs
   }
+
+  deleteDirStats.TotalDirsProcessed++
+  deleteDirStats.TotalDirsScanned++
 
   err3 = nil
   var nameFileInfos []os.FileInfo
@@ -1882,13 +1907,13 @@ func (dMgrHlpr *dirMgrHelper) deleteFilesByNamePattern(
         dMgr.absolutePath, err3.Error())
 
       errs = append(errs, err2)
-      return errs
+      return deleteDirStats, errs
     }
 
     for _, nameFInfo := range nameFileInfos {
 
       if nameFInfo.IsDir() {
-
+        deleteDirStats.TotalSubDirectories++
         continue
 
       } else {
@@ -1912,8 +1937,11 @@ func (dMgrHlpr *dirMgrHelper) deleteFilesByNamePattern(
           continue
         }
 
-        if !isMatch {
+        deleteDirStats.TotalFilesProcessed++
 
+        if !isMatch {
+          deleteDirStats.FilesRemaining++
+          deleteDirStats.FilesRemainingBytes += uint64(nameFInfo.Size())
           continue
 
         } else {
@@ -1927,9 +1955,15 @@ func (dMgrHlpr *dirMgrHelper) deleteFilesByNamePattern(
               dMgr.absolutePath+osPathSepStr+nameFInfo.Name(),
               err.Error())
 
+            deleteDirStats.FilesRemaining++
+            deleteDirStats.FilesRemainingBytes -= uint64(nameFInfo.Size())
+
             errs = append(errs, err2)
             continue
           }
+
+          deleteDirStats.FilesDeleted++
+          deleteDirStats.FilesDeletedBytes += uint64(nameFInfo.Size())
         }
       }
     }
@@ -1949,7 +1983,7 @@ func (dMgrHlpr *dirMgrHelper) deleteFilesByNamePattern(
     }
   }
 
-  return errs
+  return deleteDirStats, errs
 }
 
 // doesDirectoryExist - Helper method used by DirMgr to test for

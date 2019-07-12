@@ -582,7 +582,7 @@ func (dMgr *DirMgr) DeleteAll() error {
 //                      If errors are encountered they are stored in the error
 //                      array and returned to the caller.
 //
-func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
+func (dMgr *DirMgr) DeleteAllFilesInDir() (deleteDirStats DeleteDirFilesStats, errs []error) {
 
   ePrefix := "DirMgr.DeleteAllFilesInDir() "
   dMgrHlpr := dirMgrHelper{}
@@ -590,14 +590,15 @@ func (dMgr *DirMgr) DeleteAllFilesInDir() (errs []error) {
 
   dMgr.dataMutex.Lock()
 
-  errs = dMgrHlpr.deleteAllFilesInDirectory(
+  deleteDirStats,
+    errs = dMgrHlpr.deleteAllFilesInDirectory(
     dMgr,
     ePrefix,
     "dMgr")
 
   dMgr.dataMutex.Unlock()
 
-  return errs
+  return deleteDirStats, errs
 }
 
 // DeleteAllSubDirectories - The directory identified by the current
@@ -795,8 +796,7 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
 //                                       the error array and returned to the caller.
 //
 func (dMgr *DirMgr) DeleteDirectoryTreeFiles(
-  deleteFileSelectionCriteria FileSelectionCriteria) (deleteDirStats DeleteDirFilesStats,
-  errs []error) {
+  deleteFileSelectionCriteria FileSelectionCriteria) (deleteDirStats DeleteDirFilesStats, errs []error) {
   ePrefix := "DirMgr.DeleteDirectoryTreeFiles() "
 
   dMgrHlpr := dirMgrHelper{}
@@ -847,7 +847,8 @@ func (dMgr *DirMgr) DeleteDirectoryTreeFiles(
 //   Reference For Matching Details:
 //     https://golang.org/pkg/path/filepath/#Match
 //
-func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []error) {
+func (dMgr *DirMgr) DeleteFilesByNamePattern(
+  fileSearchPattern string) (deleteDirStats DeleteDirFilesStats, errs []error) {
 
   ePrefix := "DirMgr.DeleteFilesByNamePattern() "
 
@@ -855,7 +856,8 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 
   dMgr.dataMutex.Lock()
 
-  errs = dMgrHlpr.deleteFilesByNamePattern(
+  deleteDirStats,
+    errs = dMgrHlpr.deleteFilesByNamePattern(
     dMgr,
     fileSearchPattern,
     ePrefix,
@@ -864,7 +866,7 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(fileSearchPattern string) (errs []e
 
   dMgr.dataMutex.Unlock()
 
-  return errs
+  return deleteDirStats, errs
 }
 
 // DeleteFilesBySelectionCriteria - Deletes selected files from the directory

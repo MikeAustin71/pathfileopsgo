@@ -93,8 +93,8 @@ func PrintFileInfoPlusFields(info pathFileOps.FileInfoPlus) {
   fmt.Println("            File Info Plus")
   fmt.Println("======================================")
   du := appLib.DateTimeUtility{}
-  fmt.Println("  IsFInfoInitialized: ", info.IsFInfoInitialized)
-  fmt.Println("IsDirPathInitialized: ", info.IsDirPathInitialized)
+  fmt.Println("  isFInfoInitialized: ", info.IsFileInfoInitialized())
+  fmt.Println("isDirPathInitialized: ", info.IsDirectoryPathInitialized())
   fmt.Println("     CreateTimeStamp: ", du.GetDateTimeYMDAbbrvDowNano(info.CreateTimeStamp))
   fmt.Println("              Name(): ", info.Name())
   fmt.Println("              Size(): ", info.Size())
@@ -106,21 +106,17 @@ func PrintFileInfoPlusFields(info pathFileOps.FileInfoPlus) {
 }
 
 func CreateFileOnTopOfExistingFile() {
+  ePrefix := "CreateFileOnTopOfExistingFile() "
+
   tstFile := "..//logTest//testoverwrite//TestOverwrite001.txt"
   fMgr, err := pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(tstFile)
-  ePrefix := "CreateFileOnTopOfExistingFile() "
 
   if err != nil {
     _ = fMgr.CloseThisFile()
     panic(fmt.Errorf(ePrefix+
       "- Error: FileMgr{}.NewFromPathFileNameExtStr(tstFile) Failed. tstFile='%v' Error='%v'",
       tstFile, err.Error()))
-  }
-
-  if err != nil {
-    _ = fMgr.CloseThisFile()
-    panic(errors.New(fmt.Sprintf(ePrefix+
-      "Error Creating File: '%v' Error: %v", tstFile, err.Error())))
+    return
   }
 
   du := appLib.DateTimeUtility{}
@@ -150,6 +146,7 @@ func ExampleReadTestFile() {
 
   if err != nil {
     fmt.Printf("Error Opening file: %v\n", tstFile)
+    return
   }
 
   fOut, err2 := fh.CreateFile(tstOutFile)
@@ -208,7 +205,7 @@ func ExampleReadTestFile() {
 
     }
 
-    if n < 50000 || err != nil {
+    if n < 50000 {
       doRead = false
     }
 

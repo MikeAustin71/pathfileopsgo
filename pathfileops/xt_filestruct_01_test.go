@@ -63,12 +63,12 @@ func TestFileInfoPlus_CopyOut_01(t *testing.T) {
     t.Errorf("Error CopyOut. Names do not match. fip.DirPath()= '%v'  fip2.DirPath()= '%v' ", fip.DirPath(), fip2.DirPath())
   }
 
-  if fip.IsFInfoInitialized != fip2.IsFInfoInitialized {
-    t.Errorf("Error CopyOut. IsFInfoInitialized values do not match. fip.IsFInfoInitialized= '%v'  fip2.IsFInfoInitialized= '%v' ", fip.IsFInfoInitialized, fip2.IsFInfoInitialized)
+  if fip.isFInfoInitialized != fip2.isFInfoInitialized {
+    t.Errorf("Error CopyOut. isFInfoInitialized values do not match. fip.isFInfoInitialized= '%v'  fip2.isFInfoInitialized= '%v' ", fip.isFInfoInitialized, fip2.isFInfoInitialized)
   }
 
-  if fip.IsDirPathInitialized != fip2.IsDirPathInitialized {
-    t.Errorf("Error CopyOut. IsDirPathInitialized values do not match. fip.IsDirPathInitialized= '%v'  fip2.IsDirPathInitialized= '%v' ", fip.IsDirPathInitialized, fip2.IsDirPathInitialized)
+  if fip.isDirPathInitialized != fip2.isDirPathInitialized {
+    t.Errorf("Error CopyOut. isDirPathInitialized values do not match. fip.isDirPathInitialized= '%v'  fip2.isDirPathInitialized= '%v' ", fip.isDirPathInitialized, fip2.isDirPathInitialized)
   }
 
   if fip.CreateTimeStamp != fip2.CreateTimeStamp {
@@ -108,8 +108,8 @@ func TestFileInfoPlus_NewFromFileInfo_01(t *testing.T) {
     t.Error("Expected  fip.IsDir()=false. Instead, fip.IsDir()=true")
   }
 
-  if fip.IsFInfoInitialized == false {
-    t.Error("Expected fip.IsFInfoInitialized='true'.  Instead, fip.IsFInfoInitialized='false'")
+  if fip.isFInfoInitialized == false {
+    t.Error("Expected fip.isFInfoInitialized='true'.  Instead, fip.isFInfoInitialized='false'")
   }
 
   if fip.CreateTimeStamp.IsZero() {
@@ -282,6 +282,7 @@ func TestFileSelectCriterionMode_Text_04(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileSelectMode.ParseString(s, false). "+
       "s='%v' Error='%v' ", s, err.Error())
+    return
   }
 
   if s != r.String() {
@@ -298,6 +299,7 @@ func TestFileSelectCriterionMode_Text_05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileSelectMode.ParseString(s, false). "+
       "s='%v' Error='%v' ", s, err.Error())
+    return
   }
 
   if s != r.String() {
@@ -314,10 +316,12 @@ func TestFileSelectCriterionMode_Text_06(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileSelectMode.ParseString(s, true). "+
       "s='%v' Error='%v' ", s, err.Error())
+    return
   }
 
   if s != r.String() {
     t.Errorf("Expected string '%v'. Instead, got %v", s, r.String())
+    return
   }
 }
 
@@ -344,10 +348,12 @@ func TestFileSelectCriterionMode_Text_08(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileSelectMode.ParseString(s, false). "+
       "s='%v' Error='%v' ", s, err.Error())
+    return
   }
 
   if expectedStr != r.String() {
     t.Errorf("Expected string '%v'. Instead, got %v", expectedStr, r.String())
+    return
   }
 }
 
@@ -361,6 +367,7 @@ func TestFileSelectCriterionMode_Text_09(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileSelectMode.ParseString(s, false). "+
       "s='%v' Error='%v' ", s, err.Error())
+    return
   }
 
   if expectedStr != r.String() {
@@ -378,6 +385,7 @@ func TestFileSelectCriterionMode_Text_10(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileSelectMode.ParseString(s, false). "+
       "s='%v' Error='%v' ", s, err.Error())
+    return
   }
 
   if expectedStr != r.String() {
@@ -481,4 +489,3 @@ func TestFileSelectCriterionMode_Value_06(t *testing.T) {
     t.Errorf("Expected 'FileSelectMode.ORSelect()' value = 2. Instead, got %v", i)
   }
 }
-

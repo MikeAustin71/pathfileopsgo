@@ -7,7 +7,6 @@ import (
   "os"
 )
 
-
 /*
   This source code file contains type 'DirMgrCollection' .
 
@@ -226,7 +225,7 @@ func (dMgrs *DirMgrCollection) FindDirectories(
   for i := 0; i < lDirCol; i++ {
     dMgr := dMgrs.dirMgrs[i]
 
-    if dMgr.actualDirFileInfo.IsFInfoInitialized {
+    if dMgr.actualDirFileInfo.isFInfoInitialized {
 
       isMatchedFile, err = fh.FilterFileName(dMgr.actualDirFileInfo, fileSelectionCriteria)
 
@@ -557,11 +556,11 @@ func (dMgrs *DirMgrCollection) PeekDirMgrAtIndex(idx int) (DirMgr, error) {
   arrayLen := len(dMgrs.dirMgrs)
 
   /*
-  if arrayLen == 0 {
-    return DirMgr{},
-      errors.New(ePrefix +
-        "Error: The Directory Manager Collection, 'DirMgrCollection' is EMPTY!")
-  }
+    if arrayLen == 0 {
+      return DirMgr{},
+        errors.New(ePrefix +
+          "Error: The Directory Manager Collection, 'DirMgrCollection' is EMPTY!")
+    }
   */
 
   if arrayLen == 0 {
@@ -646,4 +645,3 @@ func (dMgrs *DirMgrCollection) PeekLastDirMgr() (DirMgr, error) {
 
   return dMgrs.dirMgrs[arrayLen-1].CopyOut(), nil
 }
-

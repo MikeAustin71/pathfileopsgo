@@ -1275,8 +1275,8 @@ func TestFileMgr_NewFromFileInfo_01(t *testing.T) {
       "Instead, it is 'false'\n")
   }
 
-  if !fileMgr.actualFileInfo.IsFInfoInitialized {
-    t.Error("ERROR: Expected fileMgr.actualFileInfo.IsFInfoInitialized" +
+  if !fileMgr.actualFileInfo.isFInfoInitialized {
+    t.Error("ERROR: Expected fileMgr.actualFileInfo.isFInfoInitialized" +
       "='true'.\nInstead, it is 'false'")
   }
 
@@ -1675,8 +1675,8 @@ func TestFileMgr_NewFromDirStrFileNameStr_01(t *testing.T) {
       "Instead, it is 'false'.\n")
   }
 
-  if !fileMgr.actualFileInfo.IsFInfoInitialized {
-    t.Error("Expected fileMgr.actualFileInfo.IsFInfoInitialized='true'.\n" +
+  if !fileMgr.actualFileInfo.isFInfoInitialized {
+    t.Error("Expected fileMgr.actualFileInfo.isFInfoInitialized='true'.\n" +
       "Error, it is 'false'.\n")
   }
 

@@ -90,7 +90,8 @@ func TestDirMgr_DeleteAllFilesInDir_01(t *testing.T) {
 
   dMgr.isInitialized = false
 
-  errs := dMgr.DeleteAllFilesInDir()
+  _,
+    errs := dMgr.DeleteAllFilesInDir()
 
   if len(errs) == 0 {
     t.Error("Expected an error return from dMgr.DeleteAllFilesInDir()\n" +
@@ -134,7 +135,8 @@ func TestDirMgr_DeleteAllFilesInDir_02(t *testing.T) {
     return
   }
 
-  errs := dMgr.DeleteAllFilesInDir()
+  _,
+    errs := dMgr.DeleteAllFilesInDir()
 
   if len(errs) == 0 {
     t.Error("Expected an error return from dMgr.DeleteAllFilesInDir()\n" +
@@ -281,25 +283,15 @@ func TestDirMgr_DeleteAllFilesInDir_03(t *testing.T) {
     return
   }
 
-  errArray := dMgr.DeleteAllFilesInDir()
+  deleteDirStats,
+    errArray := dMgr.DeleteAllFilesInDir()
 
   if len(errArray) > 0 {
 
-    if len(errArray) == 1 {
-      t.Errorf("Error returned by dMgr.DeleteAllFilesInDir().\n"+
-        "testDir='%v'\nErrors Follow:\n", testDir)
-    } else {
-      t.Errorf("Errors returned by dMgr.DeleteAllFilesInDir().\n"+
-        "testDir='%v'\n\n", testDir)
-
-      for i := 0; i < len(errArray); i++ {
-        if i == len(errArray)-1 {
-          t.Errorf("%v\n\n", errArray[i].Error())
-        } else {
-          t.Errorf("%v\n", errArray[i].Error())
-        }
-      }
-    }
+    t.Errorf("Errors returned by dMgr.DeleteAllFilesInDir().\n"+
+      "testDir='%v'\nErrors Follow:\n\n%v",
+      testDir,
+      dMgr.ConsolidateErrors(errArray))
 
     _ = fh.DeleteDirPathAll(testDir)
 
@@ -321,6 +313,62 @@ func TestDirMgr_DeleteAllFilesInDir_03(t *testing.T) {
     t.Errorf("Error: Expected to find 0-files in 'testDir'.\n"+
       "Instead, %v-files were found.", fMgrCollection.GetNumOfFileMgrs())
 
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.FilesDeleted != 10 {
+    t.Errorf("Error: Expected deleteDirStats.FilesDeleted='10'.\n"+
+      "Instead, deleteDirStats.FilesDeleted='%v'",
+      deleteDirStats.FilesDeleted)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.FilesRemaining != 0 {
+    t.Errorf("Error: Expected deleteDirStats.FilesRemaining == '0'\n"+
+      "Instead, deleteDirStats.FilesRemaining == '%v'",
+      deleteDirStats.FilesRemaining)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.TotalDirsProcessed != 2 {
+    t.Errorf("Error: Expected deleteDirStats.TotalDirsProcessed == '2'\n"+
+      "Instead, deleteDirStats.TotalDirsProcessed == '%v'\n",
+      deleteDirStats.TotalDirsProcessed)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.TotalSubDirectories != 1 {
+    t.Errorf("Error: Expected deleteDirStats.TotalSubDirectories == '1'\n"+
+      "Instead, deleteDirStats.TotalSubDirectories == '%v'\n",
+      deleteDirStats.TotalSubDirectories)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.DirectoriesDeleted != 0 {
+    t.Errorf("Error: Expected deleteDirStats.DirectoriesDeleted == '0'\n"+
+      "Instead, deleteDirStats.DirectoriesDeleted == '%v'\n",
+      deleteDirStats.DirectoriesDeleted)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.TotalDirsScanned != 1 {
+    t.Errorf("Error: Expected deleteDirStats.TotalDirsScanned == '1'\n"+
+      "Instead, deleteDirStats.TotalDirsScanned == '%v'\n",
+      deleteDirStats.TotalDirsScanned)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
   }
 
   fMgrCollection, err = dMgrSub.FindFilesByNamePattern("*.*")
@@ -330,7 +378,6 @@ func TestDirMgr_DeleteAllFilesInDir_03(t *testing.T) {
       "testDir2='%v'\nError='%v'\n", testDir2, err.Error())
 
     _ = fh.DeleteDirPathAll(testDir)
-
     return
   }
 
@@ -645,6 +692,10 @@ func TestDirMgr_DeleteDirectoryTreeFiles_01(t *testing.T) {
 
   expectedNumOfDeletedFiles := testDtreeInfo.FoundFiles.GetNumOfFileMgrs()
 
+  expectedNumOfDeletedFileBytes := testDtreeInfo.FoundFiles.GetTotalFileBytes()
+
+  fsc = FileSelectionCriteria{}
+
   deleteDirStats,
     errs := testDMgr.DeleteDirectoryTreeFiles(fsc)
 
@@ -664,6 +715,12 @@ func TestDirMgr_DeleteDirectoryTreeFiles_01(t *testing.T) {
   if uint64(expectedNumOfDeletedFiles) != deleteDirStats.FilesDeleted {
     t.Errorf("Expected numOfDeletedFiles='%v'\nInstead, numOfDeletedFiles='%v'\n",
       expectedNumOfDeletedFiles, deleteDirStats.FilesDeleted)
+  }
+
+  if expectedNumOfDeletedFileBytes != deleteDirStats.FilesDeletedBytes {
+    t.Errorf("Expected deleteDirStats.FilesDeletedBytes='%v'\n"+
+      "Instead, deleteDirStats.FilesDeletedBytes='%v'\n",
+      expectedNumOfDeletedFiles, deleteDirStats.FilesDeletedBytes)
   }
 
   if deleteDirStats.FilesRemaining != 0 {
@@ -753,6 +810,188 @@ func TestDirMgr_DeleteDirectoryTreeFiles_03(t *testing.T) {
     t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(testDir)\n"+
       "testDir='%v'\nError='%v'\n", testDir, err.Error())
   }
+}
+
+func TestDirMgr_DeleteDirectoryTreeFiles_04(t *testing.T) {
+
+  testDir := "../dirmgrtests/TestDirMgr_DeleteDirectoryTreeFiles_04"
+
+  sourceDir1 := "../filesfortest/levelfilesfortest"
+
+  sourceDir2 := "../filesfortest/htmlFilesForTest"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir)\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = testDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by testDMgr.DeleteAll()\n"+
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+    return
+  }
+
+  sourceDMgr1, err := DirMgr{}.New(sourceDir1)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir1)\n"+
+      "sourceDir1='%v'\nError='%v'\n", sourceDir1, err.Error())
+    _ = testDMgr.DeleteAll()
+    return
+  }
+
+  sourceDMgr2, err := DirMgr{}.New(sourceDir2)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir2)\n"+
+      "sourceDir2='%v'\nError='%v'\n", sourceDir2, err.Error())
+    _ = testDMgr.DeleteAll()
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  _,
+    errs := sourceDMgr1.CopyDirectoryTree(testDMgr, true, fsc)
+
+  if len(errs) != 0 {
+    t.Errorf("Setup Errors returned by sourceDMgr1.CopyDirectoryTree(testDMgr, true, fsc)\n"+
+      "sourceDMgr1='%v'\ntestDMgr='%v'\nErrors Follow:\n\n%v",
+      sourceDMgr1.GetAbsolutePath(),
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
+  }
+
+  _,
+    errs = sourceDMgr2.CopyDirectory(testDMgr, fsc, false)
+
+  if len(errs) != 0 {
+    t.Errorf("Setup Errors returned by sourceDMgr2.CopyDirectoryTree(testDMgr, true, fsc)\n"+
+      "sourceDMgr2='%v'\ntestDMgr='%v'\nErrors Follow:\n\n%v",
+      sourceDMgr2.GetAbsolutePath(),
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
+  }
+
+  fsc = FileSelectionCriteria{}
+  fsc.FileNamePatterns = []string{"*.txt"}
+
+  testDtreeTxtInfo, err := testDMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by testDtreeTxtInfo, err := testDMgr.FindWalkDirFiles(fsc)\n"+
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+    _ = testDMgr.DeleteAll()
+    return
+  }
+
+  fsc = FileSelectionCriteria{}
+  fsc.FileNamePatterns = []string{"*.htm"}
+
+  testDtreeHtmInfo, err := testDMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by testDtreeHtmInfo, err :=testDMgr.FindWalkDirFiles(fsc)\n"+
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+    _ = testDMgr.DeleteAll()
+    return
+  }
+
+  fsc = FileSelectionCriteria{}
+  testDtreeAllInfo, err := testDMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by testDtreeAllInfo, err :=testDMgr.FindWalkDirFiles(fsc)\n"+
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+    _ = testDMgr.DeleteAll()
+    return
+  }
+
+  expectedNumOfDirsProcessed := testDtreeAllInfo.Directories.GetNumOfDirs()
+
+  expectedNumOfSubdirectories := expectedNumOfDirsProcessed - 1
+
+  expectedNumOfDeletedFiles := testDtreeTxtInfo.FoundFiles.GetNumOfFileMgrs()
+
+  expectedNumOfDeletedFileBytes := testDtreeTxtInfo.FoundFiles.GetTotalFileBytes()
+
+  expectedNumOfRemainingFiles := testDtreeHtmInfo.FoundFiles.GetNumOfFileMgrs()
+
+  expectedNumOfRemainingFileBytes := testDtreeHtmInfo.FoundFiles.GetTotalFileBytes()
+
+  fsc = FileSelectionCriteria{}
+  fsc.FileNamePatterns = []string{"*.txt"}
+
+  deleteDirStats,
+    errs := testDMgr.DeleteDirectoryTreeFiles(fsc)
+
+  if len(errs) != 0 {
+    t.Errorf("Setup Errors returned by testDMgr.DeleteDirectoryTreeFiles(fsc) fsc='*.txt'\n"+
+      "sourceDMgr2='%v'\ntestDMgr='%v'\nErrors Follow:\n\n%v",
+      sourceDMgr2.GetAbsolutePath(),
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
+  }
+
+  if uint64(expectedNumOfDirsProcessed) != deleteDirStats.TotalDirsProcessed {
+    t.Errorf("Expected deleteDirStats.TotalDirsProcessed='%v'\n"+
+      "Instead, deleteDirStats.TotalDirsProcessed='%v'\n",
+      expectedNumOfDirsProcessed, deleteDirStats.TotalDirsProcessed)
+  }
+
+  if uint64(expectedNumOfDirsProcessed) != deleteDirStats.TotalDirsScanned {
+    t.Errorf("Expected deleteDirStats.TotalDirsScanned='%v'\n"+
+      "Instead, deleteDirStats.TotalDirsScanned='%v'\n",
+      expectedNumOfDirsProcessed, deleteDirStats.TotalDirsScanned)
+  }
+
+  if 5 == deleteDirStats.DirectoriesDeleted {
+    t.Errorf("Expected deleteDirStats.DirectoriesDeleted='5'\n"+
+      "Instead, deleteDirStats.DirectoriesDeleted='%v'\n",
+      deleteDirStats.TotalDirsScanned)
+  }
+
+  if uint64(expectedNumOfSubdirectories) != deleteDirStats.TotalSubDirectories {
+    t.Errorf("Expected deleteDirStats.TotalSubDirectories='%v'\n"+
+      "Instead, deleteDirStats.TotalSubDirectories='%v'\n",
+      expectedNumOfSubdirectories, deleteDirStats.TotalSubDirectories)
+  }
+
+  if uint64(expectedNumOfDeletedFiles) != deleteDirStats.FilesDeleted {
+    t.Errorf("Expected deleteDirStats.FilesDeleted='%v'\n"+
+      "Instead, deleteDirStats.FilesDeleted='%v'\n",
+      expectedNumOfDeletedFiles, deleteDirStats.FilesDeleted)
+  }
+
+  if expectedNumOfDeletedFileBytes != deleteDirStats.FilesDeletedBytes {
+    t.Errorf("Expected deleteDirStats.FilesDeletedBytes='%v'\n"+
+      "Instead, deleteDirStats.FilesDeletedBytes='%v'\n",
+      expectedNumOfDeletedFiles, deleteDirStats.FilesDeletedBytes)
+  }
+
+  if uint64(expectedNumOfRemainingFiles) != deleteDirStats.FilesRemaining {
+    t.Errorf("Expected numOfRemainingFiles='0'.\nInstead, numOfRemainingFiles='%v'\n",
+      deleteDirStats.FilesRemaining)
+  }
+
+  if expectedNumOfRemainingFileBytes != deleteDirStats.FilesRemainingBytes {
+    t.Errorf("Expected deleteDirStats.FilesRemainingBytes='%v'.\n"+
+      "Instead, deleteDirStats.FilesRemainingBytes='%v'\n",
+      expectedNumOfRemainingFileBytes, deleteDirStats.FilesRemaining)
+  }
+
+  err = testDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by testDMgr.DeleteAll()\n"+
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+  }
+
 }
 
 func TestDirMgr_DeleteFilesByNamePattern_01(t *testing.T) {
@@ -845,27 +1084,17 @@ func TestDirMgr_DeleteFilesByNamePattern_01(t *testing.T) {
     return
   }
 
-  errArray := dMgr.DeleteFilesByNamePattern("*.htm")
+  deleteDirStats,
+    errArray := dMgr.DeleteFilesByNamePattern("*.htm")
 
   if len(errArray) > 0 {
-    if len(errArray) == 1 {
-      t.Errorf("Error returned by dMgr.DeleteFilesByNamePattern(\"*.htm\").\n"+
-        "testDir='%v'\nError='%v'\n", testDir, errArray[0].Error())
-    } else {
-      t.Errorf("Errors returned by dMgr.DeleteFilesByNamePattern(\"*.htm\").\n"+
-        "testDir='%v'\n\n", testDir)
 
-      for i := 0; i < len(errArray); i++ {
-        if i == len(errArray)-1 {
-          t.Errorf("%v\n\n", errArray[i].Error())
-        } else {
-          t.Errorf("%v\n", errArray[i].Error())
-        }
-      }
-    }
+    t.Errorf("Errors returned by dMgr.DeleteFilesByNamePattern(\"*.htm\").\n"+
+      "testDir='%v'\nErrors Follow:\n\n%v",
+      testDir,
+      dMgr.ConsolidateErrors(errArray))
 
     _ = fh.DeleteDirPathAll(testDir)
-
     return
   }
 
@@ -876,7 +1105,6 @@ func TestDirMgr_DeleteFilesByNamePattern_01(t *testing.T) {
       "testDir='%v'\nError='%v'\n", testDir, err.Error())
 
     _ = fh.DeleteDirPathAll(testDir)
-
     return
   }
 
@@ -884,6 +1112,62 @@ func TestDirMgr_DeleteFilesByNamePattern_01(t *testing.T) {
     t.Errorf("Error: Expected to find 0-html files in 'testDir'.\n"+
       "Instead, %v-html files were found.", fMgrCollection.GetNumOfFileMgrs())
 
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.FilesDeleted != 3 {
+    t.Errorf("Expected deleteDirStats.FilesDeleted='3'.\n"+
+      "Instead, deleteDirStats.FilesDeleted='%v'.",
+      deleteDirStats.FilesDeleted)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.FilesRemaining != 5 {
+    t.Errorf("Expected deleteDirStats.FilesRemaining='5'.\n"+
+      "Instead, deleteDirStats.FilesRemaining='%v'.",
+      deleteDirStats.FilesRemaining)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.TotalFilesProcessed != 8 {
+    t.Errorf("Expected deleteDirStats.TotalFilesProcessed='8'.\n"+
+      "Instead, deleteDirStats.TotalFilesProcessed='%v'.",
+      deleteDirStats.TotalFilesProcessed)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.TotalSubDirectories != 0 {
+    t.Errorf("Expected deleteDirStats.TotalSubDirectories='0'.\n"+
+      "Instead, deleteDirStats.TotalSubDirectories='%v'.",
+      deleteDirStats.TotalSubDirectories)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.TotalDirsProcessed != 1 {
+    t.Errorf("Expected deleteDirStats.TotalDirsProcessed='1'.\n"+
+      "Instead, deleteDirStats.TotalDirsProcessed='%v'.",
+      deleteDirStats.TotalDirsProcessed)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.TotalDirsScanned != 1 {
+    t.Errorf("Expected deleteDirStats.TotalDirsScanned='1'.\n"+
+      "Instead, deleteDirStats.TotalDirsScanned='%v'.",
+      deleteDirStats.TotalDirsScanned)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
   }
 
   err = fh.DeleteDirPathAll(testDir)
@@ -930,7 +1214,8 @@ func TestDirMgr_DeleteFilesByNamePattern_02(t *testing.T) {
     return
   }
 
-  errs := dMgr.DeleteFilesByNamePattern("")
+  _,
+    errs := dMgr.DeleteFilesByNamePattern("")
 
   if len(errs) == 0 {
     t.Error("Expected an error return from dMgr.DeleteFilesByNamePattern(\"\")\n" +
@@ -975,7 +1260,8 @@ func TestDirMgr_DeleteFilesByNamePattern_03(t *testing.T) {
     return
   }
 
-  errs := dMgr.DeleteFilesByNamePattern("     ")
+  _,
+    errs := dMgr.DeleteFilesByNamePattern("     ")
 
   if len(errs) == 0 {
     t.Error("Expected an error return from dMgr.DeleteFilesByNamePattern(\"     \")\n" +
@@ -1022,7 +1308,8 @@ func TestDirMgr_DeleteFilesByNamePattern_04(t *testing.T) {
 
   dMgr.isInitialized = false
 
-  errs := dMgr.DeleteFilesByNamePattern("*.*")
+  _,
+    errs := dMgr.DeleteFilesByNamePattern("*.*")
 
   if len(errs) == 0 {
     t.Error("Expected an error return from dMgr.DeleteFilesByNamePattern(\"*.*\")\n" +
@@ -1059,7 +1346,8 @@ func TestDirMgr_DeleteFilesByNamePattern_05(t *testing.T) {
     return
   }
 
-  errs := dMgr.DeleteFilesByNamePattern("*.*")
+  _,
+    errs := dMgr.DeleteFilesByNamePattern("*.*")
 
   if len(errs) == 0 {
     t.Error("Expected an error return from dMgr.DeleteFilesByNamePattern(\"*.*\")\n" +
@@ -1164,10 +1452,11 @@ func TestDirMgr_DeleteFilesByNamePattern_06(t *testing.T) {
     return
   }
 
-  fMgrCollection, err := dMgr.FindFilesByNamePattern("*.htm")
+  fMgrHtmCollection, err := dMgr.FindFilesByNamePattern("*.htm")
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by dMgr.FindFilesByNamePattern(\"*.htm\").\n"+
+    t.Errorf("Test Setup Error returned by fMgrHtmCollection, err :=\n"+
+      "dMgr.FindFilesByNamePattern(\"*.htm\").\n"+
       "testDir='%v'\nError='%v'\n", testDir, err.Error())
 
     _ = fh.DeleteDirPathAll(baseTestDir)
@@ -1175,58 +1464,171 @@ func TestDirMgr_DeleteFilesByNamePattern_06(t *testing.T) {
     return
   }
 
-  if fMgrCollection.GetNumOfFileMgrs() != 3 {
+  expectedNumOfFilesDeleted := uint64(fMgrHtmCollection.GetNumOfFileMgrs())
+
+  if expectedNumOfFilesDeleted != 3 {
     t.Errorf("Test Setup Error: Expected to find 3-html files in 'testDir'.\n"+
-      "Instead, %v-html files were found.", fMgrCollection.GetNumOfFileMgrs())
+      "Instead, %v-html files were found.", expectedNumOfFilesDeleted)
 
     _ = fh.DeleteDirPathAll(baseTestDir)
 
     return
   }
 
-  errArray := dMgr.DeleteFilesByNamePattern("*.htm")
+  expectedNumOfFileBytesDeleted := fMgrHtmCollection.GetTotalFileBytes()
+
+  fMgrTxtCollection, err := dMgr.FindFilesByNamePattern("*.txt")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fMgrTxtCollection, err :=\n"+
+      "dMgr.FindFilesByNamePattern(\"*.htm\").\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+
+    return
+  }
+
+  expectedNumOfFilesRemaining := uint64(fMgrTxtCollection.GetNumOfFileMgrs())
+
+  expectedNumOfFileBytesRemaining := fMgrTxtCollection.GetTotalFileBytes()
+
+  expectedNumOfFilesProcessed := expectedNumOfFilesDeleted + expectedNumOfFilesRemaining
+
+  expectedNumOfSubDirectories := uint64(1)
+
+  expectedNumOfDirsProcessed := uint64(1)
+
+  expectedNumOfDirsScanned := uint64(1)
+
+  deleteDirStats,
+    errArray := dMgr.DeleteFilesByNamePattern("*.htm")
 
   if len(errArray) > 0 {
-    if len(errArray) == 1 {
-      t.Errorf("Error returned by dMgr.DeleteFilesByNamePattern(\"*.htm\").\n"+
-        "testDir='%v'\nError='%v'\n", testDir, errArray[0].Error())
-    } else {
-      t.Errorf("Errors returned by dMgr.DeleteFilesByNamePattern(\"*.htm\").\n"+
-        "testDir='%v'\n\n", testDir)
 
-      for i := 0; i < len(errArray); i++ {
-        if i == len(errArray)-1 {
-          t.Errorf("%v\n\n", errArray[i].Error())
-        } else {
-          t.Errorf("%v\n", errArray[i].Error())
-        }
-      }
-
-    }
+    t.Errorf("Errors returned by dMgr.DeleteFilesByNamePattern(\"*.htm\").\n"+
+      "testDir='%v'\nErrors Follow:\n\n%v",
+      testDir,
+      dMgr.ConsolidateErrors(errArray))
 
     _ = fh.DeleteDirPathAll(baseTestDir)
-
     return
   }
 
-  fMgrCollection, err = dMgr.FindFilesByNamePattern("*.htm")
+  fMgrHtmCollection, err = dMgr.FindFilesByNamePattern("*.htm")
 
   if err != nil {
     t.Errorf("Test Setup Error returned by dMgr.FindFilesByNamePattern(\"*.htm\").\n"+
       "baseTestDir='%v'\nError='%v'\n", baseTestDir, err.Error())
 
     _ = fh.DeleteDirPathAll(baseTestDir)
-
     return
   }
 
-  if fMgrCollection.GetNumOfFileMgrs() != 0 {
+  if fMgrHtmCollection.GetNumOfFileMgrs() != 0 {
     t.Errorf("Error: Expected to find 0-html files in 'testDir'.\n"+
-      "Instead, %v-html files were found.", fMgrCollection.GetNumOfFileMgrs())
+      "Instead, %v-html files were found.", fMgrHtmCollection.GetNumOfFileMgrs())
 
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
   }
 
-  fMgrCollection, err = dMgr2Sub.FindFilesByNamePattern("*.txt")
+  if expectedNumOfFileBytesDeleted != deleteDirStats.FilesDeletedBytes {
+    t.Errorf("Error: Expected deleteDirStats.FilesDeletedBytes=='%v'.\n"+
+      "Instead, deleteDirStats.FilesDeletedBytes=='%v'\n",
+      expectedNumOfFileBytesDeleted,
+      deleteDirStats.FilesDeleted)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if expectedNumOfFilesRemaining != deleteDirStats.FilesRemaining {
+    t.Errorf("Error: Expected deleteDirStats.FilesRemaining=='%v'.\n"+
+      "Instead, deleteDirStats.FilesDeleted=='%v'\n",
+      expectedNumOfFilesRemaining,
+      deleteDirStats.FilesRemaining)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if deleteDirStats.DirectoriesDeleted != 0 {
+    t.Errorf("Error: Expected deleteDirStats.DirectoriesDeleted=='0'.\n"+
+      "Instead, deleteDirStats.DirectoriesDeleted=='%v'\n",
+      deleteDirStats.DirectoriesDeleted)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if expectedNumOfDirsProcessed != deleteDirStats.TotalDirsProcessed {
+
+    t.Errorf("Error: Expected deleteDirStats.TotalDirsProcessed=='%v'.\n"+
+      "Instead, deleteDirStats.TotalDirsProcessed=='%v'\n",
+      expectedNumOfDirsProcessed,
+      deleteDirStats.TotalDirsProcessed)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if expectedNumOfDirsScanned != deleteDirStats.TotalDirsScanned {
+
+    t.Errorf("Error: Expected deleteDirStats.TotalDirsScanned=='%v'.\n"+
+      "Instead, deleteDirStats.TotalDirsScanned=='%v'\n",
+      expectedNumOfDirsScanned,
+      deleteDirStats.TotalDirsScanned)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if expectedNumOfSubDirectories != deleteDirStats.TotalSubDirectories {
+
+    t.Errorf("Error: Expected deleteDirStats.TotalSubDirectories=='%v'.\n"+
+      "Instead, deleteDirStats.TotalSubDirectories=='%v'\n",
+      expectedNumOfSubDirectories,
+      deleteDirStats.TotalDirsScanned)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if expectedNumOfFileBytesDeleted != deleteDirStats.FilesDeletedBytes {
+
+    t.Errorf("Error: Expected deleteDirStats.FilesDeletedBytes=='%v'.\n"+
+      "Instead, deleteDirStats.FilesDeletedBytes=='%v'\n",
+      expectedNumOfFileBytesDeleted,
+      deleteDirStats.FilesDeletedBytes)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if expectedNumOfFileBytesRemaining != deleteDirStats.FilesRemainingBytes {
+
+    t.Errorf("Error: Expected deleteDirStats.FilesDeletedBytes=='%v'.\n"+
+      "Instead, deleteDirStats.FilesDeletedBytes=='%v'\n",
+      expectedNumOfFileBytesRemaining,
+      deleteDirStats.FilesDeletedBytes)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if expectedNumOfFilesProcessed != deleteDirStats.TotalFilesProcessed {
+
+    t.Errorf("Error: Expected deleteDirStats.TotalFilesProcessed=='%v'.\n"+
+      "Instead, deleteDirStats.TotalFilesProcessed=='%v'\n",
+      expectedNumOfFilesProcessed,
+      deleteDirStats.TotalFilesProcessed)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  fMgrHtmCollection, err = dMgr2Sub.FindFilesByNamePattern("*.txt")
 
   if err != nil {
     t.Errorf("Error returned by dMgr2Sub.FindFilesByNamePattern(\"*.txt\").\n"+
@@ -1237,9 +1639,9 @@ func TestDirMgr_DeleteFilesByNamePattern_06(t *testing.T) {
     return
   }
 
-  if fMgrCollection.GetNumOfFileMgrs() != 4 {
+  if fMgrHtmCollection.GetNumOfFileMgrs() != 4 {
     t.Errorf("Error expected 4-txt files in the sub-directory. However, the number of\n"+
-      "found txt file='%v'", fMgrCollection.GetNumOfFileMgrs())
+      "found txt file='%v'", fMgrHtmCollection.GetNumOfFileMgrs())
   }
 
   err = fh.DeleteDirPathAll(baseTestDir)

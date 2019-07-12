@@ -43,7 +43,7 @@ func TestFileMgr_SetFileInfo_01(t *testing.T) {
     t.Errorf("Error returned by fmgr.SetFileInfo(info). info.Name()='%v'  Error='%v'", info.Name(), err.Error())
   }
 
-  if !fmgr.actualFileInfo.IsFInfoInitialized {
+  if !fmgr.actualFileInfo.isFInfoInitialized {
     t.Error("Error - File Manager FileInfoPlus object is not initialized!")
   }
 

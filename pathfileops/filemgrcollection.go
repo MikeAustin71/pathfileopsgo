@@ -290,7 +290,7 @@ func (fMgrs *FileMgrCollection) FindFiles(
   for i := 0; i < lDirCol; i++ {
     fMgr := fMgrs.fileMgrs[i]
 
-    if fMgr.actualFileInfo.IsFInfoInitialized {
+    if fMgr.actualFileInfo.isFInfoInitialized {
 
       isMatchedFile, err = fh.FilterFileName(fMgr.actualFileInfo, fileSelectionCriteria)
 
@@ -418,6 +418,28 @@ func (fMgrs *FileMgrCollection) GetNumOfFiles() int {
   }
 
   return len(fMgrs.fileMgrs)
+}
+
+// GetTotalFileBytes - Returns the total number of file bytes
+// represented by all files in the collection.
+//
+func (fMgrs *FileMgrCollection) GetTotalFileBytes() uint64 {
+
+  if fMgrs.fileMgrs == nil {
+    fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+    return 0
+  }
+
+  totalFileBytes := uint64(0)
+
+  for i := 0; i < len(fMgrs.fileMgrs); i++ {
+
+    if fMgrs.fileMgrs[i].actualFileInfo.isFInfoInitialized {
+      totalFileBytes += uint64(fMgrs.fileMgrs[i].actualFileInfo.Size())
+    }
+  }
+
+  return totalFileBytes
 }
 
 // InsertFileMgrAtIndex - Inserts a new File Manager into the collection at

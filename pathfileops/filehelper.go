@@ -6022,11 +6022,6 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
       subDir, err := DirMgr{}.NewFromFileInfo(pathFile, info)
 
       if err != nil {
-        /*
-           if subDir.isInitialized {
-             dInfo.Directories.AddDirMgr(subDir)
-           }
-        */
 
         er2 := fmt.Errorf(ePrefix+"Error returned by DirMgr{}.NewFromPathFileNameExtStr(pathFile). "+
           "pathFile='%v' Error='%v'", pathFile, err.Error())
