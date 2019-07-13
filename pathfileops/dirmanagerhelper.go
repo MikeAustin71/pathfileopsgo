@@ -2857,6 +2857,270 @@ func (dMgrHlpr *dirMgrHelper) findFilesWalkDirectory(
   return findFilesInfo, nil
 }
 
+// findFilesWalkSubDirectories - This helper method returns file and directory
+// information on files residing in a directory tree identified by the input
+// parameter, 'dMgr', which is treated as the top level or parent directory
+// for purposes of the search operation. This parent directory is NOT searched,
+// but sub-directories in the tree ARE searched.
+//
+// This method 'walks the sub-directory tree' locating all files in the
+// sub-directory tree which match the file selection criteria submitted as
+// input parameter, 'fileSelectCriteria'.
+//
+// If a file matches the File Selection Criteria, it is included in the returned,
+// 'DirectoryTreeInfo.FoundFiles'. If ALL the file selection criterion are set to
+// zero values or 'Inactive', then ALL FILES in the sub-directory tree are selected
+// and returned in, 'DirectoryTreeInfo.FoundFiles'.
+//
+func (dMgrHlpr *dirMgrHelper) findFilesWalkSubDirectories(
+  dMgr *DirMgr,
+  fileSelectCriteria FileSelectionCriteria,
+  ePrefix string,
+  dMgrLabel string) (dTreeInfo DirectoryTreeInfo, err error) {
+
+  ePrefixCurrMethod := "dirMgrHelper.findFilesWalkSubDirectories() "
+
+  dTreeInfo = DirectoryTreeInfo{}
+  err = nil
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  dMgrPathDoesExist,
+    _,
+    err2 :=
+    dMgrHlpr.doesDirectoryExist(
+      dMgr,
+      PreProcPathCode.None(),
+      ePrefix,
+      dMgrLabel)
+
+  if err2 != nil {
+    err = fmt.Errorf("%v", err2.Error())
+    return dTreeInfo, err
+  }
+
+  if !dMgrPathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "\nError: %v directory path DOES NOT EXIST!\n",
+      dMgrLabel)
+
+    return dTreeInfo, err
+  }
+
+  var err3 error
+  var nameFileInfos []os.FileInfo
+  osPathSepStr := string(os.PathSeparator)
+  dirs := DirMgrCollection{}
+  var nextDir DirMgr
+  var dirPtr *os.File
+  fh := FileHelper{}
+
+  dTreeInfo.StartPath = dMgr.absolutePath
+  dTreeInfo.FileSelectCriteria = fileSelectCriteria
+
+  dirs.AddDirMgr(dMgrHlpr.copyOut(dMgr))
+
+  mainLoopIsDone := false
+  file2LoopIsDone := false
+  isMatch := false
+  isTopLevelDir := true
+
+  for !mainLoopIsDone {
+
+    nextDir, err2 = dirs.PopFirstDirMgr()
+
+    if err2 != nil && err2 == io.EOF {
+      mainLoopIsDone = true
+      break
+    } else if err2 != nil {
+      err = fmt.Errorf(ePrefix+
+        "\nError returned by dirs.PopFirstDirMgr().\n"+
+        "Error='%v'\n", err2.Error())
+
+      return dTreeInfo, err
+    }
+
+    if dirPtr != nil {
+
+      err2 = dirPtr.Close()
+
+      if err2 != nil {
+
+        err3 = fmt.Errorf(ePrefix+
+          "\nError returned by dirPtr.Close()\n"+
+          "Error='%v'\n\n", err2.Error())
+
+        dTreeInfo.ErrReturns =
+          append(dTreeInfo.ErrReturns, err3)
+
+        isTopLevelDir = false
+
+        continue
+      }
+    }
+
+    dirPtr, err2 = os.Open(nextDir.absolutePath)
+
+    if err2 != nil {
+
+      err3 = fmt.Errorf(ePrefix+
+        "\nError return by os.Open(nextDir.absolutePath).\n"+
+        "nextDir.absolutePath='%v'\nError='%v'\n\n",
+        nextDir.absolutePath, err2.Error())
+
+      dTreeInfo.ErrReturns =
+        append(dTreeInfo.ErrReturns, err3)
+
+      isTopLevelDir = false
+
+      continue
+    }
+
+    file2LoopIsDone = false
+
+    for !file2LoopIsDone {
+
+      nameFileInfos, err2 = dirPtr.Readdir(1000)
+
+      if err2 != nil && err2 == io.EOF {
+        file2LoopIsDone = true
+
+        if len(nameFileInfos) == 0 {
+
+          break
+        }
+
+      } else if err2 != nil {
+
+        err3 = fmt.Errorf(ePrefix+
+          "\nError returned by dirPtr.Readdir(1000).\n"+
+          "Error='%v'\n\n", err2.Error())
+
+        dTreeInfo.ErrReturns =
+          append(dTreeInfo.ErrReturns, err3)
+
+        file2LoopIsDone = true
+        break
+      }
+
+      for _, nameFInfo := range nameFileInfos {
+
+        if nameFInfo.IsDir() {
+          // This is a directory
+          err2 = dirs.AddDirMgrByPathNameStr(
+            nextDir.absolutePath +
+              osPathSepStr +
+              nameFInfo.Name())
+
+          if err2 != nil {
+            err3 = fmt.Errorf(ePrefix+
+              "\nError returned by dirs.AddDirMgrByPathNameStr(newDir).\n"+
+              "newDir='%v'\nError='%v'\n\n",
+              nextDir.absolutePath+osPathSepStr+nameFInfo.Name(),
+              err2.Error())
+
+            dTreeInfo.ErrReturns =
+              append(dTreeInfo.ErrReturns, err3)
+            continue
+          }
+
+          // Add directory to dTreeInfo
+          err2 = dTreeInfo.Directories.AddDirMgrByPathNameStr(
+            nextDir.absolutePath +
+              osPathSepStr +
+              nameFInfo.Name())
+
+          if err2 != nil {
+            err3 = fmt.Errorf(ePrefix+
+              "\nError occurred while adding found directory.\n"+
+              "dTreeInfo.Directories.AddDirMgrByPathNameStr(newDir).\n"+
+              "newDir='%v'\nError='%v'\n\n",
+              nextDir.absolutePath+osPathSepStr+nameFInfo.Name(),
+              err2.Error())
+
+            dTreeInfo.ErrReturns =
+              append(dTreeInfo.ErrReturns, err3)
+
+            err = fmt.Errorf("%v", err3.Error())
+
+            return dTreeInfo, err
+          }
+
+          continue
+        }
+
+        if isTopLevelDir {
+          // Skip all files in the
+          // parent directory.
+          continue
+        }
+
+        // This is a file eligible for
+        // matching with selection criteria
+        // Determine if it matches the find file criteria.
+        isMatch, err2 =
+          fh.FilterFileName(nameFInfo, fileSelectCriteria)
+
+        if err2 != nil {
+          err3 = fmt.Errorf(ePrefix+
+            "\nError returned by fh.FilterFileName(nameFInfo, fileSelectCriteria).\n"+
+            "Directory='%v'\nFile Name='%v'\nError='%v'\n\n",
+            nextDir.absolutePath, nameFInfo.Name(), err2.Error())
+
+          dTreeInfo.ErrReturns =
+            append(dTreeInfo.ErrReturns, err3)
+
+          continue
+        }
+
+        if isMatch {
+          err2 =
+            dTreeInfo.FoundFiles.AddFileMgrByDirStrFileNameStr(
+              nextDir.absolutePath,
+              nameFInfo.Name())
+
+          if err2 != nil {
+            err3 = fmt.Errorf(ePrefix+
+              "\nError returned by dTreeInfo.FoundFiles.AddFileMgrByDirStrFileNameStr("+
+              "nextDir.absolutePath,nameFInfo.Name())\n"+
+              "nextDir.absolutePath='%v'\n"+
+              "nameFInfo.Name()='%v'\nError='%v'\n\n",
+              nextDir.absolutePath,
+              nameFInfo.Name())
+
+            dTreeInfo.ErrReturns =
+              append(dTreeInfo.ErrReturns, err3)
+          }
+        }
+      }
+    }
+
+    isTopLevelDir = false
+  }
+
+  if dirPtr != nil {
+
+    err2 = dirPtr.Close()
+
+    if err2 != nil {
+
+      err3 = fmt.Errorf(ePrefix+
+        "\nError returned by dirPtr.Close()\n"+
+        "Error='%v'\n\n", err2.Error())
+
+      dTreeInfo.ErrReturns =
+        append(dTreeInfo.ErrReturns, err3)
+
+    }
+  }
+
+  return dTreeInfo, err
+}
+
 // getAbsolutePathElements - Returns all of the directories and drive
 // specifications as an array of strings.
 //

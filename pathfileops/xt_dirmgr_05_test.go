@@ -674,6 +674,52 @@ func TestDirMgr_FindWalkDirFiles_06(t *testing.T) {
 
 }
 
+func TestDirMgr_FindWalkSubDirFiles_01(t *testing.T) {
+  testDir := "../logTest"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n",
+      testDir, err.Error())
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  dTreeInfo, err := testDMgr.FindWalkSubDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by testDMgr.FindWalkSubDirFiles(fsc)\n"+
+      "testDMgr='%v'\nError='%v'\n",
+      testDMgr.GetAbsolutePath(),
+      err.Error())
+    return
+  }
+
+  expectedNumOfDirs := 7
+  expectedNumOfFiles := 5
+
+  if expectedNumOfFiles != dTreeInfo.FoundFiles.GetNumOfFileMgrs() {
+    t.Errorf("Error: Expected dTreeInfo.FoundFiles.GetNumOfFileMgrs()='%v'.\n"+
+      "Instead, dTreeInfo.FoundFiles.GetNumOfFileMgrs()='%v'\n",
+      expectedNumOfFiles, dTreeInfo.FoundFiles.GetNumOfFileMgrs())
+  }
+
+  if expectedNumOfDirs != dTreeInfo.Directories.GetNumOfDirs() {
+    t.Errorf("Error: Expected dTreeInfo.Directories.GetNumOfDirs()='%v'\n"+
+      "Instead, dTreeInfo.Directories.GetNumOfDirs()='%v'\n",
+      expectedNumOfDirs, dTreeInfo.Directories.GetNumOfDirs())
+  }
+
+  if len(dTreeInfo.ErrReturns) > 0 {
+    t.Errorf("dTreeInfo Returned Errors:\n\n%v",
+      testDMgr.ConsolidateErrors(dTreeInfo.ErrReturns))
+  }
+
+}
+
 func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
 
   origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()

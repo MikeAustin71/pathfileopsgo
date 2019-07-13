@@ -18,9 +18,69 @@ import (
 
 func main() {
 
-  mainTest84CopyDirTree()
+  mainTest85FindWalkSubDirFiles()
 
 }
+
+func mainTest85FindWalkSubDirFiles() {
+
+  testDir := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\logTest"
+
+  testDMgr, err := pf.DirMgr{}.New(testDir)
+
+  if err != nil {
+    fmt.Printf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n",
+      testDir, err.Error())
+    return
+  }
+
+  fsc := pf.FileSelectionCriteria{}
+
+  dTreeInfo, err := testDMgr.FindWalkSubDirFiles(fsc)
+
+  if err != nil {
+    fmt.Printf("Error returned by testDMgr.FindWalkSubDirFiles(fsc)\n"+
+      "testDMgr='%v'\nError='%v'\n",
+      testDMgr.GetAbsolutePath(),
+      err.Error())
+    return
+  }
+
+  expectedNumOfDirs := 7
+  expectedNumOfFiles := 5
+
+  if len(dTreeInfo.ErrReturns) > 0 {
+    fmt.Printf("dTreeInfo Returned Errors:\n\n%v",
+      testDMgr.ConsolidateErrors(dTreeInfo.ErrReturns))
+    return
+  }
+
+  if expectedNumOfFiles != dTreeInfo.FoundFiles.GetNumOfFileMgrs() {
+    fmt.Printf("Error: Expected dTreeInfo.FoundFiles.GetNumOfFileMgrs()='%v'.\n"+
+      "Instead, dTreeInfo.FoundFiles.GetNumOfFileMgrs()='%v'\n",
+      expectedNumOfFiles, dTreeInfo.FoundFiles.GetNumOfFileMgrs())
+    return
+  }
+
+  if expectedNumOfDirs != dTreeInfo.Directories.GetNumOfDirs() {
+    fmt.Printf("Error: Expected dTreeInfo.Directories.GetNumOfDirs()='%v'\n"+
+      "Instead, dTreeInfo.Directories.GetNumOfDirs()='%v'\n",
+      expectedNumOfDirs, dTreeInfo.Directories.GetNumOfDirs())
+    return
+  }
+
+  fmt.Println("            mainTest85FindWalkSubDirFiles               ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("Number Of Directories Found: ", dTreeInfo.Directories.GetNumOfDirs())
+  fmt.Println("      Number Of Files Found: ", dTreeInfo.FoundFiles.GetNumOfFileMgrs())
+
+}
+
+/*
 
 func mainTest84CopyDirTree() {
 
@@ -81,7 +141,6 @@ func mainTest84CopyDirTree() {
 
 }
 
-/*
 
 func mainTest83DmgrDeleteDirAll() {
 
