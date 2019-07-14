@@ -290,7 +290,10 @@ func (dMgrHlpr *dirMgrHelper) copyDirectory(
   return dirCopyStats, errs
 }
 
-func (dMgrHlpr *dirMgrHelper) copyDirectoryTree2(
+// copyDirectoryTree - Helper method for 'DirMgr'. This method is
+// designed to copy entire directory trees.
+//
+func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   dMgr *DirMgr,
   targetDMgr *DirMgr,
   copyEmptyDirectories bool,
@@ -300,7 +303,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree2(
   dMgrLabel string,
   targetDMgrLabel string) (dTreeCopyStats DirTreeCopyStats, errs []error) {
 
-  ePrefixCurrMethod := "dirMgrHelper.copyDirectoryTree2() "
+  ePrefixCurrMethod := "dirMgrHelper.copyDirectoryTree() "
 
   errs = make([]error, 0, 300)
 
@@ -420,6 +423,8 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree2(
       continue
     }
 
+    dirCreated = false
+
     if isTopLevelDir &&
       !skipTopLevelDirectory &&
       copyEmptyDirectories {
@@ -455,10 +460,14 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree2(
 
     } else if dirCreated {
       dTreeCopyStats.DirsCreated++
-      dirCreated = false
     }
 
-    if copyEmptyDirectories {
+    if !skipTopLevelDirectory && copyEmptyDirectories {
+      dTreeCopyStats.DirsCopied++
+    } else if skipTopLevelDirectory &&
+      copyEmptyDirectories &&
+      !isTopLevelDir {
+
       dTreeCopyStats.DirsCopied++
     }
 
@@ -475,9 +484,9 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree2(
           "Error='%v'\n\n", err.Error())
 
         errs = append(errs, err2)
-
-        continue
       }
+
+      dirPtr = nil
     }
 
     dirPtr, err = os.Open(nextDir.absolutePath)
@@ -616,10 +625,10 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree2(
 
             } else if dirCreated {
               dTreeCopyStats.DirsCreated++
+              dTreeCopyStats.DirsCopied++
             }
-          }
 
-          if isNewDir && !copyEmptyDirectories {
+          } else if isNewDir && !copyEmptyDirectories {
 
             dTreeCopyStats.DirsCopied++
           }
@@ -663,6 +672,22 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree2(
 
     isTopLevelDir = false
   } // End of main loop
+
+  if dirPtr != nil {
+
+    err = dirPtr.Close()
+
+    if err != nil {
+
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned at clean-up by dirPtr.Close()\n"+
+        "Error='%v'\n\n", err.Error())
+
+      errs = append(errs, err2)
+    }
+
+    dirPtr = nil
+  }
 
   // Final verification of
   dMgrPathDoesExist,
@@ -712,9 +737,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree2(
   return dTreeCopyStats, errs
 }
 
-// copyDirectoryTree - Helper method for 'DirMgr'. This method is
-// designed to copy entire directory trees.
-
+/*
 func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   dMgr *DirMgr,
   targetDMgr *DirMgr,
@@ -1153,6 +1176,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   return dTreeCopyStats,
     errs
 }
+*/
 
 // CopyIn - Receives a pointer to a incoming DirMgr object
 // ('dMgrIn') as an input parameter and copies the values from

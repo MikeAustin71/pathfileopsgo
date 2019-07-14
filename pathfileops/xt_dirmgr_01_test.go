@@ -1752,7 +1752,7 @@ func TestDirMgr_CopySubDirectoryTree_01(t *testing.T) {
 
   expectedNumOfDirsCopied := uint64(srcDTreeInfo.Directories.GetNumOfDirs())
   expectedNumOfDirsCreated := expectedNumOfDirsCopied
-  expectedTotalDirsProcessed := expectedNumOfDirsCopied + 1
+  expectedTotalDirsProcessed := expectedNumOfDirsCopied
 
   if expectedTotalDirsProcessed != dTreeCopyStats.TotalDirsProcessed {
     t.Errorf("Error: Expected dTreeCopyStats.TotalDirsProcessed='%v'.\n"+
@@ -2086,7 +2086,7 @@ func TestDirMgr_CopySubDirectoryTree_05(t *testing.T) {
 
   expectedDirsCopied := uint64(srcDTreeInfo.Directories.GetNumOfDirs())
   expectedDirsCreated := expectedDirsCopied
-  expectedTotalDirsProcessed := expectedDirsCopied + 1
+  expectedTotalDirsProcessed := expectedDirsCopied
 
   if expectedTotalDirsProcessed != dTreeStats.TotalDirsProcessed {
     t.Errorf("Error: Expected dTreeCopyStats.TotalDirsProcessed='%v'.\n"+
@@ -2186,11 +2186,9 @@ func TestDirMgr_CopySubDirectoryTree_06(t *testing.T) {
 
   if len(errs) > 0 {
     t.Errorf("Errors returned by srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n"+
-      "targetDMgr='%v'\nErrors:\n", targetDMgr.GetAbsolutePath())
-
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("'%v'\n\n", errs[i].Error())
-    }
+      "targetDMgr='%v'\nErrors Follow:\n\n%v",
+      targetDMgr.GetAbsolutePath(),
+      targetDMgr.ConsolidateErrors(errs))
 
     _ = targetDMgr.DeleteAll()
 
@@ -2261,10 +2259,9 @@ func TestDirMgr_CopySubDirectoryTree_06(t *testing.T) {
   }
 
   // Subtract 1 to eliminate the empty directory
-  expectedDirsCopied := uint64(srcDTreeInfo.Directories.GetNumOfDirs() - 1)
-
-  expectedDirsCreated := expectedDirsCopied
-  expectedTotalDirsProcessed := expectedDirsCopied + 1
+  expectedDirsCopied := uint64(srcDTreeInfo.Directories.GetNumOfDirs() - 2)
+  expectedDirsCreated := uint64(srcDTreeInfo.Directories.GetNumOfDirs() - 2)
+  expectedTotalDirsProcessed := uint64(srcDTreeInfo.Directories.GetNumOfDirs())
 
   if expectedTotalDirsProcessed != dTreeStats.TotalDirsProcessed {
     t.Errorf("Error: Expected dTreeCopyStats.TotalDirsProcessed='%v'.\n"+

@@ -18,7 +18,480 @@ import (
 
 func main() {
 
-  mainTest85FindWalkSubDirFiles()
+  mainTest88CopySubDirectoryTree()
+
+}
+
+func mainTest88CopySubDirectoryTree() {
+
+  srcDir := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\logTest"
+
+  srcDMgr, err := pf.DirMgr{}.New(srcDir)
+
+  if err != nil {
+    fmt.Printf("Test Setup Error returned by DirMgr{}.New(srcDir).\n"+
+      "srcDir='%v'\nError='%v'", srcDir, err.Error())
+    return
+  }
+
+  targetDir := "D:\\T06\\TestDirMgr_CopySubDirectoryTree_06"
+
+  fh := pf.FileHelper{}
+
+  _ = fh.DeleteDirPathAll(targetDir)
+
+  targetDMgr, err := pf.DirMgr{}.New(targetDir)
+
+  if err != nil {
+    fmt.Printf("Test Setup Error returned by DirMgr{}.New(targetDir).\n"+
+      "targetDir='%v'\nError='%v'", targetDir, err.Error())
+    _ = fh.DeleteDirPathAll(targetDir)
+    return
+  }
+
+  fsc := pf.FileSelectionCriteria{}
+
+  var copyEmptyDirectories bool
+
+  copyEmptyDirectories = false
+
+  dTreeStats,
+    errs := srcDMgr.CopySubDirectoryTree(targetDMgr, copyEmptyDirectories, fsc)
+
+  if len(errs) > 0 {
+    fmt.Printf("Errors returned by srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n"+
+      "targetDMgr='%v'\nErrors Follow:\n\n%v",
+      targetDMgr.GetAbsolutePath(),
+      targetDMgr.ConsolidateErrors(errs))
+
+    _ = targetDMgr.DeleteAll()
+
+    return
+  }
+
+  if !targetDMgr.DoesAbsolutePathExist() {
+    fmt.Println("ERROR: The target directory path DOES NOT EXIST!!")
+
+    return
+  }
+
+  fsc = pf.FileSelectionCriteria{}
+
+  srcDTreeInfo, err := srcDMgr.FindWalkSubDirFiles(fsc)
+
+  if err != nil {
+    fmt.Printf("Test Verification Error returned by srcDMgr.FindWalkSubDirFiles(fsc).\n"+
+      "source directory='%v'\nError='%v'", srcDMgr.GetAbsolutePath(), err.Error())
+
+    _ = targetDMgr.DeleteAll()
+
+    return
+  }
+
+  fsc = pf.FileSelectionCriteria{}
+
+  targetDTreeInfo, err := targetDMgr.FindWalkSubDirFiles(fsc)
+
+  if err != nil {
+    fmt.Printf("Test Verification Error returned by targetDMgr.FindWalkDirFiles(fsc).\n"+
+      "target directory='%v'\nError='%v'", targetDMgr.GetAbsolutePath(), err.Error())
+
+    _ = targetDMgr.DeleteAll()
+
+    return
+  }
+
+  srcDirs := srcDTreeInfo.Directories.GetNumOfDirs()
+  srcDirs-- // Discount the one empty subdirectory
+
+  targetDirs := targetDTreeInfo.Directories.GetNumOfDirs()
+
+  if srcDirs != targetDirs {
+    fmt.Printf("ERROR: Expected %v-directories would be created.\n"+
+      "Instead, %v-directories were created!\n",
+      srcDirs, targetDirs)
+
+    _ = targetDMgr.DeleteAll()
+
+    return
+  }
+
+  tFileInfo, err := targetDMgr.FindFilesBySelectCriteria(fsc)
+
+  if err != nil {
+    fmt.Printf("Error returned by targetDMgr.FindFilesBySelectCriteria(fsc).\n"+
+      "targetDMgr='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
+    _ = targetDMgr.DeleteAll()
+
+    return
+  }
+
+  if tFileInfo.GetNumOfFileMgrs() > 0 {
+    fmt.Printf("ERROR: Expected ZERO files in top level target directory.\n"+
+      "Instead, the top level target directory had %v-files.\nTarget Directory='%v'\n",
+      tFileInfo.GetNumOfFileMgrs(), targetDMgr.GetAbsolutePath())
+  }
+
+  // Subtract 1 to eliminate the empty directory
+  expectedDirsCopied := uint64(srcDTreeInfo.Directories.GetNumOfDirs() - 2)
+  expectedDirsCreated := uint64(srcDTreeInfo.Directories.GetNumOfDirs() - 2)
+  expectedTotalDirsProcessed := uint64(srcDTreeInfo.Directories.GetNumOfDirs())
+
+  if expectedTotalDirsProcessed != dTreeStats.TotalDirsProcessed {
+    fmt.Printf("Error: Expected dTreeCopyStats.TotalDirsProcessed='%v'.\n"+
+      "Instead, dTreeCopyStats.TotalDirsProcessed='%v'\n",
+      expectedTotalDirsProcessed, dTreeStats.TotalDirsProcessed)
+  }
+
+  if expectedDirsCopied != dTreeStats.DirsCopied {
+    fmt.Printf("Error: Expected dTreeCopyStats.DirsCopied='%v'.\n"+
+      "Instead, dTreeCopyStats.DirsCopied='%v'\n",
+      expectedDirsCopied, dTreeStats.DirsCopied)
+
+  }
+
+  if expectedDirsCreated != dTreeStats.DirsCreated {
+    fmt.Printf("Error: Expected dTreeCopyStats.DirsCreated='%v'.\n"+
+      "Instead, dTreeCopyStats.DirsCreated='%v'\n",
+      expectedDirsCopied, dTreeStats.DirsCreated)
+  }
+
+  expectedFilesCopied := uint64(srcDTreeInfo.FoundFiles.GetNumOfFileMgrs())
+  expectedFileBytesCopied := srcDTreeInfo.FoundFiles.GetTotalFileBytes()
+  expectedFilesNotCopied := uint64(0)
+  expectedFileBytesNotCopied := uint64(0)
+  expectedTotalFilesProcessed := expectedFilesCopied
+
+  if expectedFilesCopied != dTreeStats.FilesCopied {
+    fmt.Printf("Error: Expected dTreeCopyStats.FilesCopied='%v'.\n"+
+      "Instead, dTreeCopyStats.FilesCopied='%v'\n",
+      expectedFilesCopied, dTreeStats.FilesCopied)
+  }
+
+  if expectedFileBytesCopied != dTreeStats.FileBytesCopied {
+    fmt.Printf("Error: Expected dTreeCopyStats.FileBytesCopied='%v'.\n"+
+      "Instead, dTreeCopyStats.FileBytesCopied='%v'\n",
+      expectedFileBytesCopied, dTreeStats.FileBytesCopied)
+  }
+
+  if expectedFilesNotCopied != dTreeStats.FilesNotCopied {
+    fmt.Printf("Error: Expected dTreeCopyStats.FilesNotCopied='%v'.\n"+
+      "Instead, dTreeCopyStats.FilesNotCopied='%v'\n",
+      expectedFilesNotCopied, dTreeStats.FilesNotCopied)
+  }
+
+  if expectedFileBytesNotCopied != dTreeStats.FileBytesNotCopied {
+    fmt.Printf("Error: Expected dTreeCopyStats.FileBytesNotCopied='%v'.\n"+
+      "Instead, dTreeCopyStats.FileBytesNotCopied='%v'\n",
+      expectedFileBytesNotCopied, dTreeStats.FileBytesNotCopied)
+  }
+
+  if expectedTotalFilesProcessed != dTreeStats.TotalFilesProcessed {
+    fmt.Printf("Error: Expected dTreeCopyStats.TotalFilesProcessed='%v'.\n"+
+      "Instead, dTreeCopyStats.TotalFilesProcessed='%v'\n",
+      expectedTotalFilesProcessed, dTreeStats.TotalFilesProcessed)
+  }
+
+  fmt.Println("             mainTest84CopyDirTree()                    ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("Total Directories Processed: ", dTreeStats.TotalDirsProcessed)
+  fmt.Println("         Directories Copied: ", dTreeStats.DirsCopied)
+  fmt.Println("        Directories Created: ", dTreeStats.DirsCreated)
+  fmt.Println("      Total Files Processed: ", dTreeStats.TotalFilesProcessed)
+  fmt.Println("               Files Copied: ", dTreeStats.FilesCopied)
+  fmt.Println("           Files Not Copied: ", dTreeStats.FilesNotCopied)
+  fmt.Println("Copy Empty Directories Flag: ", copyEmptyDirectories)
+
+  /*
+    err = targetDMgr.DeleteAll()
+
+    if err != nil {
+      fmt.Printf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n"+
+        "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
+    }
+  */
+
+  return
+}
+
+/*
+
+func mainTest87CopyDirectoryTree() {
+
+  setUpDir1 := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest\\levelfilesfortest"
+
+  setUpDMgr1, err := pf.DirMgr{}.New(setUpDir1)
+
+  if err != nil {
+    fmt.Printf("Test Setup Error returned by DirMgr{}.New(setUpDir1)\n"+
+      "setUpDir1='%v'\nError='%v'\n",
+      setUpDir1, err.Error())
+    return
+  }
+
+  setupDir2 := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest\\htmlFilesForTest"
+
+  setUpDMgr2, err := pf.DirMgr{}.New(setupDir2)
+
+  if err != nil {
+    fmt.Printf("Test Setup Error returned by DirMgr{}.New(setupDir2)\n"+
+      "setupDir2='%v'\nError='%v'\n",
+      setupDir2, err.Error())
+    return
+  }
+
+  srcDir := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\createFilesTest\\levelfilesfortest"
+
+  srcDMgr, err := pf.DirMgr{}.New(srcDir)
+
+  if err != nil {
+    fmt.Printf("Test Setup Error returned by DirMgr{}.New(srcDir).\n"+
+      "srcDir='%v'\nError='%v'", srcDir, err.Error())
+    return
+  }
+
+  fsc := pf.FileSelectionCriteria{}
+
+  _,
+  errs := setUpDMgr1.CopyDirectoryTree(srcDMgr, false, fsc)
+
+  if len(errs) > 0 {
+    fmt.Printf("Test Setup Errors returned by setUpDMgr1.CopyDirectoryTree(srcDMgr, false, fsc).\n"+
+      "srcDMgr='%v'\nErrors Follow:\n%v", srcDMgr.GetAbsolutePath(),
+      pf.DirMgr{}.ConsolidateErrors(errs).Error())
+    return
+  }
+
+  srcHtmlDir := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\createFilesTest\\" +
+    "levelfilesfortest\\level_01_dir\\level_02_dir\\htmlFilesForTest"
+
+  srcHtmlDMgr, err := pf.DirMgr{}.New(srcHtmlDir)
+
+  if err != nil {
+    fmt.Printf("Test Setup Error returned by DirMgr{}.New(srcHtmlDir).\n"+
+      "srcHtmlDir='%v'\nError='%v'", srcHtmlDir, err.Error())
+    return
+  }
+
+  fsc = pf.FileSelectionCriteria{}
+
+  _,
+    errs = setUpDMgr2.CopyDirectory(srcHtmlDMgr, fsc, false)
+
+  if len(errs) > 0 {
+    fmt.Printf("Test Setup Errors returned by setUpDMgr2.CopyDirectory(srcHtmlDMgr, fsc).\n"+
+      "srcHtmlDMgr='%v'\nErrors Follow:\n%v\n",
+      srcHtmlDMgr.GetAbsolutePath(),
+      pf.DirMgr{}.ConsolidateErrors(errs).Error())
+    return
+  }
+
+  targetDir := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\dirmgrtests\\levelfilesfortest"
+
+  fh := pf.FileHelper{}
+
+  err = fh.DeleteDirPathAll(targetDir)
+
+  if err != nil {
+    fmt.Printf("Error returned from fh.DeleteDirPathAll(targetDir)\n"+
+      "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
+    return
+  }
+
+  targetDMgr, err := pf.DirMgr{}.New(targetDir)
+
+  if err != nil {
+    fmt.Printf("Test Setup Error returned by DirMgr{}.New(targetDir).\n"+
+      "targetDir='%v'\nError='%v'", targetDir, err.Error())
+    return
+  }
+
+  fsc = pf.FileSelectionCriteria{}
+  fsc.FileNamePatterns = []string{"*.txt"}
+
+  // Copy '.txt' files only to targetDMgr
+  dtreeCopyStats,
+  errs := srcDMgr.CopyDirectoryTree(
+    targetDMgr,
+    false,
+    fsc)
+
+  if len(errs) > 0 {
+    fmt.Printf("Errors returned by srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)\n"+
+      "targetDMgr='%v'\nErrors Follow:\n%v",
+      targetDMgr.GetAbsolutePath(),
+      pf.DirMgr{}.ConsolidateErrors(errs).Error())
+
+    _ = fh.DeleteDirPathAll(targetDir)
+    _ = fh.DeleteDirPathAll(srcDir)
+
+    return
+  }
+
+  if !targetDMgr.DoesAbsolutePathExist() {
+    fmt.Printf("ERROR: The target directory path DOES NOT EXIST!!\n"+
+      "Number Of FilesCopied='%v'\n", dtreeCopyStats.FilesCopied)
+
+    _ = fh.DeleteDirPathAll(targetDir)
+    _ = fh.DeleteDirPathAll(srcDir)
+
+    return
+  }
+
+  fsc = pf.FileSelectionCriteria{}
+  fsc.FileNamePatterns = []string{"*.txt"}
+
+  srcTextDTreeInfo, err := srcDMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    fmt.Printf("Test Verification Error returned by\n"+
+      "srcTextDTreeInfo, err := srcDMgr.FindWalkDirFiles(fsc).\n"+
+      "source directory='%v'\nError='%v'",
+      srcDMgr.GetAbsolutePath(), err.Error())
+
+    _ = fh.DeleteDirPathAll(targetDir)
+    _ = fh.DeleteDirPathAll(srcDir)
+
+    return
+  }
+
+  expectedNumOfCopiedFiles := srcTextDTreeInfo.FoundFiles.GetNumOfFileMgrs()
+
+  fsc = pf.FileSelectionCriteria{}
+  fsc.FileNamePatterns = []string{"*.htm"}
+
+  srcHtmlDTreeInfo, err := srcDMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    fmt.Printf("Test Verification Error returned by\n"+
+      "srcHtmlDTreeInfo, err := srcDMgr.FindWalkDirFiles(fsc).\n"+
+      "source directory='%v'\nError='%v'",
+      srcDMgr.GetAbsolutePath(), err.Error())
+
+    _ = fh.DeleteDirPathAll(targetDir)
+    _ = fh.DeleteDirPathAll(srcDir)
+    return
+  }
+
+  expectedNumOfFilesNotCopied := srcHtmlDTreeInfo.FoundFiles.GetNumOfFileMgrs()
+
+  targetDTreeInfo, err := targetDMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    fmt.Printf("Test Verification Error returned by targetDMgr.FindWalkDirFiles(fsc).\n"+
+      "target directory='%v'\nError='%v'", targetDMgr.GetAbsolutePath(), err.Error())
+
+    _ = fh.DeleteDirPathAll(targetDir)
+    _ = fh.DeleteDirPathAll(srcDir)
+    return
+  }
+
+  expectedNumOfDirectoriesCopied := srcTextDTreeInfo.Directories.GetNumOfDirs() - 1
+
+  if expectedNumOfDirectoriesCopied != targetDTreeInfo.Directories.GetNumOfDirs() {
+    fmt.Printf("Expected %v-directories would be created. Instead, %v-directories were created!\n"+
+      "targetDTreeInfo.Directories.GetNumOfDirs()='%v'\n",
+      expectedNumOfDirectoriesCopied,
+      targetDTreeInfo.Directories.GetNumOfDirs(),
+      targetDTreeInfo.Directories.GetNumOfDirs())
+
+  }
+
+  if uint64(expectedNumOfCopiedFiles) != dtreeCopyStats.FilesCopied {
+    fmt.Printf("Expected %v-files would be copied.\n"+
+      "Instead, numberOfFilesCopied-'%v'\n",
+      expectedNumOfCopiedFiles, dtreeCopyStats.FilesCopied)
+  }
+
+  if uint64(expectedNumOfFilesNotCopied) != dtreeCopyStats.FilesNotCopied {
+    fmt.Printf("Expected %v-files would NOT be copied.\n"+
+      "Instead, numberOfFilesNotCopied='%v'!",
+      expectedNumOfFilesNotCopied, dtreeCopyStats.FilesNotCopied)
+  }
+
+  if uint64(expectedNumOfDirectoriesCopied) != dtreeCopyStats.DirsCopied {
+    fmt.Printf("Expected that %v-directories would be copied.\n"+
+      "Instead, %v-directories were copied.",
+      expectedNumOfDirectoriesCopied, dtreeCopyStats.DirsCopied)
+  }
+
+  err = fh.DeleteDirPathAll(targetDir)
+
+  if err != nil {
+    fmt.Printf("Test Clean-Up Error returned by fh.DeleteDirPathAll(fh.DeleteDirPathAll(targetDir)\n"+
+      "Target Directory Path='%v'\nError='%v'\n", targetDir, err.Error())
+  }
+
+  err = fh.DeleteDirPathAll(srcDir)
+
+  if err != nil {
+    fmt.Printf("Test Clean-Up Error returned by fh.DeleteDirPathAll(fh.DeleteDirPathAll(srcDir)\n"+
+      "Source Directory Path='%v'\nError='%v'\n", srcDir, err.Error())
+  }
+
+  return
+}
+
+func mainTest86CopySubDirTree() {
+
+  src := "D:\\T05\\levelfilesfortest"
+
+  dst := "D:\\T06\\levelfilesfortest"
+
+  srcDMgr, err := pf.DirMgr{}.New(src)
+
+  if err != nil {
+    fmt.Printf("Error returned by pf.DirMgr{}.New(src)\n"+
+      "src='%v'\nError='%v'\n", src, err.Error())
+    return
+  }
+
+  targetDMgr, err := pf.DirMgr{}.New(dst)
+
+  if err != nil {
+    fmt.Printf("Error returned by pf.DirMgr{}.New(dst)\n"+
+      "dst='%v'\nError='%v'\n", dst, err.Error())
+    return
+  }
+
+  fsc := pf.FileSelectionCriteria{}
+  // fsc.FileNamePatterns = []string{"*.htm"}
+  var copyEmptyDirectories bool
+  copyEmptyDirectories = false
+
+  dtreeStats,
+  errs := srcDMgr.CopySubDirectoryTree(targetDMgr, copyEmptyDirectories, fsc)
+
+  if len(errs) > 0 {
+    fmt.Printf("Errors returned by srcDMgr.CopyDirectoryTree("+
+      "targetDMgr, true, fsc)\n"+
+      "targetDMgr='%v'\n"+
+      "Errors Follow:\n%v",
+      targetDMgr.GetAbsolutePath(),
+      srcDMgr.ConsolidateErrors(errs))
+    return
+  }
+
+  if dtreeStats.ComputeError != nil {
+    fmt.Printf("Error returned by dtreeStats.ComputeError\n"+
+      "Error='%v'\n", dtreeStats.ComputeError.Error())
+  }
+
+  fmt.Println("             mainTest84CopyDirTree()                    ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("Total Directories Processed: ", dtreeStats.TotalDirsProcessed)
+  fmt.Println("         Directories Copied: ", dtreeStats.DirsCopied)
+  fmt.Println("        Directories Created: ", dtreeStats.DirsCreated)
+  fmt.Println("      Total Files Processed: ", dtreeStats.TotalFilesProcessed)
+  fmt.Println("               Files Copied: ", dtreeStats.FilesCopied)
+  fmt.Println("           Files Not Copied: ", dtreeStats.FilesNotCopied)
+  fmt.Println("Copy Empty Directories Flag: ", copyEmptyDirectories)
 
 }
 
@@ -80,7 +553,6 @@ func mainTest85FindWalkSubDirFiles() {
 
 }
 
-/*
 
 func mainTest84CopyDirTree() {
 
