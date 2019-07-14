@@ -1714,10 +1714,10 @@ func TestDirMgr_CopySubDirectoryTree_01(t *testing.T) {
     return
   }
 
-  srcDTreeInfo, err := srcDMgr.FindWalkDirFiles(fsc)
+  srcDTreeInfo, err := srcDMgr.FindWalkSubDirFiles(fsc)
 
   if err != nil {
-    t.Errorf("Test Verification Error returned by srcDMgr.FindWalkDirFiles(fsc).\n"+
+    t.Errorf("Test Verification Error returned by srcDMgr.FindWalkSubDirFiles(fsc).\n"+
       "source directory='%v'\nError='%v'", srcDMgr.GetAbsolutePath(), err.Error())
 
     _ = targetDMgr.DeleteAll()
@@ -1725,10 +1725,10 @@ func TestDirMgr_CopySubDirectoryTree_01(t *testing.T) {
     return
   }
 
-  targetDTreeInfo, err := targetDMgr.FindWalkDirFiles(fsc)
+  targetDTreeInfo, err := targetDMgr.FindWalkSubDirFiles(fsc)
 
   if err != nil {
-    t.Errorf("Test Verification Error returned by targetDMgr.FindWalkDirFiles(fsc).\n"+
+    t.Errorf("Test Verification Error returned by targetDMgr.FindWalkSubDirFiles(fsc).\n"+
       "target directory='%v'\nError='%v'", targetDMgr.GetAbsolutePath(), err.Error())
 
     _ = targetDMgr.DeleteAll()
@@ -1750,7 +1750,7 @@ func TestDirMgr_CopySubDirectoryTree_01(t *testing.T) {
       srcDTreeInfo.FoundFiles.GetNumOfFileMgrs(), targetDTreeInfo.FoundFiles.GetNumOfFileMgrs())
   }
 
-  expectedNumOfDirsCopied := uint64(srcDTreeInfo.Directories.GetNumOfDirs() - 1)
+  expectedNumOfDirsCopied := uint64(srcDTreeInfo.Directories.GetNumOfDirs())
   expectedNumOfDirsCreated := expectedNumOfDirsCopied
   expectedTotalDirsProcessed := expectedNumOfDirsCopied + 1
 
@@ -2030,10 +2030,10 @@ func TestDirMgr_CopySubDirectoryTree_05(t *testing.T) {
 
   fsc = FileSelectionCriteria{}
 
-  srcDTreeInfo, err := srcDMgr.FindWalkDirFiles(fsc)
+  srcDTreeInfo, err := srcDMgr.FindWalkSubDirFiles(fsc)
 
   if err != nil {
-    t.Errorf("Test Verification Error returned by srcDMgr.FindWalkDirFiles(fsc).\n"+
+    t.Errorf("Test Verification Error returned by srcDMgr.FindWalkSubDirFiles(fsc).\n"+
       "source directory='%v'\nError='%v'", srcDMgr.GetAbsolutePath(), err.Error())
 
     _ = targetDMgr.DeleteAll()
@@ -2043,7 +2043,7 @@ func TestDirMgr_CopySubDirectoryTree_05(t *testing.T) {
 
   fsc = FileSelectionCriteria{}
 
-  targetDTreeInfo, err := targetDMgr.FindWalkDirFiles(fsc)
+  targetDTreeInfo, err := targetDMgr.FindWalkSubDirFiles(fsc)
 
   if err != nil {
     t.Errorf("Test Verification Error returned by targetDMgr.FindWalkDirFiles(fsc).\n"+
@@ -2055,10 +2055,8 @@ func TestDirMgr_CopySubDirectoryTree_05(t *testing.T) {
   }
 
   srcDirs := srcDTreeInfo.Directories.GetNumOfDirs()
-  srcDirs-- // Discount top level directories. Only count subdirectories
 
   targetDirs := targetDTreeInfo.Directories.GetNumOfDirs()
-  targetDirs-- // Discount top level directories. Only count subdirectories
 
   if srcDirs != targetDirs {
     t.Errorf("ERROR: Expected %v-directories would be created.\n"+
@@ -2086,8 +2084,9 @@ func TestDirMgr_CopySubDirectoryTree_05(t *testing.T) {
       tFileInfo.GetNumOfFileMgrs(), targetDMgr.GetAbsolutePath())
   }
 
-  expectedDirsCopied := uint64(srcDTreeInfo.Directories.GetNumOfDirs() - 1)
-  expectedTotalDirsProcessed := uint64(8)
+  expectedDirsCopied := uint64(srcDTreeInfo.Directories.GetNumOfDirs())
+  expectedDirsCreated := expectedDirsCopied
+  expectedTotalDirsProcessed := expectedDirsCopied + 1
 
   if expectedTotalDirsProcessed != dTreeStats.TotalDirsProcessed {
     t.Errorf("Error: Expected dTreeCopyStats.TotalDirsProcessed='%v'.\n"+
@@ -2101,8 +2100,14 @@ func TestDirMgr_CopySubDirectoryTree_05(t *testing.T) {
       expectedDirsCopied, dTreeStats.DirsCopied)
   }
 
-  expectedFilesCopied := uint64(5)
-  expectedFileBytesCopied := uint64(416)
+  if expectedDirsCreated != dTreeStats.DirsCreated {
+    t.Errorf("Error: Expected dTreeCopyStats.DirsCreated='%v'.\n"+
+      "Instead, dTreeCopyStats.DirsCreated='%v'\n",
+      expectedDirsCopied, dTreeStats.DirsCreated)
+  }
+
+  expectedFilesCopied := uint64(srcDTreeInfo.FoundFiles.GetNumOfFileMgrs())
+  expectedFileBytesCopied := srcDTreeInfo.FoundFiles.GetTotalFileBytes()
   expectedFilesNotCopied := uint64(0)
   expectedFileBytesNotCopied := uint64(0)
   expectedTotalFilesProcessed := expectedFilesCopied
@@ -2176,7 +2181,7 @@ func TestDirMgr_CopySubDirectoryTree_06(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
 
-  _,
+  dTreeStats,
     errs := srcDMgr.CopySubDirectoryTree(targetDMgr, false, fsc)
 
   if len(errs) > 0 {
@@ -2200,10 +2205,10 @@ func TestDirMgr_CopySubDirectoryTree_06(t *testing.T) {
 
   fsc = FileSelectionCriteria{}
 
-  srcDTreeInfo, err := srcDMgr.FindWalkDirFiles(fsc)
+  srcDTreeInfo, err := srcDMgr.FindWalkSubDirFiles(fsc)
 
   if err != nil {
-    t.Errorf("Test Verification Error returned by srcDMgr.FindWalkDirFiles(fsc).\n"+
+    t.Errorf("Test Verification Error returned by srcDMgr.FindWalkSubDirFiles(fsc).\n"+
       "source directory='%v'\nError='%v'", srcDMgr.GetAbsolutePath(), err.Error())
 
     _ = targetDMgr.DeleteAll()
@@ -2213,7 +2218,7 @@ func TestDirMgr_CopySubDirectoryTree_06(t *testing.T) {
 
   fsc = FileSelectionCriteria{}
 
-  targetDTreeInfo, err := targetDMgr.FindWalkDirFiles(fsc)
+  targetDTreeInfo, err := targetDMgr.FindWalkSubDirFiles(fsc)
 
   if err != nil {
     t.Errorf("Test Verification Error returned by targetDMgr.FindWalkDirFiles(fsc).\n"+
@@ -2225,11 +2230,9 @@ func TestDirMgr_CopySubDirectoryTree_06(t *testing.T) {
   }
 
   srcDirs := srcDTreeInfo.Directories.GetNumOfDirs()
-  srcDirs--    // Discount top level directories. Only count subdirectories
-  srcDirs -= 1 // Eliminate the single empty directory.
+  srcDirs-- // Discount the one empty subdirectory
 
   targetDirs := targetDTreeInfo.Directories.GetNumOfDirs()
-  targetDirs-- // Discount top level directories. Only count subdirectories
 
   if srcDirs != targetDirs {
     t.Errorf("ERROR: Expected %v-directories would be created.\n"+
@@ -2255,6 +2258,67 @@ func TestDirMgr_CopySubDirectoryTree_06(t *testing.T) {
     t.Errorf("ERROR: Expected ZERO files in top level target directory.\n"+
       "Instead, the top level target directory had %v-files.\nTarget Directory='%v'\n",
       tFileInfo.GetNumOfFileMgrs(), targetDMgr.GetAbsolutePath())
+  }
+
+  // Subtract 1 to eliminate the empty directory
+  expectedDirsCopied := uint64(srcDTreeInfo.Directories.GetNumOfDirs() - 1)
+
+  expectedDirsCreated := expectedDirsCopied
+  expectedTotalDirsProcessed := expectedDirsCopied + 1
+
+  if expectedTotalDirsProcessed != dTreeStats.TotalDirsProcessed {
+    t.Errorf("Error: Expected dTreeCopyStats.TotalDirsProcessed='%v'.\n"+
+      "Instead, dTreeCopyStats.TotalDirsProcessed='%v'\n",
+      expectedTotalDirsProcessed, dTreeStats.TotalDirsProcessed)
+  }
+
+  if expectedDirsCopied != dTreeStats.DirsCopied {
+    t.Errorf("Error: Expected dTreeCopyStats.DirsCopied='%v'.\n"+
+      "Instead, dTreeCopyStats.DirsCopied='%v'\n",
+      expectedDirsCopied, dTreeStats.DirsCopied)
+
+  }
+
+  if expectedDirsCreated != dTreeStats.DirsCreated {
+    t.Errorf("Error: Expected dTreeCopyStats.DirsCreated='%v'.\n"+
+      "Instead, dTreeCopyStats.DirsCreated='%v'\n",
+      expectedDirsCopied, dTreeStats.DirsCreated)
+  }
+
+  expectedFilesCopied := uint64(srcDTreeInfo.FoundFiles.GetNumOfFileMgrs())
+  expectedFileBytesCopied := srcDTreeInfo.FoundFiles.GetTotalFileBytes()
+  expectedFilesNotCopied := uint64(0)
+  expectedFileBytesNotCopied := uint64(0)
+  expectedTotalFilesProcessed := expectedFilesCopied
+
+  if expectedFilesCopied != dTreeStats.FilesCopied {
+    t.Errorf("Error: Expected dTreeCopyStats.FilesCopied='%v'.\n"+
+      "Instead, dTreeCopyStats.FilesCopied='%v'\n",
+      expectedFilesCopied, dTreeStats.FilesCopied)
+  }
+
+  if expectedFileBytesCopied != dTreeStats.FileBytesCopied {
+    t.Errorf("Error: Expected dTreeCopyStats.FileBytesCopied='%v'.\n"+
+      "Instead, dTreeCopyStats.FileBytesCopied='%v'\n",
+      expectedFileBytesCopied, dTreeStats.FileBytesCopied)
+  }
+
+  if expectedFilesNotCopied != dTreeStats.FilesNotCopied {
+    t.Errorf("Error: Expected dTreeCopyStats.FilesNotCopied='%v'.\n"+
+      "Instead, dTreeCopyStats.FilesNotCopied='%v'\n",
+      expectedFilesNotCopied, dTreeStats.FilesNotCopied)
+  }
+
+  if expectedFileBytesNotCopied != dTreeStats.FileBytesNotCopied {
+    t.Errorf("Error: Expected dTreeCopyStats.FileBytesNotCopied='%v'.\n"+
+      "Instead, dTreeCopyStats.FileBytesNotCopied='%v'\n",
+      expectedFileBytesNotCopied, dTreeStats.FileBytesNotCopied)
+  }
+
+  if expectedTotalFilesProcessed != dTreeStats.TotalFilesProcessed {
+    t.Errorf("Error: Expected dTreeCopyStats.TotalFilesProcessed='%v'.\n"+
+      "Instead, dTreeCopyStats.TotalFilesProcessed='%v'\n",
+      expectedTotalFilesProcessed, dTreeStats.TotalFilesProcessed)
   }
 
   err = targetDMgr.DeleteAll()
