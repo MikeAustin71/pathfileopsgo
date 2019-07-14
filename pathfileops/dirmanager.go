@@ -2695,9 +2695,10 @@ func (dMgr *DirMgr) FindWalkSubDirFiles(
   dMgrHlpr := dirMgrHelper{}
 
   dTreeInfo,
-    err = dMgrHlpr.findFilesWalkSubDirectories(
+    err = dMgrHlpr.findFilesWalkDirectoryTree(
     dMgr,
     fileSelectCriteria,
+    true, // skipTopLevelDirectory
     ePrefix,
     "dMgr")
 

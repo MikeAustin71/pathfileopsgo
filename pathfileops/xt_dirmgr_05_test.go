@@ -720,6 +720,30 @@ func TestDirMgr_FindWalkSubDirFiles_01(t *testing.T) {
 
 }
 
+func TestDirMgr_FindWalkSubDirFiles_02(t *testing.T) {
+  testDir := "../IDoNotExist"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n",
+      testDir, err.Error())
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  _, err = testDMgr.FindWalkSubDirFiles(fsc)
+
+  if err == nil {
+    t.Errorf("Expected an error return from " +
+      "testDMgr.FindWalkSubDirFiles(fsc)\n" +
+      "because the testDMgr Directory DOES NOT EXIST!\n" +
+      "However, NO ERROR WAS RETURNED!!!!")
+  }
+}
+
 func TestDirMgr_DeleteWalkDirFiles_01(t *testing.T) {
 
   origDir, err := dirMgr02TestSetupFileWalkDeleteFiles()

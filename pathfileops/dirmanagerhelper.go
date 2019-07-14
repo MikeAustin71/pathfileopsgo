@@ -2857,28 +2857,37 @@ func (dMgrHlpr *dirMgrHelper) findFilesWalkDirectory(
   return findFilesInfo, nil
 }
 
-// findFilesWalkSubDirectories - This helper method returns file and directory
+// findFilesWalkDirectoryTree - This helper method returns file and directory
 // information on files residing in a directory tree identified by the input
 // parameter, 'dMgr', which is treated as the top level or parent directory
-// for purposes of the search operation. This parent directory is NOT searched,
-// but sub-directories in the tree ARE searched.
+// for purposes of the search operation. I
 //
-// This method 'walks the sub-directory tree' locating all files in the
-// sub-directory tree which match the file selection criteria submitted as
-// input parameter, 'fileSelectCriteria'.
+// f input parameter 'skipTopLevelDirectory' is set to 'true', only sub-directories
+// will be searched. If only sub-directories are searched, only sub-directories will
+// be returned in the DirectoryTreeInfo.Directories collection.
+//
+// If 'skipTopLevelDirectory' equals 'false', all directories in the directory tree,
+// including the parent directory, will be searched. In this case, all directories
+// including the parent directory, will be returned in the DirectoryTreeInfo.Directories
+// collection.
+//
+// This method 'walks directory tree' locating all files in the designated directory
+// tree which match the file selection criteria submitted as input parameter,
+// 'fileSelectCriteria'.
 //
 // If a file matches the File Selection Criteria, it is included in the returned,
 // 'DirectoryTreeInfo.FoundFiles'. If ALL the file selection criterion are set to
-// zero values or 'Inactive', then ALL FILES in the sub-directory tree are selected
-// and returned in, 'DirectoryTreeInfo.FoundFiles'.
+// zero values or 'Inactive', then ALL FILES in the designated directory tree are
+// selected and returned in, 'DirectoryTreeInfo.FoundFiles'.
 //
-func (dMgrHlpr *dirMgrHelper) findFilesWalkSubDirectories(
+func (dMgrHlpr *dirMgrHelper) findFilesWalkDirectoryTree(
   dMgr *DirMgr,
   fileSelectCriteria FileSelectionCriteria,
+  skipTopLevelDirectory bool,
   ePrefix string,
   dMgrLabel string) (dTreeInfo DirectoryTreeInfo, err error) {
 
-  ePrefixCurrMethod := "dirMgrHelper.findFilesWalkSubDirectories() "
+  ePrefixCurrMethod := "dirMgrHelper.findFilesWalkDirectoryTree() "
 
   dTreeInfo = DirectoryTreeInfo{}
   err = nil
@@ -2923,6 +2932,10 @@ func (dMgrHlpr *dirMgrHelper) findFilesWalkSubDirectories(
   dTreeInfo.FileSelectCriteria = fileSelectCriteria
 
   dirs.AddDirMgr(dMgrHlpr.copyOut(dMgr))
+
+  if !skipTopLevelDirectory {
+    dTreeInfo.Directories.AddDirMgr(dMgrHlpr.copyOut(dMgr))
+  }
 
   mainLoopIsDone := false
   file2LoopIsDone := false
@@ -3053,7 +3066,7 @@ func (dMgrHlpr *dirMgrHelper) findFilesWalkSubDirectories(
           continue
         }
 
-        if isTopLevelDir {
+        if isTopLevelDir && skipTopLevelDirectory {
           // Skip all files in the
           // parent directory.
           continue
