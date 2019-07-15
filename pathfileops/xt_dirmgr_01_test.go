@@ -1752,12 +1752,12 @@ func TestDirMgr_CopySubDirectoryTree_01(t *testing.T) {
 
   expectedNumOfDirsCopied := uint64(srcDTreeInfo.Directories.GetNumOfDirs())
   expectedNumOfDirsCreated := expectedNumOfDirsCopied
-  expectedTotalDirsProcessed := expectedNumOfDirsCopied
+  expectedTotalDirsScanned := expectedNumOfDirsCopied
 
-  if expectedTotalDirsProcessed != dTreeCopyStats.TotalDirsProcessed {
-    t.Errorf("Error: Expected dTreeCopyStats.TotalDirsProcessed='%v'.\n"+
-      "Instead, dTreeCopyStats.TotalDirsProcessed='%v'\n",
-      expectedTotalDirsProcessed, dTreeCopyStats.TotalDirsProcessed)
+  if expectedTotalDirsScanned != dTreeCopyStats.TotalDirsScanned {
+    t.Errorf("Error: Expected dTreeCopyStats.TotalDirsScanned='%v'.\n"+
+      "Instead, dTreeCopyStats.TotalDirsScanned='%v'\n",
+      expectedTotalDirsScanned, dTreeCopyStats.TotalDirsScanned)
   }
 
   if expectedNumOfDirsCopied != dTreeCopyStats.DirsCopied {
@@ -2086,12 +2086,12 @@ func TestDirMgr_CopySubDirectoryTree_05(t *testing.T) {
 
   expectedDirsCopied := uint64(srcDTreeInfo.Directories.GetNumOfDirs())
   expectedDirsCreated := expectedDirsCopied
-  expectedTotalDirsProcessed := expectedDirsCopied
+  expectedTotalDirsScanned := expectedDirsCopied
 
-  if expectedTotalDirsProcessed != dTreeStats.TotalDirsProcessed {
-    t.Errorf("Error: Expected dTreeCopyStats.TotalDirsProcessed='%v'.\n"+
-      "Instead, dTreeCopyStats.TotalDirsProcessed='%v'\n",
-      expectedTotalDirsProcessed, dTreeStats.TotalDirsProcessed)
+  if expectedTotalDirsScanned != dTreeStats.TotalDirsScanned {
+    t.Errorf("Error: Expected dTreeCopyStats.TotalDirsScanned='%v'.\n"+
+      "Instead, dTreeCopyStats.TotalDirsScanned='%v'\n",
+      expectedTotalDirsScanned, dTreeStats.TotalDirsScanned)
   }
 
   if expectedDirsCopied != dTreeStats.DirsCopied {
@@ -2261,12 +2261,12 @@ func TestDirMgr_CopySubDirectoryTree_06(t *testing.T) {
   // Subtract 1 to eliminate the empty directory
   expectedDirsCopied := uint64(srcDTreeInfo.Directories.GetNumOfDirs() - 2)
   expectedDirsCreated := uint64(srcDTreeInfo.Directories.GetNumOfDirs() - 2)
-  expectedTotalDirsProcessed := uint64(srcDTreeInfo.Directories.GetNumOfDirs())
+  expectedTotalDirsScanned := uint64(srcDTreeInfo.Directories.GetNumOfDirs())
 
-  if expectedTotalDirsProcessed != dTreeStats.TotalDirsProcessed {
-    t.Errorf("Error: Expected dTreeCopyStats.TotalDirsProcessed='%v'.\n"+
-      "Instead, dTreeCopyStats.TotalDirsProcessed='%v'\n",
-      expectedTotalDirsProcessed, dTreeStats.TotalDirsProcessed)
+  if expectedTotalDirsScanned != dTreeStats.TotalDirsScanned {
+    t.Errorf("Error: Expected dTreeCopyStats.TotalDirsScanned='%v'.\n"+
+      "Instead, dTreeCopyStats.TotalDirsScanned='%v'\n",
+      expectedTotalDirsScanned, dTreeStats.TotalDirsScanned)
   }
 
   if expectedDirsCopied != dTreeStats.DirsCopied {

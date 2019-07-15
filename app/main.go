@@ -137,10 +137,10 @@ func mainTest88CopySubDirectoryTree() {
   expectedDirsCreated := uint64(srcDTreeInfo.Directories.GetNumOfDirs() - 2)
   expectedTotalDirsProcessed := uint64(srcDTreeInfo.Directories.GetNumOfDirs())
 
-  if expectedTotalDirsProcessed != dTreeStats.TotalDirsProcessed {
-    fmt.Printf("Error: Expected dTreeCopyStats.TotalDirsProcessed='%v'.\n"+
-      "Instead, dTreeCopyStats.TotalDirsProcessed='%v'\n",
-      expectedTotalDirsProcessed, dTreeStats.TotalDirsProcessed)
+  if expectedTotalDirsProcessed != dTreeStats.TotalDirsScanned {
+    fmt.Printf("Error: Expected dTreeCopyStats.TotalDirsScanned='%v'.\n"+
+      "Instead, dTreeCopyStats.TotalDirsScanned='%v'\n",
+      expectedTotalDirsProcessed, dTreeStats.TotalDirsScanned)
   }
 
   if expectedDirsCopied != dTreeStats.DirsCopied {
@@ -197,7 +197,7 @@ func mainTest88CopySubDirectoryTree() {
   fmt.Println("                    SUCCESS!!!                          ")
   fmt.Println("********************************************************")
   fmt.Println()
-  fmt.Println("Total Directories Processed: ", dTreeStats.TotalDirsProcessed)
+  fmt.Println("Total Directories Processed: ", dTreeStats.TotalDirsScanned)
   fmt.Println("         Directories Copied: ", dTreeStats.DirsCopied)
   fmt.Println("        Directories Created: ", dTreeStats.DirsCreated)
   fmt.Println("      Total Files Processed: ", dTreeStats.TotalFilesProcessed)
@@ -485,7 +485,7 @@ func mainTest86CopySubDirTree() {
   fmt.Println("                    SUCCESS!!!                          ")
   fmt.Println("********************************************************")
   fmt.Println()
-  fmt.Println("Total Directories Processed: ", dtreeStats.TotalDirsProcessed)
+  fmt.Println("Total Directories Processed: ", dtreeStats.TotalDirsScanned)
   fmt.Println("         Directories Copied: ", dtreeStats.DirsCopied)
   fmt.Println("        Directories Created: ", dtreeStats.DirsCreated)
   fmt.Println("      Total Files Processed: ", dtreeStats.TotalFilesProcessed)
@@ -604,7 +604,7 @@ func mainTest84CopyDirTree() {
   fmt.Println("                    SUCCESS!!!                          ")
   fmt.Println("********************************************************")
   fmt.Println()
-  fmt.Println("Total Directories Processed: ", dtreeStats.TotalDirsProcessed)
+  fmt.Println("Total Directories Processed: ", dtreeStats.TotalDirsScanned)
   fmt.Println("         Directories Copied: ", dtreeStats.DirsCopied)
   fmt.Println("      Total Files Processed: ", dtreeStats.TotalFilesProcessed)
   fmt.Println("               Files Copied: ", dtreeStats.FilesCopied)

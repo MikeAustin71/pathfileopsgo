@@ -335,15 +335,6 @@ func TestDirMgr_DeleteAllFilesInDir_03(t *testing.T) {
     return
   }
 
-  if deleteDirStats.TotalDirsProcessed != 2 {
-    t.Errorf("Error: Expected deleteDirStats.TotalDirsProcessed == '2'\n"+
-      "Instead, deleteDirStats.TotalDirsProcessed == '%v'\n",
-      deleteDirStats.TotalDirsProcessed)
-
-    _ = fh.DeleteDirPathAll(testDir)
-    return
-  }
-
   if deleteDirStats.TotalSubDirectories != 1 {
     t.Errorf("Error: Expected deleteDirStats.TotalSubDirectories == '1'\n"+
       "Instead, deleteDirStats.TotalSubDirectories == '%v'\n",
@@ -912,15 +903,15 @@ func TestDirMgr_DeleteDirectoryTreeFiles_04(t *testing.T) {
     return
   }
 
-  expectedNumOfDirsProcessed := testDtreeAllInfo.Directories.GetNumOfDirs()
+  expectedNumOfDirsScanned := uint64(testDtreeAllInfo.Directories.GetNumOfDirs())
 
-  expectedNumOfSubdirectories := expectedNumOfDirsProcessed - 1
+  expectedNumOfSubdirectories := expectedNumOfDirsScanned - 1
 
-  expectedNumOfDeletedFiles := testDtreeTxtInfo.FoundFiles.GetNumOfFileMgrs()
+  expectedNumOfDeletedFiles := uint64(testDtreeTxtInfo.FoundFiles.GetNumOfFileMgrs())
 
   expectedNumOfDeletedFileBytes := testDtreeTxtInfo.FoundFiles.GetTotalFileBytes()
 
-  expectedNumOfRemainingFiles := testDtreeHtmInfo.FoundFiles.GetNumOfFileMgrs()
+  expectedNumOfRemainingFiles := uint64(testDtreeHtmInfo.FoundFiles.GetNumOfFileMgrs())
 
   expectedNumOfRemainingFileBytes := testDtreeHtmInfo.FoundFiles.GetTotalFileBytes()
 
@@ -938,16 +929,10 @@ func TestDirMgr_DeleteDirectoryTreeFiles_04(t *testing.T) {
       testDMgr.ConsolidateErrors(errs))
   }
 
-  if uint64(expectedNumOfDirsProcessed) != deleteDirStats.TotalDirsProcessed {
-    t.Errorf("Expected deleteDirStats.TotalDirsProcessed='%v'\n"+
-      "Instead, deleteDirStats.TotalDirsProcessed='%v'\n",
-      expectedNumOfDirsProcessed, deleteDirStats.TotalDirsProcessed)
-  }
-
-  if uint64(expectedNumOfDirsProcessed) != deleteDirStats.TotalDirsScanned {
+  if expectedNumOfDirsScanned != deleteDirStats.TotalDirsScanned {
     t.Errorf("Expected deleteDirStats.TotalDirsScanned='%v'\n"+
       "Instead, deleteDirStats.TotalDirsScanned='%v'\n",
-      expectedNumOfDirsProcessed, deleteDirStats.TotalDirsScanned)
+      expectedNumOfDirsScanned, deleteDirStats.TotalDirsScanned)
   }
 
   if 5 == deleteDirStats.DirectoriesDeleted {
@@ -956,13 +941,13 @@ func TestDirMgr_DeleteDirectoryTreeFiles_04(t *testing.T) {
       deleteDirStats.TotalDirsScanned)
   }
 
-  if uint64(expectedNumOfSubdirectories) != deleteDirStats.TotalSubDirectories {
+  if expectedNumOfSubdirectories != deleteDirStats.TotalSubDirectories {
     t.Errorf("Expected deleteDirStats.TotalSubDirectories='%v'\n"+
       "Instead, deleteDirStats.TotalSubDirectories='%v'\n",
       expectedNumOfSubdirectories, deleteDirStats.TotalSubDirectories)
   }
 
-  if uint64(expectedNumOfDeletedFiles) != deleteDirStats.FilesDeleted {
+  if expectedNumOfDeletedFiles != deleteDirStats.FilesDeleted {
     t.Errorf("Expected deleteDirStats.FilesDeleted='%v'\n"+
       "Instead, deleteDirStats.FilesDeleted='%v'\n",
       expectedNumOfDeletedFiles, deleteDirStats.FilesDeleted)
@@ -974,7 +959,7 @@ func TestDirMgr_DeleteDirectoryTreeFiles_04(t *testing.T) {
       expectedNumOfDeletedFiles, deleteDirStats.FilesDeletedBytes)
   }
 
-  if uint64(expectedNumOfRemainingFiles) != deleteDirStats.FilesRemaining {
+  if expectedNumOfRemainingFiles != deleteDirStats.FilesRemaining {
     t.Errorf("Expected numOfRemainingFiles='0'.\nInstead, numOfRemainingFiles='%v'\n",
       deleteDirStats.FilesRemaining)
   }
@@ -1147,15 +1132,6 @@ func TestDirMgr_DeleteFilesByNamePattern_01(t *testing.T) {
     t.Errorf("Expected deleteDirStats.TotalSubDirectories='0'.\n"+
       "Instead, deleteDirStats.TotalSubDirectories='%v'.",
       deleteDirStats.TotalSubDirectories)
-
-    _ = fh.DeleteDirPathAll(testDir)
-    return
-  }
-
-  if deleteDirStats.TotalDirsProcessed != 1 {
-    t.Errorf("Expected deleteDirStats.TotalDirsProcessed='1'.\n"+
-      "Instead, deleteDirStats.TotalDirsProcessed='%v'.",
-      deleteDirStats.TotalDirsProcessed)
 
     _ = fh.DeleteDirPathAll(testDir)
     return
@@ -1497,8 +1473,6 @@ func TestDirMgr_DeleteFilesByNamePattern_06(t *testing.T) {
 
   expectedNumOfSubDirectories := uint64(1)
 
-  expectedNumOfDirsProcessed := uint64(1)
-
   expectedNumOfDirsScanned := uint64(1)
 
   deleteDirStats,
@@ -1557,17 +1531,6 @@ func TestDirMgr_DeleteFilesByNamePattern_06(t *testing.T) {
     t.Errorf("Error: Expected deleteDirStats.DirectoriesDeleted=='0'.\n"+
       "Instead, deleteDirStats.DirectoriesDeleted=='%v'\n",
       deleteDirStats.DirectoriesDeleted)
-
-    _ = fh.DeleteDirPathAll(baseTestDir)
-    return
-  }
-
-  if expectedNumOfDirsProcessed != deleteDirStats.TotalDirsProcessed {
-
-    t.Errorf("Error: Expected deleteDirStats.TotalDirsProcessed=='%v'.\n"+
-      "Instead, deleteDirStats.TotalDirsProcessed=='%v'\n",
-      expectedNumOfDirsProcessed,
-      deleteDirStats.TotalDirsProcessed)
 
     _ = fh.DeleteDirPathAll(baseTestDir)
     return
@@ -1749,34 +1712,70 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_01(t *testing.T) {
     return
   }
 
-  expectedNumOfDeletedFiles := testFileMgrInfo.GetNumOfFileMgrs()
+  expectedNumOfDeletedFiles := uint64(testFileMgrInfo.GetNumOfFileMgrs())
+  expectedNumOfFileBytesDeleted := testFileMgrInfo.GetTotalFileBytes()
+  expectedNumOfFilesProcessed := expectedNumOfDeletedFiles
+
+  expectedTotalDirsScanned := uint64(1)
+  expectedNumOfDirsWhereFilesDeleted := uint64(1)
 
   deleteDirStats,
     errs := testDMgr.DeleteFilesBySelectionCriteria(fsc)
 
   if len(errs) != 0 {
     t.Errorf("Errors returned by testDMgr.DeleteFilesBySelectionCriteria(fsc).\n"+
-      "testDMgr='%v'\nErrors Follow:\n\n",
-      testDMgr.GetAbsolutePath())
-
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("%v\n", errs[i])
-    }
+      "testDMgr='%v'\nErrors Follow:\n\n%v",
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(testDir)
 
     return
   }
 
-  if uint64(expectedNumOfDeletedFiles) != deleteDirStats.FilesDeleted {
+  if expectedNumOfDeletedFiles != deleteDirStats.FilesDeleted {
     t.Errorf("Error: Expected numOfDeletedFiles='%v'.\nInstead, numOfDeletedFils='%v'\n",
       expectedNumOfDeletedFiles, deleteDirStats.FilesDeleted)
   }
 
   if deleteDirStats.FilesRemaining != 0 {
-    t.Errorf("Error: Expected numOfRemainingFiles=0.\n"+
-      "Instead, numOfRemainingFiles='%v'\n",
+    t.Errorf("Error: Expected deleteDirStats.FilesRemaining=0.\n"+
+      "Instead, deleteDirStats.FilesRemaining='%v'\n",
       deleteDirStats.FilesRemaining)
+  }
+
+  if deleteDirStats.FilesRemainingBytes != 0 {
+    t.Errorf("Error: Expected deleteDirStats.FilesRemainingBytes=0.\n"+
+      "Instead, deleteDirStats.FilesRemainingBytes='%v'\n",
+      deleteDirStats.FilesRemainingBytes)
+  }
+
+  if expectedNumOfFilesProcessed != deleteDirStats.TotalFilesProcessed {
+    t.Errorf("Error: Expected deleteDirStats.TotalFilesProcessed=%v.\n"+
+      "Instead, deleteDirStats.TotalFilesProcessed='%v'\n",
+      expectedNumOfFilesProcessed,
+      deleteDirStats.TotalFilesProcessed)
+  }
+
+  if expectedTotalDirsScanned != deleteDirStats.TotalDirsScanned {
+    t.Errorf("Error: Expected deleteDirStats.TotalDirsScanned=%v.\n"+
+      "Instead, deleteDirStats.TotalDirsScanned='%v'\n",
+      expectedTotalDirsScanned,
+      deleteDirStats.TotalDirsScanned)
+  }
+
+  if expectedNumOfDirsWhereFilesDeleted != deleteDirStats.NumOfDirsWhereFilesDeleted {
+    t.Errorf("Error: Expected deleteDirStats.NumOfDirsWhereFilesDeleted=%v.\n"+
+      "Instead, deleteDirStats.NumOfDirsWhereFilesDeleted='%v'\n",
+      expectedNumOfDirsWhereFilesDeleted,
+      deleteDirStats.NumOfDirsWhereFilesDeleted)
+  }
+
+  if expectedNumOfFileBytesDeleted != deleteDirStats.FilesDeletedBytes {
+    t.Errorf("Error: Expected deleteDirStats.FilesDeletedBytes=%v.\n"+
+      "Instead, deleteDirStats.FilesDeletedBytes='%v'\n",
+      expectedNumOfFileBytesDeleted,
+      deleteDirStats.FilesDeletedBytes)
   }
 
   err = fh.DeleteDirPathAll(testDir)
@@ -1883,7 +1882,7 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_02(t *testing.T) {
   testFileMgrInfo, err := testDMgr.FindFilesBySelectCriteria(fsc)
 
   if err != nil {
-    t.Errorf("Error returned by testDMgr.FindWalkDirFiles(fsc)\n"+
+    t.Errorf("Error returned by testDMgr.FindFilesBySelectCriteria(fsc)\n"+
       "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
 
     _ = fh.DeleteDirPathAll(testDir)
@@ -1891,7 +1890,8 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_02(t *testing.T) {
     return
   }
 
-  expectedNumOfDeletedFiles := testFileMgrInfo.GetNumOfFileMgrs()
+  expectedNumOfDeletedFiles := uint64(testFileMgrInfo.GetNumOfFileMgrs())
+  expectedNumOfDeletedFileBytes := testFileMgrInfo.GetTotalFileBytes()
 
   fsc = FileSelectionCriteria{}
 
@@ -1908,7 +1908,8 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_02(t *testing.T) {
     return
   }
 
-  expectedNumOfRemainingFiles := remainingFileMgrInfo.GetNumOfFileMgrs()
+  expectedNumOfRemainingFiles := uint64(remainingFileMgrInfo.GetNumOfFileMgrs())
+  expectedNumOfRemainingFileBytes := remainingFileMgrInfo.GetTotalFileBytes()
 
   fsc = FileSelectionCriteria{}
 
@@ -1919,27 +1920,39 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_02(t *testing.T) {
 
   if len(errs) != 0 {
     t.Errorf("Errors returned by testDMgr.DeleteFilesBySelectionCriteria(fsc).\n"+
-      "testDMgr='%v'\nErrors Follow:\n\n",
-      testDMgr.GetAbsolutePath())
-
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("%v\n", errs[i])
-    }
+      "testDMgr='%v'\nErrors Follow:\n\n%v",
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(testDir)
 
     return
   }
 
-  if uint64(expectedNumOfDeletedFiles) != deleteDirStats.FilesDeleted {
-    t.Errorf("Error: Expected numOfDeletedFiles='%v'.\nInstead, numOfDeletedFils='%v'\n",
+  if expectedNumOfDeletedFiles != deleteDirStats.FilesDeleted {
+    t.Errorf("Error: Expected deleteDirStats.FilesDeleted='%v'.\n"+
+      "Instead, deleteDirStats.FilesDeleted='%v'\n",
       expectedNumOfDeletedFiles, deleteDirStats.FilesDeleted)
   }
 
-  if deleteDirStats.FilesRemaining != uint64(expectedNumOfRemainingFiles) {
-    t.Errorf("Error: Expected numOfRemainingFiles='%v'.\n"+
-      "Instead, numOfRemainingFiles='%v'\n",
-      expectedNumOfRemainingFiles, deleteDirStats.FilesRemaining)
+  if expectedNumOfDeletedFileBytes != deleteDirStats.FilesDeletedBytes {
+    t.Errorf("Error: Expected deleteDirStats.FilesDeletedBytes='%v'.\n"+
+      "Instead, deleteDirStats.FilesDeletedBytes='%v'\n",
+      expectedNumOfDeletedFileBytes,
+      deleteDirStats.FilesDeletedBytes)
+  }
+
+  if expectedNumOfRemainingFiles != deleteDirStats.FilesRemaining {
+    t.Errorf("Error: Expected numOfDeletedFiles='%v'.\n"+
+      "Instead, numOfDeletedFils='%v'\n",
+      expectedNumOfDeletedFiles, deleteDirStats.FilesDeleted)
+  }
+
+  if expectedNumOfRemainingFileBytes != deleteDirStats.FilesRemainingBytes {
+    t.Errorf("Error: Expected deleteDirStats.FilesRemainingBytes='%v'.\n"+
+      "Instead, deleteDirStats.FilesRemainingBytes='%v'\n",
+      expectedNumOfRemainingFileBytes,
+      deleteDirStats.FilesRemainingBytes)
   }
 
   err = fh.DeleteDirPathAll(testDir)

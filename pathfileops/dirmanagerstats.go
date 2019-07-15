@@ -1,7 +1,7 @@
 package pathfileops
 
 type DirTreeCopyStats struct {
-  TotalDirsProcessed  uint64
+  TotalDirsScanned    uint64
   DirsCopied          uint64
   DirsCreated         uint64
   TotalFilesProcessed uint64
@@ -39,7 +39,6 @@ type DeleteDirFilesStats struct {
   FilesDeletedBytes          uint64
   FilesRemaining             uint64
   FilesRemainingBytes        uint64
-  TotalDirsProcessed         uint64
   TotalSubDirectories        uint64
   TotalDirsScanned           uint64
   NumOfDirsWhereFilesDeleted uint64

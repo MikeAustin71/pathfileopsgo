@@ -368,7 +368,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   dirs.AddDirMgr(dMgrHlpr.copyOut(dMgr))
 
   if !skipTopLevelDirectory {
-    dTreeCopyStats.TotalDirsProcessed++
+    dTreeCopyStats.TotalDirsScanned++
   }
 
   dirCreated := false
@@ -551,7 +551,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
           }
 
           // Count Directories Processed
-          dTreeCopyStats.TotalDirsProcessed++
+          dTreeCopyStats.TotalDirsScanned++
 
           continue
         } // End of IsDir()
@@ -794,7 +794,7 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
   }
 
   errs = make([]error, 0, 300)
-  var err2, err3 error
+  var err2 error
   osPathSepStr := string(os.PathSeparator)
 
   dirPathDoesExist,
@@ -823,7 +823,7 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
     return deleteDirStats, errs
   }
 
-  dMgrPtr, err := os.Open(dMgr.absolutePath)
+  dirPtr, err := os.Open(dMgr.absolutePath)
 
   if err != nil {
     err2 = fmt.Errorf(ePrefix+
@@ -836,31 +836,41 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
     return deleteDirStats, errs
   }
 
-  err3 = nil
+  deleteDirStats.TotalDirsScanned = 1
+
   var nameFileInfos []os.FileInfo
 
-  deleteDirStats.TotalDirsProcessed++
-  deleteDirStats.TotalDirsScanned++
+  file2LoopIsDone := false
 
-  for err3 != io.EOF {
+  isNewDir := true
 
-    nameFileInfos, err3 = dMgrPtr.Readdir(1000)
+  for !file2LoopIsDone {
 
-    if err3 != nil && err3 != io.EOF {
+    nameFileInfos, err = dirPtr.Readdir(1000)
 
-      if dMgrPtr != nil {
-        _ = dMgrPtr.Close()
+    if err != nil && err == io.EOF {
+
+      file2LoopIsDone = true
+
+      if len(nameFileInfos) == 0 {
+
+        break
       }
 
+    } else if err != nil {
+
       err2 = fmt.Errorf(ePrefix+
-        "\nError returned by dMgrPtr.Readdirnames(1000).\n"+
+        "\nError returned by dirPtr.Readdirnames(1000).\n"+
         "%v.absolutePath='%v'\nError='%v'\n",
         dMgrLabel,
         dMgr.absolutePath,
-        err3.Error())
+        err.Error())
 
       errs = append(errs, err2)
-      return deleteDirStats, errs
+
+      file2LoopIsDone = true
+
+      break
     }
 
     for _, nameFInfo := range nameFileInfos {
@@ -868,11 +878,12 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
       if nameFInfo.IsDir() {
 
         deleteDirStats.TotalSubDirectories++
-        deleteDirStats.TotalDirsProcessed++
 
         continue
 
       } else {
+
+        deleteDirStats.TotalFilesProcessed++
 
         if !nameFInfo.Mode().IsRegular() {
           err2 = fmt.Errorf(ePrefix+
@@ -906,18 +917,24 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
 
           deleteDirStats.FilesDeleted++
           deleteDirStats.FilesDeletedBytes += uint64(nameFInfo.Size())
+
+          if isNewDir {
+            isNewDir = false
+            deleteDirStats.NumOfDirsWhereFilesDeleted++
+          }
+
         }
       }
     }
   }
 
-  if dMgrPtr != nil {
+  if dirPtr != nil {
 
-    err = dMgrPtr.Close()
+    err = dirPtr.Close()
 
     if err != nil {
       err2 = fmt.Errorf(ePrefix+
-        "\nError returned by dMgrPtr.Close().\n"+
+        "\nError returned by dirPtr.Close().\n"+
         "An attempt to close the os.File pointer to the current\n"+
         "%v path has FAILED!\n"+
         "%v.absolutePath='%v'\nError='%v'\n",
@@ -1248,8 +1265,6 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeFiles(
 
     deleteDirStats.TotalDirsScanned++
 
-    deleteDirStats.TotalDirsProcessed++
-
     isNewDir = true
     file2LoopIsDone = false
 
@@ -1466,7 +1481,6 @@ func (dMgrHlpr *dirMgrHelper) deleteFilesByNamePattern(
     return deleteDirStats, errs
   }
 
-  deleteDirStats.TotalDirsProcessed++
   deleteDirStats.TotalDirsScanned++
 
   err3 = nil
