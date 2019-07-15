@@ -641,15 +641,17 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
           targetFile = nextTargetDMgr.absolutePath +
             osPathSepStr + nameFInfo.Name()
 
-          err = fh.CopyFileByIo(srcFile, targetFile)
+          //err = fh.CopyFileByIo(srcFile, targetFile)
+          err = dMgrHlpr.lowLevelCopyFile(
+            srcFile,
+            nameFInfo,
+            targetFile,
+            ePrefix,
+            "srcFile",
+            "destinationFile")
 
           if err != nil {
-            err2 = fmt.Errorf("\n"+ePrefix+
-              "\nERROR: fh.CopyFileByIo(srcFile, targetFile)\n"+
-              "srcFile='%v'\ntargetFile='%v'\nError='%v'\n\n",
-              srcFile, targetFile, err.Error())
-
-            errs = append(errs, err2)
+            errs = append(errs, err)
             dTreeCopyStats.FilesNotCopied++
             dTreeCopyStats.FileBytesNotCopied += uint64(nameFInfo.Size())
 
@@ -665,9 +667,7 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
           dTreeCopyStats.FileBytesNotCopied += uint64(nameFInfo.Size())
 
         }
-
       } // End of range nameFileInfos
-
     } // End of file 2 Loop
 
     isTopLevelDir = false
@@ -3834,6 +3834,192 @@ func (dMgrHlpr *dirMgrHelper) getParentDirMgr(
   err = nil
 
   return dirMgrOut, hasParent, err
+}
+
+// lowLevelCopyFile - This low level helper method is designed
+// to copy files from a source file to a destination file.
+//
+// No validation or error checking is performed on the input
+// parameters.
+//
+func (dMgrHlpr *dirMgrHelper) lowLevelCopyFile(
+  src string,
+  srcFInfo os.FileInfo,
+  dst,
+  ePrefix,
+  srcLabel,
+  dstLabel string) error {
+
+  ePrefixCurrMethod := "dirMgrHelper.lowLevelCopyFile() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  // First, open the source file
+  inSrcPtr, err := os.Open(src)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Error returned from os.Open(src)\n"+
+      "%v='%v'\nError='%v'\n",
+      srcLabel,
+      src,
+      err.Error())
+  }
+  // Next, 'Create' the destination file
+  // If the destination file previously exists,
+  // it will be truncated.
+  outDestPtr, err := os.Create(dst)
+
+  if err != nil {
+
+    _ = inSrcPtr.Close()
+
+    return fmt.Errorf(ePrefix+
+      "Error returned from os.Create(destinationFile)\n"+
+      "%='%v'\nError='%v'\n",
+      dstLabel,
+      dst,
+      err.Error())
+  }
+
+  bytesCopied, err2 := io.Copy(outDestPtr, inSrcPtr)
+
+  if err2 != nil {
+    _ = inSrcPtr.Close()
+    _ = outDestPtr.Close()
+    err = fmt.Errorf(ePrefix+
+      "Error returned from io.Copy(%v, %v) \n"+
+      "%v='%v'\n"+
+      "%v='%v'\nError='%v'\n",
+      dstLabel,
+      srcLabel,
+      dstLabel,
+      dst,
+      srcLabel,
+      src,
+      err2.Error())
+
+    return err
+  }
+
+  errs := make([]error, 0)
+
+  // flush file buffers inSrcPtr memory
+  err = outDestPtr.Sync()
+
+  if err != nil {
+    err2 = fmt.Errorf(ePrefix+
+      "Error returned from outDestPtr.Sync()\n"+
+      "%v='%v'\nError='%v'\n",
+      dstLabel,
+      dst,
+      err.Error())
+
+    errs = append(errs, err2)
+  }
+
+  err = inSrcPtr.Close()
+
+  if err != nil {
+    err2 = fmt.Errorf(ePrefix+
+      "Error returned from inSrcPtr.Close()\n"+
+      "inSrcPtr=source='%v'\nError='%v'\n",
+      src, err.Error())
+
+    errs = append(errs, err2)
+  }
+
+  inSrcPtr = nil
+
+  err = outDestPtr.Close()
+
+  if err != nil {
+
+    err2 = fmt.Errorf(ePrefix+
+      "Error returned from outDestPtr.Close()\n"+
+      "outDestPtr=destination='%v'\nError='%v'\n",
+      dst, err.Error())
+
+    errs = append(errs, err2)
+  }
+
+  outDestPtr = nil
+
+  if len(errs) > 0 {
+    return dMgrHlpr.consolidateErrors(errs)
+  }
+  var dstFileDoesExist bool
+  var dstFileInfo FileInfoPlus
+
+  dstFileDoesExist,
+    dstFileInfo,
+    err = dMgrHlpr.lowLevelDoesDirectoryExist(
+    dst,
+    ePrefix,
+    dstLabel)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Error: After Copy IO operation, %v "+
+      "generated non-path error!\n"+
+      "%v='%v'\nError='%v'\n",
+      dstLabel,
+      dstLabel,
+      dst,
+      err.Error())
+  }
+
+  if !dstFileDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "ERROR: After Copy IO operation, the destination file DOES NOT EXIST!\n"+
+      "Destination File = '%v' = '%v'\n",
+      dstLabel,
+      dst)
+
+    return err
+  }
+
+  srcFileSize := srcFInfo.Size()
+
+  if bytesCopied != srcFileSize {
+    err = fmt.Errorf(ePrefix+
+      "Error: Bytes Copied does NOT equal bytes "+
+      "in source file!\n"+
+      "Source File Bytes='%v'   Bytes Coped='%v'\n"+
+      "Source File=%v='%v'\n"+
+      "Destination File=%v='%v'\n",
+      srcFileSize,
+      bytesCopied,
+      srcLabel,
+      src,
+      dstLabel,
+      dst)
+
+    return err
+  }
+
+  err = nil
+
+  if dstFileInfo.Size() != srcFileSize {
+    err = fmt.Errorf(ePrefix+
+      "\nError: Bytes is source file do NOT equal bytes "+
+      "in destination file!\n"+
+      "Source File Bytes='%v'   Destination File Bytes='%v'\n"+
+      "Source File=%v='%v'\n"+
+      "Destination File=%v='%v'\n",
+      srcFileSize,
+      dstFileInfo.Size(),
+      srcLabel,
+      src,
+      dstLabel,
+      dst)
+  }
+
+  return err
 }
 
 // lowLevelDeleteDirectoryAll - Helper method designed for use by DirMgr.

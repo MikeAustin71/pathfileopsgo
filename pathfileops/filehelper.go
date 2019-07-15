@@ -1510,6 +1510,8 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
     return err
   }
 
+  err = nil
+
   if dstFileInfo.Size() != srcFileSize {
     err = fmt.Errorf(ePrefix+
       "\nError: Bytes is source file do NOT equal bytes "+
@@ -1520,8 +1522,6 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
       src, dst)
     return err
   }
-
-  err = nil
 
   return err
 }
