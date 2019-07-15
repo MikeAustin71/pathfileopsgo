@@ -3426,6 +3426,15 @@ func (dMgrHlpr *dirMgrHelper) lowLevelCopyFile(
     ePrefix = ePrefix + "- " + ePrefixCurrMethod
   }
 
+  if !srcFInfo.Mode().IsRegular() {
+    return fmt.Errorf(ePrefix+
+      "Error: %v is a Non-Regular File and cannot be copied!\n"+
+      "%v='%v'\n",
+      srcLabel,
+      srcLabel,
+      src)
+  }
+
   // First, open the source file
   inSrcPtr, err := os.Open(src)
 
