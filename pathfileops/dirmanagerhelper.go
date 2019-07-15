@@ -3429,7 +3429,7 @@ func (dMgrHlpr *dirMgrHelper) lowLevelCopyFile(
   if !srcFInfo.Mode().IsRegular() {
     return fmt.Errorf(ePrefix+
       "Error: %v is a Non-Regular File and cannot be copied!\n"+
-      "%v='%v'\n",
+      "%v='%v'\n\n",
       srcLabel,
       srcLabel,
       src)
@@ -3441,7 +3441,7 @@ func (dMgrHlpr *dirMgrHelper) lowLevelCopyFile(
   if err != nil {
     return fmt.Errorf(ePrefix+
       "Error returned from os.Open(src)\n"+
-      "%v='%v'\nError='%v'\n",
+      "%v='%v'\nError='%v'\n\n",
       srcLabel,
       src,
       err.Error())
@@ -3457,7 +3457,7 @@ func (dMgrHlpr *dirMgrHelper) lowLevelCopyFile(
 
     return fmt.Errorf(ePrefix+
       "Error returned from os.Create(destinationFile)\n"+
-      "%='%v'\nError='%v'\n",
+      "%='%v'\nError='%v'\n\n",
       dstLabel,
       dst,
       err.Error())
@@ -3471,7 +3471,7 @@ func (dMgrHlpr *dirMgrHelper) lowLevelCopyFile(
     err = fmt.Errorf(ePrefix+
       "Error returned from io.Copy(%v, %v) \n"+
       "%v='%v'\n"+
-      "%v='%v'\nError='%v'\n",
+      "%v='%v'\nError='%v'\n\n",
       dstLabel,
       srcLabel,
       dstLabel,
@@ -3491,7 +3491,7 @@ func (dMgrHlpr *dirMgrHelper) lowLevelCopyFile(
   if err != nil {
     err2 = fmt.Errorf(ePrefix+
       "Error returned from outDestPtr.Sync()\n"+
-      "%v='%v'\nError='%v'\n",
+      "%v='%v'\nError='%v'\n\n",
       dstLabel,
       dst,
       err.Error())
@@ -3504,7 +3504,7 @@ func (dMgrHlpr *dirMgrHelper) lowLevelCopyFile(
   if err != nil {
     err2 = fmt.Errorf(ePrefix+
       "Error returned from inSrcPtr.Close()\n"+
-      "inSrcPtr=source='%v'\nError='%v'\n",
+      "inSrcPtr=source='%v'\nError='%v'\n\n",
       src, err.Error())
 
     errs = append(errs, err2)
@@ -3518,7 +3518,7 @@ func (dMgrHlpr *dirMgrHelper) lowLevelCopyFile(
 
     err2 = fmt.Errorf(ePrefix+
       "Error returned from outDestPtr.Close()\n"+
-      "outDestPtr=destination='%v'\nError='%v'\n",
+      "outDestPtr=destination='%v'\nError='%v'\n\n",
       dst, err.Error())
 
     errs = append(errs, err2)
@@ -3543,7 +3543,7 @@ func (dMgrHlpr *dirMgrHelper) lowLevelCopyFile(
     return fmt.Errorf(ePrefix+
       "Error: After Copy IO operation, %v "+
       "generated non-path error!\n"+
-      "%v='%v'\nError='%v'\n",
+      "%v='%v'\nError='%v'\n\n",
       dstLabel,
       dstLabel,
       dst,
@@ -3553,7 +3553,7 @@ func (dMgrHlpr *dirMgrHelper) lowLevelCopyFile(
   if !dstFileDoesExist {
     err = fmt.Errorf(ePrefix+
       "ERROR: After Copy IO operation, the destination file DOES NOT EXIST!\n"+
-      "Destination File = '%v' = '%v'\n",
+      "Destination File = '%v' = '%v'\n\n",
       dstLabel,
       dst)
 
@@ -3568,7 +3568,7 @@ func (dMgrHlpr *dirMgrHelper) lowLevelCopyFile(
       "in source file!\n"+
       "Source File Bytes='%v'   Bytes Coped='%v'\n"+
       "Source File=%v='%v'\n"+
-      "Destination File=%v='%v'\n",
+      "Destination File=%v='%v'\n\n",
       srcFileSize,
       bytesCopied,
       srcLabel,
@@ -3587,7 +3587,7 @@ func (dMgrHlpr *dirMgrHelper) lowLevelCopyFile(
       "in destination file!\n"+
       "Source File Bytes='%v'   Destination File Bytes='%v'\n"+
       "Source File=%v='%v'\n"+
-      "Destination File=%v='%v'\n",
+      "Destination File=%v='%v'\n\n",
       srcFileSize,
       dstFileInfo.Size(),
       srcLabel,
@@ -3975,7 +3975,7 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
     ePrefix = ePrefix + "- " + ePrefixCurrMethod
   }
 
-  var err, err2, err3 error
+  var err, err2 error
   var dMgrPathDoesExist, targetDMgrPathDoesExist bool
 
   dMgrPathDoesExist,
@@ -4044,23 +4044,30 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
   var src, target string
   var isMatch, dirCreated bool
   var nameFileInfos []os.FileInfo
-  err3 = nil
 
-  for err3 != io.EOF {
+  file2LoopIsDone := false
 
-    nameFileInfos, err3 = dir.Readdir(1000)
+  for !file2LoopIsDone {
 
-    if err3 != nil && err3 != io.EOF {
+    nameFileInfos, err = dir.Readdir(1000)
+
+    if err != nil && err == io.EOF {
+      file2LoopIsDone = true
+
+      if len(nameFileInfos) == 0 {
+        break
+      }
+
+    } else if err != nil {
 
       err2 = fmt.Errorf(ePrefix+
         "\nError returned by dir.Readdirnames(1000).\n"+
         "%v.absolutePath='%v'\nError='%v'\n\n",
         dMgrLabel,
         dMgr.absolutePath,
-        err3.Error())
-
+        err.Error())
       errs = append(errs, err2)
-      err3 = io.EOF
+      file2LoopIsDone = true
       break
     }
 
@@ -4121,7 +4128,7 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
               err.Error())
 
             errs = append(errs, err2)
-
+            file2LoopIsDone = true
             break
           }
 
@@ -4139,17 +4146,33 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
         target = targetDMgr.absolutePath +
           osPathSeparatorStr + nameFInfo.Name()
 
-        err = fh.MoveFile(src, target)
+        err = dMgrHlpr.lowLevelCopyFile(
+          src,
+          nameFInfo,
+          target,
+          ePrefix,
+          "sourceFile",
+          "destinationFile")
 
         if err != nil {
-          err2 = fmt.Errorf("\n"+ePrefix+
-            "ERROR: fh.MoveFile(src, target)\n"+
-            "src='%v'\ntarget='%v'\nError='%v'\n\n",
-            src, target, err.Error())
-
-          errs = append(errs, err2)
+          errs = append(errs, err)
+          dirMoveStats.SourceFilesRemaining++
           continue
 
+        }
+
+        err = os.Remove(src)
+
+        if err != nil {
+          err2 = fmt.Errorf(ePrefix+
+            "\nError occurred after file copy completed during delete operation!\n"+
+            "\nError returned by os.Remove(sourceFile)\n"+
+            "sourceFile='%v'\nError='%v'\n\n",
+            src, err.Error())
+
+          errs = append(errs, err)
+          dirMoveStats.SourceFilesRemaining++
+          continue
         }
 
         dirMoveStats.SourceFilesMoved++
@@ -4168,7 +4191,6 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
 
       errs = append(errs, err2)
     }
-
   }
 
   if dirMoveStats.TotalSrcFilesProcessed !=
@@ -4188,7 +4210,6 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
       dirMoveStats.SourceFilesRemaining)
 
     errs = append(errs, err)
-
   }
 
   // If all the source files have been moved and
