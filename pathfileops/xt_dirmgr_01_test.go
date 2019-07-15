@@ -569,7 +569,7 @@ func TestDirMgr_CopyDirectory_06(t *testing.T) {
   }
 
   if 1 != dirCopyStats.DirCreated {
-    t.Errorf("Error: Expected that dirCopyStats.DirCreated='1'.\n"+
+    t.Errorf("Error: Expected that dirCopyStats.DirsCreated='1'.\n"+
       "Instead, dirCopyStats.TotalFilesProcessed='%v'.\n",
       dirCopyStats.DirCreated)
 
@@ -739,7 +739,7 @@ func TestDirMgr_CopyDirectory_07(t *testing.T) {
   }
 
   if 1 != dirCopyStats.DirCreated {
-    t.Errorf("Error: Expected that dirCopyStats.DirCreated='1'.\n"+
+    t.Errorf("Error: Expected that dirCopyStats.DirsCreated='1'.\n"+
       "Instead, dirCopyStats.TotalFilesProcessed='%v'.\n",
       dirCopyStats.DirCreated)
 

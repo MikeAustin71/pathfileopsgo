@@ -3806,8 +3806,8 @@ func (dMgr *DirMgr) MoveDirectory(
 //                      array and returned to the caller.
 //
 func (dMgr *DirMgr) MoveDirectoryTree(
-  targetDMgr DirMgr) (numOfSrcFilesMoved uint64,
-  numOfSrcDirectoriesMoved uint64,
+  targetDMgr DirMgr) (
+  dirMoveStats DirectoryMoveStats,
   errs []error) {
 
   ePrefix := "DirMgr.MoveDirectoryTree() "
@@ -3816,8 +3816,7 @@ func (dMgr *DirMgr) MoveDirectoryTree(
 
   dMgr.dataMutex.Lock()
 
-  numOfSrcFilesMoved,
-    numOfSrcDirectoriesMoved,
+  dirMoveStats,
     errs = dMgrHlpr.moveDirectoryTree(
     dMgr,
     &targetDMgr,
@@ -3827,9 +3826,7 @@ func (dMgr *DirMgr) MoveDirectoryTree(
 
   dMgr.dataMutex.Unlock()
 
-  return numOfSrcFilesMoved,
-    numOfSrcDirectoriesMoved,
-    errs
+  return dirMoveStats, errs
 }
 
 // MoveSubDirectoryTree - Moves all sub-directories and their constituent

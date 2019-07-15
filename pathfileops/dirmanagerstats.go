@@ -23,14 +23,16 @@ type DirectoryCopyStats struct {
 }
 
 type DirectoryMoveStats struct {
-  TotalSrcFilesProcessed uint64
-  SourceFilesMoved       uint64
-  SourceFilesRemaining   uint64
-  TotalDirsProcessed     uint64
-  DirCreated             uint64
-  NumOfSubDirectories    uint64
-  SourceDirWasDeleted    bool
-  ComputeError           error
+  TotalSrcFilesProcessed   uint64
+  SourceFilesMoved         uint64
+  SourceFileBytesMoved     uint64
+  SourceFilesRemaining     uint64
+  SourceFileBytesRemaining uint64
+  TotalDirsProcessed       uint64
+  DirsCreated              uint64
+  NumOfSubDirectories      uint64
+  SourceDirWasDeleted      bool
+  ComputeError             error
 }
 
 type DeleteDirFilesStats struct {

@@ -3962,8 +3962,7 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
   ePrefix string,
   dMgrLabel string,
   targetDMgrLabel string,
-  fileSelectLabel string) (dirMoveStats DirectoryMoveStats,
-  errs []error) {
+  fileSelectLabel string) (dirMoveStats DirectoryMoveStats, errs []error) {
 
   ePrefixCurrMethod := "dirMgrHelper.moveDirectory() "
 
@@ -4040,7 +4039,6 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
   }
 
   osPathSeparatorStr := string(os.PathSeparator)
-
   var src, target string
   var isMatch, dirCreated bool
   var nameFileInfos []os.FileInfo
@@ -4133,10 +4131,10 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
           }
 
           if dirCreated {
-            dirMoveStats.DirCreated++
+            dirMoveStats.DirsCreated++
           }
 
-          dirMoveStats.DirCreated++
+          dirMoveStats.DirsCreated++
           targetDMgrPathDoesExist = true
         }
 
@@ -4255,14 +4253,11 @@ func (dMgrHlpr *dirMgrHelper) moveDirectoryTree(
   targetDMgr *DirMgr,
   ePrefix string,
   dMgrLabel string,
-  targetDMgrLabel string) (numOfSrcFilesMoved uint64,
-  numOfSrcDirectoriesMoved uint64,
-  errs []error) {
+  targetDMgrLabel string) (
+  dirMoveStats DirectoryMoveStats, errs []error) {
 
   ePrefixCurrMethod := "dirMgrHelper.moveDirectoryTree() "
 
-  numOfSrcFilesMoved = 0
-  numOfSrcDirectoriesMoved = 0
   errs = make([]error, 0, 300)
 
   if len(ePrefix) == 0 {
@@ -4299,12 +4294,25 @@ func (dMgrHlpr *dirMgrHelper) moveDirectoryTree(
     errs = append(errs, err2)
     errs = append(errs, errs2...)
 
-    return numOfSrcFilesMoved,
-      numOfSrcDirectoriesMoved,
-      errs
+    return dirMoveStats, errs
   }
 
-  if dTreeCopyStats.FilesNotCopied > 0 {
+  dirMoveStats.TotalDirsProcessed =
+    dTreeCopyStats.TotalDirsScanned
+
+  dirMoveStats.DirsCreated =
+    dTreeCopyStats.DirsCreated
+
+  dirMoveStats.NumOfSubDirectories =
+    dTreeCopyStats.TotalDirsScanned - 1
+
+  dirMoveStats.SourceFilesRemaining =
+    dTreeCopyStats.FilesNotCopied
+
+  dirMoveStats.SourceFileBytesRemaining =
+    dTreeCopyStats.FileBytesNotCopied
+
+  if dirMoveStats.SourceFilesRemaining > 0 {
     err2 = fmt.Errorf(ePrefix+
       "\nError: Some of the files designated to be moved to the target directory, were NOT copied!\n"+
       "Therefore the source directory WILL NOT BE DELETED!\n"+
@@ -4315,13 +4323,11 @@ func (dMgrHlpr *dirMgrHelper) moveDirectoryTree(
       targetDMgrLabel, targetDMgr.absolutePath)
     errs = append(errs, err2)
 
-    return numOfSrcFilesMoved,
-      numOfSrcDirectoriesMoved,
-      errs
+    return dirMoveStats, errs
   }
 
-  numOfSrcFilesMoved = dTreeCopyStats.FilesCopied
-  numOfSrcDirectoriesMoved = dTreeCopyStats.DirsCopied
+  dirMoveStats.TotalSrcFilesProcessed =
+    dTreeCopyStats.TotalFilesProcessed
 
   err = dMgrHlpr.lowLevelDeleteDirectoryAll(
     dMgr,
@@ -4340,7 +4346,11 @@ func (dMgrHlpr *dirMgrHelper) moveDirectoryTree(
     errs = append(errs, err2)
   }
 
-  return numOfSrcFilesMoved,
-    numOfSrcDirectoriesMoved,
-    errs
+  dirMoveStats.SourceDirWasDeleted = true
+  dirMoveStats.SourceFilesMoved =
+    dTreeCopyStats.FilesCopied
+  dirMoveStats.SourceFileBytesMoved =
+    dTreeCopyStats.FileBytesCopied
+
+  return dirMoveStats, errs
 }
