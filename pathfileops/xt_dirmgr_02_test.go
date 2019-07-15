@@ -657,6 +657,8 @@ func TestDirMgr_DeleteDirectoryTreeFiles_01(t *testing.T) {
       sourceDMgr1.GetAbsolutePath(),
       testDMgr.GetAbsolutePath(),
       testDMgr.ConsolidateErrors(errs))
+    _ = testDMgr.DeleteAll()
+    return
   }
 
   _,
@@ -696,6 +698,9 @@ func TestDirMgr_DeleteDirectoryTreeFiles_01(t *testing.T) {
       sourceDMgr2.GetAbsolutePath(),
       testDMgr.GetAbsolutePath(),
       testDMgr.ConsolidateErrors(errs))
+
+    _ = testDMgr.DeleteAll()
+    return
   }
 
   if uint64(expectedNumOfDirectories) != deleteDirStats.TotalSubDirectories {
@@ -2060,6 +2065,131 @@ func TestDirMgr_DeleteFilesBySelectionCriteria_04(t *testing.T) {
     t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(testDir)\n"+
       "testDir='%v'\nError='%v'\n", testDir, err.Error())
   }
+}
+
+func TestDirMgr_DeleteSubDirectoryTreeFiles_01(t *testing.T) {
+
+  testDir := "../dirmgrtests/DeleteSubDirectoryTreeFiles_01"
+
+  sourceDir1 := "../logTest"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir)\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = testDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by testDMgr.DeleteAll()\n"+
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+    return
+  }
+
+  sourceDMgr1, err := DirMgr{}.New(sourceDir1)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir1)\n"+
+      "sourceDir1='%v'\nError='%v'\n", sourceDir1, err.Error())
+    _ = testDMgr.DeleteAll()
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+  _,
+    errs := sourceDMgr1.CopyDirectoryTree(testDMgr, true, fsc)
+
+  if len(errs) != 0 {
+    t.Errorf("Setup Errors returned by sourceDMgr1.CopyDirectoryTree(testDMgr, true, fsc)\n"+
+      "sourceDMgr1='%v'\ntestDMgr='%v'\nErrors Follow:\n\n%v",
+      sourceDMgr1.GetAbsolutePath(),
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
+    _ = testDMgr.DeleteAll()
+    return
+  }
+
+  /*
+
+    beforeDtreeInfo, err := testDMgr.FindWalkDirFiles(fsc)
+
+    if err != nil {
+      t.Errorf("Error returned by testDMgr.FindWalkDirFiles(fsc)\n"+
+        "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+      _ = testDMgr.DeleteAll()
+      return
+    }
+    beforeTotalNumOfDirs := uint(beforeDtreeInfo.Directories.GetNumOfDirs())
+
+    beforeNumOfFiles := uint64(beforeDtreeInfo.FoundFiles.GetNumOfFileMgrs())
+    beforeNumOfFileBytes := beforeDtreeInfo.FoundFiles.GetTotalFileBytes()
+  */
+
+  fsc = FileSelectionCriteria{}
+
+  _,
+    errs = testDMgr.DeleteSubDirectoryTreeFiles(fsc)
+
+  if len(errs) != 0 {
+    t.Errorf("Setup Errors returned by testDMgr.DeleteDirectoryTreeFiles(fsc)\n"+
+      "sourceDMgr1='%v'\ntestDMgr='%v'\nErrors Follow:\n\n%v",
+      sourceDMgr1.GetAbsolutePath(),
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
+
+    _ = testDMgr.DeleteAll()
+    return
+  }
+
+  afterDtreeInfo, err := testDMgr.FindFilesBySelectCriteria(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by testDMgr.FindFilesBySelectCriteria(fsc)\n"+
+      "testDMgr='%v'\nError='%v'\n",
+      testDMgr.GetAbsolutePath(), err.Error())
+    _ = testDMgr.DeleteAll()
+    return
+  }
+
+  NumOfFilesRemainingInTopDir := afterDtreeInfo.GetNumOfFileMgrs()
+
+  if NumOfFilesRemainingInTopDir != 4 {
+    t.Errorf("Error: Expected 4-files would remain in parent directory.\n"+
+      "Instead, the number of files in parent directory is %v\n",
+      NumOfFilesRemainingInTopDir)
+    _ = testDMgr.DeleteAll()
+    return
+  }
+
+  afterSubDtreeInfo, err := testDMgr.FindWalkSubDirFiles(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by testDMgr.FindWalkSubDirFiles(fsc).\n"+
+      "testDMgr='%v'\nError='%v'\n",
+      testDMgr.GetAbsolutePath(),
+      err.Error())
+    _ = testDMgr.DeleteAll()
+    return
+  }
+
+  NumOfFilesRemainingInSubDirs := afterSubDtreeInfo.FoundFiles.GetNumOfFileMgrs()
+
+  if NumOfFilesRemainingInSubDirs != 0 {
+    t.Errorf("Error: Expected 0-files would remain in sub-directory tree.\n"+
+      "Instead, the number of files in the sub-directory tree is %v\n",
+      NumOfFilesRemainingInSubDirs)
+  }
+
+  err = testDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Clean-Up Error returned by testDMgr.DeleteAll()\n"+
+      "Error='%v'\n", err.Error())
+  }
+
 }
 
 func TestDirMgr_DoesAbsolutePathExist_01(t *testing.T) {

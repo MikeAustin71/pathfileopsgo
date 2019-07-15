@@ -665,6 +665,8 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
 // method returns less data and is designed to work with very large numbers of
 // files and directories.
 //
+// Note: As a result of this operation, files within directory tree folders may be
+// deleted, but the folders or directory elements will NEVER be deleted.
 //
 // ------------------------------------------------------------------------------
 //
@@ -1034,6 +1036,188 @@ func (dMgr *DirMgr) DeleteFilesBySelectionCriteria(
     dMgr,
     false, // skip top level (parent) directory
     false, //scan sub-directories
+    deleteFileSelectionCriteria,
+    ePrefix,
+    "dMgr",
+    "deleteFileSelectionCriteria")
+
+  dMgr.dataMutex.Unlock()
+
+  return deleteDirStats, errs
+}
+
+// DeleteSubDirectoryTreeFiles - Deletes sub-directory files. For this operation, the
+// current 'DirMgr' is classified as the top level or parent directory. Files in this
+// parent directory will NEVER BE DELETED.
+//
+// However, files in the sub-directory tree below the parent directory WILL BE DELETED.
+//
+// Files eligible for deletion must match the file selection criteria specified by input
+// parameter 'deleteFileSelectionCriteria'. The file deletion operation will exclude the
+// parent directory ('DirMgr') and confine the file search to the sub-directories underneath
+// the parent directory. The file search will screen for files which match the file selection
+// criteria in the sub-directory tree.
+//
+// The file deletion operation is conducted in three steps:
+//
+//    1. The criteria for selecting files to be deleted is created using input parameter
+//       'deleteFileSelectionCriteria'.
+//
+//    2. A file search is conducted which excludes the DirMgr parent directory and focuses
+//       exclusively on all sub-directories in the tree.
+//
+//    3. Files processed during the sub-directory tree search are compared to the file
+//       selection criteria specified by 'deleteFileSelectionCriteria'. Those files which
+//       match the selection criteria are then deleted.
+//
+// Note: As a result of this operation, files within sub-directory tree folders may be
+// deleted, but the folders or directory elements themselves will NEVER be deleted.
+//
+// ------------------------------------------------------------------------------
+//
+// Input Parameters:
+//
+//  deleteFileSelectionCriteria FileSelectionCriteria
+//    This input parameter should be configured with the desired file
+//    selection criteria. Files matching this criteria will be deleted.
+//
+//    type FileSelectionCriteria struct {
+//     FileNamePatterns    []string// An array of strings containing File Name Patterns
+//     FilesOlderThan      time.Time// Match files with older modification date times
+//     FilesNewerThan      time.Time// Match files with newer modification date times
+//     SelectByFileMode    FilePermissionConfig  // Match file mode (os.FileMode).
+//     SelectCriterionModeFileSelectCriterionMode // Specifies 'AND' or 'OR' selection mode
+//    }
+//
+//    The FileSelectionCriteria type allows for configuration of single or multiple file
+//    selection criterion. The 'SelectCriterionMode' can be used to specify whether the
+//    file must match all, or any one, of the active file selection criterion.
+//
+//    Elements of the FileSelectionCriteria are described below:
+//
+//    FileNamePatterns    []string  - An array of strings which may define one or more
+//                                    search patterns. If a file name matches any one of the
+//                                    search pattern strings, it is deemed to be a 'match'
+//                                    for the search pattern criterion.
+//
+//                                      Example Patterns:
+//                                       FileNamePatterns = []string{"*.log"}
+//                                       FileNamePatterns = []string{"current*.txt"}
+//                                       FileNamePatterns = []string{"*.txt", "*.log"}
+//
+//                                    If this string array has zero length or if
+//                                    all the strings are empty strings, then this
+//                                    file search criterion is considered 'Inactive'
+//                                    or 'Not Set'.
+//
+//
+//    FilesOlderThan      time.Time - This date time type is compared to file modification
+//                                    date times in order to determine whether the file is
+//                                    older than the 'FilesOlderThan' file selection criterion.
+//                                    If the file modification date time is older than the
+//                                    'FilesOlderThan' date time, that file is considered a
+//                                    'match'	for this file selection criterion.
+//
+//                                    If the value of 'FilesOlderThan' is set to time zero,
+//                                    the default value for type time.Time{}, then this
+//                                    file selection criterion is considered to be 'Inactive'
+//                                    or 'Not Set'.
+//
+//    FilesNewerThan      time.Time - This date time type is compared to the file
+//                                    modification date time in order to determine
+//                                    whether the file is newer than the 'FilesNewerThan'
+//                                    file selection criterion. If the file modification date time
+//                                    is newer than the 'FilesNewerThan' date time, that file is
+//                                    considered a 'match' for this file selection criterion.
+//
+//                                    If the value of 'FilesNewerThan' is set to time zero,
+//                                    the default value for type time.Time{}, then this
+//                                    file selection criterion is considered to be 'Inactive'
+//                                    or 'Not Set'.
+//
+//    SelectByFileMode  FilePermissionConfig -
+//                                    Type FilePermissionConfig encapsulates an os.FileMode. The file
+//                                    selection criterion allows for the selection of files by File Mode.
+//                                    File modes are compared to the value	of 'SelectByFileMode'. If the
+//                                    File Mode for a given file is equal to the value of 'SelectByFileMode',
+//                                    that file is considered to be a 'match' for this file selection
+//                                    criterion. Examples for setting SelectByFileMode are shown as follows:
+//
+//                                         fsc := FileSelectionCriteria{}
+//                                           err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                           err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//
+//    SelectCriterionMode FileSelectCriterionMode -
+//                                    This parameter selects the manner in which the file selection
+//                                    criteria above are applied in determining a 'match' for file
+//                                    selection purposes. 'SelectCriterionMode' may be set to one of
+//                                    two constant values:
+//
+//                                    FileSelectMode.ANDSelect() - File selected if all active selection
+//                                      criteria are satisfied.
+//
+//                                    	If this constant value is specified for the file selection mode,
+//                                    	then a given file will not be judged as 'selected' unless all of
+//                                    	the active selection criterion are satisfied. In other words, if
+//                                    	three active search criterion are provided for 'FileNamePatterns',
+//                                    	'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                    	selected unless it has satisfied all three criterion in this example.
+//
+//                                    FileSelectMode.ORSelect() - File selected if any active selection
+//                                      criterion is satisfied.
+//
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will be selected if any one of the active file
+//                                      selection criterion is satisfied. In other words, if three active
+//                                      search criterion are provided for 'FileNamePatterns', 'FilesOlderThan'
+//                                      and 'FilesNewerThan', then a file will be selected if it satisfies any
+//                                      one of the three criterion in this example.
+//
+// ------------------------------------------------------------------------
+//
+// IMPORTANT:
+//
+// If all of the file selection criterion in the FileSelectionCriteria object are
+// 'Inactive' or 'Not Set' (set to their zero or default values), then all of
+// the files processed in the directory tree will be selected and deleted.
+//
+//      Example:
+//        fsc := FileSelectCriterionMode{}
+//
+//        In this example, 'fsc' is NOT initialized. Therefore,
+//        all of the selection criterion are 'Inactive'. Consequently,
+//        all of the files encountered in the target directory tree
+//        during the search operation will be selected and deleted.
+//
+//
+// ---------------------------------------------------------------------------
+//
+// Return Value:
+//
+//  deleteDirStats DeleteDirFilesStats - Statistics generated by the delete operation
+//                                       performed on the current directory identified
+//                                       by DirMgr.
+//
+//  errs                      []error  - An array of errors is returned. If the method
+//                                       completes successfully with no errors, a
+//                                       ZERO-length array is returned.
+//
+//                                       If errors are encountered they are stored in
+//                                       the error array and returned to the caller.
+//
+func (dMgr *DirMgr) DeleteSubDirectoryTreeFiles(
+  deleteFileSelectionCriteria FileSelectionCriteria) (deleteDirStats DeleteDirFilesStats, errs []error) {
+  ePrefix := "DirMgr.DeleteSubDirectoryTreeFiles() "
+
+  dMgrHlpr := dirMgrHelper{}
+
+  dMgr.dataMutex.Lock()
+
+  deleteDirStats,
+    errs = dMgrHlpr.deleteDirectoryTreeFiles(
+    dMgr,
+    true, // skip top level (parent) directory
+    true, // scan sub-directories
     deleteFileSelectionCriteria,
     ePrefix,
     "dMgr",
