@@ -647,7 +647,12 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
 
 // DeleteDirectoryTreeFiles - Deletes files in the directory tree. The parent
 // directory for this tree is the directory specified by the current 'DirMgr'
-// instance. The file deletion operation is conducted in three steps:
+// instance. Files eligible for deletion must match the file selection criteria
+// specified by input parameter 'deleteFileSelectionCriteria'. The file deletion
+// operation will search the parent directory ('DirMgr') and all sub-directories
+// screening for files which match the file selection criteria.
+//
+// The file deletion operation is conducted in three steps:
 //    1. The criteria for selecting files to be deleted is created using
 //       input parameter 'deleteFileSelectionCriteria'.
 //    2. A file search is conducted which includes the DirMgr parent directory
@@ -656,7 +661,7 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
 //       file selection criteria specified by 'deleteFileSelectionCriteria'.
 //       Those files which match the selection criteria are then deleted.
 //
-// This method is similar to method 'DirMgr.DeleteWalkDirFiles()'. However this
+// This method is similar to method 'DirMgr.DeleteWalkDirFiles()'. However, this
 // method returns less data and is designed to work with very large numbers of
 // files and directories.
 //
@@ -804,7 +809,8 @@ func (dMgr *DirMgr) DeleteDirectoryTreeFiles(
   deleteDirStats,
     errs = dMgrHlpr.deleteDirectoryTreeFiles(
     dMgr,
-    true, // scan sub-directories
+    false, // skip top level (parent) directory
+    true,  // scan sub-directories
     deleteFileSelectionCriteria,
     ePrefix,
     "dMgr",
@@ -1026,6 +1032,7 @@ func (dMgr *DirMgr) DeleteFilesBySelectionCriteria(
   deleteDirStats,
     errs = dMgrHlpr.deleteDirectoryTreeFiles(
     dMgr,
+    false, // skip top level (parent) directory
     false, //scan sub-directories
     deleteFileSelectionCriteria,
     ePrefix,

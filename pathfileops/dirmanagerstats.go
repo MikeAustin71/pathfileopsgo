@@ -34,13 +34,14 @@ type DirectoryMoveStats struct {
 }
 
 type DeleteDirFilesStats struct {
-  TotalFilesProcessed uint64
-  FilesDeleted        uint64
-  FilesDeletedBytes   uint64
-  FilesRemaining      uint64
-  FilesRemainingBytes uint64
-  TotalDirsProcessed  uint64
-  TotalSubDirectories uint64
-  TotalDirsScanned    uint64
-  DirectoriesDeleted  uint64
+  TotalFilesProcessed        uint64
+  FilesDeleted               uint64
+  FilesDeletedBytes          uint64
+  FilesRemaining             uint64
+  FilesRemainingBytes        uint64
+  TotalDirsProcessed         uint64
+  TotalSubDirectories        uint64
+  TotalDirsScanned           uint64
+  NumOfDirsWhereFilesDeleted uint64
+  DirectoriesDeleted         uint64
 }
