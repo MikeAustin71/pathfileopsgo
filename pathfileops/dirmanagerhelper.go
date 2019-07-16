@@ -4971,3 +4971,140 @@ func (dMgrHlpr *dirMgrHelper) setPermissions(
 
   return nil
 }
+
+// substituteBaseDir - Substitute 'baseDir' segment of the current DirMgr with a new
+// parent directory identified by input parameter 'substituteBaseDir'. This is useful
+// in copying files to new directory trees.
+//
+func (dMgrHlpr *dirMgrHelper) substituteBaseDir(
+  dMgr *DirMgr,
+  baseDir *DirMgr,
+  substituteBaseDir *DirMgr,
+  ePrefix string,
+  dMgrLabel string,
+  baseDirLabel string,
+  substituteBaseDirLabel string) (newDMgr DirMgr, err error) {
+
+  ePrefixCurrMethod := "dirMgrHelper.substituteBaseDir() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  newDMgr = DirMgr{}
+  err = nil
+
+  _,
+    _,
+    err = dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+    return newDMgr, err
+  }
+
+  _,
+    _,
+    err = dMgrHlpr.doesDirectoryExist(
+    baseDir,
+    PreProcPathCode.None(),
+    ePrefix,
+    baseDirLabel)
+
+  if err != nil {
+    return newDMgr, err
+  }
+
+  _,
+    _,
+    err = dMgrHlpr.doesDirectoryExist(
+    substituteBaseDir,
+    PreProcPathCode.None(),
+    ePrefix,
+    substituteBaseDirLabel)
+
+  if err != nil {
+    return newDMgr, err
+  }
+
+  thisDirAbsPath := strings.ToLower(dMgr.absolutePath)
+
+  oldBaseAbsPath := strings.ToLower(baseDir.absolutePath)
+
+  newBaseAbsPath := strings.ToLower(substituteBaseDir.absolutePath)
+
+  idx := strings.Index(thisDirAbsPath, oldBaseAbsPath)
+
+  if idx < 0 {
+    err = fmt.Errorf(ePrefix+
+      "\nThe base directory was NOT found in the current %v path!\n"+
+      "%v Path='%v'\n%v Path='%v'\n\n",
+      dMgrLabel,
+      dMgrLabel,
+      thisDirAbsPath,
+      baseDirLabel,
+      oldBaseAbsPath)
+
+    return newDMgr, err
+  }
+
+  if idx != 0 {
+    err = fmt.Errorf(ePrefix+
+      "\nThe %v directory was NOT found at the beginning of the %v path!\n"+
+      "%v Path='%v'\n%v Path='%v'\n\n",
+      baseDirLabel,
+      dMgrLabel,
+      dMgrLabel,
+      thisDirAbsPath,
+      baseDirLabel,
+      oldBaseAbsPath)
+
+    return newDMgr, err
+  }
+
+  oldBaseLen := len(oldBaseAbsPath)
+
+  newAbsPath := newBaseAbsPath + thisDirAbsPath[oldBaseLen:]
+
+  isEmpty := false
+
+  isEmpty, err = dMgrHlpr.setDirMgr(
+    &newDMgr,
+    newAbsPath,
+    ePrefix,
+    dMgrLabel,
+    "newAbsPath")
+
+  if err != nil {
+
+    _ = dMgrHlpr.empty(
+      &newDMgr,
+      ePrefix,
+      dMgrLabel)
+
+    return newDMgr, err
+  }
+
+  if isEmpty {
+
+    _ = dMgrHlpr.empty(
+      &newDMgr,
+      ePrefix,
+      dMgrLabel)
+
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: New generated Directory Path Is Invalid!\n"+
+      "isEmpty='true'\n"+
+      "newAbsPath='%v'\n\n", newAbsPath)
+
+    return newDMgr, err
+  }
+
+  err = nil
+  return newDMgr, err
+}

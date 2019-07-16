@@ -4129,75 +4129,21 @@ func (dMgr *DirMgr) SubstituteBaseDir(
   substituteBaseDir DirMgr) (newDMgr DirMgr, err error) {
 
   ePrefix := "DirMgr.SubstituteBaseDir() "
+  dMgrHlpr := dirMgrHelper{}
 
-  newDMgr = DirMgr{}
-  err = nil
+  dMgr.dataMutex.Lock()
 
-  err2 := baseDir.IsDirMgrValid("")
+  newDMgr,
+    err = dMgrHlpr.substituteBaseDir(
+    dMgr,
+    &baseDir,
+    &substituteBaseDir,
+    ePrefix,
+    "DirMgr",
+    "baseDir",
+    "substituteBaseDir")
 
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix + "Error: Input parameter 'baseDir' is INVALID!")
-    return newDMgr, err
-  }
+  dMgr.dataMutex.Unlock()
 
-  err2 = substituteBaseDir.IsDirMgrValid("")
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix + "Error: Input parameter 'substituteBaseDir' is INVALID!")
-    return newDMgr, err
-  }
-
-  err2 = dMgr.IsDirMgrValid("")
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix + "Error: The current DirMgr object is INVALID!")
-    return newDMgr, err
-  }
-
-  thisDirAbsPath := strings.ToLower(dMgr.absolutePath)
-
-  oldBaseAbsPath := strings.ToLower(baseDir.absolutePath)
-
-  newBaseAbsPath := strings.ToLower(substituteBaseDir.absolutePath)
-
-  idx := strings.Index(thisDirAbsPath, oldBaseAbsPath)
-
-  if idx < 0 {
-    err = fmt.Errorf(ePrefix+"The base directory was NOT found in the current DirMgr path!\n"+
-      "DirMgr Path='%v'\nbaseDir Path='%v'\n",
-      thisDirAbsPath, oldBaseAbsPath)
-
-    return newDMgr, err
-  }
-
-  if idx != 0 {
-    err = fmt.Errorf(ePrefix+"The base directory was NOT found at the beginning of the current DirMgr path!\n"+
-      "DirMgr Path='%v'\nbaseDir Path='%v'\n",
-      thisDirAbsPath, oldBaseAbsPath)
-
-    return newDMgr, err
-  }
-
-  oldBaseLen := len(oldBaseAbsPath)
-
-  newAbsPath := newBaseAbsPath + thisDirAbsPath[oldBaseLen:]
-
-  isEmpty := false
-
-  isEmpty, err = newDMgr.SetDirMgr(newAbsPath)
-
-  if err != nil {
-    newDMgr.Empty()
-    return newDMgr, err
-  }
-
-  if isEmpty {
-    newDMgr.Empty()
-    err = fmt.Errorf(ePrefix+"ERROR: New generated Directory Path Is Invalid!\n"+
-      "newAbsPath='%v'\n", newAbsPath)
-    return newDMgr, err
-  }
-
-  err = nil
   return newDMgr, err
 }
