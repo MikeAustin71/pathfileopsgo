@@ -1,6 +1,7 @@
 package pathfileops
 
 import (
+  "strings"
   "testing"
 )
 
@@ -364,6 +365,133 @@ func TestDirMgrCollection_AddFileInfo_01(t *testing.T) {
   if numOfDirs != 1 {
     t.Errorf("ERROR: Expected number of directories in collection would equal '1'.\n"+
       "Instead, the number of directories='%v'.\n", numOfDirs)
+  }
+
+}
+
+func TestDirMgrCollection_CopyOut_01(t *testing.T) {
+
+  fh := FileHelper{}
+  dMgrs := DirMgrCollection{}
+
+  dirArray := []string{
+    "../logTest",
+    "../logTest/CmdrX",
+    "../logTest/FileMgmnt",
+    "../logTest/FileSrc",
+    "../logTest/Level01",
+    "../logTest/Level01/Level02"}
+
+  absDirArray := make([]string, 0, 30)
+
+  for i := 0; i < len(dirArray); i++ {
+
+    absStr, err := fh.MakeAbsolutePath(dirArray[i])
+
+    if err != nil {
+      t.Errorf("Error returned by fh.MakeAbsolutePath(dirArray[%v])\n"+
+        "dirArray[%v]='%v'\nError='%v'\n",
+        i, i, dirArray[i], err.Error())
+      return
+    }
+
+    absDirArray = append(absDirArray, strings.ToLower(absStr))
+
+    err = dMgrs.AddDirMgrByPathNameStr(absStr)
+
+    if err != nil {
+      t.Errorf("Error returned by "+
+        "dMgrs.AddDirMgrByPathNameStr(absStr)\n"+
+        "absStr='%v'\nIndex='%v'\nError='%v'\n",
+        absStr,
+        i,
+        err.Error())
+      return
+    }
+
+  }
+
+  dMgrs2, err := dMgrs.CopyOut()
+
+  if err != nil {
+    t.Errorf("Error returned by dMgrs.CopyOut()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  dMgrCnt := dMgrs.GetNumOfDirs()
+
+  if len(dirArray) != dMgrCnt {
+    t.Errorf("ERROR: Expected Num of dMgrs='%v'\n"+
+      "Instead, Num of dMgrs='%v'\nLength of dirArray='%v'\n",
+      len(dirArray),
+      dMgrCnt,
+      len(dirArray))
+    return
+  }
+
+  dMgr2Cnt := dMgrs2.GetNumOfDirs()
+
+  if dMgrCnt != dMgr2Cnt {
+    t.Errorf("ERROR: Expected Num of dMgrs='%v'\n"+
+      "Instead, Num of dMgrs='%v'",
+      dMgrCnt, dMgr2Cnt)
+  }
+
+  for k := 0; k < dMgrCnt; k++ {
+
+    origDir, err := dMgrs.GetDirMgrAtIndex(k)
+
+    if err != nil {
+      t.Errorf("Error returned by origDir, err := dMgrs.GetDirMgrAtIndex(%v)\n"+
+        "Error='%v'\n",
+        k, err.Error())
+      return
+    }
+
+    origDirAbsPath := strings.ToLower(origDir.GetAbsolutePath())
+
+    copiedDir, err := dMgrs2.GetDirMgrAtIndex(k)
+
+    if err != nil {
+      t.Errorf("Error returned by copiedDir, err := dMgrs2.GetDirMgrAtIndex(%v)\n"+
+        "Error='%v'\n",
+        k, err.Error())
+      return
+    }
+
+    copiedDirAbsPath := strings.ToLower(copiedDir.GetAbsolutePath())
+
+    if origDirAbsPath != copiedDirAbsPath {
+      t.Errorf("ERROR Index %v: Original Path and Copied Path\n"+
+        "are NOT EQUAL!\n"+
+        "origDirAbsPath='%v'\ncopiedDirAbsPath='%v'\n\n",
+        k,
+        origDirAbsPath,
+        copiedDirAbsPath)
+    }
+
+    if absDirArray[k] != copiedDirAbsPath {
+      t.Errorf("ERROR: absDirArray[%v] and Copied Path\n"+
+        "are NOT EQUAL!\n"+
+        "absDirArray[%v]='%v'\ncopiedDirAbsPath='%v'\n\n",
+        k,
+        k,
+        absDirArray[k],
+        copiedDirAbsPath)
+    }
+  }
+}
+
+func TestDirMgrCollection_CopyOut_02(t *testing.T) {
+
+  dMgrs := DirMgrCollection{}
+
+  _, err := dMgrs.CopyOut()
+
+  if err == nil {
+    t.Errorf("Expected Error return from 'dMgrs' because the collection\n" +
+      "has zero members in the collection. However, NO ERROR WAS RETURNED!!!")
   }
 
 }

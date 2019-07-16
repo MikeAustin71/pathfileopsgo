@@ -5,6 +5,226 @@ import (
   "testing"
 )
 
+func TestDirMgrCollection_PeekDirMgrAtIndex_01(t *testing.T) {
+  fh := FileHelper{}
+  dMgrs := DirMgrCollection{}
+
+  // # 1
+  origPath := fh.AdjustPathSlash("../logTest")
+
+  origAbsPath, err := fh.MakeAbsolutePath(origPath)
+
+  if err != nil {
+    t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
+  }
+
+  err = dMgrs.AddDirMgrByPathNameStr(origPath)
+
+  if err != nil {
+    t.Errorf("%v", err.Error())
+  }
+
+  if dMgrs.GetNumOfDirs() != 1 {
+    t.Errorf("Expected DirMgrsCollection Array Length = '1'. Instead, Array Length = '%v'", dMgrs.GetNumOfDirs())
+  }
+
+  if dMgrs.dirMgrs[0].absolutePath != origAbsPath {
+    t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.dirMgrs[0].absolutePath)
+  }
+
+  // # 2
+  origPath = fh.AdjustPathSlash("../logTest/CmdrX")
+
+  origAbsPath, err = fh.MakeAbsolutePath(origPath)
+
+  if err != nil {
+    t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
+  }
+
+  err = dMgrs.AddDirMgrByPathNameStr(origPath)
+
+  if err != nil {
+    t.Errorf("%v", err.Error())
+  }
+
+  // # 3
+  origPath = fh.AdjustPathSlash("../logTest/FileMgmnt")
+
+  origAbsPath, err = fh.MakeAbsolutePath(origPath)
+
+  if err != nil {
+    t.Errorf("Error returned by (3) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
+  }
+
+  idx2Path := origPath
+  idx2AbsPath := origAbsPath
+
+  err = dMgrs.AddDirMgrByPathNameStr(origPath)
+
+  if err != nil {
+    t.Errorf("%v", err.Error())
+  }
+
+  // #4
+  origPath = fh.AdjustPathSlash("../logTest/FileSrc")
+
+  origAbsPath, err = fh.MakeAbsolutePath(origPath)
+
+  if err != nil {
+    t.Errorf("Error returned by (3) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
+  }
+
+  idx3Path := origPath
+  idx3AbsPath := origAbsPath
+
+  err = dMgrs.AddDirMgrByPathNameStr(origPath)
+
+  if err != nil {
+    t.Errorf("%v", err.Error())
+  }
+
+  // #5
+  origPath = fh.AdjustPathSlash("../logTest/Level01")
+
+  origAbsPath, err = fh.MakeAbsolutePath(origPath)
+
+  if err != nil {
+    t.Errorf("Error returned by (4) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
+  }
+
+  err = dMgrs.AddDirMgrByPathNameStr(origPath)
+
+  if err != nil {
+    t.Errorf("%v", err.Error())
+  }
+
+  // # 6
+  origPath = fh.AdjustPathSlash("../logTest/Level01/Level02")
+
+  origAbsPath, err = fh.MakeAbsolutePath(origPath)
+
+  if err != nil {
+    t.Errorf("Error returned by (4) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
+  }
+
+  err = dMgrs.AddDirMgrByPathNameStr(origPath)
+
+  if err != nil {
+    t.Errorf("%v", err.Error())
+  }
+
+  dMgr, err := dMgrs.PeekDirMgrAtIndex(2)
+
+  if err != nil {
+    t.Errorf("Error returned by dMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
+    return
+  }
+
+  if dMgr.path != idx2Path {
+    t.Errorf("Expected Last DirMgr path='%v'. Instead, dMgr.path='%v'", idx2Path, dMgr.path)
+  }
+
+  if dMgr.absolutePath != idx2AbsPath {
+    t.Errorf("Expected Last DirMgr absolutePath='%v'. Instead, dMgr.absolutePath='%v'", idx2AbsPath, dMgr.absolutePath)
+  }
+
+  if dMgrs.GetNumOfDirs() != 6 {
+    t.Errorf("Expected final dMgrs.GetNumOfDirs() == 6.  Instead, dMgrs.GetNumOfDirs()=='%v'", dMgrs.GetNumOfDirs())
+  }
+
+  dMgr, err = dMgrs.PeekDirMgrAtIndex(3)
+
+  if err != nil {
+    t.Errorf("Error returned by dMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
+    return
+  }
+
+  if dMgr.path != idx3Path {
+    t.Errorf("Expected Last DirMgr path='%v'. Instead, dMgr.path='%v'", idx3Path, dMgr.path)
+  }
+
+  if dMgr.absolutePath != idx3AbsPath {
+    t.Errorf("Expected Last DirMgr absolutePath='%v'. Instead, dMgr.absolutePath='%v'", idx3AbsPath, dMgr.absolutePath)
+  }
+
+  if dMgrs.GetNumOfDirs() != 6 {
+    t.Errorf("Expected final dMgrs.GetNumOfDirs() == 6.  Instead, dMgrs.GetNumOfDirs()=='%v'", dMgrs.GetNumOfDirs())
+  }
+
+}
+
+func TestDirMgrCollection_PeekFirstDirMgr_01(t *testing.T) {
+  fh := FileHelper{}
+  dMgrs := DirMgrCollection{}
+
+  dirArray := []string{
+    "../logTest",
+    "../logTest/CmdrX",
+    "../logTest/FileMgmnt",
+    "../logTest/FileSrc",
+    "../logTest/Level01",
+    "../logTest/Level01/Level02"}
+
+  absDirArray := make([]string, 0, 30)
+
+  for i := 0; i < len(dirArray); i++ {
+
+    absStr, err := fh.MakeAbsolutePath(dirArray[i])
+
+    if err != nil {
+      t.Errorf("Error returned by fh.MakeAbsolutePath(dirArray[%v])\n"+
+        "dirArray[%v]='%v'\nError='%v'\n",
+        i, i, dirArray[i], err.Error())
+      return
+    }
+
+    absDirArray = append(absDirArray, strings.ToLower(absStr))
+
+    err = dMgrs.AddDirMgrByPathNameStr(absStr)
+
+    if err != nil {
+      t.Errorf("Error returned by "+
+        "dMgrs.AddDirMgrByPathNameStr(absStr)\n"+
+        "absStr='%v'\nIndex='%v'\nError='%v'\n",
+        absStr,
+        i,
+        err.Error())
+      return
+    }
+
+  }
+
+  dMgr1, err := dMgrs.PeekFirstDirMgr()
+
+  if err != nil {
+    t.Errorf("Error returned by dMgr1, err := dMgrs.PeekFirstDirMgr()\n"+
+      "Error='%v'", err.Error())
+    return
+  }
+
+  absPathDMgr1 := strings.ToLower(dMgr1.GetAbsolutePath())
+
+  if absDirArray[0] != absPathDMgr1 {
+    t.Errorf("ERROR: Expected First DirMgr Path is \n"+
+      "NOT EQUAL to actual First DirMgr Path!\n"+
+      "Expected Path='%v'\nActual Path='%v'\n",
+      absDirArray[0], absPathDMgr1)
+  }
+
+}
+
+func TestDirMgrCollection_PeekFirstDirMgr_02(t *testing.T) {
+
+  dMgrs := DirMgrCollection{}
+
+  _, err := dMgrs.PeekFirstDirMgr()
+
+  if err == nil {
+    t.Error("Expected an error return from dMgrs.PeekFirstDirMgr() because\n" +
+      "the dMgrs collection is empty. However, NO ERROR WAS RETURNED!")
+  }
+}
+
 func TestDirMgrCollection_PopLastDirMgr_01(t *testing.T) {
 
   fh := FileHelper{}
@@ -112,6 +332,7 @@ func TestDirMgrCollection_PopLastDirMgr_01(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by dMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
+    return
   }
 
   if dMgr.path != origPath {
@@ -119,11 +340,13 @@ func TestDirMgrCollection_PopLastDirMgr_01(t *testing.T) {
   }
 
   if dMgr.absolutePath != origAbsPath {
-    t.Errorf("Expected Last DirMgr absolutePath='%v'. Instead, dMgr.absolutePath='%v'", origAbsPath, dMgr.absolutePath)
+    t.Errorf("Expected Last DirMgr absolutePath='%v'.\n"+
+      "Instead, dMgr.absolutePath='%v'", origAbsPath, dMgr.absolutePath)
   }
 
   if dMgrs.GetNumOfDirs() != 5 {
-    t.Errorf("Expected final dMgrs.GetNumOfDirs() == 5.  Instead, dMgrs.GetNumOfDirs()=='%v'", dMgrs.GetNumOfDirs())
+    t.Errorf("Expected final dMgrs.GetNumOfDirs() == 5.\n"+
+      "Instead, dMgrs.GetNumOfDirs()=='%v'", dMgrs.GetNumOfDirs())
   }
 
 }
@@ -239,18 +462,22 @@ func TestDirMgrCollection_PopFirstDirMgr_01(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by dMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
+    return
   }
 
   if dMgr.path != firstDirPath {
-    t.Errorf("Expected Last DirMgr path='%v'. Instead, dMgr.path='%v'", firstDirPath, dMgr.path)
+    t.Errorf("Expected Last DirMgr path='%v'.\nInstead, dMgr.path='%v'",
+      firstDirPath, dMgr.path)
   }
 
   if dMgr.absolutePath != firstAbsDirPath {
-    t.Errorf("Expected Last DirMgr absolutePath='%v'. Instead, dMgr.absolutePath='%v'", firstAbsDirPath, dMgr.absolutePath)
+    t.Errorf("Expected Last DirMgr absolutePath='%v'.\n"+
+      "Instead, dMgr.absolutePath='%v'", firstAbsDirPath, dMgr.absolutePath)
   }
 
   if dMgrs.GetNumOfDirs() != 5 {
-    t.Errorf("Expected final dMgrs.GetNumOfDirs() == 5.  Instead, dMgrs.GetNumOfDirs()=='%v'", dMgrs.GetNumOfDirs())
+    t.Errorf("Expected final dMgrs.GetNumOfDirs() == 5.\n"+
+      "Instead, dMgrs.GetNumOfDirs()=='%v'", dMgrs.GetNumOfDirs())
   }
 
 }
@@ -367,6 +594,7 @@ func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by dMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
+    return
   }
 
   if dMgr.path != idx2Path {
@@ -374,17 +602,20 @@ func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
   }
 
   if dMgr.absolutePath != idx2AbsPath {
-    t.Errorf("Expected Last DirMgr absolutePath='%v'. Instead, dMgr.absolutePath='%v'", idx2AbsPath, dMgr.absolutePath)
+    t.Errorf("Expected Last DirMgr absolutePath='%v'.\n"+
+      "Instead, dMgr.absolutePath='%v'", idx2AbsPath, dMgr.absolutePath)
   }
 
   if dMgrs.GetNumOfDirs() != 5 {
-    t.Errorf("Expected final dMgrs.GetNumOfDirs() == 5.  Instead, dMgrs.GetNumOfDirs()=='%v'", dMgrs.GetNumOfDirs())
+    t.Errorf("Expected final dMgrs.GetNumOfDirs() == 5.\n"+
+      "Instead, dMgrs.GetNumOfDirs()=='%v'", dMgrs.GetNumOfDirs())
   }
 
   dMgr, err = dMgrs.PopDirMgrAtIndex(2)
 
   if err != nil {
     t.Errorf("Error returned by dMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
+    return
   }
 
   if dMgr.path != idx3Path {
@@ -397,152 +628,6 @@ func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
 
   if dMgrs.GetNumOfDirs() != 4 {
     t.Errorf("Expected final dMgrs.GetNumOfDirs() == 4.  Instead, dMgrs.GetNumOfDirs()=='%v'", dMgrs.GetNumOfDirs())
-  }
-
-}
-
-func TestDirMgrCollection_PeekDirMgrAtIndex_01(t *testing.T) {
-  fh := FileHelper{}
-  dMgrs := DirMgrCollection{}
-
-  // # 1
-  origPath := fh.AdjustPathSlash("../logTest")
-
-  origAbsPath, err := fh.MakeAbsolutePath(origPath)
-
-  if err != nil {
-    t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
-  }
-
-  err = dMgrs.AddDirMgrByPathNameStr(origPath)
-
-  if err != nil {
-    t.Errorf("%v", err.Error())
-  }
-
-  if dMgrs.GetNumOfDirs() != 1 {
-    t.Errorf("Expected DirMgrsCollection Array Length = '1'. Instead, Array Length = '%v'", dMgrs.GetNumOfDirs())
-  }
-
-  if dMgrs.dirMgrs[0].absolutePath != origAbsPath {
-    t.Errorf("Expected Addition #1 absolutePath='%v'. Instead, absolutePath='%v' ", origAbsPath, dMgrs.dirMgrs[0].absolutePath)
-  }
-
-  // # 2
-  origPath = fh.AdjustPathSlash("../logTest/CmdrX")
-
-  origAbsPath, err = fh.MakeAbsolutePath(origPath)
-
-  if err != nil {
-    t.Errorf("Error returned by (2) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
-  }
-
-  err = dMgrs.AddDirMgrByPathNameStr(origPath)
-
-  if err != nil {
-    t.Errorf("%v", err.Error())
-  }
-
-  // # 3
-  origPath = fh.AdjustPathSlash("../logTest/FileMgmnt")
-
-  origAbsPath, err = fh.MakeAbsolutePath(origPath)
-
-  if err != nil {
-    t.Errorf("Error returned by (3) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
-  }
-
-  idx2Path := origPath
-  idx2AbsPath := origAbsPath
-
-  err = dMgrs.AddDirMgrByPathNameStr(origPath)
-
-  if err != nil {
-    t.Errorf("%v", err.Error())
-  }
-
-  // #4
-  origPath = fh.AdjustPathSlash("../logTest/FileSrc")
-
-  origAbsPath, err = fh.MakeAbsolutePath(origPath)
-
-  if err != nil {
-    t.Errorf("Error returned by (3) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
-  }
-
-  idx3Path := origPath
-  idx3AbsPath := origAbsPath
-
-  err = dMgrs.AddDirMgrByPathNameStr(origPath)
-
-  if err != nil {
-    t.Errorf("%v", err.Error())
-  }
-
-  // #5
-  origPath = fh.AdjustPathSlash("../logTest/Level01")
-
-  origAbsPath, err = fh.MakeAbsolutePath(origPath)
-
-  if err != nil {
-    t.Errorf("Error returned by (4) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
-  }
-
-  err = dMgrs.AddDirMgrByPathNameStr(origPath)
-
-  if err != nil {
-    t.Errorf("%v", err.Error())
-  }
-
-  // # 6
-  origPath = fh.AdjustPathSlash("../logTest/Level01/Level02")
-
-  origAbsPath, err = fh.MakeAbsolutePath(origPath)
-
-  if err != nil {
-    t.Errorf("Error returned by (4) fh.MakeAbsolutePath(origPath). origPath= '%v'  Error='%v'", origPath, err.Error())
-  }
-
-  err = dMgrs.AddDirMgrByPathNameStr(origPath)
-
-  if err != nil {
-    t.Errorf("%v", err.Error())
-  }
-
-  dMgr, err := dMgrs.PeekDirMgrAtIndex(2)
-
-  if err != nil {
-    t.Errorf("Error returned by dMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
-  }
-
-  if dMgr.path != idx2Path {
-    t.Errorf("Expected Last DirMgr path='%v'. Instead, dMgr.path='%v'", idx2Path, dMgr.path)
-  }
-
-  if dMgr.absolutePath != idx2AbsPath {
-    t.Errorf("Expected Last DirMgr absolutePath='%v'. Instead, dMgr.absolutePath='%v'", idx2AbsPath, dMgr.absolutePath)
-  }
-
-  if dMgrs.GetNumOfDirs() != 6 {
-    t.Errorf("Expected final dMgrs.GetNumOfDirs() == 6.  Instead, dMgrs.GetNumOfDirs()=='%v'", dMgrs.GetNumOfDirs())
-  }
-
-  dMgr, err = dMgrs.PeekDirMgrAtIndex(3)
-
-  if err != nil {
-    t.Errorf("Error returned by dMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
-  }
-
-  if dMgr.path != idx3Path {
-    t.Errorf("Expected Last DirMgr path='%v'. Instead, dMgr.path='%v'", idx3Path, dMgr.path)
-  }
-
-  if dMgr.absolutePath != idx3AbsPath {
-    t.Errorf("Expected Last DirMgr absolutePath='%v'. Instead, dMgr.absolutePath='%v'", idx3AbsPath, dMgr.absolutePath)
-  }
-
-  if dMgrs.GetNumOfDirs() != 6 {
-    t.Errorf("Expected final dMgrs.GetNumOfDirs() == 6.  Instead, dMgrs.GetNumOfDirs()=='%v'", dMgrs.GetNumOfDirs())
   }
 
 }
@@ -561,7 +646,9 @@ func TestDirMgrCollection_FindDirectories_01(t *testing.T) {
   origDirMgr, err := DirMgr{}.New(origPath)
 
   if err != nil {
-    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origPath). origPath='%v'  Error='%v'", origPath, err.Error())
+    t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(origPath).\n"+
+      "origPath='%v'\nError='%v'\n", origPath, err.Error())
+    return
   }
 
   if origDirMgr.absolutePath != origAbsPath {
@@ -572,13 +659,21 @@ func TestDirMgrCollection_FindDirectories_01(t *testing.T) {
   dWlkr, err := origDirMgr.FindWalkDirFiles(fsc)
 
   if err != nil {
-    t.Errorf("Error retured from origDirMgr.FindWalkDirFiles(fsc).  Error='%v'", err.Error())
+    t.Errorf("Error retured from origDirMgr.FindWalkDirFiles(fsc).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   fsc = FileSelectionCriteria{}
   fsc.FileNamePatterns = []string{"*Level*"}
 
   dCol, err := dWlkr.Directories.FindDirectories(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by dCol, err := dWlkr.Directories.FindDirectories(fsc)\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
 
   isLevel02Found := false
   isLevel01Found := false

@@ -135,7 +135,7 @@ func (dMgrs *DirMgrCollection) CopyOut() (DirMgrCollection, error) {
 
   if lOmc == 0 {
     return DirMgrCollection{},
-      errors.New(ePrefix + "Error: Empty DirMgrCollection. No messages available!")
+      errors.New(ePrefix + "Error: Empty DirMgrCollection.\n")
   }
 
   for i := 0; i < lOmc; i++ {
@@ -556,11 +556,11 @@ func (dMgrs *DirMgrCollection) PeekDirMgrAtIndex(idx int) (DirMgr, error) {
   arrayLen := len(dMgrs.dirMgrs)
 
   /*
-    if arrayLen == 0 {
-      return DirMgr{},
-        errors.New(ePrefix +
-          "Error: The Directory Manager Collection, 'DirMgrCollection' is EMPTY!")
-    }
+     if arrayLen == 0 {
+       return DirMgr{},
+         errors.New(ePrefix +
+           "Error: The Directory Manager Collection, 'DirMgrCollection' is EMPTY!")
+     }
   */
 
   if arrayLen == 0 {
