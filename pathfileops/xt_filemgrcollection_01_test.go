@@ -2,6 +2,7 @@ package pathfileops
 
 import (
   "fmt"
+  "strings"
   "testing"
   "time"
 )
@@ -52,10 +53,12 @@ func TestFileMgrCollection_AddFileMgrCollection(t *testing.T) {
 
   if err != nil {
     t.Errorf("2nd Run: Error returned from fMgrs1.PeekLastDirMgr(). Error='%v'", err.Error())
+    return
   }
 
   if fMgr.fileNameExt != "testCol2AddFile_015.txt" {
-    t.Errorf("Expected consolidated fMgrs1 to have last fMgr.fileNameExt='testCol2AddFile_015.txt'. Instead, fMgr.fileNameExt='%v'", fMgr.fileNameExt)
+    t.Errorf("Expected consolidated fMgrs1 to have last fMgr.fileNameExt='testCol2AddFile_015.txt'.\n"+
+      "Instead, fMgr.fileNameExt='%v'", fMgr.fileNameExt)
   }
 
 }
@@ -129,10 +132,136 @@ func TestFileMgrCollection_AddFileMgrByPathFile(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fMgrs.PeekLastDirMgr(). Error='%v'", err.Error())
+    return
   }
 
   if fmgr2.fileNameExt != "newerFileForTest_01.txt" {
-    t.Errorf("Expected Newly Added Fmgr fileNameExt='newerFileForTest_01.txt'. Instead, fileNameExt='%v'", fmgr2.fileNameExt)
+    t.Errorf("Expected Newly Added Fmgr fileNameExt='newerFileForTest_01.txt'.\n"+
+      "Instead, fileNameExt='%v'", fmgr2.fileNameExt)
+  }
+
+}
+
+func TestFileMgrCollection_AddFileMgrByDirFileNameExt_01(t *testing.T) {
+
+  testDir := "../createFilesTest"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir)\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  fMgrs := FileMgrCollection{}.New()
+  var fileNameExt string
+  fileNamesArray := make([]string, 0, 30)
+
+  for i := 0; i < 10; i++ {
+
+    fileNameExt = fmt.Sprintf("testAddFile_%03d.txt", i+1)
+
+    fileNamesArray = append(fileNamesArray, strings.ToLower(fileNameExt))
+
+    err := fMgrs.AddFileMgrByDirFileNameExt(testDMgr, fileNameExt)
+
+    if err != nil {
+      t.Errorf("Error returned from fMgrs.AddFileMgrByDirFileNameExt(testDMgr, fileNameExt).\n"+
+        "testDMgr='%v'"+
+        "fileNameExt='%v'\nError='%v'",
+        testDMgr.GetAbsolutePath(),
+        fileNameExt,
+        err.Error())
+    }
+  }
+
+  numOfFileManagers := fMgrs.GetNumOfFileMgrs()
+
+  if 10 != numOfFileManagers {
+    t.Errorf("ERROR: Expected 10-File Managers.\n"+
+      "Instead, the collection actually contains %v-File Managers.\n",
+      numOfFileManagers)
+  }
+
+  if len(fileNamesArray) != numOfFileManagers {
+    t.Errorf("Expected number of elements in 'fileNamesArray'\n"+
+      "to equal number of file managers in collection.\n"+
+      "They ARE NOT EQUAL!\n"+
+      "Length of fileNamesArray='%v'\nNumber of File Managers='%v'\n",
+      len(fileNamesArray), numOfFileManagers)
+  }
+
+  for k := 0; k < numOfFileManagers; k++ {
+
+    fMgr, err := fMgrs.GetFileMgrAtIndex(k)
+
+    if err != nil {
+      t.Errorf("Error retrned by fMgrs.GetFileMgrAtIndex(%v)\n"+
+        "Error='%v'\n",
+        k, err.Error())
+      return
+    }
+
+    fNameExt := strings.ToLower(fMgr.GetFileNameExt())
+
+    if fileNamesArray[k] != fNameExt {
+      t.Errorf("Expected File Name Extension='%v'.\n"+
+        "Instead, File Name Extension='%v'\n",
+        fileNamesArray[k], fNameExt)
+    }
+  }
+}
+
+func TestFileMgrCollection_AddFileMgrByDirFileNameExt_02(t *testing.T) {
+
+  fMgrs := FileMgrCollection{}
+
+  testDir := "../createFilesTest"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir)\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  fileNameExt := ""
+
+  err = fMgrs.AddFileMgrByDirFileNameExt(testDMgr, fileNameExt)
+
+  if err == nil {
+    t.Error("Expected an error return fMgrs.AddFileMgrByDirFileNameExt(testDMgr, fileNameExt)\n" +
+      "because 'fileNameExt' is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+
+}
+
+func TestFileMgrCollection_AddFileMgrByDirFileNameExt_03(t *testing.T) {
+
+  fMgrs := FileMgrCollection{}
+
+  testDir := "../createFilesTest"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir)\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  fileNameExt := "testFile.txt"
+
+  testDMgr.isInitialized = false
+
+  err = fMgrs.AddFileMgrByDirFileNameExt(testDMgr, fileNameExt)
+
+  if err == nil {
+    t.Error("Expected an error return fMgrs.AddFileMgrByDirFileNameExt(testDMgr, fileNameExt)\n" +
+      "because 'testDMgr' is INVALID!.\nHowever, NO ERROR WAS RETURNED!!!\n")
   }
 
 }
@@ -188,13 +317,23 @@ func TestFileMgrCollection_AddFileInfo_01(t *testing.T) {
   }
 
   if fMgrs.GetNumOfFileMgrs() != 11 {
-    t.Errorf("Expected fMgrs Array Length == 11. Instead fMgrs.GetNumOfDirs()=='%v'", fMgrs.GetNumOfFileMgrs())
+    t.Errorf("Expected fMgrs Array Length == 11.\n"+
+      "Instead fMgrs.GetNumOfDirs()=='%v'", fMgrs.GetNumOfFileMgrs())
+    return
   }
 
   fmgrLast, err := fMgrs.PopLastFileMgr()
 
+  if err != nil {
+    t.Errorf("Error returned by fMgrs.PopLastFileMgr()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
   if fmgrLast.fileNameExt != expectedFileNameExt {
-    t.Errorf("Expected fmgrLast.fileNameExt='%v'.  Instead, fmgrLast.fileNameExt='%v'", expectedFileNameExt, fmgrLast.fileNameExt)
+    t.Errorf("Expected fmgrLast.fileNameExt='%v'.\n"+
+      "Instead, fmgrLast.fileNameExt='%v'\n",
+      expectedFileNameExt, fmgrLast.fileNameExt)
   }
 
 }
@@ -211,11 +350,15 @@ func TestDirectoryTreeInfo_CopyToDirectoryTree_01(t *testing.T) {
   dMgr, err := DirMgr{}.New(dir)
 
   if err != nil {
-    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(dir). dir='%v' Error='%v'\n", dir, err.Error())
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(dir).\n"+
+      "dir='%v'\nError='%v'\n", dir, err.Error())
+    return
   }
 
   if !dMgr.doesAbsolutePathExist {
-    t.Errorf("Expected target directory to exist. I does NOT exist. dMgr.path='%v' dMgr.AbolutePath='%v'\n", dMgr.path, dMgr.absolutePath)
+    t.Errorf("Expected target directory to exist. However, it does NOT exist!\n"+
+      "dMgr.path='%v'\ndMgr.AbolutePath='%v'\n",
+      dMgr.path, dMgr.absolutePath)
     return
   }
 
@@ -251,8 +394,10 @@ func TestDirectoryTreeInfo_CopyToDirectoryTree_01(t *testing.T) {
   newDirTree, err := dirTreeInfo.CopyToDirectoryTree(baseDMgr, substituteDMgr)
 
   if err != nil {
-    t.Errorf("Error returned by dirTreeInfo.CopyToDirectoryTree(baseDMgr, substituteDMgr). Error='%v'",
+    t.Errorf("Error returned by dirTreeInfo.CopyToDirectoryTree(baseDMgr, substituteDMgr).\n"+
+      "Error='%v'",
       err.Error())
+    return
   }
 
   if len(dirTreeInfo.Directories.dirMgrs) != len(newDirTree.Directories.dirMgrs) {
@@ -296,11 +441,13 @@ func TestFileMgrCollection_FindFiles(t *testing.T) {
   fmgrCol2, err := fmgrCol.FindFiles(fsc)
 
   if err != nil {
-    t.Errorf("Error returned by fmgrCol.FindFiles(fsc). Error='%v'", err.Error())
+    t.Errorf("Error returned by fmgrCol.FindFiles(fsc).\nError='%v'\n", err.Error())
+    return
   }
 
   if fmgrCol2.GetNumOfFileMgrs() != 3 {
-    t.Errorf("Expected fmgrCol2.GetNumOfDirs()==3 . Instead, fmgrCol2.GetNumOfDirs()='%v' ",
+    t.Errorf("Expected fmgrCol2.GetNumOfDirs()==3 .\n"+
+      "Instead, fmgrCol2.GetNumOfDirs()='%v' ",
       fmgrCol2.GetNumOfFileMgrs())
   }
 
@@ -313,7 +460,8 @@ func TestFileMgrCollection_FindFiles(t *testing.T) {
   }
 
   if numOfFoundTextfiles != 3 {
-    t.Errorf("Expected the number of found text files == 3. Instead, number of found text files=='%v'", numOfFoundTextfiles)
+    t.Errorf("Expected the number of found text files == 3.\n"+
+      "Instead, number of found text files=='%v'", numOfFoundTextfiles)
   }
 
 }
@@ -403,6 +551,7 @@ func TestFileMgrCollection_GetFileMgrAtIndex_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fMgrCol.GetFileMgrAtIndex(2). "+
       "Error='%v' ", err.Error())
+    return
   }
 
   if fm[2] != fMgr.GetAbsolutePathFileName() {
@@ -730,15 +879,19 @@ func TestFileMgrCollection_PopFMgrAtIndex(t *testing.T) {
   fmgrOut, err := fMgrs.PopFileMgrAtIndex(5)
 
   if err != nil {
-    t.Errorf("Error returned by fMgrs.PopDirMgrAtIndex(5). Error='%v'", err.Error())
+    t.Errorf("Error returned by fMgrs.PopDirMgrAtIndex(5).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if fMgrs.GetNumOfFileMgrs() != 9 {
-    t.Errorf("Expected after Pop Array fMgrs Array Length == 9. Instead fMgrs.GetNumOfDirs()=='%v'", fMgrs.GetNumOfFileMgrs())
+    t.Errorf("Expected after Pop Array fMgrs Array Length == 9.\n"+
+      "Instead fMgrs.GetNumOfDirs()=='%v'\n", fMgrs.GetNumOfFileMgrs())
   }
 
   if fmgrOut.fileNameExt != "testAddFile_006.txt" {
-    t.Errorf("Expected popped file manger at index=5 to be fileNameExt='testAddFile_006.txt'. Instead, fileNameExt='%v'", fmgrOut.fileNameExt)
+    t.Errorf("Expected popped file manger at index=5 to be fileNameExt='testAddFile_006.txt'.\n"+
+      "Instead, fileNameExt='%v'", fmgrOut.fileNameExt)
   }
 
 }
@@ -766,15 +919,19 @@ func TestFileMgrCollection_PeekFMgrAtIndex(t *testing.T) {
   fmgrOut, err := fMgrs.PeekFileMgrAtIndex(5)
 
   if err != nil {
-    t.Errorf("Error returned by fMgrs.PopDirMgrAtIndex(5). Error='%v'", err.Error())
+    t.Errorf("Error returned by fMgrs.PopDirMgrAtIndex(5).\n"+
+      "Error='%v'", err.Error())
+    return
   }
 
   if fMgrs.GetNumOfFileMgrs() != 10 {
-    t.Errorf("Expected after Peek Array fMgrs Array Length == 10. Instead fMgrs.GetNumOfDirs()=='%v'", fMgrs.GetNumOfFileMgrs())
+    t.Errorf("Expected after Peek Array fMgrs Array Length == 10.\n"+
+      "Instead fMgrs.GetNumOfDirs()=='%v'\n", fMgrs.GetNumOfFileMgrs())
   }
 
   if fmgrOut.fileNameExt != "testAddFile_006.txt" {
-    t.Errorf("Expected Peek file manger at index=5 to be fileNameExt='testAddFile_006.txt'. Instead, fileNameExt='%v'", fmgrOut.fileNameExt)
+    t.Errorf("Expected Peek file manger at index=5 to be fileNameExt='testAddFile_006.txt'.\n"+
+      "Instead, fileNameExt='%v'", fmgrOut.fileNameExt)
   }
 
 }
@@ -803,10 +960,12 @@ func TestFileMgrCollection_PopLastFMgr(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from fMgrs.PopLastDirMgr(). Error='%v'", err.Error())
+    return
   }
 
   if fmgrLast.fileNameExt != "testAddFile_010.txt" {
-    t.Errorf("Expected PopLastDirMgr() to produce fmgrLast.fileNameExt='testAddFile_010.txt'. Instead, fmgrLast.fileNameExt='%v'", fmgrLast.fileNameExt)
+    t.Errorf("Expected PopLastDirMgr() to produce fmgrLast.fileNameExt='testAddFile_010.txt'.\n"+
+      "Instead, fmgrLast.fileNameExt='%v'", fmgrLast.fileNameExt)
   }
 
 }
@@ -819,7 +978,8 @@ func FileMgrCollectionTestSetup01() FileMgrCollection {
   fh := FileHelper{}
   FMgrs := FileMgrCollection{}
 
-  fPath, _ := fh.MakeAbsolutePath(fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt"))
+  fPath, _ := fh.MakeAbsolutePath(fh.AdjustPathSlash(
+    "../filesfortest/newfilesfortest/newerFileForTest_01.txt"))
   fmgr, _ := FileMgr{}.NewFromPathFileNameExtStr(fPath)
   FMgrs.AddFileMgr(fmgr)
 
