@@ -4011,13 +4011,24 @@ func (dMgr DirMgr) NewFromFileInfo(pathStr string, info os.FileInfo) (DirMgr, er
 //                             File Info Sys():  &{16 {617269082 30594119} {2388100752 30639796} {2388100752 30639796} 0 0}
 //                                    Dir path:  D:\go\work\src\MikeAustin71\pathfilego\003_filehelper\logTest\testoverwrite
 //
-
+//
+// ---------------------------------------------------------------------------
+//
+// Return Value:
+//
+//  isEmpty     bool - If the outcome of setting new values for DirMgr is an
+//                     'empty' DirMgr instance, this value will be set to 'true'.
+//
+//  err        error - If a program execution error is encountered during
+//                     processing, it will be returned as an 'error' type.
+//
 func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
 
   ePrefix := "DirMgr.SetDirMgr() "
   dMgrHlpr := dirMgrHelper{}
 
   dMgr.dataMutex.Lock()
+
   isEmpty,
     err = dMgrHlpr.setDirMgr(
     dMgr,
@@ -4035,21 +4046,49 @@ func (dMgr *DirMgr) SetDirMgr(pathStr string) (isEmpty bool, err error) {
 // DirMgr object based on an input 'pathStr' parameter and an os.FileInfo input
 // parameter ('info').
 //
-func (dMgr *DirMgr) SetDirMgrWithFileInfo(pathStr string, info os.FileInfo) error {
+// ------------------------------------------------------------------------------
+//
+// Input Parameters:
+//
+//  pathStr   string - The directory path for the directory manager.
+//
+//  info os.FileInfo - This os.FileInfo will be associated with the new
+//                     values assigned to the DirMgr. The os.FileInfo
+//                     name will be assigned as the DirMgr directory
+//                     name.
+//
+//
+// ---------------------------------------------------------------------------
+//
+// Return Value:
+//
+// err        error - If a program execution error is encountered during
+//                    processing, it will be returned as an 'error' type.
+//
+func (dMgr *DirMgr) SetDirMgrWithFileInfo(pathStr string, info os.FileInfo) (err error) {
+
   ePrefix := "DirMgr.SetDirMgrWithFileInfo() "
 
-  _, err := dMgr.SetDirMgr(pathStr)
+  dMgrHlpr := dirMgrHelper{}
 
-  if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned from dMgr.SetDirMgr(pathStr). "+
-      "pathStr='%v'  Error='%v'", pathStr, err.Error())
+  dMgr.dataMutex.Lock()
+
+  _,
+    err = dMgrHlpr.setDirMgr(
+    dMgr,
+    pathStr,
+    ePrefix,
+    "dMgr",
+    "pathStr")
+
+  if err == nil {
+    dMgr.actualDirFileInfo = FileInfoPlus{}.NewFromPathFileInfo(pathStr, info)
+    dMgr.directoryName = info.Name()
   }
 
-  dMgr.actualDirFileInfo = FileInfoPlus{}.NewFromPathFileInfo(pathStr, info)
-  dMgr.directoryName = info.Name()
+  dMgr.dataMutex.Unlock()
 
-  return nil
+  return err
 }
 
 // SetPermissions - Sets the read/write and execute permissions for the directory
