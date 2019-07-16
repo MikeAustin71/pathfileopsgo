@@ -1632,7 +1632,7 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
     dMgr.actualDirFileInfo = FileInfoPlus{}
     dirPathDoesExist = false
     err = fmt.Errorf(ePrefix+
-      "\nError: Input parameter '%v'.absolutePath is an empty string!\n",
+      "\nError: Input parameter '%v'.absolutePath is an empty string!\n\n",
       dMgrLabel)
     return dirPathDoesExist, fInfo, err
   }
@@ -1646,7 +1646,7 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
     dMgr.actualDirFileInfo = FileInfoPlus{}
     dirPathDoesExist = false
     err = fmt.Errorf(ePrefix+
-      "\nError: Input parameter '%v' consists of blank spaces!\n",
+      "\nError: Input parameter '%v' consists of blank spaces!\n\n",
       dMgrLabel)
 
     return dirPathDoesExist, fInfo, err
@@ -1665,7 +1665,9 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
     if err2 != nil {
       err = fmt.Errorf(ePrefix+
         "\nError: fh.MakeAbsolutePath(%v.absolutePath) FAILED!\n"+
-        "%v.absolutePath='%v'\nError='%v'", dMgrLabel, dMgrLabel, err2.Error())
+        "%v.absolutePath='%v'\nError='%v'\n\n",
+        dMgrLabel, dMgrLabel, err2.Error())
+
       return dirPathDoesExist, fInfo, err
     }
   }
@@ -1753,7 +1755,7 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
     err = fmt.Errorf(ePrefix+
       "\nError: Directory absolute path exists, but "+
       "it is a file - NOT A DIRECTORY!\n"+
-      "%v='%v'\n",
+      "%v='%v'\n\n",
       dMgrLabel,
       dMgr.absolutePath)
     dirPathDoesExist = false
@@ -1767,7 +1769,7 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
     err = fmt.Errorf(ePrefix+
       "\nError: Directory absolute path exists, but "+
       "it is classified as as a Regular File!\n"+
-      "%v='%v'\n",
+      "%v='%v'\n\n",
       dMgrLabel,
       dMgr.absolutePath)
     dirPathDoesExist = false
@@ -1795,7 +1797,7 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
       "but original directory 'path' DOES NOT "+
       "EXIST!\n"+
       "%v.absolutePath='%v'\n"+
-      "%v.path='%v'\n",
+      "%v.path='%v'\n\n",
       dMgrLabel,
       dMgr.absolutePath,
       dMgrLabel,
@@ -1814,7 +1816,7 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
       "\nError: Directory path absolute path exists, "+
       "but original directory 'path' is NOT A DIRECTORY!!\n"+
       "%v.absolutePath='%v'\n"+
-      "%v.path='%v'\n",
+      "%v.path='%v'\n\n",
       dMgrLabel,
       dMgr.absolutePath,
       dMgrLabel,
@@ -1833,7 +1835,7 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
       "but original directory 'path' is classified "+
       "as a Regular File!!\n"+
       "%v.absolutePath='%v'\n"+
-      "%v.path='%v'\n",
+      "%v.path='%v'\n\n",
       dMgrLabel,
       dMgr.absolutePath,
       dMgrLabel,
@@ -3703,7 +3705,7 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDoesDirectoryExist(
       // This is a non-path error. The non-path error will be test
       // up to 3-times before it is returned.
       err = fmt.Errorf(ePrefix+"Non-Path error returned by os.Stat(%v)\n"+
-        "%v='%v'\nError='%v'\n",
+        "%v='%v'\nError='%v'\n\n",
         dirPathLabel, dirPathLabel, err2.Error())
       fInfo = FileInfoPlus{}
       dirPathDoesExist = false
@@ -4588,6 +4590,14 @@ func (dMgrHlpr *dirMgrHelper) setDirMgr(
   err = nil
   isEmpty = true
 
+  ePrefixCurrMethod := "dirMgrHelper.setDirMgr() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
   err = dMgrHlpr.empty(
     dMgr,
     ePrefix,
@@ -4880,4 +4890,84 @@ func (dMgrHlpr *dirMgrHelper) setDirMgr(
   err = nil
 
   return isEmpty, err
+}
+
+// setPermissions - Sets the read/write and execute
+// permissions for the directory identified by the
+// 'dMgr' instance. Note the treatment of 'execute'
+// permissions may vary by operating system.
+//
+func (dMgrHlpr *dirMgrHelper) setPermissions(
+  dMgr *DirMgr,
+  permissionConfig FilePermissionConfig,
+  ePrefix string,
+  dMgrLabel string,
+  permissionConfigLabel string) error {
+
+  ePrefixCurrMethod := "dirMgrHelper.setPermissions() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  err := permissionConfig.IsValid()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nInput parameter '%v' is INVALID!\n"+
+      "Error returned by %v.IsValid()\n"+
+      "%v='%v'\n"+
+      "Error='%v'\n\n",
+      permissionConfigLabel,
+      permissionConfigLabel,
+      permissionConfigLabel,
+      permissionConfig.GetPermissionNarrativeText(),
+      err.Error())
+  }
+
+  dirPathDoesExist,
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+    return err
+  }
+
+  if !dirPathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: %v Directory Path DOES NOT EXIST!\n"+
+      "%v='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath)
+
+    return err
+  }
+
+  err = FileHelper{}.ChangeFileMode(
+    dMgr.absolutePath,
+    permissionConfig)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "\nError retrned by FileHelper{}.ChangeFileMode("+
+      "%v.absolutePath, %v)\n"+
+      "%v.absolutePath=%v\n"+
+      "%v='%v'"+
+      "Error='%v'\n\n",
+      dMgrLabel,
+      permissionConfigLabel,
+      dMgrLabel,
+      dMgr.absolutePath,
+      permissionConfigLabel,
+      permissionConfig.GetPermissionNarrativeText(),
+      err.Error())
+  }
+
+  return nil
 }
