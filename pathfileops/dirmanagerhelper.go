@@ -4575,3 +4575,309 @@ func (dMgrHlpr *dirMgrHelper) moveSubDirectoryTree(
 
   return dirMoveStats, errs
 }
+
+// setDirMgr - Sets internal values for DirMgr instance.
+//
+func (dMgrHlpr *dirMgrHelper) setDirMgr(
+  dMgr *DirMgr,
+  pathStr string,
+  ePrefix string,
+  dMgrLabel string,
+  pathStrLabel string) (isEmpty bool, err error) {
+
+  err = nil
+  isEmpty = true
+
+  err = dMgrHlpr.empty(
+    dMgr,
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+
+    return isEmpty, err
+  }
+
+  errCode := 0
+  fh := FileHelper{}
+
+  errCode, _, pathStr = fh.isStringEmptyOrBlank(pathStr)
+
+  if errCode == -1 {
+    isEmpty = true
+    err = fmt.Errorf(ePrefix+
+      "\nError: Input parameter '%v' is an empty string!\n",
+      pathStrLabel)
+
+    return isEmpty, err
+  }
+
+  if errCode == -2 {
+    isEmpty = true
+    err = fmt.Errorf(ePrefix+
+      "\nError: Input parameter '%v' consists of blank spaces!\n",
+      pathStrLabel)
+
+    return isEmpty, err
+  }
+
+  adjustedTrimmedPathStr := fh.AdjustPathSlash(pathStr)
+
+  finalPathStr, isEmptyPath, err2 := fh.GetPathFromPathFileName(adjustedTrimmedPathStr)
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "\nError: INVALID PATH. fh.GetPathFromPathFileName(%v)\n"+
+      "%v='%v'\nError='%v'\n",
+      pathStrLabel,
+      pathStrLabel,
+      pathStr,
+      err2.Error())
+
+    isEmpty = isEmptyPath
+    return isEmpty, err
+  }
+
+  if isEmptyPath {
+    isEmpty = true
+    err = fmt.Errorf(ePrefix+
+      "\nError: INVALID PATH. '%v' generated an Empty path!\n"+
+      "%v='%v'\n",
+      pathStrLabel,
+      pathStrLabel,
+      pathStr)
+
+    return isEmpty, err
+  }
+
+  errCode, _, finalPathStr = fh.isStringEmptyOrBlank(finalPathStr)
+
+  if errCode < 0 {
+    err = fmt.Errorf(ePrefix+
+      "\nError: path returned from fh.GetPathFromPathFileName(%v) is EMPTY!\n"+
+      "%v='%v'\n",
+      pathStrLabel,
+      pathStrLabel,
+      pathStr)
+
+    isEmpty = true
+    return isEmpty, err
+  }
+
+  dMgr.originalPath = adjustedTrimmedPathStr
+
+  dMgr.path = finalPathStr
+
+  dMgr.isPathPopulated = true
+
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError :=
+    fh.doesPathFileExist(
+      dMgr.path,
+      PreProcPathCode.None(),
+      ePrefix,
+      dMgrLabel+".path")
+
+  if nonPathError != nil {
+    _ = dMgrHlpr.empty(
+      dMgr,
+      ePrefix,
+      dMgrLabel)
+
+    err = fmt.Errorf("%v",
+      nonPathError.Error())
+
+    isEmpty = true
+    return isEmpty, err
+  }
+
+  if !dirPathDoesExist {
+    dMgr.doesPathExist = false
+
+  } else {
+
+    if !fInfoPlus.IsDir() {
+      _ = dMgrHlpr.empty(
+        dMgr,
+        ePrefix,
+        dMgrLabel)
+
+      err = fmt.Errorf(ePrefix+
+        "\nERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+        "%v='%v'\n",
+        dMgrLabel,
+        dMgr.path)
+
+      isEmpty = true
+      return isEmpty, err
+    }
+
+    if fInfoPlus.Mode().IsRegular() {
+
+      _ = dMgrHlpr.empty(
+        dMgr,
+        ePrefix,
+        dMgrLabel)
+
+      err = fmt.Errorf(ePrefix+
+        "\nError: Directory path exists, but "+
+        "it is classified as as a Regular File!\n"+
+        "%v='%v'\n",
+        dMgrLabel,
+        dMgr.path)
+
+      isEmpty = true
+      return isEmpty, err
+    }
+
+    dMgr.doesPathExist = true
+  }
+
+  // Create absolute path
+  if strings.ToLower(dMgr.path) == strings.ToLower(pf.VolumeName(dMgr.path)) {
+
+    dMgr.absolutePath = fh.AdjustPathSlash(dMgr.path)
+
+  } else {
+
+    dMgr.absolutePath, err2 = fh.MakeAbsolutePath(dMgr.path)
+
+    if err2 != nil {
+
+      _ = dMgrHlpr.empty(
+        dMgr,
+        ePrefix,
+        dMgrLabel)
+
+      err = fmt.Errorf(ePrefix+
+        "\nfh.MakeAbsolutePath(%v.path) returned error.\n"+
+        "%v.path='%v'\nError='%v'\n",
+        dMgrLabel,
+        dMgrLabel,
+        dMgr.path,
+        err2.Error())
+
+      isEmpty = true
+      return isEmpty, err
+    }
+  }
+
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    nonPathError =
+    fh.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      dMgrLabel+".absolutePath")
+
+  if nonPathError != nil {
+
+    _ = dMgrHlpr.empty(
+      dMgr,
+      ePrefix,
+      dMgrLabel)
+
+    err = fmt.Errorf("%v",
+      nonPathError.Error())
+
+    isEmpty = true
+    return isEmpty, err
+  }
+
+  if dirPathDoesExist {
+
+    if !fInfoPlus.IsDir() {
+      _ = dMgrHlpr.empty(
+        dMgr,
+        ePrefix,
+        dMgrLabel)
+
+      err = fmt.Errorf(ePrefix+
+        "\nThe Directory Manager absolute path exists and IS NOT A DIRECTORY!.\n"+
+        "%v Path='%v'\n",
+        dMgrLabel,
+        dMgr.absolutePath)
+
+      isEmpty = true
+      return isEmpty, err
+    }
+
+    if fInfoPlus.Mode().IsRegular() {
+
+      _ = dMgrHlpr.empty(
+        dMgr,
+        ePrefix,
+        dMgrLabel)
+
+      err = fmt.Errorf(ePrefix+
+        "\nError: Directory absolute path exists, but "+
+        "it is classified as as a Regular File!\n"+
+        "%v='%v'\n",
+        dMgrLabel,
+        dMgr.absolutePath)
+
+      isEmpty = true
+      return isEmpty, err
+    }
+
+    dMgr.doesAbsolutePathExist = true
+    dMgr.actualDirFileInfo = fInfoPlus.CopyOut()
+
+  } else {
+    dMgr.doesAbsolutePathExist = false
+    dMgr.actualDirFileInfo = FileInfoPlus{}
+  }
+
+  dMgr.isAbsolutePathPopulated = true
+
+  strAry := strings.Split(dMgr.absolutePath, string(os.PathSeparator))
+  lStr := len(strAry)
+  idxStr := strAry[lStr-1]
+
+  idx := strings.Index(dMgr.absolutePath, idxStr)
+
+  dMgr.parentPath = fh.RemovePathSeparatorFromEndOfPathString(dMgr.absolutePath[0:idx])
+
+  dMgr.isParentPathPopulated = true
+
+  if dMgr.parentPath == "" {
+    dMgr.isParentPathPopulated = false
+  }
+
+  if idxStr != "" {
+    dMgr.directoryName = idxStr
+  } else {
+    dMgr.directoryName = dMgr.absolutePath
+  }
+
+  if dMgr.path != dMgr.absolutePath {
+    dMgr.isAbsolutePathDifferentFromPath = true
+  }
+
+  var vn string
+  if dMgr.isAbsolutePathPopulated {
+    vn = pf.VolumeName(dMgr.absolutePath)
+  } else if dMgr.isPathPopulated {
+    vn = pf.VolumeName(dMgr.path)
+  }
+
+  if vn != "" {
+    dMgr.isVolumePopulated = true
+    dMgr.volumeName = vn
+  }
+
+  if dMgr.isAbsolutePathPopulated && dMgr.isPathPopulated {
+    dMgr.isInitialized = true
+    isEmpty = false
+  } else {
+    isEmpty = true
+  }
+
+  err = nil
+
+  return isEmpty, err
+}
