@@ -1615,13 +1615,12 @@ func TestDirMgr_MoveSubDirectoryTree_01(t *testing.T) {
     errs := origSrcDMgr.CopyDirectoryTree(srcDirMgr, true, fsc)
 
   if len(errs) > 0 {
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("Test Setup Error returned from origSrcDMgr."+
-        "CopyDirectoryTree(srcDirMgr, fsc)\n"+
-        "srcDirMgr='%v'\nErrors Follow:\n\n'%v'",
-        srcDirMgr.GetAbsolutePath(),
-        srcDirMgr.ConsolidateErrors(errs))
-    }
+
+    t.Errorf("Test Setup Error returned from origSrcDMgr."+
+      "CopyDirectoryTree(srcDirMgr, fsc)\n"+
+      "srcDirMgr='%v'\nErrors Follow:\n\n'%v'",
+      srcDirMgr.GetAbsolutePath(),
+      srcDirMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(baseDir)
 
@@ -1641,14 +1640,16 @@ func TestDirMgr_MoveSubDirectoryTree_01(t *testing.T) {
     return
   }
 
-  errs = srcDirMgr.MoveSubDirectoryTree(targetDMgr)
+  dirMoveStats,
+    errs := srcDirMgr.MoveSubDirectoryTree(targetDMgr)
 
   if len(errs) > 0 {
-    for i := 0; i < len(errs); i++ {
-      t.Errorf("Error returned from srcDirMgr.MoveSubDirectoryTree(targetDMgr)\n"+
-        "srcDirMgr='%v'\ntargetDir='%v'\nError='%v'\n\n",
-        srcDirMgr.GetAbsolutePath(), targetDMgr.GetAbsolutePath(), errs[0].Error())
-    }
+
+    t.Errorf("Error returned from srcDirMgr.MoveSubDirectoryTree(targetDMgr)\n"+
+      "srcDirMgr='%v'\ntargetDir='%v'\nErrors Follow:\n\n'%v'",
+      srcDirMgr.GetAbsolutePath(),
+      targetDMgr.GetAbsolutePath(),
+      srcDirMgr.ConsolidateErrors(errs))
 
     _ = fh.DeleteDirPathAll(baseDir)
     return
@@ -1668,9 +1669,9 @@ func TestDirMgr_MoveSubDirectoryTree_01(t *testing.T) {
   }
 
   origDtreeFiles := origDtreeInfo.FoundFiles.GetNumOfFileMgrs()
-  origDtreeFiles -= 4
+  expectedNumOfMovedFiles := uint64(origDtreeFiles - 4)
 
-  if origDtreeFiles != targetDtreeInfo.FoundFiles.GetNumOfFileMgrs() {
+  if expectedNumOfMovedFiles != uint64(targetDtreeInfo.FoundFiles.GetNumOfFileMgrs()) {
     t.Errorf("Expected the target directory would contain %v-files.\n"+
       "Error: The target directory tree has %v-files.\n",
       origDtreeFiles, targetDtreeInfo.FoundFiles.GetNumOfFileMgrs())
@@ -1698,7 +1699,6 @@ func TestDirMgr_MoveSubDirectoryTree_01(t *testing.T) {
     _ = fh.DeleteDirPathAll(baseDir)
 
     return
-
   }
 
   fsc = FileSelectionCriteria{}
@@ -1742,6 +1742,45 @@ func TestDirMgr_MoveSubDirectoryTree_01(t *testing.T) {
     t.Errorf("Expected number of files in source directory='%v'.\n"+
       "Instead, the number of files remaining in source directory='%v'.\n",
       origSrcFInfo.GetNumOfFileMgrs(), sourceDtreeInfo.FoundFiles.GetNumOfFileMgrs())
+  }
+
+  if expectedNumOfMovedFiles != dirMoveStats.SourceFilesMoved {
+    t.Errorf("ERROR: Expected dirMoveStats.SourceFilesMoved='%v'\n"+
+      "Instead, dirMoveStats.SourceFilesMoved='%v'\n",
+      expectedNumOfMovedFiles,
+      dirMoveStats.SourceFilesMoved)
+  }
+
+  expectedNumOfMovedFileBytes :=
+    targetDtreeInfo.FoundFiles.GetTotalFileBytes()
+
+  if expectedNumOfMovedFileBytes != dirMoveStats.SourceFileBytesMoved {
+    t.Errorf("ERROR: Expected dirMoveStats.SourceFileBytesMoved='%v'\n"+
+      "Instead, dirMoveStats.SourceFileBytesMoved='%v'\n",
+      expectedNumOfMovedFileBytes,
+      dirMoveStats.SourceFileBytesMoved)
+  }
+
+  if dirMoveStats.SourceFilesRemaining != 0 {
+    t.Errorf("ERROR: Expected dirMoveStats.SourceFilesRemaining='0'\n"+
+      "Instead, dirMoveStats.SourceFilesRemaining='%v'\n",
+      dirMoveStats.SourceFilesRemaining)
+  }
+
+  if dirMoveStats.SourceFileBytesRemaining != 0 {
+    t.Errorf("ERROR: Expected dirMoveStats.SourceFileBytesRemaining='0'\n"+
+      "Instead, dirMoveStats.SourceFileBytesRemaining='%v'\n",
+      dirMoveStats.SourceFileBytesRemaining)
+  }
+
+  expectedNumOfSubDirs :=
+    uint64(targetDtreeInfo.Directories.GetNumOfDirs() - 1)
+
+  if expectedNumOfSubDirs != dirMoveStats.NumOfSubDirectories {
+    t.Errorf("ERROR: Expected dirMoveStats.NumOfSubDirectories='%v'\n"+
+      "Instead, dirMoveStats.NumOfSubDirectories='%v'\n",
+      expectedNumOfSubDirs,
+      dirMoveStats.NumOfSubDirectories)
   }
 
   err = fh.DeleteDirPathAll(baseDir)
@@ -1820,7 +1859,8 @@ func TestDirMgr_MoveSubDirectoryTree_02(t *testing.T) {
 
   srcDirMgr.isInitialized = false
 
-  errs = srcDirMgr.MoveSubDirectoryTree(targetDMgr)
+  _,
+    errs = srcDirMgr.MoveSubDirectoryTree(targetDMgr)
 
   if len(errs) == 0 {
     t.Errorf("Expected an error return from srcDirMgr.MoveSubDirectoryTree(targetDMgr)\n" +
@@ -1906,7 +1946,8 @@ func TestDirMgr_MoveSubDirectoryTree_03(t *testing.T) {
 
   targetDMgr.isInitialized = false
 
-  errs = srcDirMgr.MoveSubDirectoryTree(targetDMgr)
+  _,
+    errs = srcDirMgr.MoveSubDirectoryTree(targetDMgr)
 
   if len(errs) == 0 {
     t.Errorf("Expected an error return from srcDirMgr.MoveSubDirectoryTree(targetDMgr)\n" +
@@ -1960,7 +2001,8 @@ func TestDirMgr_MoveSubDirectoryTree_04(t *testing.T) {
     return
   }
 
-  errs := srcDirMgr.MoveSubDirectoryTree(targetDMgr)
+  _,
+    errs := srcDirMgr.MoveSubDirectoryTree(targetDMgr)
 
   if len(errs) == 0 {
     t.Errorf("Expected an error return from srcDirMgr.MoveSubDirectoryTree(targetDMgr)\n" +

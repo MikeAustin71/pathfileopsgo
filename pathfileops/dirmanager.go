@@ -3863,95 +3863,26 @@ func (dMgr *DirMgr) MoveDirectoryTree(
 //                      If errors are encountered they are stored in the error
 //                      array and returned to the caller.
 //
-func (dMgr *DirMgr) MoveSubDirectoryTree(targetDMgr DirMgr) (errs []error) {
+func (dMgr *DirMgr) MoveSubDirectoryTree(targetDMgr DirMgr) (
+  dirMoveStats DirectoryMoveStats, errs []error) {
 
   ePrefix := "DirMgr.MoveSubDirectoryTree() "
-  errs = make([]error, 0, 300)
-  var err, err2 error
+  dMgrHlpr := dirMgrHelper{}
 
-  err = dMgr.IsDirMgrValid(ePrefix)
+  dMgr.dataMutex.Lock()
 
-  if err != nil {
-    errs = append(errs, err)
-    return errs
-  }
-
-  err = targetDMgr.IsDirMgrValid("targetDMgr ")
-
-  if err != nil {
-    err2 = fmt.Errorf(ePrefix+"Input parameter targetDMgr is INVALID!\n"+
-      "Error='%v'", err.Error())
-
-    errs = append(errs, err2)
-    return errs
-  }
-
-  _,
-    dirPathDoesExist,
-    fInfoPlus,
-    nonPathError :=
-    FileHelper{}.doesPathFileExist(
-      dMgr.absolutePath,
-      PreProcPathCode.None(),
+  dirMoveStats,
+    errs =
+    dMgrHlpr.moveSubDirectoryTree(
+      dMgr,
+      &targetDMgr,
       ePrefix,
-      "dMgr.absolutePath")
+      "dMgr",
+      "destinationDMgr")
 
-  if nonPathError != nil {
-    errs = append(errs, nonPathError)
-    return errs
-  }
+  dMgr.dataMutex.Unlock()
 
-  if !dirPathDoesExist {
-    err2 = fmt.Errorf(ePrefix+
-      "Error: Source DirMgr Path DOES NOT EXIST!\n"+
-      "DirMgr Path='%v'", dMgr.absolutePath)
-    errs = append(errs, nonPathError)
-    return errs
-  }
-
-  if !fInfoPlus.IsDir() {
-    err2 = fmt.Errorf(ePrefix+
-      "ERROR: Directory path exists, but it is a File - NOT a directory!\n"+
-      "DMgr='%v'\n", dMgr.absolutePath)
-
-    errs = append(errs, err2)
-    return errs
-  }
-
-  fsc := FileSelectionCriteria{}
-  errs2 := dMgr.copyDirectoryTree(
-    targetDMgr,
-    true,
-    true,
-    ePrefix,
-    fsc)
-
-  if len(errs2) > 0 {
-    err2 = fmt.Errorf("Errors occurred while copying directory tree to target directory.\n"+
-      "Source Directory='%v'\nTarget Directory='%v'\nErrors Follow:\n\n",
-      dMgr.GetAbsolutePath(), targetDMgr.GetAbsolutePath())
-    errs = append(errs, err2)
-    errs = append(errs, errs2...)
-    return errs
-  }
-
-  // The entire directory tree was copied.
-  // Now delete the current directory tree
-  // to complete the move operation.
-
-  errs2 = dMgr.DeleteAllSubDirectories()
-
-  if len(errs2) > 0 {
-    err2 = fmt.Errorf(ePrefix+"Files were copied successfuly to target directory.\n"+
-      "However, errors occurred while deleting the sub-directory tree.\n"+
-      "Source Directory (DirMgr)='%v'\nErrors Follow:\n\n",
-      dMgr.GetAbsolutePath())
-
-    errs = append(errs, err2)
-    errs = append(errs, errs2...)
-  }
-
-  return errs
+  return dirMoveStats, errs
 }
 
 // NewFromPathFileNameExtStr - Returns a new DirMgr object and populates the

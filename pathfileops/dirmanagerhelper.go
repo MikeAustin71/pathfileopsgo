@@ -1,6 +1,7 @@
 package pathfileops
 
 import (
+  "errors"
   "fmt"
   "io"
   "os"
@@ -331,8 +332,11 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
 
   if !dMgrPathDoesExist {
     err = fmt.Errorf(ePrefix+
-      "\nError: %v directory path DOES NOT EXIST!\n",
-      dMgrLabel)
+      "\nError: %v directory path DOES NOT EXIST!\n"+
+      "%v='%v'\n\n",
+      dMgrLabel,
+      dMgrLabel,
+      dMgr.absolutePath)
 
     errs = append(errs, err)
 
@@ -1607,7 +1611,7 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
   }
 
   if !dMgr.isInitialized {
-    err = fmt.Errorf(ePrefix +
+    err = errors.New(ePrefix +
       "\nError: DirMgr is NOT Initialized.\n")
     return dirPathDoesExist, fInfo, err
   }
@@ -2923,8 +2927,11 @@ func (dMgrHlpr *dirMgrHelper) findFilesWalkDirectoryTree(
 
   if !dMgrPathDoesExist {
     err = fmt.Errorf(ePrefix+
-      "\nError: %v directory path DOES NOT EXIST!\n",
-      dMgrLabel)
+      "\nError: %v directory path DOES NOT EXIST!\n"+
+      "%v='%v'\n\n",
+      dMgrLabel,
+      dMgrLabel,
+      dMgr.absolutePath)
 
     return dTreeInfo, err
   }
@@ -3634,6 +3641,9 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDeleteDirectoryAll(
     } else {
       // err2 == nil
       // Deletion was successful
+      dMgr.doesAbsolutePathExist = false
+      dMgr.doesPathExist = false
+      dMgr.actualDirFileInfo = FileInfoPlus{}
       return nil
     }
 
@@ -3711,6 +3721,111 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDoesDirectoryExist(
   }
 
   return dirPathDoesExist, fInfo, err
+}
+
+// lowLevelDeleteSubdirectories - Deletes all sub-directories
+// in the 'dMgr' directory tree. Parent directory 'dMgr' is not
+// affected.
+//
+func (dMgrHlpr *dirMgrHelper) lowLevelDeleteSubdirectories(
+  dMgr *DirMgr,
+  ePrefix string,
+  dMgrLabel string) (dirsDeleted bool, errs []error) {
+
+  ePrefixCurrMethod := "dirMgrHelper.lowLevelDeleteSubdirectories() "
+
+  dirsDeleted = false
+  errs = make([]error, 0, 300)
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  var err2 error
+
+  dirPtr, err := os.Open(dMgr.absolutePath)
+
+  if err != nil {
+
+    err2 = fmt.Errorf(ePrefix+
+      "Error return by os.Open(dMgr.absolutePath). "+
+      "dMgr.absolutePath='%v' Error='%v' ",
+      dMgr.absolutePath, err.Error())
+
+    errs = append(errs, err2)
+
+    return dirsDeleted, errs
+  }
+
+  var nameFileInfos []os.FileInfo
+  osPathSeparatorStr := string(os.PathSeparator)
+  file2LoopIsDone := false
+
+  for !file2LoopIsDone {
+
+    nameFileInfos, err = dirPtr.Readdir(1000)
+
+    if err != nil && err == io.EOF {
+
+      file2LoopIsDone = true
+
+      if len(nameFileInfos) == 0 {
+
+        break
+      }
+
+    } else if err != nil {
+
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by dirPtr.Readdir(1000).\n"+
+        "Error='%v'\n\n", err.Error())
+
+      errs = append(errs, err2)
+
+      file2LoopIsDone = true
+
+      break
+    }
+
+    for _, nameFInfo := range nameFileInfos {
+
+      if nameFInfo.IsDir() {
+
+        err = os.RemoveAll(dMgr.absolutePath + osPathSeparatorStr + nameFInfo.Name())
+
+        if err != nil {
+          err2 = fmt.Errorf(ePrefix+
+            "\nError returned by os.RemoveAll(subDir)\n"+
+            "subDir='%v'\nError='%v'\n\n",
+            dMgr.absolutePath+osPathSeparatorStr+nameFInfo.Name(),
+            err.Error())
+
+          errs = append(errs, err2)
+
+          continue
+        }
+      }
+    }
+  }
+
+  if dirPtr != nil {
+
+    err = dirPtr.Close()
+
+    if err != nil {
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by %vPtr.Close().\n"+
+        "%v='%v'\nError='%v'\n",
+        dMgrLabel, dMgrLabel,
+        dMgr.absolutePath, err.Error())
+
+      errs = append(errs, err2)
+    }
+  }
+
+  return dirsDeleted, errs
 }
 
 // lowLevelMakeDir - Helper Method used by 'DirMgr'. This method will create
@@ -4349,6 +4464,112 @@ func (dMgrHlpr *dirMgrHelper) moveDirectoryTree(
   dirMoveStats.SourceDirWasDeleted = true
   dirMoveStats.SourceFilesMoved =
     dTreeCopyStats.FilesCopied
+  dirMoveStats.SourceFileBytesMoved =
+    dTreeCopyStats.FileBytesCopied
+
+  return dirMoveStats, errs
+}
+
+// moveSubDirectoryTree - Moves all subdirectories in the 'dMgr'
+// tree to the 'targetDMgr' subdirectory tree.
+//
+func (dMgrHlpr *dirMgrHelper) moveSubDirectoryTree(
+  dMgr *DirMgr,
+  targetDMgr *DirMgr,
+  ePrefix string,
+  dMgrLabel string,
+  targetDMgrLabel string) (
+  dirMoveStats DirectoryMoveStats, errs []error) {
+
+  ePrefixCurrMethod := "dirMgrHelper.moveSubDirectoryTree() "
+
+  errs = make([]error, 0, 300)
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  var err2 error
+
+  fileSelectCriteria := FileSelectionCriteria{}
+
+  dTreeCopyStats,
+    errs2 :=
+    dMgrHlpr.copyDirectoryTree(
+      dMgr,
+      targetDMgr,
+      true, // copy empty directories
+      true, // skip top level directory
+      fileSelectCriteria,
+      ePrefix,
+      "dMgr",
+      "targetDMgr")
+
+  if len(errs2) > 0 {
+    err2 = fmt.Errorf(ePrefix+
+      "\nErrors occurred while copying directory tree to target directory.\n"+
+      "The source directory WAS NOT DELETED!\n"+
+      "%v Source Directory='%v'\n%v Target Directory='%v'\nErrors Follow:\n\n",
+      dMgrLabel,
+      dMgr.absolutePath,
+      targetDMgrLabel,
+      targetDMgr.absolutePath)
+    errs = append(errs, err2)
+    errs = append(errs, errs2...)
+
+    return dirMoveStats, errs
+  }
+
+  dirMoveStats.TotalDirsProcessed =
+    dTreeCopyStats.TotalDirsScanned
+
+  dirMoveStats.DirsCreated =
+    dTreeCopyStats.DirsCreated
+
+  dirMoveStats.NumOfSubDirectories =
+    dTreeCopyStats.TotalDirsScanned
+
+  dirMoveStats.SourceFilesRemaining =
+    dTreeCopyStats.FilesNotCopied
+
+  dirMoveStats.SourceFileBytesRemaining =
+    dTreeCopyStats.FileBytesNotCopied
+
+  if dirMoveStats.SourceFilesRemaining > 0 {
+    err2 = fmt.Errorf(ePrefix+
+      "\nError: Some of the files designated to be moved to the target directory, were NOT copied!\n"+
+      "Therefore the source directory WILL NOT BE DELETED!\n"+
+      "Number of Files NOT Copied='%v'\n",
+      "%v Source Directory='%v'\n%v Target Directory='%v'\n\n",
+      dTreeCopyStats.FilesNotCopied,
+      dMgrLabel, dMgr.absolutePath,
+      targetDMgrLabel, targetDMgr.absolutePath)
+
+    errs = append(errs, err2)
+
+    return dirMoveStats, errs
+  }
+
+  dirMoveStats.TotalSrcFilesProcessed =
+    dTreeCopyStats.TotalFilesProcessed
+
+  errs2 = dMgrHlpr.deleteAllSubDirectories(
+    dMgr,
+    ePrefix,
+    "dMgr")
+
+  if len(errs2) > 0 {
+    errs = append(errs, errs2...)
+    return dirMoveStats, errs
+  }
+
+  dirMoveStats.SourceDirWasDeleted = true
+
+  dirMoveStats.SourceFilesMoved =
+    dTreeCopyStats.FilesCopied
+
   dirMoveStats.SourceFileBytesMoved =
     dTreeCopyStats.FileBytesCopied
 

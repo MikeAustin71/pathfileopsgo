@@ -18,10 +18,83 @@ import (
 
 func main() {
 
-  mainTest88CopySubDirectoryTree()
+  mainTest89MoveSubDirectoryTree()
 
 }
 
+func mainTest89MoveSubDirectoryTree() {
+
+  originDir := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\logTest"
+
+  originDMgr, err := pf.DirMgr{}.New(originDir)
+
+  if err != nil {
+    fmt.Printf("Test Setup Error returned by DirMgr{}.New(originDir).\n"+
+      "originDir='%v'\nError='%v'", originDir, err.Error())
+    return
+  }
+
+  srcDir := "D:\\T06\\TestDirMgr_MoveSubDirectoryTree_02"
+
+  srcDMgr, err := pf.DirMgr{}.New(srcDir)
+
+  if err != nil {
+    fmt.Printf("Test Setup Error returned by DirMgr{}.New(srcDir).\n"+
+      "srcDir='%v'\nError='%v'", srcDir, err.Error())
+    return
+  }
+
+  destDir := "D:\\T07\\TestDirMgr_MoveSubDirectoryTree_02"
+
+  destDMgr, err := pf.DirMgr{}.New(destDir)
+
+  if err != nil {
+    fmt.Printf("Test Setup Error returned by DirMgr{}.New(destDir).\n"+
+      "destDir='%v'\nError='%v'", destDir, err.Error())
+    return
+  }
+
+  fsc := pf.FileSelectionCriteria{}
+
+  _,
+    errs := originDMgr.CopyDirectoryTree(srcDMgr, true, fsc)
+
+  if len(errs) > 0 {
+    fmt.Printf("Test Setup Errors returned by originDMgr.CopyDirectoryTree(srcDMgr, true, fsc).\n"+
+      "srcDMgr='%v'\nErrors Follow:\n\n%v", srcDMgr.GetAbsolutePath(),
+      originDMgr.ConsolidateErrors(errs).Error())
+    return
+  }
+
+  dirMoveStats,
+    errs :=
+    srcDMgr.MoveSubDirectoryTree(destDMgr)
+
+  if len(errs) > 0 {
+    fmt.Printf("Test Setup Errors returned by srcDMgr.MoveSubDirectoryTree(destDMgr).\n"+
+      "destDMgr='%v'\nErrors Follow:\n\n%v", destDMgr.GetAbsolutePath(),
+      originDMgr.ConsolidateErrors(errs).Error())
+    return
+  }
+
+  fmt.Println("          mainTest89MoveSubDirectoryTree()              ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("     dirMoveStats.NumOfSubDirectories: ", dirMoveStats.NumOfSubDirectories)
+  fmt.Println("    dirMoveStats.SourceFilesRemaining: ", dirMoveStats.SourceFilesRemaining)
+  fmt.Println("dirMoveStats.SourceFileBytesRemaining: ", dirMoveStats.SourceFileBytesRemaining)
+  fmt.Println("        dirMoveStats.SourceFilesMoved: ", dirMoveStats.SourceFilesMoved)
+  fmt.Println("    dirMoveStats.SourceFileBytesMoved: ", dirMoveStats.SourceFileBytesMoved)
+  fmt.Println("  dirMoveStats.TotalSrcFilesProcessed: ", dirMoveStats.TotalSrcFilesProcessed)
+  fmt.Println("     dirMoveStats.NumOfSubDirectories: ", dirMoveStats.NumOfSubDirectories)
+  fmt.Println("             dirMoveStats.DirsCreated: ", dirMoveStats.DirsCreated)
+  fmt.Println("      dirMoveStats.TotalDirsProcessed: ", dirMoveStats.TotalDirsProcessed)
+
+}
+
+/*
 func mainTest88CopySubDirectoryTree() {
 
   srcDir := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\logTest"
@@ -205,19 +278,10 @@ func mainTest88CopySubDirectoryTree() {
   fmt.Println("           Files Not Copied: ", dTreeStats.FilesNotCopied)
   fmt.Println("Copy Empty Directories Flag: ", copyEmptyDirectories)
 
-  /*
-    err = targetDMgr.DeleteAll()
-
-    if err != nil {
-      fmt.Printf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n"+
-        "Target Directory Absolute Path='%v'\nError='%v'\n", targetDMgr.GetAbsolutePath(), err.Error())
-    }
-  */
 
   return
 }
 
-/*
 
 func mainTest87CopyDirectoryTree() {
 
