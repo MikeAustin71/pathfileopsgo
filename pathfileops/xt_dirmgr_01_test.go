@@ -2,6 +2,7 @@ package pathfileops
 
 import (
   "fmt"
+  "strings"
   "testing"
 )
 
@@ -71,6 +72,130 @@ func TestDirMgr_ChangeWorkingDir_01(t *testing.T) {
 
   if checkDir != startDir {
     t.Error("Start Dir != CheckDir")
+  }
+}
+
+func TestDirMgr_ConsolidateErrors_01(t *testing.T) {
+
+  errs := make([]error, 0, 300)
+
+  maxCnt := 9
+
+  for i := 0; i < maxCnt; i++ {
+
+    err := fmt.Errorf("Heder\nError-%v text\n\n", i+1)
+
+    errs = append(errs, err)
+
+  }
+
+  conSolError := DirMgr{}.ConsolidateErrors(errs)
+
+  if conSolError == nil {
+    t.Error("Test Error returned from DirMgr{}.ConsolidateErrors(errs) is 'nil'\n")
+    return
+  }
+
+  errStr := fmt.Sprintf("%v", conSolError.Error())
+
+  if len(errStr) == 0 {
+    t.Error("Error string returned from DirMgr{}.ConsolidateErrors(errs) is zero length")
+  }
+
+  testCnt := 0
+
+  for j := 0; j < maxCnt; j++ {
+
+    testStr := fmt.Sprintf("Error-%v text", j+1)
+
+    if strings.Contains(errStr, testStr) {
+      testCnt++
+    }
+  }
+
+  if maxCnt != testCnt {
+    t.Errorf("ERROR: Expected Error String to contain %v Errors.\n"+
+      "Instead, found only %v Errors.",
+      maxCnt, testCnt)
+  }
+
+}
+
+func TestDirMgr_ConsolidateErrors_02(t *testing.T) {
+
+  testDir := "../checkfiles"
+  testDirMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by testDirMgr, err := DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n",
+      testDir, err.Error())
+    return
+  }
+
+  errs := make([]error, 0, 300)
+
+  maxCnt := 9
+
+  for i := 0; i < maxCnt; i++ {
+
+    err := fmt.Errorf("Heder\nError-%v text\n\n", i+1)
+
+    errs = append(errs, err)
+
+  }
+
+  conSolError := testDirMgr.ConsolidateErrors(errs)
+
+  if conSolError == nil {
+    t.Error("Test Error returned from testDirMgr{}.ConsolidateErrors(errs) is 'nil'\n")
+    return
+  }
+
+  errStr := fmt.Sprintf("%v", conSolError.Error())
+
+  if len(errStr) == 0 {
+    t.Error("Error string returned from DirMgr{}.ConsolidateErrors(errs) is zero length")
+  }
+
+  testCnt := 0
+
+  for j := 0; j < maxCnt; j++ {
+
+    testStr := fmt.Sprintf("Error-%v text", j+1)
+
+    if strings.Contains(errStr, testStr) {
+      testCnt++
+    }
+  }
+
+  if maxCnt != testCnt {
+    t.Errorf("ERROR: Expected Error String to contain %v Errors.\n"+
+      "Instead, found only %v Errors.",
+      maxCnt, testCnt)
+  }
+
+}
+
+func TestDirMgr_ConsolidateErrors_03(t *testing.T) {
+
+  testDir := "../checkfiles"
+  testDirMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by testDirMgr, err := DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n",
+      testDir, err.Error())
+    return
+  }
+
+  errs := make([]error, 0, 300)
+
+  conSolError := testDirMgr.ConsolidateErrors(errs)
+
+  if conSolError != nil {
+    t.Error("ERROR: Expected a 'nil' return from  testDirMgr.ConsolidateErrors(errs)\n" +
+      "because errs is 'nil'. However, the returned value was NOT 'nil'.")
   }
 }
 
