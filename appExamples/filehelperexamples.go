@@ -8,7 +8,12 @@ import (
   "time"
 )
 
-func ExampleExtractPathElements() {
+type FileHelperExamples struct {
+  Input  string
+  Output string
+}
+
+func (fhEx FileHelperExamples) ExampleExtractPathElements() {
 
   fh := pathFileOps.FileHelper{}
   commonDir := fh.AdjustPathSlash("..\\..\\003_filehelper\\common\\xt_dirmgr_01_test.go")
@@ -16,7 +21,8 @@ func ExampleExtractPathElements() {
   fileMgr, err := pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(commonDir)
 
   if err != nil {
-    panic(errors.New("ExampleExtractPathElements()- Error returned on fh.GetPathFileNameElements(), Error:" + err.Error()))
+    panic(errors.New("ExampleExtractPathElements()- Error returned on " +
+      "fh.GetPathFileNameElements(), Error:" + err.Error()))
   }
 
   fmgr2 := fileMgr.CopyOut()
@@ -25,10 +31,10 @@ func ExampleExtractPathElements() {
     panic(errors.New("ExampleExtractPathElements() - CopyToThis Equal Analysis Failed!"))
   }
 
-  PrintFileManagerFields(fileMgr)
+  fhEx.PrintFileManagerFields(fileMgr)
 }
 
-func PathElementsAnalysis(pathFile string) {
+func (fhEx FileHelperExamples) PathElementsAnalysis(pathFile string) {
   fh := pathFileOps.FileHelper{}
   commonDir := fh.AdjustPathSlash(pathFile)
 
@@ -45,11 +51,12 @@ func PathElementsAnalysis(pathFile string) {
     panic(errors.New("PathElementsAnalysis() - CopyOut Equal Analysis Failed!"))
   }
 
-  PrintFileManagerFields(fMgr)
+  fhEx.PrintFileManagerFields(fMgr)
 
 }
 
-func PrintFileManagerFields(fileMgr pathFileOps.FileMgr) {
+func (fhEx FileHelperExamples) PrintFileManagerFields(fileMgr pathFileOps.FileMgr) {
+
   ePrefix := "PrintFileManagerFields() "
   fmt.Println("======================================")
   fmt.Println("            File Manager")
@@ -84,11 +91,11 @@ func PrintFileManagerFields(fileMgr pathFileOps.FileMgr) {
 
   }
 
-  PrintFileInfoPlusFields(fileInfoPlus)
-  PrintDirMgrFields(fileMgr.GetDirMgr())
+  fhEx.PrintFileInfoPlusFields(fileInfoPlus)
+  DirMgrExamples{}.PrintDirMgrFields(fileMgr.GetDirMgr())
 }
 
-func PrintFileInfoPlusFields(info pathFileOps.FileInfoPlus) {
+func (fhEx FileHelperExamples) PrintFileInfoPlusFields(info pathFileOps.FileInfoPlus) {
   fmt.Println("======================================")
   fmt.Println("            File Info Plus")
   fmt.Println("======================================")
@@ -105,7 +112,7 @@ func PrintFileInfoPlusFields(info pathFileOps.FileInfoPlus) {
   fmt.Println("           DirPath(): ", info.DirPath())
 }
 
-func CreateFileOnTopOfExistingFile() {
+func (fhEx FileHelperExamples) CreateFileOnTopOfExistingFile() {
   ePrefix := "CreateFileOnTopOfExistingFile() "
 
   tstFile := "..//logTest//testoverwrite//TestOverwrite001.txt"
@@ -136,7 +143,7 @@ func CreateFileOnTopOfExistingFile() {
 
 }
 
-func ExampleReadTestFile() {
+func (fhEx FileHelperExamples) ExampleReadTestFile() {
 
   ePrefix := "ExampleReadTestFile() "
   tstFile := "../testfiles/TestRead.txt"

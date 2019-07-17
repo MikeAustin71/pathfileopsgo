@@ -235,13 +235,13 @@ func TestFileHelper_AreSameFile_04(t *testing.T) {
   filesAreTheSame, err := fh.AreSameFile(correctedFile1, correctedFile2)
 
   if err != nil {
-    t.Errorf("Error returned by fh.AreSameFile(correctedFile1, correctedFile2).\n" +
+    t.Errorf("Error returned by fh.AreSameFile(correctedFile1, correctedFile2).\n"+
       "correctedFile1='%v'\ncorrectedFile2='%v'\nError='%v'\n",
       correctedFile1, correctedFile2, err.Error())
   }
 
   if !filesAreTheSame {
-    t.Errorf("ERROR: Expected that AreSameFile='true'.\nInstead, AreSameFile='false'\n" +
+    t.Errorf("ERROR: Expected that AreSameFile='true'.\nInstead, AreSameFile='false'\n"+
       "correctedFile1='%v'\ncorrectedFile2='%v'\n",
       correctedFile1, correctedFile2)
   }
@@ -342,7 +342,6 @@ func TestFileHelper_AreSameFile_09(t *testing.T) {
   rawFile1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
     "\\level_04_dir\\level_4_2_test.txt"
 
-
   rawFile2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
     "\\level_04_dir\\level_4_3_test.txt"
 
@@ -372,7 +371,6 @@ func TestFileHelper_AreSameFile_10(t *testing.T) {
 
   rawFile1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
     "\\level_04_dir\\level_4_2_test.txt"
-
 
   rawFile2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir" +
     "\\level_04_dir\\level_4_3_test.txt"
@@ -498,7 +496,7 @@ func TestFileHelper_ChangeFileMode_01(t *testing.T) {
   filePermission, err := FilePermissionConfig{}.New("-rwxrwxrwx")
 
   if err != nil {
-    t.Errorf("Error return from FilePermissionConfig{}.New(\"-rwxrwxrwx\").\n" +
+    t.Errorf("Error return from FilePermissionConfig{}.New(\"-rwxrwxrwx\").\n"+
       "Error='%v'\n", err.Error())
   }
 
@@ -520,7 +518,7 @@ func TestFileHelper_ChangeFileMode_02(t *testing.T) {
   filePermission, err := FilePermissionConfig{}.New("-rwxrwxrwx")
 
   if err != nil {
-    t.Errorf("Error return from FilePermissionConfig{}.New(\"-rwxrwxrwx\").\n" +
+    t.Errorf("Error return from FilePermissionConfig{}.New(\"-rwxrwxrwx\").\n"+
       "Error='%v'\n", err.Error())
   }
 
@@ -543,7 +541,7 @@ func TestFileHelper_ChangeFileMode_04(t *testing.T) {
   filePermission, err := FilePermissionConfig{}.New("-rwxrwxrwx")
 
   if err != nil {
-    t.Errorf("Error return from FilePermissionConfig{}.New(\"-rwxrwxrwx\").\n" +
+    t.Errorf("Error return from FilePermissionConfig{}.New(\"-rwxrwxrwx\").\n"+
       "Error='%v'\n", err.Error())
   }
 
@@ -564,7 +562,7 @@ func TestFileHelper_ChangeFileMode_05(t *testing.T) {
   actualPath := basePath + "/level01"
 
   originalSrc := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
-  pathFileName := actualPath + "/" +"level_0_3_test.txt"
+  pathFileName := actualPath + "/" + "level_0_3_test.txt"
 
   fh := FileHelper{}
   var err error
@@ -573,7 +571,7 @@ func TestFileHelper_ChangeFileMode_05(t *testing.T) {
     err = fh.DeleteDirPathAll(basePath)
 
     if err != nil {
-      t.Errorf("Test Setup Error: Could not delete 'basePath'!\n" +
+      t.Errorf("Test Setup Error: Could not delete 'basePath'!\n"+
         "basePath='%v'\nError='%v'\n", basePath, err.Error())
       return
     }
@@ -582,7 +580,7 @@ func TestFileHelper_ChangeFileMode_05(t *testing.T) {
   err = fh.MakeDirAll(actualPath)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.MakeDirAll(actualPath).\n" +
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(actualPath).\n"+
       "actualPath='%v'\nError='%v'\n", actualPath, err.Error())
     return
   }
@@ -590,7 +588,7 @@ func TestFileHelper_ChangeFileMode_05(t *testing.T) {
   err = fh.CopyFileByIo(originalSrc, pathFileName)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(originalSrc, pathFileName)." +
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(originalSrc, pathFileName)."+
       "originalSrc='%v'\npathFileName='%v'\nError='%v'\n",
       originalSrc, pathFileName, err.Error())
     return
@@ -599,7 +597,7 @@ func TestFileHelper_ChangeFileMode_05(t *testing.T) {
   filePermission, err := FilePermissionConfig{}.New("-rwxrwxrwx")
 
   if err != nil {
-    t.Errorf("Error return from FilePermissionConfig{}.New(\"-rwxrwxrwx\").\n" +
+    t.Errorf("Error return from FilePermissionConfig{}.New(\"-rwxrwxrwx\").\n"+
       "Error='%v'\n", err.Error())
     return
   }
@@ -617,7 +615,7 @@ func TestFileHelper_ChangeFileMode_05(t *testing.T) {
   err = fh.DeleteDirPathAll(basePath)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error: Could not delete 'basePath'!\n" +
+    t.Errorf("Test Clean-Up Error: Could not delete 'basePath'!\n"+
       "basePath='%v'\nError='%v'\n", basePath, err.Error())
     return
   }
@@ -630,7 +628,7 @@ func TestFileHelper_ChangeFileMode_06(t *testing.T) {
   actualPath := basePath + "/level01"
 
   originalSrc := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
-  pathFileName := actualPath + "/" +"level_0_3_test.txt"
+  pathFileName := actualPath + "/" + "level_0_3_test.txt"
 
   fh := FileHelper{}
   var err error
@@ -639,7 +637,7 @@ func TestFileHelper_ChangeFileMode_06(t *testing.T) {
     err = fh.DeleteDirPathAll(basePath)
 
     if err != nil {
-      t.Errorf("Test Setup Error: Could not delete 'basePath'!\n" +
+      t.Errorf("Test Setup Error: Could not delete 'basePath'!\n"+
         "basePath='%v'\nError='%v'\n", basePath, err.Error())
       return
     }
@@ -648,7 +646,7 @@ func TestFileHelper_ChangeFileMode_06(t *testing.T) {
   err = fh.MakeDirAll(actualPath)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.MakeDirAll(actualPath).\n" +
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(actualPath).\n"+
       "actualPath='%v'\nError='%v'\n", actualPath, err.Error())
     return
   }
@@ -656,7 +654,7 @@ func TestFileHelper_ChangeFileMode_06(t *testing.T) {
   err = fh.CopyFileByIo(originalSrc, pathFileName)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(originalSrc, pathFileName)." +
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(originalSrc, pathFileName)."+
       "originalSrc='%v'\npathFileName='%v'\nError='%v'\n",
       originalSrc, pathFileName, err.Error())
     return
@@ -665,7 +663,7 @@ func TestFileHelper_ChangeFileMode_06(t *testing.T) {
   originalPermission, err := fh.GetFileMode(pathFileName)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.GetFileMode(pathFileName).\n" +
+    t.Errorf("Test Setup Error returned by fh.GetFileMode(pathFileName).\n"+
       "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
     return
   }
@@ -673,14 +671,14 @@ func TestFileHelper_ChangeFileMode_06(t *testing.T) {
   filePermission, err := FilePermissionConfig{}.New("-r--r--r--")
 
   if err != nil {
-    t.Errorf("Error return from FilePermissionConfig{}.New(\"-r--r--r--\").\n" +
+    t.Errorf("Error return from FilePermissionConfig{}.New(\"-r--r--r--\").\n"+
       "Error='%v'\n", err.Error())
   }
 
   err = fh.ChangeFileMode(pathFileName, filePermission)
 
   if err != nil {
-    t.Errorf("Error returned from fh.ChangeFileMode(pathFileName, filePermission)\n" +
+    t.Errorf("Error returned from fh.ChangeFileMode(pathFileName, filePermission)\n"+
       "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
 
     _ = fh.DeleteDirPathAll(basePath)
@@ -691,7 +689,7 @@ func TestFileHelper_ChangeFileMode_06(t *testing.T) {
   newPermission, err := fh.GetFileMode(pathFileName)
 
   if err != nil {
-    t.Errorf("Test Verification Error returned by fh.GetFileMode(pathFileName).\n" +
+    t.Errorf("Test Verification Error returned by fh.GetFileMode(pathFileName).\n"+
       "pathFileName='%v'\nError='%v'\n", pathFileName, err.Error())
 
     _ = fh.DeleteDirPathAll(basePath)
@@ -702,7 +700,7 @@ func TestFileHelper_ChangeFileMode_06(t *testing.T) {
   originalPermissionText, err := originalPermission.GetPermissionTextCode()
 
   if err != nil {
-    t.Errorf("Test Verification Error returned by originalPermission.GetPermissionTextCode().\n" +
+    t.Errorf("Test Verification Error returned by originalPermission.GetPermissionTextCode().\n"+
       "Error='%v'\n", err.Error())
 
     _ = fh.DeleteDirPathAll(basePath)
@@ -715,7 +713,7 @@ func TestFileHelper_ChangeFileMode_06(t *testing.T) {
   newPermissionText, err := newPermission.GetPermissionTextCode()
 
   if err != nil {
-    t.Errorf("Test Verification Error returned by newPermission.GetPermissionTextCode().\n" +
+    t.Errorf("Test Verification Error returned by newPermission.GetPermissionTextCode().\n"+
       "Error='%v'\n", err.Error())
 
     _ = fh.DeleteDirPathAll(basePath)
@@ -726,22 +724,22 @@ func TestFileHelper_ChangeFileMode_06(t *testing.T) {
   newPermissionValue := newPermission.GetPermissionFileModeValueText()
 
   if originalPermission.Equal(&newPermission) {
-    t.Errorf("Error: Expected new File Mode to be different from old File Mode.\n" +
-      "Instead, they are equal!\nOrigional Permission Text='%v' Orginal Permission Value='%v'\n" +
+    t.Errorf("Error: Expected new File Mode to be different from old File Mode.\n"+
+      "Instead, they are equal!\nOrigional Permission Text='%v' Orginal Permission Value='%v'\n"+
       "New Permission Text='%v' New Permission Value='%v'",
       originalPermissionText, originalPermissionValue, newPermissionText, newPermissionValue)
   }
 
   if originalPermissionText == newPermissionText {
-    t.Errorf("Error: Expected new File Mode text value to be different from old File " +
-      "Mode text value.\nInstead, they are the same!\n" +
+    t.Errorf("Error: Expected new File Mode text value to be different from old File "+
+      "Mode text value.\nInstead, they are the same!\n"+
       "originalPermissionText='%v' newPermissionText='%v'",
       originalPermissionText, newPermissionText)
   }
 
   if originalPermissionValue == newPermissionValue {
-    t.Errorf("Error: Expected new File Mode numerical value to be different from old File " +
-      "Mode numerical value.\nInstead, they are the same!\n" +
+    t.Errorf("Error: Expected new File Mode numerical value to be different from old File "+
+      "Mode numerical value.\nInstead, they are the same!\n"+
       "originalPermissionText='%v' newPermissionText='%v'",
       originalPermissionValue, newPermissionValue)
   }
@@ -749,7 +747,7 @@ func TestFileHelper_ChangeFileMode_06(t *testing.T) {
   err = fh.DeleteDirPathAll(basePath)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error: Could not delete 'basePath'!\n" +
+    t.Errorf("Test Clean-Up Error: Could not delete 'basePath'!\n"+
       "basePath='%v'\nError='%v'\n", basePath, err.Error())
     return
   }
@@ -766,7 +764,7 @@ func TestFileHelper_ChangeFileTimes_01(t *testing.T) {
   err := fh.DeleteDirPathAll(dest)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(dest).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(dest).\n"+
       "dest='%v'\nError='%v'\n", dest, err.Error())
     return
   }
@@ -774,7 +772,7 @@ func TestFileHelper_ChangeFileTimes_01(t *testing.T) {
   err = fh.MakeDirAll(dest)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.MakeDirAll(dest).\n" +
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(dest).\n"+
       "dest='%v'\nError='%v'\n",
       dest, err.Error())
     return
@@ -785,7 +783,7 @@ func TestFileHelper_ChangeFileTimes_01(t *testing.T) {
   err = fh.CopyFileByIo(originalSrc, destFile)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(originalSrc, destFile).\n" +
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(originalSrc, destFile).\n"+
       "originalSrc='%v'\ndestFile='%v'\nError='%v'\n",
       originalSrc, destFile, err.Error())
 
@@ -796,30 +794,30 @@ func TestFileHelper_ChangeFileTimes_01(t *testing.T) {
   dateFormat := "2006-01-02 15:04:05.000000000 -0700 MST"
 
   originalModTime, _, err :=
-    fh.GetFileLastModificationDate(destFile,dateFormat)
+    fh.GetFileLastModificationDate(destFile, dateFormat)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by #1 fh.GetFileLastModificationDate(destFile,dateFormat).\n" +
+    t.Errorf("Test Setup Error returned by #1 fh.GetFileLastModificationDate(destFile,dateFormat).\n"+
       "\ndestFile='%v'\nError='%v'\n",
       destFile, err.Error())
   }
 
-  newAccessTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
-  newModTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+  newAccessTime := time.Date(2006, 2, 25, 10, 30, 30, 1250, time.Local)
+  newModTime := time.Date(2006, 2, 25, 10, 30, 30, 1250, time.Local)
 
   err = fh.ChangeFileTimes(destFile, newAccessTime, newModTime)
 
   if err != nil {
-    t.Errorf("Error returned by fh.ChangeFileTimes(destFile, newAccessTime, newModTime).\n" +
+    t.Errorf("Error returned by fh.ChangeFileTimes(destFile, newAccessTime, newModTime).\n"+
       "destFile='%v'\nnewAccessTime='%v'\newModTime='%v'\nError='%v'\n",
-      destFile,newAccessTime.Format(dateFormat), newModTime.Format(dateFormat), err.Error())
+      destFile, newAccessTime.Format(dateFormat), newModTime.Format(dateFormat), err.Error())
   }
 
   actualModTime, _, err :=
-    fh.GetFileLastModificationDate(destFile,dateFormat)
+    fh.GetFileLastModificationDate(destFile, dateFormat)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by #2 fh.GetFileLastModificationDate(...).\n" +
+    t.Errorf("Test Setup Error returned by #2 fh.GetFileLastModificationDate(...).\n"+
       "\ndestFile='%v'\nError='%v'\n",
       destFile, err.Error())
   }
@@ -827,12 +825,12 @@ func TestFileHelper_ChangeFileTimes_01(t *testing.T) {
   err = fh.DeleteDirPathAll(dest)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(dest)\n" +
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(dest)\n"+
       "dest='%v'\nError='%v'\n", dest, err.Error())
   }
 
   if originalModTime.Year() == actualModTime.Year() {
-    t.Errorf("Error Original Mod Time Year == Actual Mod Time Year!\n" +
+    t.Errorf("Error Original Mod Time Year == Actual Mod Time Year!\n"+
       "Original Mod Time Year='%v'\nActual Mod Time Year='%v'\n",
       originalModTime.Year(), actualModTime.Year())
   }
@@ -843,8 +841,8 @@ func TestFileHelper_ChangeFileTimes_01(t *testing.T) {
   actualModStr := actualModTime.Format(dateFormat2)
 
   if newModStr != actualModStr {
-    t.Errorf("ERROR: Expected actual modified time='%v'.\n" +
-      "Instead, actual modified time='%v'.\n",newModStr, actualModStr)
+    t.Errorf("ERROR: Expected actual modified time='%v'.\n"+
+      "Instead, actual modified time='%v'.\n", newModStr, actualModStr)
   }
 
 }
@@ -853,10 +851,10 @@ func TestFileHelper_ChangeFileTimes_02(t *testing.T) {
 
   fh := FileHelper{}
 
-  newAccessTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
-  newModTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+  newAccessTime := time.Date(2006, 2, 25, 10, 30, 30, 1250, time.Local)
+  newModTime := time.Date(2006, 2, 25, 10, 30, 30, 1250, time.Local)
   testFile := ""
-  err := fh.ChangeFileTimes(testFile,newAccessTime, newModTime)
+  err := fh.ChangeFileTimes(testFile, newAccessTime, newModTime)
 
   if err == nil {
     t.Error("Expected an error return from fh.ChangeFileTimes(testFile, " +
@@ -870,10 +868,10 @@ func TestFileHelper_ChangeFileTimes_03(t *testing.T) {
 
   fh := FileHelper{}
 
-  newAccessTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
-  newModTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+  newAccessTime := time.Date(2006, 2, 25, 10, 30, 30, 1250, time.Local)
+  newModTime := time.Date(2006, 2, 25, 10, 30, 30, 1250, time.Local)
   testFile := "      "
-  err := fh.ChangeFileTimes(testFile,newAccessTime, newModTime)
+  err := fh.ChangeFileTimes(testFile, newAccessTime, newModTime)
 
   if err == nil {
     t.Error("Expected an error return from fh.ChangeFileTimes(testFile, " +
@@ -888,10 +886,10 @@ func TestFileHelper_ChangeFileTimes_04(t *testing.T) {
   fh := FileHelper{}
 
   testFile := "../checkfiles/iDoNotExist.txt"
-  newAccessTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
-  newModTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+  newAccessTime := time.Date(2006, 2, 25, 10, 30, 30, 1250, time.Local)
+  newModTime := time.Date(2006, 2, 25, 10, 30, 30, 1250, time.Local)
 
-  err := fh.ChangeFileTimes(testFile,newAccessTime, newModTime)
+  err := fh.ChangeFileTimes(testFile, newAccessTime, newModTime)
 
   if err == nil {
     t.Error("Expected an error return from fh.ChangeFileTimes(testFile, " +
@@ -906,10 +904,10 @@ func TestFileHelper_ChangeFileTimes_05(t *testing.T) {
   fh := FileHelper{}
 
   testFile := "../checkfiles"
-  newAccessTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
-  newModTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+  newAccessTime := time.Date(2006, 2, 25, 10, 30, 30, 1250, time.Local)
+  newModTime := time.Date(2006, 2, 25, 10, 30, 30, 1250, time.Local)
 
-  err := fh.ChangeFileTimes(testFile,newAccessTime, newModTime)
+  err := fh.ChangeFileTimes(testFile, newAccessTime, newModTime)
 
   if err == nil {
     t.Error("Expected an error return from fh.ChangeFileTimes(testFile, " +
@@ -927,11 +925,10 @@ func TestFileHelper_ChangeFileTimes_06(t *testing.T) {
 
   dest := "../checkfiles/TestFileHelper_ChangeFileTimes_06"
 
-
   err := fh.DeleteDirPathAll(dest)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(dest).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(dest).\n"+
       "dest='%v'\nError='%v'\n", dest, err.Error())
     return
   }
@@ -939,7 +936,7 @@ func TestFileHelper_ChangeFileTimes_06(t *testing.T) {
   err = fh.MakeDirAll(dest)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.MakeDirAll(dest).\n" +
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(dest).\n"+
       "dest='%v'\nError='%v'\n",
       dest, err.Error())
     return
@@ -950,7 +947,7 @@ func TestFileHelper_ChangeFileTimes_06(t *testing.T) {
   err = fh.CopyFileByIo(originalSrc, testFile)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(originalSrc, destFile).\n" +
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(originalSrc, destFile).\n"+
       "originalSrc='%v'\ntestFile='%v'\nError='%v'\n",
       originalSrc, testFile, err.Error())
 
@@ -959,9 +956,9 @@ func TestFileHelper_ChangeFileTimes_06(t *testing.T) {
   }
 
   newAccessTime := time.Time{}
-  newModTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+  newModTime := time.Date(2006, 2, 25, 10, 30, 30, 1250, time.Local)
 
-  err = fh.ChangeFileTimes(testFile,newAccessTime, newModTime)
+  err = fh.ChangeFileTimes(testFile, newAccessTime, newModTime)
 
   if err == nil {
     t.Error("Expected an error return from fh.ChangeFileTimes(testFile, " +
@@ -972,7 +969,7 @@ func TestFileHelper_ChangeFileTimes_06(t *testing.T) {
   err = fh.DeleteDirPathAll(dest)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(dest)\n" +
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(dest)\n"+
       "dest='%v'\nError='%v'\n", dest, err.Error())
   }
 
@@ -989,7 +986,7 @@ func TestFileHelper_ChangeFileTimes_07(t *testing.T) {
   err := fh.DeleteDirPathAll(dest)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(dest).\n" +
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(dest).\n"+
       "dest='%v'\nError='%v'\n", dest, err.Error())
     return
   }
@@ -997,7 +994,7 @@ func TestFileHelper_ChangeFileTimes_07(t *testing.T) {
   err = fh.MakeDirAll(dest)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.MakeDirAll(dest).\n" +
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(dest).\n"+
       "dest='%v'\nError='%v'\n",
       dest, err.Error())
     return
@@ -1008,7 +1005,7 @@ func TestFileHelper_ChangeFileTimes_07(t *testing.T) {
   err = fh.CopyFileByIo(originalSrc, testFile)
 
   if err != nil {
-    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(originalSrc, destFile).\n" +
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(originalSrc, destFile).\n"+
       "originalSrc='%v'\ntestFile='%v'\nError='%v'\n",
       originalSrc, testFile, err.Error())
 
@@ -1016,10 +1013,10 @@ func TestFileHelper_ChangeFileTimes_07(t *testing.T) {
     return
   }
 
-  newAccessTime := time.Date(2006,2,25,10,30,30,1250, time.Local)
+  newAccessTime := time.Date(2006, 2, 25, 10, 30, 30, 1250, time.Local)
   newModTime := time.Time{}
 
-  err = fh.ChangeFileTimes(testFile,newAccessTime, newModTime)
+  err = fh.ChangeFileTimes(testFile, newAccessTime, newModTime)
 
   if err == nil {
     t.Error("Expected an error return from fh.ChangeFileTimes(testFile, " +
@@ -1030,7 +1027,7 @@ func TestFileHelper_ChangeFileTimes_07(t *testing.T) {
   err = fh.DeleteDirPathAll(dest)
 
   if err != nil {
-    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(dest)\n" +
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(dest)\n"+
       "dest='%v'\nError='%v'\n", dest, err.Error())
   }
 
@@ -1224,7 +1221,7 @@ func TestFileHelper_CleanDirStr_04(t *testing.T) {
   _, _, err := fh.CleanDirStr(testPath)
 
   if err == nil {
-    t.Errorf("Expected error to be returned by fh.CleanDirStr(testPath).\n" +
+    t.Errorf("Expected error to be returned by fh.CleanDirStr(testPath).\n"+
       "testPath='%v'\n", testPath)
   }
 
@@ -1237,7 +1234,7 @@ func TestFileHelper_CleanDirStr_05(t *testing.T) {
   _, _, err := fh.CleanDirStr(testPath)
 
   if err == nil {
-    t.Errorf("Expected error to be returned by fh.CleanDirStr(testPath).\n" +
+    t.Errorf("Expected error to be returned by fh.CleanDirStr(testPath).\n"+
       "It was NOT.\ntestPath='%v'\n", testPath)
   }
 
@@ -1250,7 +1247,7 @@ func TestFileHelper_CleanDirStr_06(t *testing.T) {
   _, _, err := fh.CleanDirStr(testPath)
 
   if err == nil {
-    t.Errorf("Expected error to be returned by fh.CleanDirStr(testPath).\n" +
+    t.Errorf("Expected error to be returned by fh.CleanDirStr(testPath).\n"+
       "It was NOT.\ntestPath='%v'\n", testPath)
   }
 
@@ -1264,7 +1261,7 @@ func TestFileHelper_CleanDirStr_07(t *testing.T) {
   cleanDirStr, isDirEmpty, err := fh.CleanDirStr(testPath)
 
   if err != nil {
-    t.Errorf("Error returned by fh.CleanDirStr(testPath).\n" +
+    t.Errorf("Error returned by fh.CleanDirStr(testPath).\n"+
       "testPath='%v'\nError='%v'", testPath, err.Error())
   }
 
@@ -1390,7 +1387,7 @@ func TestFileHelper_CleanFileNameExtStr_02(t *testing.T) {
   result, isFileNameEmpty, err := fh.CleanFileNameExtStr(testPath)
 
   if err != nil {
-    t.Errorf("Error returned by fh.CleanFileNameExtStr(testPath).\n" +
+    t.Errorf("Error returned by fh.CleanFileNameExtStr(testPath).\n"+
       "testPath='%v'\nError='%v'",
       testPath, err.Error())
   }
@@ -1401,7 +1398,7 @@ func TestFileHelper_CleanFileNameExtStr_02(t *testing.T) {
   }
 
   if expectedFileNameExt != result {
-    t.Errorf("Expected fh.CleanFileNameExtStr to return '%v'.\n" +
+    t.Errorf("Expected fh.CleanFileNameExtStr to return '%v'.\n"+
       "Instead, it returned '%v'\n",
       expectedFileNameExt, result)
   }
@@ -1415,7 +1412,7 @@ func TestFileHelper_CleanFileNameExtStr_03(t *testing.T) {
   _, isEmpty, err := fh.CleanFileNameExtStr(testPath)
 
   if err != nil {
-    t.Errorf("Unexpected Error returned by fh.CleanFileNameExtStr(testPath)\n" +
+    t.Errorf("Unexpected Error returned by fh.CleanFileNameExtStr(testPath)\n"+
       "testPath='%v'\nError='%v'\n",
       testPath, err.Error())
     return
@@ -1800,7 +1797,7 @@ func TestFileHelper_CopyFileByIo_09(t *testing.T) {
   srcFile := fh.AdjustPathSlash(rawSrcFile)
 
   if !fh.DoesFileExist(srcFile) {
-    t.Errorf("ERROR: Setup source file DOES NOT EXIST!\n" +
+    t.Errorf("ERROR: Setup source file DOES NOT EXIST!\n"+
       "srcFile='%v' \n", srcFile)
     return
   }
@@ -1814,14 +1811,14 @@ func TestFileHelper_CopyFileByIo_09(t *testing.T) {
     err := fh.DeleteDirFile(destFile)
 
     if err != nil {
-      t.Errorf("Error returned from fh.DeleteDirFile(destFile).\n" +
-        "Attempt to delete prexisting version of destination file FAILED!\n" +
+      t.Errorf("Error returned from fh.DeleteDirFile(destFile).\n"+
+        "Attempt to delete prexisting version of destination file FAILED!\n"+
         "destFile='%v'\nError='%v'\n", destFile, err.Error())
       return
     }
 
     if fh.DoesFileExist(destFile) {
-      t.Errorf("ERROR: Prexisting Destination File could NOT be Deleted!\n" +
+      t.Errorf("ERROR: Prexisting Destination File could NOT be Deleted!\n"+
         "Destination File:'%v'\n", destFile)
       return
     }
@@ -1830,13 +1827,13 @@ func TestFileHelper_CopyFileByIo_09(t *testing.T) {
   err := fh.CopyFileByIo(srcFile, destFile)
 
   if err != nil {
-    t.Errorf("Error while Copying Source File to  Destination File!\n" +
+    t.Errorf("Error while Copying Source File to  Destination File!\n"+
       "Source File='%v'\nDestination File='%v'\nError='%v'\n",
       srcFile, destFile, err.Error())
   }
 
   if !fh.DoesFileExist(destFile) {
-    t.Error(fmt.Sprintf("After CopyIO Destination File DOES NOT EXIST!\n" +
+    t.Error(fmt.Sprintf("After CopyIO Destination File DOES NOT EXIST!\n"+
       "destFile='%v'\n", destFile))
     return
   }
@@ -1844,16 +1841,15 @@ func TestFileHelper_CopyFileByIo_09(t *testing.T) {
   err = fh.DeleteDirFile(destFile)
 
   if err != nil {
-    t.Errorf("Error returned by fh.DeleteDirFile(destFile).\n" +
-    "During clean-up, the attempted deletion of the destination file FAILED!\n" +
+    t.Errorf("Error returned by fh.DeleteDirFile(destFile).\n"+
+      "During clean-up, the attempted deletion of the destination file FAILED!\n"+
       "destFile='%v'\nError='%v'\n", destFile, err.Error())
   }
 
   if fh.DoesFileExist(destFile) {
-    t.Errorf("ERROR: Attempted deletion of the destination file during " +
+    t.Errorf("ERROR: Attempted deletion of the destination file during "+
       "clean-up FAILED!\ndestFile='%v'", destFile)
   }
-
 
 }
 
@@ -1868,14 +1864,14 @@ func TestFileHelper_CopyFileByIo_10(t *testing.T) {
   err := fh.DeleteDirFile(destFile)
 
   if err != nil {
-    t.Errorf("Error retunred by fh.DeleteDirFile(destFile) during setup.\n" +
-      "Attempt deletion of pre-existing version of destination file FAILED!\n" +
+    t.Errorf("Error retunred by fh.DeleteDirFile(destFile) during setup.\n"+
+      "Attempt deletion of pre-existing version of destination file FAILED!\n"+
       "destFile='%v'\nError='%v'\n", destFile, err.Error())
     return
   }
 
   if fh.DoesFileExist(destFile) {
-    t.Errorf("ERROR: Unable to delete pre-existing version of destination file!\n" +
+    t.Errorf("ERROR: Unable to delete pre-existing version of destination file!\n"+
       "destFile='%v'", destFile)
     return
   }
@@ -1887,28 +1883,28 @@ func TestFileHelper_CopyFileByIo_10(t *testing.T) {
   err = fh.CopyFileByIo(srcFile, destFile)
 
   if err != nil {
-    t.Errorf("Error returned by FileHelper{}.CopyFileByIo(srcFile, destFile).\n" +
+    t.Errorf("Error returned by FileHelper{}.CopyFileByIo(srcFile, destFile).\n"+
       "srcFile='%v'\ndestFile='%v\nError='%v'\n",
       srcFile, destFile, err.Error())
   }
 
   if !fh.DoesFileExist(destFile) {
-    t.Errorf("ERROR: CopyFileByIo FAILED! The destination file was NOT created!\n" +
+    t.Errorf("ERROR: CopyFileByIo FAILED! The destination file was NOT created!\n"+
       "destFile='%v'\n", destFile)
     return
   }
 
   err = fh.DeleteDirFile(destFile)
 
-  if err!=nil {
-    t.Errorf("Error returned by fh.DeleteDirFile(destFile).\n" +
-      "Attempted deletion of destination file during clean-up FAILED!\n" +
-      "destFile='%v'\nError='%v'\n",destFile, err.Error())
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirFile(destFile).\n"+
+      "Attempted deletion of destination file during clean-up FAILED!\n"+
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
   }
 
   if fh.DoesFileExist(destFile) {
-    t.Errorf("ERROR: Attempted deletion of destination file during clean-up FAILED!\n" +
-      "Destination File STILL EXISTS!\n" +
+    t.Errorf("ERROR: Attempted deletion of destination file during clean-up FAILED!\n"+
+      "Destination File STILL EXISTS!\n"+
       "Destination File='%v'\n", destFile)
   }
 
@@ -1925,14 +1921,14 @@ func TestFileHelper_CopyFileByIo_11(t *testing.T) {
     err := fh.DeleteDirFile(destFile)
 
     if err != nil {
-      t.Errorf("Error retrned by setup fh.DeleteDirFile(destFile).\n" +
-        "Attempted deletion of pre-existing destination file FAILED!\n" +
+      t.Errorf("Error retrned by setup fh.DeleteDirFile(destFile).\n"+
+        "Attempted deletion of pre-existing destination file FAILED!\n"+
         "destFile='%v'\nError='%v'\n", destFile, err.Error())
       return
     }
 
     if fh.DoesFileExist(destFile) {
-      t.Errorf("Attempted deletion of pre-existing destination file FAILED!\n" +
+      t.Errorf("Attempted deletion of pre-existing destination file FAILED!\n"+
         "destFile='%v'\n", destFile)
       return
     }
@@ -1944,13 +1940,13 @@ func TestFileHelper_CopyFileByIo_11(t *testing.T) {
   err := fh.CopyFileByIo(srcFile, destFile)
 
   if err != nil {
-    t.Errorf("Error returned by setup fh.CopyFileByIo(srcFile, destFile).\n" +
+    t.Errorf("Error returned by setup fh.CopyFileByIo(srcFile, destFile).\n"+
       "srcFile='%v'\ndestFile='%v\nError='%v'\n",
       srcFile, destFile, err.Error())
   }
 
   if !fh.DoesFileExist(destFile) {
-    t.Errorf("Error: Attempted creation of setup destination file FAILED!\n" +
+    t.Errorf("Error: Attempted creation of setup destination file FAILED!\n"+
       "destFile='%v'\n", destFile)
     return
   }
@@ -1960,13 +1956,13 @@ func TestFileHelper_CopyFileByIo_11(t *testing.T) {
   err = fh.CopyFileByIo(srcFile2, destFile)
 
   if err != nil {
-    t.Errorf("Error returned by 2nd Copy fh.CopyFileByIo(srcFile2, destFile).\n" +
+    t.Errorf("Error returned by 2nd Copy fh.CopyFileByIo(srcFile2, destFile).\n"+
       "srcFile2='%v'\ndestFile='%v\nError='%v'\n",
       srcFile2, destFile, err.Error())
   }
 
   if !fh.DoesFileExist(destFile) {
-    t.Errorf("Error: 2nd Copy of destination file does NOT exist!\n" +
+    t.Errorf("Error: 2nd Copy of destination file does NOT exist!\n"+
       "Destination File='%v'\n", destFile)
     return
   }
@@ -1976,21 +1972,21 @@ func TestFileHelper_CopyFileByIo_11(t *testing.T) {
   finfoSrcFile, err := os.Stat(srcFile2)
 
   if err != nil {
-    t.Errorf("Error returned by os.Stat(srcFile2).\n" +
+    t.Errorf("Error returned by os.Stat(srcFile2).\n"+
       "srcFile2='%v'\nError='%v'\n", srcFile2, err.Error())
   }
 
   finfoDestFile, err := os.Stat(destFile)
 
   if err != nil {
-    t.Errorf("Error returned by os.Stat(destFile).\n" +
+    t.Errorf("Error returned by os.Stat(destFile).\n"+
       "destFile='%v'\nError='%v'\n", destFile, err.Error())
     _ = fh.DeleteDirFile(destFile)
     return
   }
 
   if finfoSrcFile.Size() != finfoDestFile.Size() {
-    t.Errorf("The sizes of the source file and destination file DO NOT MATHCH!\n" +
+    t.Errorf("The sizes of the source file and destination file DO NOT MATHCH!\n"+
       "Source File Size='%v'  Destination File Size='%v'.\n",
       finfoSrcFile.Size(), finfoDestFile.Size())
   }
@@ -1998,13 +1994,140 @@ func TestFileHelper_CopyFileByIo_11(t *testing.T) {
   err = fh.DeleteDirFile(destFile)
 
   if err != nil {
-    t.Errorf("Error returned by clean-up fh.DeleteDirFile(destFile).\n" +
+    t.Errorf("Error returned by clean-up fh.DeleteDirFile(destFile).\n"+
       "destFile='%v'\nError='%v' ", destFile, err.Error())
   }
 
   if fh.DoesFileExist(destFile) {
-    t.Errorf("ERROR: Attempted deletion of destination file FAILED!\n" +
+    t.Errorf("ERROR: Attempted deletion of destination file FAILED!\n"+
       "Destination File='%v'\n", destFile)
+  }
+
+}
+
+func TestFileHelper_CopyFileByIoByLink_01(t *testing.T) {
+
+  fh := FileHelper{}
+  rawSrcFile := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir" +
+    "\\level_03_dir\\level_3_1_test.txt"
+
+  srcFile := fh.AdjustPathSlash(rawSrcFile)
+
+  if !fh.DoesFileExist(srcFile) {
+    t.Errorf("ERROR: Setup source file DOES NOT EXIST!\n"+
+      "srcFile='%v' \n", srcFile)
+    return
+  }
+
+  rawDestFile := "..\\checkfiles\\CopyFileByIoByLink_01.txt"
+
+  destFile := fh.AdjustPathSlash(rawDestFile)
+
+  if fh.DoesFileExist(destFile) {
+
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error returned from fh.DeleteDirFile(destFile).\n"+
+        "Attempt to delete prexisting version of destination file FAILED!\n"+
+        "destFile='%v'\nError='%v'\n", destFile, err.Error())
+      return
+    }
+
+    if fh.DoesFileExist(destFile) {
+      t.Errorf("ERROR: Prexisting Destination File could NOT be Deleted!\n"+
+        "Destination File:'%v'\n", destFile)
+      return
+    }
+  }
+
+  err := fh.CopyFileByIoByLink(srcFile, destFile)
+
+  if err != nil {
+    t.Errorf("Error while Copying Source File to  Destination File!\n"+
+      "Source File='%v'\nDestination File='%v'\nError='%v'\n",
+      srcFile, destFile, err.Error())
+  }
+
+  if !fh.DoesFileExist(destFile) {
+    t.Error(fmt.Sprintf("After CopyIO Destination File DOES NOT EXIST!\n"+
+      "destFile='%v'\n", destFile))
+    return
+  }
+
+  err = fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirFile(destFile).\n"+
+      "During clean-up, the attempted deletion of the destination file FAILED!\n"+
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
+    return
+  }
+
+  if fh.DoesFileExist(destFile) {
+    t.Errorf("ERROR: Attempted deletion of the destination file during "+
+      "clean-up FAILED!\ndestFile='%v'", destFile)
+  }
+}
+
+func TestFileHelper_CopyFileByIoByLink_02(t *testing.T) {
+
+  fh := FileHelper{}
+  rawSrcFile := "../checkfiles/iDoNotExist.txt"
+
+  srcFile := fh.AdjustPathSlash(rawSrcFile)
+
+  rawDestFile := "..\\checkfiles\\TestFileHelper_CopyFileByIoByLink_02.txt"
+
+  destFile := fh.AdjustPathSlash(rawDestFile)
+
+  if fh.DoesFileExist(destFile) {
+
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error returned from fh.DeleteDirFile(destFile).\n"+
+        "Attempt to delete prexisting version of destination file FAILED!\n"+
+        "destFile='%v'\nError='%v'\n", destFile, err.Error())
+      return
+    }
+
+    if fh.DoesFileExist(destFile) {
+      t.Errorf("ERROR: Prexisting Destination File could NOT be Deleted!\n"+
+        "Destination File:'%v'\n", destFile)
+      return
+    }
+  }
+
+  err := fh.CopyFileByIoByLink(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.CopyFileByIoByLink(srcFile, destFile)\n" +
+      "because 'srcFile' DOES NOT EXIST!\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+}
+
+func TestFileHelper_CopyFileByIoByLink_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  rawSrcFile := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir" +
+    "\\level_03_dir\\level_3_1_test.txt"
+
+  srcFile := fh.AdjustPathSlash(rawSrcFile)
+
+  rawDestFile := "../checkfiles/checkfiles02"
+
+  destFile := fh.AdjustPathSlash(rawDestFile)
+
+  err := fh.CopyFileByIoByLink(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.CopyFileByIoByLink(srcFile, destFile)\n" +
+      "because 'srcFile' DOES NOT EXIST!\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }

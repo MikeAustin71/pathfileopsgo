@@ -388,7 +388,7 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
     err = fmt.Errorf(ePrefix+
       "Error: Invalid Directory string.\n"+
       "Directory string contains invalid Path Separators.\n"+
-      "adjustedDirName='%v' ",
+      "adjustedDirName='%v'\n",
       adjustedDirName)
     return returnedDirName, isEmpty, err
   }
@@ -399,7 +399,7 @@ func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isE
     err = fmt.Errorf(ePrefix+
       "Error: Invalid Directory string.\n"+
       "Directory string contains invalid dots.\n"+
-      "adjustedDirName='%v' ",
+      "adjustedDirName='%v'\n",
       adjustedDirName)
     return returnedDirName, isEmpty, err
   }
@@ -1138,7 +1138,7 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
   err = nil
   var err2 error
   var srcFileDoesExist, dstFileDoesExist bool
-  var srcFInfo FileInfoPlus
+  var srcFInfo, dstFInfo FileInfoPlus
 
   src,
     srcFileDoesExist,
@@ -1154,7 +1154,7 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 
   dst,
     dstFileDoesExist,
-    _,
+    dstFInfo,
     err = fh.doesPathFileExist(dst,
     PreProcPathCode.AbsolutePath(), // Convert to Absolute Path
     ePrefix,
@@ -1168,7 +1168,9 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+"Error occurred during path file name comparison.\n"+
-      "Source File:'%v'\nDestination File:'%v'\nError='%v' ",
+      "Source File:'%v'\n"+
+      "Destination File:'%v'\n"+
+      "Error='%v'\n",
       src, dst, err2.Error())
     return err
   }
@@ -1212,12 +1214,29 @@ func (fh FileHelper) CopyFileByLink(src, dst string) (err error) {
     // The destination file exists. This IS a problem. Link will
     // fail when attempting to create a link to an existing file.
 
+    if dstFInfo.IsDir() {
+      err = fmt.Errorf(ePrefix+
+        "Error: The destination file ('dst') is NOT A FILE.\n"+
+        "It is a DIRECTORY!\n"+
+        "Destination File ('dst') = '%v'\n",
+        dst)
+      return err
+    }
+
+    if !dstFInfo.Mode().IsRegular() {
+      err = fmt.Errorf(ePrefix+
+        "Error: The destination file ('dst') is NOT A REGULAR FILE.\n"+
+        "Destination File ('dst') = '%v'\n",
+        dst)
+      return err
+    }
+
     err2 = os.Remove(dst)
 
     if err2 != nil {
       err = fmt.Errorf(ePrefix+
         "Error: The target destination file exists and could NOT be deleted! \n"+
-        "destination file='%v' Error='%v' ", dst, err2.Error())
+        "destination file='%v'\nError='%v'\n", dst, err2.Error())
       return err
     }
 
@@ -1446,7 +1465,8 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
 
   if err2 != nil {
     err3 = fmt.Errorf(ePrefix+
-      "Error returned from inSrcPtr.Close()\ninSrcPtr=source='%v'\nError='%v'\n",
+      "Error returned from inSrcPtr.Close()\n"+
+      "inSrcPtr=source='%v'\nError='%v'\n",
       src, err2.Error())
 
     errs = append(errs, err3)
@@ -2436,12 +2456,14 @@ func (fh FileHelper) GetDotSeparatorIndexesInPathStr(pathStr string) ([]int, err
 
   if errCode == -1 {
     return []int{},
-      errors.New(ePrefix + "Error: Input parameter 'pathStr' is an empty string!")
+      errors.New(ePrefix +
+        "Error: Input parameter 'pathStr' is an empty string!\n")
   }
 
   if errCode == -2 {
     return []int{},
-      errors.New(ePrefix + "Error: Input parameter 'pathStr' consists of blank spaces!")
+      errors.New(ePrefix +
+        "Error: Input parameter 'pathStr' consists of blank spaces!\n")
   }
 
   var dotIdxs []int
@@ -3115,13 +3137,14 @@ func (fh FileHelper) GetFirstLastNonSeparatorCharIndexInPathStr(
 
   if errCode == -1 {
 
-    err = errors.New(ePrefix + "Error: Input parameter 'pathStr' is an empty string!")
+    err = errors.New(ePrefix +
+      "Error: Input parameter 'pathStr' is an empty string!\n")
 
     return firstIdx, lastIdx, err
   }
 
   if errCode == -2 {
-    err = errors.New(ePrefix + "Error: Input parameter 'pathStr' consists of blank spaces!")
+    err = errors.New(ePrefix + "Error: Input parameter 'pathStr' consists of blank spaces!\n")
 
     return firstIdx, lastIdx, err
   }
@@ -3134,7 +3157,8 @@ func (fh FileHelper) GetFirstLastNonSeparatorCharIndexInPathStr(
 
   if errCode < 0 {
 
-    err = fmt.Errorf(ePrefix + "Error: After path Separator adjustment, 'pathStr' is an empty string!")
+    err = fmt.Errorf(ePrefix +
+      "Error: After path Separator adjustment, 'pathStr' is an empty string!\n")
 
     return firstIdx, lastIdx, err
   }
@@ -3237,12 +3261,14 @@ func (fh FileHelper) GetLastPathElement(pathName string) (string, error) {
 
   if errCode == -1 {
     return "",
-      errors.New(ePrefix + "Error: Input parameter 'pathName' is an empty string!")
+      errors.New(ePrefix +
+        "Error: Input parameter 'pathName' is an empty string!\n")
   }
 
   if errCode == -2 {
     return "",
-      errors.New(ePrefix + "Error: Input parameter 'pathName' consists of blank spaces!")
+      errors.New(ePrefix +
+        "Error: Input parameter 'pathName' consists of blank spaces!\n")
   }
 
   adjustedPath := fh.AdjustPathSlash(pathName)
@@ -3275,19 +3301,26 @@ func (fh FileHelper) GetPathAndFileNameExt(
   errCode, _, trimmedFileNameExt = fh.isStringEmptyOrBlank(pathFileNameExt)
 
   if errCode == -1 {
-    err = errors.New(ePrefix + "Error: Input parameter 'pathFileName' is an empty string!")
+    err = errors.New(ePrefix +
+      "Error: Input parameter 'pathFileName' is an empty string!\n")
+
     return pathDir, fileNameExt, bothAreEmpty, err
   }
 
   if errCode == -2 {
-    err = errors.New(ePrefix + "Error: Input parameter 'pathFileName' consists of blank spaces!")
+    err = errors.New(ePrefix +
+      "Error: Input parameter 'pathFileName' consists of blank spaces!\n")
+
     return pathDir, fileNameExt, bothAreEmpty, err
   }
 
   xFnameExt, isEmpty, err2 := fh.GetFileNameWithExt(trimmedFileNameExt)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error returned from fh.GetFileNameWithExt(pathFileNameExt). pathFileNameExt='%v' Error='%v'", pathFileNameExt, err2.Error())
+    err = fmt.Errorf(ePrefix+
+      "Error returned from fh.GetFileNameWithExt(pathFileNameExt).\n"+
+      "pathFileNameExt='%v'\nError='%v'\n",
+      pathFileNameExt, err2.Error())
     return
   }
 
@@ -3317,7 +3350,11 @@ func (fh FileHelper) GetPathAndFileNameExt(
   xPath, isEmpty, err2 := fh.GetPathFromPathFileName(remainingPathStr)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Error returned from fh.GetPathFromPathFileName(remainingPathStr). remainingPathStr='%v' Error='%v'", remainingPathStr, err2.Error())
+    err = fmt.Errorf(ePrefix+
+      "Error returned from fh.GetPathFromPathFileName(remainingPathStr).\n"+
+      "remainingPathStr='%v'\nError='%v'\n",
+      remainingPathStr, err2.Error())
+
     return
   }
 
@@ -3398,13 +3435,17 @@ func (fh FileHelper) GetPathFromPathFileName(
   errCode, _, pathFileNameExt = fh.isStringEmptyOrBlank(pathFileNameExt)
 
   if errCode == -1 {
-    err = errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' is an empty string!")
+    err = errors.New(ePrefix +
+      "Error: Input parameter 'pathFileNameExt' is an empty string!\n")
+
     return dirPath, isEmpty, err
   }
 
   if errCode == -2 {
     err =
-      errors.New(ePrefix + "Error: Input parameter 'pathFileNameExt' consists of blank spaces!")
+      errors.New(ePrefix +
+        "Error: Input parameter 'pathFileNameExt' consists of blank spaces!\n")
+
     return dirPath, isEmpty, err
   }
 
@@ -3479,7 +3520,8 @@ func (fh FileHelper) GetPathFromPathFileName(
 
   } else if strings.Contains(testPathStr, "...") {
 
-    err = fmt.Errorf(ePrefix+"Error: PATH CONTAINS INVALID Dot Characters!\n"+
+    err = fmt.Errorf(ePrefix+
+      "Error: PATH CONTAINS INVALID Dot Characters!\n"+
       "testPathStr='%v'\n", testPathStr)
     return dirPath, isEmpty, err
 
@@ -3488,13 +3530,17 @@ func (fh FileHelper) GetPathFromPathFileName(
     absPath, err2 := fh.MakeAbsolutePath(testPathStr)
 
     if err2 != nil {
-      err = fmt.Errorf(ePrefix+"Error returned from fh.MakeAbsolutePath(testPathStr).\n"+
-        "testPathStr='%v'\nError='%v'\n", testPathStr, err2.Error())
+      err = fmt.Errorf(ePrefix+
+        "Error returned from fh.MakeAbsolutePath(testPathStr).\n"+
+        "testPathStr='%v'\nError='%v'\n",
+        testPathStr, err2.Error())
+
       return dirPath, isEmpty, err
     }
 
     if absPath == "" {
-      err = fmt.Errorf(ePrefix+"Error: Could not convert 'testPathStr' to Absolute path!\n"+
+      err = fmt.Errorf(ePrefix+
+        "Error: Could not convert 'testPathStr' to Absolute path!\n"+
         "testPathStr='%v'\n",
         testPathStr)
       return dirPath, isEmpty, err
@@ -3528,13 +3574,16 @@ func (fh FileHelper) GetPathFromPathFileName(
     finalPathStr = testPathStr
 
   } else {
-    err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING.\n"+
+    err = fmt.Errorf(ePrefix+
+      "Error: INVALID PATH STRING.\n"+
       "testPathStr='%v'\n", testPathStr)
+
     return dirPath, isEmpty, err
   }
 
   if len(finalPathStr) == 0 {
     err = fmt.Errorf(ePrefix + "Error: Processed path is a Zero Length String!\n")
+
     return dirPath, isEmpty, err
   }
 
@@ -3568,13 +3617,13 @@ func (fh FileHelper) GetPathSeparatorIndexesInPathStr(
   if errCode == -1 {
     return []int{},
       errors.New(ePrefix +
-        "Error: Input parameter 'pathStr' is an empty string!")
+        "Error: Input parameter 'pathStr' is an empty string!\n")
   }
 
   if errCode == -2 {
     return []int{},
       errors.New(ePrefix +
-        "Error: Input parameter 'pathStr' consists of blank spaces!")
+        "Error: Input parameter 'pathStr' consists of blank spaces!\n")
   }
 
   var slashIdxs []int
@@ -3715,8 +3764,10 @@ func (fh FileHelper) IsPathFileString(
   if strings.Contains(correctedPathFileStr, "...") {
     pathFileType = PathFileType.None()
     absolutePathFile = ""
-    err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING!\n"+
+    err = fmt.Errorf(ePrefix+
+      "Error: INVALID PATH STRING!\n"+
       "pathFileStr='%v'\n", correctedPathFileStr)
+
     return pathFileType, absolutePathFile, err
   }
 
@@ -3728,8 +3779,9 @@ func (fh FileHelper) IsPathFileString(
     err = fmt.Errorf(ePrefix+
       "Error: Invalid Path File string.\n"+
       "Path File string contains invalid Path Separators.\n"+
-      "pathFileStr='%v' ",
+      "pathFileStr='%v'\n",
       correctedPathFileStr)
+
     return pathFileType, absolutePathFile, err
   }
 
@@ -3737,7 +3789,7 @@ func (fh FileHelper) IsPathFileString(
 
   if err2 != nil {
     err = fmt.Errorf("Error converting pathFileStr to absolute path.\n"+
-      "pathFileStr='%v'\nError='%v']n",
+      "pathFileStr='%v'\nError='%v'\n",
       correctedPathFileStr, err2.Error())
 
     return pathFileType, absolutePathFile, err
@@ -3840,7 +3892,8 @@ func (fh FileHelper) IsPathFileString(
     // There are no valid characters in the string
     pathFileType = PathFileType.None()
     absolutePathFile = ""
-    err = fmt.Errorf(ePrefix+"No valid characters in parameter 'pathFileStr'\n"+
+    err = fmt.Errorf(ePrefix+
+      "No valid characters in parameter 'pathFileStr'\n"+
       "pathFileStr='%v'\n", correctedPathFileStr)
 
   } else if lDotIdxs == 0 && lSlashIdxs == 0 && lastCharIdx > -1 {
@@ -3864,9 +3917,12 @@ func (fh FileHelper) IsPathFileString(
     if lSlashIdxs > 1 {
       pathFileType = PathFileType.None()
       absolutePathFile = ""
-      err = fmt.Errorf(ePrefix+"Invalid parameter 'pathFileStr'!\n"+
-        "'pathFileStr' consists entirely of path separators!"+
-        "pathFileStr='%v'\n", correctedPathFileStr)
+      err = fmt.Errorf(ePrefix+
+        "Invalid parameter 'pathFileStr'!\n"+
+        "'pathFileStr' consists entirely of path separators!\n"+
+        "pathFileStr='%v'\n",
+        correctedPathFileStr)
+
     } else {
       // lSlashIdxs must be '1'
       absolutePathFile = testAbsPathFileStr
@@ -3970,87 +4026,6 @@ func (fh FileHelper) IsPathFileString(
   }
 
   return pathFileType, absolutePathFile, err
-
-  /*
-     if lSlashIdxs == 0 &&
-       lDotIdxs > 0 {
-       // This is a string of alpha numeric characters which
-       // does NOT contain a path separator, but Does contain
-       // a dot separator.
-       // Example "someFileName.txt"
-       // Let's call it a file
-       absolutePathFile = testAbsPathFileStr
-
-       // Call it a file!
-       // Example: "somefilename"
-       pathFileType = PathFileType.File()
-       err = nil
-       return pathFileType, absolutePathFile, err
-
-     }
-
-     if lSlashIdxs == 0 &&
-       lDotIdxs == 0 {
-
-       // the string has no dots and no path separators.
-       absolutePathFile = testAbsPathFileStr
-
-       // Call it a file!
-       // Example: "somefilename"
-       pathFileType = PathFileType.File()
-       err = nil
-       return pathFileType, absolutePathFile, err
-     }
-
-     if lSlashIdxs > 0 &&
-       lDotIdxs == 0 {
-
-       // string contains one or more path separators, but no dots (aka periods)
-       absolutePathFile = testAbsPathFileStr
-
-       if lastCharIdx > slashIdxs[lSlashIdxs-1] {
-         // Example D:\dir1\dir2\xray
-         // It could be a file or a path. We simply
-         // can't tell.
-         pathFileType = PathFileType.Indeterminate()
-
-         err = nil
-         return pathFileType, absolutePathFile, err
-       }
-
-       // lastCharIdx <= slashIdxs[lSlashIdxs-1]
-       // Call it a Path (aka Directory)
-       pathFileType = PathFileType.Path()
-       err = nil
-       return pathFileType, absolutePathFile, err
-     }
-
-     // We know that the test string contains both path separators and
-     // dot separators ('.')
-
-     if dotIdxs[lDotIdxs-1] > slashIdxs[lSlashIdxs-1] &&
-       lastCharIdx > slashIdxs[lSlashIdxs-1] {
-
-       // Example D:\dir1\dir2\xray.txt
-       absolutePathFile = testAbsPathFileStr
-
-       // Call this a path file name
-       pathFileType = PathFileType.PathFile()
-       err = nil
-       return pathFileType, absolutePathFile, err
-     }
-
-     // Cannot be certain of the result.
-     // String doesn't conform to any standard pattern for
-     // a file or a path. Don't know for sure what this string is
-
-     absolutePathFile = testAbsPathFileStr
-
-     pathFileType = PathFileType.None()
-     err = errors.New(ePrefix + "Unknown string type!")
-     return pathFileType, absolutePathFile, err
-  */
-
 }
 
 // IsPathString - Attempts to determine whether a string is a
@@ -4115,20 +4090,22 @@ func (fh FileHelper) IsPathString(
   if errCode == -1 {
     err =
       errors.New(ePrefix +
-        "Error: Input parameter 'pathStr' is an empty string!")
+        "Error: Input parameter 'pathStr' is an empty string!\n")
     return isPathStr, cannotDetermine, testPathStr, err
   }
 
   if errCode == -2 {
     err =
       errors.New(ePrefix +
-        "Error: Input parameter 'pathStr' consists of blank spaces!")
+        "Error: Input parameter 'pathStr' consists of blank spaces!\n")
 
     return isPathStr, cannotDetermine, testPathStr, err
   }
 
   if strings.Contains(pathStr, "...") {
-    err = fmt.Errorf(ePrefix+"Error: INVALID PATH STRING! pathStr='%v'", pathStr)
+    err = fmt.Errorf(ePrefix+
+      "Error: INVALID PATH STRING!\n"+
+      "pathStr='%v'\n", pathStr)
     return isPathStr, cannotDetermine, testPathStr, err
   }
 
@@ -4137,7 +4114,7 @@ func (fh FileHelper) IsPathString(
   pathFileType, _, err2 := fh.IsPathFileString(testPathStr)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"%v", err2.Error())
+    err = fmt.Errorf(ePrefix+"%v\n", err2.Error())
     return isPathStr, cannotDetermine, testPathStr, err
   }
 
@@ -4217,13 +4194,13 @@ func (fh FileHelper) MakeAbsolutePath(relPath string) (string, error) {
   if errCode == -1 {
     return "",
       errors.New(ePrefix +
-        "Error: Input parameter 'relPath' is an empty string!")
+        "Error: Input parameter 'relPath' is an empty string!\n")
   }
 
   if errCode == -2 {
     return "",
       errors.New(ePrefix +
-        "Error: Input parameter 'relPath' consists of blank spaces!")
+        "Error: Input parameter 'relPath' consists of blank spaces!\n")
   }
 
   testRelPath := fh.AdjustPathSlash(relPath)
@@ -4232,13 +4209,16 @@ func (fh FileHelper) MakeAbsolutePath(relPath string) (string, error) {
 
   if errCode < 0 {
     return "", errors.New(ePrefix +
-      "Error: Input Parameter 'relPath' adjusted for path Separators is an EMPTY string!")
+      "Error: Input Parameter 'relPath' adjusted for path Separators is an EMPTY string!\n")
   }
 
   p, err := fp.Abs(testRelPath)
 
   if err != nil {
-    return "", fmt.Errorf(ePrefix+"Error returned from  fp.Abs(testRelPath). testRelPath='%v'  Error='%v'", testRelPath, err.Error())
+    return "", fmt.Errorf(ePrefix+
+      "Error returned from fp.Abs(testRelPath).\n"+
+      "testRelPath='%v'\nError='%v'\n",
+      testRelPath, err.Error())
   }
 
   return p, nil
@@ -4261,13 +4241,13 @@ func (fh FileHelper) MakeDirAll(dirPath string) error {
   permission, err := FilePermissionConfig{}.New("drwxrwxrwx")
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"%v\n", err.Error())
   }
 
   err = fh.MakeDirAllPerm(dirPath, permission)
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"%v\n", err.Error())
   }
 
   return nil
@@ -4293,13 +4273,13 @@ func (fh FileHelper) MakeDir(dirPath string) error {
   permission, err := FilePermissionConfig{}.New("drwxrwxrwx")
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"%v\n", err.Error())
   }
 
   err = fh.MakeDirPerm(dirPath, permission)
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"%v\n", err.Error())
   }
 
   return nil
@@ -4332,12 +4312,12 @@ func (fh FileHelper) MakeDirAllPerm(dirPath string, permission FilePermissionCon
 
   if errCode == -1 {
     return errors.New(ePrefix +
-      "Error: Input parameter 'dirPath' is an empty string!")
+      "Error: Input parameter 'dirPath' is an empty string!\n")
   }
 
   if errCode == -2 {
     return errors.New(ePrefix +
-      "Error: Input parameter 'dirPath' consists of blank spaces!")
+      "Error: Input parameter 'dirPath' consists of blank spaces!\n")
   }
 
   err2 := permission.IsValid()
@@ -4350,14 +4330,16 @@ func (fh FileHelper) MakeDirAllPerm(dirPath string, permission FilePermissionCon
   dirPermCode, err2 := permission.GetCompositePermissionMode()
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix+"ERROR: INVALID Permission Code\n"+
+    return fmt.Errorf(ePrefix+
+      "ERROR: INVALID Permission Code\n"+
       "Error='%v'\n", err2.Error())
   }
 
   dirPath, err2 = fh.MakeAbsolutePath(dirPath)
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix+"Error returned by fh.MakeAbsolutePath(dirPath).\n"+
+    return fmt.Errorf(ePrefix+
+      "Error returned by fh.MakeAbsolutePath(dirPath).\n"+
       "dirPath='%v'\nError='%v'\n",
       dirPath, err2.Error())
   }
@@ -4365,7 +4347,8 @@ func (fh FileHelper) MakeDirAllPerm(dirPath string, permission FilePermissionCon
   err2 = os.MkdirAll(dirPath, dirPermCode)
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix+"Error return from os.MkdirAll(dirPath, permission).\n"+
+    return fmt.Errorf(ePrefix+
+      "Error return from os.MkdirAll(dirPath, permission).\n"+
       "dirPath='%v'\nError='%v'\n",
       dirPath, err2.Error())
   }
@@ -4387,7 +4370,7 @@ func (fh FileHelper) MakeDirAllPerm(dirPath string, permission FilePermissionCon
   if !pathDoesExist {
     return fmt.Errorf(ePrefix+
       "Error: Directory creation FAILED!. New Directory Path DOES NOT EXIST!\n"+
-      "dirPath='%v' \n", dirPath)
+      "dirPath='%v'\n", dirPath)
   }
 
   return nil
@@ -4432,28 +4415,32 @@ func (fh FileHelper) MakeDirPerm(dirPath string, permission FilePermissionConfig
   err2 := permission.IsValid()
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix+"Input parameter 'permission' is INVALID!\n"+
+    return fmt.Errorf(ePrefix+
+      "Input parameter 'permission' is INVALID!\n"+
       "Error='%v'\n", err2.Error())
   }
 
   dirPermCode, err2 := permission.GetCompositePermissionMode()
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix+"ERROR: INVALID Permission Code\n"+
+    return fmt.Errorf(ePrefix+
+      "ERROR: INVALID Permission Code\n"+
       "Error='%v'\n", err2.Error())
   }
 
   dirPath, err2 = fh.MakeAbsolutePath(dirPath)
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix+"Error returned by fh.MakeAbsolutePath(dirPath).\n"+
+    return fmt.Errorf(ePrefix+
+      "Error returned by fh.MakeAbsolutePath(dirPath).\n"+
       "dirPath='%v'\nError='%v'\n", dirPath, err2.Error())
   }
 
   err2 = os.Mkdir(dirPath, dirPermCode)
 
   if err2 != nil {
-    return fmt.Errorf(ePrefix+"Error return from os.Mkdir(dirPath, dirPermCode).\n"+
+    return fmt.Errorf(ePrefix+
+      "Error return from os.Mkdir(dirPath, dirPermCode).\n"+
       "dirPath='%v'\nError='%v'\n",
       dirPath, err2.Error())
   }
@@ -4517,13 +4504,15 @@ func (fh FileHelper) MoveFile(src, dst string) error {
   }
 
   if !srcFileDoesExist {
-    return fmt.Errorf(ePrefix+"Error: Input parameter "+
+    return fmt.Errorf(ePrefix+
+      "Error: Input parameter "+
       "'src' file DOES NOT EXIST!\n"+
       "src='%v'\n", src)
   }
 
   if srcFInfo.IsDir() {
-    return fmt.Errorf(ePrefix+"Error: Input parameter 'src' "+
+    return fmt.Errorf(ePrefix+
+      "Error: Input parameter 'src' "+
       "exists and it is directory NOT a file!\n"+
       "src='%v'\n", src)
   }
@@ -4557,7 +4546,8 @@ func (fh FileHelper) MoveFile(src, dst string) error {
     // and DO NOT delete the source file!
     return fmt.Errorf(ePrefix+
       "Error: Copy operation FAILED!\n"+
-      "Source File='%v'\nDestination File='%v'\nError='%v'\n",
+      "Source File='%v'\n"+
+      "Destination File='%v'\nError='%v'\n",
       src, dst, err.Error())
   }
 
@@ -4577,7 +4567,8 @@ func (fh FileHelper) MoveFile(src, dst string) error {
   }
 
   if !dstFileDoesExist {
-    return fmt.Errorf(ePrefix+"Error: After Copy Operation, destination file "+
+    return fmt.Errorf(ePrefix+
+      "Error: After Copy Operation, destination file "+
       "DOES NOT EXIST!\n"+
       "Therefore, the copy operation FAILED! Source file was NOT deleted.\n"+
       "destination file='%v'\n", dst)
@@ -4698,6 +4689,24 @@ func (fh FileHelper) OpenDirectory(
     return nil, err
   }
 
+  if directoryPathDoesExist &&
+    !dirPathFInfo.IsDir() {
+
+    return nil,
+      fmt.Errorf(ePrefix+
+        "ERROR: 'directoryPath' does exist, but\n"+
+        "IT IS NOT A DIRECTORY!\n"+
+        "directoryPath='%v'\n", directoryPath)
+  }
+
+  if directoryPathDoesExist && dirPathFInfo.Mode().IsRegular() {
+    return nil,
+      fmt.Errorf(ePrefix+
+        "ERROR: 'directoryPath' does exist, but\n"+
+        "it is classifed as a REGULAR File!\n"+
+        "directoryPath='%v'\n", directoryPath)
+  }
+
   if !directoryPathDoesExist {
 
     if !createDir {
@@ -4740,12 +4749,19 @@ func (fh FileHelper) OpenDirectory(
         "directoryPath='%v'\n", directoryPath)
     }
 
-  }
+    if !dirPathFInfo.IsDir() {
+      return nil,
+        fmt.Errorf(ePrefix+"ERROR: Input Paramter 'directoryPath' is NOT a directory!\n"+
+          "directoryPath='%v'\n", directoryPath)
+    }
 
-  if !dirPathFInfo.IsDir() {
-    return nil,
-      fmt.Errorf(ePrefix+"ERROR: Input Paramter 'directoryPath' is NOT a directory!\n"+
-        "directoryPath='%v'\n", directoryPath)
+    if dirPathFInfo.Mode().IsRegular() {
+      return nil,
+        fmt.Errorf(ePrefix+
+          "ERROR: 'directoryPath' does exist, but\n"+
+          "it is classifed as a REGULAR File!\n"+
+          "directoryPath='%v'\n", directoryPath)
+    }
   }
 
   filePtr, err := os.Open(directoryPath)
@@ -4849,7 +4865,8 @@ func (fh FileHelper) OpenFile(
 
   if fInfoPlus.IsDir() {
     err =
-      fmt.Errorf(ePrefix+"ERROR: Input parameter 'pathFileName' is "+
+      fmt.Errorf(ePrefix+
+        "ERROR: Input parameter 'pathFileName' is "+
         "a 'Directory' - NOT a file!\n"+
         "pathFileName='%v'\n", pathFileName)
 
@@ -4859,22 +4876,24 @@ func (fh FileHelper) OpenFile(
   err2 := fileOpenCfg.IsValid()
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Input Parameter 'fileOpenCfg' is INVALID!\n"+
-      "Error='%v'", err2.Error())
+    err = fmt.Errorf(ePrefix+
+      "Input Parameter 'fileOpenCfg' is INVALID!\n"+
+      "Error='%v'\n", err2.Error())
     return filePtr, err
   }
 
   fOpenCode, err2 := fileOpenCfg.GetCompositeFileOpenCode()
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"%v", err2.Error())
+    err = fmt.Errorf(ePrefix+"%v\n", err2.Error())
     return filePtr, err
   }
 
   err2 = filePermissionCfg.IsValid()
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"Input Parameter 'filePermissionCfg' is INVALID!\n"+
+    err = fmt.Errorf(ePrefix+
+      "Input Parameter 'filePermissionCfg' is INVALID!\n"+
       "Error='%v'\n", err2.Error())
     return filePtr, err
   }
@@ -4882,7 +4901,7 @@ func (fh FileHelper) OpenFile(
   fileMode, err2 := filePermissionCfg.GetCompositePermissionMode()
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix+"%v", err2.Error())
+    err = fmt.Errorf(ePrefix+"%v\n", err2.Error())
     return filePtr, err
   }
 

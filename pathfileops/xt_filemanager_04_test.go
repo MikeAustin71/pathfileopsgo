@@ -703,7 +703,8 @@ func TestFileMgr_CopyFileStrByLinkByIo_01(t *testing.T) {
   err = srcFMgr.CopyFileStrByLinkByIo(rawAbsDestPath)
 
   if err != nil {
-    t.Errorf("Error returned by srcFMgr.CopyFileStrByLink(rawAbsDestPath).\n"+
+    t.Errorf("Error returned by srcFMgr.CopyFileStrByLinkByIo("+
+      "rawAbsDestPath).\n"+
       "rawAbsDestPath='%v'\nError='%v'\n",
       rawAbsDestPath, err.Error())
     return

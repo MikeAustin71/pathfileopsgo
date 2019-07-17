@@ -12,11 +12,16 @@ import (
   "time"
 )
 
-func TestDirMgrWalDirDeleteFiles() {
+type MiscExamples struct {
+  Input  string
+  Output string
+}
+
+func (mscEx MiscExamples) TestDirMgrWalDirDeleteFiles() {
 
   ePrefix := "TestDirMgrWalDirDeleteFiles()"
 
-  origDir, err := MainDirMgrTestSetupFileWalkDeleteFiles()
+  origDir, err := mscEx.MainDirMgrTestSetupFileWalkDeleteFiles()
 
   if err != nil {
     fmt.Printf(ePrefix+
@@ -66,6 +71,13 @@ func TestDirMgrWalDirDeleteFiles() {
   fsc.SelectCriterionMode = pathFileOp.FileSelectMode.ORSelect()
 
   dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
+
+  if err != nil {
+    fmt.Printf(ePrefix+
+      "Error returned by dMgr.DeleteWalkDirFiles(fsc)\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
 
   if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
 
@@ -170,7 +182,7 @@ func TestDirMgrWalDirDeleteFiles() {
 
 }
 
-func GetBaseProjectPath() string {
+func (mscEx MiscExamples) GetBaseProjectPath() string {
 
   ePrefix := "getBaseProjectPath() "
   fh := pathFileOp.FileHelper{}
@@ -198,12 +210,12 @@ func GetBaseProjectPath() string {
   return baseDir
 }
 
-func TestingDirMgrDeleteWalkDirFiles06() {
+func (mscEx MiscExamples) TestingDirMgrDeleteWalkDirFiles06() {
 
   ePrefix := "TestingDirMgrDeleteWalkDirFiles06() "
 
   // origDir = D:\gowork\src\MikeAustin71\pathfileopsgo\dirwalkdeletetests\dirdelete01
-  origDir, err := TestingDirMgr02TestSetupFileWalkDeleteFiles()
+  origDir, err := mscEx.TestingDirMgr02TestSetupFileWalkDeleteFiles()
 
   if err != nil {
     fmt.Printf(ePrefix+
@@ -238,13 +250,13 @@ func TestingDirMgrDeleteWalkDirFiles06() {
   filesOlderThan.AddDate(0, 1, 0)
 
   /*
-    filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
+     filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
 
-    if err != nil {
-      fmt.Printf("Error returned from time.Parse(fmtstr, fOlderThanStr). "+
-        "fOlderThanStr='%v' Error='%v'", fOlderThanStr, err.Error())
-      return
-    }
+     if err != nil {
+       fmt.Printf("Error returned from time.Parse(fmtstr, fOlderThanStr). "+
+         "fOlderThanStr='%v' Error='%v'", fOlderThanStr, err.Error())
+       return
+     }
   */
   filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
 
@@ -262,6 +274,12 @@ func TestingDirMgrDeleteWalkDirFiles06() {
   fsc.SelectCriterionMode = pathFileOp.FileSelectMode.ANDSelect()
 
   dInfo, err := dMgr.DeleteWalkDirFiles(fsc)
+
+  if err != nil {
+    fmt.Printf("Error returned by dMgr.DeleteWalkDirFiles(fsc)\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
 
   if dInfo.DeletedFiles.GetNumOfFileMgrs() != 6 {
     fmt.Printf(ePrefix+
@@ -348,7 +366,7 @@ func TestingDirMgrDeleteWalkDirFiles06() {
 
 }
 
-func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
+func (mscEx MiscExamples) TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
 
   ePrefix := "TestFile: xt_dirmgr_02_test.go Func: DirMgr02TestSetupFileWalkDeleteFiles() "
 
@@ -434,7 +452,7 @@ func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
   srcFile := dirOldFilesForTest + string(os.PathSeparator) + oldFile1
   destFile := origDir + string(os.PathSeparator) + oldFile1
 
-  err = fh.CopyFileByLinkByIo(srcFile, destFile)
+  err = fh.CopyFileByIoByLink(srcFile, destFile)
 
   if err != nil {
     return "", fmt.Errorf(ePrefix+
@@ -445,7 +463,7 @@ func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
   srcFile = dirOldFilesForTest + string(os.PathSeparator) + oldFile2
   destFile = origDir + string(os.PathSeparator) + "dirdelete02" + string(os.PathSeparator) + oldFile2
 
-  err = fh.CopyFileByLinkByIo(srcFile, destFile)
+  err = fh.CopyFileByIoByLink(srcFile, destFile)
 
   if err != nil {
     return "", fmt.Errorf(ePrefix+
@@ -459,7 +477,7 @@ func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
   destFile = origDir + string(os.PathSeparator) + "dirdelete02" +
     string(os.PathSeparator) + "dirdelete03" + string(os.PathSeparator) + oldFile3
 
-  err = fh.CopyFileByLinkByIo(srcFile, destFile)
+  err = fh.CopyFileByIoByLink(srcFile, destFile)
 
   if err != nil {
     return "",
@@ -489,7 +507,7 @@ func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
   srcFile = dirNewFilesForTest + string(os.PathSeparator) + newFile1
   destFile = origDir + string(os.PathSeparator) + newFile1
 
-  err = fh.CopyFileByLinkByIo(srcFile, destFile)
+  err = fh.CopyFileByIoByLink(srcFile, destFile)
 
   if err != nil {
     return "",
@@ -501,7 +519,7 @@ func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
   srcFile = dirNewFilesForTest + string(os.PathSeparator) + newFile2
   destFile = origDir + string(os.PathSeparator) + "dirdelete02" + string(os.PathSeparator) + newFile2
 
-  err = fh.CopyFileByLinkByIo(srcFile, destFile)
+  err = fh.CopyFileByIoByLink(srcFile, destFile)
 
   if err != nil {
     return "", fmt.Errorf("Error while Copying Source File, '%v' to  Destination File '%v', Error:'%v'", srcFile, destFile, err)
@@ -510,7 +528,7 @@ func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
   srcFile = dirNewFilesForTest + string(os.PathSeparator) + newFile3
   destFile = origDir + string(os.PathSeparator) + "dirdelete02" + string(os.PathSeparator) + "dirdelete03" + string(os.PathSeparator) + newFile3
 
-  err = fh.CopyFileByLinkByIo(srcFile, destFile)
+  err = fh.CopyFileByIoByLink(srcFile, destFile)
 
   if err != nil {
     return "", fmt.Errorf("Error while Copying Source File, '%v' to  Destination File '%v', Error:'%v'", srcFile, destFile, err)
@@ -519,7 +537,7 @@ func TestingDirMgr02TestSetupFileWalkDeleteFiles() (string, error) {
   return origDir, nil
 }
 
-func TestingfileinfoplusEqual01() {
+func (mscEx MiscExamples) TestingfileinfoplusEqual01() {
   fh := pathFileOp.FileHelper{}
 
   baseFileName := "newerFileForTest_01.txt"
@@ -570,18 +588,18 @@ func TestingfileinfoplusEqual01() {
   if fip.Equal(&fip2) == false {
     fmt.Println("Expected  fip to EQUAL fip2. It DID NOT!")
     fmt.Println("fip file info")
-    PrintFileInfoPlusFields(fip)
+    FileHelperExamples{}.PrintFileInfoPlusFields(fip)
     fmt.Println()
     fmt.Println("fip2 file info")
-    PrintFileInfoPlusFields(fip2)
+    FileHelperExamples{}.PrintFileInfoPlusFields(fip2)
   }
 
 }
 
-func TestWriteFile() {
+func (mscEx MiscExamples) TestWriteFile() {
   fh := pathFileOp.FileHelper{}
 
-  filePath := GetBaseProjectPath() +
+  filePath := mscEx.GetBaseProjectPath() +
     fh.AdjustPathSlash("/checkfiles/checkfiles03/testWrite2998.txt")
 
   fMgr, err := pathFileOp.FileMgr{}.NewFromPathFileNameExtStr(filePath)
@@ -614,38 +632,38 @@ func TestWriteFile() {
   _ = fMgr.CloseThisFile()
 
   /*
-    bytesRead, err := fMgr.ReadAllFile()
+     bytesRead, err := fMgr.ReadAllFile()
 
-    if err != nil {
-      fmt.Printf("Error returned from fMgr.ReadAllFile(). filePathName='%v'  Error='%v'", fMgr.GetAbsolutePathFileName(), err.Error())
-      return
-    }
+     if err != nil {
+       fmt.Printf("Error returned from fMgr.ReadAllFile(). filePathName='%v'  Error='%v'", fMgr.GetAbsolutePathFileName(), err.Error())
+       return
+     }
 
-    if lExpectedStr != bytesWritten {
-      fmt.Printf("Error: Length of string written NOT equal to Bytes Read! Length of written string='%v'. Actual Bytes Read='%v' ", lExpectedStr, bytesWritten)
-      return
-    }
+     if lExpectedStr != bytesWritten {
+       fmt.Printf("Error: Length of string written NOT equal to Bytes Read! Length of written string='%v'. Actual Bytes Read='%v' ", lExpectedStr, bytesWritten)
+       return
+     }
 
-    actualStr := string(bytesRead)
+     actualStr := string(bytesRead)
 
-    if lExpectedStr != len(actualStr) {
-      fmt.Printf("Error: Legth of actual string read is NOT equal to length of string written. lExpectedStr='%v'  len(actualStr)='%v'", lExpectedStr, len(actualStr))
-      return
-    }
+     if lExpectedStr != len(actualStr) {
+       fmt.Printf("Error: Legth of actual string read is NOT equal to length of string written. lExpectedStr='%v'  len(actualStr)='%v'", lExpectedStr, len(actualStr))
+       return
+     }
 
-    if expectedStr != actualStr {
-      fmt.Printf("Error: expectedStr written='%v'  Actual string read='%v'", expectedStr, actualStr)
-      return
-    }
+     if expectedStr != actualStr {
+       fmt.Printf("Error: expectedStr written='%v'  Actual string read='%v'", expectedStr, actualStr)
+       return
+     }
 
-    fMgr.CloseThisFile()
+     fMgr.CloseThisFile()
 
-    doesFileExist := fh.DoesFileExist(filePath)
+     doesFileExist := fh.DoesFileExist(filePath)
 
-    if !doesFileExist {
-      fmt.Printf("Error: After writing string, target file does NOT exist!. fileNameExt='%v'", fMgr.GetAbsolutePathFileName())
-      return
-    }
+     if !doesFileExist {
+       fmt.Printf("Error: After writing string, target file does NOT exist!. fileNameExt='%v'", fMgr.GetAbsolutePathFileName())
+       return
+     }
 
   */
 
@@ -668,7 +686,7 @@ func TestWriteFile() {
   fmt.Println("Successful Completion!")
 }
 
-func TestOpenFile() {
+func (mscEx MiscExamples) TestOpenFile() {
   fh := pathFileOp.FileHelper{}
   ePrefix := "TestOpenFile() "
 
@@ -719,11 +737,11 @@ func TestOpenFile() {
 
 }
 
-func TestDeleteDirectoryTree() {
+func (mscEx MiscExamples) TestDeleteDirectoryTree() {
 
   ePrefix := "TestDeleteDirectoryTree() "
   fh := pathFileOp.FileHelper{}
-  substituteDir := GetBaseProjectPath() + fh.AdjustPathSlash("/testdestdir/destdir")
+  substituteDir := mscEx.GetBaseProjectPath() + fh.AdjustPathSlash("/testdestdir/destdir")
 
   substituteDMgr, err := pathFileOp.DirMgr{}.New(substituteDir)
 
@@ -745,11 +763,11 @@ func TestDeleteDirectoryTree() {
 
 }
 
-func TestCopyDirectoryTree() {
+func (mscEx MiscExamples) TestCopyDirectoryTree() {
 
   ePrefix := "TestCopyDirectoryTree() "
   fh := pathFileOp.FileHelper{}
-  dir := GetBaseProjectPath() + fh.AdjustPathSlash("/testsrcdir")
+  dir := mscEx.GetBaseProjectPath() + fh.AdjustPathSlash("/testsrcdir")
 
   searchPattern := ""
   filesOlderThan := time.Time{}
@@ -783,7 +801,7 @@ func TestCopyDirectoryTree() {
     return
   }
 
-  baseDir := GetBaseProjectPath() + fh.AdjustPathSlash("/testsrcdir")
+  baseDir := mscEx.GetBaseProjectPath() + fh.AdjustPathSlash("/testsrcdir")
 
   baseDMgr, err := pathFileOp.DirMgr{}.New(baseDir)
 
@@ -792,7 +810,7 @@ func TestCopyDirectoryTree() {
     return
   }
 
-  substituteDir := GetBaseProjectPath() + fh.AdjustPathSlash("/testdestdir/destdir")
+  substituteDir := mscEx.GetBaseProjectPath() + fh.AdjustPathSlash("/testdestdir/destdir")
 
   substituteDMgr, err := pathFileOp.DirMgr{}.New(substituteDir)
 
@@ -859,7 +877,7 @@ func TestCopyDirectoryTree() {
   fmt.Println("Successful Completion")
 }
 
-func TestMainCleanDirStr(rawPath string) {
+func (mscEx MiscExamples) TestMainCleanDirStr(rawPath string) {
   fh := pathFileOp.FileHelper{}
 
   dirPath, isEmpty, err := fh.CleanDirStr(rawPath)
@@ -880,19 +898,19 @@ func TestMainCleanDirStr(rawPath string) {
 
 }
 
-func TestNewFileMgrFromPathFileNameStr(pathFileNameExt string) {
+func (mscEx MiscExamples) TestNewFileMgrFromPathFileNameStr(pathFileNameExt string) {
 
   fMgr, err := pathFileOp.FileMgr{}.NewFromPathFileNameExtStr(pathFileNameExt)
 
   if err != nil {
-    fmt.Printf("Error returned from pathFileOp.FileMgr{}.NewFromPathFileNameExtStr(pathFileNameExt) pathFileNameExt='%v'  Error='%v' \n", pathFileNameExt, err.Error())
+    fmt.Printf("Error returned from pathFileOp.FileMgr{}.NewFromPathFileNameExtStr("+
+      "pathFileNameExt)\npathFileNameExt='%v'\nError='%v' \n", pathFileNameExt, err.Error())
   }
 
-  PrintFileManagerFields(fMgr)
-
+  FileHelperExamples{}.PrintFileManagerFields(fMgr)
 }
 
-func TestNewFileMgrFromDirMgrFileNameExt(rawPath, rawFileNameExt string) {
+func (mscEx MiscExamples) TestNewFileMgrFromDirMgrFileNameExt(rawPath, rawFileNameExt string) {
 
   fh := pathFileOp.FileHelper{}
   adjustedPath := fh.AdjustPathSlash(rawPath)
@@ -912,18 +930,19 @@ func TestNewFileMgrFromDirMgrFileNameExt(rawPath, rawFileNameExt string) {
       "dMgr.path='%v' rawFileNameExt='%v'  \n", dMgr.GetPath(), rawFileNameExt)
   }
 
-  PrintFileManagerFields(fMgr)
+  FileHelperExamples{}.PrintFileManagerFields(fMgr)
 
 }
 
-func TestDirMgr(rawPath string, expectedPath string) {
+func (mscEx MiscExamples) TestDirMgr(rawPath string, expectedPath string) {
 
   fh := pathFileOp.FileHelper{}
 
   expectedAbsDir, err := fh.MakeAbsolutePath(expectedPath)
 
   if err != nil {
-    fmt.Printf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v'  Error='%v'\n", expectedPath, err.Error())
+    fmt.Printf("Error returned from fh.GetAbsPathFromFilePath(origDir).\n"+
+      "origDir=='%v'\nError='%v'\n", expectedPath, err.Error())
     return
   }
 
@@ -934,7 +953,7 @@ func TestDirMgr(rawPath string, expectedPath string) {
     return
   }
 
-  PrintDirMgrFields(dMgr)
+  DirMgrExamples{}.PrintDirMgrFields(dMgr)
 
   fmt.Println()
   fmt.Println("=========================================")
@@ -946,7 +965,7 @@ func TestDirMgr(rawPath string, expectedPath string) {
 
 }
 
-func TestMainCleanFileNameExt(rawFileNameExt, expectedFileNameExt string) {
+func (mscEx MiscExamples) TestMainCleanFileNameExt(rawFileNameExt, expectedFileNameExt string) {
 
   fh := pathFileOp.FileHelper{}
   adjustedFileNameExt := fh.AdjustPathSlash(rawFileNameExt)
@@ -968,7 +987,7 @@ func TestMainCleanFileNameExt(rawFileNameExt, expectedFileNameExt string) {
 
 }
 
-func TestMainCleanPath(rawPath string) {
+func (mscEx MiscExamples) TestMainCleanPath(rawPath string) {
 
   adjustedPath := fp.FromSlash(rawPath)
 
@@ -1001,7 +1020,7 @@ func TestMainCleanPath(rawPath string) {
 
 }
 
-func TestMainGetPathFromPathFileName098(dir, expectedDir string) {
+func (mscEx MiscExamples) TestMainGetPathFromPathFileName098(dir, expectedDir string) {
 
   fh := pathFileOp.FileHelper{}
 
@@ -1022,7 +1041,7 @@ func TestMainGetPathFromPathFileName098(dir, expectedDir string) {
 
 }
 
-func TestGetFileName(pathFileName string) {
+func (mscEx MiscExamples) TestGetFileName(pathFileName string) {
   fh := pathFileOp.FileHelper{}
 
   rawDir := fh.AdjustPathSlash(pathFileName)
@@ -1056,7 +1075,7 @@ func TestGetFileName(pathFileName string) {
 
 }
 
-func TestDirMgrFileInfo() {
+func (mscEx MiscExamples) TestDirMgrFileInfo() {
   fh := pathFileOp.FileHelper{}
   origDir := fh.AdjustPathSlash("D:/go/work/src/MikeAustin71/pathfilego/003_filehelper/logTest")
 
@@ -1095,7 +1114,7 @@ func TestDirMgrFileInfo() {
           "i='%v' Error='%v' ", i, err.Error())
     }
 
-    PrintDirMgrFields(foundDMgr)
+    DirMgrExamples{}.PrintDirMgrFields(foundDMgr)
   }
 
   fmt.Println("Success")
@@ -1103,7 +1122,7 @@ func TestDirMgrFileInfo() {
 
 }
 
-func TestFilterFile() {
+func (mscEx MiscExamples) TestFilterFile() {
 
   fia := pathFileOp.FileInfoPlus{}
   fia.SetName("newerFileForTest_01.txt")
@@ -1165,12 +1184,13 @@ func TestFilterFile() {
   fmt.Println("              fia.Sys: ", fia.Sys())
 }
 
-func DeleteDir01() {
+func (mscEx MiscExamples) DeleteDir01() {
 
-  origDir, err := testMain01CreateCheckFiles03DirFiles()
+  origDir, err := mscEx.testMain01CreateCheckFiles03DirFiles()
 
   if err != nil {
-    fmt.Printf("Error returned from testMain01CreateCheckFiles03DirFiles(). Error='%v'", err.Error())
+    fmt.Printf("Error returned from testMain01CreateCheckFiles03DirFiles()."+
+      "\nError='%v'\n", err.Error())
     return
   }
 
@@ -1179,7 +1199,7 @@ func DeleteDir01() {
 
 }
 
-func DeleteDir02() error {
+func (mscEx MiscExamples) DeleteDir02() error {
 
   fh := pathFileOp.FileHelper{}
   origDir := fh.AdjustPathSlash("../checkfiles/checkfiles02/checkfiles03")
@@ -1212,7 +1232,7 @@ func DeleteDir02() error {
   return nil
 }
 
-func TestMainClean001(srcFile1 string) {
+func (mscEx MiscExamples) TestMainClean001(srcFile1 string) {
 
   srcFileCleaned := fp.Clean(srcFile1)
   fh := pathFileOp.FileHelper{}
@@ -1227,7 +1247,8 @@ func TestMainClean001(srcFile1 string) {
   fmt.Println("splitFile srcFile1:", splitFile)
 
 }
-func TestMain901() {
+
+func (mscEx MiscExamples) TestMain901() {
 
   fh := pathFileOp.FileHelper{}
   srcFile := fh.AdjustPathSlash("..\\logTest\\Level01\\Level02\\TestFile001.txt")
@@ -1271,7 +1292,8 @@ func TestMain901() {
   fmt.Println("**** SUCCESS ****")
 }
 
-func testMain01CreateCheckFiles03DirFiles() (string, error) {
+func (mscEx MiscExamples) testMain01CreateCheckFiles03DirFiles() (string, error) {
+
   ePrefix := "TestFile: dirmgr_01_test.go Func: testDirMgrCreateCheckFiles03DirFiles() "
   fh := pathFileOp.FileHelper{}
 
@@ -1368,12 +1390,12 @@ func testMain01CreateCheckFiles03DirFiles() (string, error) {
   return origDir, nil
 }
 
-func MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
+func (mscEx MiscExamples) MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
   ePrefix := "appExample.MainDirMgrTestSetupFileWalkDeleteFiles() "
 
   fh := pathFileOp.FileHelper{}
 
-  origDir := getBaseProjectPath() + fh.AdjustPathSlash("/dirwalkdeletetests/dirdelete01")
+  origDir := mscEx.getBaseProjectPath() + fh.AdjustPathSlash("/dirwalkdeletetests/dirdelete01")
 
   if fh.DoesFileExist(origDir) {
 
@@ -1405,7 +1427,7 @@ func MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
   }
 
   // Copy Old Files
-  dirOldFilesForTest := getBaseProjectPath() + fh.AdjustPathSlash("/filesfortest/oldfilesfortest")
+  dirOldFilesForTest := mscEx.getBaseProjectPath() + fh.AdjustPathSlash("/filesfortest/oldfilesfortest")
 
   if !fh.DoesFileExist(dirOldFilesForTest) {
     return "", fmt.Errorf(ePrefix+"Error: Old Files Directory does NOT exist! dirOldFilesForTest='%v'", dirOldFilesForTest)
@@ -1448,7 +1470,7 @@ func MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
   newFile2 := "newerFileForTest_02.txt"
   newFile3 := "newerFileForTest_03.txt"
 
-  dirNewFilesForTest := getBaseProjectPath() + fh.AdjustPathSlash("/filesfortest/newfilesfortest")
+  dirNewFilesForTest := mscEx.getBaseProjectPath() + fh.AdjustPathSlash("/filesfortest/newfilesfortest")
 
   if !fh.DoesFileExist(dirNewFilesForTest) {
     return "", fmt.Errorf(ePrefix+"Error: NewFromPathFileNameExtStr Files Directory does NOT exist! dirNewFilesForTest='%v'", dirNewFilesForTest)
@@ -1484,7 +1506,7 @@ func MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
   return origDir, nil
 }
 
-func getBaseProjectPath() string {
+func (mscEx MiscExamples) getBaseProjectPath() string {
 
   ePrefix := "getBaseProjectPath() "
   fh := pathFileOp.FileHelper{}

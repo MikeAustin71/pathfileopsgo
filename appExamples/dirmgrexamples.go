@@ -7,7 +7,12 @@ import (
   "time"
 )
 
-func WalkDirFindFiles(
+type DirMgrExamples struct {
+  Input  string
+  Output string
+}
+
+func (dMgrEx DirMgrExamples) WalkDirFindFiles(
   dMgr pathFileOps.DirMgr,
   filePattern string,
   filesOlderThan, filesNewerThan time.Time) error {
@@ -33,7 +38,7 @@ func WalkDirFindFiles(
       du.GetDateTimeYMDAbbrvDowNano(filesNewerThan), err.Error())
   }
 
-  PrintDirMgrFields(dMgr)
+  dMgrEx.PrintDirMgrFields(dMgr)
   fmt.Println("----------------------------")
   fmt.Println("     startPath: ", dWalkInfo.StartPath)
   fmt.Println("   filePattern: ", filePattern)
@@ -102,7 +107,7 @@ func WalkDirFindFiles(
   return nil
 }
 
-func WalkDirFindFiles2(
+func (dMgrEx DirMgrExamples) WalkDirFindFiles2(
   dMgr pathFileOps.DirMgr,
   filePattern string,
   filesOlderThan,
@@ -130,7 +135,7 @@ func WalkDirFindFiles2(
       du.GetDateTimeYMDAbbrvDowNano(filesNewerThan), err.Error())
   }
 
-  PrintDirMgrFields(dMgr)
+  dMgrEx.PrintDirMgrFields(dMgr)
   fmt.Println("----------------------------")
   fmt.Println("     startPath: ", dWalkInfo.StartPath)
   fmt.Println("   filePattern: ", filePattern)
@@ -201,7 +206,7 @@ func WalkDirFindFiles2(
   return nil
 }
 
-func PrintDirMgrFields(dMgr pathFileOps.DirMgr) {
+func (dMgrEx DirMgrExamples) PrintDirMgrFields(dMgr pathFileOps.DirMgr) {
 
   ePrefix := "PrintDirMgrFields() "
 

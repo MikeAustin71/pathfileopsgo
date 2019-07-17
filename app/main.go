@@ -3,6 +3,9 @@ package main
 import (
   pf "../pathfileops"
   "fmt"
+  "io"
+  fp "path/filepath"
+  "strings"
 )
 
 /*
@@ -11,6 +14,9 @@ import (
 import (
   pf "../pathfileops"
   "fmt"
+  "io"
+  fp "path/filepath"
+  "strings"
 )
 
 
@@ -18,11 +24,16 @@ import (
 
 func main() {
 
-  mainTest89MoveSubDirectoryTree()
+  mainTests{}.mainTest89MoveSubDirectoryTree()
 
 }
 
-func mainTest89MoveSubDirectoryTree() {
+type mainTests struct {
+  Input  string
+  Output string
+}
+
+func (mtst mainTests) mainTest89MoveSubDirectoryTree() {
 
   originDir := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\logTest"
 
@@ -94,8 +105,7 @@ func mainTest89MoveSubDirectoryTree() {
 
 }
 
-/*
-func mainTest88CopySubDirectoryTree() {
+func (mtst mainTests) mainTest88CopySubDirectoryTree() {
 
   srcDir := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\logTest"
 
@@ -278,12 +288,10 @@ func mainTest88CopySubDirectoryTree() {
   fmt.Println("           Files Not Copied: ", dTreeStats.FilesNotCopied)
   fmt.Println("Copy Empty Directories Flag: ", copyEmptyDirectories)
 
-
   return
 }
 
-
-func mainTest87CopyDirectoryTree() {
+func (mtst mainTests) mainTest87CopyDirectoryTree() {
 
   setUpDir1 := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest\\levelfilesfortest"
 
@@ -320,7 +328,7 @@ func mainTest87CopyDirectoryTree() {
   fsc := pf.FileSelectionCriteria{}
 
   _,
-  errs := setUpDMgr1.CopyDirectoryTree(srcDMgr, false, fsc)
+    errs := setUpDMgr1.CopyDirectoryTree(srcDMgr, false, fsc)
 
   if len(errs) > 0 {
     fmt.Printf("Test Setup Errors returned by setUpDMgr1.CopyDirectoryTree(srcDMgr, false, fsc).\n"+
@@ -378,7 +386,7 @@ func mainTest87CopyDirectoryTree() {
 
   // Copy '.txt' files only to targetDMgr
   dtreeCopyStats,
-  errs := srcDMgr.CopyDirectoryTree(
+    errs := srcDMgr.CopyDirectoryTree(
     targetDMgr,
     false,
     fsc)
@@ -499,7 +507,7 @@ func mainTest87CopyDirectoryTree() {
   return
 }
 
-func mainTest86CopySubDirTree() {
+func (mtst mainTests) mainTest86CopySubDirTree() {
 
   src := "D:\\T05\\levelfilesfortest"
 
@@ -527,7 +535,7 @@ func mainTest86CopySubDirTree() {
   copyEmptyDirectories = false
 
   dtreeStats,
-  errs := srcDMgr.CopySubDirectoryTree(targetDMgr, copyEmptyDirectories, fsc)
+    errs := srcDMgr.CopySubDirectoryTree(targetDMgr, copyEmptyDirectories, fsc)
 
   if len(errs) > 0 {
     fmt.Printf("Errors returned by srcDMgr.CopyDirectoryTree("+
@@ -559,7 +567,7 @@ func mainTest86CopySubDirTree() {
 
 }
 
-func mainTest85FindWalkSubDirFiles() {
+func (mtst mainTests) mainTest85FindWalkSubDirFiles() {
 
   testDir := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\logTest"
 
@@ -617,8 +625,7 @@ func mainTest85FindWalkSubDirFiles() {
 
 }
 
-
-func mainTest84CopyDirTree() {
+func (mtst mainTests) mainTest84CopyDirTree() {
 
   src := "D:\\T05\\levelfilesfortest"
 
@@ -677,8 +684,7 @@ func mainTest84CopyDirTree() {
 
 }
 
-
-func mainTest83DmgrDeleteDirAll() {
+func (mtst mainTests) mainTest83DmgrDeleteDirAll() {
 
   //srcDir := "D:\\T04\\checkfiles\\checkfiles03\\dir01\\dir02\\dir03"
   srcDir := "D:\\T04\\checkfiles\\checkfiles03\\dir01"
@@ -708,7 +714,7 @@ func mainTest83DmgrDeleteDirAll() {
 
 }
 
-func mainTest82CopyByIO() {
+func (mtst mainTests) mainTest82CopyByIO() {
 
   fh := pf.FileHelper{}
 
@@ -792,8 +798,7 @@ func mainTest82CopyByIO() {
 
 }
 
-
-func mainTest81ReadFileLine() {
+func (mtst mainTests) mainTest81ReadFileLine() {
   // TestFileMgr_ReadFileLine_03
   // xt_filemanager_07_test.go
 
@@ -935,7 +940,7 @@ func mainTest81ReadFileLine() {
 
 }
 
-func mainTest80FileAccessCtrlDetection() {
+func (mtst mainTests) mainTest80FileAccessCtrlDetection() {
 
   fileAccessCtrl, err2 := pf.FileAccessControl{}.NewWriteOnlyAccess()
 
@@ -969,7 +974,7 @@ func mainTest80FileAccessCtrlDetection() {
   fmt.Println("fNewOpenType: ", fNewOpenType.String())
 }
 
-func maintTest79WriteBytes() {
+func (mtst mainTests) maintTest79WriteBytes() {
 
   fh := pf.FileHelper{}
 
@@ -1040,7 +1045,7 @@ func maintTest79WriteBytes() {
   }
 
   if verifyBytesWritten != uint64(numBytesWritten) {
-    fmt.Printf("verifyBytesWritten != numBytesWritten\n" +
+    fmt.Printf("verifyBytesWritten != numBytesWritten\n"+
       "verifyBytesWritten='%v'\nnumBytesWritten='%v'\n",
       verifyBytesWritten, uint64(numBytesWritten))
     return
@@ -1057,7 +1062,7 @@ func maintTest79WriteBytes() {
   }
 
   if numBytesRead == 0 {
-    fmt.Printf("Number of bytes read returned by fMgr.ReadFileBytes() is ZERO!\n" +
+    fmt.Printf("Number of bytes read returned by fMgr.ReadFileBytes() is ZERO!\n"+
       "fMgr='%v'\n",
       fMgr.GetAbsolutePath())
   }
@@ -1083,7 +1088,7 @@ func maintTest79WriteBytes() {
 
 }
 
-func maintTest78WriteBytes() {
+func (mtst mainTests) maintTest78WriteBytes() {
 
   fh := pf.FileHelper{}
 
@@ -1209,7 +1214,7 @@ func maintTest78WriteBytes() {
 
 }
 
-func maintTest77OpenThisFileWriteOnlyAppend() {
+func (mtst mainTests) maintTest77OpenThisFileWriteOnlyAppend() {
 
   fh := pf.FileHelper{}
 
@@ -1301,7 +1306,7 @@ func maintTest77OpenThisFileWriteOnlyAppend() {
 
 }
 
-func mainTest76OpenThisFileWriteOnlyAppend() {
+func (mtst mainTests) mainTest76OpenThisFileWriteOnlyAppend() {
 
   fh := pf.FileHelper{}
 
@@ -1496,8 +1501,7 @@ func mainTest76OpenThisFileWriteOnlyAppend() {
   return
 }
 
-
-func maintTest75FileMgrGetTimeVal() {
+func (mtst mainTests) maintTest75FileMgrGetTimeVal() {
 
   filePath :=
     "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest\\levelfilesfortest\\level_0_2_test.txt"
@@ -1527,7 +1531,7 @@ func maintTest75FileMgrGetTimeVal() {
 
 }
 
-func mainTest73FileHelperFileExist() {
+func (mtst mainTests) mainTest73FileHelperFileExist() {
 
   filePath := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\checkfiles"
 
@@ -1548,7 +1552,7 @@ func mainTest73FileHelperFileExist() {
 
 }
 
-func mainTest72OpenReadOnlyFile() {
+func (mtst mainTests) mainTest72OpenReadOnlyFile() {
   fh := pf.FileHelper{}
 
   rawPath := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\checkfiles\\TestFileMgr_OpenThisFileReadOnly_03.txt"
@@ -1636,7 +1640,7 @@ func mainTest72OpenReadOnlyFile() {
 
 }
 
-func mainTest71IsPathFileString() {
+func (mtst mainTests) mainTest71IsPathFileString() {
   fh := pf.FileHelper{}
 
   testPath := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/" +
@@ -1658,7 +1662,7 @@ func mainTest71IsPathFileString() {
 
 }
 
-func mainTest70AdjustPathStr() {
+func (mtst mainTests) mainTest70AdjustPathStr() {
 
   fh := pf.FileHelper{}
 
@@ -1672,7 +1676,7 @@ func mainTest70AdjustPathStr() {
   fmt.Println("adjustedPath: ", adjustedPath)
 }
 
-func mainTest69CleanDirStr() {
+func (mtst mainTests) mainTest69CleanDirStr() {
 
   fh := pf.FileHelper{}
 
@@ -1681,7 +1685,6 @@ func mainTest69CleanDirStr() {
 
   //    testPathFile := "d:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\pathfileops" +
   //      "\\levelfilesfortest\\level_0_0_test.txt"
-
 
   testPathFile := "../filesfortest//levelfilesfortest/level_01_dir/level_1_1_test.txt"
 
@@ -1717,5 +1720,3 @@ func mainTest69CleanDirStr() {
   fmt.Println("Absolute Path: ", absFilePath)
   fmt.Println()
 }
-
-*/

@@ -2611,7 +2611,7 @@ func dirMgr02SetupDirWalkTests() error {
         "FATAL ERROR: Source File %v DOES NOT EXIST!!!", filesToCopySrc[i])
     }
 
-    err = fh.CopyFileByLinkByIo(filesToCopySrc[i], filesToCopyDest[i])
+    err = fh.CopyFileByIoByLink(filesToCopySrc[i], filesToCopyDest[i])
 
     if err != nil {
       return fmt.Errorf(ePrefix+
