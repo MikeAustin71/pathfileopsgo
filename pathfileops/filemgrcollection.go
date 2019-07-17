@@ -351,7 +351,6 @@ func (fMgrs *FileMgrCollection) GetFileMgrArray() []FileMgr {
   }
 
   return fMgrs.fileMgrs
-
 }
 
 // GetFileMgrAtIndex - If successful, this method returns a pointer to
