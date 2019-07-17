@@ -338,6 +338,150 @@ func TestFileMgrCollection_AddFileInfo_01(t *testing.T) {
 
 }
 
+func TestFileMgrCollection_CopyFilesToDir_01(t *testing.T) {
+  srcPath := "../filesfortest/checkfiles"
+
+  srcDMgr, err := DirMgr{}.New(srcPath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(srcPath)\n"+
+      "srcPath='%v'\nError='%v'\n",
+      srcPath, err.Error())
+    return
+  }
+
+  testPath := "../dirmgrtests/TestFileMgrCollection_CopyFilesToDir_01"
+
+  testDMgr, err := DirMgr{}.New(testPath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testPath)\n"+
+      "testPath='%v'\nError='%v'\n",
+      testPath, err.Error())
+    return
+  }
+
+  err = testDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by (1) testDMgr.DeleteAll()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  err = testDMgr.MakeDir()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by (1) testDMgr.MakeDir()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  fMgrs, err := srcDMgr.FindFilesBySelectCriteria(fsc)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by (1) srcDMgr.FindFilesBySelectCriteria(fsc)\n"+
+      "Error='%v'\n", err.Error())
+    _ = testDMgr.DeleteAll()
+    return
+  }
+
+  numOfSrcFMgrs := fMgrs.GetNumOfFileMgrs()
+
+  if numOfSrcFMgrs == 0 {
+    t.Error("Expected files would be returned from srcDMgr search.\n" +
+      "However, Zero Files were returned!\n")
+    _ = testDMgr.DeleteAll()
+    return
+  }
+
+  err = fMgrs.CopyFilesToDir(testDMgr)
+
+  if err != nil {
+    t.Errorf("Error returned by err = fMgrs.CopyFilesToDir(testDMgr)\n"+
+      "testDMgr='%v'"+
+      "Error='%v'\n",
+      testDMgr.GetAbsolutePath(),
+      err.Error())
+    _ = testDMgr.DeleteAll()
+    return
+  }
+
+  fsc = FileSelectionCriteria{}
+
+  testDirInfo, err := testDMgr.FindFilesBySelectCriteria(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by testDMgr.FindFilesBySelectCriteria(fsc)\n"+
+      "Error='%v'\n", err)
+    _ = testDMgr.DeleteAll()
+    return
+  }
+
+  if numOfSrcFMgrs != testDirInfo.GetNumOfFileMgrs() {
+    t.Errorf("After File Manager Collection Copy Operation,\n"+
+      "the number of files copied does NOT match the number of source files.\n"+
+      "Expected Number of Files Copied='%v'\n"+
+      "Actual Number of Files Copied='%v'\n",
+      numOfSrcFMgrs, testDirInfo.GetNumOfFileMgrs())
+  }
+
+  err = testDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Cleanup Error returned by (2) testDMgr.DeleteAll()\n"+
+      "Error='%v'\n", err.Error())
+  }
+}
+
+func TestFileMgrCollection_CopyFilesToDir_02(t *testing.T) {
+
+  testPath := "../dirmgrtests/TestFileMgrCollection_CopyFilesToDir_02"
+
+  testDMgr, err := DirMgr{}.New(testPath)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testPath)\n"+
+      "testPath='%v'\nError='%v'\n",
+      testPath, err.Error())
+    return
+  }
+
+  err = testDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by (1) testDMgr.DeleteAll()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  err = testDMgr.MakeDir()
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by (1) testDMgr.MakeDir()\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  fMgrs := FileMgrCollection{}
+
+  err = fMgrs.CopyFilesToDir(testDMgr)
+
+  if err == nil {
+    t.Error("Expected an error return by fMgrs.CopyFilesToDir(testDMgr)\n" +
+      "because fMgrs is an empty collection.\nHowever, NO ERROR WAS RETURNED!!!\n")
+  }
+
+  err = testDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Cleanup Error returned by (2) testDMgr.DeleteAll()\n"+
+      "Error='%v'\n", err.Error())
+  }
+}
+
 func TestDirectoryTreeInfo_CopyToDirectoryTree_01(t *testing.T) {
 
   fh := FileHelper{}
