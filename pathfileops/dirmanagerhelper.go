@@ -2475,6 +2475,235 @@ func (dMgrHlpr *dirMgrHelper) executeFileOpsOnFoundFiles(dirOp *DirTreeOp) func(
   }
 }
 
+func (dMgrHlpr *dirMgrHelper) findDirectoryTreeFiles(
+  dMgr *DirMgr,
+  fileSelectionCriteria FileSelectionCriteria,
+  skipTopLevelDirectory bool,
+  scanSubDirectories bool,
+  ePrefix string,
+  dMgrLabel string,
+  fileSelectLabel string) (dTreeInfo DirectoryTreeInfo, errs []error) {
+
+  dTreeInfo = DirectoryTreeInfo{}
+  errs = make([]error, 0, 300)
+
+  ePrefixCurrMethod := "dirMgrHelper.findDirectoryTreeFiles() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  if skipTopLevelDirectory &&
+    !scanSubDirectories {
+
+    err := fmt.Errorf(ePrefix +
+      "\nERROR: Conflicted Input parameters! skipTopLevelDirectory=true and scanSubDirectories=false.\n" +
+      "Impossible combination!!\n")
+
+    errs = append(errs, err)
+    return dTreeInfo, errs
+  }
+
+  dirPathDoesExist,
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+    errs = append(errs, err)
+    return dTreeInfo, errs
+  }
+
+  if !dirPathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: %v Directory Path DOES NOT EXIST!\n"+
+      "%v='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath)
+
+    errs = append(errs, err)
+
+    return dTreeInfo, errs
+  }
+
+  var err2 error
+
+  osPathSepStr := string(os.PathSeparator)
+
+  var nameFileInfos []os.FileInfo
+  var dirPtr *os.File
+  dirPtr = nil
+  fh := FileHelper{}
+  var nextDir *DirMgr
+  file2LoopIsDone := false
+  isMatch := false
+  isTopLevelDir := true
+
+  dTreeInfo.Directories.AddDirMgr(dMgrHlpr.copyOut(dMgr))
+  dTreeCnt := 1
+  idx := 0
+
+  for idx < dTreeCnt {
+
+    if idx == 0 {
+      isTopLevelDir = true
+    } else {
+      isTopLevelDir = false
+    }
+
+    nextDir, err = dTreeInfo.Directories.GetDirMgrAtIndex(idx)
+
+    if err != nil {
+      errs = append(errs, err)
+      break
+    }
+
+    dirPtr, err = os.Open(nextDir.absolutePath)
+
+    if err != nil {
+      err2 = fmt.Errorf(ePrefix+
+        "\nError return by os.Open(%v.absolutePath). "+
+        "%v.absolutePath='%v'\nError='%v'\n\n",
+        dMgrLabel, dMgrLabel,
+        dMgr.absolutePath, err.Error())
+
+      errs = append(errs, err2)
+      dirPtr = nil
+      continue
+    }
+
+    file2LoopIsDone = false
+
+    for !file2LoopIsDone {
+
+      nameFileInfos, err = dirPtr.Readdir(1000)
+
+      if err != nil && err == io.EOF {
+
+        file2LoopIsDone = true
+
+        if len(nameFileInfos) == 0 {
+          break
+        }
+
+      } else if err != nil {
+
+        err2 = fmt.Errorf(ePrefix+
+          "\nError returned by dirPtr.Readdir(1000).\n"+
+          "Error='%v'\n\n", err.Error())
+
+        errs = append(errs, err2)
+
+        file2LoopIsDone = true
+        break
+      }
+
+      for _, nameFInfo := range nameFileInfos {
+
+        if nameFInfo.IsDir() {
+
+          if !scanSubDirectories {
+            continue
+          }
+
+          err = dTreeInfo.Directories.AddDirMgrByPathNameStr(nextDir.absolutePath + osPathSepStr + nameFInfo.Name())
+
+          if err != nil {
+
+            err2 =
+              fmt.Errorf(ePrefix+
+                "\nError returned by dirs.AddDirMgrByPathNameStr(newDirPathFileName).\n"+
+                "newDirPathFileName='%v'\nError='%v'\n\n",
+                nextDir.absolutePath+osPathSepStr+nameFInfo.Name(), err.Error())
+
+            errs = append(errs, err2)
+            continue
+          }
+
+          dTreeCnt++
+
+        } else {
+          // This is a file which is eligible for processing
+
+          if isTopLevelDir && skipTopLevelDirectory {
+            continue
+          }
+
+          // This is not a directory. It is a file.
+          // Determine if it matches the find file criteria.
+          isMatch, err =
+            fh.FilterFileName(nameFInfo, fileSelectionCriteria)
+
+          if err != nil {
+
+            err2 =
+              fmt.Errorf(ePrefix+
+                "\nError returned by fh.FilterFileName(nameFInfo, %v).\n"+
+                "%v directory searched='%v'\nfileName='%v'\nError='%v'\n\n",
+                fileSelectLabel, dMgrLabel,
+                dMgr.absolutePath, nameFInfo.Name(), err.Error())
+
+            errs = append(errs, err2)
+
+            continue
+          }
+
+          if !isMatch {
+
+            continue
+
+          } else {
+
+            // We have a match, delete the file
+
+            err = dTreeInfo.FoundFiles.AddFileMgrByDirFileNameExt(nextDir.CopyOut(), nameFInfo.Name())
+
+            if err != nil {
+              err2 = fmt.Errorf(ePrefix+
+                "\nERROR returned by dTreeInfo.FoundFiles.AddFileMgrByDirFileNameExt(nextDir, fileNameExt)\n"+
+                "nextDir='%v'\n"+
+                "fileNameExt='%v'"+
+                "Error='%v'\n\n",
+                nextDir.absolutePath,
+                nameFInfo.Name(),
+                err.Error())
+
+              errs = append(errs, err2)
+
+            }
+          }
+        }
+
+      } // End of nameFInfo := range nameFileInfos
+    } // End of for !file2LoopIsDone
+
+    if dirPtr != nil {
+
+      err = dirPtr.Close()
+
+      if err != nil {
+
+        err2 = fmt.Errorf(ePrefix+
+          "\nError returned by dirPtr.Close()\n"+
+          "Error='%v'\n\n", err.Error())
+
+        errs = append(errs, err2)
+      }
+
+      dirPtr = nil
+    }
+
+    idx++
+  } // End of for !mainLoopIsDone
+
+  return dTreeInfo, errs
+}
+
 // findFilesByNamePattern - Searches files in the current directory ONLY. An attempt
 // will be made to match the file name with the specified search pattern string.
 // All matched files will be returned in a FileMgrCollection.

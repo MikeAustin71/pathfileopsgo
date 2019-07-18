@@ -2250,6 +2250,8 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
   return errs
 }
 
+// FindFilesByNamePattern - searches the current directory using a name pattern file
+// search criteria.
 //
 // Regardless of the search pattern used, this method will never return sub-directories
 // of the target search directory.
@@ -2992,6 +2994,43 @@ func (dMgr *DirMgr) GetAbsolutePathWithSeparator() string {
   }
 
   return absolutePath
+}
+
+// GetDirectoryBytes - Returns the number of bytes in the current directory identified
+// by the 'DirMgr' instance. This method only returns bytes in the current directory
+//
+func (dMgr *DirMgr) GetDirectoryBytes() (dirBytes uint64) {
+
+  ePrefix := "DirMgr.GetDirectoryBytes() "
+  dMgrHlpr := dirMgrHelper{}
+  dirBytes = 0
+  fsc := FileSelectionCriteria{}
+  dMgr.dataMutex.Lock()
+
+  fileMgrCol,
+    err := dMgrHlpr.findFilesBySelectCriteria(
+    dMgr,
+    fsc,
+    ePrefix,
+    "dMgr",
+    "fileSelectCriteria")
+
+  if err == nil {
+    dirBytes = fileMgrCol.GetTotalFileBytes()
+  }
+
+  dMgr.dataMutex.Unlock()
+  return dirBytes
+}
+
+// GetDirectoryTreeBytes - Returns all the bytes in a directory tree.
+// The parent directory for the search is identified by the current
+// DirMgr instance.
+//
+func (dMgr *DirMgr) GetDirectoryTreeBytes() (dirBytes uint64) {
+
+  dirBytes = 0
+  return dirBytes
 }
 
 // GetDirectoryTree - Returns a DirMgrCollection containing all

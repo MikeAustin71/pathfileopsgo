@@ -4,6 +4,7 @@ import (
   pf "../pathfileops"
   "fmt"
   "io"
+  "os"
   fp "path/filepath"
   "strings"
 )
@@ -24,13 +25,94 @@ import (
 
 func main() {
 
-  mainTests{}.mainTest89MoveSubDirectoryTree()
+  mainTests{}.mainTest91GetDirBytes()
 
 }
 
 type mainTests struct {
   Input  string
   Output string
+}
+
+func (mtst mainTests) mainTest91GetDirBytes() {
+
+  basePath, err := mtst.getBaseProjectPath(true)
+
+  if err != nil {
+    fmt.Printf("Error returned by mtst.getBaseProjectPath(false)\n"+
+      "Error='%v'\n\n", err.Error())
+    return
+  }
+
+  testDir := basePath + "filesfortest"
+
+  testDMgr, err := pf.DirMgr{}.New(testDir)
+
+  if err != nil {
+    fmt.Printf("Error returned by DirMgr{}.New(testDir)\n"+
+      "testDir='%v'\n"+
+      "Error='%v'\n\n", err.Error())
+    return
+  }
+
+  fsc := pf.FileSelectionCriteria{}
+
+  testDInfo, err := testDMgr.FindWalkDirFiles(fsc)
+
+  if err != nil {
+    fmt.Printf("Error returned by testDMgr.FindWalkDirFiles(fsc)\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  fileBytes := testDInfo.FoundFiles.GetTotalFileBytes()
+
+  dirBytes := testDMgr.GetDirectoryBytes()
+
+  fmt.Println("           maintTest90GetBaseProject()                  ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("          Test Directory: ", testDir)
+  fmt.Println("  Test Directory Manager: ", testDMgr.GetAbsolutePath())
+  fmt.Println("         Directory Bytes: ", dirBytes)
+  fmt.Println("        Total File Bytes: ", fileBytes)
+  fmt.Println()
+
+}
+
+func (mtst mainTests) maintTest90GetBaseProject() {
+
+  basePath, err := mtst.getBaseProjectPath(false)
+
+  if err != nil {
+    fmt.Printf("Error returned by mtst.getBaseProjectPath(false)\n"+
+      "Error='%v'\n\n", err.Error())
+    return
+  }
+
+  basePathWithSeparator, err := mtst.getBaseProjectPath(true)
+
+  if err != nil {
+    fmt.Printf("Error returned by mtst.getBaseProjectPath(true)\n"+
+      "Error='%v'\n\n", err.Error())
+    return
+  }
+
+  localPath := "archive"
+  fh := pf.FileHelper{}
+  absoluteLocalPath := fh.JoinPathsAdjustSeparators(basePath, localPath)
+
+  fmt.Println("          maintTest90GetBaseProject()                   ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("Project Base Path Without Separator: ", basePath)
+  fmt.Println("   Project Base Path With Separator: ", basePathWithSeparator)
+  fmt.Println("             Local Constructed Path: ", absoluteLocalPath)
+
 }
 
 func (mtst mainTests) mainTest89MoveSubDirectoryTree() {
@@ -1719,4 +1801,45 @@ func (mtst mainTests) mainTest69CleanDirStr() {
   fmt.Println("  Volume Name: ", volName)
   fmt.Println("Absolute Path: ", absFilePath)
   fmt.Println()
+}
+
+// getBaseProjectPath - Gets the base path on this machine for the
+// 'pathfileopsgo' project.
+//
+func (mtst mainTests) getBaseProjectPath(
+  addTrailingPathSeparator bool) (basePath string, err error) {
+
+  ePrefix := "getBaseProjectPath() "
+  fh := pf.FileHelper{}
+
+  basePath = ""
+  err = nil
+  currDir, err2 := fh.GetAbsCurrDir()
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "Error returned by fh.GetAbsCurrDir().\nError='%v'\n", err2.Error())
+
+    return basePath, err
+  }
+
+  target := "pathfileopsgo"
+  idx := strings.Index(currDir, target)
+
+  if idx < 0 {
+    err = fmt.Errorf(ePrefix +
+      "Error: Unable to locate \"pathfileopsgo\" in current directory string!\n")
+
+    return basePath, err
+  }
+
+  idx += len(target)
+
+  basePath = currDir[0:idx]
+
+  if addTrailingPathSeparator {
+    basePath += string(os.PathSeparator)
+  }
+
+  return basePath, err
 }

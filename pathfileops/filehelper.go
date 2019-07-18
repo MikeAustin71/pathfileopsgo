@@ -2363,14 +2363,15 @@ func (fh FileHelper) GetAbsCurrDir() (string, error) {
 
   if err != nil {
     return "", fmt.Errorf(ePrefix+
-      "Error returned from os.Getwd(). Error='%v'", err.Error())
+      "Error returned from os.Getwd().\nError='%v'\n",
+      err.Error())
   }
 
   absDir, err := fh.MakeAbsolutePath(dir)
 
   if err != nil {
     return "", fmt.Errorf(ePrefix+
-      "Error returned by fh.MakeAbsolutePath(dir). Error='%v' ",
+      "Error returned by fh.MakeAbsolutePath(dir).\nError='%v'\n",
       err.Error())
 
   }
@@ -4142,7 +4143,8 @@ func (fh FileHelper) IsPathString(
 // path strings and standardizes the
 // path separators according to the
 // current operating system.
-func (fh FileHelper) JoinPathsAdjustSeparators(p1 string, p2 string) string {
+func (fh FileHelper) JoinPathsAdjustSeparators(
+  p1 string, p2 string) string {
 
   errCode := 0
 
