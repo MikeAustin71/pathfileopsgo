@@ -26,13 +26,59 @@ import (
 
 func main() {
 
-  mainTests{}.mainTest94Index02()
+  mainTests{}.mainTest95DirNew01()
 
 }
 
 type mainTests struct {
   Input  string
   Output string
+}
+
+func (mtst mainTests) mainTest95DirNew01() {
+
+  fh := pf.FileHelper{}
+  origDir := fh.AdjustPathSlash("../testfiles/testfiles2/.git")
+  expectedPath := fh.AdjustPathSlash("../testfiles/testfiles2/.git")
+
+  expectedAbsDir, err := fh.MakeAbsolutePath(expectedPath)
+
+  if err != nil {
+    fmt.Printf("Test Startup Error returned by fh.MakeAbsolutePath(expectedPath).\n"+
+      "expectedPath='%v'\nError='%v'\n", expectedPath, err.Error())
+    return
+  }
+
+  dMgr, err := pf.DirMgr{}.New(origDir)
+
+  if err != nil {
+    fmt.Printf("Error returned from DirMgr{}.New(origDir).\n"+
+      "origDir=='%v' Error='%v'\n",
+      origDir, err.Error())
+    return
+  }
+
+  if true != dMgr.IsInitialized() {
+    fmt.Printf("Expected DirMgr.isFInfoInitialized=='%v'.\n"+
+      "Instead, DirMgr.isFInfoInitialized=='%v'\n",
+      true, dMgr.IsInitialized())
+    return
+  }
+
+  if expectedAbsDir != dMgr.GetAbsolutePath() {
+    fmt.Printf("Expected absolute path does match actual absolute path!\n"+
+      "Expected absolute path='%v'\n"+
+      "Actual absolute path='%v'\n",
+      expectedAbsDir, dMgr.GetAbsolutePath())
+  }
+
+  fmt.Println("                mainTest95DirNew01                      ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("Expected Absolute Path: ", expectedAbsDir)
+  fmt.Println("  Actual Absolute Path: ", dMgr.GetAbsolutePath())
 }
 
 func (mtst mainTests) mainTest94Index02() {
@@ -110,7 +156,7 @@ func (mtst mainTests) mainTest92GetDirTreeBytes() {
 
   var tStart, tEnd time.Time
 
-  targetDir := "D:\\T88\\pathfileopsgo"
+  targetDir := "D:\\T98\\pathfileopsgo"
   // targetDir := "D:\\T05\\filesfortest"
 
   testDMgr, err := pf.DirMgr{}.New(targetDir)

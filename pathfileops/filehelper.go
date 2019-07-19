@@ -352,6 +352,8 @@ func (fh FileHelper) ChangeWorkingDir(dirPath string) error {
 //
 //     dirName = '../dir1/dir2/filename.ext'     returns "../dir1/dir2"
 //
+//     dirName = '../dir1/dir2/.git'             returns "../dir1/dir2"
+//
 //     dirName = 'somevalidcharacters'           returns "./somevalidchracters"
 //
 func (fh FileHelper) CleanDirStr(dirNameStr string) (returnedDirName string, isEmpty bool, err error) {
