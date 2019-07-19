@@ -159,7 +159,7 @@ func TestFileHelper_GetPathFromPathFileName_07(t *testing.T) {
 
   commonDir := fh.AdjustPathSlash("./")
 
-  expectedDir :=  fh.AdjustPathSlash("./")
+  expectedDir := fh.AdjustPathSlash("./")
 
   result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
 
@@ -175,7 +175,7 @@ func TestFileHelper_GetPathFromPathFileName_07(t *testing.T) {
   }
 
   if result != expectedDir {
-    t.Errorf("Expected GetPathFromPathFileName to return path == '%v'\n" +
+    t.Errorf("Expected GetPathFromPathFileName to return path == '%v'\n"+
       "for valid path/file name.\nInstead return path == '%v'\n",
       expectedDir, result)
   }
@@ -270,21 +270,21 @@ func TestFileHelper_GetPathFromPathFileName_11(t *testing.T) {
   result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
 
   if err != nil {
-    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir).\n" +
+    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir).\n"+
       "commonDir='%v'\nError='%v'\n",
       commonDir, err.Error())
     return
   }
 
   if false != isEmpty {
-    t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'.\n" +
+    t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'.\n"+
       "Instead, isEmpty='%v'\n",
       false, isEmpty)
   }
 
   if result != expectedDir {
     t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file "+
-      "name\n" +
+      "name\n"+
       "Instead return path == '%v'\n",
       expectedDir, result)
   }
@@ -333,6 +333,33 @@ func TestFileHelper_GetPathFromPathFileName_13(t *testing.T) {
   if result != "" {
     t.Errorf("Expected GetPathFromPathFileName to return path == 'empty string'.  "+
       "Instead path=='%v' ", result)
+  }
+
+}
+
+func TestFileHelper_GetPathFromPathFileName_14(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\.git")
+
+  expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
+
+  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir).\n"+
+      "commonDir='%v'\nError='%v'", commonDir, err.Error())
+  }
+
+  if isEmpty != false {
+    t.Errorf("Expected isEmpty GetPathFromPathFileName for valid file extension\n"+
+      "to return 'false'. Instead isEmpty='%v'\n", isEmpty)
+  }
+
+  if result != expectedDir {
+    t.Errorf("ERROR: Expected GetPathFromPathFileName to return "+
+      "path == '%v' for valid path/file name.\n"+
+      "Instead path == %v\n", expectedDir, result)
   }
 
 }

@@ -7,6 +7,7 @@ import (
   "os"
   fp "path/filepath"
   "strings"
+  "time"
 )
 
 /*
@@ -25,13 +26,150 @@ import (
 
 func main() {
 
-  mainTests{}.mainTest91GetDirBytes()
+  mainTests{}.mainTest94Index02()
 
 }
 
 type mainTests struct {
   Input  string
   Output string
+}
+
+func (mtst mainTests) mainTest94Index02() {
+  fh := pf.FileHelper{}
+
+  pathStr := fh.AdjustPathSlash("../dir1/dir2/dir3/")
+  //dirName := string(os.PathSeparator) +  ".git"
+  dirName := string(os.PathSeparator)
+
+  origPathName := pathStr
+
+  lPathStr := len(pathStr)
+
+  if pathStr[lPathStr-1] == os.PathSeparator {
+    pathStr = pathStr[0 : lPathStr-1]
+  }
+
+  newDirName := dirName
+
+  if newDirName[0] == os.PathSeparator {
+    newDirName = newDirName[1:]
+  }
+
+  fullPath := pathStr + string(os.PathSeparator) + newDirName
+
+  if len(newDirName) == 0 {
+    fullPath = pathStr
+  }
+
+  fmt.Println("                mainTest94Index02                       ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("   pathStr: ", origPathName)
+  fmt.Println("   dirName: ", dirName)
+  fmt.Println("newDirName: ", newDirName)
+  fmt.Println("  fullPath: ", fullPath)
+
+  // Print out
+  // pathStr:  ..\dir1\dir2\dir3\
+  // dirName:  \
+  // newDirName:
+  // fullPath:  ..\dir1\dir2\dir3
+}
+
+func (mtst mainTests) mainTest93Index01() {
+  fh := pf.FileHelper{}
+
+  pathStr := fh.AdjustPathSlash("../dir1/dir2/dir3")
+  dirName := ".git"
+
+  origPathName := pathStr
+
+  lPathStr := len(pathStr)
+
+  if pathStr[lPathStr-1] != os.PathSeparator {
+    pathStr += string(os.PathSeparator)
+  }
+
+  fullPath := pathStr + dirName
+
+  fmt.Println("                mainTest93Index01                       ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println(" pathStr: ", origPathName)
+  fmt.Println(" dirName: ", dirName)
+  fmt.Println("fullPath: ", fullPath)
+
+}
+
+func (mtst mainTests) mainTest92GetDirTreeBytes() {
+
+  var tStart, tEnd time.Time
+
+  targetDir := "D:\\T88\\pathfileopsgo"
+  // targetDir := "D:\\T05\\filesfortest"
+
+  testDMgr, err := pf.DirMgr{}.New(targetDir)
+
+  if err != nil {
+    fmt.Printf("Error returned by DirMgr{}.New(targetDir)\n"+
+      "targetDir='%v'\n"+
+      "Error='%v'\n\n", targetDir, err.Error())
+    return
+  }
+
+  fsc := pf.FileSelectionCriteria{}
+
+  tStart = time.Now()
+
+  testDInfo1, errs := testDMgr.FindDirectoryTreeFiles(fsc)
+
+  tEnd = time.Now()
+
+  if len(errs) > 0 {
+    fmt.Printf("Error returned by testDMgr.FindDirectoryTreeFiles(fsc)\n"+
+      "testDMgr='%v'\n"+
+      "Errors Follow:\n\n'%v'", targetDir,
+      testDMgr.ConsolidateErrors(errs))
+    return
+  }
+
+  duration1Str := mtst.timer(tStart, tEnd)
+
+  total1FileBytes := testDInfo1.FoundFiles.GetTotalFileBytes()
+
+  tStart = time.Now()
+
+  testDInfo2, err := testDMgr.FindWalkDirFiles(fsc)
+
+  tEnd = time.Now()
+
+  if err != nil {
+    fmt.Printf("Error returned by testDMgr.FindDirectoryTreeFiles(fsc)\n"+
+      "testDMgr='%v'\n"+
+      "Error='%v'\n", targetDir, err)
+    return
+  }
+
+  total2FileBytes := testDInfo2.FoundFiles.GetTotalFileBytes()
+  duration2Str := mtst.timer(tStart, tEnd)
+
+  fmt.Println("           mainTest92GetDirTreeBytes()                  ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("         Target Directory: ", targetDir)
+  fmt.Println("   Test Directory Manager: ", testDMgr.GetAbsolutePath())
+  fmt.Println("      Total File Bytes #1: ", total1FileBytes)
+  fmt.Println("FileScreen-1 Elapsed Time: ", duration1Str)
+  fmt.Println("      Total File Bytes #2: ", total2FileBytes)
+  fmt.Println("FileScreen-2 Elapsed Time: ", duration2Str)
+  fmt.Println()
 }
 
 func (mtst mainTests) mainTest91GetDirBytes() {
@@ -51,7 +189,7 @@ func (mtst mainTests) mainTest91GetDirBytes() {
   if err != nil {
     fmt.Printf("Error returned by DirMgr{}.New(testDir)\n"+
       "testDir='%v'\n"+
-      "Error='%v'\n\n", err.Error())
+      "Error='%v'\n\n", testDir, err.Error())
     return
   }
 
@@ -69,7 +207,7 @@ func (mtst mainTests) mainTest91GetDirBytes() {
 
   dirBytes := testDMgr.GetDirectoryBytes()
 
-  fmt.Println("           maintTest90GetBaseProject()                  ")
+  fmt.Println("              mainTest91GetDirBytes()                   ")
   fmt.Println("********************************************************")
   fmt.Println("                    SUCCESS!!!                          ")
   fmt.Println("********************************************************")
@@ -1842,4 +1980,102 @@ func (mtst mainTests) getBaseProjectPath(
   }
 
   return basePath, err
+}
+
+func (mtst mainTests) timer(starTime, endTime time.Time) string {
+
+  // MicroSecondNanoseconds - Number of Nanoseconds in a Microsecond
+  // 	A MicroSecond is 1/1,000,000 or 1 one-millionth of a second
+  MicroSecondNanoseconds := int64(time.Microsecond)
+
+  // MilliSecondNanoseconds - Number of Nanoseconds in a MilliSecond
+  //	 A millisecond is 1/1,000 or 1 one-thousandth of a second
+  MilliSecondNanoseconds := int64(time.Millisecond)
+
+  // SecondNanoseconds - Number of Nanoseconds in a Second
+  SecondNanoseconds := int64(time.Second)
+
+  // MinuteNanoseconds - Number of Nanoseconds in a minute
+  MinuteNanoseconds := int64(time.Minute)
+
+  // HourNanoseconds - Number of Nanoseconds in an hour
+  HourNanoseconds := int64(time.Hour)
+
+  t2Dur := endTime.Sub(starTime)
+
+  str := ""
+
+  totalNanoseconds := t2Dur.Nanoseconds()
+  numOfHours := int64(0)
+  numOfMinutes := int64(0)
+  numOfSeconds := int64(0)
+  numOfMillisecionds := int64(0)
+  numOfMicroseconds := int64(0)
+  numOfNanoseconds := int64(0)
+
+  if totalNanoseconds >= HourNanoseconds {
+    numOfHours = totalNanoseconds / HourNanoseconds
+    totalNanoseconds = totalNanoseconds - (numOfHours * HourNanoseconds)
+  }
+
+  if totalNanoseconds >= MinuteNanoseconds {
+    numOfMinutes = totalNanoseconds / MinuteNanoseconds
+    totalNanoseconds = totalNanoseconds - (numOfMinutes * MinuteNanoseconds)
+  }
+
+  if totalNanoseconds >= SecondNanoseconds {
+    numOfSeconds = totalNanoseconds / SecondNanoseconds
+    totalNanoseconds = totalNanoseconds - (numOfSeconds * SecondNanoseconds)
+  }
+
+  if totalNanoseconds >= SecondNanoseconds {
+    numOfSeconds = totalNanoseconds / SecondNanoseconds
+    totalNanoseconds = totalNanoseconds - (numOfSeconds * SecondNanoseconds)
+  }
+
+  if totalNanoseconds >= MilliSecondNanoseconds {
+    numOfMillisecionds = totalNanoseconds / MilliSecondNanoseconds
+    totalNanoseconds = totalNanoseconds - (numOfMillisecionds * MilliSecondNanoseconds)
+  }
+
+  if totalNanoseconds >= MicroSecondNanoseconds {
+    numOfMicroseconds = totalNanoseconds / MicroSecondNanoseconds
+    totalNanoseconds = totalNanoseconds - (numOfMicroseconds * MicroSecondNanoseconds)
+  }
+
+  numOfNanoseconds = totalNanoseconds
+
+  if numOfHours > 0 {
+
+    str += fmt.Sprintf("%v-Hours ", numOfHours)
+
+  }
+
+  if numOfMinutes > 0 {
+
+    str += fmt.Sprintf("%v-Minutes ", numOfMinutes)
+
+  }
+
+  if numOfSeconds > 0 || str != "" {
+
+    str += fmt.Sprintf("%v-Seconds ", numOfSeconds)
+
+  }
+
+  if numOfMillisecionds > 0 || str != "" {
+
+    str += fmt.Sprintf("%v-Milliseconds ", numOfMillisecionds)
+
+  }
+
+  if numOfMicroseconds > 0 || str != "" {
+
+    str += fmt.Sprintf("%v-Microseconds ", numOfMicroseconds)
+
+  }
+
+  str += fmt.Sprintf("%v-Nanoseconds", numOfNanoseconds)
+
+  return str
 }

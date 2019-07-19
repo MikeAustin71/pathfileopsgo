@@ -3416,13 +3416,18 @@ func (fh FileHelper) GetPathAndFileNameExt(
 //
 // Examples:
 //
-//  pathFileNameExt = ""        returns isEmpty==true  err==nil
-//  pathFileNameExt = "D:\"     returns "D:\"
-//  pathFileNameExt = "."       returns ".\"
-//  pathFileNameExt = "..\"     returns "..\"
-//  pathFileNameExt = "...\"    returns ERROR
-//  pathFileNameExt = ".\pathfile\003_filehelper\wt_HowToRunTests.md"  returns ".\pathfile\003_filehelper"
-//  pathFileNameExt = "someFile.go" returns ""
+//  pathFileNameExt = ""                  returns isEmpty==true  err==nil
+//  pathFileNameExt = "D:\"               returns "D:\"
+//  pathFileNameExt = "."                 returns ".\"
+//  pathFileNameExt = "..\"               returns "..\"
+//  pathFileNameExt = "...\"              returns ERROR
+//
+//  pathFileNameExt = ".\pathfile\003_filehelper\wt_HowToRunTests.md"
+//                                        returns ".\pathfile\003_filehelper"
+//
+//  pathFileNameExt = "someFile.go"       returns ""
+//  pathFileNameExt = "..\dir1\dir2\.git" returns "..\dir1\dir2"
+//                                         '.git' is assumed to be a file.
 //
 func (fh FileHelper) GetPathFromPathFileName(
   pathFileNameExt string) (dirPath string, isEmpty bool, err error) {

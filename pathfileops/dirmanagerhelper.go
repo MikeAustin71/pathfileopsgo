@@ -2540,23 +2540,23 @@ func (dMgrHlpr *dirMgrHelper) findDirectoryTreeFiles(
   dirPtr = nil
   fh := FileHelper{}
   var nextDir *DirMgr
+  newDir := ""
   file2LoopIsDone := false
   isMatch := false
   isTopLevelDir := true
 
   dTreeInfo.Directories.AddDirMgr(dMgrHlpr.copyOut(dMgr))
   dTreeCnt := 1
-  idx := 0
 
-  for idx < dTreeCnt {
+  for i := 0; i < dTreeCnt; i++ {
 
-    if idx == 0 {
+    if i == 0 {
       isTopLevelDir = true
     } else {
       isTopLevelDir = false
     }
 
-    nextDir, err = dTreeInfo.Directories.GetDirMgrAtIndex(idx)
+    nextDir, err = dTreeInfo.Directories.GetDirMgrAtIndex(i)
 
     if err != nil {
       errs = append(errs, err)
@@ -2583,11 +2583,13 @@ func (dMgrHlpr *dirMgrHelper) findDirectoryTreeFiles(
 
       nameFileInfos, err = dirPtr.Readdir(1000)
 
+      lNameFileInfos := len(nameFileInfos)
+
       if err != nil && err == io.EOF {
 
         file2LoopIsDone = true
 
-        if len(nameFileInfos) == 0 {
+        if lNameFileInfos == 0 {
           break
         }
 
@@ -2611,7 +2613,9 @@ func (dMgrHlpr *dirMgrHelper) findDirectoryTreeFiles(
             continue
           }
 
-          err = dTreeInfo.Directories.AddDirMgrByPathNameStr(nextDir.absolutePath + osPathSepStr + nameFInfo.Name())
+          newDir = nextDir.absolutePath + osPathSepStr + nameFInfo.Name()
+
+          err = dTreeInfo.Directories.AddDirMgrByPathNameStr(newDir)
 
           if err != nil {
 
@@ -2698,7 +2702,6 @@ func (dMgrHlpr *dirMgrHelper) findDirectoryTreeFiles(
       dirPtr = nil
     }
 
-    idx++
   } // End of for !mainLoopIsDone
 
   return dTreeInfo, errs
@@ -5022,6 +5025,300 @@ func (dMgrHlpr *dirMgrHelper) setDirMgr(
 
     err = fmt.Errorf("%v",
       nonPathError.Error())
+
+    isEmpty = true
+    return isEmpty, err
+  }
+
+  if dirPathDoesExist {
+
+    if !fInfoPlus.IsDir() {
+      _ = dMgrHlpr.empty(
+        dMgr,
+        ePrefix,
+        dMgrLabel)
+
+      err = fmt.Errorf(ePrefix+
+        "\nThe Directory Manager absolute path exists and IS NOT A DIRECTORY!.\n"+
+        "%v Path='%v'\n",
+        dMgrLabel,
+        dMgr.absolutePath)
+
+      isEmpty = true
+      return isEmpty, err
+    }
+
+    if fInfoPlus.Mode().IsRegular() {
+
+      _ = dMgrHlpr.empty(
+        dMgr,
+        ePrefix,
+        dMgrLabel)
+
+      err = fmt.Errorf(ePrefix+
+        "\nError: Directory absolute path exists, but "+
+        "it is classified as as a Regular File!\n"+
+        "%v='%v'\n",
+        dMgrLabel,
+        dMgr.absolutePath)
+
+      isEmpty = true
+      return isEmpty, err
+    }
+
+    dMgr.doesAbsolutePathExist = true
+    dMgr.actualDirFileInfo = fInfoPlus.CopyOut()
+
+  } else {
+    dMgr.doesAbsolutePathExist = false
+    dMgr.actualDirFileInfo = FileInfoPlus{}
+  }
+
+  dMgr.isAbsolutePathPopulated = true
+
+  strAry := strings.Split(dMgr.absolutePath, string(os.PathSeparator))
+  lStr := len(strAry)
+  idxStr := strAry[lStr-1]
+
+  idx := strings.Index(dMgr.absolutePath, idxStr)
+
+  dMgr.parentPath = fh.RemovePathSeparatorFromEndOfPathString(dMgr.absolutePath[0:idx])
+
+  dMgr.isParentPathPopulated = true
+
+  if dMgr.parentPath == "" {
+    dMgr.isParentPathPopulated = false
+  }
+
+  if idxStr != "" {
+    dMgr.directoryName = idxStr
+  } else {
+    dMgr.directoryName = dMgr.absolutePath
+  }
+
+  if dMgr.path != dMgr.absolutePath {
+    dMgr.isAbsolutePathDifferentFromPath = true
+  }
+
+  var vn string
+  if dMgr.isAbsolutePathPopulated {
+    vn = pf.VolumeName(dMgr.absolutePath)
+  } else if dMgr.isPathPopulated {
+    vn = pf.VolumeName(dMgr.path)
+  }
+
+  if vn != "" {
+    dMgr.isVolumePopulated = true
+    dMgr.volumeName = vn
+  }
+
+  if dMgr.isAbsolutePathPopulated && dMgr.isPathPopulated {
+    dMgr.isInitialized = true
+    isEmpty = false
+  } else {
+    isEmpty = true
+  }
+
+  err = nil
+
+  return isEmpty, err
+}
+
+// setDirMgrWithPathDirectoryName - Configures a Directory Manager
+// instance based on 'path' and 'directory name' parameters.
+//
+func (dMgrHlpr *dirMgrHelper) setDirMgrWithPathDirectoryName(
+  dMgr *DirMgr,
+  pathStr string,
+  directoryName string,
+  ePrefix string,
+  dMgrLabel string,
+  pathStrLabel string,
+  directoryNameLabel string) (isEmpty bool, err error) {
+
+  isEmpty = false
+  err = nil
+
+  ePrefixCurrMethod := "dirMgrHelper.setDirMgrWithPathDirectoryName() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+  errCode := 0
+
+  fh := FileHelper{}
+
+  errCode, _, pathStr = fh.isStringEmptyOrBlank(pathStr)
+
+  if errCode == -1 {
+    isEmpty = true
+    err = fmt.Errorf(ePrefix+
+      "\nError: Input parameter '%v' is an empty string!\n",
+      pathStrLabel)
+
+    return isEmpty, err
+  }
+
+  if errCode == -2 {
+    isEmpty = true
+    err = fmt.Errorf(ePrefix+
+      "\nError: Input parameter '%v' consists of blank spaces!\n",
+      pathStrLabel)
+
+    return isEmpty, err
+  }
+
+  errCode, _, directoryName = fh.isStringEmptyOrBlank(directoryName)
+
+  if errCode == -1 {
+    isEmpty = true
+    err = fmt.Errorf(ePrefix+
+      "\nError: Input parameter '%v' is an empty string!\n",
+      directoryNameLabel)
+
+    return isEmpty, err
+  }
+
+  if errCode == -2 {
+    isEmpty = true
+    err = fmt.Errorf(ePrefix+
+      "\nError: Input parameter '%v' consists of blank spaces!\n",
+      directoryNameLabel)
+
+    return isEmpty, err
+  }
+
+  pathStr = fh.AdjustPathSlash(pathStr)
+
+  lPathStr := len(pathStr)
+
+  if pathStr[lPathStr-1] != os.PathSeparator {
+    pathStr += string(os.PathSeparator)
+  }
+
+  finalPathStr := pathStr + directoryName
+
+  dMgr.originalPath = finalPathStr
+
+  dMgr.path = finalPathStr
+
+  dMgr.isPathPopulated = true
+
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    err2 :=
+    fh.doesPathFileExist(
+      dMgr.path,
+      PreProcPathCode.None(),
+      ePrefix,
+      dMgrLabel+".path")
+
+  if err2 != nil {
+    _ = dMgrHlpr.empty(
+      dMgr,
+      ePrefix,
+      dMgrLabel)
+
+    err = fmt.Errorf("%v",
+      err2.Error())
+
+    isEmpty = true
+    return isEmpty, err
+  }
+
+  if !dirPathDoesExist {
+    dMgr.doesPathExist = false
+
+  } else {
+
+    if !fInfoPlus.IsDir() {
+      _ = dMgrHlpr.empty(
+        dMgr,
+        ePrefix,
+        dMgrLabel)
+
+      err = fmt.Errorf(ePrefix+
+        "\nERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+        "%v='%v'\n",
+        dMgrLabel,
+        dMgr.path)
+
+      isEmpty = true
+      return isEmpty, err
+    }
+
+    if fInfoPlus.Mode().IsRegular() {
+
+      _ = dMgrHlpr.empty(
+        dMgr,
+        ePrefix,
+        dMgrLabel)
+
+      err = fmt.Errorf(ePrefix+
+        "\nError: Directory path exists, but "+
+        "it is classified as as a Regular File!\n"+
+        "%v='%v'\n",
+        dMgrLabel,
+        dMgr.path)
+
+      isEmpty = true
+      return isEmpty, err
+    }
+
+    dMgr.doesPathExist = true
+  }
+
+  // Create absolute path
+  if strings.ToLower(dMgr.path) == strings.ToLower(pf.VolumeName(dMgr.path)) {
+
+    dMgr.absolutePath = fh.AdjustPathSlash(dMgr.path)
+
+  } else {
+
+    dMgr.absolutePath, err2 = fh.MakeAbsolutePath(dMgr.path)
+
+    if err2 != nil {
+
+      _ = dMgrHlpr.empty(
+        dMgr,
+        ePrefix,
+        dMgrLabel)
+
+      err = fmt.Errorf(ePrefix+
+        "\nfh.MakeAbsolutePath(%v.path) returned error.\n"+
+        "%v.path='%v'\nError='%v'\n",
+        dMgrLabel,
+        dMgrLabel,
+        dMgr.path,
+        err2.Error())
+
+      isEmpty = true
+      return isEmpty, err
+    }
+  }
+
+  _,
+    dirPathDoesExist,
+    fInfoPlus,
+    err2 =
+    fh.doesPathFileExist(
+      dMgr.absolutePath,
+      PreProcPathCode.None(),
+      ePrefix,
+      dMgrLabel+".absolutePath")
+
+  if err2 != nil {
+
+    _ = dMgrHlpr.empty(
+      dMgr,
+      ePrefix,
+      dMgrLabel)
+
+    err = fmt.Errorf("%v",
+      err2.Error())
 
     isEmpty = true
     return isEmpty, err
