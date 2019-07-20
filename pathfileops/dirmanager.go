@@ -2908,22 +2908,30 @@ func (dMgr *DirMgr) FindWalkDirFiles(
   fileSelectCriteria FileSelectionCriteria) (DirectoryTreeInfo, error) {
 
   ePrefix := "DirMgr.FindWalkDirFiles() "
-  findFilesInfo := DirectoryTreeInfo{}
+  dTreeInfo := DirectoryTreeInfo{}
   var err error
+  var errs []error
   dMgrHlpr := dirMgrHelper{}
 
   dMgr.dataMutex.Lock()
 
-  findFilesInfo,
-    err = dMgrHlpr.findFilesWalkDirectory(
+  dTreeInfo,
+    errs = dMgrHlpr.findDirectoryTreeFiles(
     dMgr,
     fileSelectCriteria,
+    false, // skip top level directory
+    true,  // scan sub-directories
     ePrefix,
-    "dMgr")
+    "dMgr",
+    "fileSelectCriteria")
+
+  if len(errs) > 0 {
+    err = dMgr.ConsolidateErrors(errs)
+  }
 
   dMgr.dataMutex.Unlock()
 
-  return findFilesInfo, err
+  return dTreeInfo, err
 }
 
 // FindWalkSubDirFiles - This method returns file information on files residing in a
@@ -3112,15 +3120,35 @@ func (dMgr *DirMgr) FindWalkSubDirFiles(
 
   ePrefix := "DirMgr.FindWalkSubDirFiles() "
   dMgrHlpr := dirMgrHelper{}
+  var errs []error
+
+  dMgr.dataMutex.Lock()
 
   dTreeInfo,
-    err = dMgrHlpr.findFilesWalkDirectoryTree(
+    errs = dMgrHlpr.findDirectoryTreeFiles(
     dMgr,
     fileSelectCriteria,
-    true, // skipTopLevelDirectory
+    true, // skip top level directory
+    true, // scan sub-directories
     ePrefix,
-    "dMgr")
+    "dMgr",
+    "fileSelectCriteria")
 
+  if len(errs) > 0 {
+    err = dMgr.ConsolidateErrors(errs)
+  }
+
+  dMgr.dataMutex.Unlock()
+
+  /*
+     dTreeInfo,
+       err = dMgrHlpr.findFilesWalkDirectoryTree(
+       dMgr,
+       fileSelectCriteria,
+       true, // skipTopLevelDirectory
+       ePrefix,
+       "dMgr")
+  */
   return dTreeInfo, err
 }
 
