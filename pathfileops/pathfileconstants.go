@@ -115,7 +115,7 @@ func (fsc *FileSelectionCriteria) ArePatternsActive() bool {
 type DirectoryDeleteFileInfo struct {
   StartPath                string
   Directories              DirMgrCollection
-  ErrReturns               []string
+  ErrReturns               []error
   DeleteFileSelectCriteria FileSelectionCriteria
   DeletedFiles             FileMgrCollection
 }

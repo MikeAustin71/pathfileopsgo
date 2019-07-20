@@ -5957,7 +5957,7 @@ func (fh *FileHelper) makeFileHelperWalkDirDeleteFilesFunc(dInfo *DirectoryDelet
     ePrefix := "DirMgr.makeFileHelperWalkDirDeleteFilesFunc"
 
     if erIn != nil {
-      dInfo.ErrReturns = append(dInfo.ErrReturns, erIn.Error())
+      dInfo.ErrReturns = append(dInfo.ErrReturns, erIn)
       return nil
     }
 
@@ -5971,14 +5971,7 @@ func (fh *FileHelper) makeFileHelperWalkDirDeleteFilesFunc(dInfo *DirectoryDelet
           "Error returned from DirMgr{}.NewFromPathFileNameExtStr(pathFile).\n"+
           "pathFile:='%v'\nError='%v'\n", pathFile, err.Error())
 
-        dInfo.ErrReturns = append(dInfo.ErrReturns, ex.Error())
-
-        /*
-           if subDir.isInitialized {
-             subDir.actualDirFileInfo = FileInfoPlus{}.NewFromPathFileInfo(pathFile, info)
-             dInfo.Directories.AddDirMgr(subDir)
-           }
-        */
+        dInfo.ErrReturns = append(dInfo.ErrReturns, ex)
 
         return nil
       }
@@ -5996,7 +5989,7 @@ func (fh *FileHelper) makeFileHelperWalkDirDeleteFilesFunc(dInfo *DirectoryDelet
     if err != nil {
 
       ex := fmt.Errorf(ePrefix+"Error returned from dMgr.FilterFileName(info, dInfo.DeleteFileSelectCriteria) pathFile='%v' info.Name()='%v' Error='%v' ", pathFile, info.Name(), err.Error())
-      dInfo.ErrReturns = append(dInfo.ErrReturns, ex.Error())
+      dInfo.ErrReturns = append(dInfo.ErrReturns, ex)
       return nil
     }
 
@@ -6009,7 +6002,7 @@ func (fh *FileHelper) makeFileHelperWalkDirDeleteFilesFunc(dInfo *DirectoryDelet
           "Error returned from os.Remove(pathFile). pathFile='%v' Error='%v'",
           pathFile, err.Error())
 
-        dInfo.ErrReturns = append(dInfo.ErrReturns, ex.Error())
+        dInfo.ErrReturns = append(dInfo.ErrReturns, ex)
         return nil
       }
 
@@ -6021,7 +6014,7 @@ func (fh *FileHelper) makeFileHelperWalkDirDeleteFilesFunc(dInfo *DirectoryDelet
           "pathFile='%v'  Error='%v'",
           pathFile, err.Error())
 
-        dInfo.ErrReturns = append(dInfo.ErrReturns, ex.Error())
+        dInfo.ErrReturns = append(dInfo.ErrReturns, ex)
         return nil
       }
 

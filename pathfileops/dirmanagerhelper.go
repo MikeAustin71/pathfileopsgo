@@ -1136,14 +1136,274 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryAll(
   return nil
 }
 
-// deleteDirectoryTreeFiles - Helper method designed to delete files using
+// deleteDirectoryTreeInfo - Helper method similar to
+// dirMgrHelper.deleteDirectoryTreeStats(). This method
+// will optionally delete files in the entire directory
+// tree, the top level directory or exclusively in the
+// sub-directory tree.
+//
+// This differs from similar methods in that it returns
+// a type DirectoryDeleteFileInfo.
+//
+func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeInfo(
+  dMgr *DirMgr,
+  deleteFileSelectionCriteria FileSelectionCriteria,
+  skipTopLevelDirectory bool,
+  scanSubDirectories bool,
+  ePrefix string,
+  dMgrLabel string,
+  deleteFileSelectLabel string) (DirectoryDeleteFileInfo, []error) {
+
+  deleteTreeInfo := DirectoryDeleteFileInfo{}
+  errs := make([]error, 0, 300)
+  ePrefixCurrMethod := "dirMgrHelper.deleteDirectoryTreeInfo() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  if skipTopLevelDirectory &&
+    !scanSubDirectories {
+
+    err := errors.New(ePrefix +
+      "\nERROR: Conflicted Input parameters! skipTopLevelDirectory=true and scanSubDirectories=false.\n" +
+      "Impossible combination!!\n")
+
+    errs = append(errs, err)
+    return deleteTreeInfo, errs
+  }
+
+  dirPathDoesExist,
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+    errs = append(errs, err)
+    return deleteTreeInfo, errs
+  }
+
+  if !dirPathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: %v Directory Path DOES NOT EXIST!\n"+
+      "%v='%v'\n",
+      dMgrLabel, dMgrLabel,
+      dMgr.absolutePath)
+
+    errs = append(errs, err)
+    return deleteTreeInfo, errs
+  }
+
+  var err2 error
+  osPathSepStr := string(os.PathSeparator)
+  var nameFileInfos []os.FileInfo
+  var dirPtr *os.File
+  dirPtr = nil
+  fh := FileHelper{}
+  var nextDir *DirMgr
+  file2LoopIsDone := false
+  isMatch := false
+  isTopLevelDir := true
+
+  deleteTreeInfo.StartPath = dMgr.absolutePath
+  deleteTreeInfo.DeleteFileSelectCriteria = deleteFileSelectionCriteria
+  deleteTreeInfo.Directories.AddDirMgr(dMgrHlpr.copyOut(dMgr))
+  dTreeCnt := 1
+
+  for i := 0; i < dTreeCnt; i++ {
+
+    if i == 0 {
+      isTopLevelDir = true
+    } else {
+      isTopLevelDir = false
+    }
+
+    nextDir, err = deleteTreeInfo.Directories.GetDirMgrAtIndex(i)
+
+    if err != nil {
+      errs = append(errs, err)
+      break
+    }
+
+    dirPtr, err = os.Open(nextDir.absolutePath)
+
+    if err != nil {
+      err2 = fmt.Errorf(ePrefix+
+        "\nError return by os.Open(%v.absolutePath). "+
+        "%v.absolutePath='%v'\nError='%v'\n\n",
+        dMgrLabel, dMgrLabel,
+        dMgr.absolutePath, err.Error())
+
+      errs = append(errs, err2)
+      dirPtr = nil
+      continue
+    }
+
+    file2LoopIsDone = false
+
+    for !file2LoopIsDone {
+
+      nameFileInfos, err = dirPtr.Readdir(1000)
+
+      lNameFileInfos := len(nameFileInfos)
+
+      if err != nil && err == io.EOF {
+
+        file2LoopIsDone = true
+
+        if lNameFileInfos == 0 {
+          break
+        }
+
+      } else if err != nil {
+
+        err2 = fmt.Errorf(ePrefix+
+          "\nError returned by dirPtr.Readdir(1000).\n"+
+          "Error='%v'\n\n", err.Error())
+
+        errs = append(errs, err2)
+
+        file2LoopIsDone = true
+        break
+      }
+
+      for _, nameFInfo := range nameFileInfos {
+
+        if nameFInfo.IsDir() {
+
+          if !scanSubDirectories {
+            continue
+          }
+
+          err =
+            deleteTreeInfo.Directories.AddDirMgrByKnownPathDirName(
+              nextDir.absolutePath,
+              nameFInfo.Name())
+
+          if err != nil {
+            err2 =
+              fmt.Errorf(ePrefix+
+                "\nError returned by dirs.AddDirMgrByKnownPathDirName(newDirPathFileName).\n"+
+                "newDirPathFileName='%v'\nError='%v'\n\n",
+                nextDir.absolutePath+osPathSepStr+nameFInfo.Name(), err.Error())
+
+            errs = append(errs, err2)
+            continue
+          }
+
+          dTreeCnt++
+
+        } else {
+          // This is a file which is eligible for processing
+
+          if isTopLevelDir && skipTopLevelDirectory {
+            continue
+          }
+
+          // This is not a directory. It is a file.
+          // Determine if it matches the find file criteria.
+          isMatch, err =
+            fh.FilterFileName(nameFInfo, deleteFileSelectionCriteria)
+
+          if err != nil {
+
+            err2 =
+              fmt.Errorf(ePrefix+
+                "\nError returned by fh.FilterFileName(nameFInfo, %v).\n"+
+                "%v directory searched='%v'\nfileName='%v'\nError='%v'\n\n",
+                deleteFileSelectLabel, dMgrLabel,
+                dMgr.absolutePath, nameFInfo.Name(), err.Error())
+
+            errs = append(errs, err2)
+
+            continue
+          }
+
+          if !isMatch {
+
+            continue
+
+          } else {
+
+            // We have a match, save file to deleteTreeInfo
+            fileToDelete := nextDir.absolutePath + osPathSepStr + nameFInfo.Name()
+
+            err = os.Remove(fileToDelete)
+
+            if err != nil {
+              err2 = fmt.Errorf(ePrefix+
+                "\nError returned by os.Remove(fileToDelete)\n"+
+                "fileToDelete='%v'\nError='%v'\n",
+                fileToDelete,
+                err.Error())
+              errs = append(errs, err2)
+              continue
+            }
+
+            err = deleteTreeInfo.DeletedFiles.AddFileMgrByDirFileNameExt(nextDir.CopyOut(), nameFInfo.Name())
+
+            if err != nil {
+              err2 = fmt.Errorf(ePrefix+
+                "\nERROR returned by deleteTreeInfo.DeletedFiles.AddFileMgrByDirFileNameExt(nextDir, fileNameExt)\n"+
+                "nextDir='%v'\n"+
+                "fileNameExt='%v'"+
+                "Error='%v'\n\n",
+                nextDir.absolutePath,
+                nameFInfo.Name(),
+                err.Error())
+
+              errs = append(errs, err2)
+            }
+          }
+        }
+
+      } // End of nameFInfo := range nameFileInfos
+    } // End of for !file2LoopIsDone
+
+    if dirPtr != nil {
+
+      err = dirPtr.Close()
+
+      if err != nil {
+
+        err2 = fmt.Errorf(ePrefix+
+          "\nError returned by dirPtr.Close()\n"+
+          "Error='%v'\n\n", err.Error())
+
+        errs = append(errs, err2)
+      }
+
+      dirPtr = nil
+    }
+
+  } // End of for i:=0; i < dTreeCnt; i ++
+
+  if len(deleteTreeInfo.Directories.dirMgrs) > 0 && skipTopLevelDirectory {
+    _, _ = deleteTreeInfo.Directories.PopFirstDirMgr()
+  }
+
+  for i := 0; i < len(errs); i++ {
+    err2 = fmt.Errorf("%v", errs[i].Error())
+    deleteTreeInfo.ErrReturns =
+      append(deleteTreeInfo.ErrReturns, err2)
+  }
+
+  return deleteTreeInfo, errs
+}
+
+// deleteDirectoryTreeStats - Helper method designed to delete files using
 // file selection criteria. Scope of scans and file deletions is controlled
 // by input parameter 'scanSubDirectories'. If set to 'true' files may be
 // deleted in the entire directory tree. If set to 'false' the file deletions
 // are limited solely to the directory identified by the current 'DirMgr'
 // instance.
 //
-func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeFiles(
+func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeStats(
   dMgr *DirMgr,
   skipTopLevelDirectory,
   scanSubDirectories bool,
@@ -1151,7 +1411,7 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeFiles(
   ePrefix string,
   dMgrLabel string,
   deleteSelectionLabel string) (deleteDirStats DeleteDirFilesStats, errs []error) {
-  ePrefixCurrMethod := "dirMgrHelper.deleteDirectoryTreeFiles() "
+  ePrefixCurrMethod := "dirMgrHelper.deleteDirectoryTreeStats() "
 
   errs = make([]error, 0, 300)
 
@@ -1164,7 +1424,7 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeFiles(
   if skipTopLevelDirectory &&
     !scanSubDirectories {
 
-    err := fmt.Errorf(ePrefix +
+    err := errors.New(ePrefix +
       "\nERROR: Conflicted Input parameters! skipTopLevelDirectory=true and scanSubDirectories=false.\n" +
       "Impossible combination!!\n")
 
@@ -1198,9 +1458,7 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeFiles(
   }
 
   var err2 error
-
   osPathSepStr := string(os.PathSeparator)
-
   var nameFileInfos []os.FileInfo
   dirs := DirMgrCollection{}
   var dirPtr *os.File
@@ -2536,9 +2794,7 @@ func (dMgrHlpr *dirMgrHelper) findDirectoryTreeFiles(
   }
 
   var err2 error
-
   osPathSepStr := string(os.PathSeparator)
-
   var nameFileInfos []os.FileInfo
   var dirPtr *os.File
   dirPtr = nil

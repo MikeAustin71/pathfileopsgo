@@ -3,7 +3,6 @@ package pathfileops
 import (
   "fmt"
   "os"
-  fp "path/filepath"
   "strings"
   "sync"
 )
@@ -807,7 +806,7 @@ func (dMgr *DirMgr) DeleteDirectoryTreeFiles(
   dMgr.dataMutex.Lock()
 
   deleteDirStats,
-    errs = dMgrHlpr.deleteDirectoryTreeFiles(
+    errs = dMgrHlpr.deleteDirectoryTreeStats(
     dMgr,
     false, // skip top level (parent) directory
     true,  // scan sub-directories
@@ -1030,7 +1029,7 @@ func (dMgr *DirMgr) DeleteFilesBySelectionCriteria(
   dMgr.dataMutex.Lock()
 
   deleteDirStats,
-    errs = dMgrHlpr.deleteDirectoryTreeFiles(
+    errs = dMgrHlpr.deleteDirectoryTreeStats(
     dMgr,
     false, // skip top level (parent) directory
     false, //scan sub-directories
@@ -1048,7 +1047,7 @@ func (dMgr *DirMgr) DeleteFilesBySelectionCriteria(
 // current 'DirMgr' is classified as the top level or parent directory. Files in this
 // parent directory will NEVER BE DELETED.
 //
-// However, files in the sub-directory tree below the parent directory WILL BE DELETED.
+// !!! BE CAREFUL !!! This method deletes files in sub-directories!
 //
 // Files eligible for deletion must match the file selection criteria specified by input
 // parameter 'deleteFileSelectionCriteria'. The file deletion operation will exclude the
@@ -1212,7 +1211,7 @@ func (dMgr *DirMgr) DeleteSubDirectoryTreeFiles(
   dMgr.dataMutex.Lock()
 
   deleteDirStats,
-    errs = dMgrHlpr.deleteDirectoryTreeFiles(
+    errs = dMgrHlpr.deleteDirectoryTreeStats(
     dMgr,
     true, // skip top level (parent) directory
     true, // scan sub-directories
@@ -1230,10 +1229,14 @@ func (dMgr *DirMgr) DeleteSubDirectoryTreeFiles(
 // in a specified directory tree.
 //
 // This method searches for files residing in the directory tree
-// identified by the current DirMgr object. The method 'walks the
-// directory tree' locating all files in the directory tree which
-// match the file selection criteria submitted as method input parameter,
+// identified by the current DirMgr object which is treated as the
+// parent directory. This method 'walks the directory tree' locating
+// all files in the directory tree which match the file selection
+// criteria submitted as method input parameter,
 // 'deleteFileSelectionCriteria'.
+//
+// This method will delete files in the entire directory tree including
+// the parent directory and its sub-directory tree.
 //
 // If a file matches the File Selection Criteria, it is DELETED. By the
 // way, if ALL the file selection criterion are set to zero values or
@@ -1395,6 +1398,38 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(
   ePrefix := "DirMgr.DeleteWalkDirFiles() "
   deleteFilesInfo := DirectoryDeleteFileInfo{}
   dMgrHlpr := dirMgrHelper{}
+  var err error
+  var errs []error
+
+  dMgr.dataMutex.Lock()
+
+  deleteFilesInfo,
+    errs =
+    dMgrHlpr.deleteDirectoryTreeInfo(
+      dMgr,
+      deleteFileSelectionCriteria,
+      false, // skip top level directory
+      true,  // scan sub-directories
+      ePrefix,
+      "dMgr",
+      "deleteFileSelectionCriteria")
+
+  if len(errs) > 0 {
+    err = dMgr.ConsolidateErrors(errs)
+  }
+
+  dMgr.dataMutex.Unlock()
+
+  return deleteFilesInfo, err
+}
+
+/*
+func (dMgr *DirMgr) DeleteWalkDirFiles(
+  deleteFileSelectionCriteria FileSelectionCriteria) (DirectoryDeleteFileInfo, error) {
+
+  ePrefix := "DirMgr.DeleteWalkDirFiles() "
+  deleteFilesInfo := DirectoryDeleteFileInfo{}
+  dMgrHlpr := dirMgrHelper{}
   var dirPathDoesExist bool
   var err error
 
@@ -1441,6 +1476,7 @@ func (dMgr *DirMgr) DeleteWalkDirFiles(
 
   return deleteFilesInfo, err
 }
+*/
 
 // DoesAbsolutePathExist - Performs two operations.
 // First the method determine whether the directory
