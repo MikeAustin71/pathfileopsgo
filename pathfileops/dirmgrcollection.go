@@ -46,6 +46,56 @@ func (dMgrs *DirMgrCollection) AddDirMgr(dMgr DirMgr) {
   dMgrs.dirMgrs = append(dMgrs.dirMgrs, dMgr.CopyOut())
 }
 
+// AddDirMgrByKnownPathDirName - Adds a Directory Manager (DirMgr)
+// using know parent path and directory name.
+//
+func (dMgrs *DirMgrCollection) AddDirMgrByKnownPathDirName(parentPathName, dirName string) error {
+
+  ePrefix := "DirMgrCollection.AddDirMgrByKnownPathDirName() "
+
+  if dMgrs.dirMgrs == nil {
+    dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+  }
+
+  dMgrHlpr := dirMgrHelper{}
+  newDirMgr := DirMgr{}
+
+  isEmpty, err := dMgrHlpr.setDirMgrFromKnownPathDirName(
+    &newDirMgr,
+    parentPathName,
+    dirName,
+    ePrefix,
+    "newDirMgr",
+    "parentPathName",
+    "dirName")
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+
+      "Error returned from dMgrHlpr.setDirMgrFromKnownPathDirName("+
+      "parentPathName, dirName).\n"+
+      "parentPathName='%v'\n"+
+      "dirName='%v'\n"+
+      "Error='%v'\n",
+      parentPathName,
+      dirName,
+      err.Error())
+  }
+
+  if isEmpty {
+    return fmt.Errorf(ePrefix+
+      "Returned 'DirMgr' is Empty!\n"+
+      "dMgrHlpr.setDirMgrFromKnownPathDirName()\n"+
+      "parentPathName='%v'\n"+
+      "dirName='%v'\n",
+      parentPathName,
+      dirName)
+  }
+
+  dMgrs.dirMgrs = append(dMgrs.dirMgrs, newDirMgr)
+
+  return nil
+}
+
 // AddDirMgrByPathNameStr - Adds a Directory Manager (DirMgr) to the
 // collections based on a string input parameter, 'pathName'.
 //
@@ -56,24 +106,41 @@ func (dMgrs *DirMgrCollection) AddDirMgrByPathNameStr(pathName string) error {
     dMgrs.dirMgrs = make([]DirMgr, 0, 100)
   }
 
-  dMgr, err := DirMgr{}.New(pathName)
+  dMgrHlpr := dirMgrHelper{}
+  newDirMgr := DirMgr{}
+
+  isEmpty, err := dMgrHlpr.setDirMgr(
+    &newDirMgr,
+    pathName,
+    ePrefix,
+    "newDirMgr",
+    "pathName")
 
   if err != nil {
     s := ePrefix +
-      "Error returned from DirMgr{}.New(pathName). pathName='%v' Error='%v'"
+      "Error returned from dMgrHlpr.setDirMgr(pathName).\n" +
+      "pathName='%v' Error='%v'"
     return fmt.Errorf(s, pathName, err.Error())
   }
 
-  dMgrs.dirMgrs = append(dMgrs.dirMgrs, dMgr)
+  if isEmpty {
+    return fmt.Errorf(ePrefix+
+      "Returned 'DirMgr' is Empty!\n"+
+      "dMgrHlpr.setDirMgrFromKnownPathDirName()\n"+
+      "parentPathName='%v'\n",
+      pathName)
+  }
+
+  dMgrs.dirMgrs = append(dMgrs.dirMgrs, newDirMgr)
 
   return nil
 }
 
 // AddFileMgrByFileInfo - Adds a Directory Manager object to the
-// collection based on input from a directory path string and an
-// os.FileInfo object.
+// collection based on input from a parent directory path string
+// and an os.FileInfo object.
 //
-func (dMgrs *DirMgrCollection) AddFileInfo(pathFile string, info os.FileInfo) error {
+func (dMgrs *DirMgrCollection) AddFileInfo(parentDirectoryPath string, info os.FileInfo) error {
 
   ePrefix := "DirMgrCollection) AddFileMgrByFileInfo() "
 
@@ -81,15 +148,41 @@ func (dMgrs *DirMgrCollection) AddFileInfo(pathFile string, info os.FileInfo) er
     dMgrs.dirMgrs = make([]DirMgr, 0, 100)
   }
 
-  dMgr, err := DirMgr{}.NewFromFileInfo(pathFile, info)
+  dMgrHlpr := dirMgrHelper{}
+  newDirMgr := DirMgr{}
+
+  isEmpty, err := dMgrHlpr.setDirMgrFromKnownPathDirName(
+    &newDirMgr,
+    parentDirectoryPath,
+    info.Name(),
+    ePrefix,
+    "newDirMgr",
+    "parentDirectoryPath",
+    "FileInfo.Name()")
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"Error retrned from DirMgr{}."+
-      "NewFromFileInfo(pathFile, info). pathFile='%v' info.Name()='%v'  Error='%v'",
-      pathFile, info.Name(), err.Error())
+    return fmt.Errorf(ePrefix+
+      "Error returned from dMgrHlpr.setDirMgrFromKnownPathDirName("+
+      "parentDirectoryPath, FileInfo.Name()).\n"+
+      "parentDirectoryPath='%v'\n"+
+      "FileInfo.Name()='%v'\n"+
+      "Error='%v'\n",
+      parentDirectoryPath,
+      info.Name(),
+      err.Error())
   }
 
-  dMgrs.dirMgrs = append(dMgrs.dirMgrs, dMgr)
+  if isEmpty {
+    return fmt.Errorf(ePrefix+
+      "Returned 'DirMgr' is Empty!\n"+
+      "dMgrHlpr.setDirMgrFromKnownPathDirName()\n"+
+      "parentDirectoryPath='%v'\n"+
+      "FileInfo.Name()='%v'\n",
+      parentDirectoryPath,
+      info.Name())
+  }
+
+  dMgrs.dirMgrs = append(dMgrs.dirMgrs, newDirMgr)
 
   return nil
 }

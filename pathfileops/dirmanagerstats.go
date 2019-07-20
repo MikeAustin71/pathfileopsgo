@@ -1,5 +1,28 @@
 package pathfileops
 
+type DirectoryStatsDto struct {
+  numOfFiles    uint64
+  numOfSubDirs  uint64
+  numOfBytes    uint64
+  isInitialized bool
+}
+
+func (dirStats *DirectoryStatsDto) IsInitialized() bool {
+  return dirStats.isInitialized
+}
+
+func (dirStats *DirectoryStatsDto) NumOfFiles() uint64 {
+  return dirStats.numOfFiles
+}
+
+func (dirStats *DirectoryStatsDto) NumOfSubDirs() uint64 {
+  return dirStats.numOfSubDirs
+}
+
+func (dirStats *DirectoryStatsDto) NumOfBytes() uint64 {
+  return dirStats.numOfBytes
+}
+
 type DirTreeCopyStats struct {
   TotalDirsScanned    uint64
   DirsCopied          uint64

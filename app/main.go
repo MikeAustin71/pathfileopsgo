@@ -26,7 +26,7 @@ import (
 
 func main() {
 
-  mainTests{}.mainTest95DirNew01()
+  mainTests{}.mainTest92GetDirTreeBytes()
 
 }
 
@@ -156,7 +156,8 @@ func (mtst mainTests) mainTest92GetDirTreeBytes() {
 
   var tStart, tEnd time.Time
 
-  targetDir := "D:\\T98\\pathfileopsgo"
+  targetDir := "D:\\T88"
+  // targetDir := "D:\\T88\\pathfileopsgo"
   // targetDir := "D:\\T05\\filesfortest"
 
   testDMgr, err := pf.DirMgr{}.New(targetDir)
@@ -169,6 +170,9 @@ func (mtst mainTests) mainTest92GetDirTreeBytes() {
   }
 
   fsc := pf.FileSelectionCriteria{}
+
+  fmt.Println("Starting Search # 1 ...")
+  fmt.Println()
 
   tStart = time.Now()
 
@@ -187,22 +191,8 @@ func (mtst mainTests) mainTest92GetDirTreeBytes() {
   duration1Str := mtst.timer(tStart, tEnd)
 
   total1FileBytes := testDInfo1.FoundFiles.GetTotalFileBytes()
-
-  tStart = time.Now()
-
-  testDInfo2, err := testDMgr.FindWalkDirFiles(fsc)
-
-  tEnd = time.Now()
-
-  if err != nil {
-    fmt.Printf("Error returned by testDMgr.FindDirectoryTreeFiles(fsc)\n"+
-      "testDMgr='%v'\n"+
-      "Error='%v'\n", targetDir, err)
-    return
-  }
-
-  total2FileBytes := testDInfo2.FoundFiles.GetTotalFileBytes()
-  duration2Str := mtst.timer(tStart, tEnd)
+  total1Files := testDInfo1.FoundFiles.GetNumOfFiles()
+  total1Dirs := testDInfo1.Directories.GetNumOfDirs()
 
   fmt.Println("           mainTest92GetDirTreeBytes()                  ")
   fmt.Println("********************************************************")
@@ -211,24 +201,29 @@ func (mtst mainTests) mainTest92GetDirTreeBytes() {
   fmt.Println()
   fmt.Println("         Target Directory: ", targetDir)
   fmt.Println("   Test Directory Manager: ", testDMgr.GetAbsolutePath())
-  fmt.Println("      Total File Bytes #1: ", total1FileBytes)
-  fmt.Println("FileScreen-1 Elapsed Time: ", duration1Str)
-  fmt.Println("      Total File Bytes #2: ", total2FileBytes)
-  fmt.Println("FileScreen-2 Elapsed Time: ", duration2Str)
+  fmt.Println("      Total Number of Files: ", total1Files)
+  fmt.Println("           Total File Bytes: ", total1FileBytes)
+  fmt.Println("Total Number of Directories: ", total1Dirs)
+  fmt.Println("             Elapsed Time: ", duration1Str)
   fmt.Println()
 }
 
-func (mtst mainTests) mainTest91GetDirBytes() {
+func (mtst mainTests) mainTest91GetDirTreeBytes() {
 
-  basePath, err := mtst.getBaseProjectPath(true)
+  var tStart, tEnd time.Time
 
-  if err != nil {
-    fmt.Printf("Error returned by mtst.getBaseProjectPath(false)\n"+
-      "Error='%v'\n\n", err.Error())
-    return
-  }
+  /*
+    basePath, err := mtst.getBaseProjectPath(true)
 
-  testDir := basePath + "filesfortest"
+    if err != nil {
+      fmt.Printf("Error returned by mtst.getBaseProjectPath(false)\n"+
+        "Error='%v'\n\n", err.Error())
+      return
+    }
+  */
+
+  // testDir := basePath + "filesfortest"
+  testDir := "D:\\T88"
 
   testDMgr, err := pf.DirMgr{}.New(testDir)
 
@@ -239,29 +234,35 @@ func (mtst mainTests) mainTest91GetDirBytes() {
     return
   }
 
-  fsc := pf.FileSelectionCriteria{}
+  tStart = time.Now()
 
-  testDInfo, err := testDMgr.FindWalkDirFiles(fsc)
+  dirStats, errs := testDMgr.GetDirectoryStats()
 
-  if err != nil {
-    fmt.Printf("Error returned by testDMgr.FindWalkDirFiles(fsc)\n"+
-      "Error='%v'\n", err.Error())
+  tEnd = time.Now()
+
+  if len(errs) > 0 {
+    fmt.Printf("Error returned by testDMgr.GetDirectoryStats()\n"+
+      "testDMgr='%v'\n"+
+      "Errors Follow:\n\n%v",
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
+
     return
   }
 
-  fileBytes := testDInfo.FoundFiles.GetTotalFileBytes()
+  duration1Str := mtst.timer(tStart, tEnd)
 
-  dirBytes := testDMgr.GetDirectoryBytes()
-
-  fmt.Println("              mainTest91GetDirBytes()                   ")
+  fmt.Println("              mainTest91GetDirTreeBytes()                   ")
   fmt.Println("********************************************************")
   fmt.Println("                    SUCCESS!!!                          ")
   fmt.Println("********************************************************")
   fmt.Println()
-  fmt.Println("          Test Directory: ", testDir)
-  fmt.Println("  Test Directory Manager: ", testDMgr.GetAbsolutePath())
-  fmt.Println("         Directory Bytes: ", dirBytes)
-  fmt.Println("        Total File Bytes: ", fileBytes)
+  fmt.Println("           Test Directory: ", testDir)
+  fmt.Println("   Test Directory Manager: ", testDMgr.GetAbsolutePath())
+  fmt.Println("Number of Sub-Directories: ", dirStats.NumOfSubDirs())
+  fmt.Println("          Number of Files: ", dirStats.NumOfFiles())
+  fmt.Println("     Number Of File Bytes: ", dirStats.NumOfBytes())
+  fmt.Println("             Elapsed Time: ", duration1Str)
   fmt.Println()
 
 }

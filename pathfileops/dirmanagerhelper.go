@@ -2475,6 +2475,10 @@ func (dMgrHlpr *dirMgrHelper) executeFileOpsOnFoundFiles(dirOp *DirTreeOp) func(
   }
 }
 
+// findDirectoryTreeFiles - A multifunctional helper method which
+// can be used to scan a parent directory or an entire directory
+// tree to locate files which match the file selection criteria.
+//
 func (dMgrHlpr *dirMgrHelper) findDirectoryTreeFiles(
   dMgr *DirMgr,
   fileSelectionCriteria FileSelectionCriteria,
@@ -2540,7 +2544,6 @@ func (dMgrHlpr *dirMgrHelper) findDirectoryTreeFiles(
   dirPtr = nil
   fh := FileHelper{}
   var nextDir *DirMgr
-  newDir := ""
   file2LoopIsDone := false
   isMatch := false
   isTopLevelDir := true
@@ -2613,15 +2616,12 @@ func (dMgrHlpr *dirMgrHelper) findDirectoryTreeFiles(
             continue
           }
 
-          newDir = nextDir.absolutePath + osPathSepStr + nameFInfo.Name()
-
-          err = dTreeInfo.Directories.AddDirMgrByPathNameStr(newDir)
+          err = dTreeInfo.Directories.AddDirMgrByKnownPathDirName(nextDir.absolutePath, nameFInfo.Name())
 
           if err != nil {
-
             err2 =
               fmt.Errorf(ePrefix+
-                "\nError returned by dirs.AddDirMgrByPathNameStr(newDirPathFileName).\n"+
+                "\nError returned by dirs.AddDirMgrByKnownPathDirName(newDirPathFileName).\n"+
                 "newDirPathFileName='%v'\nError='%v'\n\n",
                 nextDir.absolutePath+osPathSepStr+nameFInfo.Name(), err.Error())
 
@@ -2868,6 +2868,189 @@ func (dMgrHlpr *dirMgrHelper) findFilesByNamePattern(
   }
 
   return fileMgrCol, dMgrHlpr.consolidateErrors(errs)
+}
+
+// findDirectoryTreeStats - Scans the parent directory
+// or the entire directory tree to calculate and
+// return directory information.
+//
+func (dMgrHlpr *dirMgrHelper) findDirectoryTreeStats(
+  dMgr *DirMgr,
+  skipTopLevelDirectory bool,
+  scanSubDirectories bool,
+  ePrefix string,
+  dMgrLabel string) (dTreeStats DirectoryStatsDto, errs []error) {
+
+  ePrefixCurrMethod := "dirMgrHelper.findDirectoryTreeStats() "
+
+  dTreeStats = DirectoryStatsDto{}
+  errs = make([]error, 0, 300)
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  dMgrPathDoesExist,
+    _,
+    err :=
+    dMgrHlpr.doesDirectoryExist(
+      dMgr,
+      PreProcPathCode.None(),
+      ePrefix,
+      dMgrLabel)
+
+  if err != nil {
+    errs = append(errs, err)
+
+    return dTreeStats, errs
+  }
+
+  if !dMgrPathDoesExist {
+    err = fmt.Errorf(ePrefix+
+      "\nError: %v directory path DOES NOT EXIST!\n"+
+      "%v='%v'\n\n",
+      dMgrLabel,
+      dMgrLabel,
+      dMgr.absolutePath)
+
+    errs = append(errs, err)
+
+    return dTreeStats, errs
+  }
+
+  var err2 error
+  dirs := DirMgrCollection{}
+  var nameFileInfos []os.FileInfo
+  var nextDir DirMgr
+  var dirPtr *os.File
+  mainLoopIsDone := false
+  isFirstLoop := true
+  isTopLevelDir := true
+  file2LoopIsDone := false
+
+  dirs.AddDirMgr(dMgrHlpr.copyOut(dMgr))
+
+  for !mainLoopIsDone {
+
+    if isFirstLoop {
+      isTopLevelDir = true
+      isFirstLoop = false
+    } else {
+      isTopLevelDir = false
+    }
+
+    nextDir, err = dirs.PopFirstDirMgr()
+
+    if err != nil && err == io.EOF {
+      mainLoopIsDone = true
+      break
+
+    } else if err != nil {
+      err2 = fmt.Errorf(ePrefix+
+        "\nError returned by dirs.PopFirstDirMgr().\n"+
+        "Error='%v'\n", err.Error())
+      errs = append(errs, err2)
+      return dTreeStats, errs
+    }
+
+    dirPtr, err = os.Open(nextDir.absolutePath)
+
+    if err != nil {
+
+      err2 = fmt.Errorf(ePrefix+
+        "\nError return by os.Open(nextDir.absolutePath).\n"+
+        "nextDir.absolutePath='%v'\nError='%v'\n\n",
+        nextDir.absolutePath, err.Error())
+
+      errs = append(errs, err2)
+      continue
+    }
+
+    file2LoopIsDone = false
+
+    for !file2LoopIsDone {
+
+      nameFileInfos, err = dirPtr.Readdir(1000)
+
+      if err != nil && err == io.EOF {
+
+        file2LoopIsDone = true
+
+        if len(nameFileInfos) == 0 {
+
+          break
+        }
+
+      } else if err != nil {
+
+        err2 = fmt.Errorf(ePrefix+
+          "\nError returned by dirPtr.Readdir(1000).\n"+
+          "Error='%v'\n\n", err.Error())
+
+        errs = append(errs, err2)
+
+        file2LoopIsDone = true
+
+        break
+      }
+
+      for _, nameFInfo := range nameFileInfos {
+
+        if nameFInfo.IsDir() {
+          // This is a directory
+          err = dirs.AddDirMgrByKnownPathDirName(
+            nextDir.absolutePath,
+            nameFInfo.Name())
+
+          if err != nil {
+            errs = append(errs, err2)
+            continue
+          }
+
+          dTreeStats.numOfSubDirs++
+
+        } else {
+
+          if isTopLevelDir && skipTopLevelDirectory {
+            continue
+          }
+
+          // This is a file
+          dTreeStats.numOfFiles++
+          dTreeStats.numOfBytes += uint64(nameFInfo.Size())
+        }
+      } // for _, nameFInfo := range nameFileInfos
+    } // for !file2LoopIsDone
+
+    if dirPtr != nil {
+
+      err = dirPtr.Close()
+
+      if err != nil {
+
+        err2 = fmt.Errorf(ePrefix+
+          "\nError returned by dirPtr.Close()\n"+
+          "Error='%v'\n\n", err.Error())
+
+        errs = append(errs, err2)
+
+        mainLoopIsDone = true
+        break
+      }
+
+      dirPtr = nil
+    }
+
+    if isTopLevelDir && !scanSubDirectories {
+      mainLoopIsDone = true
+      break
+    }
+
+  } // for !mainLoopIsDone
+
+  return dTreeStats, errs
 }
 
 // findFilesBySelectCriteria - This helper method is designed to conduct
@@ -5312,7 +5495,8 @@ func (dMgrHlpr *dirMgrHelper) moveSubDirectoryTree(
   return dirMoveStats, errs
 }
 
-// setDirMgr - Sets internal values for DirMgr instance.
+// setDirMgr - Sets internal values for DirMgr instance based on
+// a path or path/file name string passed as an input parameter
 //
 func (dMgrHlpr *dirMgrHelper) setDirMgr(
   dMgr *DirMgr,
@@ -5407,6 +5591,98 @@ func (dMgrHlpr *dirMgrHelper) setDirMgr(
   return dMgrHlpr.lowLevelDirMgrPostPathConfig(
     dMgr,
     adjustedTrimmedPathStr,
+    finalPathStr,
+    ePrefix,
+    dMgrLabel)
+}
+
+// setDirMgrFromKnownPathDirName - Configures the internal
+// field values for the 'dMgr' instance using a parent path
+// name and a directory name. The parent path and directory
+// name are combined to form the full path for the 'dMgr'
+// instance.
+//
+// This method will replace all previous field values with new
+// values based on input parameters 'parentPathName' and
+// 'directoryName'.
+//
+// This method differs from other "Set" methods in that it
+// assumes the input parameters are known values and do not
+// require the usual analysis and validation screening applied
+// by similar methods.
+//
+func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
+  dMgr *DirMgr,
+  pathStr string,
+  dirName string,
+  ePrefix string,
+  dMgrLabel string,
+  pathStrLabel string,
+  dirNameLabel string) (isEmpty bool, err error) {
+
+  err = nil
+  isEmpty = true
+
+  ePrefixCurrMethod := "dirMgrHelper.setDirMgrFromKnownPathDirName() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  err = dMgrHlpr.empty(
+    dMgr,
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+
+    return isEmpty, err
+  }
+
+  adjustedTrimmedPathStr := ""
+
+  adjustedTrimmedPathStr,
+    _,
+    err = dMgrHlpr.isPathStringEmptyOrBlank(
+    pathStr,
+    true, // trim trailing path separator
+    ePrefix,
+    pathStrLabel)
+
+  if err != nil {
+    isEmpty = true
+    return isEmpty, err
+  }
+
+  adjustedTrimmmedDirName := ""
+
+  adjustedTrimmmedDirName,
+    _,
+    err = dMgrHlpr.isPathStringEmptyOrBlank(
+    dirName,
+    true, // trim trailing path separator
+    ePrefix,
+    dirNameLabel)
+
+  if err != nil {
+    isEmpty = true
+    return isEmpty, err
+  }
+
+  if adjustedTrimmmedDirName[0] == os.PathSeparator {
+    adjustedTrimmmedDirName = adjustedTrimmmedDirName[1:]
+  }
+
+  finalPathStr :=
+    adjustedTrimmedPathStr +
+      string(os.PathSeparator) +
+      adjustedTrimmmedDirName
+
+  return dMgrHlpr.lowLevelDirMgrPostPathConfig(
+    dMgr,
+    finalPathStr,
     finalPathStr,
     ePrefix,
     dMgrLabel)
