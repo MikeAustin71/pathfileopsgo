@@ -115,10 +115,49 @@ func (fMgrs *FileMgrCollection) AddFileMgrByDirStrFileNameStr(
     fMgrs.fileMgrs = make([]FileMgr, 0, 50)
   }
 
-  fMgr, err := FileMgr{}.NewFromDirStrFileNameStr(pathName, fileNameExt)
+  dMgrHlpr := dirMgrHelper{}
+  dMgr := DirMgr{}
+
+  isEmpty, err := dMgrHlpr.setDirMgr(
+    &dMgr,
+    pathName,
+    ePrefix,
+    "dMgr",
+    "pathName")
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"Error creating FileMgr: %v", err.Error())
+    return err
+  }
+
+  if isEmpty {
+    return fmt.Errorf("ERROR: Directory Manager created "+
+      "from 'pathName' is EMPTY!\n"+
+      "pathName='%v'", pathName)
+  }
+
+  fMgrHlpr := fileMgrHelper{}
+  fMgr := FileMgr{}
+
+  isEmpty,
+    err = fMgrHlpr.setFileMgrDirMgrFileName(
+    &fMgr,
+    dMgr,
+    fileNameExt,
+    ePrefix)
+
+  //fMgr, err := FileMgr{}.NewFromDirStrFileNameStr(pathName, fileNameExt)
+
+  if err != nil {
+    return err
+  }
+
+  if isEmpty {
+    return fmt.Errorf("ERROR: File Manager created "+
+      "from 'pathName' and 'fileNameExt' is EMPTY!\n"+
+      "pathName='%v'\n"+
+      "fileNameExt='%v'",
+      pathName,
+      fileNameExt)
   }
 
   fMgrs.fileMgrs = append(fMgrs.fileMgrs, fMgr)
