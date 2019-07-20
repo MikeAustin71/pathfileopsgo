@@ -74,12 +74,26 @@ func (fMgrs *FileMgrCollection) AddFileMgrByPathFileNameExt(
     fMgrs.fileMgrs = make([]FileMgr, 0, 50)
   }
 
-  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(pathFileNameExt)
+  fMgrHlpr := fileMgrHelper{}
+  fMgr := FileMgr{}
+
+  isEmpty, err := fMgrHlpr.setFileMgrPathFileName(
+    &fMgr,
+    pathFileNameExt,
+    ePrefix)
+
+  // fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(pathFileNameExt)
 
   if err != nil {
     return fmt.Errorf(ePrefix+
-      "Error returned from FileMgr{}.NewFromPathFileNameExtStr(pathFileNameExt). "+
-      "pathFileNameExt='%v' Error='%v'", pathFileNameExt, err.Error())
+      "Error returned from fMgrHlpr.setFileMgrPathFileName(pathFileNameExt).\n"+
+      "pathFileNameExt='%v'\nError='%v'\n", pathFileNameExt, err.Error())
+  }
+
+  if isEmpty {
+    return fmt.Errorf(ePrefix+
+      "ERROR: The generated File Manager instance is EMPTY!\n"+
+      "pathFileNameExt='%v'\n", pathFileNameExt)
   }
 
   fMgrs.fileMgrs = append(fMgrs.fileMgrs, fMgr)
