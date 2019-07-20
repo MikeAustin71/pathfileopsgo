@@ -130,7 +130,7 @@ func (fMgrs *FileMgrCollection) AddFileMgrByDirStrFileNameStr(
   }
 
   if isEmpty {
-    return fmt.Errorf("ERROR: Directory Manager created "+
+    return fmt.Errorf(ePrefix+"ERROR: Directory Manager created "+
       "from 'pathName' is EMPTY!\n"+
       "pathName='%v'", pathName)
   }
@@ -145,14 +145,12 @@ func (fMgrs *FileMgrCollection) AddFileMgrByDirStrFileNameStr(
     fileNameExt,
     ePrefix)
 
-  //fMgr, err := FileMgr{}.NewFromDirStrFileNameStr(pathName, fileNameExt)
-
   if err != nil {
     return err
   }
 
   if isEmpty {
-    return fmt.Errorf("ERROR: File Manager created "+
+    return fmt.Errorf(ePrefix+"ERROR: File Manager created "+
       "from 'pathName' and 'fileNameExt' is EMPTY!\n"+
       "pathName='%v'\n"+
       "fileNameExt='%v'",
@@ -163,12 +161,11 @@ func (fMgrs *FileMgrCollection) AddFileMgrByDirStrFileNameStr(
   fMgrs.fileMgrs = append(fMgrs.fileMgrs, fMgr)
 
   return nil
-
 }
 
 // AddFileMgrByFileInfo - Adds a File Manager object to the collection based on input from
 // a directory path string and a os.FileInfo object.
-func (fMgrs *FileMgrCollection) AddFileMgrByFileInfo(pathFile string, info os.FileInfo) error {
+func (fMgrs *FileMgrCollection) AddFileMgrByFileInfo(pathName string, info os.FileInfo) error {
 
   ePrefix := "FileMgrCollection) AddFileMgrByFileInfo() "
 
@@ -176,12 +173,47 @@ func (fMgrs *FileMgrCollection) AddFileMgrByFileInfo(pathFile string, info os.Fi
     fMgrs.fileMgrs = make([]FileMgr, 0, 50)
   }
 
-  fMgr, err := FileMgr{}.NewFromFileInfo(pathFile, info)
+  dMgrHlpr := dirMgrHelper{}
+  dMgr := DirMgr{}
+
+  isEmpty, err := dMgrHlpr.setDirMgr(
+    &dMgr,
+    pathName,
+    ePrefix,
+    "dMgr",
+    "pathName")
 
   if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error retrned from FileMgr{}.NewFromFileInfo(pathFile, info). "+
-      "pathFile='%v' info.Name()='%v'  Error='%v'", pathFile, info.Name(), err.Error())
+    return err
+  }
+
+  if isEmpty {
+    return fmt.Errorf(ePrefix+"ERROR: Directory Manager created "+
+      "from 'pathName' is EMPTY!\n"+
+      "pathName='%v'", pathName)
+  }
+
+  fMgrHlpr := fileMgrHelper{}
+  fMgr := FileMgr{}
+
+  isEmpty,
+    err = fMgrHlpr.setFileMgrDirMgrFileName(
+    &fMgr,
+    dMgr,
+    info.Name(),
+    ePrefix)
+
+  if err != nil {
+    return err
+  }
+
+  if isEmpty {
+    return fmt.Errorf("ERROR: File Manager created "+
+      "from 'pathName' and 'info' is EMPTY!\n"+
+      "pathName='%v'\n"+
+      "info.Name()='%v'",
+      pathName,
+      info.Name())
   }
 
   fMgrs.fileMgrs = append(fMgrs.fileMgrs, fMgr)
