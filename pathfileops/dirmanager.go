@@ -2688,25 +2688,34 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 
   ePrefix := "DirMgr.FindFilesBySelectCriteria() "
 
-  fileMgrCol := FileMgrCollection{}.New()
-
-  var err error
-
   dMgrHlpr := dirMgrHelper{}
+
+  dTreeInfo := DirectoryTreeInfo{}
+  var err error
 
   dMgr.dataMutex.Lock()
 
-  fileMgrCol,
-    err = dMgrHlpr.findFilesBySelectCriteria(
+  dTreeInfo,
+    errs := dMgrHlpr.findDirectoryTreeFiles(
     dMgr,
     fileSelectCriteria,
+    false, // skip top level directory
+    false, // scan sub-directories
     ePrefix,
     "dMgr",
     "fileSelectCriteria")
 
+  if len(errs) > 0 {
+    err = dMgr.ConsolidateErrors(errs)
+  }
+
   dMgr.dataMutex.Unlock()
 
-  return fileMgrCol, err
+  if err != nil {
+    return FileMgrCollection{}, err
+  }
+
+  return dTreeInfo.FoundFiles, err
 }
 
 // FindWalkDirFiles - This method returns file information on files residing in a
