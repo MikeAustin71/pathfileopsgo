@@ -277,21 +277,21 @@ func (dMgr *DirMgr) CopyDirectory(
 //
 // Input Parameters:
 //
-//  targetDMgr        DirMgr - An instance of 'DirMgr' initialized with the directory
-//                             path of the target directory to which selected files
-//                             will be copied. If the target directory does not exist,
-//                             this method will attempt to create it.
+//  targetDMgr         DirMgr - An instance of 'DirMgr' initialized with the directory
+//                              path of the target directory to which selected files
+//                              will be copied. If the target directory does not exist,
+//                              this method will attempt to create it.
 //
-// copyEmptyDirectories bool - If a target directory tree path does not previously exist,
-//                             the default behavior is to create that directory ONLY if
-//                             files matching the file selection criteria are identified
-//                             for that directory. If no files match the file selection
-//                             criteria, the default is to NOT create the target directory
-//                             path.
+//  copyEmptyDirectories bool - If a target directory tree path does not previously exist,
+//                              the default behavior is to create that directory ONLY if
+//                              files matching the file selection criteria are identified
+//                              for that directory. If no files match the file selection
+//                              criteria, the default is to NOT create the target directory
+//                              path.
 //
-//                             If the parameter 'copyEmptyDirectories' is set to 'true' all
-//                             target directory tree paths will be created regardless of
-//                             whether files are copied to those directories.
+//                              If the parameter 'copyEmptyDirectories' is set to 'true' all
+//                              target directory tree paths will be created regardless of
+//                              whether files are copied to those directories.
 //
 //  fileSelectCriteria FileSelectionCriteria
 //    This input parameter should be configured with the desired file

@@ -3812,7 +3812,6 @@ func (dMgrHlpr *dirMgrHelper) isPathStringEmptyOrBlank(
   }
 
   strPathSep := string(os.PathSeparator)
-  dotSeparator := "." + strPathSep
 
   if pathFileNameExt == strPathSep {
     err = fmt.Errorf(ePrefix+
@@ -3822,6 +3821,8 @@ func (dMgrHlpr *dirMgrHelper) isPathStringEmptyOrBlank(
 
     return pathFileNameExt, strLen, err
   }
+
+  dotSeparator := "." + strPathSep
 
   if strings.HasSuffix(pathFileNameExt, dotSeparator) &&
     trimTrailingPathSeparator {

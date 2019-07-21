@@ -238,6 +238,94 @@ func TestDirMgr_GetDirectoryTree_03(t *testing.T) {
   }
 }
 
+func TestDirMgr_GetDirectoryTreeStats_01(t *testing.T) {
+
+  testDir := "../filesfortest/levelfilesfortest"
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  dirStats, errs := dMgr.GetDirectoryTreeStats()
+
+  if len(errs) > 0 {
+    t.Error("Errors returned by dMgr.GetDirectoryTreeStats():\n"+
+      "Errors Follow:\n\n%v", dMgr.ConsolidateErrors(errs))
+
+    return
+  }
+
+  if 4 != dirStats.NumOfSubDirs() {
+    t.Errorf("Expected returned number of sub-directories would equal '4'.\n"+
+      "Instead, the returned number of directories equal '%v'",
+      dirStats.NumOfSubDirs())
+  }
+
+  if 25 != dirStats.NumOfFiles() {
+    t.Errorf("Expected the number of files='25'.\n"+
+      "Instead, the returned number of files='%v'\n",
+      dirStats.NumOfFiles())
+  }
+
+  if uint64(10017) != dirStats.NumOfBytes() {
+    t.Errorf("Expected the number of bytes='10017'.\n"+
+      "Instead, number of bytes='%v'\n",
+      dirStats.NumOfBytes())
+  }
+}
+
+func TestDirMgr_GetDirectoryTreeStats_02(t *testing.T) {
+
+  testDir := "../dirmgrtests/TestDirMgr_" +
+    "GetDirectoryTreeStats_02/dirIDoNotExist"
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  _, errs := dMgr.GetDirectoryTreeStats()
+
+  if len(errs) == 0 {
+    t.Error("Expected error return from dMgr.GetDirectoryTreeStats() " +
+      "because 'dMgr' Path DOES NOT EXIST!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+
+  }
+
+}
+
+func TestDirMgr_GetDirectoryTreeStats_03(t *testing.T) {
+
+  testDir := "../filesfortest"
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  dMgr.isInitialized = false
+
+  _, errs := dMgr.GetDirectoryTreeStats()
+
+  if len(errs) == 0 {
+    t.Error("Expected error return from dMgr.GetDirectoryTreeStats() " +
+      "because dMgr is INVALID!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+
+  }
+}
+
 func TestDirMgr_GetDirPermissionTextCodes_01(t *testing.T) {
 
   sourceDir := "../filesfortest/htmlFilesForTest"
