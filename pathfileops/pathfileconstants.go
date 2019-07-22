@@ -126,23 +126,29 @@ type DirectoryDeleteFileInfo struct {
 type ValidPathStrDto struct {
   isInitialized bool
 
-  validPathStr string
+  pathStr string
 
-  validPathStrLength int // -1  = unknown
-  // >-1 = known correct length
-
-  absValidPathStr string
-
-  absValidPathStrLength int // -1  = unknown
-  // >-1 = known correct length
+  pathFInfoPlus FileInfoPlus // Only populated if absValidPath
+  // exists on disk.
 
   pathDoesExist int // -1 = don't know, has not been tested
   //  0 - No it doesnt exist
   //  1 - Yes, it does exist
 
+  pathStrLength int // -1  = unknown
+  // >-1 = known correct length
+
+  absPathStr string // The absolute path version of 'path'
+
+  absPathFInfoPlus 	FileInfoPlus // Only populated if absValidPath
+                                 // exists on disk.
+
   absPathDoesExist int // -1 = don't know, has not been tested
   //  0 - No it doesnt exist
   //  1 - Yes, it does exist
+
+  absPathStrLength int // -1  = unknown
+  // >-1 = known correct length
 
   pathIsValid int // -1 - don't know
   //  0 - No path is NOT valid
@@ -154,8 +160,8 @@ type ValidPathStrDto struct {
 
 func (vpDto ValidPathStrDto) New() ValidPathStrDto {
   newValPathDto := ValidPathStrDto{}
-  newValPathDto.validPathStrLength = -1
-  newValPathDto.absValidPathStrLength = -1
+  newValPathDto.pathStrLength = -1
+  newValPathDto.absPathStrLength = -1
   newValPathDto.pathDoesExist = -1
   newValPathDto.absPathDoesExist = -1
   newValPathDto.pathIsValid = -1
@@ -174,26 +180,34 @@ func (vpDto *ValidPathStrDto) PathDoesExist() int {
 }
 
 func (vpDto *ValidPathStrDto) GetPath() string {
-  return vpDto.validPathStr
+  return vpDto.pathStr
 }
 
 func (vpDto *ValidPathStrDto) GetPathStrLen() int {
-  return vpDto.validPathStrLength
+  return vpDto.pathStrLength
+}
+
+func (vpDto *ValidPathStrDto) GetPathFileInfo() FileInfoPlus {
+  return vpDto.pathFInfoPlus
 }
 
 func (vpDto *ValidPathStrDto) GetAbsPath() string {
-  return vpDto.absValidPathStr
+  return vpDto.absPathStr
 }
 
 func (vpDto *ValidPathStrDto) GetAbsPathStrLen() int {
-  return vpDto.absValidPathStrLength
+  return vpDto.absPathStrLength
+}
+
+func (vpDto *ValidPathStrDto) GetAbsPathFileInfo() FileInfoPlus {
+  return vpDto.absPathFInfoPlus
 }
 
 func (vpDto *ValidPathStrDto) GetError() error {
   return vpDto.err
 }
 
-func (vpDto *ValidPathStrDto) IsValidPath() int {
+func (vpDto *ValidPathStrDto) PathIsValid() int {
   return vpDto.pathIsValid
 }
 

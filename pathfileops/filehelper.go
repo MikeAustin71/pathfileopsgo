@@ -3656,10 +3656,13 @@ func (fh FileHelper) GetPathSeparatorIndexesInPathStr(
 // a given directory path. The method calls the function
 // 'path/filepath.VolumeName().
 //
-// VolumeName returns leading volume name.
+// VolumeName() returns the leading volume name if it exists
+// in input parameter 'pathStr'.
+//
 // Given "C:\foo\bar" it returns "C:" on Windows.
-// Given "\\host\share\foo" it returns "\\host\share".
-// On other platforms it returns "".
+// Given "c:\foo\bar" it returns "c:" on Windows.
+// Given "\\host\share\foo" it returns "\\host\share" on linux
+// On other platforms, it returns "".
 //
 func (fh FileHelper) GetVolumeName(pathStr string) string {
 
@@ -3672,6 +3675,50 @@ func (fh FileHelper) GetVolumeName(pathStr string) string {
   }
 
   return fp.VolumeName(pathStr)
+}
+
+// GetVolumeNameIndex - Analyzes input parameter 'pathStr' to
+// determine if it contains a volume name.
+// The method calls the function 'path/filepath.VolumeName().
+//
+// VolumeName() returns the leading volume name if it exists
+// in input parameter 'pathStr'.
+//
+// Given "C:\foo\bar" it returns "C:" on Windows.
+// Given "c:\foo\bar" it returns "c:" on Windows.
+// Given "\\host\share\foo" it returns "\\host\share" on linux
+// On other platforms, it returns "".
+//
+func (fh FileHelper) GetVolumeNameIndex(
+  pathStr string) (volNameIndex int, volNameLength int, volNameStr string) {
+
+  volNameIndex = -1
+  volNameLength = 0
+  volNameStr = ""
+
+  errCode := 0
+
+  errCode, _, pathStr = fh.isStringEmptyOrBlank(pathStr)
+
+  if errCode < 0 {
+    return volNameIndex, volNameLength, volNameStr
+  }
+
+  volName := fp.VolumeName(pathStr)
+
+  if len(volName) == 0 {
+    return volNameIndex, volNameLength, volNameStr
+  }
+
+  volNameIndex = strings.Index(pathStr, volName)
+
+  volNameLength = len(volName)
+
+  if volNameLength > 0 {
+    volNameStr = volName
+  }
+
+  return volNameIndex, volNameLength, volNameStr
 }
 
 // IsAbsolutePath - Compares the input parameter 'pathStr' to

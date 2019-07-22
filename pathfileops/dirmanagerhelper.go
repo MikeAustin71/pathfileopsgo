@@ -317,8 +317,8 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   }
 
   dMgrPathDoesExist,
-    _,
-    err :=
+  _,
+  err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
@@ -345,8 +345,8 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   }
 
   _,
-    _,
-    err2 :=
+  _,
+  err2 :=
     dMgrHlpr.doesDirectoryExist(
       targetDMgr,
       PreProcPathCode.None(),
@@ -803,8 +803,8 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
   osPathSepStr := string(os.PathSeparator)
 
   dirPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -975,8 +975,8 @@ func (dMgrHlpr *dirMgrHelper) deleteAllSubDirectories(
   }
 
   dirPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -1087,8 +1087,8 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryAll(
   }
 
   dirPathDoesExist,
-    _,
-    err :=
+  _,
+  err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
@@ -1177,8 +1177,8 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeInfo(
   }
 
   dirPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -1434,8 +1434,8 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeStats(
   }
 
   dirPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -1680,8 +1680,8 @@ func (dMgrHlpr *dirMgrHelper) deleteFilesByNamePattern(
   }
 
   dirPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -2307,8 +2307,8 @@ func (dMgrHlpr *dirMgrHelper) executeDirectoryFileOps(
   }
 
   dMgrPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -2332,8 +2332,8 @@ func (dMgrHlpr *dirMgrHelper) executeDirectoryFileOps(
   }
 
   _,
-    _,
-    err2 := dMgrHlpr.doesDirectoryExist(
+  _,
+  err2 := dMgrHlpr.doesDirectoryExist(
     targetBaseDir,
     PreProcPathCode.None(),
     ePrefix,
@@ -2521,8 +2521,8 @@ func (dMgrHlpr *dirMgrHelper) executeDirectoryTreeOps(
   }
 
   dMgrPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -2546,8 +2546,8 @@ func (dMgrHlpr *dirMgrHelper) executeDirectoryTreeOps(
   }
 
   _,
-    _,
-    err2 := dMgrHlpr.doesDirectoryExist(
+  _,
+  err2 := dMgrHlpr.doesDirectoryExist(
     targetBaseDir,
     PreProcPathCode.None(),
     ePrefix,
@@ -2770,8 +2770,8 @@ func (dMgrHlpr *dirMgrHelper) findDirectoryTreeFiles(
   }
 
   dirPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -2991,8 +2991,8 @@ func (dMgrHlpr *dirMgrHelper) findDirectoryTreeStats(
   }
 
   dMgrPathDoesExist,
-    _,
-    err :=
+  _,
+  err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
@@ -3784,18 +3784,22 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
   }
 
   pathStr = fh.AdjustPathSlash(pathStr)
-  validPathDto.validPathStr = pathStr
+  validPathDto.pathStr = pathStr
 
   strLen = len(pathStr)
 
-  if strLen > 1 &&
-    // Remove trailing slash
+  if strLen > 2 &&
+  // Remove trailing slash
     pathStr[strLen-1] == os.PathSeparator &&
     pathStr[strLen-2] != '.' &&
     pathStr[strLen-2] != os.PathSeparator {
     pathStr = pathStr[0 : strLen-1]
     strLen--
   }
+
+  volNameIndex,
+  _,
+  volNameStr := fh.GetVolumeNameIndex(pathStr)
 
   slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(pathStr)
 
@@ -3872,8 +3876,8 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
   }
 
   if err != nil {
-    validPathDto.validPathStr = pathStr
-    validPathDto.validPathStrLength =
+    validPathDto.pathStr = pathStr
+    validPathDto.pathStrLength =
       len(pathStr)
     validPathDto.pathIsValid = 0
     validPathDto.isInitialized = true
@@ -3884,30 +3888,57 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
   dotSeparator := "." + pathSepStr
   doubleDotSeparator := "." + dotSeparator
 
-  // identify valid path strings
+  // identify obvious valid path strings
 
   err = nil
-  lcVolName := strings.ToLower(pf.VolumeName(pathStr))
 
   if pathStr == "." {
-    validPathDto.validPathStr = dotSeparator
+    validPathDto.pathStr = dotSeparator
     validPathDto.pathIsValid = 1
   } else if pathStr == ".." {
-    validPathDto.validPathStr = doubleDotSeparator
+    validPathDto.pathStr = doubleDotSeparator
     validPathDto.pathIsValid = 1
   } else if pathStr == dotSeparator {
-    validPathDto.validPathStr = dotSeparator
+    validPathDto.pathStr = dotSeparator
     validPathDto.pathIsValid = 1
   } else if pathStr == doubleDotSeparator {
-    validPathDto.validPathStr = doubleDotSeparator
+    validPathDto.pathStr = doubleDotSeparator
     validPathDto.pathIsValid = 1
-  } else if lcVolName == strings.ToLower(pathStr) {
+  }
+
+  // Check conversion to absolute path
+  validPathDto.absPathStr,
+    err2 =
+    fh.MakeAbsolutePath(validPathDto.pathStr)
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix+
+      "\nError returned by fh.MakeAbsolutePath("+
+      "validPathDto.pathStr)\n"+
+      "validPathDto.pathStr='%v'\n"+
+      "Error='%v'\n",
+      validPathDto.pathStr,
+      err2.Error())
+
+    validPathDto.pathStr = pathStr
+    validPathDto.absPathStr = ""
+    validPathDto.pathStrLength =
+      len(pathStr)
+    validPathDto.pathIsValid = 0
+    validPathDto.isInitialized = true
+    validPathDto.pathIsValid = 0
+    validPathDto.err = fmt.Errorf("%v", err.Error())
+    return validPathDto, err
+  }
+
+  if volNameIndex > -1 &&
+      strings.ToLower(volNameStr) == strings.ToLower(pathStr) {
 
     if strings.Contains(strings.ToLower(runtime.GOOS), "windows") {
-      validPathDto.validPathStr = pathStr + pathSepStr
-    } else {
-      validPathDto.validPathStr = pathStr
+      pathStr += pathSepStr
     }
+
+    validPathDto.pathStr = pathStr
     validPathDto.pathIsValid = 1
 
   } else if lastCharIdx == -1 &&
@@ -3944,7 +3975,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     lSlashIdxs > 0 {
     // No characters but Has slashes and
     // has dots.
-    validPathDto.validPathStr = pathStr
+    validPathDto.pathStr = pathStr
     validPathDto.pathIsValid = 1
 
   } else if lastCharIdx == -1 &&
@@ -3952,7 +3983,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     lSlashIdxs > 0 {
     // No characters, No dots, but Has slashes
     err = fmt.Errorf(ePrefix+
-      "\nError: %v contains improperly formatted path separator characters!\n"+
+      "\nError: '%v' contains improperly formatted path separator characters!\n"+
       "%v='%v'\n\n",
       pathStrLabel,
       pathStrLabel,
@@ -3963,7 +3994,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     lDotIdxs == 0 &&
     lSlashIdxs == 0 {
     // Has characters, but No dots and No slashes
-    validPathDto.validPathStr = pathStr
+    validPathDto.pathStr = pathStr
     validPathDto.pathIsValid = 1
 
   } else if lastCharIdx > -1 &&
@@ -3985,7 +4016,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
       // lDotIdx must equal '1'
       if dotIdxs[0] < firstCharIdx {
         // Example .git = directory
-        validPathDto.validPathStr = pathStr
+        validPathDto.pathStr = pathStr
         validPathDto.pathIsValid = 1
       } else {
         err = fmt.Errorf(ePrefix+
@@ -4032,7 +4063,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     } else if dotIdxs[lDotIdxs-1]-slashIdxs[lSlashIdxs-1] == 1 &&
       lastCharIdx > dotIdxs[lDotIdxs-1] {
       // ../dir1/dir2/.git
-      validPathDto.validPathStr = pathStr
+      validPathDto.pathStr = pathStr
       validPathDto.pathIsValid = 1
 
     } else if lastCharIdx > dotIdxs[lDotIdxs-1] &&
@@ -4041,9 +4072,9 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
       // ./dir1/dir2/fileName.ext
 
       // Trim off trailing file name
-      validPathDto.validPathStr = pathStr[0:slashIdxs[lSlashIdxs-1]]
+      validPathDto.pathStr = pathStr[0:slashIdxs[lSlashIdxs-1]]
 
-      if len(validPathDto.validPathStr) == 0 {
+      if len(validPathDto.pathStr) == 0 {
         err = fmt.Errorf(ePrefix+
           "\nError: %v contains a "+
           "file name!\n"+
@@ -4061,7 +4092,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     } else if lastCharIdx > slashIdxs[lSlashIdxs-1] &&
       slashIdxs[lSlashIdxs-1] > dotIdxs[lDotIdxs-1] {
       // ../dir1/dir2/git
-      validPathDto.validPathStr = pathStr
+      validPathDto.pathStr = pathStr
       validPathDto.pathIsValid = 1
 
     } else {
@@ -4095,7 +4126,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
       validPathDto.pathIsValid = 0
 
     } else {
-      validPathDto.validPathStr = pathStr
+      validPathDto.pathStr = pathStr
       validPathDto.pathIsValid = 1
     }
 
@@ -4109,13 +4140,12 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
       pathStr)
 
     validPathDto.pathIsValid = 0
-
   }
 
   if err != nil {
-    validPathDto.validPathStr = pathStr
-    validPathDto.absValidPathStr = ""
-    validPathDto.validPathStrLength =
+    validPathDto.pathStr = pathStr
+    validPathDto.absPathStr = ""
+    validPathDto.pathStrLength =
       len(pathStr)
     validPathDto.pathIsValid = 0
     validPathDto.isInitialized = true
@@ -4124,22 +4154,23 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     return validPathDto, err
   }
 
-  validPathDto.absValidPathStr,
+  // Check conversion to absolute path
+  validPathDto.absPathStr,
     err2 =
-    fh.MakeAbsolutePath(validPathDto.validPathStr)
+    fh.MakeAbsolutePath(validPathDto.pathStr)
 
   if err2 != nil {
     err = fmt.Errorf(ePrefix+
       "\nError returned by fh.MakeAbsolutePath("+
-      "validPathDto.validPathStr)\n"+
-      "validPathDto.validPathStr='%v'\n"+
+      "validPathDto.pathStr)\n"+
+      "validPathDto.pathStr='%v'\n"+
       "Error='%v'\n",
-      validPathDto.validPathStr,
+      validPathDto.pathStr,
       err2.Error())
 
-    validPathDto.validPathStr = pathStr
-    validPathDto.absValidPathStr = ""
-    validPathDto.validPathStrLength =
+    validPathDto.pathStr = pathStr
+    validPathDto.absPathStr = ""
+    validPathDto.pathStrLength =
       len(pathStr)
     validPathDto.pathIsValid = 0
     validPathDto.isInitialized = true
@@ -4148,11 +4179,123 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     return validPathDto, err
   }
 
-  validPathDto.validPathStrLength =
-    len(validPathDto.validPathStr)
+  doesPathExist := false
+  fInfo := FileInfoPlus{}
 
-  validPathDto.absValidPathStrLength =
-    len(validPathDto.absValidPathStr)
+  doesPathExist,
+    fInfo,
+    err = dMgrHlpr.lowLevelDoesDirectoryExist(
+    pathStr,
+    ePrefix,
+    "pathStr")
+
+  if err != nil {
+    validPathDto.pathStr = pathStr
+    validPathDto.absPathStr = ""
+    validPathDto.pathStrLength =
+      len(pathStr)
+    validPathDto.pathIsValid = 0
+    validPathDto.isInitialized = true
+    validPathDto.pathIsValid = 0
+    validPathDto.err = fmt.Errorf("%v", err.Error())
+    return validPathDto, err
+  }
+
+  if doesPathExist {
+    validPathDto.pathDoesExist = 1
+    validPathDto.pathFInfoPlus = fInfo.CopyOut()
+    fInfo = FileInfoPlus{}
+  } else {
+    // doesPathExist = false
+    validPathDto.pathDoesExist = 0
+  }
+
+  doesPathExist,
+    fInfo,
+    err = dMgrHlpr.lowLevelDoesDirectoryExist(
+    validPathDto.absPathStr,
+    ePrefix,
+    "absolutePathStr")
+
+  if err != nil {
+    validPathDto.pathStr = pathStr
+    validPathDto.absPathStr = ""
+    validPathDto.pathStrLength =
+      len(pathStr)
+    validPathDto.pathIsValid = 0
+    validPathDto.isInitialized = true
+    validPathDto.pathIsValid = 0
+    validPathDto.err = fmt.Errorf("%v", err.Error())
+    return validPathDto, err
+  }
+
+  if doesPathExist {
+    validPathDto.absPathDoesExist = 1
+    validPathDto.absPathFInfoPlus = fInfo.CopyOut()
+    fInfo = FileInfoPlus{}
+  } else {
+    // doesPathExist = false
+    validPathDto.pathDoesExist = 0
+  }
+
+  if validPathDto.pathDoesExist == 1 &&
+    validPathDto.absPathDoesExist == 1 {
+
+    err = nil
+
+    if !validPathDto.absPathFInfoPlus.IsDir() {
+      err = fmt.Errorf(ePrefix +
+        "\nERROR: %v exists but it is classified " +
+        "as a File, NOT a directory!\n" +
+        "%v='%v'\n" +
+        "absolutePath='%v'\n",
+        pathStrLabel,
+        pathStrLabel,
+        pathStr,
+        validPathDto.absPathStr)
+
+    } else if validPathDto.absPathFInfoPlus.Mode().IsRegular() {
+      err = fmt.Errorf(ePrefix +
+        "\nERROR: %v exists but it is classified " +
+        "as a File, NOT a directory!\n" +
+        "%v='%v'\n" +
+        "absolutePath='%v'\n",
+        pathStrLabel,
+        pathStrLabel,
+        pathStr,
+        validPathDto.absPathStr)
+    }
+
+    if err != nil {
+
+      validPathDto.pathStr = pathStr
+      validPathDto.absPathStr = ""
+      validPathDto.pathStrLength =
+        len(pathStr)
+      validPathDto.pathIsValid = 0
+      validPathDto.isInitialized = true
+      validPathDto.pathIsValid = 0
+      validPathDto.err = fmt.Errorf("%v", err.Error())
+
+    } else {
+      validPathDto.pathStrLength =
+        len(validPathDto.pathStr)
+
+      validPathDto.absPathStrLength =
+        len(validPathDto.absPathStr)
+
+      validPathDto.pathIsValid = 1
+      validPathDto.isInitialized = true
+    }
+
+    return validPathDto, err
+  }
+
+  validPathDto.pathStrLength =
+    len(validPathDto.pathStr)
+
+  validPathDto.absPathStrLength =
+    len(validPathDto.absPathStr)
 
   validPathDto.pathIsValid = 1
   validPathDto.isInitialized = true
@@ -4899,8 +5042,8 @@ func (dMgrHlpr *dirMgrHelper) lowLevelMakeDir(
   }
 
   dMgrPathDoesExist,
-    _,
-    err :=
+  _,
+  err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
@@ -5004,8 +5147,8 @@ func (dMgrHlpr *dirMgrHelper) lowLevelMakeDirWithPermission(
   }
 
   dMgrPathDoesExist,
-    _,
-    err :=
+  _,
+  err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
@@ -5438,7 +5581,7 @@ func (dMgrHlpr *dirMgrHelper) moveDirectoryTree(
   fileSelectCriteria := FileSelectionCriteria{}
 
   dTreeCopyStats,
-    errs2 :=
+  errs2 :=
     dMgrHlpr.copyDirectoryTree(
       dMgr,
       targetDMgr,
@@ -5548,7 +5691,7 @@ func (dMgrHlpr *dirMgrHelper) moveSubDirectoryTree(
   fileSelectCriteria := FileSelectionCriteria{}
 
   dTreeCopyStats,
-    errs2 :=
+  errs2 :=
     dMgrHlpr.copyDirectoryTree(
       dMgr,
       targetDMgr,
@@ -5676,7 +5819,7 @@ func (dMgrHlpr *dirMgrHelper) setDirMgr(
   return dMgrHlpr.lowLevelDirMgrPostPathConfig(
     dMgr,
     pathStr,
-    validPathDto.validPathStr,
+    validPathDto.pathStr,
     ePrefix,
     dMgrLabel)
 }
@@ -5869,8 +6012,8 @@ func (dMgrHlpr *dirMgrHelper) setPermissions(
   }
 
   dirPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,

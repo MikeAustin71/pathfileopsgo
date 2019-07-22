@@ -2732,7 +2732,7 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
   dMgr.dataMutex.Lock()
 
   dTreeInfo,
-    errs := dMgrHlpr.findDirectoryTreeFiles(
+  errs := dMgrHlpr.findDirectoryTreeFiles(
     dMgr,
     fileSelectCriteria,
     false, // skip top level directory
@@ -3201,8 +3201,8 @@ func (dMgr *DirMgr) GetAbsolutePath() string {
   dMgr.dataMutex.Lock()
 
   _,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     "",
@@ -3260,8 +3260,8 @@ func (dMgr *DirMgr) GetAbsolutePathWithSeparator() string {
   dMgr.dataMutex.Lock()
 
   _,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     "",
@@ -3715,8 +3715,8 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
 
   dMgr.dataMutex.Lock()
   _,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -3818,7 +3818,7 @@ func (dMgr *DirMgr) ParseValidPathStr(pathStr string) (ValidPathStrDto, error) {
   dMgrHlpr := dirMgrHelper{}
 
   validPathDto,
-    err := dMgrHlpr.getValidPathStr(
+  err := dMgrHlpr.getValidPathStr(
     pathStr,
     "DirMgr.ParseValidPathStr() ",
     "pathStr")
@@ -4285,15 +4285,27 @@ func (dMgr *DirMgr) MoveSubDirectoryTree(targetDMgr DirMgr) (
 func (dMgr DirMgr) New(pathStr string) (DirMgr, error) {
 
   ePrefix := "DirMgr.New() "
+  dMgrHlpr := dirMgrHelper{}
 
   newDirMgr := DirMgr{}
 
-  _, err := newDirMgr.SetDirMgr(pathStr)
+  isEmpty,
+  err := dMgrHlpr.setDirMgr(
+    &newDirMgr,
+    pathStr,
+    ePrefix,
+    "newDirMgr",
+    "pathStr")
 
   if err != nil {
+   return DirMgr{}, err
+  }
+
+  if isEmpty {
     return DirMgr{}, fmt.Errorf(ePrefix+
-      "Error returned by newDirMgr.SetDirMgr(pathStr)\npathStr='%v'\nError='%v'\n",
-      pathStr, err.Error())
+      "\nERROR: dMgrHlpr.SetDirMgr(pathStr) returned an EMPTY DirMgr\n" +
+      "pathStr='%v'\n",
+      pathStr)
   }
 
   return newDirMgr, nil

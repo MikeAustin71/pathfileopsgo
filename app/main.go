@@ -34,18 +34,86 @@ func main() {
         "Error='%v'", err.Error())
       return
     }
+  fh := pf.FileHelper{}
+
+  xDir, err := fh.GetCurrentDir()
+
+  if err != nil {
+    fmt.Printf("Error returned from fh.GetCurrentDir().\n"+
+      "Error='%v'", err.Error())
+    return
+  }
+
+  volName := fp.VolumeName(xDir)
+
+  origDir := fh.AdjustPathSlash(volName)
+
+  expectedPath := origDir
+
+  if strings.Contains(strings.ToLower(runtime.GOOS), "windows") {
+    expectedPath = expectedPath + string(os.PathSeparator)
+  }
+    origDir := "../createFilesTest/Level01/Level02"
+
   */
 
-  origDir := "../createFilesTest/levelfilesfortest/myFile.txt"
-  expectedPath := "../createFilesTest/levelfilesfortest"
 
-  mainTests{}.mainTest97DirNew03(origDir, expectedPath)
+  origDir := "d:\\"
+
+  //expectedPath := "D:\\"
+
+  mainTests{}.mainTest98ParseValidPathStr(origDir)
+
 
 }
 
 type mainTests struct {
   Input  string
   Output string
+}
+
+func (mtst mainTests) mainTest100GetAbsPath(pathStr string ) {
+
+  fh := pf.FileHelper{}
+  absOrigDir, err := fh.MakeAbsolutePath(pathStr)
+
+  if err != nil {
+    fmt.Printf("Error returned from fh.MakeAbsolutePath(pathStr).\n" +
+      "pathStr='%v'\n"+
+      "Error='%v'",
+      pathStr,
+      err.Error())
+    return
+  }
+
+  fmt.Println("              mainTest100GetAbsPath                     ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("Original Path String: ", pathStr)
+  fmt.Println("       Absolute Path: ", absOrigDir)
+
+}
+
+func (mtst mainTests) mainTest99GetVolumeName(pathStr string) {
+
+  fh := pf.FileHelper{}
+
+  volIdx,
+  volLen,
+  volName := fh.GetVolumeNameIndex(pathStr)
+
+  fmt.Println("              mainTest99GetVolumeName                   ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("Original Path String: ", pathStr)
+  fmt.Println("        Volume Index: ", volIdx)
+  fmt.Println("       Volume Length: ", volLen)
+  fmt.Println("         Volume Name: ", volName)
+
 }
 
 func (mtst mainTests) mainTest98ParseValidPathStr(pathStr string) {
@@ -74,7 +142,7 @@ func (mtst mainTests) mainTest98ParseValidPathStr(pathStr string) {
   fmt.Println("    Validated Absolute Path: ", validPathDto.GetAbsPath())
   fmt.Println("Absolute Path String Length: ", validPathDto.GetAbsPathStrLen())
   fmt.Println(" Valid Path Dto Initialized: ", validPathDto.IsInitialized())
-  fmt.Println(" Valid Path Dto IsValidPath: ", validPathDto.IsValidPath())
+  fmt.Println(" Valid Path Dto PathIsValid: ", validPathDto.PathIsValid())
 
   if validPathDto.GetPathStrLen() != len(validPathDto.GetPath()) {
     fmt.Printf("Path String Length Error!\n"+
