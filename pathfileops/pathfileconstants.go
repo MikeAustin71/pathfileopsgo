@@ -154,18 +154,29 @@ type ValidPathStrDto struct {
   //  0 - No path is NOT valid
   //  1 - Yes, path is valid
 
+  pathVolumeName string
+
+  pathVolumeIndex int
+
+  pathVolumeStrLength int
+
   err error // If no error is encountered
   // this value is nil
 }
 
 func (vpDto ValidPathStrDto) New() ValidPathStrDto {
   newValPathDto := ValidPathStrDto{}
+  newValPathDto.pathStr = ""
   newValPathDto.pathStrLength = -1
+  newValPathDto.absPathStr = ""
   newValPathDto.absPathStrLength = -1
   newValPathDto.pathDoesExist = -1
   newValPathDto.absPathDoesExist = -1
   newValPathDto.pathIsValid = -1
   newValPathDto.isInitialized = false
+  newValPathDto.pathVolumeName = ""
+  newValPathDto.pathVolumeIndex = -1
+  newValPathDto.pathVolumeStrLength = 0
   newValPathDto.err = nil
 
   return newValPathDto
@@ -201,6 +212,18 @@ func (vpDto *ValidPathStrDto) GetAbsPathStrLen() int {
 
 func (vpDto *ValidPathStrDto) GetAbsPathFileInfo() FileInfoPlus {
   return vpDto.absPathFInfoPlus
+}
+
+func (vpDto *ValidPathStrDto) GetPathVolumeName() string {
+  return vpDto.pathVolumeName
+}
+
+func (vpDto *ValidPathStrDto) GetPathVolumeIndex() int {
+  return vpDto.pathVolumeIndex
+}
+
+func (vpDto *ValidPathStrDto) GetPathVolumeStrLength() int {
+  return vpDto.pathVolumeStrLength
 }
 
 func (vpDto *ValidPathStrDto) GetError() error {

@@ -4788,6 +4788,20 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDeleteSubdirectories(
   return dirsDeleted, errs
 }
 
+func (dMgrHlpr *dirMgrHelper) lowLevelDirMgrFieldConfig(
+  dMgr *DirMgr,
+  validPathDto ValidPathStrDto,
+  ePrefix string,
+  dMgrLabel string) (isEmpty bool, err error) {
+
+  isEmpty = false
+  err = nil
+
+
+
+  return isEmpty, err
+}
+
 func (dMgrHlpr *dirMgrHelper) lowLevelDirMgrPostPathConfig(
   dMgr *DirMgr,
   originalPathStr string,
