@@ -119,3 +119,84 @@ type DirectoryDeleteFileInfo struct {
   DeleteFileSelectCriteria FileSelectionCriteria
   DeletedFiles             FileMgrCollection
 }
+
+// ValidPathStrDto - Used to transfer valid
+// path string attributes and associated errors
+//
+type ValidPathStrDto struct {
+  isInitialized bool
+
+  validPathStr string
+
+  validPathStrLength int // -1  = unknown
+  // >-1 = known correct length
+
+  absValidPathStr string
+
+  absValidPathStrLength int // -1  = unknown
+  // >-1 = known correct length
+
+  pathDoesExist int // -1 = don't know, has not been tested
+  //  0 - No it doesnt exist
+  //  1 - Yes, it does exist
+
+  absPathDoesExist int // -1 = don't know, has not been tested
+  //  0 - No it doesnt exist
+  //  1 - Yes, it does exist
+
+  pathIsValid int // -1 - don't know
+  //  0 - No path is NOT valid
+  //  1 - Yes, path is valid
+
+  err error // If no error is encountered
+  // this value is nil
+}
+
+func (vpDto ValidPathStrDto) New() ValidPathStrDto {
+  newValPathDto := ValidPathStrDto{}
+  newValPathDto.validPathStrLength = -1
+  newValPathDto.absValidPathStrLength = -1
+  newValPathDto.pathDoesExist = -1
+  newValPathDto.absPathDoesExist = -1
+  newValPathDto.pathIsValid = -1
+  newValPathDto.isInitialized = false
+  newValPathDto.err = nil
+
+  return newValPathDto
+}
+
+func (vpDto *ValidPathStrDto) AbsolutePathDoesExist() int {
+  return vpDto.absPathDoesExist
+}
+
+func (vpDto *ValidPathStrDto) PathDoesExist() int {
+  return vpDto.pathDoesExist
+}
+
+func (vpDto *ValidPathStrDto) GetPath() string {
+  return vpDto.validPathStr
+}
+
+func (vpDto *ValidPathStrDto) GetPathStrLen() int {
+  return vpDto.validPathStrLength
+}
+
+func (vpDto *ValidPathStrDto) GetAbsPath() string {
+  return vpDto.absValidPathStr
+}
+
+func (vpDto *ValidPathStrDto) GetAbsPathStrLen() int {
+  return vpDto.absValidPathStrLength
+}
+
+func (vpDto *ValidPathStrDto) GetError() error {
+  return vpDto.err
+}
+
+func (vpDto *ValidPathStrDto) IsValidPath() int {
+  return vpDto.pathIsValid
+}
+
+func (vpDto *ValidPathStrDto) IsInitialized() bool {
+  return vpDto.isInitialized
+}

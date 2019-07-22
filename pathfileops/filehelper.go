@@ -5968,7 +5968,7 @@ func (fh *FileHelper) makeFileHelperWalkDirDeleteFilesFunc(dInfo *DirectoryDelet
       if err != nil {
 
         ex := fmt.Errorf(ePrefix+
-          "Error returned from DirMgr{}.NewFromPathFileNameExtStr(pathFile).\n"+
+          "Error returned from DirMgr{}.New(pathFile).\n"+
           "pathFile:='%v'\nError='%v'\n", pathFile, err.Error())
 
         dInfo.ErrReturns = append(dInfo.ErrReturns, ex)
@@ -6044,7 +6044,7 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
 
       if err != nil {
 
-        er2 := fmt.Errorf(ePrefix+"Error returned by DirMgr{}.NewFromPathFileNameExtStr(pathFile). "+
+        er2 := fmt.Errorf(ePrefix+"Error returned by DirMgr{}.New(pathFile). "+
           "pathFile='%v' Error='%v'", pathFile, err.Error())
         dInfo.ErrReturns = append(dInfo.ErrReturns, er2)
         return nil

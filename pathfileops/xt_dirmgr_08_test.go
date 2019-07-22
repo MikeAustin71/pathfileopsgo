@@ -1,7 +1,9 @@
 package pathfileops
 
 import (
+  "os"
   fp "path/filepath"
+  "runtime"
   "strings"
   "testing"
 )
@@ -323,8 +325,14 @@ func TestDirMgr_New_04(t *testing.T) {
   volName := fp.VolumeName(xDir)
 
   origDir := fh.AdjustPathSlash(volName)
-  expectedPath := fh.AdjustPathSlash(origDir)
-  expectedAbsDir := origDir
+
+  expectedPath := origDir
+
+  if strings.Contains(strings.ToLower(runtime.GOOS), "windows") {
+    expectedPath = expectedPath + string(os.PathSeparator)
+  }
+
+  expectedAbsDir := expectedPath
 
   expectedPathDoesExist := fh.DoesFileExist(origDir)
 
@@ -753,7 +761,7 @@ func TestDirMgr_New_07(t *testing.T) {
 func TestDirMgr_New_08(t *testing.T) {
   fh := FileHelper{}
   rawDir := "D:/"
-  expectedPath := fh.AdjustPathSlash("D:")
+  expectedPath := fh.AdjustPathSlash(rawDir)
   expectedAbsDir := expectedPath
 
   expectedPathDoesExist := fh.DoesFileExist(expectedPath)

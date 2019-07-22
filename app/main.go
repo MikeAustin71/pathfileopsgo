@@ -26,13 +26,175 @@ import (
 
 func main() {
 
-  mainTests{}.mainTest92GetDirTreeBytes()
+  /*
+    basePath, err := mainTests{}.getBaseProjectPath(true)
+
+    if err != nil {
+      fmt.Printf("Error returned by mainTests{}.getBaseProjectPath(true)\n" +
+        "Error='%v'", err.Error())
+      return
+    }
+  */
+
+  origDir := "../createFilesTest/levelfilesfortest/myFile.txt"
+  expectedPath := "../createFilesTest/levelfilesfortest"
+
+  mainTests{}.mainTest97DirNew03(origDir, expectedPath)
 
 }
 
 type mainTests struct {
   Input  string
   Output string
+}
+
+func (mtst mainTests) mainTest98ParseValidPathStr(pathStr string) {
+  dMgr := pf.DirMgr{}
+
+  validPathDto,
+    err := dMgr.ParseValidPathStr(pathStr)
+
+  if err != nil {
+    fmt.Printf("Error returned by dMgr.ParseValidPathStr(pathStr)\n"+
+      "pathStr='%v'\n"+
+      "Error='%v'\n",
+      pathStr, err.Error())
+    return
+  }
+
+  fmt.Println("           mainTest97ParseValidPathStr                  ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("       Original Path String: ", pathStr)
+  fmt.Println("Original Path String Length: ", len(pathStr))
+  fmt.Println("      Validated Path String: ", validPathDto.GetPath())
+  fmt.Println("         Path String Length: ", validPathDto.GetPathStrLen())
+  fmt.Println("    Validated Absolute Path: ", validPathDto.GetAbsPath())
+  fmt.Println("Absolute Path String Length: ", validPathDto.GetAbsPathStrLen())
+  fmt.Println(" Valid Path Dto Initialized: ", validPathDto.IsInitialized())
+  fmt.Println(" Valid Path Dto IsValidPath: ", validPathDto.IsValidPath())
+
+  if validPathDto.GetPathStrLen() != len(validPathDto.GetPath()) {
+    fmt.Printf("Path String Length Error!\n"+
+      "Expected String Length='%v'\nActual String Length='%v'\n",
+      validPathDto.GetPathStrLen(), len(validPathDto.GetPath()))
+  }
+
+  if validPathDto.GetAbsPathStrLen() != len(validPathDto.GetAbsPath()) {
+    fmt.Printf("Absolute Path String Length Error!\n"+
+      "Expected String Length='%v'\nActual String Length='%v'\n",
+      validPathDto.GetAbsPathStrLen(), len(validPathDto.GetAbsPath()))
+  }
+
+}
+
+func (mtst mainTests) mainTest97DirNew03(origDir, expectedPath string) {
+
+  fh := pf.FileHelper{}
+
+  rawOrigDir := origDir
+
+  origDir = fh.AdjustPathSlash(origDir)
+
+  expectedPath = fh.AdjustPathSlash(expectedPath)
+
+  expectedAbsPath, err := fh.MakeAbsolutePath(expectedPath)
+
+  if err != nil {
+    fmt.Printf("Error returned by err := fh.MakeAbsolutePath(expectedPath)\n"+
+      "expectedPath='%v'\n"+
+      "Error='%v'\n",
+      expectedPath, err.Error())
+    return
+  }
+
+  dMgr, err := pf.DirMgr{}.New(origDir)
+
+  if err != nil {
+    fmt.Printf("Error returned from DirMgr{}.New(origDir).\n"+
+      "origDir=='%v'\nError='%v'\n",
+      origDir, err.Error())
+    return
+  }
+
+  if expectedPath != dMgr.GetPath() {
+    fmt.Printf("ERROR: Expected path='%v'\n"+
+      "Instead, path='%v'\n",
+      expectedPath, dMgr.GetPath())
+  }
+
+  if expectedAbsPath != dMgr.GetAbsolutePath() {
+    fmt.Printf("ERROR: Expected absolute path='%v'\n"+
+      "Instead, absolute path='%v'\n",
+      expectedAbsPath, dMgr.GetAbsolutePath())
+    return
+  }
+
+  fmt.Println("                mainTest96DirNew02                      ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("         Original Path: ", rawOrigDir)
+  fmt.Println("         Expected Path: ", expectedPath)
+  fmt.Println("           Actual Path: ", dMgr.GetPath())
+  fmt.Println("Expected Absolute Path: ", expectedAbsPath)
+  fmt.Println("  Actual Absolute Path: ", dMgr.GetAbsolutePath())
+
+  return
+}
+
+func (mtst mainTests) mainTest96DirNew02() {
+
+  fh := pf.FileHelper{}
+
+  origDir := fh.AdjustPathSlash("../testfiles/testfiles2/")
+  expectedPath := fh.AdjustPathSlash("../testfiles/testfiles2")
+  expectedAbsPath, err := fh.MakeAbsolutePath(expectedPath)
+
+  if err != nil {
+    fmt.Printf("Error returned by err := fh.MakeAbsolutePath(expectedPath)\n"+
+      "expectedPath='%v'\n"+
+      "Error='%v'\n",
+      expectedPath, err.Error())
+    return
+  }
+
+  dMgr, err := pf.DirMgr{}.New(origDir)
+
+  if err != nil {
+    fmt.Printf("Error returned from DirMgr{}.New(origDir).\n"+
+      "origDir=='%v'\nError='%v'\n",
+      origDir, err.Error())
+    return
+  }
+
+  if expectedPath != dMgr.GetPath() {
+    fmt.Printf("ERROR: Expected path='%v'\n"+
+      "Instead, path='%v'\n",
+      expectedPath, dMgr.GetPath())
+  }
+
+  if expectedAbsPath != dMgr.GetAbsolutePath() {
+    fmt.Printf("ERROR: Expected absolute path='%v'\n"+
+      "Instead, absolute path='%v'\n",
+      expectedAbsPath, dMgr.GetAbsolutePath())
+    return
+  }
+
+  fmt.Println("                mainTest96DirNew02                      ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("         Expected Path: ", expectedPath)
+  fmt.Println("           Actual Path: ", dMgr.GetPath())
+  fmt.Println("Expected Absolute Path: ", expectedAbsPath)
+  fmt.Println("  Actual Absolute Path: ", dMgr.GetAbsolutePath())
+
+  return
 }
 
 func (mtst mainTests) mainTest95DirNew01() {

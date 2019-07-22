@@ -527,7 +527,7 @@ func TestDirMgr_GetNumberOfAbsPathElements_02(t *testing.T) {
 
   numOfElements := dMgr.GetNumberOfAbsPathElements()
 
-  if 1 != numOfElements {
+  if 2 != numOfElements {
     t.Errorf("Expected Number Of directory elements='%v'. Instead, "+
       "number of elements='%v' ", 1, numOfElements)
   }

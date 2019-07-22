@@ -3813,6 +3813,19 @@ func (dMgr *DirMgr) IsPathPopulated() bool {
   return isDMgrPathPopulated
 }
 
+func (dMgr *DirMgr) ParseValidPathStr(pathStr string) (ValidPathStrDto, error) {
+
+  dMgrHlpr := dirMgrHelper{}
+
+  validPathDto,
+    err := dMgrHlpr.getValidPathStr(
+    pathStr,
+    "DirMgr.ParseValidPathStr() ",
+    "pathStr")
+
+  return validPathDto, err
+}
+
 // IsVolumeNamePopulated - Returns a boolean value indicating
 // whether the Volume Name for the current Directory Manager
 // instance is populated.
@@ -4224,7 +4237,7 @@ func (dMgr *DirMgr) MoveSubDirectoryTree(targetDMgr DirMgr) (
   return dirMoveStats, errs
 }
 
-// NewFromPathFileNameExtStr - Returns a new DirMgr object and populates the
+// New - Returns a new DirMgr object and populates the
 // the data fields.
 //
 // ------------------------------------------------------------------------
@@ -4271,7 +4284,7 @@ func (dMgr *DirMgr) MoveSubDirectoryTree(targetDMgr DirMgr) (
 //
 func (dMgr DirMgr) New(pathStr string) (DirMgr, error) {
 
-  ePrefix := "DirMgr.NewFromPathFileNameExtStr() "
+  ePrefix := "DirMgr.New() "
 
   newDirMgr := DirMgr{}
 
@@ -4279,7 +4292,7 @@ func (dMgr DirMgr) New(pathStr string) (DirMgr, error) {
 
   if err != nil {
     return DirMgr{}, fmt.Errorf(ePrefix+
-      "Error returned by newDirMgr.SetDirMgr(pathStr) pathStr='%v' Error='%v'",
+      "Error returned by newDirMgr.SetDirMgr(pathStr)\npathStr='%v'\nError='%v'\n",
       pathStr, err.Error())
   }
 
@@ -4307,23 +4320,14 @@ func (dMgr DirMgr) NewFromFileInfo(
     "FileInfo.Name()")
 
   if err != nil {
-    return DirMgr{},
-      fmt.Errorf(ePrefix+
-        "Error returned from dMgrHlpr.setDirMgrFromKnownPathDirName("+
-        "parentDirectoryPath, FileInfo.Name()).\n"+
-        "parentDirectoryPath='%v'\n"+
-        "FileInfo.Name()='%v'\n"+
-        "Error='%v'\n",
-        parentDirectoryPath,
-        info.Name(),
-        err.Error())
+    return DirMgr{}, err
   }
 
   if isEmpty {
     return DirMgr{},
       fmt.Errorf(ePrefix+
-        "Returned 'DirMgr' is Empty!\n"+
-        "dMgrHlpr.setDirMgrFromKnownPathDirName()\n"+
+        "Newly generated 'DirMgr' is Empty!\n"+
+        "dMgrHlpr.setDirMgrFromKnownPathDirName() returned an empty 'DirMgr'\n"+
         "parentDirectoryPath='%v'\n"+
         "FileInfo.Name()='%v'\n",
         parentDirectoryPath,
@@ -4376,8 +4380,13 @@ func (dMgr DirMgr) NewFromKnownPathDirectoryName(
 
   if isEmpty {
     return DirMgr{},
-      fmt.Errorf(ePrefix +
-        "New DirMgr is Empty!\n")
+      fmt.Errorf(ePrefix+
+        "Newly generated 'DirMgr' is Empty!\n"+
+        "dMgrHlpr.setDirMgrFromKnownPathDirName() returned an empty 'DirMgr'\n"+
+        "parentPathName='%v'\n"+
+        "directoryName='%v'\n",
+        parentPathName,
+        directoryName)
   }
 
   return newDirMgr, nil
