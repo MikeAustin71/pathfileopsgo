@@ -4313,7 +4313,7 @@ func (dMgr DirMgr) New(pathStr string) (DirMgr, error) {
 
 // NewFromFileInfo - Returns a new DirMgr object based on two input parameters:
 // 		- A parent directory path string
-//		- An os.FileInfo object
+//		- An os.FileInfo object containing the directory name.
 //
 func (dMgr DirMgr) NewFromFileInfo(
   parentDirectoryPath string, info os.FileInfo) (DirMgr, error) {
@@ -4322,7 +4322,7 @@ func (dMgr DirMgr) NewFromFileInfo(
   dMgrHlpr := dirMgrHelper{}
   newDirMgr := DirMgr{}
 
-  isEmpty, err := dMgrHlpr.setDirMgrFromKnownPathDirName(
+  isEmpty, err := dMgrHlpr.setDirMgrWithPathDirectoryName(
     &newDirMgr,
     parentDirectoryPath,
     info.Name(),
@@ -4530,40 +4530,50 @@ func (dMgr *DirMgr) SetDirMgrFromKnownPathDirName(
 //
 // Input Parameters:
 //
-//  pathStr   string - The directory path for the directory manager.
+//  parentDirectoryPath string - The parent directory path.
 //
-//  info os.FileInfo - This os.FileInfo will be associated with the new
-//                     values assigned to the DirMgr. The os.FileInfo
-//                     name will be assigned as the DirMgr directory
-//                     name.
-//
+//  info os.FileInfo           - The os.FileInfo containing the directory name.
 //
 // ---------------------------------------------------------------------------
 //
 // Return Value:
 //
-// err        error - If a program execution error is encountered during
-//                    processing, it will be returned as an 'error' type.
+//  err        error - If a program execution error is encountered during
+//                     processing, it will be returned as an 'error' type.
 //
-func (dMgr *DirMgr) SetDirMgrWithFileInfo(pathStr string, info os.FileInfo) (err error) {
+func (dMgr *DirMgr) SetDirMgrWithFileInfo(
+  parentDirectoryPath string,
+  info os.FileInfo) (err error) {
 
   ePrefix := "DirMgr.SetDirMgrWithFileInfo() "
 
   dMgrHlpr := dirMgrHelper{}
+  isEmpty := true
 
   dMgr.dataMutex.Lock()
 
-  _,
-    err = dMgrHlpr.setDirMgr(
+  isEmpty,
+  err = dMgrHlpr.setDirMgrWithPathDirectoryName(
     dMgr,
-    pathStr,
+    parentDirectoryPath,
+    info.Name(),
     ePrefix,
     "dMgr",
-    "pathStr")
+    "parentDirectoryPath",
+    "FileInfo.Name()")
 
-  if err == nil {
-    dMgr.actualDirFileInfo = FileInfoPlus{}.NewFromPathFileInfo(pathStr, info)
-    dMgr.directoryName = info.Name()
+  if err != nil {
+    return err
+  }
+
+  if isEmpty {
+    err = fmt.Errorf(ePrefix+
+        "Newly generated 'DirMgr' is Empty!\n"+
+        "dMgrHlpr.setDirMgrFromKnownPathDirName() returned an empty 'DirMgr'\n"+
+        "parentDirectoryPath='%v'\n"+
+        "FileInfo.Name()='%v'\n",
+        parentDirectoryPath,
+        info.Name())
   }
 
   dMgr.dataMutex.Unlock()

@@ -6122,6 +6122,7 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
     pathStrLabel)
 
   if err != nil {
+
     isEmpty = true
     return isEmpty, err
   }
@@ -6135,6 +6136,7 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
     dirNameLabel)
 
   if err != nil {
+
     isEmpty = true
     return isEmpty, err
   }
@@ -6151,12 +6153,56 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
     finalPathStr = pathStr + dirName
   }
 
-  return dMgrHlpr.lowLevelDirMgrPostPathConfig(
+  var err2 error
+  fh := FileHelper{}
+
+  validPathDto := ValidPathStrDto{}.New()
+
+  validPathDto.originalPathStr = finalPathStr
+  validPathDto.pathStr = finalPathStr
+
+  validPathDto.absPathStr,
+  err2 = fh.MakeAbsolutePath(validPathDto.pathStr)
+
+  if err2 != nil {
+    err = fmt.Errorf(ePrefix +
+      "\nError returned by fh.MakeAbsolutePath(pathStr).\n" +
+      "Directory Path='%v'\nError='%v'\n",
+      validPathDto.pathStr,
+      err2.Error())
+
+    isEmpty = true
+    return isEmpty, err
+  }
+
+  validPathDto.pathVolumeIndex,
+  validPathDto.pathVolumeStrLength,
+  validPathDto.pathVolumeName =
+  fh.GetVolumeNameIndex(validPathDto.absPathStr)
+
+  validPathDto.pathStrLength = len(pathStr)
+  validPathDto.absPathStrLength = len(validPathDto.absPathStr)
+  validPathDto.pathDoesExist = -1
+  validPathDto.absPathDoesExist = -1
+  validPathDto.isInitialized = true
+  validPathDto.pathIsValid = 1
+
+  err = validPathDto.IsDtoValid(ePrefix)
+
+  if err != nil {
+
+    isEmpty = true
+    return isEmpty, err
+  }
+
+  isEmpty,
+  err = dMgrHlpr.lowLevelDirMgrFieldConfig(
     dMgr,
-    finalPathStr,
-    finalPathStr,
+    validPathDto,
     ePrefix,
     dMgrLabel)
+
+  return isEmpty, err
 }
 
 // setDirMgrWithPathDirectoryName - Configures a Directory Manager
@@ -6238,11 +6284,14 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrWithPathDirectoryName(
     return isEmpty, err
   }
 
-  return dMgrHlpr.lowLevelDirMgrFieldConfig(
+  isEmpty,
+  err = dMgrHlpr.lowLevelDirMgrFieldConfig(
     dMgr,
     validPathDto,
     ePrefix,
     dMgrLabel)
+
+  return isEmpty, err
 }
 
 // setPermissions - Sets the read/write and execute
