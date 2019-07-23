@@ -234,7 +234,7 @@ func TestDirMgr_CopyDirectory_01(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   dirCopyStats,
-    errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
+  errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
 
   if len(errs) > 0 {
 
@@ -367,7 +367,7 @@ func TestDirMgr_CopyDirectory_02(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
+  errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
 
   if len(errs) == 0 {
     t.Error("Expected an error return from srcDMgr.CopyDirectory(targetDMgr, fsc)\n" +
@@ -422,7 +422,7 @@ func TestDirMgr_CopyDirectory_03(t *testing.T) {
   srcDMgr.isInitialized = false
 
   _,
-    errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
+  errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
 
   if len(errs) == 0 {
     t.Error("Expected an error return from srcDMgr.CopyDirectory(targetDMgr, fsc)\n" +
@@ -479,7 +479,7 @@ func TestDirMgr_CopyDirectory_04(t *testing.T) {
   targetDMgr.isInitialized = false
 
   _,
-    errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
+  errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
 
   if len(errs) == 0 {
     t.Error("Expected an error return from srcDMgr.CopyDirectory(targetDMgr, fsc)\n" +
@@ -536,7 +536,7 @@ func TestDirMgr_CopyDirectory_05(t *testing.T) {
   fsc.FileNamePatterns = []string{"*.htm"}
 
   dirCopyStats,
-    errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
+  errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
 
   if len(errs) > 0 {
 
@@ -617,7 +617,7 @@ func TestDirMgr_CopyDirectory_06(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   dirCopyStats,
-    errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
+  errs := srcDMgr.CopyDirectory(targetDMgr, fsc, false)
 
   if len(errs) > 0 {
 
@@ -784,7 +784,7 @@ func TestDirMgr_CopyDirectory_07(t *testing.T) {
   fsc.FileNamePatterns = []string{"*.xxx"}
 
   dirCopyStats,
-    errs := srcDMgr.CopyDirectory(targetDMgr, fsc, true)
+  errs := srcDMgr.CopyDirectory(targetDMgr, fsc, true)
 
   if len(errs) > 0 {
 
@@ -931,7 +931,7 @@ func TestDirMgr_CopyDirectoryTree_01(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   dtreeCopyStats,
-    errs := srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)
+  errs := srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)
 
   if len(errs) > 0 {
     t.Errorf("Errors returned by srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)\n"+
@@ -1049,7 +1049,7 @@ func TestDirMgr_CopyDirectoryTree_02(t *testing.T) {
   srcDMgr.isInitialized = false
 
   _,
-    errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
+  errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) == 0 {
     t.Error("Expected an error from srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)\n" +
@@ -1103,7 +1103,7 @@ func TestDirMgr_CopyDirectoryTree_03(t *testing.T) {
   targetDMgr.isInitialized = false
 
   _,
-    errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
+  errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) == 0 {
     t.Error("Expected an error from srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)\n" +
@@ -1155,7 +1155,7 @@ func TestDirMgr_CopyDirectoryTree_04(t *testing.T) {
 
   fsc := FileSelectionCriteria{}
   _,
-    errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
+  errs := srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) == 0 {
     t.Error("Expected an error from srcDMgr.CopyDirectoryTree(targetDMgr, true, fsc)\n" +
@@ -1219,7 +1219,7 @@ func TestDirMgr_CopyDirectoryTree_05(t *testing.T) {
   fsc.FileNamePatterns = []string{"*.htm"}
 
   dtreeCopyStats,
-    errs := srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)
+  errs := srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)
 
   if len(errs) > 0 {
     t.Errorf("Errors returned by srcDMgr.CopyDirectoryTree(targetDMgr, false, fsc)\n"+
@@ -1301,7 +1301,7 @@ func TestDirMgr_CopyDirectoryTree_06(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    errs := setUpDMgr1.CopyDirectoryTree(srcDMgr, false, fsc)
+  errs := setUpDMgr1.CopyDirectoryTree(srcDMgr, false, fsc)
 
   if len(errs) > 0 {
     t.Errorf("Test Setup Errors returned by setUpDMgr1.CopyDirectoryTree(srcDMgr, false, fsc).\n"+
@@ -1358,7 +1358,7 @@ func TestDirMgr_CopyDirectoryTree_06(t *testing.T) {
 
   // Copy '.txt' files only to targetDMgr
   dtreeCopyStats,
-    errs := srcDMgr.CopyDirectoryTree(
+  errs := srcDMgr.CopyDirectoryTree(
     targetDMgr,
     false,
     fsc)
@@ -1821,7 +1821,7 @@ func TestDirMgr_CopySubDirectoryTree_01(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   dTreeCopyStats,
-    errs := srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)
+  errs := srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) > 0 {
     t.Errorf("Errors returned by srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n"+
@@ -1972,7 +1972,7 @@ func TestDirMgr_CopySubDirectoryTree_02(t *testing.T) {
   srcDMgr.isInitialized = false
 
   _,
-    errs := srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)
+  errs := srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) == 0 {
     t.Error("Expected Errors to be returned from srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n" +
@@ -2029,7 +2029,7 @@ func TestDirMgr_CopySubDirectoryTree_03(t *testing.T) {
   targetDMgr.isInitialized = false
 
   _,
-    errs := srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)
+  errs := srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) == 0 {
     t.Error("Expected Errors to be returned from srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n" +
@@ -2083,7 +2083,7 @@ func TestDirMgr_CopySubDirectoryTree_04(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   _,
-    errs := srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)
+  errs := srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) == 0 {
     t.Error("Expected Errors to be returned from " +
@@ -2134,7 +2134,7 @@ func TestDirMgr_CopySubDirectoryTree_05(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   dTreeStats,
-    errs := srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)
+  errs := srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)
 
   if len(errs) > 0 {
 
@@ -2307,7 +2307,7 @@ func TestDirMgr_CopySubDirectoryTree_06(t *testing.T) {
   fsc := FileSelectionCriteria{}
 
   dTreeStats,
-    errs := srcDMgr.CopySubDirectoryTree(targetDMgr, false, fsc)
+  errs := srcDMgr.CopySubDirectoryTree(targetDMgr, false, fsc)
 
   if len(errs) > 0 {
     t.Errorf("Errors returned by srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n"+
