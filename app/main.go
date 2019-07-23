@@ -58,7 +58,7 @@ func main() {
   */
 
 
-  origDir := "d:\\"
+  origDir := ".."
 
   //expectedPath := "D:\\"
 
@@ -137,10 +137,14 @@ func (mtst mainTests) mainTest98ParseValidPathStr(pathStr string) {
   fmt.Println()
   fmt.Println("       Original Path String: ", pathStr)
   fmt.Println("Original Path String Length: ", len(pathStr))
+  fmt.Println("Original Path String Length: ", validPathDto.GetOriginalPathStr())
   fmt.Println("      Validated Path String: ", validPathDto.GetPath())
   fmt.Println("         Path String Length: ", validPathDto.GetPathStrLen())
   fmt.Println("    Validated Absolute Path: ", validPathDto.GetAbsPath())
   fmt.Println("Absolute Path String Length: ", validPathDto.GetAbsPathStrLen())
+  fmt.Println("                Volume Name: ", validPathDto.GetPathVolumeName())
+  fmt.Println("               Volume Index: ", validPathDto.GetPathVolumeIndex())
+  fmt.Println("       Volume String Length: ", validPathDto.GetPathVolumeStrLength())
   fmt.Println(" Valid Path Dto Initialized: ", validPathDto.IsInitialized())
   fmt.Println(" Valid Path Dto PathIsValid: ", validPathDto.PathIsValid())
 

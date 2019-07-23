@@ -126,7 +126,10 @@ type DirectoryDeleteFileInfo struct {
 type ValidPathStrDto struct {
   isInitialized bool
 
-  pathStr string
+  originalPathStr string  // The original, unformatted path string
+
+  pathStr string    // The path string which may or may not be
+  // the absolute path
 
   pathFInfoPlus FileInfoPlus // Only populated if absValidPath
   // exists on disk.
@@ -212,6 +215,10 @@ func (vpDto *ValidPathStrDto) GetAbsPathStrLen() int {
 
 func (vpDto *ValidPathStrDto) GetAbsPathFileInfo() FileInfoPlus {
   return vpDto.absPathFInfoPlus
+}
+
+func (vpDto *ValidPathStrDto) GetOriginalPathStr() string {
+  return vpDto.originalPathStr
 }
 
 func (vpDto *ValidPathStrDto) GetPathVolumeName() string {
