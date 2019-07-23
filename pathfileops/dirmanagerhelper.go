@@ -6111,10 +6111,10 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
     return isEmpty, err
   }
 
-  adjustedTrimmedPathStr := ""
+  strLen := 0
 
-  adjustedTrimmedPathStr,
-    _,
+  pathStr,
+    strLen,
     err = dMgrHlpr.isPathStringEmptyOrBlank(
     pathStr,
     true, // trim trailing path separator
@@ -6126,9 +6126,7 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
     return isEmpty, err
   }
 
-  adjustedTrimmmedDirName := ""
-
-  adjustedTrimmmedDirName,
+  dirName,
     _,
     err = dMgrHlpr.isPathStringEmptyOrBlank(
     dirName,
@@ -6141,14 +6139,17 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
     return isEmpty, err
   }
 
-  if adjustedTrimmmedDirName[0] == os.PathSeparator {
-    adjustedTrimmmedDirName = adjustedTrimmmedDirName[1:]
+  if dirName[0] == os.PathSeparator {
+    dirName = dirName[1:]
   }
 
-  finalPathStr :=
-    adjustedTrimmedPathStr +
-      string(os.PathSeparator) +
-      adjustedTrimmmedDirName
+  finalPathStr := ""
+
+  if pathStr[strLen-1] != os.PathSeparator {
+    finalPathStr = pathStr + string(os.PathSeparator) + dirName
+  } else {
+    finalPathStr = pathStr + dirName
+  }
 
   return dMgrHlpr.lowLevelDirMgrPostPathConfig(
     dMgr,
@@ -6181,8 +6182,10 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrWithPathDirectoryName(
     ePrefix = ePrefix + "- " + ePrefixCurrMethod
   }
 
+  strLen := 0
+
   pathStr,
-    _,
+    strLen,
     err = dMgrHlpr.isPathStringEmptyOrBlank(
     pathStr,
     true,
@@ -6207,15 +6210,39 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrWithPathDirectoryName(
     return isEmpty, err
   }
 
-  finalPathStr := pathStr + directoryName
+  if directoryName[0] == os.PathSeparator {
+    directoryName = directoryName[1:]
+  }
 
-  return dMgrHlpr.lowLevelDirMgrPostPathConfig(
+  finalPathStr := ""
+
+  if pathStr[strLen-1] != os.PathSeparator {
+    finalPathStr =
+      pathStr + string(os.PathSeparator) + directoryName
+
+  } else {
+    finalPathStr = pathStr + directoryName
+  }
+
+  validPathDto := ValidPathStrDto{}.New()
+
+  validPathDto,
+    err =
+    dMgrHlpr.getValidPathStr(
+      finalPathStr,
+      ePrefix,
+      "pathStr")
+
+  if err != nil {
+    isEmpty = true
+    return isEmpty, err
+  }
+
+  return dMgrHlpr.lowLevelDirMgrFieldConfig(
     dMgr,
-    finalPathStr,
-    finalPathStr,
+    validPathDto,
     ePrefix,
     dMgrLabel)
-
 }
 
 // setPermissions - Sets the read/write and execute
