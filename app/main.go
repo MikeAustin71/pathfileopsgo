@@ -58,11 +58,11 @@ func main() {
   */
 
 
-  origDir := ".."
+  origDir := "../filesfortest/levelfilesfortest/level_01_dir/level_1_3_test.txt"
 
-  //expectedPath := "D:\\"
+  expectedPath := "../filesfortest/levelfilesfortest/level_01_dir"
 
-  mainTests{}.mainTest98ParseValidPathStr(origDir)
+  mainTests{}.mainTest97DirNew03(origDir, expectedPath)
 
 
 }
@@ -127,6 +127,20 @@ func (mtst mainTests) mainTest98ParseValidPathStr(pathStr string) {
       "pathStr='%v'\n"+
       "Error='%v'\n",
       pathStr, err.Error())
+    return
+  }
+
+  err = validPathDto.IsDtoValid("mainTest97ParseValidPathStr() ")
+
+  if err != nil {
+    fmt.Printf("%v", err.Error())
+    return
+  }
+
+  err = validPathDto.IsPathExistenceTestValid("mainTest97ParseValidPathStr() ")
+
+  if err != nil {
+    fmt.Printf("%v", err.Error())
     return
   }
 

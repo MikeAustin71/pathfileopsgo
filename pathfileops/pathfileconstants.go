@@ -30,6 +30,8 @@ The source code repository for this package is located at:
 package pathfileops
 
 import (
+  "errors"
+  "fmt"
   "strings"
   "time"
 )
@@ -239,6 +241,82 @@ func (vpDto *ValidPathStrDto) GetError() error {
 
 func (vpDto *ValidPathStrDto) PathIsValid() int {
   return vpDto.pathIsValid
+}
+
+func (vpDto *ValidPathStrDto) IsDtoValid(ePrefix string) error {
+
+  if len(ePrefix) == 0 {
+    ePrefix = "ValidPathStrDto.IsDtoValid() "
+  } else {
+    ePrefix = ePrefix + "- ValidPathStrDto.IsDtoValid()\n"
+  }
+
+  if !vpDto.isInitialized {
+    return errors.New(ePrefix +
+      "ERROR: This ValidPathStrDto is INVALID!\n" +
+      "This ValidPathStrDto instance is NOT initialized!\n" +
+      "vpDto.isInitialized='false'\n")
+  }
+
+  if vpDto.pathIsValid != 1 {
+    return fmt.Errorf(ePrefix +
+      "ERROR: This ValidPathStrDto is INVALID!\n" +
+      "The ValidPathStrDto 'Path Is Valid flag' is Invalid!\n" +
+      "vpDto.pathIsValid=%v'\n", vpDto.pathIsValid)
+  }
+
+  if len(vpDto.pathStr) == 0 {
+    return errors.New(ePrefix +
+      "ERROR: This ValidPathStrDto is INVALID!\n" +
+      "The ValidPathStrDto 'pathStr' is EMPTY!\n")
+  }
+
+  if len(vpDto.absPathStr) == 0 {
+    return errors.New(ePrefix +
+      "ERROR: This ValidPathStrDto is INVALID!\n" +
+      "The ValidPathStrDto absolute path string is EMPTY!\n")
+  }
+
+  if vpDto.pathDoesExist < -1 || vpDto.pathDoesExist > 1 {
+    return fmt.Errorf(ePrefix +
+      "ERROR: This ValidPathStrDto is INVALID!\n" +
+      "ValidPathStrDto.pathDoesExist holds an invalid value.\n" +
+      "ValidPathStrDto.pathDoesExist='%v'\n", vpDto.pathDoesExist)
+  }
+
+  if vpDto.absPathDoesExist < -1 || vpDto.absPathDoesExist > 1 {
+    return fmt.Errorf(ePrefix +
+      "ERROR: This ValidPathStrDto is INVALID!\n" +
+      "ValidPathStrDto.absPathDoesExist holds an invalid value.\n" +
+      "ValidPathStrDto.absPathDoesExist='%v'\n", vpDto.absPathDoesExist)
+  }
+
+  return nil
+}
+
+func (vpDto *ValidPathStrDto) IsPathExistenceTestValid(ePrefix string) error {
+
+  if len(ePrefix) == 0 {
+    ePrefix = "ValidPathStrDto.IsPathExistenceTestValid() "
+  } else {
+    ePrefix = ePrefix + "- ValidPathStrDto.IsPathExistenceTestValid()\n"
+  }
+
+  if vpDto.pathDoesExist < 0 || vpDto.pathDoesExist > 1 {
+    return fmt.Errorf(ePrefix +
+      "ERROR: The ValidPathStrDto Path Existence Test is INVALID!\n" +
+      "ValidPathStrDto.pathDoesExist holds an invalid value.\n" +
+      "ValidPathStrDto.pathDoesExist='%v'\n", vpDto.pathDoesExist)
+  }
+
+  if vpDto.absPathDoesExist < 0 || vpDto.absPathDoesExist > 1 {
+    return fmt.Errorf(ePrefix +
+      "ERROR: The ValidPathStrDto Absolute Path Existence Test is INVALID!\n" +
+      "ValidPathStrDto.absPathDoesExist holds an invalid value.\n" +
+      "ValidPathStrDto.absPathDoesExist='%v'\n", vpDto.absPathDoesExist)
+  }
+
+  return nil
 }
 
 func (vpDto *ValidPathStrDto) IsInitialized() bool {

@@ -4314,6 +4314,12 @@ errorExit:
   validPathDto.pathIsValid = 1
   validPathDto.isInitialized = true
 
+  err = validPathDto.IsDtoValid(ePrefix)
+
+  if err == nil {
+    err = validPathDto.IsPathExistenceTestValid(ePrefix)
+  }
+
   return validPathDto, err
 }
 
@@ -4819,27 +4825,206 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDirMgrFieldConfig(
     ePrefix = ePrefix + "- " + ePrefixCurrMethod
   }
 
-  if !validPathDto.isInitialized {
+  err = validPathDto.IsDtoValid(ePrefix)
 
-    err = fmt.Errorf(ePrefix +
-      "\nERROR: Method Input Parameter 'validPathDto' was never initialized!\n" +
-      "validPathDto.isInitialized='%v'\n",
-      validPathDto.isInitialized)
-
+  if err != nil {
     return isEmpty, err
   }
 
-  if validPathDto.pathIsValid < 1 {
+  dMgr.originalPath = validPathDto.originalPathStr
 
-    err = fmt.Errorf(ePrefix +
-      "\nERROR: Method Input Parameter 'validPathDto' is INVALID!\n" +
-      "validPathDto.pathIsValid='%v'\n",
-      validPathDto.pathIsValid)
+  dMgr.path = validPathDto.pathStr
+  dMgr.isPathPopulated = true
 
-    return isEmpty, err
+  dMgr.absolutePath = validPathDto.absPathStr
+  dMgr.isAbsolutePathPopulated = true
+
+  fh := FileHelper{}
+  var dirPathDoesExist, dirAbsPathDoesExist bool
+  var pathFInfoPlus, absPathFInfoPlus FileInfoPlus
+
+  if validPathDto.pathDoesExist > -1 &&
+    validPathDto.absPathDoesExist > -1 {
+
+    if validPathDto.pathDoesExist == 0 {
+      dirPathDoesExist = false
+    } else {
+      dirPathDoesExist = true
+      pathFInfoPlus = validPathDto.pathFInfoPlus.CopyOut()
+    }
+
+    if validPathDto.absPathDoesExist == 0 {
+      dirAbsPathDoesExist = false
+    } else {
+      dirAbsPathDoesExist = true
+      absPathFInfoPlus = validPathDto.absPathFInfoPlus.CopyOut()
+    }
+
+  } else {
+    _,
+      dirPathDoesExist,
+      pathFInfoPlus,
+      err =
+      fh.doesPathFileExist(
+        dMgr.path,
+        PreProcPathCode.None(),
+        ePrefix,
+        dMgrLabel+".path")
+
+    if err != nil {
+      _ = dMgrHlpr.empty(
+        dMgr,
+        ePrefix,
+        dMgrLabel)
+
+      isEmpty = true
+      return isEmpty, err
+    }
+
+    _,
+      dirAbsPathDoesExist,
+      absPathFInfoPlus,
+      err =
+      fh.doesPathFileExist(
+        dMgr.absolutePath,
+        PreProcPathCode.None(),
+        ePrefix,
+        dMgrLabel+".absolutePath")
+
+    if err != nil {
+
+      _ = dMgrHlpr.empty(
+        dMgr,
+        ePrefix,
+        dMgrLabel)
+
+      isEmpty = true
+      return isEmpty, err
+    }
   }
 
-  isEmpty = false
+  if !dirPathDoesExist {
+    dMgr.doesPathExist = false
+
+  } else {
+
+    if !pathFInfoPlus.IsDir() {
+      _ = dMgrHlpr.empty(
+        dMgr,
+        ePrefix,
+        dMgrLabel)
+
+      err = fmt.Errorf(ePrefix+
+        "\nERROR: Directory path exists, but it is a File - NOT a directory!\n"+
+        "%v='%v'\n",
+        dMgrLabel,
+        dMgr.path)
+
+      isEmpty = true
+      return isEmpty, err
+    }
+
+    if pathFInfoPlus.Mode().IsRegular() {
+
+      _ = dMgrHlpr.empty(
+        dMgr,
+        ePrefix,
+        dMgrLabel)
+
+      err = fmt.Errorf(ePrefix+
+        "\nError: Directory path exists, but "+
+        "it is classified as as a Regular File!\n"+
+        "%v='%v'\n",
+        dMgrLabel,
+        dMgr.path)
+
+      isEmpty = true
+      return isEmpty, err
+    }
+
+    dMgr.doesPathExist = true
+  }
+
+  if dirAbsPathDoesExist {
+
+    if !absPathFInfoPlus.IsDir() {
+      _ = dMgrHlpr.empty(
+        dMgr,
+        ePrefix,
+        dMgrLabel)
+
+      err = fmt.Errorf(ePrefix+
+        "\nThe Directory Manager absolute path exists and IS NOT A DIRECTORY!.\n"+
+        "%v Path='%v'\n",
+        dMgrLabel,
+        dMgr.absolutePath)
+
+      isEmpty = true
+      return isEmpty, err
+    }
+
+    if absPathFInfoPlus.Mode().IsRegular() {
+
+      _ = dMgrHlpr.empty(
+        dMgr,
+        ePrefix,
+        dMgrLabel)
+
+      err = fmt.Errorf(ePrefix+
+        "\nError: Directory absolute path exists, but "+
+        "it is classified as as a Regular File!\n"+
+        "%v='%v'\n",
+        dMgrLabel,
+        dMgr.absolutePath)
+
+      isEmpty = true
+      return isEmpty, err
+    }
+
+    dMgr.doesAbsolutePathExist = true
+    dMgr.actualDirFileInfo = absPathFInfoPlus.CopyOut()
+
+  } else {
+    dMgr.doesAbsolutePathExist = false
+    dMgr.actualDirFileInfo = FileInfoPlus{}
+  }
+
+  strAry := strings.Split(dMgr.absolutePath, string(os.PathSeparator))
+  lStr := len(strAry)
+  idxStr := strAry[lStr-1]
+
+  idx := strings.Index(dMgr.absolutePath, idxStr)
+
+  dMgr.parentPath = fh.RemovePathSeparatorFromEndOfPathString(dMgr.absolutePath[0:idx])
+
+  dMgr.isParentPathPopulated = true
+
+  if dMgr.parentPath == "" {
+    dMgr.isParentPathPopulated = false
+  }
+
+  if idxStr != "" {
+    dMgr.directoryName = idxStr
+  } else {
+    dMgr.directoryName = dMgr.absolutePath
+  }
+
+  if dMgr.path != dMgr.absolutePath {
+    dMgr.isAbsolutePathDifferentFromPath = true
+  }
+
+  if validPathDto.pathVolumeName != "" {
+    dMgr.isVolumePopulated = true
+    dMgr.volumeName = validPathDto.pathVolumeName
+  }
+
+  if dMgr.isAbsolutePathPopulated && dMgr.isPathPopulated {
+    dMgr.isInitialized = true
+    isEmpty = false
+  } else {
+    isEmpty = true
+  }
+
   err = nil
 
 
@@ -5874,10 +6059,9 @@ func (dMgrHlpr *dirMgrHelper) setDirMgr(
     return isEmpty, err
   }
 
-  return dMgrHlpr.lowLevelDirMgrPostPathConfig(
+  return dMgrHlpr.lowLevelDirMgrFieldConfig(
     dMgr,
-    pathStr,
-    validPathDto.pathStr,
+    validPathDto,
     ePrefix,
     dMgrLabel)
 }
