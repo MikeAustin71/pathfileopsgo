@@ -1,6 +1,7 @@
 package pathfileops
 
 import (
+  "os"
   "strings"
   "testing"
 )
@@ -49,6 +50,254 @@ func TestDirMgr_SetDirMgr_02(t *testing.T) {
       "'testDir' consists entirely of blank spaces.\nHowever, NO ERROR WAS RETURNED!!!!\n")
   }
 }
+
+func TestDirMgr_SetDirMgrWithFileInfo_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testDir1 := "../createFilesTest/Level01/Level02"
+  testDir2 := "../checkfiles/checkfiles03/checkfiles03_02"
+  testDir3 := "../checkfiles/checkfiles03/checkfiles03_02/htmlFilesForTest"
+
+  targetDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+
+  targetFileInfo, err := fh.GetFileInfo(targetDir)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetFileInfo(targetDir)\n" +
+      "targetDir='%v'\nError:='%v'\n",
+      targetDir, err.Error())
+    return
+  }
+
+  absTestDir1, err := fh.MakeAbsolutePath(testDir1)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(testDir1)\n" +
+      "testDir1='%v'\n" +
+      "Error='%v'\n",
+      testDir1, err.Error())
+    return
+  }
+
+  absTestDir1 = strings.ToLower(absTestDir1)
+
+  absTestDir3, err := fh.MakeAbsolutePath(testDir3)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(testDir3)\n" +
+      "testDir3='%v'\n" +
+      "Error='%v'\n",
+      testDir3, err.Error())
+    return
+  }
+
+  absTestDir3 = strings.ToLower(absTestDir3)
+
+  testDMgr, err := DirMgr{}.New(testDir1)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir1)\n" +
+      "testDir1='%v'\n" +
+      "Error='%v'\n",
+      testDir1, err.Error())
+    return
+  }
+
+  if absTestDir1 != strings.ToLower(testDMgr.GetAbsolutePath()) {
+    t.Errorf("Test Setup Error:\n" +
+      "Expected that setup absolute path='%v'\n" +
+      "Instead, absolute path='%v'\n",
+      absTestDir1, strings.ToLower(testDMgr.GetAbsolutePath()))
+    return
+  }
+
+  err = testDMgr.SetDirMgrWithFileInfo(testDir2, targetFileInfo)
+
+  if err != nil {
+    t.Errorf("Error returned by testDMgr.SetDirMgrWithFileInfo(testDir2, targetFileInfo).\n" +
+      "testDir2='%v'\ntargetFileInfo='%v'\nError='%v'\n",
+      testDir2, targetFileInfo.Name(), err.Error())
+    return
+  }
+
+  if absTestDir3 != strings.ToLower(testDMgr.GetAbsolutePath()) {
+    t.Errorf("Error:\n" +
+      "Expected that final absolute path='%v'\n" +
+      "Instead, final absolute path='%v'\n",
+      absTestDir3, testDMgr.GetAbsolutePath())
+    return
+  }
+}
+
+func TestDirMgr_SetDirMgrWithFileInfo_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testDir1 := "../createFilesTest/Level01/Level02"
+  testDir3 := "../checkfiles/checkfiles03/checkfiles03_02/htmlFilesForTest"
+
+  targetDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+
+  targetFileInfo, err := fh.GetFileInfo(targetDir)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetFileInfo(targetDir)\n" +
+      "targetDir='%v'\nError:='%v'\n",
+      targetDir, err.Error())
+    return
+  }
+
+  absTestDir1, err := fh.MakeAbsolutePath(testDir1)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(testDir1)\n" +
+      "testDir1='%v'\n" +
+      "Error='%v'\n",
+      testDir1, err.Error())
+    return
+  }
+
+  absTestDir1 = strings.ToLower(absTestDir1)
+
+  absTestDir3, err := fh.MakeAbsolutePath(testDir3)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(testDir3)\n" +
+      "testDir3='%v'\n" +
+      "Error='%v'\n",
+      testDir3, err.Error())
+    return
+  }
+
+  absTestDir3 = strings.ToLower(absTestDir3)
+
+  testDMgr, err := DirMgr{}.New(testDir1)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir1)\n" +
+      "testDir1='%v'\n" +
+      "Error='%v'\n",
+      testDir1, err.Error())
+    return
+  }
+
+  if absTestDir1 != strings.ToLower(testDMgr.GetAbsolutePath()) {
+    t.Errorf("Test Setup Error:\n" +
+      "Expected that setup absolute path='%v'\n" +
+      "Instead, absolute path='%v'\n",
+      absTestDir1, strings.ToLower(testDMgr.GetAbsolutePath()))
+    return
+  }
+
+  testDir2 := ""
+
+  err = testDMgr.SetDirMgrWithFileInfo(testDir2, targetFileInfo)
+
+  if err == nil {
+    t.Error("Expected an error return from testDMgr.SetDirMgrWithFileInfo(testDir2, targetFileInfo)\n" +
+      "because testDir2 is an empty string.\nHowever, NO ERROR WAS RETURNED!!\n")
+    return
+  }
+
+  if absTestDir1 != strings.ToLower(testDMgr.GetAbsolutePath()) {
+    t.Errorf("Test Cleanup Error:\n" +
+      "The testDMgr should remain unchanged.\n" +
+      "Expected absolute path='%v'\n" +
+      "Instead, absolute path='%v'\n",
+      absTestDir1, strings.ToLower(testDMgr.GetAbsolutePath()))
+    return
+  }
+
+  err = testDMgr.IsDirMgrValid("")
+
+  if err != nil {
+    t.Errorf("Expected that 'testDMgr' would be valid.\n" +
+      "However, testDMgr.IsDirMgrValid(\"\") returned an error.\n" +
+      "Error='%v'\n", err.Error())
+  }
+}
+
+func TestDirMgr_SetDirMgrWithFileInfo_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testDir1 := "../createFilesTest/Level01/Level02"
+  testDir2 := "../checkfiles/checkfiles03/checkfiles03_02"
+  testDir3 := "../checkfiles/checkfiles03/checkfiles03_02/htmlFilesForTest"
+
+  absTestDir1, err := fh.MakeAbsolutePath(testDir1)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(testDir1)\n" +
+      "testDir1='%v'\n" +
+      "Error='%v'\n",
+      testDir1, err.Error())
+    return
+  }
+
+  absTestDir1 = strings.ToLower(absTestDir1)
+
+  absTestDir3, err := fh.MakeAbsolutePath(testDir3)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(testDir3)\n" +
+      "testDir3='%v'\n" +
+      "Error='%v'\n",
+      testDir3, err.Error())
+    return
+  }
+
+  absTestDir3 = strings.ToLower(absTestDir3)
+
+  testDMgr, err := DirMgr{}.New(testDir1)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir1)\n" +
+      "testDir1='%v'\n" +
+      "Error='%v'\n",
+      testDir1, err.Error())
+    return
+  }
+
+  if absTestDir1 != strings.ToLower(testDMgr.GetAbsolutePath()) {
+    t.Errorf("Test Setup Error:\n" +
+      "Expected that setup absolute path='%v'\n" +
+      "Instead, absolute path='%v'\n",
+      absTestDir1, strings.ToLower(testDMgr.GetAbsolutePath()))
+    return
+  }
+
+  var targetFileInfo os.FileInfo
+
+  err = testDMgr.SetDirMgrWithFileInfo(testDir2, targetFileInfo)
+
+  if err == nil {
+    t.Error("Expected an error return from testDMgr.SetDirMgrWithFileInfo(testDir2, targetFileInfo)\n" +
+      "because targetFileInfo is 'nil'\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+    return
+  }
+
+  if absTestDir1 != strings.ToLower(testDMgr.GetAbsolutePath()) {
+    t.Errorf("Test Cleanup Error:\n" +
+      "The testDMgr should remain unchanged.\n" +
+      "Expected absolute path='%v'\n" +
+      "Instead, absolute path='%v'\n",
+      absTestDir1, strings.ToLower(testDMgr.GetAbsolutePath()))
+    return
+  }
+
+  err = testDMgr.IsDirMgrValid("")
+
+  if err != nil {
+    t.Errorf("Expected that 'testDMgr' would be valid.\n" +
+      "However, testDMgr.IsDirMgrValid(\"\") returned an error.\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+}
+
 
 func TestDirMgr_SetPermissions_01(t *testing.T) {
 

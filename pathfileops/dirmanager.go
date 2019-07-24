@@ -4530,8 +4530,8 @@ func (dMgr *DirMgr) SetDirMgrFromKnownPathDirName(
 }
 
 // SetDirMgrWithFileInfo - Sets the DirMgr fields and path strings for the current
-// DirMgr object based on an input 'pathStr' parameter and an os.FileInfo input
-// parameter ('info').
+// DirMgr object based on an input 'parentDirectoryPath' parameter and an
+// os.FileInfo input parameter, 'info'.
 //
 // ------------------------------------------------------------------------------
 //
@@ -4539,7 +4539,7 @@ func (dMgr *DirMgr) SetDirMgrFromKnownPathDirName(
 //
 //  parentDirectoryPath string - The parent directory path.
 //
-//  info os.FileInfo           - The os.FileInfo containing the directory name.
+//  info           os.FileInfo - The os.FileInfo containing the directory name.
 //
 // ---------------------------------------------------------------------------
 //
@@ -4574,11 +4574,8 @@ func (dMgr *DirMgr) SetDirMgrWithFileInfo(
     "parentDirectoryPath",
     "FileInfo.Name()")
 
-  if err != nil {
-    return err
-  }
 
-  if isEmpty {
+  if err == nil && isEmpty {
     err = fmt.Errorf(ePrefix+
         "Newly generated 'DirMgr' is Empty!\n"+
         "dMgrHlpr.setDirMgrFromKnownPathDirName() returned an empty 'DirMgr'\n"+
