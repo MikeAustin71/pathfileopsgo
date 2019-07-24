@@ -1094,3 +1094,183 @@ func TestDirMgr_New_10(t *testing.T) {
 
 }
 
+func TestDirMgr_NewFromFileInfo_01(t *testing.T) {
+  fh := FileHelper{}
+  baseDir := fh.AdjustPathSlash("../filesfortest")
+  targetDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+
+  expectedAbsTargetDir,
+  err := fh.MakeAbsolutePath(targetDir)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(targetDir)\n" +
+      "targetDir='%v'\nError:='%v'\n",
+      targetDir, err.Error())
+    return
+
+  }
+
+  expectedAbsTargetDir = strings.ToLower(expectedAbsTargetDir)
+
+  targetFileInfo, err := fh.GetFileInfo(targetDir)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetFileInfo(targetDir)\n" +
+      "targetDir='%v'\nError:='%v'\n",
+      targetDir, err.Error())
+    return
+  }
+
+  targetDMgr, err := DirMgr{}.NewFromFileInfo(baseDir, targetFileInfo)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromFileInfo(baseDir, targetFileInfo)\n" +
+      "baseDir='%v'\ntargetFileInfo='%v'\nError='%v'\n",
+      baseDir, targetFileInfo.Name(), err.Error())
+    return
+  }
+
+  if expectedAbsTargetDir != strings.ToLower(targetDMgr.GetAbsolutePath()) {
+    t.Errorf("ERROR: Expected absolute path='%v'.\n" +
+      "Instead, actual absolute path='%v'\n",
+      expectedAbsTargetDir, strings.ToLower(targetDMgr.GetAbsolutePath()))
+  }
+}
+
+func TestDirMgr_NewFromFileInfo_02(t *testing.T) {
+  fh := FileHelper{}
+
+  baseDir := fh.AdjustPathSlash("../testdestdir")
+
+  var targetFileInfo os.FileInfo
+
+  _, err := DirMgr{}.NewFromFileInfo(baseDir, targetFileInfo)
+
+  if err == nil {
+    t.Error("Expected an error return from DirMgr{}.NewFromFileInfo(baseDir, targetFileInfo)\n" +
+      "because targetFileInfo is empty and uninitialized.\n" +
+      "However, NO ERROR WAS RETURNED!!!")
+  }
+
+  return
+}
+
+func TestDirMgr_NewFromFileInfo_03(t *testing.T) {
+  fh := FileHelper{}
+
+  targetDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+
+  targetFileInfo, err := fh.GetFileInfo(targetDir)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetFileInfo(targetDir)\n" +
+      "targetDir='%v'\nError:='%v'\n",
+      targetDir, err.Error())
+    return
+  }
+
+  baseDir := ""
+
+  _, err = DirMgr{}.NewFromFileInfo(baseDir, targetFileInfo)
+
+  if err == nil {
+
+    t.Error("Expected an error return by DirMgr{}.NewFromFileInfo(baseDir, targetFileInfo)\n" +
+      "because baseDir is an empty string.\nHowever, NO ERROR WAS RETURNED!!!\n")
+
+  }
+
+}
+
+func TestDirMgr_NewFromFileInfo_04(t *testing.T) {
+  fh := FileHelper{}
+  baseDir := fh.AdjustPathSlash("../checkfiles/checkfiles03/checkfiles03_02")
+  finalDir := fh.AdjustPathSlash("../checkfiles/checkfiles03/checkfiles03_02/htmlFilesForTest")
+  targetDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+
+  expectedAbsFinalDir,
+  err := fh.MakeAbsolutePath(finalDir)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(finalDir)\n" +
+      "finalDir='%v'\nError:='%v'\n",
+      finalDir, err.Error())
+    return
+
+  }
+
+  expectedAbsFinalDir = strings.ToLower(expectedAbsFinalDir)
+
+  targetFileInfo, err := fh.GetFileInfo(targetDir)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetFileInfo(targetDir)\n" +
+      "targetDir='%v'\nError:='%v'\n",
+      targetDir, err.Error())
+    return
+  }
+
+  targetDMgr, err := DirMgr{}.NewFromFileInfo(baseDir, targetFileInfo)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromFileInfo(baseDir, targetFileInfo)\n" +
+      "baseDir='%v'\ntargetFileInfo='%v'\nError='%v'\n",
+      baseDir, targetFileInfo.Name(), err.Error())
+    return
+  }
+
+  if expectedAbsFinalDir != strings.ToLower(targetDMgr.GetAbsolutePath()) {
+    t.Errorf("ERROR: Expected absolute path='%v'.\n" +
+      "Instead, actual absolute path='%v'\n",
+      expectedAbsFinalDir, strings.ToLower(targetDMgr.GetAbsolutePath()))
+  }
+}
+
+func TestDirMgr_NewFromFileInfo_05(t *testing.T) {
+
+  fh := FileHelper{}
+  baseDir := fh.AdjustPathSlash("../checkfiles/checkfiles03/checkfiles03_02")
+  finalDir := fh.AdjustPathSlash("../checkfiles/checkfiles03/checkfiles03_02/htmlFilesForTest")
+  targetDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+
+  expectedAbsFinalDir,
+  err := fh.MakeAbsolutePath(finalDir)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(finalDir)\n" +
+      "finalDir='%v'\nError:='%v'\n",
+      finalDir, err.Error())
+    return
+
+  }
+
+  expectedAbsFinalDir = strings.ToLower(expectedAbsFinalDir)
+
+  targetFileInfo, err := fh.GetFileInfo(targetDir)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.GetFileInfo(targetDir)\n" +
+      "targetDir='%v'\nError:='%v'\n",
+      targetDir, err.Error())
+    return
+  }
+
+  targetFileInfoPlus :=
+    FileInfoPlus{}.NewFromPathFileInfo(targetDir, targetFileInfo)
+
+
+  targetDMgr, err := DirMgr{}.NewFromFileInfo(baseDir, targetFileInfoPlus)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromFileInfo(baseDir, targetFileInfoPlus)\n" +
+      "baseDir='%v'\ntargetFileInfo='%v'\nError='%v'\n",
+      baseDir, targetFileInfo.Name(), err.Error())
+    return
+  }
+
+  if expectedAbsFinalDir != strings.ToLower(targetDMgr.GetAbsolutePath()) {
+    t.Errorf("ERROR: Expected absolute path='%v'.\n" +
+      "Instead, actual absolute path='%v'\n",
+      expectedAbsFinalDir, strings.ToLower(targetDMgr.GetAbsolutePath()))
+  }
+}

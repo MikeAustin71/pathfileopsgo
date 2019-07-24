@@ -1,6 +1,7 @@
 package pathfileops
 
 import (
+  "errors"
   "fmt"
   "os"
   "strings"
@@ -4322,6 +4323,12 @@ func (dMgr DirMgr) NewFromFileInfo(
   dMgrHlpr := dirMgrHelper{}
   newDirMgr := DirMgr{}
 
+  if info == nil {
+    return DirMgr{},
+    errors.New(ePrefix +
+      "ERROR: Input parameter 'info' is 'nil' and INVALID!\n")
+  }
+
   isEmpty, err := dMgrHlpr.setDirMgrWithPathDirectoryName(
     &newDirMgr,
     parentDirectoryPath,
@@ -4549,6 +4556,11 @@ func (dMgr *DirMgr) SetDirMgrWithFileInfo(
 
   dMgrHlpr := dirMgrHelper{}
   isEmpty := true
+
+  if info == nil {
+    return errors.New(ePrefix +
+        "ERROR: Input parameter 'info' is 'nil' and INVALID!\n")
+  }
 
   dMgr.dataMutex.Lock()
 
