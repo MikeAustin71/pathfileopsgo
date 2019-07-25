@@ -3575,172 +3575,6 @@ func (dMgrHlpr *dirMgrHelper) getParentDirMgr(
   return dirMgrOut, hasParent, err
 }
 
-// getPathFromPathFileName - This method will extract a path from a
-// string containing both a path and file name. This method assumes
-// that the string is directory string.  For example the path string
-// "./dir1/dir2/dir3/.git" will be considered a directory. ".git"
-// will be considered a directory.
-//
-func (dMgrHlpr *dirMgrHelper) getPathFromPathFileName(
-  pathFileNameExt string,
-  pathFileNameLabel string) (dirPath string, isEmpty bool, err error) {
-
-  ePrefix := "dirMgrHelper.getPathFromPathFileName() "
-  dirPath = ""
-  isEmpty = true
-  err = nil
-  testPathStr := ""
-  lTestPathStr := 0
-  fh := FileHelper{}
-
-  testPathStr,
-    lTestPathStr,
-    err = dMgrHlpr.isPathStringEmptyOrBlank(
-    pathFileNameExt,
-    true, // Trim Trailing Path Separator
-    ePrefix,
-    pathFileNameLabel)
-
-  if err != nil {
-
-    return dirPath, isEmpty, err
-  }
-
-  slashIdxs, err2 := fh.GetPathSeparatorIndexesInPathStr(testPathStr)
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+
-      "Error returned by fh.GetPathSeparatorIndexesInPathStr(testPathStr).\n"+
-      "testPathStr='%v'\nError='%v'\n",
-      testPathStr, err2.Error())
-    return dirPath, isEmpty, err
-  }
-
-  lSlashIdxs := len(slashIdxs)
-
-  firstGoodChar, lastGoodChar, err2 :=
-    fh.GetFirstLastNonSeparatorCharIndexInPathStr(testPathStr)
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+
-      "Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr("+
-      "testPathStr).\n"+
-      "testPathStr='%v'\nError='%v'\n",
-      testPathStr, err2.Error())
-    return dirPath, isEmpty, err
-  }
-
-  dotIdxs, err2 := fh.GetDotSeparatorIndexesInPathStr(testPathStr)
-
-  if err2 != nil {
-    err = fmt.Errorf(ePrefix+
-      "\nError returned by fh.GetDotSeparatorIndexesInPathStr(testPathStr).\n"+
-      "testPathStr='%v'\nError='%v'\n",
-      testPathStr, err2.Error())
-    return dirPath, isEmpty, err
-  }
-
-  lDotIdxs := len(dotIdxs)
-
-  var finalPathStr string
-
-  volName := pf.VolumeName(testPathStr)
-
-  if testPathStr == volName {
-
-    finalPathStr = testPathStr
-
-  } else if strings.Contains(testPathStr, "...") {
-
-    err = fmt.Errorf(ePrefix+
-      "Error: PATH CONTAINS INVALID Dot Characters!\n"+
-      "testPathStr='%v'\n", testPathStr)
-    return dirPath, isEmpty, err
-
-  } else if firstGoodChar == -1 || lastGoodChar == -1 {
-
-    absPath, err2 := fh.MakeAbsolutePath(testPathStr)
-
-    if err2 != nil {
-      err = fmt.Errorf(ePrefix+
-        "Error returned from fh.MakeAbsolutePath(testPathStr).\n"+
-        "testPathStr='%v'\nError='%v'\n",
-        testPathStr, err2.Error())
-
-      return dirPath, isEmpty, err
-    }
-
-    if absPath == "" {
-      err = fmt.Errorf(ePrefix+
-        "Error: Could not convert 'testPathStr' to Absolute path!\n"+
-        "testPathStr='%v'\n",
-        testPathStr)
-      return dirPath, isEmpty, err
-    }
-
-    finalPathStr = testPathStr
-
-  } else if lSlashIdxs == 0 {
-    // No path separators but alpha numeric chars are present
-    dirPath = ""
-    isEmpty = true
-    err = nil
-    return dirPath, isEmpty, err
-
-  } else if lDotIdxs == 0 {
-    //path separators are present but there are no dots in the string
-
-    if slashIdxs[lSlashIdxs-1] == lTestPathStr-1 {
-      // Trailing path separator
-      // format ./dir1/dir2/
-      finalPathStr = testPathStr[0:slashIdxs[lSlashIdxs-2]]
-    } else {
-      finalPathStr = testPathStr
-    }
-
-  } else if dotIdxs[lDotIdxs-1] > slashIdxs[lSlashIdxs-1] &&
-    dotIdxs[lDotIdxs-1]-slashIdxs[lSlashIdxs-1] == 1 {
-    // format: ./dir1/dir2/.git
-    // Presumption is that '.git' is a directory
-    finalPathStr = testPathStr
-
-  } else if dotIdxs[lDotIdxs-1] > slashIdxs[lSlashIdxs-1] {
-    // format: ./dir1/dir2/fileName.ext
-    finalPathStr = testPathStr[0:slashIdxs[lSlashIdxs-1]]
-
-  } else if dotIdxs[lDotIdxs-1] < slashIdxs[lSlashIdxs-1] {
-
-    finalPathStr = testPathStr
-
-  } else {
-    err = fmt.Errorf(ePrefix+
-      "Error: INVALID PATH STRING.\n"+
-      "testPathStr='%v'\n", testPathStr)
-
-    return dirPath, isEmpty, err
-  }
-
-  if len(finalPathStr) == 0 {
-    err = fmt.Errorf(ePrefix + "Error: Processed path is a Zero Length String!\n")
-
-    return dirPath, isEmpty, err
-  }
-
-  //Successfully isolated and returned a valid
-  // directory path from 'pathFileNameExt'
-  dirPath = finalPathStr
-
-  if len(dirPath) == 0 {
-    isEmpty = true
-  } else {
-    isEmpty = false
-  }
-
-  err = nil
-
-  return dirPath, isEmpty, err
-}
-
 // getValidPathStr - Performs validation on a path string.
 // If the string contains a filename and file extension,
 // this method will declare an error.
@@ -3757,51 +3591,32 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     ePrefix = ePrefix + "- " + ePrefixCurrMethod
   }
 
-  err = nil
   fh := FileHelper{}
   validPathDto = ValidPathStrDto{}.New()
   pathSepStr := string(os.PathSeparator)
-  doublePathSeparator := pathSepStr + pathSepStr
-  tripleDot := "..."
   dotSeparator := "." + pathSepStr
   doubleDotSeparator := "." + dotSeparator
   doesPathExist := false
   fInfo := FileInfoPlus{}
   var volNameIndex, lSlashIdxs, lDotIdxs,
-        strLen, firstCharIdx, lastCharIdx int
+  strLen, firstCharIdx, lastCharIdx int
   var slashIdxs, dotIdxs []int
   var err2 error
   var volNameStr string
 
-  strLen = len(pathStr)
+  pathStr,
+  strLen,
+  err =
+    dMgrHlpr.lowLevelScreenPathStrForInvalidChars(
+      pathStr,
+      ePrefix,
+      pathStrLabel)
 
-  if strLen == 0 {
-    err = fmt.Errorf(ePrefix+
-        "\nERROR: %v is an EMPTY string!\n",
-        pathStrLabel)
-
+  if err != nil {
     goto errorExit
   }
 
-  pathStr = strings.TrimRight(pathStr, " ")
-
-  pathStr = strings.TrimLeft(pathStr, " ")
-
-  strLen = len(pathStr)
-
-  if strLen == 0 {
-    err =
-      fmt.Errorf(ePrefix+
-        "\nERROR: %v consists entirely of blank spaces!\n",
-        pathStrLabel)
-
-    goto errorExit
-  }
-
-  pathStr = fh.AdjustPathSlash(pathStr)
   validPathDto.originalPathStr = pathStr
-
-  strLen = len(pathStr)
 
   if strLen > 2 &&
   // Remove trailing slash
@@ -3863,31 +3678,6 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
   }
 
   lDotIdxs = len(dotIdxs)
-
-  // identify obviously invalid path strings
-
-  if strings.Contains(pathStr, tripleDot) {
-    err = fmt.Errorf(ePrefix+
-      "\nERROR: '%v' contains an invalid dot sequence and is INVALID!\n"+
-      "%v='%v'\n\n",
-      pathStrLabel,
-      pathStrLabel,
-      pathStr)
-
-    goto errorExit
-
-  } else if strings.Contains(pathStr, doublePathSeparator) {
-    err = fmt.Errorf(ePrefix+
-      "\nERROR: '%v' is INVALID!\n"+
-      "'%v' contains incorrectly formatted path separators within the string!\n"+
-      "%v='%v'\n\n",
-      pathStrLabel,
-      pathStrLabel,
-      pathStrLabel,
-      pathStr)
-
-    goto errorExit
-  }
 
   // identify obvious valid path strings
 
