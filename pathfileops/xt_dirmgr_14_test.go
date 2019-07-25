@@ -51,6 +51,506 @@ func TestDirMgr_SetDirMgr_02(t *testing.T) {
   }
 }
 
+func TestDirMgr_SetDirMgrFromKnownPathDirName_01(t *testing.T) {
+
+  fh := FileHelper{}
+  setupDir := fh.AdjustPathSlash("../dirmgrtests/dir01/dir02/dir03")
+  baseDir := fh.AdjustPathSlash("../filesfortest")
+  targetDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+  subDir := "htmlFilesForTest"
+
+  expectedAbsTargetDir,
+  err := fh.MakeAbsolutePath(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(targetDir)\n"+
+      "targetDir='%v'\nError:='%v'\n",
+      targetDir, err.Error())
+    return
+
+  }
+
+  expectedAbsTargetDir = strings.ToLower(expectedAbsTargetDir)
+
+  expectedAbsSetupDir,
+  err := fh.MakeAbsolutePath(setupDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(setupDir)\n"+
+      "setupDir='%v'\nError:='%v'\n",
+      setupDir, err.Error())
+    return
+
+  }
+
+  expectedAbsSetupDir = strings.ToLower(expectedAbsSetupDir)
+
+  targetDMgr, err := DirMgr{}.New(setupDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(setupDir)\n" +
+      "setupDir='%v'\nError='%v'\n", setupDir, err.Error())
+    return
+  }
+
+  if expectedAbsSetupDir != strings.ToLower(targetDMgr.absolutePath) {
+    t.Errorf("ERROR: Expected setup absolute path does " +
+      "NOT match setup actual absolute path!\n" +
+      "Expected setup absolute path='%v'\n" +
+      "Actual setup absolute path='%v'",
+      expectedAbsSetupDir, strings.ToLower(targetDMgr.absolutePath))
+    return
+  }
+
+  isEmpty, err := targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)
+
+  if err != nil {
+    t.Errorf("Error returned by targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)\n" +
+      "baseDir='%v'\nsubDir='%v'\nError='%v'\n",baseDir, subDir, err.Error())
+    return
+  }
+
+  if isEmpty {
+    t.Error("ERROR: targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)\n" +
+      "returned 'isEmpty' = 'true'!")
+    return
+  }
+
+  if expectedAbsTargetDir != strings.ToLower(targetDMgr.absolutePath) {
+    t.Errorf("ERROR: Expected absolute path does NOT match actual absolute path!\n" +
+      "Expected absolute path='%v'\n" +
+      "Actual absolute path='%v'\n",
+      expectedAbsTargetDir, strings.ToLower(targetDMgr.absolutePath))
+  }
+
+}
+
+func TestDirMgr_SetDirMgrFromKnownPathDirName_02(t *testing.T) {
+
+  fh := FileHelper{}
+  setupDir := fh.AdjustPathSlash("../dirmgrtests/dir01/dir02/dir03")
+  baseDir := fh.AdjustPathSlash("../filesfortest")
+  targetDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+  subDir := "./htmlFilesForTest"
+
+  expectedAbsTargetDir,
+  err := fh.MakeAbsolutePath(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(targetDir)\n"+
+      "targetDir='%v'\nError:='%v'\n",
+      targetDir, err.Error())
+    return
+
+  }
+
+  expectedAbsTargetDir = strings.ToLower(expectedAbsTargetDir)
+
+  expectedAbsSetupDir,
+  err := fh.MakeAbsolutePath(setupDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(setupDir)\n"+
+      "setupDir='%v'\nError:='%v'\n",
+      setupDir, err.Error())
+    return
+
+  }
+
+  expectedAbsSetupDir = strings.ToLower(expectedAbsSetupDir)
+
+  targetDMgr, err := DirMgr{}.New(setupDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(setupDir)\n" +
+      "setupDir='%v'\nError='%v'\n", setupDir, err.Error())
+    return
+  }
+
+  if expectedAbsSetupDir != strings.ToLower(targetDMgr.absolutePath) {
+    t.Errorf("ERROR: Expected setup absolute path does " +
+      "NOT match setup actual absolute path!\n" +
+      "Expected setup absolute path='%v'\n" +
+      "Actual setup absolute path='%v'",
+      expectedAbsSetupDir, strings.ToLower(targetDMgr.absolutePath))
+    return
+  }
+
+  isEmpty, err := targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)
+
+  if err != nil {
+    t.Errorf("Error returned by targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)\n" +
+      "baseDir='%v'\nsubDir='%v'\nError='%v'\n",baseDir, subDir, err.Error())
+    return
+  }
+
+  if isEmpty {
+    t.Error("ERROR: targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)\n" +
+      "returned 'isEmpty' = 'true'!")
+    return
+  }
+
+  if expectedAbsTargetDir != strings.ToLower(targetDMgr.absolutePath) {
+    t.Errorf("ERROR: Expected absolute path does NOT match actual absolute path!\n" +
+      "Expected absolute path='%v'\n" +
+      "Actual absolute path='%v'\n",
+      expectedAbsTargetDir, strings.ToLower(targetDMgr.absolutePath))
+  }
+
+}
+
+func TestDirMgr_SetDirMgrFromKnownPathDirName_03(t *testing.T) {
+
+  fh := FileHelper{}
+  setupDir := fh.AdjustPathSlash("../dirmgrtests/dir01/dir02/dir03")
+  baseDir := fh.AdjustPathSlash("../filesfortest")
+  targetDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+  subDir := "../htmlFilesForTest"
+
+  expectedAbsTargetDir,
+  err := fh.MakeAbsolutePath(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(targetDir)\n"+
+      "targetDir='%v'\nError:='%v'\n",
+      targetDir, err.Error())
+    return
+
+  }
+
+  expectedAbsTargetDir = strings.ToLower(expectedAbsTargetDir)
+
+  expectedAbsSetupDir,
+  err := fh.MakeAbsolutePath(setupDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(setupDir)\n"+
+      "setupDir='%v'\nError:='%v'\n",
+      setupDir, err.Error())
+    return
+
+  }
+
+  expectedAbsSetupDir = strings.ToLower(expectedAbsSetupDir)
+
+  targetDMgr, err := DirMgr{}.New(setupDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(setupDir)\n" +
+      "setupDir='%v'\nError='%v'\n", setupDir, err.Error())
+    return
+  }
+
+  if expectedAbsSetupDir != strings.ToLower(targetDMgr.absolutePath) {
+    t.Errorf("ERROR: Expected setup absolute path does " +
+      "NOT match setup actual absolute path!\n" +
+      "Expected setup absolute path='%v'\n" +
+      "Actual setup absolute path='%v'",
+      expectedAbsSetupDir, strings.ToLower(targetDMgr.absolutePath))
+    return
+  }
+
+  isEmpty, err := targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)
+
+  if err != nil {
+    t.Errorf("Error returned by targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)\n" +
+      "baseDir='%v'\nsubDir='%v'\nError='%v'\n",baseDir, subDir, err.Error())
+    return
+  }
+
+  if isEmpty {
+    t.Error("ERROR: targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)\n" +
+      "returned 'isEmpty' = 'true'!")
+    return
+  }
+
+  if expectedAbsTargetDir != strings.ToLower(targetDMgr.absolutePath) {
+    t.Errorf("ERROR: Expected absolute path does NOT match actual absolute path!\n" +
+      "Expected absolute path='%v'\n" +
+      "Actual absolute path='%v'\n",
+      expectedAbsTargetDir, strings.ToLower(targetDMgr.absolutePath))
+  }
+
+}
+
+func TestDirMgr_SetDirMgrFromKnownPathDirName_04(t *testing.T) {
+
+  fh := FileHelper{}
+  setupDir := fh.AdjustPathSlash("../dirmgrtests/dir01/dir02/dir03")
+  baseDir := fh.AdjustPathSlash("../filesfortest")
+  targetDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+  subDir := ".htmlFilesForTest"
+
+  expectedAbsTargetDir,
+  err := fh.MakeAbsolutePath(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(targetDir)\n"+
+      "targetDir='%v'\nError:='%v'\n",
+      targetDir, err.Error())
+    return
+
+  }
+
+  expectedAbsTargetDir = strings.ToLower(expectedAbsTargetDir)
+
+  expectedAbsSetupDir,
+  err := fh.MakeAbsolutePath(setupDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(setupDir)\n"+
+      "setupDir='%v'\nError:='%v'\n",
+      setupDir, err.Error())
+    return
+
+  }
+
+  expectedAbsSetupDir = strings.ToLower(expectedAbsSetupDir)
+
+  targetDMgr, err := DirMgr{}.New(setupDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(setupDir)\n" +
+      "setupDir='%v'\nError='%v'\n", setupDir, err.Error())
+    return
+  }
+
+  if expectedAbsSetupDir != strings.ToLower(targetDMgr.absolutePath) {
+    t.Errorf("ERROR: Expected setup absolute path does " +
+      "NOT match setup actual absolute path!\n" +
+      "Expected setup absolute path='%v'\n" +
+      "Actual setup absolute path='%v'",
+      expectedAbsSetupDir, strings.ToLower(targetDMgr.absolutePath))
+    return
+  }
+
+  isEmpty, err := targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)
+
+  if err != nil {
+    t.Errorf("Error returned by targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)\n" +
+      "baseDir='%v'\nsubDir='%v'\nError='%v'\n",baseDir, subDir, err.Error())
+    return
+  }
+
+  if isEmpty {
+    t.Error("ERROR: targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)\n" +
+      "returned 'isEmpty' = 'true'!")
+    return
+  }
+
+  if expectedAbsTargetDir != strings.ToLower(targetDMgr.absolutePath) {
+    t.Errorf("ERROR: Expected absolute path does NOT match actual absolute path!\n" +
+      "Expected absolute path='%v'\n" +
+      "Actual absolute path='%v'\n",
+      expectedAbsTargetDir, strings.ToLower(targetDMgr.absolutePath))
+  }
+
+}
+
+func TestDirMgr_SetDirMgrFromKnownPathDirName_05(t *testing.T) {
+
+  fh := FileHelper{}
+  setupDir := fh.AdjustPathSlash("../dirmgrtests/dir01/dir02/dir03")
+  baseDir := fh.AdjustPathSlash("../filesfortest")
+  targetDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+  subDir := "..htmlFilesForTest"
+
+  expectedAbsTargetDir,
+  err := fh.MakeAbsolutePath(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(targetDir)\n"+
+      "targetDir='%v'\nError:='%v'\n",
+      targetDir, err.Error())
+    return
+
+  }
+
+  expectedAbsTargetDir = strings.ToLower(expectedAbsTargetDir)
+
+  expectedAbsSetupDir,
+  err := fh.MakeAbsolutePath(setupDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(setupDir)\n"+
+      "setupDir='%v'\nError:='%v'\n",
+      setupDir, err.Error())
+    return
+
+  }
+
+  expectedAbsSetupDir = strings.ToLower(expectedAbsSetupDir)
+
+  targetDMgr, err := DirMgr{}.New(setupDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(setupDir)\n" +
+      "setupDir='%v'\nError='%v'\n", setupDir, err.Error())
+    return
+  }
+
+  if expectedAbsSetupDir != strings.ToLower(targetDMgr.absolutePath) {
+    t.Errorf("ERROR: Expected setup absolute path does " +
+      "NOT match setup actual absolute path!\n" +
+      "Expected setup absolute path='%v'\n" +
+      "Actual setup absolute path='%v'",
+      expectedAbsSetupDir, strings.ToLower(targetDMgr.absolutePath))
+    return
+  }
+
+  isEmpty, err := targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)
+
+  if err != nil {
+    t.Errorf("Error returned by targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)\n" +
+      "baseDir='%v'\nsubDir='%v'\nError='%v'\n",baseDir, subDir, err.Error())
+    return
+  }
+
+  if isEmpty {
+    t.Error("ERROR: targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)\n" +
+      "returned 'isEmpty' = 'true'!")
+    return
+  }
+
+  if expectedAbsTargetDir != strings.ToLower(targetDMgr.absolutePath) {
+    t.Errorf("ERROR: Expected absolute path does NOT match actual absolute path!\n" +
+      "Expected absolute path='%v'\n" +
+      "Actual absolute path='%v'\n",
+      expectedAbsTargetDir, strings.ToLower(targetDMgr.absolutePath))
+  }
+
+}
+
+func TestDirMgr_SetDirMgrFromKnownPathDirName_06(t *testing.T) {
+
+  fh := FileHelper{}
+  setupDir := fh.AdjustPathSlash("../dirmgrtests/dir01/dir02/dir03")
+  baseDir := fh.AdjustPathSlash("../filesfortest")
+  targetDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+  subDir := "htmlFilesForTest"
+
+  expectedAbsTargetDir,
+  err := fh.MakeAbsolutePath(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(targetDir)\n"+
+      "targetDir='%v'\nError:='%v'\n",
+      targetDir, err.Error())
+    return
+
+  }
+
+  expectedAbsTargetDir = strings.ToLower(expectedAbsTargetDir)
+
+  expectedAbsSetupDir,
+  err := fh.MakeAbsolutePath(setupDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(setupDir)\n"+
+      "setupDir='%v'\nError:='%v'\n",
+      setupDir, err.Error())
+    return
+
+  }
+
+  expectedAbsSetupDir = strings.ToLower(expectedAbsSetupDir)
+
+  targetDMgr, err := DirMgr{}.New(setupDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(setupDir)\n" +
+      "setupDir='%v'\nError='%v'\n", setupDir, err.Error())
+    return
+  }
+
+  if expectedAbsSetupDir != strings.ToLower(targetDMgr.absolutePath) {
+    t.Errorf("ERROR: Expected setup absolute path does " +
+      "NOT match setup actual absolute path!\n" +
+      "Expected setup absolute path='%v'\n" +
+      "Actual setup absolute path='%v'",
+      expectedAbsSetupDir, strings.ToLower(targetDMgr.absolutePath))
+    return
+  }
+
+  subDir = ""
+
+  _, err = targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)
+
+  if err == nil {
+
+    t.Error("Expected an error return from targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)\n" +
+      "because subDir is an empty string!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+
+    return
+  }
+}
+
+func TestDirMgr_SetDirMgrFromKnownPathDirName_07(t *testing.T) {
+
+  fh := FileHelper{}
+  setupDir := fh.AdjustPathSlash("../dirmgrtests/dir01/dir02/dir03")
+  baseDir := fh.AdjustPathSlash("../filesfortest")
+  targetDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
+  subDir := "htmlFilesForTest"
+
+  expectedAbsTargetDir,
+  err := fh.MakeAbsolutePath(targetDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(targetDir)\n"+
+      "targetDir='%v'\nError:='%v'\n",
+      targetDir, err.Error())
+    return
+
+  }
+
+  expectedAbsTargetDir = strings.ToLower(expectedAbsTargetDir)
+
+  expectedAbsSetupDir,
+  err := fh.MakeAbsolutePath(setupDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(setupDir)\n"+
+      "setupDir='%v'\nError:='%v'\n",
+      setupDir, err.Error())
+    return
+
+  }
+
+  expectedAbsSetupDir = strings.ToLower(expectedAbsSetupDir)
+
+  targetDMgr, err := DirMgr{}.New(setupDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(setupDir)\n" +
+      "setupDir='%v'\nError='%v'\n", setupDir, err.Error())
+    return
+  }
+
+  if expectedAbsSetupDir != strings.ToLower(targetDMgr.absolutePath) {
+    t.Errorf("ERROR: Expected setup absolute path does " +
+      "NOT match setup actual absolute path!\n" +
+      "Expected setup absolute path='%v'\n" +
+      "Actual setup absolute path='%v'",
+      expectedAbsSetupDir, strings.ToLower(targetDMgr.absolutePath))
+    return
+  }
+
+  baseDir = ""
+
+  _, err = targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)
+
+  if err == nil {
+
+    t.Error("Expected an error return from targetDMgr.SetDirMgrFromKnownPathDirName(baseDir, subDir)\n" +
+      "because subDir is an empty string!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+
+    return
+  }
+}
+
 func TestDirMgr_SetDirMgrWithFileInfo_01(t *testing.T) {
 
   fh := FileHelper{}

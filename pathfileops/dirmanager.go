@@ -4445,10 +4445,10 @@ func (dMgr DirMgr) NewFromFileMgr(fileMgr FileMgr) (DirMgr, error) {
 // with new values based on input parameters 'parentPathName'
 // and 'directoryName'.
 //
-// This method differs from other "Set" methods in that it
-// assumes the input parameters are known values and do not
-// require the usual analysis and validation screening applied
-// by similar methods.
+// This method differs from similar methods in that it assumes
+// the input parameters are known values and do not require
+// the usual analysis and validation screening applied by
+// other methods.
 //
 func (dMgr DirMgr) NewFromKnownPathDirectoryName(
   parentPathName string, directoryName string) (DirMgr, error) {
