@@ -317,8 +317,8 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   }
 
   dMgrPathDoesExist,
-  _,
-  err :=
+    _,
+    err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
@@ -345,8 +345,8 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   }
 
   _,
-  _,
-  err2 :=
+    _,
+    err2 :=
     dMgrHlpr.doesDirectoryExist(
       targetDMgr,
       PreProcPathCode.None(),
@@ -803,8 +803,8 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
   osPathSepStr := string(os.PathSeparator)
 
   dirPathDoesExist,
-  _,
-  err := dMgrHlpr.doesDirectoryExist(
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -975,8 +975,8 @@ func (dMgrHlpr *dirMgrHelper) deleteAllSubDirectories(
   }
 
   dirPathDoesExist,
-  _,
-  err := dMgrHlpr.doesDirectoryExist(
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -1087,8 +1087,8 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryAll(
   }
 
   dirPathDoesExist,
-  _,
-  err :=
+    _,
+    err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
@@ -1177,8 +1177,8 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeInfo(
   }
 
   dirPathDoesExist,
-  _,
-  err := dMgrHlpr.doesDirectoryExist(
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -1434,8 +1434,8 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeStats(
   }
 
   dirPathDoesExist,
-  _,
-  err := dMgrHlpr.doesDirectoryExist(
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -1680,8 +1680,8 @@ func (dMgrHlpr *dirMgrHelper) deleteFilesByNamePattern(
   }
 
   dirPathDoesExist,
-  _,
-  err := dMgrHlpr.doesDirectoryExist(
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -2307,8 +2307,8 @@ func (dMgrHlpr *dirMgrHelper) executeDirectoryFileOps(
   }
 
   dMgrPathDoesExist,
-  _,
-  err := dMgrHlpr.doesDirectoryExist(
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -2332,8 +2332,8 @@ func (dMgrHlpr *dirMgrHelper) executeDirectoryFileOps(
   }
 
   _,
-  _,
-  err2 := dMgrHlpr.doesDirectoryExist(
+    _,
+    err2 := dMgrHlpr.doesDirectoryExist(
     targetBaseDir,
     PreProcPathCode.None(),
     ePrefix,
@@ -2521,8 +2521,8 @@ func (dMgrHlpr *dirMgrHelper) executeDirectoryTreeOps(
   }
 
   dMgrPathDoesExist,
-  _,
-  err := dMgrHlpr.doesDirectoryExist(
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -2546,8 +2546,8 @@ func (dMgrHlpr *dirMgrHelper) executeDirectoryTreeOps(
   }
 
   _,
-  _,
-  err2 := dMgrHlpr.doesDirectoryExist(
+    _,
+    err2 := dMgrHlpr.doesDirectoryExist(
     targetBaseDir,
     PreProcPathCode.None(),
     ePrefix,
@@ -2770,8 +2770,8 @@ func (dMgrHlpr *dirMgrHelper) findDirectoryTreeFiles(
   }
 
   dirPathDoesExist,
-  _,
-  err := dMgrHlpr.doesDirectoryExist(
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -2991,8 +2991,8 @@ func (dMgrHlpr *dirMgrHelper) findDirectoryTreeStats(
   }
 
   dMgrPathDoesExist,
-  _,
-  err :=
+    _,
+    err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
@@ -3599,14 +3599,14 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
   doesPathExist := false
   fInfo := FileInfoPlus{}
   var volNameIndex, lSlashIdxs, lDotIdxs,
-  strLen, firstCharIdx, lastCharIdx int
+    strLen, firstCharIdx, lastCharIdx int
   var slashIdxs, dotIdxs []int
   var err2 error
   var volNameStr string
 
   pathStr,
-  strLen,
-  err =
+    strLen,
+    err =
     dMgrHlpr.lowLevelScreenPathStrForInvalidChars(
       pathStr,
       ePrefix,
@@ -3619,7 +3619,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
   validPathDto.originalPathStr = pathStr
 
   if strLen > 2 &&
-  // Remove trailing slash
+    // Remove trailing slash
     pathStr[strLen-1] == os.PathSeparator &&
     pathStr[strLen-2] != '.' &&
     pathStr[strLen-2] != os.PathSeparator {
@@ -3628,8 +3628,8 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
   }
 
   volNameIndex,
-  _,
-  volNameStr = fh.GetVolumeNameIndex(pathStr)
+    _,
+    volNameStr = fh.GetVolumeNameIndex(pathStr)
 
   slashIdxs, err2 = fh.GetPathSeparatorIndexesInPathStr(pathStr)
 
@@ -3727,7 +3727,6 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
 
     goto errorExit
   }
-
 
   if lastCharIdx == -1 &&
     lDotIdxs == 0 &&
@@ -3935,7 +3934,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     goto errorExit
   }
 
-  successExit:
+successExit:
 
   // Check conversion to absolute path
   validPathDto.absPathStr,
@@ -3955,8 +3954,8 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
   }
 
   validPathDto.pathVolumeIndex,
-  validPathDto.pathVolumeStrLength,
-  validPathDto.pathVolumeName =
+    validPathDto.pathVolumeStrLength,
+    validPathDto.pathVolumeName =
     fh.GetVolumeNameIndex(validPathDto.absPathStr)
 
   doesPathExist,
@@ -3984,7 +3983,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     err = dMgrHlpr.lowLevelDoesDirectoryExist(
     validPathDto.absPathStr,
     ePrefix,
-     pathStrLabel + ".absolutePath")
+    pathStrLabel+".absolutePath")
 
   if err != nil {
     goto errorExit
@@ -3999,12 +3998,12 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
   }
 
   if validPathDto.pathDoesExist !=
-      validPathDto.absPathDoesExist {
+    validPathDto.absPathDoesExist {
 
-    err = fmt.Errorf(ePrefix +
-      "\nERROR: The path and absolute path show different values for " +
-      "existence on disk.\n" +
-      "validPathDto.pathDoesExist='%v'\n" +
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: The path and absolute path show different values for "+
+      "existence on disk.\n"+
+      "validPathDto.pathDoesExist='%v'\n"+
       "validPathDto.absPathDoesExist='%v'\n",
       validPathDto.pathDoesExist,
       validPathDto.absPathDoesExist)
@@ -4016,10 +4015,10 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     validPathDto.absPathDoesExist == 1 {
 
     if !validPathDto.absPathFInfoPlus.IsDir() {
-      err = fmt.Errorf(ePrefix +
-        "\nERROR: The '%v' absolute path exists but it is classified " +
-        "as a File, NOT a directory!\n" +
-        "%v base path='%v'\n" +
+      err = fmt.Errorf(ePrefix+
+        "\nERROR: The '%v' absolute path exists but it is classified "+
+        "as a File, NOT a directory!\n"+
+        "%v base path='%v'\n"+
         "%v absolute path='%v'\n",
         pathStrLabel,
         pathStrLabel,
@@ -4031,10 +4030,10 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     }
 
     if validPathDto.absPathFInfoPlus.Mode().IsRegular() {
-      err = fmt.Errorf(ePrefix +
-        "\nERROR: The '%v' absolute path exists but it is classified " +
-        "as a 'Regular' File, NOT a directory!\n" +
-        "%v base path ='%v'\n" +
+      err = fmt.Errorf(ePrefix+
+        "\nERROR: The '%v' absolute path exists but it is classified "+
+        "as a 'Regular' File, NOT a directory!\n"+
+        "%v base path ='%v'\n"+
         "%v absolute path='%v'\n",
         pathStrLabel,
         pathStrLabel,
@@ -4047,10 +4046,10 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     }
 
     if !validPathDto.pathFInfoPlus.IsDir() {
-      err = fmt.Errorf(ePrefix +
-        "\nERROR: The '%v' base path exists but it is classified " +
-        "as a File, NOT a directory!\n" +
-        "%v base path='%v'\n" +
+      err = fmt.Errorf(ePrefix+
+        "\nERROR: The '%v' base path exists but it is classified "+
+        "as a File, NOT a directory!\n"+
+        "%v base path='%v'\n"+
         "%v absolute path='%v'\n",
         pathStrLabel,
         pathStrLabel,
@@ -4062,10 +4061,10 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     }
 
     if validPathDto.pathFInfoPlus.Mode().IsRegular() {
-      err = fmt.Errorf(ePrefix +
-        "\nERROR: The '%v' base path exists but it is classified " +
-        "as a 'Regular' File, NOT a directory!\n" +
-        "%v base path='%v'\n" +
+      err = fmt.Errorf(ePrefix+
+        "\nERROR: The '%v' base path exists but it is classified "+
+        "as a 'Regular' File, NOT a directory!\n"+
+        "%v base path='%v'\n"+
         "%v absolute path='%v'\n",
         pathStrLabel,
         pathStrLabel,
@@ -4079,7 +4078,6 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
 
     err = nil
   }
-
 
 errorExit:
   if err != nil {
@@ -4817,7 +4815,6 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDirMgrFieldConfig(
 
   err = nil
 
-
   return isEmpty, err
 }
 
@@ -4840,8 +4837,8 @@ func (dMgrHlpr *dirMgrHelper) lowLevelMakeDir(
   }
 
   dMgrPathDoesExist,
-  _,
-  err :=
+    _,
+    err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
@@ -4945,8 +4942,8 @@ func (dMgrHlpr *dirMgrHelper) lowLevelMakeDirWithPermission(
   }
 
   dMgrPathDoesExist,
-  _,
-  err :=
+    _,
+    err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
@@ -5448,7 +5445,7 @@ func (dMgrHlpr *dirMgrHelper) moveDirectoryTree(
   fileSelectCriteria := FileSelectionCriteria{}
 
   dTreeCopyStats,
-  errs2 :=
+    errs2 :=
     dMgrHlpr.copyDirectoryTree(
       dMgr,
       targetDMgr,
@@ -5558,7 +5555,7 @@ func (dMgrHlpr *dirMgrHelper) moveSubDirectoryTree(
   fileSelectCriteria := FileSelectionCriteria{}
 
   dTreeCopyStats,
-  errs2 :=
+    errs2 :=
     dMgrHlpr.copyDirectoryTree(
       dMgr,
       targetDMgr,
@@ -5659,16 +5656,6 @@ func (dMgrHlpr *dirMgrHelper) setDirMgr(
     ePrefix = ePrefix + "- " + ePrefixCurrMethod
   }
 
-  err = dMgrHlpr.empty(
-    dMgr,
-    ePrefix,
-    dMgrLabel)
-
-  if err != nil {
-
-    return isEmpty, err
-  }
-
   validPathDto := ValidPathStrDto{}.New()
 
   validPathDto,
@@ -5680,6 +5667,16 @@ func (dMgrHlpr *dirMgrHelper) setDirMgr(
 
   if err != nil {
     isEmpty = true
+    return isEmpty, err
+  }
+
+  err = dMgrHlpr.empty(
+    dMgr,
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+
     return isEmpty, err
   }
 
@@ -5730,9 +5727,9 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
   pathStr,
     strLen,
     err = dMgrHlpr.lowLevelScreenPathStrForInvalidChars(
-            pathStr,
-            ePrefix,
-            pathStrLabel)
+    pathStr,
+    ePrefix,
+    pathStrLabel)
 
   if err != nil {
 
@@ -5755,7 +5752,6 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
     return isEmpty, err
   }
 
-
   fh := FileHelper{}
 
   dotSeparator := "." + string(os.PathSeparator)
@@ -5774,7 +5770,7 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
 
   } else if lDirName > 0 &&
     (dirName[0] == os.PathSeparator ||
-      dirName[0] == '.' ) {
+      dirName[0] == '.') {
 
     dirName = dirName[1:]
 
@@ -5796,11 +5792,11 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
   validPathDto.pathStr = finalPathStr
 
   validPathDto.absPathStr,
-  err2 = fh.MakeAbsolutePath(validPathDto.pathStr)
+    err2 = fh.MakeAbsolutePath(validPathDto.pathStr)
 
   if err2 != nil {
-    err = fmt.Errorf(ePrefix +
-      "\nError returned by fh.MakeAbsolutePath(pathStr).\n" +
+    err = fmt.Errorf(ePrefix+
+      "\nError returned by fh.MakeAbsolutePath(pathStr).\n"+
       "Directory Path='%v'\nError='%v'\n",
       validPathDto.pathStr,
       err2.Error())
@@ -5810,9 +5806,9 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
   }
 
   validPathDto.pathVolumeIndex,
-  validPathDto.pathVolumeStrLength,
-  validPathDto.pathVolumeName =
-  fh.GetVolumeNameIndex(validPathDto.absPathStr)
+    validPathDto.pathVolumeStrLength,
+    validPathDto.pathVolumeName =
+    fh.GetVolumeNameIndex(validPathDto.absPathStr)
 
   validPathDto.pathStrLength = len(pathStr)
   validPathDto.absPathStrLength = len(validPathDto.absPathStr)
@@ -5829,7 +5825,6 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
     return isEmpty, err
   }
 
-
   err = dMgrHlpr.empty(
     dMgr,
     ePrefix,
@@ -5841,7 +5836,7 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
   }
 
   isEmpty,
-  err = dMgrHlpr.lowLevelDirMgrFieldConfig(
+    err = dMgrHlpr.lowLevelDirMgrFieldConfig(
     dMgr,
     validPathDto,
     ePrefix,
@@ -5929,8 +5924,18 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrWithPathDirectoryName(
     return isEmpty, err
   }
 
+  err = dMgrHlpr.empty(
+    dMgr,
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+
+    return isEmpty, err
+  }
+
   isEmpty,
-  err = dMgrHlpr.lowLevelDirMgrFieldConfig(
+    err = dMgrHlpr.lowLevelDirMgrFieldConfig(
     dMgr,
     validPathDto,
     ePrefix,
@@ -5975,8 +5980,8 @@ func (dMgrHlpr *dirMgrHelper) setPermissions(
   }
 
   dirPathDoesExist,
-  _,
-  err := dMgrHlpr.doesDirectoryExist(
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,

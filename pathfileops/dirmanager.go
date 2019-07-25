@@ -2733,7 +2733,7 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
   dMgr.dataMutex.Lock()
 
   dTreeInfo,
-  errs := dMgrHlpr.findDirectoryTreeFiles(
+    errs := dMgrHlpr.findDirectoryTreeFiles(
     dMgr,
     fileSelectCriteria,
     false, // skip top level directory
@@ -3202,8 +3202,8 @@ func (dMgr *DirMgr) GetAbsolutePath() string {
   dMgr.dataMutex.Lock()
 
   _,
-  _,
-  err := dMgrHlpr.doesDirectoryExist(
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     "",
@@ -3261,8 +3261,8 @@ func (dMgr *DirMgr) GetAbsolutePathWithSeparator() string {
   dMgr.dataMutex.Lock()
 
   _,
-  _,
-  err := dMgrHlpr.doesDirectoryExist(
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     "",
@@ -3716,8 +3716,8 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
 
   dMgr.dataMutex.Lock()
   _,
-  _,
-  err := dMgrHlpr.doesDirectoryExist(
+    _,
+    err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -3819,7 +3819,7 @@ func (dMgr *DirMgr) ParseValidPathStr(pathStr string) (ValidPathStrDto, error) {
   dMgrHlpr := dirMgrHelper{}
 
   validPathDto,
-  err := dMgrHlpr.getValidPathStr(
+    err := dMgrHlpr.getValidPathStr(
     pathStr,
     "DirMgr.ParseValidPathStr() ",
     "pathStr")
@@ -4291,7 +4291,7 @@ func (dMgr DirMgr) New(pathStr string) (DirMgr, error) {
   newDirMgr := DirMgr{}
 
   isEmpty,
-  err := dMgrHlpr.setDirMgr(
+    err := dMgrHlpr.setDirMgr(
     &newDirMgr,
     pathStr,
     ePrefix,
@@ -4299,12 +4299,12 @@ func (dMgr DirMgr) New(pathStr string) (DirMgr, error) {
     "pathStr")
 
   if err != nil {
-   return DirMgr{}, err
+    return DirMgr{}, err
   }
 
   if isEmpty {
     return DirMgr{}, fmt.Errorf(ePrefix+
-      "\nERROR: dMgrHlpr.SetDirMgr(pathStr) returned an EMPTY DirMgr\n" +
+      "\nERROR: dMgrHlpr.SetDirMgr(pathStr) returned an EMPTY DirMgr\n"+
       "pathStr='%v'\n",
       pathStr)
   }
@@ -4325,8 +4325,8 @@ func (dMgr DirMgr) NewFromFileInfo(
 
   if info == nil {
     return DirMgr{},
-    errors.New(ePrefix +
-      "ERROR: Input parameter 'info' is 'nil' and INVALID!\n")
+      errors.New(ePrefix +
+        "ERROR: Input parameter 'info' is 'nil' and INVALID!\n")
   }
 
   isEmpty, err := dMgrHlpr.setDirMgrWithPathDirectoryName(
@@ -4354,6 +4354,85 @@ func (dMgr DirMgr) NewFromFileInfo(
   }
 
   return newDirMgr, nil
+}
+
+// NewFromDirMgrFileInfo - Configures and returns a new 'DirMgr' instance based on
+// two input parameters, 'directory' and 'fileNameExt'.
+//
+// Input parameter 'directory' is of type 'DirMgr' and is treated as the parent directory.
+// The final directory name is provided by the input parameter 'fileInfo' of type
+// 'os.FileInfo'.
+//
+func (dMgr DirMgr) NewFromDirMgrFileInfo(
+  parentDirectory DirMgr, directoryFileInfo os.FileInfo) (DirMgr, error) {
+
+  ePrefix := "DirMgr.NewFromDirMgrFileInfo() "
+
+  if directoryFileInfo == nil {
+    return DirMgr{},
+      errors.New(ePrefix +
+        "\nERROR: Input parameter 'directoryFileInfo' is 'nil' and therefore invalid!\n")
+  }
+
+  var err error
+
+  err = parentDirectory.IsDirMgrValid("")
+
+  if err != nil {
+    return DirMgr{},
+      fmt.Errorf(ePrefix+
+        "\nInput parameter 'parentDirectory' is invalid!\n"+
+        "%v", err.Error())
+  }
+
+  dMgrHlpr := dirMgrHelper{}
+
+  newDirMgr := DirMgr{}
+
+  isEmpty := false
+
+  isEmpty,
+    err = dMgrHlpr.setDirMgrFromKnownPathDirName(
+    &newDirMgr,
+    parentDirectory.GetAbsolutePath(),
+    directoryFileInfo.Name(),
+    ePrefix,
+    "newDirMgr",
+    "parentDirectory",
+    "directoryFileInfo.Name()")
+
+  if err == nil && isEmpty {
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: The DirMgr instance generated is empty and contains no data!\n"+
+      "parentDirectory='%v'\n"+
+      "directory='%v'\n", parentDirectory.GetAbsolutePath(), directoryFileInfo.Name())
+  }
+
+  if err != nil {
+    return DirMgr{}, err
+  }
+
+  return newDirMgr, nil
+}
+
+// NewFromFileMgr - Configures and returns a new 'DirMgr' instance based
+// on input parameter 'fileMgr' which is of type 'FileMgr'.
+//
+//
+func (dMgr DirMgr) NewFromFileMgr(fileMgr FileMgr) (DirMgr, error) {
+
+  ePrefix := "DirMgr.NewFromFileMgr() "
+
+  err := fileMgr.IsFileMgrValid("")
+
+  if err != nil {
+    return DirMgr{},
+      fmt.Errorf(ePrefix+
+        "\nERROR: Input parameter 'fileMgr' is invalid!\n"+
+        "%v", err.Error())
+  }
+
+  return fileMgr.GetDirMgr(), nil
 }
 
 // NewFromKnownPathDirectoryName - Configures and returns
@@ -4559,13 +4638,13 @@ func (dMgr *DirMgr) SetDirMgrWithFileInfo(
 
   if info == nil {
     return errors.New(ePrefix +
-        "ERROR: Input parameter 'info' is 'nil' and INVALID!\n")
+      "ERROR: Input parameter 'info' is 'nil' and INVALID!\n")
   }
 
   dMgr.dataMutex.Lock()
 
   isEmpty,
-  err = dMgrHlpr.setDirMgrWithPathDirectoryName(
+    err = dMgrHlpr.setDirMgrWithPathDirectoryName(
     dMgr,
     parentDirectoryPath,
     info.Name(),
@@ -4574,15 +4653,14 @@ func (dMgr *DirMgr) SetDirMgrWithFileInfo(
     "parentDirectoryPath",
     "FileInfo.Name()")
 
-
   if err == nil && isEmpty {
     err = fmt.Errorf(ePrefix+
-        "Newly generated 'DirMgr' is Empty!\n"+
-        "dMgrHlpr.setDirMgrFromKnownPathDirName() returned an empty 'DirMgr'\n"+
-        "parentDirectoryPath='%v'\n"+
-        "FileInfo.Name()='%v'\n",
-        parentDirectoryPath,
-        info.Name())
+      "Newly generated 'DirMgr' is Empty!\n"+
+      "dMgrHlpr.setDirMgrFromKnownPathDirName() returned an empty 'DirMgr'\n"+
+      "parentDirectoryPath='%v'\n"+
+      "FileInfo.Name()='%v'\n",
+      parentDirectoryPath,
+      info.Name())
   }
 
   dMgr.dataMutex.Unlock()
