@@ -57,19 +57,60 @@ func main() {
 
   */
 
+  parentDirectory := "..\\checkfiles\\checkfiles02"
 
-  origDir := "../filesfortest/levelfilesfortest/level_01_dir/level_1_3_test.txt"
+  subDirectoryName := "\\TestDirMgr_NewFromKnownPathDirectoryName_07"
 
-  expectedPath := "../filesfortest/levelfilesfortest/level_01_dir"
-
-  mainTests{}.mainTest97DirNew03(origDir, expectedPath)
-
+  mainTests{}.mainTest102TestNewFromKnownPath(parentDirectory, subDirectoryName)
 
 }
 
 type mainTests struct {
   Input  string
   Output string
+}
+
+func (mtst mainTests) mainTest102TestNewFromKnownPath(parentDirectory, subDirectoryName string) {
+
+
+  dMgr, err :=
+    pf.DirMgr{}.NewFromKnownPathDirectoryName(parentDirectory, subDirectoryName)
+
+  if err != nil {
+    fmt.Printf("%v", err.Error())
+    return
+  }
+
+  fmt.Println("          mainTest102TestNewFromKnownPath               ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println(" parentDirectory: ", parentDirectory)
+  fmt.Println("subDirectoryName: ", subDirectoryName)
+  fmt.Println(" DirMgr Abs Path: ", dMgr.GetAbsolutePath())
+}
+
+func (mtst mainTests) mainTest101TestBadPathChars(pathStr string) {
+
+  fh := pf.FileHelper{}
+
+  isErrorDetected := false
+  doublePathSeparator := string(os.PathSeparator) + string(os.PathSeparator)
+  tPathStr := fh.AdjustPathSlash(pathStr)
+
+  if strings.Contains(tPathStr, doublePathSeparator) {
+    isErrorDetected = true
+  }
+
+  fmt.Println("            mainTest101TestBadPathChars                 ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("Original Path String: ", pathStr)
+  fmt.Println("      Error Detected: ", isErrorDetected)
+
 }
 
 func (mtst mainTests) mainTest100GetAbsPath(pathStr string ) {

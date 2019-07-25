@@ -1274,3 +1274,255 @@ func TestDirMgr_NewFromFileInfo_05(t *testing.T) {
       expectedAbsFinalDir, strings.ToLower(targetDMgr.GetAbsolutePath()))
   }
 }
+
+func TestDirMgr_NewFromKnownPathDirectoryName_01(t *testing.T) {
+
+  parentDirectory := "../checkfiles/checkfiles02"
+
+  subDirectoryName := "TestDirMgr_NewFromKnownPathDirectoryName_01"
+
+  expectedDir := "../checkfiles/checkfiles02/TestDirMgr_NewFromKnownPathDirectoryName_01"
+
+  fh := FileHelper{}
+
+  expectedAbsDir, err := fh.MakeAbsolutePath(expectedDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(expectedDir)\n" +
+      "expectedDir='%v'\nError='%v'\n",
+      expectedDir, err.Error())
+    return
+  }
+
+  testDirMgr, err :=
+    DirMgr{}.NewFromKnownPathDirectoryName(parentDirectory, subDirectoryName)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromKnownPathDirectoryName(parentDirectory, subDirectoryName)\n" +
+      "parentDirectory='%v'\n subDirectoryName='%v'\nError='%v'\n",
+      parentDirectory, subDirectoryName, err.Error())
+    return
+  }
+
+  if expectedAbsDir != testDirMgr.absolutePath {
+    t.Errorf("Expected testDirMgr.absolutePath='%v'\n" +
+      "Instead, testDirMgr.absolutePath='%v'\n",
+      expectedAbsDir, testDirMgr.absolutePath)
+  }
+}
+
+func TestDirMgr_NewFromKnownPathDirectoryName_02(t *testing.T) {
+
+  parentDirectory := "../checkfiles/checkfiles02"
+
+  subDirectoryName := "./TestDirMgr_NewFromKnownPathDirectoryName_02"
+
+  expectedDir := "../checkfiles/checkfiles02/TestDirMgr_NewFromKnownPathDirectoryName_02"
+
+  fh := FileHelper{}
+
+  expectedAbsDir, err := fh.MakeAbsolutePath(expectedDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(expectedDir)\n" +
+      "expectedDir='%v'\nError='%v'\n",
+      expectedDir, err.Error())
+    return
+  }
+
+  testDirMgr, err :=
+    DirMgr{}.NewFromKnownPathDirectoryName(parentDirectory, subDirectoryName)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromKnownPathDirectoryName(parentDirectory, subDirectoryName)\n" +
+      "parentDirectory='%v'\n subDirectoryName='%v'\nError='%v'\n",
+      parentDirectory, subDirectoryName, err.Error())
+    return
+  }
+
+  if expectedAbsDir != testDirMgr.absolutePath {
+    t.Errorf("Expected testDirMgr.absolutePath='%v'\n" +
+      "Instead, testDirMgr.absolutePath='%v'\n",
+      expectedAbsDir, testDirMgr.absolutePath)
+  }
+}
+
+func TestDirMgr_NewFromKnownPathDirectoryName_03(t *testing.T) {
+
+  parentDirectory := "../checkfiles/checkfiles02"
+
+  subDirectoryName := "../TestDirMgr_NewFromKnownPathDirectoryName_03"
+
+  expectedDir := "../checkfiles/checkfiles02/TestDirMgr_NewFromKnownPathDirectoryName_03"
+
+  fh := FileHelper{}
+
+  expectedAbsDir, err := fh.MakeAbsolutePath(expectedDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(expectedDir)\n" +
+      "expectedDir='%v'\nError='%v'\n",
+      expectedDir, err.Error())
+    return
+  }
+
+  testDirMgr, err :=
+    DirMgr{}.NewFromKnownPathDirectoryName(parentDirectory, subDirectoryName)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromKnownPathDirectoryName(parentDirectory, subDirectoryName)\n" +
+      "parentDirectory='%v'\n subDirectoryName='%v'\nError='%v'\n",
+      parentDirectory, subDirectoryName, err.Error())
+    return
+  }
+
+  if expectedAbsDir != testDirMgr.absolutePath {
+    t.Errorf("Expected testDirMgr.absolutePath='%v'\n" +
+      "Instead, testDirMgr.absolutePath='%v'\n",
+      expectedAbsDir, testDirMgr.absolutePath)
+  }
+}
+
+func TestDirMgr_NewFromKnownPathDirectoryName_04(t *testing.T) {
+
+  parentDirectory := "../checkfiles/checkfiles02"
+
+  subDirectoryName := ".TestDirMgr_NewFromKnownPathDirectoryName_04"
+
+  expectedDir := "../checkfiles/checkfiles02/TestDirMgr_NewFromKnownPathDirectoryName_04"
+
+  fh := FileHelper{}
+
+  expectedAbsDir, err := fh.MakeAbsolutePath(expectedDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(expectedDir)\n" +
+      "expectedDir='%v'\nError='%v'\n",
+      expectedDir, err.Error())
+    return
+  }
+
+  testDirMgr, err :=
+    DirMgr{}.NewFromKnownPathDirectoryName(parentDirectory, subDirectoryName)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromKnownPathDirectoryName(parentDirectory, subDirectoryName)\n" +
+      "parentDirectory='%v'\n subDirectoryName='%v'\nError='%v'\n",
+      parentDirectory, subDirectoryName, err.Error())
+    return
+  }
+
+  if expectedAbsDir != testDirMgr.absolutePath {
+    t.Errorf("Expected testDirMgr.absolutePath='%v'\n" +
+      "Instead, testDirMgr.absolutePath='%v'\n",
+      expectedAbsDir, testDirMgr.absolutePath)
+  }
+}
+
+func TestDirMgr_NewFromKnownPathDirectoryName_05(t *testing.T) {
+
+  parentDirectory := "../checkfiles/checkfiles02"
+
+  subDirectoryName := "..TestDirMgr_NewFromKnownPathDirectoryName_05"
+
+  expectedDir := "../checkfiles/checkfiles02/TestDirMgr_NewFromKnownPathDirectoryName_05"
+
+  fh := FileHelper{}
+
+  expectedAbsDir, err := fh.MakeAbsolutePath(expectedDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(expectedDir)\n" +
+      "expectedDir='%v'\nError='%v'\n",
+      expectedDir, err.Error())
+    return
+  }
+
+  testDirMgr, err :=
+    DirMgr{}.NewFromKnownPathDirectoryName(parentDirectory, subDirectoryName)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.NewFromKnownPathDirectoryName(parentDirectory, subDirectoryName)\n" +
+      "parentDirectory='%v'\n subDirectoryName='%v'\nError='%v'\n",
+      parentDirectory, subDirectoryName, err.Error())
+    return
+  }
+
+  if expectedAbsDir != testDirMgr.absolutePath {
+    t.Errorf("Expected testDirMgr.absolutePath='%v'\n" +
+      "Instead, testDirMgr.absolutePath='%v'\n",
+      expectedAbsDir, testDirMgr.absolutePath)
+  }
+}
+
+func TestDirMgr_NewFromKnownPathDirectoryName_06(t *testing.T) {
+
+  parentDirectory := "../checkfiles/checkfiles02"
+
+  subDirectoryName := ""
+
+  _, err :=
+    DirMgr{}.NewFromKnownPathDirectoryName(parentDirectory, subDirectoryName)
+
+  if err == nil {
+    t.Error("Expected an error return from DirMgr{}.NewFromKnownPathDirectoryName(" +
+      "parentDirectory, subDirectoryName)\n" +
+      "because subDirectoryName is an Empty string.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+    return
+  }
+}
+
+func TestDirMgr_NewFromKnownPathDirectoryName_07(t *testing.T) {
+
+  parentDirectory := "../checkfiles/checkfiles02"
+
+  subDirectoryName := "...TestDirMgr_NewFromKnownPathDirectoryName_07"
+
+  _, err :=
+    DirMgr{}.NewFromKnownPathDirectoryName(parentDirectory, subDirectoryName)
+
+  if err == nil {
+    t.Error("Expected an error return from DirMgr{}.NewFromKnownPathDirectoryName(" +
+      "parentDirectory, subDirectoryName)\n" +
+      "because subDirectoryName contains '...'\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+    return
+  }
+}
+
+func TestDirMgr_NewFromKnownPathDirectoryName_08(t *testing.T) {
+
+  parentDirectory := "../checkfiles/checkfiles02"
+
+  subDirectoryName := "TestDirMgr_NewFromKnownPathDirectoryName_08\\\\\\"
+
+  _, err :=
+    DirMgr{}.NewFromKnownPathDirectoryName(parentDirectory, subDirectoryName)
+
+  if err == nil {
+    t.Error("Expected an error return from DirMgr{}.NewFromKnownPathDirectoryName(" +
+      "parentDirectory, subDirectoryName)\n" +
+      "because subDirectoryName contains '\\\\'\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+    return
+  }
+}
+
+func TestDirMgr_NewFromKnownPathDirectoryName_09(t *testing.T) {
+
+  parentDirectory := "..\\checkfiles\\\\checkfiles02"
+
+  subDirectoryName := "TestDirMgr_NewFromKnownPathDirectoryName_09"
+
+  _, err :=
+    DirMgr{}.NewFromKnownPathDirectoryName(parentDirectory, subDirectoryName)
+
+  if err == nil {
+    t.Error("Expected an error return from DirMgr{}.NewFromKnownPathDirectoryName(" +
+      "parentDirectory, subDirectoryName)\n" +
+      "because subDirectoryName contains '\\\\'\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+    return
+  }
+}

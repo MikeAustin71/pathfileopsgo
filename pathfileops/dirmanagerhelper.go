@@ -5238,6 +5238,75 @@ func (dMgrHlpr *dirMgrHelper) lowLevelMakeDirWithPermission(
   return dirCreated, err
 }
 
+// lowLevelScreenPathStrForInvalidChars - Examines input parameter 'pathStr'
+// to determine if it contains invalid characters.
+func (dMgrHlpr *dirMgrHelper) lowLevelScreenPathStrForInvalidChars(
+  pathStr string,
+  ePrefix string,
+  pathStrLabel string) (validPathStr string, validPathStrLength int, err error) {
+
+  validPathStr = ""
+  validPathStrLength = 0
+  err = nil
+
+  ePrefixCurrMethod := "dirMgrHelper.lowLevelScreenPathStrForInvalidChars() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  strLen := 0
+
+  pathStr,
+    strLen,
+    err = dMgrHlpr.isPathStringEmptyOrBlank(
+    pathStr,
+    true, // trim trailing path separator
+    ePrefix,
+    pathStrLabel)
+
+  if err != nil {
+
+    return validPathStr, validPathStrLength, err
+  }
+
+  tripleDotSeparator := "..."
+  doublePathSeparator := string(os.PathSeparator) + string(os.PathSeparator)
+
+  if strings.Contains(pathStr, tripleDotSeparator) {
+
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: Input parameter '%v' contains invalid dot characters!\n"+
+      "%v = %v\n",
+      pathStrLabel,
+      pathStrLabel,
+      pathStr)
+
+    return validPathStr, validPathStrLength, err
+
+  }
+
+  if strings.Contains(pathStr, doublePathSeparator) {
+
+    err = fmt.Errorf(ePrefix+
+      "\nERROR: Input parameter '%v' contains invalid path separator characters!\n"+
+      "%v = %v\n",
+      pathStrLabel,
+      pathStrLabel,
+      pathStr)
+
+    return validPathStr, validPathStrLength, err
+  }
+
+  validPathStr = pathStr
+  validPathStrLength = strLen
+  err = nil
+
+  return validPathStr, validPathStrLength, err
+}
+
 // moveDirectory - Moves files from the source directory identified
 // by input parameter 'dMgr' to a target directory identified by input
 // parameter 'targetDMgr'. The 'move' operation is accomplished
@@ -5866,25 +5935,14 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
     ePrefix = ePrefix + "- " + ePrefixCurrMethod
   }
 
-  err = dMgrHlpr.empty(
-    dMgr,
-    ePrefix,
-    dMgrLabel)
-
-  if err != nil {
-
-    return isEmpty, err
-  }
-
   strLen := 0
 
   pathStr,
     strLen,
-    err = dMgrHlpr.isPathStringEmptyOrBlank(
-    pathStr,
-    true, // trim trailing path separator
-    ePrefix,
-    pathStrLabel)
+    err = dMgrHlpr.lowLevelScreenPathStrForInvalidChars(
+            pathStr,
+            ePrefix,
+            pathStrLabel)
 
   if err != nil {
 
@@ -5892,11 +5950,12 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
     return isEmpty, err
   }
 
+  lDirName := 0
+
   dirName,
-    _,
-    err = dMgrHlpr.isPathStringEmptyOrBlank(
+    lDirName,
+    err = dMgrHlpr.lowLevelScreenPathStrForInvalidChars(
     dirName,
-    true, // trim trailing path separator
     ePrefix,
     dirNameLabel)
 
@@ -5906,8 +5965,29 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
     return isEmpty, err
   }
 
-  if dirName[0] == os.PathSeparator {
+
+  fh := FileHelper{}
+
+  dotSeparator := "." + string(os.PathSeparator)
+  doubleDotSeparator := ".." + string(os.PathSeparator)
+
+  if lDirName > 2 &&
+    strings.HasPrefix(dirName, doubleDotSeparator) {
+
+    dirName = dirName[3:]
+
+  } else if lDirName > 1 &&
+    (strings.HasPrefix(dirName, dotSeparator) ||
+      strings.HasPrefix(dirName, "..")) {
+
+    dirName = dirName[2:]
+
+  } else if lDirName > 0 &&
+    (dirName[0] == os.PathSeparator ||
+      dirName[0] == '.' ) {
+
     dirName = dirName[1:]
+
   }
 
   finalPathStr := ""
@@ -5919,7 +5999,6 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
   }
 
   var err2 error
-  fh := FileHelper{}
 
   validPathDto := ValidPathStrDto{}.New()
 
@@ -5957,6 +6036,17 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
   if err != nil {
 
     isEmpty = true
+    return isEmpty, err
+  }
+
+
+  err = dMgrHlpr.empty(
+    dMgr,
+    ePrefix,
+    dMgrLabel)
+
+  if err != nil {
+
     return isEmpty, err
   }
 
