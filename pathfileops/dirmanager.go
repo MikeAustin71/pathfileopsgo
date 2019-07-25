@@ -2733,7 +2733,7 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
   dMgr.dataMutex.Lock()
 
   dTreeInfo,
-    errs := dMgrHlpr.findDirectoryTreeFiles(
+  errs := dMgrHlpr.findDirectoryTreeFiles(
     dMgr,
     fileSelectCriteria,
     false, // skip top level directory
@@ -3202,8 +3202,8 @@ func (dMgr *DirMgr) GetAbsolutePath() string {
   dMgr.dataMutex.Lock()
 
   _,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     "",
@@ -3261,8 +3261,8 @@ func (dMgr *DirMgr) GetAbsolutePathWithSeparator() string {
   dMgr.dataMutex.Lock()
 
   _,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     "",
@@ -3716,8 +3716,8 @@ func (dMgr *DirMgr) IsDirMgrValid(errPrefixStr string) error {
 
   dMgr.dataMutex.Lock()
   _,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -3819,7 +3819,7 @@ func (dMgr *DirMgr) ParseValidPathStr(pathStr string) (ValidPathStrDto, error) {
   dMgrHlpr := dirMgrHelper{}
 
   validPathDto,
-    err := dMgrHlpr.getValidPathStr(
+  err := dMgrHlpr.getValidPathStr(
     pathStr,
     "DirMgr.ParseValidPathStr() ",
     "pathStr")
@@ -4291,7 +4291,7 @@ func (dMgr DirMgr) New(pathStr string) (DirMgr, error) {
   newDirMgr := DirMgr{}
 
   isEmpty,
-    err := dMgrHlpr.setDirMgr(
+  err := dMgrHlpr.setDirMgr(
     &newDirMgr,
     pathStr,
     ePrefix,

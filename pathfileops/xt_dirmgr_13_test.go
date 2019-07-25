@@ -1143,7 +1143,7 @@ func TestDirMgr_New_14(t *testing.T) {
   fh := FileHelper{}
 
   expectedAbsDir,
-    err := fh.MakeAbsolutePath(testDir)
+  err := fh.MakeAbsolutePath(testDir)
 
   expectedAbsDir = strings.ToLower(expectedAbsDir)
 
@@ -1278,7 +1278,7 @@ func TestDirMgr_NewFromFileInfo_01(t *testing.T) {
   targetDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
 
   expectedAbsTargetDir,
-    err := fh.MakeAbsolutePath(targetDir)
+  err := fh.MakeAbsolutePath(targetDir)
 
   if err != nil {
     t.Errorf("Error returned by fh.MakeAbsolutePath(targetDir)\n"+
@@ -1367,7 +1367,7 @@ func TestDirMgr_NewFromFileInfo_04(t *testing.T) {
   targetDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
 
   expectedAbsFinalDir,
-    err := fh.MakeAbsolutePath(finalDir)
+  err := fh.MakeAbsolutePath(finalDir)
 
   if err != nil {
     t.Errorf("Error returned by fh.MakeAbsolutePath(finalDir)\n"+
@@ -1412,7 +1412,7 @@ func TestDirMgr_NewFromFileInfo_05(t *testing.T) {
   targetDir := fh.AdjustPathSlash("../filesfortest/htmlFilesForTest")
 
   expectedAbsFinalDir,
-    err := fh.MakeAbsolutePath(finalDir)
+  err := fh.MakeAbsolutePath(finalDir)
 
   if err != nil {
     t.Errorf("Error returned by fh.MakeAbsolutePath(finalDir)\n"+
@@ -1491,6 +1491,56 @@ func TestDirMgr_NewFromFileMgr_01(t *testing.T) {
       "Expected Absolute Path='%v'\n"+
       "Actual Absolute Path='%v'\n",
       expectedAbsPath, strings.ToLower(newDMgr.absolutePath))
+  }
+}
+
+func TestDirMgr_NewFromFileMgr_02(t *testing.T) {
+
+  testDir := "../filesfortest/htmlFilesForTest"
+
+  fh := FileHelper{}
+
+  expectedAbsPath, err := fh.MakeAbsolutePath(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeAbsolutePath(testDir)\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  expectedAbsPath = strings.ToLower(expectedAbsPath)
+
+  testFile := "../filesfortest/htmlFilesForTest/006860_sample.htm"
+
+  fMgr, err := FileMgr{}.New(testFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by FileMgr{}.New(testFile)\n"+
+      "testFile='%v'\nError='%v'\n", testFile, err.Error())
+    return
+  }
+
+  fMgr.isInitialized = false
+
+  _, err = DirMgr{}.NewFromFileMgr(fMgr)
+
+  if err == nil {
+    t.Error("Expected an error returned by DirMgr{}.NewFromFileMgr(fMgr)\n"+
+      "because fMgr is invalid.\nHowever, NO ERROR WAS RETURNED!!!")
+  }
+
+  fMgr.isInitialized = true
+}
+
+func TestDirMgr_NewFromFileMgr_03(t *testing.T) {
+
+  fMgr := FileMgr{}
+
+  _, err := DirMgr{}.NewFromFileMgr(fMgr)
+
+  if err == nil {
+    t.Error("Expected an error returned by DirMgr{}.NewFromFileMgr(fMgr)\n"+
+      "because fMgr is empty.\nHowever, NO ERROR WAS RETURNED!!!")
   }
 }
 

@@ -317,8 +317,8 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   }
 
   dMgrPathDoesExist,
-    _,
-    err :=
+  _,
+  err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
@@ -345,8 +345,8 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
   }
 
   _,
-    _,
-    err2 :=
+  _,
+  err2 :=
     dMgrHlpr.doesDirectoryExist(
       targetDMgr,
       PreProcPathCode.None(),
@@ -803,8 +803,8 @@ func (dMgrHlpr *dirMgrHelper) deleteAllFilesInDirectory(
   osPathSepStr := string(os.PathSeparator)
 
   dirPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -975,8 +975,8 @@ func (dMgrHlpr *dirMgrHelper) deleteAllSubDirectories(
   }
 
   dirPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -1087,8 +1087,8 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryAll(
   }
 
   dirPathDoesExist,
-    _,
-    err :=
+  _,
+  err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
@@ -1177,8 +1177,8 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeInfo(
   }
 
   dirPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -1434,8 +1434,8 @@ func (dMgrHlpr *dirMgrHelper) deleteDirectoryTreeStats(
   }
 
   dirPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -1680,8 +1680,8 @@ func (dMgrHlpr *dirMgrHelper) deleteFilesByNamePattern(
   }
 
   dirPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -2307,8 +2307,8 @@ func (dMgrHlpr *dirMgrHelper) executeDirectoryFileOps(
   }
 
   dMgrPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -2332,8 +2332,8 @@ func (dMgrHlpr *dirMgrHelper) executeDirectoryFileOps(
   }
 
   _,
-    _,
-    err2 := dMgrHlpr.doesDirectoryExist(
+  _,
+  err2 := dMgrHlpr.doesDirectoryExist(
     targetBaseDir,
     PreProcPathCode.None(),
     ePrefix,
@@ -2521,8 +2521,8 @@ func (dMgrHlpr *dirMgrHelper) executeDirectoryTreeOps(
   }
 
   dMgrPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -2546,8 +2546,8 @@ func (dMgrHlpr *dirMgrHelper) executeDirectoryTreeOps(
   }
 
   _,
-    _,
-    err2 := dMgrHlpr.doesDirectoryExist(
+  _,
+  err2 := dMgrHlpr.doesDirectoryExist(
     targetBaseDir,
     PreProcPathCode.None(),
     ePrefix,
@@ -2770,8 +2770,8 @@ func (dMgrHlpr *dirMgrHelper) findDirectoryTreeFiles(
   }
 
   dirPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -2991,8 +2991,8 @@ func (dMgrHlpr *dirMgrHelper) findDirectoryTreeStats(
   }
 
   dMgrPathDoesExist,
-    _,
-    err :=
+  _,
+  err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
@@ -3599,7 +3599,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
   doesPathExist := false
   fInfo := FileInfoPlus{}
   var volNameIndex, lSlashIdxs, lDotIdxs,
-    strLen, firstCharIdx, lastCharIdx int
+  strLen, firstCharIdx, lastCharIdx int
   var slashIdxs, dotIdxs []int
   var err2 error
   var volNameStr string
@@ -3619,7 +3619,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
   validPathDto.originalPathStr = pathStr
 
   if strLen > 2 &&
-    // Remove trailing slash
+  // Remove trailing slash
     pathStr[strLen-1] == os.PathSeparator &&
     pathStr[strLen-2] != '.' &&
     pathStr[strLen-2] != os.PathSeparator {
@@ -4837,8 +4837,8 @@ func (dMgrHlpr *dirMgrHelper) lowLevelMakeDir(
   }
 
   dMgrPathDoesExist,
-    _,
-    err :=
+  _,
+  err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
@@ -4942,8 +4942,8 @@ func (dMgrHlpr *dirMgrHelper) lowLevelMakeDirWithPermission(
   }
 
   dMgrPathDoesExist,
-    _,
-    err :=
+  _,
+  err :=
     dMgrHlpr.doesDirectoryExist(
       dMgr,
       PreProcPathCode.None(),
@@ -5445,7 +5445,7 @@ func (dMgrHlpr *dirMgrHelper) moveDirectoryTree(
   fileSelectCriteria := FileSelectionCriteria{}
 
   dTreeCopyStats,
-    errs2 :=
+  errs2 :=
     dMgrHlpr.copyDirectoryTree(
       dMgr,
       targetDMgr,
@@ -5555,7 +5555,7 @@ func (dMgrHlpr *dirMgrHelper) moveSubDirectoryTree(
   fileSelectCriteria := FileSelectionCriteria{}
 
   dTreeCopyStats,
-    errs2 :=
+  errs2 :=
     dMgrHlpr.copyDirectoryTree(
       dMgr,
       targetDMgr,
@@ -5980,8 +5980,8 @@ func (dMgrHlpr *dirMgrHelper) setPermissions(
   }
 
   dirPathDoesExist,
-    _,
-    err := dMgrHlpr.doesDirectoryExist(
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
     dMgr,
     PreProcPathCode.None(),
     ePrefix,
