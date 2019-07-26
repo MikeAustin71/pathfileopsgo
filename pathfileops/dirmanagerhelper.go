@@ -15,46 +15,6 @@ type dirMgrHelper struct {
   dMgr DirMgr
 }
 
-// ConsolidateErrors - Receives an array of errors and converts them
-// to a single error which is returned to the caller. Multiple errors
-// are separated by a new line character.
-//
-// If the length of the error array is zero, this method returns nil.
-//
-func (dMgrHlpr *dirMgrHelper) consolidateErrors(errs []error) error {
-
-  lErrs := len(errs)
-
-  if lErrs == 0 {
-    return nil
-  }
-
-  errsStr := ""
-  tempStr := ""
-
-  for i := 0; i < lErrs; i++ {
-
-    tempStr = fmt.Sprintf("%v", errs[i].Error())
-
-    tempStr = strings.TrimLeft(strings.TrimRight(tempStr, " "), " ")
-
-    if strings.HasSuffix(tempStr, "\n\n") {
-
-    } else if strings.HasSuffix(tempStr, "\n") {
-
-      tempStr += "\n"
-
-    } else {
-      tempStr += "\n\n"
-    }
-
-    errsStr += fmt.Sprintf("%v", tempStr)
-
-  }
-
-  return fmt.Errorf("%v", errsStr)
-}
-
 // copyDirectory - Helper method used by DirMgr. This method copies
 // files from the directory identified by by DirMgr to a target
 // directory. The files to be copied are selected according to
@@ -3311,7 +3271,7 @@ func (dMgrHlpr *dirMgrHelper) findFilesByNamePattern(
     }
   }
 
-  return fileMgrCol, dMgrHlpr.consolidateErrors(errs)
+  return fileMgrCol, fh.ConsolidateErrors(errs)
 }
 
 // getAbsolutePathElements - Returns all of the directories and drive
@@ -4302,7 +4262,7 @@ func (dMgrHlpr *dirMgrHelper) lowLevelCopyFile(
   outDestPtr = nil
 
   if len(errs) > 0 {
-    return dMgrHlpr.consolidateErrors(errs)
+    return FileHelper{}.ConsolidateErrors(errs)
   }
   var dstFileDoesExist bool
   var dstFileInfo FileInfoPlus

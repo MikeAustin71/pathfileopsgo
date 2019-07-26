@@ -191,6 +191,21 @@ func TestFileHelper_ConsolidateErrors_01(t *testing.T) {
   }
 }
 
+func TestFileHelper_ConsolidateErrors_02(t *testing.T) {
+  errs := make([]error, 0, 100)
+
+  fh := FileHelper{}
+
+  err := fh.ConsolidateErrors(errs)
+
+  if err != nil {
+    t.Error("ERROR: Expected fh.ConsolidateErrors(errs) to return 'nil'\n" +
+      "because 'errs' is an empty array.\n" +
+      "However, NO ERROR WAS RETURNED!!!")
+  }
+
+}
+
 func TestFileHelper_ConvertOctalToDecimal_01(t *testing.T) {
 
   fh := FileHelper{}

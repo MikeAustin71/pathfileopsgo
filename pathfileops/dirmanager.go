@@ -55,9 +55,7 @@ type DirMgr struct {
 // single error.
 func (dMgr DirMgr) ConsolidateErrors(errors []error) error {
 
-  dMgrHlpr := dirMgrHelper{}
-
-  return dMgrHlpr.consolidateErrors(errors)
+  return FileHelper{}.ConsolidateErrors(errors)
 }
 
 // CopyDirectory - Copies files from the directory identified by

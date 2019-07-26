@@ -962,11 +962,11 @@ func (fh FileHelper) ConsolidateErrors(errs []error) error {
     }
 
     if i == (lErrs - 1) {
-      errStr += fmt.Sprintf("%v\n", errs[i].Error())
+      errStr += fmt.Sprintf("%v", tempStr)
     } else if i == 0 {
-      errStr = fmt.Sprintf("\n%v\n\n", errs[i].Error())
+      errStr = fmt.Sprintf("\n%v\n\n", tempStr)
     } else {
-      errStr += fmt.Sprintf("%v\n\n", errs[i].Error())
+      errStr += fmt.Sprintf("%v\n\n", tempStr)
     }
   }
 

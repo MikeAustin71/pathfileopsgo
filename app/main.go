@@ -71,7 +71,7 @@ func (mtst mainTests) mainTest103FHlprConsolidateErrors() {
   errs := make([]error, 0, 100)
 
   for i:=0; i < 3; i++ {
-    errNo := fmt.Sprintf("Error #%0.3d: Error message.\n", i)
+    errNo := fmt.Sprintf("Error #%0.3d: Error message.\n\n\n", i)
     err := fmt.Errorf(errNo)
 
     errs = append(errs, err)
@@ -81,17 +81,24 @@ func (mtst mainTests) mainTest103FHlprConsolidateErrors() {
 
   err := fh.ConsolidateErrors(errs)
 
+  if err == nil {
+    fmt.Printf("Error return from fh.ConsolidateErrors(errs) is 'nil'\n")
+    return
+  }
+
+  errStr := fmt.Sprintf("%v", err.Error())
+
+  errFmtStr := strings.ReplaceAll(errStr, "\n", "@")
+
   fmt.Println("          mainTest103FHlprConsolidateErrors             ")
   fmt.Println("********************************************************")
   fmt.Println("                    SUCCESS!!!                          ")
   fmt.Println("********************************************************")
   fmt.Println()
+  fmt.Println("Decoded Err Str: ", errFmtStr)
   fmt.Println("Error String:")
-  if err != nil {
-    fmt.Printf("%vTrailer For Test", err.Error())
-  } else {
-    fmt.Println("'err' is nil. No Error was returned!")
-  }
+  fmt.Printf("%vTrailer For Test", err.Error())
+
 
 
 }
