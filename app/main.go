@@ -57,17 +57,43 @@ func main() {
 
   */
 
-  parentDirectory := "..\\checkfiles\\checkfiles02"
-
-  subDirectoryName := "\\TestDirMgr_NewFromKnownPathDirectoryName_07"
-
-  mainTests{}.mainTest102TestNewFromKnownPath(parentDirectory, subDirectoryName)
+  mainTests{}.mainTest103FHlprConsolidateErrors()
 
 }
 
 type mainTests struct {
   Input  string
   Output string
+}
+
+func (mtst mainTests) mainTest103FHlprConsolidateErrors() {
+
+  errs := make([]error, 0, 100)
+
+  for i:=0; i < 3; i++ {
+    errNo := fmt.Sprintf("Error #%0.3d: Error message.\n", i)
+    err := fmt.Errorf(errNo)
+
+    errs = append(errs, err)
+  }
+
+  fh := pf.FileHelper{}
+
+  err := fh.ConsolidateErrors(errs)
+
+  fmt.Println("          mainTest103FHlprConsolidateErrors             ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("Error String:")
+  if err != nil {
+    fmt.Printf("%vTrailer For Test", err.Error())
+  } else {
+    fmt.Println("'err' is nil. No Error was returned!")
+  }
+
+
 }
 
 func (mtst mainTests) mainTest102TestNewFromKnownPath(parentDirectory, subDirectoryName string) {
