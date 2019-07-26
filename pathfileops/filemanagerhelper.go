@@ -257,7 +257,7 @@ func (fMgrHlpr *fileMgrHelper) closeFile(
   return fMgrHlpr.lowLevelCloseFile(fMgr, ePrefix, "fMgr")
 }
 
-// consolidateErrors - Receives an array of errors and converts them
+// ConsolidateErrors - Receives an array of errors and converts them
 // to a single error which is returned to the caller. Multiple errors
 // are separated by a new line character.
 //

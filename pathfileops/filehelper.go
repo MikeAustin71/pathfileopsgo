@@ -930,6 +930,47 @@ func (fh FileHelper) CleanPathStr(pathStr string) string {
   return fp.Clean(pathStr)
 }
 
+// ConsolidateErrors - Receives an array of errors and converts them
+// to a single error which is returned to the caller. Multiple errors
+// are separated by a new line character.
+//
+// If the length of the error array is zero, this method returns nil.
+//
+func (fh FileHelper) ConsolidateErrors(errs []error) error {
+
+  lErrs := len(errs)
+
+  if lErrs == 0 {
+    return nil
+  }
+
+  errStr := ""
+
+  for i := 0; i < lErrs; i++ {
+
+    tempStr := fmt.Sprintf("%v", errs[i].Error())
+
+    tempStr = strings.TrimLeft(strings.TrimRight(tempStr, " "), " ")
+
+    strLen := len(tempStr)
+
+    for strings.HasSuffix(tempStr,"\n") &&
+      strLen > 1 {
+
+      tempStr = tempStr[0:strLen-1]
+      strLen--
+    }
+
+    if i == (lErrs - 1) {
+      errStr += fmt.Sprintf("%v\n", errs[i].Error())
+    } else {
+      errStr += fmt.Sprintf("%v\n\n", errs[i].Error())
+    }
+  }
+
+  return fmt.Errorf("%v", errStr)
+}
+
 // ConvertDecimalToOctal - Utility routine to convert a decimal (base 10)
 // numeric value to an octal (base 8) numeric value. Useful in
 // evaluating 'os.FileMode' values and associated constants.
@@ -1490,7 +1531,7 @@ func (fh FileHelper) CopyFileByIo(src, dst string) (err error) {
   outDestPtr = nil
 
   if len(errs) > 0 {
-    return fh.consolidateErrors(errs)
+    return fh.ConsolidateErrors(errs)
   }
 
   _,
@@ -3412,7 +3453,7 @@ func (fh FileHelper) GetPathAndFileNameExt(
 //                            'pathFileNameExt' due to the fact that 'pathFileNameExt' was improperly
 //                            formatted, 'isEmpty' will be set to 'true', but no error will be returned.
 //
-//														If no error occurs, 'err' is set to 'nil'.
+//                            If no error occurs, 'err' is set to 'nil'.
 //
 // ------------------------------------------------------------------------
 //
@@ -5789,34 +5830,6 @@ func (fh FileHelper) SwapBasePath(
 /*
   FileHelper private methods
 */
-
-// consolidateErrors - Receives an array of errors and converts them
-// to a single error which is returned to the caller. Multiple errors
-// are separated by a new line character.
-//
-// If the length of the error array is zero, this method returns nil.
-//
-func (fh FileHelper) consolidateErrors(errs []error) error {
-
-  lErrs := len(errs)
-
-  if lErrs == 0 {
-    return nil
-  }
-
-  errStr := ""
-
-  for i := 0; i < lErrs; i++ {
-
-    if i == (lErrs - 1) {
-      errStr += fmt.Sprintf("%v", errs[i].Error())
-    } else {
-      errStr += fmt.Sprintf("%v\n", errs[i].Error())
-    }
-  }
-
-  return fmt.Errorf("%v", errStr)
-}
 
 // doesPathFileExist - A helper method which public methods use to determine whether a
 // path and file does or does not exist.

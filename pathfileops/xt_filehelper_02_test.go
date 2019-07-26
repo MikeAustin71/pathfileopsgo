@@ -3,6 +3,7 @@ package pathfileops
 import (
   "fmt"
   "os"
+  "strings"
   "testing"
 )
 
@@ -151,6 +152,43 @@ func TestFileHelper_CleanFileNameExtStr_08(t *testing.T) {
       expectedFileNameExt, result)
   }
 
+}
+
+func TestFileHelper_ConsolidateErrors_01(t *testing.T) {
+
+  errs := make([]error, 0, 100)
+
+  for i:=0; i < 3; i++ {
+    errNo := fmt.Sprintf("Error #%0.3d: Error message.\n", i)
+    err := fmt.Errorf(errNo)
+
+    errs = append(errs, err)
+  }
+
+  fh := FileHelper{}
+
+  err := fh.ConsolidateErrors(errs)
+
+  if err == nil {
+    t.Errorf("ERROR: fh.ConsolidateErrors(errs) returned 'nil'\n" +
+      "instead of the expected error value.\n")
+    return
+  }
+
+  finalErrStr := fmt.Sprintf("%v", err.Error())
+
+  for k:=0; k < 3; k++ {
+    testStr := fmt.Sprintf("Error #%0.3d:", k)
+
+    if !strings.Contains(finalErrStr,testStr) {
+      t.Errorf("Error: Expected final error string would contain %v.\n" +
+        "It did NOT contain that text!\n" +
+        "Final Err Str='%v'\n" +
+        "Test text='%v'\n",
+        testStr,finalErrStr,testStr)
+      return
+    }
+  }
 }
 
 func TestFileHelper_ConvertOctalToDecimal_01(t *testing.T) {
