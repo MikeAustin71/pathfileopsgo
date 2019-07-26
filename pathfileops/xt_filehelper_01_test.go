@@ -2131,3 +2131,159 @@ func TestFileHelper_CopyFileByIoByLink_03(t *testing.T) {
   }
 
 }
+
+func TestFileHelper_CopyFileByLinkByIo_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  setupSrcFile := "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+
+  srcFile:="../createFilesTest/level_0_1_test.txt"
+
+  if fh.DoesFileExist(srcFile) {
+    err := fh.DeleteDirFile(srcFile)
+
+    if err != nil {
+      t.Errorf("Test Setup Error: Setup source file previously exists and "+
+        "cannot be deleted!\nsrcFile='%v'", srcFile)
+      return
+    }
+  }
+
+  err := fh.CopyFileByIo(setupSrcFile, srcFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupSrcFile, srcFile)\n" +
+      "setupSrcFile='%v'\nsrcFile='%v'\nError='%v'\n",
+      setupSrcFile, srcFile, err.Error())
+    return
+  }
+
+  destFile := "../createFilesTest/TestFileHelper_CopyFileByLinkByIo_01.txt"
+
+  if fh.DoesFileExist(destFile) {
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error: Target destination file previously exists and "+
+        "cannot be deleted!\ndestFile='%v'", destFile)
+      return
+    }
+  }
+
+  err = fh.CopyFileByLinkByIo(srcFile, destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.CopyFileByLinkByIo(srcFile, destFile).\n"+
+      "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
+      srcFile, destFile, err.Error())
+  }
+
+  if fh.DoesFileExist(destFile) {
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error After Copy Destination File Existed. However, the attempted "+
+        "Deletion of Destination File Failed. "+
+        "It cannot be deleted!\ndestFile='%v'", destFile)
+      return
+    }
+
+  } else {
+    t.Errorf("Error: CopyFileByLink Failed. Destination File DOES NOT EXIST!\n"+
+      "destFile='%v'\n", destFile)
+  }
+
+  err = fh.DeleteDirFile(srcFile)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirFile(srcFile)\n" +
+      "srcFile='%v'\nError='%v'\n",srcFile, err.Error())
+  }
+
+}
+
+func TestFileHelper_CopyFileByLinkByIo_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  srcFile:=""
+
+  destFile := "../createFilesTest/TestFileHelper_CopyFileByLinkByIo_02.txt"
+
+  if fh.DoesFileExist(destFile) {
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error: Target destination file previously exists and "+
+        "cannot be deleted!\ndestFile='%v'", destFile)
+      return
+    }
+  }
+
+  err := fh.CopyFileByLinkByIo(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.CopyFileByLinkByIo(srcFile, destFile).\n"+
+      "because 'srcFile' is an empty string!\n" +
+      "However, NO ERROR WAS RETURNED!!\n")
+  }
+
+  if fh.DoesFileExist(destFile) {
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error After Copy Destination File Existed. However, the attempted "+
+        "Deletion of Destination File Failed. "+
+        "It cannot be deleted!\ndestFile='%v'", destFile)
+      return
+    }
+
+  }
+
+}
+
+func TestFileHelper_CopyFileByLinkByIo_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  setupSrcFile := "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+
+  srcFile:="../createFilesTest/level_0_1_test.txt"
+
+  if fh.DoesFileExist(srcFile) {
+    err := fh.DeleteDirFile(srcFile)
+
+    if err != nil {
+      t.Errorf("Test Setup Error: Setup source file previously exists and "+
+        "cannot be deleted!\nsrcFile='%v'", srcFile)
+      return
+    }
+  }
+
+  err := fh.CopyFileByIo(setupSrcFile, srcFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupSrcFile, srcFile)\n" +
+      "setupSrcFile='%v'\nsrcFile='%v'\nError='%v'\n",
+      setupSrcFile, srcFile, err.Error())
+    return
+  }
+
+  destFile := ""
+
+  err = fh.CopyFileByLinkByIo(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an rror return from fh.CopyFileByLinkByIo(srcFile, destFile).\n"+
+      "because destFile is an empty string!\n" +
+      "However, NO ERROR WAS RETURNED!!\n")
+  }
+
+  err = fh.DeleteDirFile(srcFile)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirFile(srcFile)\n" +
+      "srcFile='%v'\nError='%v'\n",srcFile, err.Error())
+  }
+}

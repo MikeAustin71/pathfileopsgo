@@ -1,1702 +1,1335 @@
 package pathfileops
 
 import (
-  "errors"
-  "io"
-  "os"
   "strings"
   "testing"
-  "time"
 )
 
-func TestFileHelper_OpenFileReadOnly_01(t *testing.T) {
-
+func TestFileHelper_GetPathFromPathFileName_01(t *testing.T) {
   fh := FileHelper{}
 
-  source := "../logTest/topTest2.txt"
-  source = fh.AdjustPathSlash(alogtopTest2Text)
+  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
 
-  target := "../checkfiles/TestFileHelper_OpenFileReadOnly_01.txt"
+  expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
 
-  target = fh.AdjustPathSlash(target)
-
-  expected := "Top level test file # 2."
-
-  if fh.DoesFileExist(target) {
-
-    err := fh.DeleteDirFile(target)
-
-    if err != nil {
-      t.Errorf("Test Setup Error: Attempted deletion of preexisting "+
-        "target file FAILED!\ntargetFile='%v'\nError='%v'\n",
-        target, err.Error())
-      return
-    }
-
-    if fh.DoesFileExist(target) {
-      t.Errorf("Test Setup Error: Verification of target file deletion FAILED!\n"+
-        "Target File still exists after attempted deletion!\ntargetFile='%v'\n",
-        target)
-      return
-    }
-  }
-
-  err := fh.CopyFileByIo(source, target)
+  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
 
   if err != nil {
-    t.Errorf("Test Setup Error: Copy of source file to target file FAILED!\n"+
-      "sourceFile='%v'\ntargetFile='%v'\nError='%v'\n",
-      source, target, err.Error())
-    return
+    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
   }
 
-  f, err := fh.OpenFileReadOnly(target)
-
-  if err != nil {
-    t.Errorf("Failed to open file: '%v'\nError='%v'",
-      target, err.Error())
-    return
+  if isEmpty != false {
+    t.Errorf("Expected isEmpty GetPathFromPathFileName for valid file extension to return 'false', instead isEmpty='%v' ", isEmpty)
   }
 
-  bytes := make([]byte, 500)
-
-  bytesRead, err := f.Read(bytes)
-
-  if err != nil {
-    t.Errorf("Error returned from f.Read(bytes).\n"+
-      "targetFile='%v'\nError='%v'\n", target, err.Error())
-    _ = f.Close()
-    _ = fh.DeleteDirFile(target)
-    return
+  if result != expectedDir {
+    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid pathn/file name, instead got: %v", expectedDir, result)
   }
 
-  s := string(bytes[0:bytesRead])
-
-  if expected != s {
-    t.Errorf("Expected read string='%v'. Instead read string='%v'",
-      expected, s)
-  }
-
-  _ = f.Close()
-  _ = fh.DeleteDirFile(target)
 }
 
-func TestFileHelper_OpenFileReadOnly_02(t *testing.T) {
+func TestFileHelper_GetPathFromPathFileName_02(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("..\\..\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
+
+  expectedDir := fh.AdjustPathSlash("..\\..\\pathfilego\\003_filehelper\\common")
+
+  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+  }
+
+  if isEmpty != false {
+    t.Errorf("Expected isEmpty GetPathFromPathFileName for valid file extension to return 'false', instead isEmpty='%v' ", isEmpty)
+  }
+
+  if result != expectedDir {
+    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file name, instead got: %v", expectedDir, result)
+  }
+
+}
+
+func TestFileHelper_GetPathFromPathFileName_03(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("D:\\go\\work\\src\\MikeAustin71\\pathfilego\\" +
+    "003_filehelper\\common\\xt_dirmgr_01_test.go")
+
+  expectedDir := fh.AdjustPathSlash("D:\\go\\work\\src\\MikeAustin71\\pathfilego\\" +
+    "003_filehelper\\common")
+
+  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
+  }
+
+  if isEmpty != false {
+    t.Errorf("Expected isEmpty GetPathFromPathFileName for valid file extension to return 'false', instead isEmpty='%v' ", isEmpty)
+  }
+
+  if result != expectedDir {
+    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid file name. Instead path='%v'", expectedDir, result)
+  }
+
+}
+
+func TestFileHelper_GetPathFromPathFileName_04(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("D:\\go\\work\\src\\MikeAustin71\\pathfilego\\" +
+    "003_filehelper\\common\\xt_dirmgr_01_test.go")
+
+  expectedDir := fh.AdjustPathSlash("D:\\go\\work\\src\\MikeAustin71\\pathfilego\\" +
+    "003_filehelper\\common")
+
+  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'",
+      commonDir, err.Error())
+  }
+
+  if isEmpty != false {
+    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
+  }
+
+  if result != expectedDir {
+    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file name. "+
+      "Instead path=='%v' ", expectedDir, result)
+  }
+
+}
+
+func TestFileHelper_GetPathFromPathFileName_05(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("xt_dirmgr_01_test.go")
+
+  expectedDir := fh.AdjustPathSlash("")
+
+  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
+
+  if err != nil {
+    t.Errorf("Expected no error returned from fh.GetPathFromPathFileName(commonDir). "+
+      "Instead an error WAS Returned. commonDir='%v' Error='%v'", commonDir, err.Error())
+  }
+
+  if isEmpty != true {
+    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", true, isEmpty)
+  }
+
+  if result != expectedDir {
+    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file name. "+
+      "Instead path=='%v' ", expectedDir, result)
+  }
+
+}
+
+func TestFileHelper_GetPathFromPathFileName_06(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\")
+
+  expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
+
+  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). "+
+      "commonDir='%v' Error='%v'", commonDir, err.Error())
+  }
+
+  if isEmpty != false {
+    t.Errorf("Expected isEmpty GetPathFromPathFileName for valid file extension to return "+
+      "'false', instead isEmpty='%v' ", isEmpty)
+  }
+
+  if result != expectedDir {
+    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid pathn/file "+
+      "name, instead got: %v", expectedDir, result)
+  }
+
+}
+
+func TestFileHelper_GetPathFromPathFileName_07(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("./")
+
+  expectedDir := fh.AdjustPathSlash("./")
+
+  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). "+
+      "commonDir='%v' Error='%v'", commonDir, err.Error())
+    return
+  }
+
+  if false != isEmpty {
+    t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ",
+      false, isEmpty)
+  }
+
+  if result != expectedDir {
+    t.Errorf("Expected GetPathFromPathFileName to return path == '%v'\n"+
+      "for valid path/file name.\nInstead return path == '%v'\n",
+      expectedDir, result)
+  }
+
+}
+
+func TestFileHelper_GetPathFromPathFileName_08(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash(".")
+
+  expectedDir := fh.AdjustPathSlash(".")
+
+  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' "+
+      "Error='%v'", commonDir, err.Error())
+  }
+
+  if false != isEmpty {
+    t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ",
+      false, isEmpty)
+  }
+
+  if result != expectedDir {
+    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid "+
+      "path/file name, instead got: %v", expectedDir, result)
+  }
+
+}
+
+func TestFileHelper_GetPathFromPathFileName_09(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("..")
+
+  expectedDir := fh.AdjustPathSlash("..")
+
+  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir). commonDir='%v' Error='%v'",
+      commonDir, err.Error())
+  }
+
+  if false != isEmpty {
+    t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ",
+      false, isEmpty)
+  }
+
+  if result != expectedDir {
+    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file "+
+      "name, instead got: %v", expectedDir, result)
+  }
+
+}
+
+func TestFileHelper_GetPathFromPathFileName_10(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("")
+
+  expectedDir := fh.AdjustPathSlash("")
+
+  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
+
+  if err == nil {
+    t.Errorf("Expected error to be returned from fh.GetPathFromPathFileName(commonDir). "+
+      "commonDir='%v' No Error Returned!", commonDir)
+  }
+
+  if true != isEmpty {
+    t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'. Instead, isEmpty='%v' ",
+      true, isEmpty)
+  }
+
+  if result != expectedDir {
+    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid pathn/file"+
+      "name, instead got: %v", expectedDir, result)
+  }
+
+}
+
+func TestFileHelper_GetPathFromPathFileName_11(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("../../../")
+
+  expectedDir := fh.AdjustPathSlash("../../../")
+
+  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir).\n"+
+      "commonDir='%v'\nError='%v'\n",
+      commonDir, err.Error())
+    return
+  }
+
+  if false != isEmpty {
+    t.Errorf("Expected GetPathFromPathFileName isEmpty=='%v'.\n"+
+      "Instead, isEmpty='%v'\n",
+      false, isEmpty)
+  }
+
+  if result != expectedDir {
+    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file "+
+      "name\n"+
+      "Instead return path == '%v'\n",
+      expectedDir, result)
+  }
+}
+
+func TestFileHelper_GetPathFromPathFileName_12(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("./xt_dirmgr_01_test.go")
+
+  expectedDir := fh.AdjustPathSlash("./")
+
+  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
+
+  if err != nil {
+    t.Errorf("Expected no error returned from fh.GetPathFromPathFileName(commonDir). "+
+      "Instead an error WAS Returned. commonDir='%v' Error='%v'", commonDir, err.Error())
+  }
+
+  if isEmpty != false {
+    t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
+  }
+
+  if result != expectedDir {
+    t.Errorf("Expected GetPathFromPathFileName to return path == '%v' for valid path/file"+
+      "name. Instead path=='%v' ", expectedDir, result)
+  }
+
+}
+
+func TestFileHelper_GetPathFromPathFileName_13(t *testing.T) {
+  fh := FileHelper{}
+
+  result, isEmpty, err := fh.GetPathFromPathFileName("     ")
+
+  if err == nil {
+    t.Error("Expected an error return from fh.GetPathFromPathFileName(\"   \") " +
+      "because the input parameter consists entirely of spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if isEmpty == false {
+    t.Error("Expected isEmpty='true', instead isEmpty='false' ")
+  }
+
+  if result != "" {
+    t.Errorf("Expected GetPathFromPathFileName to return path == 'empty string'.  "+
+      "Instead path=='%v' ", result)
+  }
+
+}
+
+func TestFileHelper_GetPathFromPathFileName_14(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\.git")
+
+  expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
+
+  result, isEmpty, err := fh.GetPathFromPathFileName(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetPathFromPathFileName(commonDir).\n"+
+      "commonDir='%v'\nError='%v'", commonDir, err.Error())
+  }
+
+  if isEmpty != false {
+    t.Errorf("Expected isEmpty GetPathFromPathFileName for valid file extension\n"+
+      "to return 'false'. Instead isEmpty='%v'\n", isEmpty)
+  }
+
+  if result != expectedDir {
+    t.Errorf("ERROR: Expected GetPathFromPathFileName to return "+
+      "path == '%v' for valid path/file name.\n"+
+      "Instead path == %v\n", expectedDir, result)
+  }
+
+}
+
+func TestFileHelper_GetPathAndFileNameExt_01(t *testing.T) {
 
   fh := FileHelper{}
 
-  _, err := fh.OpenFileReadOnly("")
+  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
+
+  expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
+
+  expectedFileNameExt := "xt_dirmgr_01_test.go"
+
+  pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetPathAndFileNameExt(commonDir). commonDir='%v' "+
+      "Error='%v'", commonDir, err.Error())
+  }
+
+  if false != bothAreEmpty {
+    t.Errorf("Expected GetPathAndFileNameExt bothAreEmpty='%v'. Instead, bothAreEmpty='%v' ",
+      false, bothAreEmpty)
+  }
+
+  if pathDir != expectedDir {
+    t.Errorf("Expected GetPathAndFileNameExt to return path == '%v'. "+
+      "Instead, path== '%v' ", expectedDir, pathDir)
+  }
+
+  if fileNameExt != expectedFileNameExt {
+    t.Errorf("Expected GetPathAndFileNameExt to return fileNameExt == '%v'. Instead, "+
+      "fileNameExt == '%v' ", expectedFileNameExt, fileNameExt)
+  }
+
+}
+
+func TestFileHelper_GetPathAndFileNameExt_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\")
+
+  expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
+
+  expectedFileNameExt := ""
+
+  pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetPathAndFileNameExt(commonDir). commonDir='%v'  Error='%v'",
+      commonDir, err.Error())
+  }
+
+  if false != bothAreEmpty {
+    t.Errorf("Expected GetPathAndFileNameExt bothAreEmpty='%v'. Instead, bothAreEmpty='%v' ",
+      false, bothAreEmpty)
+  }
+
+  if pathDir != expectedDir {
+    t.Errorf("Expected GetPathAndFileNameExt to return path == '%v'. Instead, path== '%v' ",
+      expectedDir, pathDir)
+  }
+
+  if fileNameExt != expectedFileNameExt {
+    t.Errorf("Expected GetPathAndFileNameExt to return fileNameExt == '%v'. Instead, "+
+      "fileNameExt == '%v' ", expectedFileNameExt, fileNameExt)
+  }
+
+}
+
+func TestFileHelper_GetPathAndFileNameExt_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\dirmgr_test")
+
+  expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
+
+  expectedFileNameExt := "dirmgr_test"
+
+  pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetPathAndFileNameExt(commonDir). commonDir='%v'  "+
+      "Error='%v'", commonDir, err.Error())
+  }
+
+  if false != bothAreEmpty {
+    t.Errorf("Expected GetPathAndFileNameExt bothAreEmpty='%v'. Instead, bothAreEmpty='%v' ",
+      false, bothAreEmpty)
+  }
+
+  if pathDir != expectedDir {
+    t.Errorf("Expected GetPathAndFileNameExt to return path == '%v'. Instead, path== '%v' ",
+      expectedDir, pathDir)
+  }
+
+  if fileNameExt != expectedFileNameExt {
+    t.Errorf("Expected GetPathAndFileNameExt to return fileNameExt == '%v'. Instead, "+
+      "fileNameExt == '%v' ", expectedFileNameExt, fileNameExt)
+  }
+
+}
+
+func TestFileHelper_GetPathAndFileNameExt_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash("xt_dirmgr_01_test.go")
+
+  expectedDir := fh.AdjustPathSlash("")
+
+  expectedFileNameExt := "xt_dirmgr_01_test.go"
+
+  pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt(commonDir)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetPathAndFileNameExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
+  }
+
+  if false != bothAreEmpty {
+    t.Errorf("Expected GetPathAndFileNameExt bothAreEmpty='%v'. Instead, bothAreEmpty='%v' ", false, bothAreEmpty)
+  }
+
+  if pathDir != expectedDir {
+    t.Errorf("Expected GetPathAndFileNameExt to return path == '%v'. Instead, path== '%v' ", expectedDir, pathDir)
+  }
+
+  if fileNameExt != expectedFileNameExt {
+    t.Errorf("Expected GetPathAndFileNameExt to return fileNameExt == '%v'. Instead, fileNameExt == '%v' ", expectedFileNameExt, fileNameExt)
+  }
+
+}
+
+func TestFileHelper_GetPathAndFileNameExt_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt("")
 
   if err == nil {
-    t.Error("Expected an error from fh.OpenFileReadOnly(\"\") " +
-      "because the input parameter is an empty string.\n" +
+    t.Error("Expected error return from fh.GetPathAndFileNameExt(\"\") because " +
+      "the input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if pathDir != "" {
+    t.Errorf("Expected pathDir would be an empty string. Instead, pathDir='%v'",
+      pathDir)
+  }
+
+  if fileNameExt != "" {
+    t.Errorf("Expected fileNameExt would be an empty string. Instead, pathDir='%v'",
+      fileNameExt)
+  }
+
+  if bothAreEmpty == false {
+    t.Error("Expected bothAreEmpty='true'. Instead, bothArEmpty='false'. ")
+  }
+
+}
+
+func TestFileHelper_GetPathAndFileNameExt_06(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathDir, fileNameExt, bothAreEmpty, err := fh.GetPathAndFileNameExt("    ")
+
+  if err == nil {
+    t.Error("Expected error return from fh.GetPathAndFileNameExt(\"   \") because " +
+      "the input parameter consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if pathDir != "" {
+    t.Errorf("Expected pathDir would be an empty string. Instead, pathDir='%v'",
+      pathDir)
+  }
+
+  if fileNameExt != "" {
+    t.Errorf("Expected fileNameExt would be an empty string. Instead, pathDir='%v'",
+      fileNameExt)
+  }
+
+  if bothAreEmpty == false {
+    t.Error("Expected bothAreEmpty='true'. Instead, bothArEmpty='false'. ")
+  }
+
+}
+
+func TestFileHelper_GetPathSeparatorIndexesInPathStr_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  idxs, err := fh.GetPathSeparatorIndexesInPathStr("")
+
+  if err == nil {
+    t.Error("Expected error return from fh.GetPathSeparatorIndexesInPathStr(\"\") " +
+      "because the input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if len(idxs) != 0 {
+    t.Errorf("Expected length of indexes='0'. Instead length of indexes='%v' ",
+      len(idxs))
+  }
+
+}
+
+func TestFileHelper_GetPathSeparatorIndexesInPathStr_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  idxs, err := fh.GetPathSeparatorIndexesInPathStr("     ")
+
+  if err == nil {
+    t.Error("Expected error return from fh.GetPathSeparatorIndexesInPathStr(\"     \") " +
+      "because the input parameter consists entirely of blank spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if len(idxs) != 0 {
+    t.Errorf("Expected length of indexes='0'. Instead length of indexes='%v' ",
+      len(idxs))
+  }
+
+}
+
+// /d/gowork/src/MikeAustin71/pathfileopsgo/pathfileops
+// D:\gowork\src\MikeAustin71\pathfileopsgo\pathfileops
+func TestFileHelper_GetVolumeName_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  volumeName := fh.GetVolumeName("")
+
+  if volumeName != "" {
+    t.Errorf("Expected an empty string return from fh.GetVolumeName(\"\") because "+
+      "the input parameter is an empty string. Instead, the return value='%v' ", volumeName)
+  }
+}
+
+func TestFileHelper_GetVolumeName_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  volumeName := fh.GetVolumeName("  ")
+
+  if volumeName != "" {
+    t.Errorf("Expected an empty string return from fh.GetVolumeName(\"\") because "+
+      "the input parameter consists of blank spaces. Instead, the return value='%v' ", volumeName)
+  }
+}
+
+func TestFileHelper_GetVolumeName_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testVolStr := "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\pathfileops"
+
+  expectedVolName := strings.ToLower("D:")
+
+  volumeName := fh.GetVolumeName(testVolStr)
+
+  if expectedVolName != strings.ToLower(volumeName) {
+    t.Errorf("Expected volumeName='%v'. Instead, volName='%v' ",
+      expectedVolName, strings.ToLower(volumeName))
+  }
+
+}
+
+func TestFileHelper_GetVolumeName_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testVolStr := "D:\\"
+
+  expectedVolName := strings.ToLower("D:")
+
+  volumeName := fh.GetVolumeName(testVolStr)
+
+  if expectedVolName != strings.ToLower(volumeName) {
+    t.Errorf("Expected volumeName='%v'. Instead, volName='%v' ",
+      expectedVolName, strings.ToLower(volumeName))
+  }
+
+}
+
+func TestFileHelper_GetVolumeName_05(t *testing.T) {
+
+  fh := FileHelper{}
+
+  testVolStr := "D:"
+
+  expectedVolName := strings.ToLower("D:")
+
+  volumeName := fh.GetVolumeName(testVolStr)
+
+  if expectedVolName != strings.ToLower(volumeName) {
+    t.Errorf("Expected volumeName='%v'. Instead, volName='%v' ",
+      expectedVolName, strings.ToLower(volumeName))
+  }
+
+}
+
+func TestFileHelper_IsAbsolutePath_01(t *testing.T) {
+
+  fh := FileHelper{}
+  commonDir := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/" +
+    "level_03_dir/level_3_1_test.txt")
+
+  result := fh.IsAbsolutePath(commonDir)
+
+  if result == true {
+    t.Error("IsAbsolutePath result is INVALID. Relative path classified as Absolute path!")
+  }
+
+}
+
+func TestFileHelper_IsAbsolutePath_02(t *testing.T) {
+
+  fh := FileHelper{}
+  absPathDir := fh.AdjustPathSlash("D:/gowork/src/MikeAustin71/pathfileopsgo/filesfortest/" +
+    "levelfilesfortest/level_01_dir/level_02_dir/level_03_dir/level_3_1_test.txt")
+
+  result := fh.IsAbsolutePath(absPathDir)
+
+  if result == false {
+    t.Error("IsAbsolutePath result is INVALID. Absolute path classified as Relative Path!")
+  }
+
+}
+
+func TestFileHelper_IsAbsolutePath_03(t *testing.T) {
+
+  fh := FileHelper{}
+  absPathDir := ""
+
+  result := fh.IsAbsolutePath(absPathDir)
+
+  if result == true {
+    t.Error("Expected a return value of 'false' from fh.IsAbsolutePath(absPathDir) because\n" +
+      "'absPathDir' is an empty string. However, the returned value was 'true'. ERROR!\n")
+  }
+
+}
+
+func TestFileHelper_IsPathFileString_01(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/" +
+    "level_02_dir/level_03_dir/level_3_1_test.txt")
+
+  expectedPathFile := fh.AdjustPathSlash("..\\filesfortest\\levelfilesfortest\\level_01_dir\\" +
+    "level_02_dir\\level_03_dir\\level_3_1_test.txt")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
+  }
+
+  if pathFileType != PathFileType.PathFile() {
+    t.Errorf("Expected PathFileTypeCode='PathFile'. Instead, PathFileTypeCode='%v' ",
+      pathFileType.String())
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+
+}
+
+func TestFileHelper_IsPathFileString_02(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/" +
+    "level_02_dir/level_03_dir/iDoNotExist.txt")
+
+  expectedPathFile := fh.AdjustPathSlash("..\\filesfortest\\levelfilesfortest\\level_01_dir\\" +
+    "level_02_dir\\level_03_dir\\iDoNotExist.txt")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
+  }
+
+  if pathFileType != PathFileType.PathFile() {
+    t.Errorf("Expected PathFileTypeCode='PathFile'. Instead, PathFileTypeCode='%v' ",
+      pathFileType.String())
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+
+}
+
+func TestFileHelper_IsPathFileString_03(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/" +
+    "level_02_dir/level_03_dir")
+
+  expectedPathFile := fh.AdjustPathSlash("..\\filesfortest\\levelfilesfortest\\level_01_dir\\" +
+    "level_02_dir\\level_03_dir")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
+  }
+
+  if pathFileType != PathFileType.Path() {
+    t.Errorf("Expected PathFileTypeCode='PathFile'. Instead, PathFileTypeCode='%v' ",
+      pathFileType.String())
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+
+}
+
+func TestFileHelper_IsPathFileString_04(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/" +
+    "level_02_dir/iDoNotExist")
+
+  expectedPathFile := fh.AdjustPathSlash("..\\filesfortest\\levelfilesfortest\\level_01_dir\\" +
+    "level_02_dir\\iDoNotExist")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
+  }
+
+  expectedFileType := PathFileType.Indeterminate()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+
+}
+
+func TestFileHelper_IsPathFileString_05(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("D:")
+
+  expectedPathFile := fh.AdjustPathSlash("D:")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
+  }
+
+  expectedFileType := PathFileType.Volume()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
+  }
+
+  absExpectedPathFile := strings.ToLower(expectedPathFile)
+
+  absolutePath = strings.ToLower(absolutePath)
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+}
+
+func TestFileHelper_IsPathFileString_06(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("D:\\")
+
+  expectedPathFile := fh.AdjustPathSlash("D:\\")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
+  }
+
+  expectedFileType := PathFileType.Path()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
+  }
+
+  absExpectedPathFile := strings.ToLower(expectedPathFile)
+
+  absolutePath = strings.ToLower(absolutePath)
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+}
+
+func TestFileHelper_IsPathFileString_07(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("fileIDoNotExist.txt")
+
+  expectedPathFile := fh.AdjustPathSlash("fileIDoNotExist.txt")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
+  }
+
+  expectedFileType := PathFileType.File()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+}
+
+func TestFileHelper_IsPathFileString_08(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("fileIDoNotExist")
+
+  expectedPathFile := fh.AdjustPathSlash("fileIDoNotExist")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
+  }
+
+  expectedFileType := PathFileType.File()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+}
+
+func TestFileHelper_IsPathFileString_09(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("..")
+
+  expectedPathFile := fh.AdjustPathSlash("..")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
+  }
+
+  expectedFileType := PathFileType.Path()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+}
+
+func TestFileHelper_IsPathFileString_10(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash(".")
+
+  expectedPathFile := fh.AdjustPathSlash(".")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
+  }
+
+  expectedFileType := PathFileType.Path()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+}
+
+func TestFileHelper_IsPathFileString_11(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := ""
+
+  _, _, err := fh.IsPathFileString(pathFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.IsPathFileString(pathFile) " +
+      "because 'pathFile' is an empty string. However, NO ERROR WAS RETURNED! ")
+  }
+
+}
+
+func TestFileHelper_IsPathFileString_12(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := "   "
+
+  _, _, err := fh.IsPathFileString(pathFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.IsPathFileString(pathFile) " +
+      "because 'pathFile' consists of blank spaces. However, NO ERROR WAS RETURNED! ")
+  }
+
+}
+
+func TestFileHelper_IsPathFileString_13(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := "..\\...\\"
+
+  _, _, err := fh.IsPathFileString(pathFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.IsPathFileString(pathFile) " +
+      "because 'pathFile' 3-dots ('...'). However, NO ERROR WAS RETURNED! ")
+  }
+
+}
+
+func TestFileHelper_IsPathFileString_14(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := "....\\"
+
+  _, _, err := fh.IsPathFileString(pathFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.IsPathFileString(pathFile) " +
+      "because 'pathFile' 4-dots ('....'). However, NO ERROR WAS RETURNED! ")
+  }
+
+}
+
+func TestFileHelper_IsPathFileString_15(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash(".\\")
+
+  expectedPathFile := fh.AdjustPathSlash(".\\")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
+  }
+
+  expectedFileType := PathFileType.Path()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+}
+
+func TestFileHelper_IsPathFileString_16(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("..\\..\\..\\")
+
+  expectedPathFile := fh.AdjustPathSlash("..\\..\\..\\")
+
+  pathFileType, absolutePath, err := fh.IsPathFileString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathFileString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+    return
+  }
+
+  expectedFileType := PathFileType.Path()
+
+  if expectedFileType != pathFileType {
+    t.Errorf("Expected PathFileTypeCode='%v'. Instead, PathFileTypeCode='%v' "+
+      "testFilePathStr='%v' ", expectedFileType.String(), pathFileType.String(), absolutePath)
+  }
+
+  absExpectedPathFile, err := fh.MakeAbsolutePath(expectedPathFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPathFile). "+
+      "expectedPathFile='%v' Error='%v' ", expectedPathFile, err.Error())
+  }
+
+  if absExpectedPathFile != absolutePath {
+    t.Errorf("Error: Expected 'absolutePath'='%v'. Instead, 'absolutePath='%v'.",
+      absExpectedPathFile, absolutePath)
+  }
+}
+
+func TestFileHelper_IsPathString_01(t *testing.T) {
+
+  fh := FileHelper{}
+  pathFile := fh.AdjustPathSlash("..\\..\\..\\")
+  expectedPathStr := fh.AdjustPathSlash("..\\..\\..\\")
+
+  isPath, cannotDetermine, testPathStr, err := fh.IsPathString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+  }
+
+  if true != isPath {
+    t.Errorf("Expected isPath='%v'. Instead, isPath='%v' "+
+      "testPathStr='%v' ", true, isPath, testPathStr)
+  }
+
+  if expectedPathStr != testPathStr {
+    t.Errorf("Error: Expected 'expectedPathStr'='%v'. Instead, 'expectedPathStr='%v'.",
+      expectedPathStr, testPathStr)
+  }
+
+  if false != cannotDetermine {
+    t.Errorf("Error: Expected 'cannotDetermine'='%v'. Instead, 'cannotDetermine'='%v' ",
+      false, cannotDetermine)
+  }
+
+}
+
+func TestFileHelper_IsPathString_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/" +
+    "level_02_dir/level_03_dir")
+
+  expectedPathStr := fh.AdjustPathSlash("..\\filesfortest\\levelfilesfortest\\level_01_dir\\" +
+    "level_02_dir\\level_03_dir")
+
+  isPath, cannotDetermine, testPathStr, err := fh.IsPathString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+  }
+
+  if true != isPath {
+    t.Errorf("Expected isPath='%v'. Instead, isPath='%v' "+
+      "testPathStr='%v' ", true, isPath, testPathStr)
+  }
+
+  if expectedPathStr != testPathStr {
+    t.Errorf("Error: Expected 'expectedPathStr'='%v'. Instead, 'expectedPathStr='%v'.",
+      expectedPathStr, testPathStr)
+  }
+
+  if false != cannotDetermine {
+    t.Errorf("Error: Expected 'cannotDetermine'='%v'. Instead, 'cannotDetermine'='%v' ",
+      false, cannotDetermine)
+  }
+
+}
+
+func TestFileHelper_IsPathString_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/" +
+    "level_02_dir/iDoNotExist")
+
+  expectedPathStr := fh.AdjustPathSlash("..\\filesfortest\\levelfilesfortest\\level_01_dir\\" +
+    "level_02_dir\\iDoNotExist")
+
+  isPath, cannotDetermine, testPathStr, err := fh.IsPathString(pathFile)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.IsPathString(pathFile). "+
+      "pathFile='%v' Error='%v' ", pathFile, err.Error())
+  }
+
+  if false != isPath {
+    t.Errorf("Expected isPath='%v'. Instead, isPath='%v' "+
+      "testPathStr='%v' ", false, isPath, testPathStr)
+  }
+
+  if expectedPathStr != testPathStr {
+    t.Errorf("Error: Expected 'expectedPathStr'='%v'. Instead, 'expectedPathStr='%v'.",
+      expectedPathStr, testPathStr)
+  }
+
+  if true != cannotDetermine {
+    t.Errorf("Error: Expected 'cannotDetermine'='%v'. Instead, 'cannotDetermine'='%v' ",
+      true, cannotDetermine)
+  }
+
+}
+
+func TestFileHelper_IsPathString_04(t *testing.T) {
+
+  fh := FileHelper{}
+
+  pathFile := ""
+
+  _, _, _, err := fh.IsPathString(pathFile)
+
+  if err == nil {
+    t.Errorf("Expected an error return from fh.IsPathString(pathFile) " +
+      "because 'pathFile' is an empty string. " +
       "However, NO ERROR WAS RETURNED!")
   }
 
 }
 
-func TestFileHelper_OpenFileReadOnly_03(t *testing.T) {
+func TestFileHelper_IsPathString_05(t *testing.T) {
 
   fh := FileHelper{}
 
-  _, err := fh.OpenFileReadOnly("    ")
+  pathFile := "      "
+
+  _, _, _, err := fh.IsPathString(pathFile)
 
   if err == nil {
-    t.Error("Expected an error from fh.OpenFileReadOnly(\"\") " +
-      "because the input parameter consists entirely of blank spaces.\n" +
+    t.Errorf("Expected an error return from fh.IsPathString(pathFile) " +
+      "because 'pathFile' consists entirely of blank spaces. " +
       "However, NO ERROR WAS RETURNED!")
   }
 
 }
 
-func TestFileHelper_OpenFileReadOnly_04(t *testing.T) {
+func TestFileHelper_IsPathString_06(t *testing.T) {
 
   fh := FileHelper{}
 
-  targetFile := "../filesfortest/levelfilesfortest/iDoNotExist.txt"
+  pathFile := fh.AdjustPathSlash("../filesfortest/levelfilesfortest/level_01_dir/" +
+    "level_02_dir/level_03_dir")
 
-  targetFile = fh.AdjustPathSlash(targetFile)
+  pathFile = "." + pathFile
 
-  _, err := fh.OpenFileReadOnly(targetFile)
+  _, _, _, err := fh.IsPathString(pathFile)
 
   if err == nil {
-    t.Error("Expected an error from fh.OpenFileReadOnly(targetFile) " +
-      "because the input parameter 'targetFile' does not exist.\n" +
+    t.Errorf("Expected an error return from fh.IsPathString(pathFile) " +
+      "because 'pathFile' includes the text '...' . " +
       "However, NO ERROR WAS RETURNED!")
   }
 
 }
-
-func TestFileHelper_OpenFileReadOnly_05(t *testing.T) {
-
-  fh := FileHelper{}
-
-  source := "../logTest/topTest2.txt"
-  source = fh.AdjustPathSlash(alogtopTest2Text)
-
-  target := "../checkfiles/TestFileHelper_OpenFileReadOnly_01.txt"
-
-  target = fh.AdjustPathSlash(target)
-
-  if fh.DoesFileExist(target) {
-
-    err := fh.DeleteDirFile(target)
-
-    if err != nil {
-      t.Errorf("Test Setup Error: Attempted deletion of preexisting "+
-        "target file FAILED!\ntargetFile='%v'\nError='%v'\n",
-        target, err.Error())
-      return
-    }
-
-    if fh.DoesFileExist(target) {
-      t.Errorf("Test Setup Error: Verification of target file deletion FAILED!\n"+
-        "Target File still exists after attempted deletion!\ntargetFile='%v'\n",
-        target)
-      return
-    }
-  }
-
-  err := fh.CopyFileByIo(source, target)
-
-  if err != nil {
-    t.Errorf("Test Setup Error: Copy of source file to target file FAILED!\n"+
-      "sourceFile='%v'\ntargetFile='%v'\nError='%v'\n",
-      source, target, err.Error())
-    return
-  }
-
-  f, err := fh.OpenFileReadOnly(target)
-
-  if err != nil {
-    t.Errorf("Failed to open file: '%v'\nError='%v'",
-      target, err.Error())
-    return
-  }
-
-  testText := "Cannot write text to read-only file!"
-
-  _, err = f.WriteString(testText)
-
-  if err == nil {
-    t.Errorf("Expected an error return from f.WriteString(testText) " +
-      "because\n'f' references a read-only file. However, NO ERROR WAS RETURNED!\n")
-  }
-
-  err = f.Close()
-
-  if err != nil {
-    t.Errorf("Test Clean-up Error: Error return from f.Close().\n"+
-      "File Name='%v'\nError='%v'\n",
-      target, err.Error())
-  }
-
-  err = fh.DeleteDirFile(target)
-
-  if err != nil {
-    t.Errorf("Test Clean-up Error: Error return from fh.DeleteDirFile(target).\n"+
-      "target='%v'\nError='%v'", target, err.Error())
-  }
-
-}
-
-func TestFileHelper_OpenFileReadWrite_01(t *testing.T) {
-
-  fh := FileHelper{}
-  targetFile := "../checkfiles/scratchTestFileHelper_OpenFileForWriting_01.txt"
-  targetFile = fh.AdjustPathSlash(targetFile)
-  testString := "How now, brown cow!"
-
-  if fh.DoesFileExist(targetFile) {
-    err := fh.DeleteDirFile(targetFile)
-
-    if err != nil {
-      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n"+
-        "fh.DeleteDirFile(targetFile) returned an error!\n"+
-        "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-      return
-    }
-
-    if fh.DoesFileExist(targetFile) {
-      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n"+
-        "'targetFile' STILL EXISTS!\n"+
-        "targetFile='%v'\n", targetFile)
-      return
-    }
-
-  }
-
-  // truncateFile == false - targetFile does not yet exist!
-  fPtr, err := fh.OpenFileReadWrite(targetFile, false)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.OpenFileReadWrite(targetFile, false)\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    return
-  }
-
-  if fPtr == nil {
-    t.Errorf("ERROR: File Pointer returned by fh.OpenFileReadWrite(targetFile)\n"+
-      "is 'nil'!\ntargetFile='%v'", targetFile)
-    return
-  }
-
-  bytesWritten, err := fPtr.WriteString(testString)
-
-  if bytesWritten != len(testString) {
-    t.Errorf("ERROR: Bytes written to 'targetFile' DO NOT EQUAL the lenth\n"+
-      "of 'testString'.\ntargetFile='%v'\nBytesWritten='%v' Length of Test String='%v'\n",
-      targetFile, bytesWritten, len(testString))
-    _ = fPtr.Close()
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  err = fPtr.Sync()
-
-  if err != nil {
-    t.Errorf("Error returned by fPtr.Sync() for 'targetFile'!\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    _ = fPtr.Close()
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  b := make([]byte, 500)
-
-  bytesRead, err := fPtr.ReadAt(b, 0)
-
-  if err != nil {
-    if err != io.EOF {
-      t.Errorf("Non-EOF error returned by fPtr.ReadAt(b,0).\n"+
-        "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-      _ = fPtr.Close()
-      _ = fh.DeleteDirFile(targetFile)
-      return
-    }
-  }
-
-  if bytesRead != bytesWritten {
-    t.Errorf("ERROR: The bytes written to 'targetFile' do NOT EQUAL the bytes\n"+
-      "read from 'targetFile'.\ntargetFile='%v'\nBytes Read='%v'  Bytes Written='%v'\n",
-      targetFile, bytesRead, bytesWritten)
-    _ = fPtr.Close()
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  resultStr := string(b[0:bytesRead])
-
-  if testString != resultStr {
-    t.Errorf("ERROR: Expected read string='%v'.\nInstead, read string='%v'.\n",
-      testString, resultStr)
-  }
-
-  err = fPtr.Close()
-
-  if err != nil {
-    t.Errorf("Test Clean-up Error: Error returned from fPtr.Close().\n"+
-      "targetFile='%v'\nError='%v'", targetFile, err.Error())
-  }
-
-  err = fh.DeleteDirFile(targetFile)
-
-  if err != nil {
-    t.Errorf("Test Clean-up Error: Error returned from fh.DeleteDirFile(targetFile).\n"+
-      "targetFile='%v'\nError='%v'", targetFile, err.Error())
-  }
-
-}
-
-func TestFileHelper_OpenFileReadWrite_02(t *testing.T) {
-
-  fh := FileHelper{}
-  srcFile := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
-  srcFile = fh.AdjustPathSlash(srcFile)
-  targetFile := "../checkfiles/scratchTestFileHelper_OpenFileForWriting_02.txt"
-  targetFile = fh.AdjustPathSlash(targetFile)
-  testString := "How now, brown cow!"
-
-  err := fh.DeleteDirFile(targetFile)
-
-  if err != nil {
-    t.Errorf("Test Setup Error returned from fh.DeleteDirFile(targetFile).\n" +
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    return
-  }
-
-
-  fInfo, err := os.Stat(srcFile)
-
-  if err != nil {
-    t.Errorf("ERROR: Test Setup Source File DOES NOT EXIST!\n"+
-      "Source File='%v'\n", srcFile)
-    return
-  }
-
-  sourceByteSize := fInfo.Size()
-
-  if fh.DoesFileExist(targetFile) {
-    err := fh.DeleteDirFile(targetFile)
-
-    if err != nil {
-      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n"+
-        "fh.DeleteDirFile(targetFile) returned an error!\n"+
-        "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-      return
-    }
-
-    if fh.DoesFileExist(targetFile) {
-      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n"+
-        "'targetFile' STILL EXISTS!\n"+
-        "targetFile='%v'\n", targetFile)
-      return
-    }
-  }
-
-  err = fh.CopyFileByIo(srcFile, targetFile)
-
-  if err != nil {
-    t.Errorf("Error returned by test setup op fh.CopyFileByIo(srcFile, targetFile).\n"+
-      "srcFile='%v'\ntargetFile='%v'\nError='%v'\n",
-      srcFile, targetFile, err.Error())
-    return
-  }
-
-  if !fh.DoesFileExist(targetFile) {
-    t.Errorf("Test Setup Failed! 'targetFile' does NOT EXIST!\n"+
-      "targetFile='%v'\n", targetFile)
-    return
-  }
-
-  // Open file with truncateFile=true
-  fPtr, err := fh.OpenFileReadWrite(targetFile, true)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.OpenFileReadWrite(targetFile)\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    return
-  }
-
-  if fPtr == nil {
-    t.Errorf("ERROR: File Pointer returned by fh.OpenFileReadWrite(targetFile)\n"+
-      "is 'nil'!\ntargetFile='%v'", targetFile)
-    return
-  }
-
-  bytesWritten, err := fPtr.WriteString(testString)
-
-  if bytesWritten != len(testString) {
-    t.Errorf("ERROR: Bytes written to 'targetFile' DO NOT EQUAL the lenth\n"+
-      "of 'testString'.\ntargetFile='%v'\nBytesWritten='%v' Length of Test String='%v'\n",
-      targetFile, bytesWritten, len(testString))
-    _ = fPtr.Close()
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  err = fPtr.Sync()
-
-  if err != nil {
-    t.Errorf("Error returned by fPtr.Sync() for 'targetFile'!\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    _ = fPtr.Close()
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  b := make([]byte, 500)
-
-  bytesRead, err := fPtr.ReadAt(b, 0)
-
-  if err != nil {
-    if err != io.EOF {
-      t.Errorf("Non-EOF error returned by fPtr.ReadAt(b,0).\n"+
-        "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-      _ = fPtr.Close()
-      _ = fh.DeleteDirFile(targetFile)
-      return
-    }
-  }
-
-  err = fPtr.Close()
-
-  if err != nil {
-    t.Errorf("Error returned after Read Operation on fPtr.Close()!\n"+
-      "targetFile='%v'\nError='%v'", targetFile, err.Error())
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  fInfo, err = os.Stat(targetFile)
-
-  if err != nil {
-    t.Errorf("ERROR: os.Stat(targetFile) shows targetFile DOES NOT EXIST!\n"+
-      "targetFile='%v'\n", targetFile)
-    return
-  }
-
-  targetFileByteSize := fInfo.Size()
-
-  if sourceByteSize <= targetFileByteSize {
-    t.Errorf("ERROR: Orginal Source File Byte Size is less than new "+
-      "'targetFile' Byte Size!\nSource File Byte Size='%v'   "+
-      "Target File Byte Size='%v'\ntargetFile='%v'\n",
-      sourceByteSize, targetFileByteSize, targetFile)
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  if bytesRead != bytesWritten {
-    t.Errorf("ERROR: The bytes written to 'targetFile' do NOT EQUAL the bytes\n"+
-      "read from 'targetFile'.\ntargetFile='%v'\nBytes Read='%v'  Bytes Written='%v'\n",
-      targetFile, bytesRead, bytesWritten)
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  resultStr := string(b[0:bytesRead])
-
-  if testString != resultStr {
-    t.Errorf("ERROR: Expected read string='%v'.\nInstead, read string='%v'.\n",
-      testString, resultStr)
-  }
-
-  err = fh.DeleteDirFile(targetFile)
-
-  if err != nil {
-    t.Errorf("Test Clean-up Error: Error returned from fh.DeleteDirFile(targetFile).\n"+
-      "targetFile='%v'\nError='%v'", targetFile, err.Error())
-  }
-
-}
-
-func TestFileHelper_OpenFileReadWrite_03(t *testing.T) {
-
-  targetFile := ""
-
-  fh := FileHelper{}
-
-  fPtr, err := fh.OpenFileReadWrite(targetFile, false)
-
-  if err == nil {
-    t.Error("ERROR: Expected an error return from fh.OpenFileReadWrite" +
-      "(targetFile, false)\n" +
-      "because 'targetFile' is an empty string.\n" +
-      "However NO ERROR WAS RETURNED!!!\n")
-
-    if fPtr != nil {
-
-      err = fPtr.Close()
-
-      if err != nil {
-        t.Errorf("Test Clean-up Error: Error returned from fPtr.Close().\n"+
-          "targetFile='%v'\nError='%v'", targetFile, err.Error())
-      }
-
-    }
-
-  }
-
-}
-
-func TestFileHelper_OpenFileReadWrite_04(t *testing.T) {
-
-  targetFile := "  "
-
-  fh := FileHelper{}
-
-  fPtr, err := fh.OpenFileReadWrite(targetFile, false)
-
-  if err == nil {
-    t.Error("ERROR: Expected an error return from fh.OpenFileReadWrite" +
-      "(targetFile, false)\n" +
-      "because the 'targetFile' parameter consists entirely of blank spaces.\n" +
-      "However NO ERROR WAS RETURNED!!!\n")
-
-    if fPtr != nil {
-
-      err = fPtr.Close()
-
-      if err != nil {
-        t.Errorf("Test Clean-up Error: Error returned from fPtr.Close().\n"+
-          "targetFile='%v'\nError='%v'", targetFile, err.Error())
-      }
-
-    }
-  }
-}
-
-func TestFileHelper_OpenFileReadWrite_05(t *testing.T) {
-
-  targetFile := "../checkfiles/idontexist1/idontexist2/TestFileHelper_OpenFileReadWrite_05.txt"
-
-  fh := FileHelper{}
-
-  targetFile = fh.AdjustPathSlash(targetFile)
-
-  fPtr, err := fh.OpenFileReadWrite(targetFile, false)
-
-  if err == nil {
-    t.Error("ERROR: Expected an error return from fh.OpenFileReadWrite" +
-      "(targetFile, false)\n" +
-      "because the 'targetFile' parameter includes parent directories which DO NOT EXIST.\n" +
-      "However NO ERROR WAS RETURNED!!!\n")
-
-    if fPtr != nil {
-
-      err = fPtr.Close()
-
-      if err != nil {
-        t.Errorf("Test Clean-up Error: Error returned from fPtr.Close().\n"+
-          "targetFile='%v'\nError='%v'", targetFile, err.Error())
-      }
-
-      err = fh.DeleteDirFile(targetFile)
-
-      if err != nil {
-        t.Errorf("Test Clean-up Error: Error returned from fh.DeleteDirFile(targetFile).\n"+
-          "targetFile='%v'\nError='%v'", targetFile, err.Error())
-      }
-
-    }
-
-  }
-}
-
-func TestFileHelper_OpenFileWriteOnly_01(t *testing.T) {
-  fh := FileHelper{}
-  srcFile := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
-  srcFile = fh.AdjustPathSlash(srcFile)
-  targetFile := "../checkfiles/TestFileHelper_OpenFileWriteOnly_01.txt"
-  targetFile = fh.AdjustPathSlash(targetFile)
-
-  if fh.DoesFileExist(targetFile) {
-    err := fh.DeleteDirFile(targetFile)
-
-    if err != nil {
-      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n"+
-        "fh.DeleteDirFile(targetFile) returned an error!\n"+
-        "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-      return
-    }
-
-    if fh.DoesFileExist(targetFile) {
-      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n"+
-        "'targetFile' STILL EXISTS!\n"+
-        "targetFile='%v'\n", targetFile)
-      return
-    }
-
-  }
-
-  err := fh.CopyFileByIo(srcFile, targetFile)
-
-  if err != nil {
-    t.Errorf("Error returned by test setup op fh.CopyFileByIo(srcFile, targetFile).\n"+
-      "srcFile='%v'\ntargetFile='%v'\nError='%v'\n",
-      srcFile, targetFile, err.Error())
-    return
-  }
-
-  if !fh.DoesFileExist(targetFile) {
-    t.Errorf("Test Setup Failed! 'targetFile' does NOT EXIST!\n"+
-      "targetFile='%v'\n", targetFile)
-    return
-  }
-
-  fPtr, err := fh.OpenFileWriteOnly(targetFile, false)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.OpenFileWriteOnly"+
-      "(targetFile,false).\ntargetFile='%v'\nError='%v'\n",
-      targetFile, err.Error())
-
-    if fPtr != nil {
-      _ = fPtr.Close()
-    }
-
-    err = fh.DeleteDirFile(targetFile)
-
-    if err != nil {
-      t.Errorf("After OpenFileWriteOnly() an error was returned by "+
-        "fh.DeleteDirFile(targetFile)\ntargetFile='%v'\nError='%v'\n",
-        targetFile, err.Error())
-    }
-
-    return
-  }
-
-  bytes := make([]byte, 3000)
-
-  _, err = fPtr.Read(bytes)
-
-  if err == nil {
-    t.Errorf("Expected an error retun from fPtr.Read(bytes) "+
-      "because\nthe file pointer 'fPtr' was opened as 'Write-Only'!\n"+
-      "targetFile='%v'\n", targetFile)
-  }
-
-  if fPtr != nil {
-    err = fPtr.Close()
-    if err != nil {
-      t.Errorf("Test Clean-up Error returned by fPtr.Close().\n"+
-        "targetFile='%v'\nError='%v'\n",
-        targetFile, err.Error())
-    }
-  }
-
-  err = fh.DeleteDirFile(targetFile)
-
-  if err != nil {
-    t.Errorf("Test Clean-up Error returned by fh.DeleteDirFile("+
-      "targetFile)\ntargetFile='%v'\nError='%v'\n",
-      targetFile, err.Error())
-  }
-
-}
-
-func TestFileHelper_OpenFileWriteOnly_02(t *testing.T) {
-  fh := FileHelper{}
-  srcFile := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
-  srcFile = fh.AdjustPathSlash(srcFile)
-  targetFile := "../checkfiles/TestFileHelper_OpenFileWriteOnly_01.txt"
-  targetFile = fh.AdjustPathSlash(targetFile)
-  expectedStr := "How Now Brown Cow!"
-
-  if fh.DoesFileExist(targetFile) {
-    err := fh.DeleteDirFile(targetFile)
-
-    if err != nil {
-      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n"+
-        "fh.DeleteDirFile(targetFile) returned an error!\n"+
-        "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-      return
-    }
-
-    if fh.DoesFileExist(targetFile) {
-      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n"+
-        "'targetFile' STILL EXISTS!\n"+
-        "targetFile='%v'\n", targetFile)
-      return
-    }
-
-  }
-
-  err := fh.CopyFileByIo(srcFile, targetFile)
-
-  if err != nil {
-    t.Errorf("Error returned by test setup op fh.CopyFileByIo(srcFile, targetFile).\n"+
-      "srcFile='%v'\ntargetFile='%v'\nError='%v'\n",
-      srcFile, targetFile, err.Error())
-    return
-  }
-
-  if !fh.DoesFileExist(targetFile) {
-    t.Errorf("Test Setup Failed! 'targetFile' does NOT EXIST!\n"+
-      "targetFile='%v'\n", targetFile)
-    return
-  }
-
-  fPtr, err := fh.OpenFileWriteOnly(targetFile, true)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.OpenFileWriteOnly"+
-      "(targetFile,false).\ntargetFile='%v'\nError='%v'\n",
-      targetFile, err.Error())
-
-    if fPtr != nil {
-      _ = fPtr.Close()
-    }
-
-    _ = fh.DeleteDirFile(targetFile)
-
-    return
-  }
-
-  if fPtr == nil {
-    t.Errorf("ERROR: fh.OpenFileWriteOnly(targetFile,true)\n"+
-      "returned a 'nil' file pointer!\ntargetFile='%v'\n", targetFile)
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  bytesWritten, err := fPtr.WriteString(expectedStr)
-
-  if err != nil {
-    t.Errorf("Error returned by fPtr.WriteString(expectedStr).\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    _ = fPtr.Close()
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  err = fPtr.Close()
-
-  if err != nil {
-    t.Errorf("Error returned by fPtr.Close() after writing bytes to file.\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-
-  if bytesWritten != len(expectedStr) {
-    t.Errorf("Expected bytes written='%v'. Instead, bytes written='%v'.",
-      bytesWritten, len(expectedStr))
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  fPtr, err = fh.OpenFileReadWrite(targetFile, false)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.OpenFileReadWrite(targetFile, false).\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    if fPtr != nil {
-      _ = fPtr.Close()
-    }
-
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  bytes := make([]byte, 3000)
-  bytesRead, err := fPtr.Read(bytes)
-
-  if err != nil {
-    t.Errorf("Error returned by fPtr.Read(bytes).\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    _ = fPtr.Close()
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  err = fPtr.Close()
-
-  if err != nil {
-    t.Errorf("Error returned by fPtr.Close() after bytes read operation.\n"+
-      "targetFile='%v'\nError='%v'", targetFile, err.Error())
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  if bytesWritten != bytesRead {
-    t.Errorf("Expected bytes read='%v'. Instead, bytes read='%v'\n",
-      bytesWritten, bytesRead)
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  strRead := string(bytes[0:bytesRead])
-
-  if expectedStr != strRead {
-    t.Errorf("Expected read string = '%v'\n"+
-      "Instead, read string='%v'\n",
-      expectedStr, strRead)
-  }
-
-  err = fh.DeleteDirFile(targetFile)
-
-  if err != nil {
-    t.Errorf("Test Clean-up Error: Error returned by fh.DeleteDirFile(targetFile).\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-  }
-
-  return
-}
-
-func TestFileHelper_OpenFileWriteOnly_03(t *testing.T) {
-  fh := FileHelper{}
-  targetFile := "../checkfiles/TestFileHelper_OpenFileWriteOnly_03.txt"
-  targetFile = fh.AdjustPathSlash(targetFile)
-  expectedStr := "Now is the time for all good men to come to the aid of their country."
-
-  if fh.DoesFileExist(targetFile) {
-    err := fh.DeleteDirFile(targetFile)
-
-    if err != nil {
-      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n"+
-        "fh.DeleteDirFile(targetFile) returned an error!\n"+
-        "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-      return
-    }
-
-    if fh.DoesFileExist(targetFile) {
-      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n"+
-        "'targetFile' STILL EXISTS!\n"+
-        "targetFile='%v'\n", targetFile)
-      return
-    }
-  }
-
-  fPtr, err := fh.OpenFileWriteOnly(targetFile, false)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.OpenFileWriteOnly"+
-      "(targetFile,false).\ntargetFile='%v'\nError='%v'\n",
-      targetFile, err.Error())
-
-    if fPtr != nil {
-      _ = fPtr.Close()
-    }
-
-    _ = fh.DeleteDirFile(targetFile)
-
-    return
-  }
-
-  if fPtr == nil {
-    t.Errorf("ERROR: fh.OpenFileWriteOnly(targetFile,true)\n"+
-      "returned a 'nil' file pointer!\ntargetFile='%v'\n", targetFile)
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  bytesWritten, err := fPtr.WriteString(expectedStr)
-
-  if err != nil {
-    t.Errorf("Error returned by fPtr.WriteString(expectedStr).\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    _ = fPtr.Close()
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  err = fPtr.Close()
-
-  if err != nil {
-    t.Errorf("Error returned by fPtr.Close() after writing bytes to file.\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-
-  if bytesWritten != len(expectedStr) {
-    t.Errorf("Expected bytes written='%v'. Instead, bytes written='%v'.",
-      bytesWritten, len(expectedStr))
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-
-  fPtr, err = fh.OpenFileReadWrite(targetFile, false)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.OpenFileReadWrite(targetFile, false).\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    if fPtr != nil {
-      _ = fPtr.Close()
-    }
-
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  bytes := make([]byte, 3000)
-  bytesRead, err := fPtr.Read(bytes)
-
-  if err != nil {
-    t.Errorf("Error returned by fPtr.Read(bytes).\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    _ = fPtr.Close()
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  err = fPtr.Close()
-
-  if err != nil {
-    t.Errorf("Error returned by fPtr.Close() after bytes read operation.\n"+
-      "targetFile='%v'\nError='%v'", targetFile, err.Error())
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  if bytesWritten != bytesRead {
-    t.Errorf("Expected bytes read='%v'. Instead, bytes read='%v'\n",
-      bytesWritten, bytesRead)
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  strRead := string(bytes[0:bytesRead])
-
-  if expectedStr != strRead {
-    t.Errorf("Expected read string = '%v'\n"+
-      "Instead, read string='%v'\n",
-      expectedStr, strRead)
-  }
-
-  err = fh.DeleteDirFile(targetFile)
-
-  if err != nil {
-    t.Errorf("Test Clean-up Error: Error returned by fh.DeleteDirFile(targetFile).\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-  }
-
-  return
-}
-
-func TestFileHelper_OpenFileWriteOnly_04(t *testing.T) {
-  fh := FileHelper{}
-  targetFile := "../checkfiles/TestFileHelper_OpenFileWriteOnly_03.txt"
-  targetFile = fh.AdjustPathSlash(targetFile)
-  expectedStr := "The cow jumped over the moon."
-
-  if fh.DoesFileExist(targetFile) {
-    err := fh.DeleteDirFile(targetFile)
-
-    if err != nil {
-      t.Errorf("ERROR: Test Setup attempted to delete 'targetFile'.\n"+
-        "fh.DeleteDirFile(targetFile) returned an error!\n"+
-        "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-      return
-    }
-
-    if fh.DoesFileExist(targetFile) {
-      t.Errorf("ERROR: Test Setup attempted deletion of 'targetFile'.\n"+
-        "'targetFile' STILL EXISTS!\n"+
-        "targetFile='%v'\n", targetFile)
-      return
-    }
-  }
-
-  fPtr, err := fh.OpenFileWriteOnly(targetFile, false)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.OpenFileWriteOnly"+
-      "(targetFile,false).\ntargetFile='%v'\nError='%v'\n",
-      targetFile, err.Error())
-
-    if fPtr != nil {
-      _ = fPtr.Close()
-    }
-
-    _ = fh.DeleteDirFile(targetFile)
-
-    return
-  }
-
-  if fPtr == nil {
-    t.Errorf("ERROR: fh.OpenFileWriteOnly(targetFile,true)\n"+
-      "returned a 'nil' file pointer!\ntargetFile='%v'\n", targetFile)
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  bytesWritten, err := fPtr.WriteString(expectedStr)
-
-  if err != nil {
-    t.Errorf("Error returned by fPtr.WriteString(expectedStr).\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    _ = fPtr.Close()
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  err = fPtr.Close()
-
-  if err != nil {
-    t.Errorf("Error returned by fPtr.Close() after writing bytes to file.\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-
-  if bytesWritten != len(expectedStr) {
-    t.Errorf("Expected bytes written='%v'. Instead, bytes written='%v'.",
-      bytesWritten, len(expectedStr))
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-
-  fPtr, err = fh.OpenFileReadWrite(targetFile, false)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.OpenFileReadWrite(targetFile, false).\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    if fPtr != nil {
-      _ = fPtr.Close()
-    }
-
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  bytes := make([]byte, 3000)
-  bytesRead, err := fPtr.Read(bytes)
-
-  if err != nil {
-    t.Errorf("Error returned by fPtr.Read(bytes).\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-    _ = fPtr.Close()
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  err = fPtr.Close()
-
-  if err != nil {
-    t.Errorf("Error returned by fPtr.Close() after bytes read operation.\n"+
-      "targetFile='%v'\nError='%v'", targetFile, err.Error())
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  if bytesWritten != bytesRead {
-    t.Errorf("Expected bytes read='%v'. Instead, bytes read='%v'\n",
-      bytesWritten, bytesRead)
-    _ = fh.DeleteDirFile(targetFile)
-    return
-  }
-
-  strRead := string(bytes[0:bytesRead])
-
-  if expectedStr != strRead {
-    t.Errorf("Expected read string = '%v'\n"+
-      "Instead, read string='%v'\n",
-      expectedStr, strRead)
-  }
-
-  err = fh.DeleteDirFile(targetFile)
-
-  if err != nil {
-    t.Errorf("Test Clean-up Error: Error returned by fh.DeleteDirFile(targetFile).\n"+
-      "targetFile='%v'\nError='%v'\n", targetFile, err.Error())
-  }
-
-  return
-}
-
-func TestFileHelper_OpenFileWriteOnly_05(t *testing.T) {
-  fh := FileHelper{}
-  targetFile := ""
-
-  _, err := fh.OpenFileWriteOnly(targetFile, false)
-
-  if err == nil {
-    t.Error("Expected an error return from fh.OpenFileWriteOnly(targetFile, false)\n" +
-      "because parameter 'targetFile' is an empty string.\n" +
-      "However, NO ERROR WAS RETURNED!")
-  }
-
-  return
-}
-
-func TestFileHelper_OpenFileWriteOnly_06(t *testing.T) {
-  fh := FileHelper{}
-  targetFile := "     "
-
-  _, err := fh.OpenFileWriteOnly(targetFile, false)
-
-  if err == nil {
-    t.Error("Expected an error return from fh.OpenFileWriteOnly(targetFile, false)\n" +
-      "because parameter 'targetFile' consists entirely of blank spaces.\n" +
-      "However, NO ERROR WAS RETURNED!")
-  }
-
-  return
-}
-
-func TestFileHelper_RemovePathSeparatorFromEndOfPathString_01(t *testing.T) {
-
-  fh := FileHelper{}
-
-  pathStr := ""
-
-  newPathStr := fh.RemovePathSeparatorFromEndOfPathString(pathStr)
-
-  if newPathStr != "" {
-    t.Errorf("Expected result from fh.RemovePathSeparatorFromEndOfPathString(pathStr) to\n" +
-      "equal an empty string because 'pathStr' is an empty string.\n" +
-      "However, a valid string was returned! ERROR!\nresult='%v'", newPathStr)
-  }
-}
-
-func TestFileHelper_RemovePathSeparatorFromEndOfPathString_02(t *testing.T) {
-
-  fh := FileHelper{}
-
-  pathStr := "      "
-
-  newPathStr := fh.RemovePathSeparatorFromEndOfPathString(pathStr)
-
-  if newPathStr != "" {
-    t.Errorf("Expected result from fh.RemovePathSeparatorFromEndOfPathString(pathStr) to\n" +
-      "equal an empty string because 'pathStr' consists entirely of blank spaces.\n" +
-      "However, a valid string was returned! ERROR!\nresult='%v'", newPathStr)
-  }
-}
-
-func TestFileHelper_RemovePathSeparatorFromEndOfPathString_03(t *testing.T) {
-
-  fh := FileHelper{}
-
-  pathStrBase := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir/" +
-    "level_04_dir"
-
-  pathStr := pathStrBase + "/"
-
-  pathStr = fh.AdjustPathSlash(pathStr)
-
-  pathStrBase = fh.AdjustPathSlash(pathStrBase)
-
-  newPathStr := fh.RemovePathSeparatorFromEndOfPathString(pathStr)
-
-  if pathStrBase != newPathStr  {
-    t.Errorf("Expected result from fh.RemovePathSeparatorFromEndOfPathString(pathStr) to\n" +
-      "equal\npathStrBase='%v'.\n" +
-      "Instead,\nnewPathStr='%v'", pathStrBase, newPathStr)
-  }
-}
-
-func TestFileHelper_RemovePathSeparatorFromEndOfPathString_04(t *testing.T) {
-
-  fh := FileHelper{}
-
-  pathStrBase := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir/" +
-    "level_04_dir"
-
-  pathStr := pathStrBase
-
-  pathStr = fh.AdjustPathSlash(pathStr)
-
-  pathStrBase = fh.AdjustPathSlash(pathStrBase)
-
-  newPathStr := fh.RemovePathSeparatorFromEndOfPathString(pathStr)
-
-  if pathStrBase != newPathStr  {
-    t.Errorf("Expected result from fh.RemovePathSeparatorFromEndOfPathString(pathStr) to\n" +
-      "equal\npathStrBase='%v'.\n" +
-      "Instead,\nnewPathStr='%v'", pathStrBase, newPathStr)
-  }
-}
-
-func TestFileHelper_RemovePathSeparatorFromEndOfPathString_05(t *testing.T) {
-
-  fh := FileHelper{}
-
-  pathStrBase := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir\\" +
-    "level_04_dir"
-
-  pathStr := pathStrBase + "\\"
-
-  if os.PathSeparator == '\\' {
-    pathStr = strings.ReplaceAll(pathStr,"\\", "/")
-    pathStrBase = strings.ReplaceAll(pathStrBase,"\\", "/")
-  }
-
-  newPathStr := fh.RemovePathSeparatorFromEndOfPathString(pathStr)
-
-  if pathStrBase != newPathStr  {
-    t.Errorf("Expected result from fh.RemovePathSeparatorFromEndOfPathString(pathStr) to\n" +
-      "equal\npathStrBase='%v'.\n" +
-      "Instead,\nnewPathStr='%v'", pathStrBase, newPathStr)
-  }
-}
-
-func TestFileHelper_RemovePathSeparatorFromEndOfPathString_06(t *testing.T) {
-
-  fh := FileHelper{}
-
-  pathStrBase := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_03_dir\\" +
-    "level_04_dir"
-
-  pathStr := pathStrBase
-
-  if os.PathSeparator == '\\' {
-    pathStr = strings.ReplaceAll(pathStr,"\\", "/")
-    pathStrBase = strings.ReplaceAll(pathStrBase,"\\", "/")
-  }
-
-  newPathStr := fh.RemovePathSeparatorFromEndOfPathString(pathStr)
-
-  if pathStrBase != newPathStr  {
-    t.Errorf("Expected result from fh.RemovePathSeparatorFromEndOfPathString(pathStr) to\n" +
-      "equal\npathStrBase='%v'.\n" +
-      "Instead,\nnewPathStr='%v'", pathStrBase, newPathStr)
-  }
-}
-
-func TestFileHelper_SearchFileModeMatch_01(t *testing.T) {
-
-  targetFile := "../filesfortest/levelfilesfortest/level_01_dir/level_1_3_test.txt"
-
-  fh := FileHelper{}
-
-  fInfo, err := fh.GetFileInfo(targetFile)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.GetFileInfo(targetFile).\n" +
-      "targetFile='%v'\nError='%v'", targetFile, err.Error())
-    return
-  }
-
-  fileSelection := FileSelectionCriteria{}
-
-  err = fileSelection.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
-
-  if err != nil {
-    t.Errorf("Error returned by fileSelection.SelectByFileMode.SetFileModeByTextCode" +
-      "(\"-r--r--r--\").\nError='%v'\n", err.Error())
-    return
-  }
-
-  isFileModeSet, isFileModeMatch, err := fh.SearchFileModeMatch(fInfo, fileSelection)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.SearchFileModeMatch(fInfo, fileSelection).\n" +
-      "Error='%v'\n", err.Error())
-  }
-
-  if isFileModeSet == false {
-    t.Error("Expected isFileModeSet=='true'. Instead, it is 'false'!")
-  }
-
-  if isFileModeMatch == true {
-    t.Error("Expected isFileModeMatch=='false'. Instead, it is 'true'!")
-  }
-
-}
-
-func TestFileHelper_SearchFileModeMatch_02(t *testing.T) {
-
-  targetFile := "../filesfortest/levelfilesfortest/level_01_dir/level_1_3_test.txt"
-
-  fh := FileHelper{}
-
-  fInfo, err := fh.GetFileInfo(targetFile)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.GetFileInfo(targetFile).\n" +
-      "targetFile='%v'\nError='%v'", targetFile, err.Error())
-    return
-  }
-
-  fileSelection := FileSelectionCriteria{}
-
-  err = fileSelection.SelectByFileMode.SetByFileMode(fInfo.Mode())
-
-  if err != nil {
-    t.Errorf("Error returned by fileSelection.SelectByFileMode.SetByFileMode"+
-      "(fInfo.Mode()).\nError='%v'\n", err.Error())
-    return
-  }
-
-  isFileModeSet, isFileModeMatch, err := fh.SearchFileModeMatch(fInfo, fileSelection)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.SearchFileModeMatch(fInfo, fileSelection).\n" +
-      "Error='%v'\n", err.Error())
-  }
-
-  if isFileModeSet == false {
-    t.Error("Expected isFileModeSet=='true'. Instead, it is 'false'!")
-  }
-
-  if isFileModeMatch == false {
-    t.Error("Expected isFileModeMatch=='true'. Instead, it is 'false'!")
-  }
-
-}
-
-func TestFileHelper_SearchFileModeMatch_03(t *testing.T) {
-
-  fh := FileHelper{}
-
-  fileSelection := FileSelectionCriteria{}
-
-  var fInfo os.FileInfo
-
-  isFileModeSet, isFileModeMatch, err := fh.SearchFileModeMatch(fInfo, fileSelection)
-
-  if err != nil {
-    t.Errorf("Error returned by fh.SearchFileModeMatch(fInfo, fileSelection).\n" +
-      "Error='%v'\n", err.Error())
-  }
-
-  if isFileModeSet == true {
-    t.Error("Expected isFileModeSet=='false'. Instead, it is 'true'!")
-  }
-
-  if isFileModeMatch == true {
-    t.Error("Expected isFileModeMatch=='false'. Instead, it is 'true'!")
-  }
-
-}
-
-func TestFileHelper_SwapBasePath_01(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
-  targetPath = fh.AdjustPathSlash(targetPath)
-
-  oldBasePath := "../filesfortest/levelfilesfortest"
-  oldBasePath = fh.AdjustPathSlash(oldBasePath)
-
-  newBasePath := "../dirmgrtests"
-  newBasePath = fh.AdjustPathSlash(newBasePath)
-
-  expectedTargetPath := "../dirmgrtests/level_0_0_test.txt"
-  expectedTargetPath = fh.AdjustPathSlash(expectedTargetPath)
-
-  newPath, err := fh.SwapBasePath(
-    oldBasePath,
-    newBasePath,
-    targetPath)
-
-  if err != nil {
-    t.Errorf("Error returned from FileHelper{}.SwapBasePath(...) "+
-      "Error='%v' ", err.Error())
-  }
-
-  if expectedTargetPath != newPath {
-    t.Errorf("Error: Expected newPath='%v'. Instead, newPath='%v' ",
-      expectedTargetPath, newPath)
-  }
-
-}
-
-func TestFileHelper_SwapBasePath_02(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
-  targetPath = fh.AdjustPathSlash(targetPath)
-
-  oldBasePath := "../filesforTest/levelfilesfortest"
-  oldBasePath = fh.AdjustPathSlash(oldBasePath)
-
-  newBasePath := "../dirmgrtests"
-  newBasePath = fh.AdjustPathSlash(newBasePath)
-
-  expectedTargetPath := "../dirmgrtests/level_0_0_test.txt"
-  expectedTargetPath = fh.AdjustPathSlash(expectedTargetPath)
-
-  newPath, err := fh.SwapBasePath(
-    oldBasePath,
-    newBasePath,
-    targetPath)
-
-  if err != nil {
-    t.Errorf("Error returned from FileHelper{}.SwapBasePath(...) "+
-      "Error='%v' ", err.Error())
-  }
-
-  if expectedTargetPath != newPath {
-    t.Errorf("Error: Expected newPath='%v'. Instead, newPath='%v' ",
-      expectedTargetPath, newPath)
-  }
-
-}
-
-func TestFileHelper_SwapBasePath_03(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetPath := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
-  targetPath = fh.AdjustPathSlash(targetPath)
-
-  oldBasePath := "../filesforTest/levelfilesfortest"
-  oldBasePath = fh.AdjustPathSlash(oldBasePath)
-
-  newBasePath := "../dirmgrtests"
-  newBasePath = fh.AdjustPathSlash(newBasePath)
-
-  _, err := fh.SwapBasePath(
-    oldBasePath,
-    newBasePath,
-    targetPath)
-
-  if err == nil {
-    t.Error("Expected an error return from FileHelper{}.SwapBasePath(...) " +
-      "NO ERROR WAS GENERATED!")
-  }
-
-}
-
-func TestFileHelper_SwapBasePath_04(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
-  targetPath = fh.AdjustPathSlash(targetPath)
-
-  oldBasePath := ""
-
-  newBasePath := "../dirmgrtests"
-  newBasePath = fh.AdjustPathSlash(newBasePath)
-
-  _, err := fh.SwapBasePath(
-    oldBasePath,
-    newBasePath,
-    targetPath)
-
-  if err == nil {
-    t.Error("Expected an error return from fh.SwapBasePath(oldBasePath,newBasePath,targetPath)\n" +
-    "because parameter 'oldBasePath' is an empty string.\n" +
-      "However, NO ERROR WAS RETURNED!!")
-  }
-
-}
-
-func TestFileHelper_SwapBasePath_05(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
-  targetPath = fh.AdjustPathSlash(targetPath)
-
-  oldBasePath := "   "
-
-  newBasePath := "../dirmgrtests"
-  newBasePath = fh.AdjustPathSlash(newBasePath)
-
-  _, err := fh.SwapBasePath(
-    oldBasePath,
-    newBasePath,
-    targetPath)
-
-  if err == nil {
-    t.Error("Expected an error return from fh.SwapBasePath(oldBasePath,newBasePath,targetPath)\n" +
-    "because parameter 'oldBasePath' consists entirely of blank spaces.\n" +
-      "However, NO ERROR WAS RETURNED!!")
-  }
-
-}
-
-func TestFileHelper_SwapBasePath_06(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
-  targetPath = fh.AdjustPathSlash(targetPath)
-
-  oldBasePath := "../filesforTest/levelfilesfortest"
-  oldBasePath = fh.AdjustPathSlash(oldBasePath)
-
-  newBasePath := "     "
-
-  _, err := fh.SwapBasePath(
-    oldBasePath,
-    newBasePath,
-    targetPath)
-
-  if err == nil {
-    t.Error("Expected an error return from fh.SwapBasePath(oldBasePath,newBasePath,targetPath)\n" +
-      "because parameter 'newBasePath' consists entirely of blank spaces.\n" +
-      "However, NO ERROR WAS RETURNED!!")
-  }
-}
-
-func TestFileHelper_SwapBasePath_07(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
-  targetPath = fh.AdjustPathSlash(targetPath)
-
-  oldBasePath := "../filesforTest/levelfilesfortest"
-  oldBasePath = fh.AdjustPathSlash(oldBasePath)
-
-  newBasePath := ""
-
-  _, err := fh.SwapBasePath(
-    oldBasePath,
-    newBasePath,
-    targetPath)
-
-  if err == nil {
-    t.Error("Expected an error return from fh.SwapBasePath(oldBasePath,newBasePath,targetPath)\n" +
-      "because parameter 'newBasePath' is an empty string.\n" +
-      "However, NO ERROR WAS RETURNED!!")
-  }
-}
-
-
-func TestFileHelper_SwapBasePath_08(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetPath := "     "
-
-  oldBasePath := "../filesforTest/levelfilesfortest"
-  oldBasePath = fh.AdjustPathSlash(oldBasePath)
-
-  newBasePath := "../dirmgrtests"
-  newBasePath = fh.AdjustPathSlash(newBasePath)
-
-
-  _, err := fh.SwapBasePath(
-    oldBasePath,
-    newBasePath,
-    targetPath)
-
-  if err == nil {
-    t.Error("Expected an error return from fh.SwapBasePath(oldBasePath,newBasePath,targetPath)\n" +
-      "because parameter 'targetPath' consists entirely of blank spaces.\n" +
-      "However, NO ERROR WAS RETURNED!!")
-  }
-
-}
-
-
-func TestFileHelper_SwapBasePath_09(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetPath := ""
-
-  oldBasePath := "../filesforTest/levelfilesfortest"
-  oldBasePath = fh.AdjustPathSlash(oldBasePath)
-
-  newBasePath := "../dirmgrtests"
-  newBasePath = fh.AdjustPathSlash(newBasePath)
-
-  _, err := fh.SwapBasePath(
-    oldBasePath,
-    newBasePath,
-    targetPath)
-
-  if err == nil {
-    t.Error("Expected an error return from fh.SwapBasePath(oldBasePath,newBasePath,targetPath)\n" +
-      "because parameter 'targetPath' is an empty string.\n" +
-      "However, NO ERROR WAS RETURNED!!")
-  }
-
-}
-
-func TestFileHelper_SwapBasePath_10(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
-  targetPath = fh.AdjustPathSlash(targetPath)
-
-  oldBasePath := "../filesforTest/levelfilesfortest/dir01/dir02/dir03/dir05/dir06"
-  oldBasePath = fh.AdjustPathSlash(oldBasePath)
-
-  newBasePath := "../dirmgrtests"
-  newBasePath = fh.AdjustPathSlash(newBasePath)
-
-  _, err := fh.SwapBasePath(
-    oldBasePath,
-    newBasePath,
-    targetPath)
-
-  if err == nil {
-    t.Error("Expected an error return from fh.SwapBasePath(oldBasePath,newBasePath,targetPath)\n" +
-      "because parameter 'oldBasePath' is longer than 'targetBasePath.\n" +
-      "However, NO ERROR WAS RETURNED!!")
-  }
-}
-
-
-func TestFileHelper_SwapBasePath_11(t *testing.T) {
-
-  fh := FileHelper{}
-
-  targetPath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
-  targetPath = fh.AdjustPathSlash(targetPath)
-
-  oldBasePath := "/levelfilesfortest"
-  oldBasePath = fh.AdjustPathSlash(oldBasePath)
-
-  newBasePath := "../dirmgrtests"
-  newBasePath = fh.AdjustPathSlash(newBasePath)
-
-  _, err := fh.SwapBasePath(
-    oldBasePath,
-    newBasePath,
-    targetPath)
-
-  if err == nil {
-    t.Error("Expected an error return from fh.SwapBasePath(oldBasePath,newBasePath,targetPath)\n" +
-      "because 'oldBasePath' does NOT begin at beginning of 'targetBasePath.\n" +
-      "However, NO ERROR WAS RETURNED!!")
-  }
-
-}
-
-
-func createALogTestBottomDir() error {
-  fh := FileHelper{}
-  targetDir, err1 := fh.MakeAbsolutePath(fh.AdjustPathSlash(alogTestBottomDir))
-
-  if err1 != nil {
-    return err1
-  }
-
-  if !fh.DoesFileExist(targetDir) {
-    err2 := fh.MakeDirAll(targetDir)
-
-    if err2 != nil {
-      return err2
-    }
-  }
-
-  targetFile := fh.JoinPathsAdjustSeparators(targetDir, alogFile)
-
-  if fh.DoesFileExist(targetFile) {
-    err3 := fh.DeleteDirFile(targetFile)
-    if err3 != nil {
-      return err3
-    }
-  }
-
-  f, err4 := fh.CreateFile(targetFile)
-
-  if err4 != nil {
-    return err4
-  }
-
-  t := time.Now().Local()
-
-  nowTime := t.Format("2006-01-02 15:04:05.000000000")
-
-  _, err5 := f.WriteString("Sample Write - " + nowTime + "/n")
-
-  if err5 != nil {
-    _ = f.Close()
-    return err5
-  }
-
-  _, err6 := f.WriteString("File Name: " + targetFile)
-
-  if err6 != nil {
-    _ = f.Close()
-    return err6
-  }
-
-  _ = f.Close()
-  return nil
-}
-
-func deleteALogTestBottomDirTargetDir() error {
-  fh := FileHelper{}
-  targetDir, err1 := fh.MakeAbsolutePath(fh.AdjustPathSlash(alogTestBottomDir))
-
-  if err1 != nil {
-    return err1
-  }
-
-  if fh.DoesFileExist(targetDir) {
-    err2 := fh.DeleteDirPathAll(targetDir)
-
-    if err2 != nil {
-      return err2
-    }
-
-    if fh.DoesFileExist(targetDir) {
-      return errors.New("File still exists:" + targetDir)
-    }
-  }
-
-  return nil
-}
-
