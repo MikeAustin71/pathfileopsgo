@@ -951,6 +951,213 @@ func TestFileHelper_DoesFileInfoExist_04(t *testing.T) {
 
 }
 
+func TestFileHelper_DeleteFilesWalkDirectory_01(t *testing.T) {
+
+  originalSetupDir := "../filesfortest"
+
+  dMgrOrigSetup, err := DirMgr{}.New(originalSetupDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(originalSetupDir)\n" +
+      "originalSetupDir='%v'\nError='%v'\n",
+      originalSetupDir, err.Error())
+    return
+  }
+
+  targetDir := "../dirwalkdeletetests/filesfortest"
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(targetDir)\n" +
+      "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
+    return
+  }
+
+  err = targetDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Error returned by targetDMgr.DeleteAll() ")
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  _, errs :=
+    dMgrOrigSetup.CopySubDirectoryTree(targetDMgr,false, fsc)
+
+  if len(errs) > 0 {
+    t.Errorf("Error returned by dMgrOrigSetup.CopySubDirectoryTree(targetDMgr,false, fsc)\n" +
+      "targetDMgr='%v'\nError='%v'\n",
+      targetDMgr.GetAbsolutePath(), FileHelper{}.ConsolidateErrors(errs))
+    _ = targetDMgr.DeleteAll()
+    return
+  }
+
+  fsc = FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{"*.htm"}
+
+  dTreeInfo, errs := targetDMgr.FindDirectoryTreeFiles(fsc)
+
+  if len(errs) > 0 {
+    t.Errorf("Error returned by dMgrOrigSetup.CopySubDirectoryTree(targetDMgr,false, fsc)\n" +
+      "targetDMgr='%v'\nError='%v'\n",
+      targetDMgr.GetAbsolutePath(), FileHelper{}.ConsolidateErrors(errs))
+    _ = targetDMgr.DeleteAll()
+    return
+  }
+
+  numOfHtmFiles := dTreeInfo.FoundFiles.GetNumOfFiles()
+
+  fsc = FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{"*.htm"}
+
+  deleteInfo, err := FileHelper{}.DeleteFilesWalkDirectory(targetDMgr.GetAbsolutePath(), fsc)
+
+  if err != nil {
+   t.Errorf("Error returned by FileHelper{}.DeleteFilesWalkDirectory(targetDMgr.GetAbsolutePath(), fsc).\n" +
+     "targetDMgr.GetAbsolutePath()='%v'\nError='%v'\n",
+     targetDMgr.GetAbsolutePath(), err.Error())
+   _ = targetDMgr.DeleteAll()
+   return
+  }
+
+  if len(deleteInfo.ErrReturns) > 0 {
+    t.Errorf("FileHelper{}.DeleteFilesWalkDirectory yielded deleteInfo.ErrReturns as follows:\n'%v'\n",
+      FileHelper{}.ConsolidateErrors(deleteInfo.ErrReturns))
+    _ = targetDMgr.DeleteAll()
+    return
+  }
+
+  numOfDeletedFiles := deleteInfo.DeletedFiles.GetNumOfFiles()
+
+  if numOfHtmFiles != numOfDeletedFiles {
+    t.Errorf("Expected number of deleted 'htm' files='%v'\n" +
+      "Instead, number of deleted 'htm' files='%v'\n",
+      numOfHtmFiles, numOfDeletedFiles)
+  }
+
+  err = targetDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n" +
+      "targetDMgr='%v'\nError='%v'\n",
+      targetDMgr.GetAbsolutePath(), err.Error())
+  }
+
+}
+
+func TestFileHelper_DeleteFilesWalkDirectory_02(t *testing.T) {
+
+  originalSetupDir := "../filesfortest"
+
+  dMgrOrigSetup, err := DirMgr{}.New(originalSetupDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(originalSetupDir)\n" +
+      "originalSetupDir='%v'\nError='%v'\n",
+      originalSetupDir, err.Error())
+    return
+  }
+
+  targetDir := "../dirwalkdeletetests/filesfortest"
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(targetDir)\n" +
+      "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
+    return
+  }
+
+  err = targetDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Error returned by targetDMgr.DeleteAll() ")
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  _, errs :=
+    dMgrOrigSetup.CopySubDirectoryTree(targetDMgr,false, fsc)
+
+  if len(errs) > 0 {
+    t.Errorf("Error returned by dMgrOrigSetup.CopySubDirectoryTree(targetDMgr,false, fsc)\n" +
+      "targetDMgr='%v'\nError='%v'\n",
+      targetDMgr.GetAbsolutePath(), FileHelper{}.ConsolidateErrors(errs))
+    _ = targetDMgr.DeleteAll()
+    return
+  }
+
+  fsc = FileSelectionCriteria{}
+
+  dTreeInfo, errs := targetDMgr.FindDirectoryTreeFiles(fsc)
+
+  if len(errs) > 0 {
+    t.Errorf("Error returned by dMgrOrigSetup.CopySubDirectoryTree(targetDMgr,false, fsc)\n" +
+      "targetDMgr='%v'\nError='%v'\n",
+      targetDMgr.GetAbsolutePath(), FileHelper{}.ConsolidateErrors(errs))
+    _ = targetDMgr.DeleteAll()
+    return
+  }
+
+  numOfTotalFiles := dTreeInfo.FoundFiles.GetNumOfFiles()
+
+  fsc = FileSelectionCriteria{}
+
+  deleteInfo, err := FileHelper{}.DeleteFilesWalkDirectory(targetDMgr.GetAbsolutePath(), fsc)
+
+  if err != nil {
+   t.Errorf("Error returned by FileHelper{}.DeleteFilesWalkDirectory(targetDMgr.GetAbsolutePath(), fsc).\n" +
+     "targetDMgr.GetAbsolutePath()='%v'\nError='%v'\n",
+     targetDMgr.GetAbsolutePath(), err.Error())
+   _ = targetDMgr.DeleteAll()
+   return
+  }
+
+  if len(deleteInfo.ErrReturns) > 0 {
+    t.Errorf("FileHelper{}.DeleteFilesWalkDirectory yielded deleteInfo.ErrReturns as follows:\n'%v'\n",
+      FileHelper{}.ConsolidateErrors(deleteInfo.ErrReturns))
+    _ = targetDMgr.DeleteAll()
+    return
+  }
+
+  numOfDeletedFiles := deleteInfo.DeletedFiles.GetNumOfFiles()
+
+  if numOfTotalFiles != numOfDeletedFiles {
+    t.Errorf("Expected number of deleted 'htm' files='%v'\n" +
+      "Instead, number of deleted 'htm' files='%v'\n",
+      numOfTotalFiles, numOfDeletedFiles)
+  }
+
+  err = targetDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by targetDMgr.DeleteAll()\n" +
+      "targetDMgr='%v'\nError='%v'\n",
+      targetDMgr.GetAbsolutePath(), err.Error())
+  }
+
+}
+
+func TestFileHelper_DeleteFilesWalkDirectory_03(t *testing.T) {
+
+  fsc := FileSelectionCriteria{}
+
+  target := ""
+
+  _, err := FileHelper{}.DeleteFilesWalkDirectory(target, fsc)
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}." +
+      "DeleteFilesWalkDirectory(target, fsc)\n" +
+      "because 'target' is an empty string!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+
+}
+
+
+
 func TestFileHelper_DoesStringEndWithPathSeparator_01(t *testing.T) {
   rawtestStr := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/"
 

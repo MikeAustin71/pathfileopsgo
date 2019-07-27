@@ -948,6 +948,10 @@ func (fh FileHelper) ConsolidateErrors(errs []error) error {
 
   for i := 0; i < lErrs; i++ {
 
+    if errs[i] == nil {
+      continue
+    }
+
     tempStr := fmt.Sprintf("%v", errs[i].Error())
 
     tempStr = strings.TrimLeft(strings.TrimRight(tempStr, " "), " ")
@@ -1808,6 +1812,261 @@ func (fh FileHelper) DoesFileExist(pathFileName string) bool {
   }
 
   return true
+}
+
+// DeleteFilesWalkDirectory - This method 'walks' the directory tree searching
+// for files which match the file selection criteria specified by input parameter
+// 'fileSelectCriteria'. When a file matching said 'fileSelectCriteria' is found,
+// that file is deleted.
+//
+// IMPORTANT: This method deletes files!
+//
+// This method returns file information on files deleted.
+//
+// If a file matches the File Selection Criteria ('fileSelectCriteria') it is deleted
+// and its file information is recorded in the returned DirectoryDeleteFileInfo instance,
+// DirectoryDeleteFileInfo.DeletedFiles.
+//
+// By the way, if ALL the file selection criterion are set to zero values or 'Inactive',
+// then ALL FILES in the directory are selected, deleted and returned in the field,
+// 'DirectoryDeleteFileInfo.DeletedFiles'.
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameter:
+//
+//  startPath                         string - A string consisting of the starting path or
+//                                             or directory from which the file search
+//                                             operation will commence.
+//
+//  fileSelectCriteria FileSelectionCriteria -
+//	    This input parameter should be configured with the desired file
+//	    selection criteria. Files matching this criteria will be returned as
+//	    'Found Files'. If file 'fileSelectCriteria' is uninitialized (FileSelectionCriteria{}).
+//      all directories the 'startPath' will be searched and all files within those
+//      directories will be deleted.
+//
+//
+//       _______________________________________________________________________________________________
+//       type FileSelectionCriteria struct {
+//         FileNamePatterns     []string    // An array of strings containing File Name Patterns
+//         FilesOlderThan       time.Time   // Match files with older modification date times
+//         FilesNewerThan       time.Time   // Match files with newer modification date times
+//         SelectByFileMode     FilePermissionConfig // Match file mode (os.FileMode).
+//         SelectCriterionMode  FileSelectCriterionMode // Specifies 'AND' or 'OR' selection mode
+//       }
+//
+//       The FileSelectionCriteria type allows for configuration of single or multiple file
+//       selection criterion. The 'SelectCriterionMode' can be used to specify whether the
+//       file must match all, or any one, of the active file selection criterion.
+//
+//       Elements of the FileSelectionCriteria Type are described below:
+//
+//       FileNamePatterns []string  - An array of strings which may define one or more
+//                                    search patterns. If a file name matches any one of the
+//                                    search pattern strings, it is deemed to be a 'match'
+//                                    for the search pattern criterion.
+//
+//                                      Example Patterns:
+//                                       FileNamePatterns = []string{"*.log"}
+//                                       FileNamePatterns = []string{"current*.txt"}
+//                                       FileNamePatterns = []string{"*.txt", "*.log"}
+//
+//                                    If this string array has zero length or if
+//                                    all the strings are empty strings, then this
+//                                    file search criterion is considered 'Inactive'
+//                                    or 'Not Set'.
+//
+//
+//       FilesOlderThan  time.Time - This date time type is compared to file
+//                                   modification date times in order to determine
+//                                   whether the file is older than the 'FilesOlderThan'
+//                                   file selection criterion. If the file is older than
+//                                   the 'FilesOlderThan' date time, that file is considered
+//                                   a 'match'	for this file selection criterion.
+//
+//                                   If the value of 'FilesOlderThan' is set to time zero,
+//                                   the default value for type time.Time{}, then this
+//                                   file selection criterion is considered to be 'Inactive'
+//                                   or 'Not Set'.
+//
+//      FilesNewerThan   time.Time - This date time type is compared to the file
+//                                   modification date time in order to determine
+//                                   whether the file is newer than the 'FilesNewerThan'
+//                                   file selection criterion. If the file modification date time
+//                                   is newer than the 'FilesNewerThan' date time, that file is
+//                                   considered a 'match' for this file selection criterion.
+//
+//                                   If the value of 'FilesNewerThan' is set to time zero,
+//                                   the default value for type time.Time{}, then this
+//                                   file selection criterion is considered to be 'Inactive'
+//                                   or 'Not Set'.
+//
+//      SelectByFileMode  FilePermissionConfig -
+//                                   Type FilePermissionConfig encapsulates an os.FileMode. The file
+//                                   selection criterion allows for the selection of files by File Mode.
+//                                   File modes are compared to the value	of 'SelectByFileMode'. If the
+//                                   File Mode for a given file is equal to the value of 'SelectByFileMode',
+//                                   that file is considered to be a 'match' for this file selection
+//                                   criterion. Examples for setting SelectByFileMode are shown as follows:
+//
+//                                        fsc := FileSelectionCriteria{}
+//                                          err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                          err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//
+//      SelectCriterionMode FileSelectCriterionMode -
+//                                   This parameter selects the manner in which the file selection
+//                                   criteria above are applied in determining a 'match' for file
+//                                   selection purposes. 'SelectCriterionMode' may be set to one of
+//                                   two constant values:
+//
+//                                   _____________________________________________________________________
+//
+//                                   FileSelectCriterionMode(0).ANDSelect() -
+//                                      File selected if all active selection criteria
+//                                      are satisfied.
+//
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will not be judged as 'selected' unless all of
+//                                      the active selection criterion are satisfied. In other words, if
+//                                      three active search criterion are provided for 'FileNamePatterns',
+//                                      'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                      selected unless it has satisfied all three criterion in this example.
+//
+//                                   FileSelectCriterionMode(0).ORSelect() -
+//                                      File selected if any active selection criterion is satisfied.
+//
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will be selected if any one of the active file
+//                                      selection criterion is satisfied. In other words, if three active
+//                                      search criterion are provided for 'FileNamePatterns', 'FilesOlderThan'
+//                                      and 'FilesNewerThan', then a file will be selected if it satisfies any
+//                                      one of the three criterion in this example.
+//
+//                                   _____________________________________________________________________
+//
+//
+// ------------------------------------------------------------------------
+//
+// IMPORTANT:
+//
+//   If all of the file selection criterion in the FileSelectionCriteria object are
+//   'Inactive' or 'Not Set' (set to their zero or default values), then all of
+//   the files processed in the directory tree will be deleted and returned in the
+//   the file manager collection, DirectoryDeleteFileInfo.DeletedFiles.
+//
+//     Example:
+//        FileNamePatterns  = ZERO Length Array
+//        filesOlderThan    = time.Time{}
+//        filesNewerThan    = time.Time{}
+//
+//     In this example, all of the selection criterion are
+//     'Inactive' and therefore all of the files encountered
+//     in the target directory will be selected and returned
+//     as 'Found Files'.
+//
+//     This same effect can be achieved by simply creating an
+//     empty file selection instance:
+//
+//             FileSelectionCriteria{}
+//
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+//  DirectoryDeleteFileInfo -
+//                      If successful, files matching the file selection criteria input
+//                      parameter shown above will be deleted and returned in a
+//                      'DirectoryDeleteFileInfo' object. The file manager
+//                      'DirectoryDeleteFileInfo.DeletedFiles' contains information on all files
+//                      deleted during this operation.
+//
+//                Note: It is a good idea to check the returned field 'DirectoryTreeInfo.ErrReturns'
+//                      to determine if any internal system errors were encountered while processing
+//                      the directory tree.
+//
+//          __________________________________________________________________________________________________
+//
+//          type DirectoryDeleteFileInfo struct {
+//            StartPath             string                // The starting path or directory for the file search
+//            Directories           DirMgrCollection      // Directory Manager instances found during the
+//                                                        //   directory tree search.
+//            DeletedFiles          FileMgrCollection     // Contains File Managers for Deleted Files matching
+//                                                        //   file selection criteria.
+//            ErrReturns            []error               // Internal System errors encountered during the search
+//                                                        //   and file deletion operations.
+//            FileSelectCriteria    FileSelectionCriteria // The File Selection Criteria submitted as an
+//                                                        // input parameter to this method.
+//          }
+//
+//          __________________________________________________________________________________________________
+//
+//  error - If a program execution error is encountered during processing, it will
+//          be returned as an 'error' type. Also, see the comment on 'DirectoryDeleteFileInfo.ErrReturns',
+//          above.
+//
+func (fh FileHelper) DeleteFilesWalkDirectory(
+  startPath string, fileSelectCriteria FileSelectionCriteria) (DirectoryDeleteFileInfo, error) {
+
+
+  ePrefix := "FileHelper.DeleteFilesWalkDirectory() "
+
+  deleteFilesInfo := DirectoryDeleteFileInfo{}
+
+  errCode := 0
+
+  errCode, _, startPath = fh.isStringEmptyOrBlank(startPath)
+
+  if errCode == -1 {
+    return deleteFilesInfo,
+      errors.New(ePrefix + "Error: Input parameter 'startPath' is an empty string!")
+  }
+
+  if errCode == -2 {
+    return deleteFilesInfo,
+      errors.New(ePrefix + "Error: Input parameter 'startPath' consists of blank spaces!")
+  }
+
+  startPath = fh.AdjustPathSlash(startPath)
+
+  strLen := len(startPath)
+
+  if startPath[strLen-1] == os.PathSeparator {
+    startPath = startPath[0:strLen-1]
+  }
+
+  var err error
+
+  startPath, err = fh.MakeAbsolutePath(startPath)
+
+  if err != nil {
+    return deleteFilesInfo,
+      fmt.Errorf(ePrefix+"Error returned by fh.MakeAbsolutePath(startPath). "+
+        "startPath='%v' Error='%v' ", startPath, err.Error())
+  }
+
+  if !fh.DoesFileExist(startPath) {
+    return deleteFilesInfo, fmt.Errorf(ePrefix+
+      "Error - startPath DOES NOT EXIST! startPath='%v'", startPath)
+  }
+
+  deleteFilesInfo.StartPath = startPath
+
+  deleteFilesInfo.DeleteFileSelectCriteria = fileSelectCriteria
+
+  err = fp.Walk(deleteFilesInfo.StartPath, fh.makeFileHelperWalkDirDeleteFilesFunc(&deleteFilesInfo))
+
+  if err != nil {
+
+    return deleteFilesInfo,
+      fmt.Errorf(ePrefix+
+        "Error returned from fp.Walk(deleteFilesInfo.StartPath, fh.makeFileHelperWalkDirFindFilesFunc"+
+        "(&deleteFilesInfo)). startPath='%v' Error='%v'", startPath, err.Error())
+  }
+
+  return deleteFilesInfo, nil
+
 }
 
 // DoesFileInfoExist - returns a boolean value indicating
@@ -6016,7 +6275,7 @@ func (fh FileHelper) isStringEmptyOrBlank(
 func (fh *FileHelper) makeFileHelperWalkDirDeleteFilesFunc(dInfo *DirectoryDeleteFileInfo) func(string, os.FileInfo, error) error {
   return func(pathFile string, info os.FileInfo, erIn error) error {
 
-    ePrefix := "DirMgr.makeFileHelperWalkDirDeleteFilesFunc"
+    ePrefix := "FileHelper.makeFileHelperWalkDirDeleteFilesFunc()"
 
     if erIn != nil {
       dInfo.ErrReturns = append(dInfo.ErrReturns, erIn)
@@ -6044,13 +6303,11 @@ func (fh *FileHelper) makeFileHelperWalkDirDeleteFilesFunc(dInfo *DirectoryDelet
       return nil
     }
 
-    fh := FileHelper{}
-
     isFoundFile, err := fh.FilterFileName(info, dInfo.DeleteFileSelectCriteria)
 
     if err != nil {
 
-      ex := fmt.Errorf(ePrefix+"Error returned from dMgr.FilterFileName(info, dInfo.DeleteFileSelectCriteria) pathFile='%v' info.Name()='%v' Error='%v' ", pathFile, info.Name(), err.Error())
+      ex := fmt.Errorf(ePrefix+"Error returned from fh.FilterFileName(info, dInfo.DeleteFileSelectCriteria) pathFile='%v' info.Name()='%v' Error='%v' ", pathFile, info.Name(), err.Error())
       dInfo.ErrReturns = append(dInfo.ErrReturns, ex)
       return nil
     }
