@@ -1989,7 +1989,9 @@ func (fh FileHelper) DoesFileExist(pathFileName string) bool {
 //          __________________________________________________________________________________________________
 //
 //          type DirectoryDeleteFileInfo struct {
+//
 //            StartPath             string                // The starting path or directory for the file search
+//
 //            Directories           DirMgrCollection      // Directory Manager instances found during the
 //                                                        //   directory tree search.
 //            DeletedFiles          FileMgrCollection     // Contains File Managers for Deleted Files matching
