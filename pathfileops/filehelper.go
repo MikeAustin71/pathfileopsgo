@@ -6309,7 +6309,12 @@ func (fh *FileHelper) makeFileHelperWalkDirDeleteFilesFunc(dInfo *DirectoryDelet
 
     if err != nil {
 
-      ex := fmt.Errorf(ePrefix+"Error returned from fh.FilterFileName(info, dInfo.DeleteFileSelectCriteria) pathFile='%v' info.Name()='%v' Error='%v' ", pathFile, info.Name(), err.Error())
+      ex := fmt.Errorf(ePrefix+
+        "Error returned from fh.FilterFileName(info, dInfo.DeleteFileSelectCriteria)\n" +
+        "pathFile='%v'\n" +
+        "info.Name()='%v'\nError='%v'\n",
+        pathFile, info.Name(), err.Error())
+
       dInfo.ErrReturns = append(dInfo.ErrReturns, ex)
       return nil
     }
@@ -6383,7 +6388,12 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
 
     if err != nil {
 
-      er2 := fmt.Errorf(ePrefix+"Error returned from dMgr.FilterFileName(info, dInfo.FileSelectCriteria) pathFile='%v' info.Name()='%v' Error='%v' ", pathFile, info.Name(), err.Error())
+      er2 := fmt.Errorf(ePrefix+
+        "Error returned from dMgr.FilterFileName(info, " +
+        "dInfo.FileSelectCriteria)\n" +
+        "pathFile='%v'\ninfo.Name()='%v'\nError='%v'\n",
+        pathFile, info.Name(), err.Error())
+
       dInfo.ErrReturns = append(dInfo.ErrReturns, er2)
       return nil
     }
@@ -6405,8 +6415,9 @@ func (fh *FileHelper) makeFileHelperWalkDirFindFilesFunc(dInfo *DirectoryTreeInf
       err = dInfo.FoundFiles.AddFileMgrByFileInfo(fMgr.dMgr.GetAbsolutePath(), info)
 
       if err != nil {
-        er2 := fmt.Errorf(ePrefix+"Error returned from  dInfo.FoundFiles.AddFileMgrByFileInfo( pathFile,  info) "+
-          "pathFile='%v' info.Name()='%v' Error='%v' ",
+        er2 := fmt.Errorf(ePrefix+
+          "Error returned from dInfo.FoundFiles.AddFileMgrByFileInfo(pathFile, info)\n"+
+          "pathFile='%v'\ninfo.Name()='%v'\nError='%v'\n",
           pathFile, info.Name(), err.Error())
 
         dInfo.ErrReturns = append(dInfo.ErrReturns, er2)

@@ -266,6 +266,75 @@ func TestFileMgrCollection_AddFileMgrByDirFileNameExt_03(t *testing.T) {
 
 }
 
+func TestFileMgrCollection_AddFileMgrByDirStrFileNameStr_01(t *testing.T) {
+
+  fMgrs := FileMgrCollection{}
+
+  testDir := "../createFilesTest"
+
+  absTestDir, err := FileHelper{}.MakeAbsolutePath(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by FileHelper{}.MakeAbsolutePath(testDir)\n" +
+      "testDir='%v'\nError='%v'\n",
+      testDir, err.Error())
+    return
+  }
+
+  for i:=0; i < 20; i++ {
+
+    fileNameExt := fmt.Sprintf("FileNameNo%02d.txt", i+1)
+
+    err = fMgrs.AddFileMgrByDirStrFileNameStr(absTestDir, fileNameExt)
+
+    if err != nil {
+      t.Errorf("Error returned by fMgrs.AddFileMgrByDirStrFileNameStr(" +
+        "absTestDir, fileNameExt)\n" +
+        "absTestDir='%v'\nfileNameExt='%v'\nError='%v'\n",
+        absTestDir, fileNameExt, err.Error())
+      return
+    }
+  }
+
+  if 20 != fMgrs.GetNumOfFiles() {
+    t.Errorf("ERROR: Expected number of file managers='20'.\n" +
+      "Instead, number of file managers='%v'\n",
+      fMgrs.GetNumOfFiles())
+    return
+  }
+
+  for k:=0; k < 20; k++ {
+
+    fMgr, err := fMgrs.PeekFileMgrAtIndex(k)
+
+    if err != nil {
+      t.Errorf("Error returned by fMgrs.PeekFileMgrAtIndex(%v).\n" +
+        "Error='%v'\n",
+        k, err.Error())
+      return
+    }
+
+    err = fMgr.IsFileMgrValid("")
+
+    if err != nil {
+      t.Errorf("File Manager #%v is INVALID!\n" +
+        "Error='%v'\n", k, err.Error())
+      return
+    }
+
+    fileNameExt := fMgr.GetFileNameExt()
+
+    expectedFileNameExt := fmt.Sprintf("FileNameNo%02d.txt", k+1)
+
+    if expectedFileNameExt != fileNameExt {
+      t.Errorf("ERROR: Expected fileNameExt='%v'.\n" +
+        "Instead, fileNameExt='%v'\n",
+        expectedFileNameExt, fileNameExt)
+      return
+    }
+  }
+}
+
 func TestFileMgrCollection_AddFileInfo_01(t *testing.T) {
 
   var fileNameExt string
