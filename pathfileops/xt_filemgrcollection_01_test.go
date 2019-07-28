@@ -119,7 +119,7 @@ func TestFileMgrCollection_AddFileMgr_01(t *testing.T) {
 
 }
 
-func TestFileMgrCollection_AddFileMgrByPathFile(t *testing.T) {
+func TestFileMgrCollection_AddFileMgrByPathFileNameExt_01(t *testing.T) {
 
   var fileNameExt string
   fh := FileHelper{}
@@ -163,6 +163,30 @@ func TestFileMgrCollection_AddFileMgrByPathFile(t *testing.T) {
   if fmgr2.fileNameExt != "newerFileForTest_01.txt" {
     t.Errorf("Expected Newly Added Fmgr fileNameExt='newerFileForTest_01.txt'.\n"+
       "Instead, fileNameExt='%v'", fmgr2.fileNameExt)
+  }
+
+}
+
+func TestFileMgrCollection_AddFileMgrByPathFileNameExt_02(t *testing.T) {
+  fMgrs := FileMgrCollection{}
+
+  fMgrs.fileMgrs = nil
+
+  filePath := "filesfortest/levelfilesfortest/level_0_0_test.txt"
+
+  err := fMgrs.AddFileMgrByPathFileNameExt(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from fMgrs.AddFileMgrByPathFileNameExt(fPath).\n" +
+      "filePath='%v'\n" +
+      "Error='%v'\n",
+      filePath, err.Error())
+  }
+
+  if fMgrs.GetNumOfFiles() != 1 {
+    t.Errorf("ERROR: Expected number of File Managers in collection = '1'\n" +
+      "Instead, number of file managers='%v'",
+      fMgrs.GetNumOfFiles())
   }
 
 }
@@ -1365,4 +1389,18 @@ func TestFileMgrCollection_DeleteAtIndex_07(t *testing.T) {
       "However, NO ERROR WAS RETURNED!!!\n")
   }
 
+}
+
+func TestFileMgrCollection_DeleteAtIndex_08(t *testing.T) {
+
+  fMgrCol := FileMgrCollection{}.New()
+
+
+  err := fMgrCol.DeleteAtIndex(5)
+
+  if err == nil {
+    t.Error("Expected error return from fMgrCol.DeleteAtIndex(5)\n" +
+      "because the actual number of array elements is zero.\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
 }
