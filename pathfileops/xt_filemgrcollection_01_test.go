@@ -679,6 +679,21 @@ func TestFileMgrCollection_CopyOut_02(t *testing.T) {
 
 }
 
+func TestFileMgrCollection_CopyOut_03(t *testing.T) {
+
+  fMgrs := FileMgrCollection{}
+
+  fMgrs.fileMgrs = nil
+
+  _, err := fMgrs.CopyOut()
+
+  if err == nil {
+    t.Error("Expected an error return by fMgrs.CopyOut() because\n" +
+      "fMgrs is an empty File Manager Collection.\nHowever, NO ERROR WAS RETURNED!\n")
+  }
+
+}
+
 func TestDirectoryTreeInfo_CopyToDirectoryTree_01(t *testing.T) {
 
   fh := FileHelper{}
