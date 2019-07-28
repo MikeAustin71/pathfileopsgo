@@ -375,7 +375,7 @@ func (fMgrs *FileMgrCollection) FindFiles(
   lDirCol := len(fMgrs.fileMgrs)
 
   if lDirCol == 0 {
-    return FileMgrCollection{}, nil
+    return FileMgrCollection{}.New(), nil
   }
 
   fh := FileHelper{}
