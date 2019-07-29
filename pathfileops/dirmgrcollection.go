@@ -47,7 +47,8 @@ func (dMgrs *DirMgrCollection) AddDirMgr(dMgr DirMgr) {
 }
 
 // AddDirMgrByKnownPathDirName - Adds a Directory Manager (DirMgr)
-// using know parent path and directory name.
+// using know parent path and directory name. This method performs
+// fewer string validations then similar methods.
 //
 func (dMgrs *DirMgrCollection) AddDirMgrByKnownPathDirName(parentPathName, dirName string) error {
 
@@ -70,15 +71,7 @@ func (dMgrs *DirMgrCollection) AddDirMgrByKnownPathDirName(parentPathName, dirNa
     "dirName")
 
   if err != nil {
-    return fmt.Errorf(ePrefix+
-      "Error returned from dMgrHlpr.setDirMgrFromKnownPathDirName("+
-      "parentPathName, dirName).\n"+
-      "parentPathName='%v'\n"+
-      "dirName='%v'\n"+
-      "Error='%v'\n",
-      parentPathName,
-      dirName,
-      err.Error())
+    return err
   }
 
   if isEmpty {
@@ -199,13 +192,13 @@ func (dMgrs *DirMgrCollection) AddDirMgrCollection(dMgrs2 *DirMgrCollection) {
     dMgrs2.dirMgrs = make([]DirMgr, 0, 100)
   }
 
-  lOmc2 := len(dMgrs2.dirMgrs)
+  lDmc2 := len(dMgrs2.dirMgrs)
 
-  if lOmc2 == 0 {
+  if lDmc2 == 0 {
     return
   }
 
-  for i := 0; i < lOmc2; i++ {
+  for i := 0; i < lDmc2; i++ {
     dMgrs.AddDirMgr(dMgrs2.dirMgrs[i].CopyOut())
   }
 

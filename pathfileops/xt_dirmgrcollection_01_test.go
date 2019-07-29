@@ -129,6 +129,32 @@ func TestDirMgrCollection_AddDirMgr_01(t *testing.T) {
 
 }
 
+func TestDirMgrCollection_AddDirMgrByKnownPathDirName_01(t *testing.T) {
+
+  dMgrCol := DirMgrCollection{}
+  dMgrCol.dirMgrs = nil
+  parentPath := "../checkfiles/checkfiles03"
+
+  dirPath := "checkfiles03_02"
+
+  err := dMgrCol.AddDirMgrByKnownPathDirName(parentPath, dirPath)
+
+  if err != nil {
+    t.Errorf("Error returned by dMgrCol.AddDirMgrByKnownPathDirName(parentPath, dirPath)\n" +
+      "parentPath='%v'\n, dirPath='%v'\nError='%v'\n",
+      parentPath, dirPath, err.Error())
+    return
+  }
+
+  numOfDMgrs := dMgrCol.GetNumOfDirs()
+
+  if numOfDMgrs != 1 {
+    t.Errorf("ERROR: Expected dMgrCol.GetNumOfDirs()='1'.\n" +
+      "Instead, dMgrCol.GetNumOfDirs()='%v'", dMgrCol.GetNumOfDirs())
+  }
+
+}
+
 func TestDirMgrCollection_AddDirMgrByPathNameStr_01(t *testing.T) {
 
   testDirStr := ""
@@ -144,7 +170,7 @@ func TestDirMgrCollection_AddDirMgrByPathNameStr_01(t *testing.T) {
   }
 }
 
-func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
+func TestDirMgrCollection_AddDirMgrCollection_01(t *testing.T) {
 
   fh := FileHelper{}
   dMgrs := DirMgrCollection{}
@@ -333,6 +359,32 @@ func TestDirMgrCollection_AddDirMgrCollection(t *testing.T) {
   if dMgr2.absolutePath != origAbsPath {
     t.Errorf("Expected Last DirMgr 2 absolutePath='%v'.\n"+
       "Instead, dMgr2.absolutePath='%v'", origAbsPath, dMgr2.absolutePath)
+  }
+
+}
+func TestDirMgrCollection_AddDirMgrCollection_02(t *testing.T) {
+
+  dMgrs1 := DirMgrCollection{}
+  dMgrs1.dirMgrs = nil
+
+  dMgrs2 := DirMgrCollection{}
+  dMgrs2.dirMgrs = nil
+
+  dMgrs1.AddDirMgrCollection(&dMgrs2)
+
+  if dMgrs1.dirMgrs == nil {
+    t.Error("ERROR: dMgrs1.dirMgrs == nil !!!\n")
+    return
+  }
+
+  if dMgrs2.dirMgrs == nil {
+    t.Error("ERROR: dMgrs2.dirMgrs == nil !!!\n")
+    return
+  }
+
+  if len(dMgrs1.dirMgrs) != 0 {
+    t.Errorf("ERROR: Expected len(dMgrs1.dirMgrs) == '0'.\n" +
+      "Instead, len(dMgrs1.dirMgrs) == '%v'", len(dMgrs1.dirMgrs))
   }
 
 }

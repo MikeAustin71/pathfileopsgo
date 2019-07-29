@@ -508,6 +508,95 @@ func TestDirMgrCollection_DeleteAtIndex_05(t *testing.T) {
 
 }
 
+func TestDirMgrCollection_DeleteAtIndex_06(t *testing.T) {
+
+  dMgrsCol := DirMgrCollection{}
+
+  dMgrsCol.dirMgrs = nil
+
+  err := dMgrsCol.DeleteAtIndex(-1)
+
+  if err == nil {
+    t.Error("ERROR: Expected an error return from dMgrsCol.DeleteAtIndex(-1)\n" +
+      "because the index was less than zero.\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+
+}
+
+func TestDirMgrCollection_DeleteAtIndex_07(t *testing.T) {
+
+  dMgrsCol := DirMgrCollection{}
+
+  dMgrsCol.dirMgrs = nil
+
+  err := dMgrsCol.DeleteAtIndex(5)
+
+  if err == nil {
+    t.Error("ERROR: Expected an error return from dMgrsCol.DeleteAtIndex(5)\n" +
+      "because the number of array elements in the collection is zero.\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+
+}
+
+func TestDirMgrCollection_DeleteAtIndex_08(t *testing.T) {
+
+  d0 := "..\\dirmgrtests"
+  d1 := "..\\dirmgrtests\\dir01"
+  d2 := "..\\dirmgrtests\\dir01\\dir02"
+  d3 := "..\\dirmgrtests\\dir01\\dir02\\dir03"
+
+  dmgrCol := DirMgrCollection{}.New()
+
+  err := dmgrCol.AddDirMgrByPathNameStr(d0)
+
+  if err != nil {
+    t.Errorf("Error returned by dmgrCol.AddDirMgrByPathNameStr(d0). "+
+      "Error='%v' ", err.Error())
+    return
+  }
+
+  err = dmgrCol.AddDirMgrByPathNameStr(d1)
+
+  if err != nil {
+    t.Errorf("Error returned by dmgrCol.AddDirMgrByPathNameStr(d1). "+
+      "Error='%v' ", err.Error())
+    return
+  }
+
+  err = dmgrCol.AddDirMgrByPathNameStr(d2)
+
+  if err != nil {
+    t.Errorf("Error returned by dmgrCol.AddDirMgrByPathNameStr(d2). "+
+      "Error='%v' ", err.Error())
+    return
+  }
+
+  err = dmgrCol.AddDirMgrByPathNameStr(d3)
+
+  if err != nil {
+    t.Errorf("Error returned by dmgrCol.AddDirMgrByPathNameStr(d3). "+
+      "Error='%v' ", err.Error())
+    return
+  }
+
+  if dmgrCol.GetNumOfDirs() != 4 {
+    t.Errorf("ERROR: Expected Number of Directries='4'.\n" +
+      "Instead, Number of Directories='%v'\n", dmgrCol.GetNumOfDirs())
+    return
+  }
+
+  err = dmgrCol.DeleteAtIndex(99)
+
+  if err == nil {
+    t.Error("ERROR: Expected an error return from dmgrCol.DeleteAtIndex(99)\n" +
+      "because the index, '99', exceeds the collection's array length.\n" +
+      "However, NO ERROR WAS RETURNED!!!")
+  }
+
+}
+
 func TestDirMgrCollection_GetFileMgrAtIndex_01(t *testing.T) {
 
   df := make([]string, 5, 10)
