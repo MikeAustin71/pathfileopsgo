@@ -115,14 +115,14 @@ func (fops FileOps) NewByFileMgrs(
 
   if err != nil {
     return FileOps{},
-      fmt.Errorf("Source File Manager INVALID! %v", err.Error())
+      fmt.Errorf("Source File Manager INVALID!\n%v", err.Error())
   }
 
-  err = destination.IsFileMgrValid(ePrefix + "destinationFileMgr Error:")
+  err = destination.IsFileMgrValid(ePrefix + "destinationFileMgr Error: ")
 
   if err != nil {
     return FileOps{},
-      fmt.Errorf("Destination File Manager INVALID! %v", err.Error())
+      fmt.Errorf("Destination File Manager INVALID!\n%v", err.Error())
   }
 
   fOpsNew := FileOps{}
