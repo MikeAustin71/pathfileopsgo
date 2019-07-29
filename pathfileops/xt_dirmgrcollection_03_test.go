@@ -62,7 +62,6 @@ func TestDirMgrCollection_GetDirMgrAtIndex_01(t *testing.T) {
     "..\\dirmgrtests\\dir01\\dir02",
     "..\\dirmgrtests\\dir01\\dir02\\dir03" }
 
-
   dmgrCol := DirMgrCollection{}.New()
 
   for i:=0; i < 4; i++ {

@@ -655,14 +655,6 @@ func (dMgrs *DirMgrCollection) PeekDirMgrAtIndex(idx int) (DirMgr, error) {
 
   arrayLen := len(dMgrs.dirMgrs)
 
-  /*
-     if arrayLen == 0 {
-       return DirMgr{},
-         errors.New(ePrefix +
-           "Error: The Directory Manager Collection, 'DirMgrCollection' is EMPTY!")
-     }
-  */
-
   if arrayLen == 0 {
     return DirMgr{}, io.EOF
 
@@ -700,16 +692,13 @@ func (dMgrs *DirMgrCollection) PeekDirMgrAtIndex(idx int) (DirMgr, error) {
 //
 func (dMgrs *DirMgrCollection) PeekFirstDirMgr() (DirMgr, error) {
 
-  ePrefix := "DirMgrCollection.PeekFirstDirMgr() "
-
   if dMgrs.dirMgrs == nil {
     dMgrs.dirMgrs = make([]DirMgr, 0, 100)
   }
 
   if len(dMgrs.dirMgrs) == 0 {
-    return DirMgr{},
-      errors.New(ePrefix +
-        "Error: The Director Manager Collection ('DirMgrCollection') is EMPTY!")
+    return DirMgr{}, io.EOF
+
   }
 
   return dMgrs.dirMgrs[0].CopyOut(), nil
@@ -729,8 +718,6 @@ func (dMgrs *DirMgrCollection) PeekFirstDirMgr() (DirMgr, error) {
 //
 func (dMgrs *DirMgrCollection) PeekLastDirMgr() (DirMgr, error) {
 
-  ePrefix := "DirMgrCollection.PeekLastDirMgr()"
-
   if dMgrs.dirMgrs == nil {
     dMgrs.dirMgrs = make([]DirMgr, 0, 100)
   }
@@ -738,9 +725,7 @@ func (dMgrs *DirMgrCollection) PeekLastDirMgr() (DirMgr, error) {
   arrayLen := len(dMgrs.dirMgrs)
 
   if arrayLen == 0 {
-    return DirMgr{},
-      errors.New(ePrefix +
-        "Error: The Directory Manager Collection, 'DirMgrCollection' is EMPTY!")
+    return DirMgr{}, io.EOF
   }
 
   return dMgrs.dirMgrs[arrayLen-1].CopyOut(), nil
