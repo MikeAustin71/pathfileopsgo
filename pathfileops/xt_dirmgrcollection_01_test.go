@@ -692,6 +692,28 @@ func TestDirMgrCollection_GetDirMgrArray_01(t *testing.T) {
 
 }
 
+func TestDirMgrCollection_GetDirMgrArray_02(t *testing.T) {
+  dMgrs := DirMgrCollection{}
+  dMgrs.dirMgrs = nil
+
+  dMgrArray := dMgrs.GetDirMgrArray()
+
+  if dMgrArray == nil {
+
+    t.Error("ERROR: dMgrArray := dMgrs.GetDirMgrArray().\n" +
+      "dMgrArray is nil!!!")
+
+    return
+  }
+
+  if len(dMgrArray) != 0 {
+    t.Errorf("ERROR: Length of dMgrArray is NOT equal to zero!\n" +
+      "dMgrArray := dMgrs.GetDirMgrArray().\n" +
+      "len(dMgrArray)='%v'", len(dMgrArray))
+  }
+
+}
+
 func TestDirMgrCollection_InsertDirMgrAtIndex_01(t *testing.T) {
 
   fh := FileHelper{}

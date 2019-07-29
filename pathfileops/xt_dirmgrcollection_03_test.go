@@ -1,6 +1,9 @@
 package pathfileops
 
-import "testing"
+import (
+  "strings"
+  "testing"
+)
 
 func TestDirMgrCollection_DeleteAtIndex_01(t *testing.T) {
 
@@ -636,6 +639,7 @@ func TestDirMgrCollection_GetFileMgrAtIndex_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by dmgrCol.GetDirMgrAtIndex(2). "+
       "Error='%v' ", err.Error())
+    return
   }
 
   if df[2] != dirMgr.GetAbsolutePath() {
@@ -644,3 +648,227 @@ func TestDirMgrCollection_GetFileMgrAtIndex_01(t *testing.T) {
   }
 
 }
+
+func TestDirMgrCollection_GetDirMgrAtIndex_01(t *testing.T) {
+
+  dirStr := []string{
+    "..\\dirmgrtests",
+    "..\\dirmgrtests\\dir01",
+    "..\\dirmgrtests\\dir01\\dir02",
+    "..\\dirmgrtests\\dir01\\dir02\\dir03" }
+
+
+  dmgrCol := DirMgrCollection{}.New()
+
+  for i:=0; i < 4; i++ {
+
+    err := dmgrCol.AddDirMgrByPathNameStr(dirStr[i])
+
+    if err != nil {
+      t.Errorf("Error returned by dmgrCol.AddDirMgrByPathNameStr(dirStr[%v]).\n" +
+        "dirStr[%v]='%v'\n"+
+        "Error='%v'\n", i, i, dirStr[i], err.Error())
+      return
+    }
+
+  }
+
+  _, err := dmgrCol.GetDirMgrAtIndex(-1)
+
+  if err == nil {
+    t.Error("ERROR: Expected an error return from dmgrCol.GetDirMgrAtIndex(-1)\n" +
+      "because the index, '-1' is less than zero!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+}
+
+func TestDirMgrCollection_GetDirMgrAtIndex_02(t *testing.T) {
+
+  dirStr := []string{
+    "..\\dirmgrtests",
+    "..\\dirmgrtests\\dir01",
+    "..\\dirmgrtests\\dir01\\dir02",
+    "..\\dirmgrtests\\dir01\\dir02\\dir03" }
+
+
+  dmgrCol := DirMgrCollection{}.New()
+
+  for i:=0; i < 4; i++ {
+
+    err := dmgrCol.AddDirMgrByPathNameStr(dirStr[i])
+
+    if err != nil {
+      t.Errorf("Error returned by dmgrCol.AddDirMgrByPathNameStr(dirStr[%v]).\n" +
+        "dirStr[%v]='%v'\n"+
+        "Error='%v'\n", i, i, dirStr[i], err.Error())
+      return
+    }
+
+  }
+
+  _, err := dmgrCol.GetDirMgrAtIndex(99)
+
+  if err == nil {
+    t.Error("ERROR: Expected an error return from dmgrCol.GetDirMgrAtIndex(99)\n" +
+      "because the index, '99' exceed the collection's maximum array index.\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+}
+
+func TestDirMgrCollection_GetDirMgrAtIndex_03(t *testing.T) {
+
+  dirStr := []string{
+    "..\\dirmgrtests",
+    "..\\dirmgrtests\\dir01",
+    "..\\dirmgrtests\\dir01\\dir02",
+    "..\\dirmgrtests\\dir01\\dir02\\dir03" }
+
+  expectedFirstDir, err := FileHelper{}.MakeAbsolutePath(dirStr[0])
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by FileHelper{}.MakeAbsolutePath(dirStr[0])\n" +
+      "dirStr[0]='%v'\nError='%v'\n",
+      dirStr[0], err.Error())
+  }
+
+  expectedFirstDir = strings.ToLower(expectedFirstDir)
+
+  dmgrCol := DirMgrCollection{}.New()
+
+  for i:=0; i < 4; i++ {
+
+    err := dmgrCol.AddDirMgrByPathNameStr(dirStr[i])
+
+    if err != nil {
+      t.Errorf("Error returned by dmgrCol.AddDirMgrByPathNameStr(dirStr[%v]).\n" +
+        "dirStr[%v]='%v'\n"+
+        "Error='%v'\n", i, i, dirStr[i], err.Error())
+      return
+    }
+
+  }
+
+  dMgrPtr, err := dmgrCol.GetDirMgrAtIndex(0)
+
+  if err != nil {
+    t.Errorf("Error returned by dmgrCol.GetDirMgrAtIndex(0).\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  if expectedFirstDir != strings.ToLower(dMgrPtr.GetAbsolutePath()) {
+    t.Errorf("ERROR: Expected returned dMgr='%v'\n" +
+      "Instead, returned dMgr='%v'\n",
+      expectedFirstDir, strings.ToLower(dMgrPtr.GetAbsolutePath()))
+  }
+}
+
+func TestDirMgrCollection_GetDirMgrAtIndex_04(t *testing.T) {
+
+  dirStr := []string{
+    "..\\dirmgrtests",
+    "..\\dirmgrtests\\dir01",
+    "..\\dirmgrtests\\dir01\\dir02",
+    "..\\dirmgrtests\\dir01\\dir02\\dir03" }
+
+  expectedLastDir, err := FileHelper{}.MakeAbsolutePath(dirStr[3])
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by FileHelper{}.MakeAbsolutePath(dirStr[3])\n" +
+      "dirStr[0]='%v'\nError='%v'\n",
+      dirStr[0], err.Error())
+  }
+
+  expectedLastDir = strings.ToLower(expectedLastDir)
+
+  dMgrCol := DirMgrCollection{}.New()
+
+  for i:=0; i < 4; i++ {
+
+    err := dMgrCol.AddDirMgrByPathNameStr(dirStr[i])
+
+    if err != nil {
+      t.Errorf("Error returned by dMgrCol.AddDirMgrByPathNameStr(dirStr[%v]).\n" +
+        "dirStr[%v]='%v'\n"+
+        "Error='%v'\n", i, i, dirStr[i], err.Error())
+      return
+    }
+
+  }
+
+  dMgrPtr, err := dMgrCol.GetDirMgrAtIndex(3)
+
+  if err != nil {
+    t.Errorf("Error returned by dMgrCol.GetDirMgrAtIndex(3).\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  if expectedLastDir != strings.ToLower(dMgrPtr.GetAbsolutePath()) {
+    t.Errorf("ERROR: Expected returned dMgr='%v'\n" +
+      "Instead, returned dMgr='%v'\n",
+      expectedLastDir, strings.ToLower(dMgrPtr.GetAbsolutePath()))
+  }
+}
+
+func TestDirMgrCollection_GetDirMgrAtIndex_05(t *testing.T) {
+
+  dirStr := []string{
+    "..\\dirmgrtests",
+    "..\\dirmgrtests\\dir01",
+    "..\\dirmgrtests\\dir01\\dir02",
+    "..\\dirmgrtests\\dir01\\dir02\\dir03" }
+
+  expectedDirStr, err := FileHelper{}.MakeAbsolutePath(dirStr[2])
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by FileHelper{}.MakeAbsolutePath(dirStr[3])\n" +
+      "dirStr[0]='%v'\nError='%v'\n",
+      dirStr[0], err.Error())
+  }
+
+  expectedDirStr = strings.ToLower(expectedDirStr)
+
+  dMgrCol := DirMgrCollection{}.New()
+
+  for i:=0; i < 4; i++ {
+
+    err := dMgrCol.AddDirMgrByPathNameStr(dirStr[i])
+
+    if err != nil {
+      t.Errorf("Error returned by dMgrCol.AddDirMgrByPathNameStr(dirStr[%v]).\n" +
+        "dirStr[%v]='%v'\n"+
+        "Error='%v'\n", i, i, dirStr[i], err.Error())
+      return
+    }
+
+  }
+
+  dMgrPtr, err := dMgrCol.GetDirMgrAtIndex(2)
+
+  if err != nil {
+    t.Errorf("Error returned by dMgrCol.GetDirMgrAtIndex(2).\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  if expectedDirStr != strings.ToLower(dMgrPtr.GetAbsolutePath()) {
+    t.Errorf("ERROR: Expected returned dMgr='%v'\n" +
+      "Instead, returned dMgr='%v'\n",
+      expectedDirStr, strings.ToLower(dMgrPtr.GetAbsolutePath()))
+  }
+}
+
+func TestDirMgrCollection_GetDirMgrAtIndex_06(t *testing.T) {
+
+  dMgrCol := DirMgrCollection{}
+
+  _, err := dMgrCol.GetDirMgrAtIndex(2)
+
+  if err == nil {
+    t.Error("ERROR: Expected an error return from dMgrCol.GetDirMgrAtIndex(2)\n" +
+      "because 'dMgrCol' is empty.\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+}
+

@@ -697,3 +697,21 @@ func TestDirMgrCollection_FindDirectories_01(t *testing.T) {
   }
 
 }
+
+func TestDirMgrCollection_FindDirectories_02(t *testing.T){
+
+  dMgrCol := DirMgrCollection{}
+  dMgrCol.dirMgrs = nil
+
+  fsc := FileSelectionCriteria{}
+
+  _, err := dMgrCol.FindDirectories(fsc)
+
+  if err != nil {
+    t.Errorf("ERROR: Expected NO error return from dMgrCol.FindDirectories(fsc)\n" +
+      "because 'dMgrCol' is empty.\n" +
+      "However, an error was returned!\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+}
