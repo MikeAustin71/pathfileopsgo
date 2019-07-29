@@ -36,7 +36,13 @@ type DirMgrCollection struct {
   dirMgrs []DirMgr
 }
 
-// AddDirMgr - Adds a DirMgr object to the collection
+// AddDirMgr - Adds a DirMgr object to the collection.
+// Note that this method does not perform a validity
+// check on input parameter, 'dMgr'.
+//
+// It is recommended that dMgr.IsDirMgrValid() be called
+// before adding the directory manager to the collection.
+//
 func (dMgrs *DirMgrCollection) AddDirMgr(dMgr DirMgr) {
 
   if dMgrs.dirMgrs == nil {
@@ -44,6 +50,7 @@ func (dMgrs *DirMgrCollection) AddDirMgr(dMgr DirMgr) {
   }
 
   dMgrs.dirMgrs = append(dMgrs.dirMgrs, dMgr.CopyOut())
+
 }
 
 // AddDirMgrByKnownPathDirName - Adds a Directory Manager (DirMgr)
@@ -433,6 +440,13 @@ func (dMgrs *DirMgrCollection) InsertDirMgrAtIndex(dMgr DirMgr, index int) error
 
   if dMgrs.dirMgrs == nil {
     dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+  }
+
+  err := dMgr.IsDirMgrValid(ePrefix)
+
+  if err != nil {
+    return fmt.Errorf(ePrefix +
+      "Error: Input parameter 'dMgr' is INVALID!\n%v", err.Error())
   }
 
   if index < 0 {
