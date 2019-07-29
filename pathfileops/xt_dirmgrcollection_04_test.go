@@ -1,6 +1,7 @@
 package pathfileops
 
 import (
+  "io"
   "strings"
   "testing"
 )
@@ -482,7 +483,7 @@ func TestDirMgrCollection_PopFirstDirMgr_01(t *testing.T) {
 
 }
 
-func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
+func TestDirMgrCollection_PopDirMgrAtIndex_01(t *testing.T) {
   fh := FileHelper{}
   dMgrs := DirMgrCollection{}
 
@@ -632,5 +633,92 @@ func TestDirMgrCollection_PopDirMgrAtIndex(t *testing.T) {
 
 }
 
+func TestDirMgrCollection_PopDirMgrAtIndex_02(t *testing.T) {
 
+  dirStr := []string{
+    "..\\dirmgrtests",
+    "..\\dirmgrtests\\dir01",
+    "..\\dirmgrtests\\dir01\\dir02",
+    "..\\dirmgrtests\\dir01\\dir02\\dir03" }
+
+
+  dmgrCol := DirMgrCollection{}.New()
+
+  for i:=0; i < 4; i++ {
+
+    err := dmgrCol.AddDirMgrByPathNameStr(dirStr[i])
+
+    if err != nil {
+      t.Errorf("Error returned by dmgrCol.AddDirMgrByPathNameStr(dirStr[%v]).\n" +
+        "dirStr[%v]='%v'\n"+
+        "Error='%v'\n", i, i, dirStr[i], err.Error())
+      return
+    }
+
+  }
+
+  _, err := dmgrCol.PopDirMgrAtIndex(-1)
+
+  if err == nil {
+    t.Errorf("ERROR: Expected an error return from dmgrCol.PopDirMgrAtIndex(-1)\n" +
+      "because the index is less than zero.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+}
+
+func TestDirMgrCollection_PopDirMgrAtIndex_03(t *testing.T) {
+
+  dirStr := []string{
+    "..\\dirmgrtests",
+    "..\\dirmgrtests\\dir01",
+    "..\\dirmgrtests\\dir01\\dir02",
+    "..\\dirmgrtests\\dir01\\dir02\\dir03" }
+
+
+  dmgrCol := DirMgrCollection{}.New()
+
+  for i:=0; i < 4; i++ {
+
+    err := dmgrCol.AddDirMgrByPathNameStr(dirStr[i])
+
+    if err != nil {
+      t.Errorf("Error returned by dmgrCol.AddDirMgrByPathNameStr(dirStr[%v]).\n" +
+        "dirStr[%v]='%v'\n"+
+        "Error='%v'\n", i, i, dirStr[i], err.Error())
+      return
+    }
+
+  }
+
+  _, err := dmgrCol.PopDirMgrAtIndex(99)
+
+  if err == nil {
+    t.Errorf("ERROR: Expected an error return from dmgrCol.PopDirMgrAtIndex(99)\n" +
+      "because the index, '99', is less than zero.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+}
+
+func TestDirMgrCollection_PopDirMgrAtIndex_04(t *testing.T) {
+
+  dMgrCol := DirMgrCollection{}
+  dMgrCol.dirMgrs = nil
+
+  _, err := dMgrCol.PopDirMgrAtIndex(5)
+
+  if err == nil {
+    t.Error("ERROR: Expected an error return from dMgrCol.PopDirMgrAtIndex(5)\n" +
+      "because 'dMgrCol' is empty.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+    return
+  } else {
+    if err != io.EOF {
+      t.Errorf("Error returned by dMgrCol.PopDirMgrAtIndex(5).\n" +
+        "'dMgrCol' is empty. However, the error returned is NOT 'io.EOF'.\n" +
+        "Error='%v'\n", err.Error())
+    }
+  }
+
+}
 
