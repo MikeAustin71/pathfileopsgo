@@ -2,6 +2,58 @@ package pathfileops
 
 import "testing"
 
+func TestFileOps_CopyOut_01(t *testing.T) {
+  sourcePath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  destPath := "../dirmgrtests/level_0_0_test.txt"
+
+  fOp1, err := FileOps{}.NewByPathFileNameExtStrs(sourcePath, destPath)
+
+  if err != nil {
+    t.Errorf("Error returned by #1 fOps.NewByPathFileNameExtStrs(sourcePath, destPath)\n" +
+      "sourcePath='%v'\n" +
+      "destPath='%v'\n" +
+      "Error='%v'\n",
+      sourcePath, destPath, err.Error())
+
+    return
+  }
+
+  fOp1.isInitialized = false
+
+  fOp2 := fOp1.CopyOut()
+
+  fOp3 := FileOps{}
+
+  if !fOp2.Equal(&fOp3) {
+    t.Errorf("Expected fOp2 == FileOps{}.\n" +
+      "Instead, fOp2 was NOT EQUAL to an empty FileOps instance.\n")
+  }
+}
+
+func TestFileOps_CopyOut_02(t *testing.T) {
+
+  sourcePath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  destPath := "../dirmgrtests/level_0_0_test.txt"
+
+  fOp1, err := FileOps{}.NewByPathFileNameExtStrs(sourcePath, destPath)
+
+  if err != nil {
+    t.Errorf("Error returned by #1 fOps.NewByPathFileNameExtStrs(sourcePath, destPath)\n" +
+      "sourcePath='%v'\n" +
+      "destPath='%v'\n" +
+      "Error='%v'\n",
+      sourcePath, destPath, err.Error())
+
+    return
+  }
+
+  fOp2 := fOp1.CopyOut()
+
+  if !fOp2.Equal(&fOp1) {
+    t.Errorf("Expected fOp2 == fOp1.\n" +
+      "Instead, fOp2 was NOT EQUAL to fOp1.\n")
+  }
+}
 
 func TestFileOps_EqualPathFileNameExt_01(t *testing.T) {
   sourcePath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
