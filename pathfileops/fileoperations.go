@@ -156,8 +156,7 @@ func (fops FileOps) NewByDirMgrFileName(
   err = sourceDir.IsDirMgrValid(ePrefix + "sourceDir Error: ")
 
   if err != nil {
-    return FileOps{},
-      err
+    return FileOps{}, err
   }
 
   fOpsNew.source, err = FileMgr{}.NewFromDirMgrFileNameExt(sourceDir, sourceFileNameExt)

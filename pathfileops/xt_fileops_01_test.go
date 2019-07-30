@@ -123,3 +123,53 @@ func TestFileOps_EqualPathFileNameExt_03(t *testing.T) {
 
 }
 
+func TestFileOps_IsInitialized(t *testing.T) {
+
+
+  sourceFile := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_2_0_test.txt"
+  destFile := "../createFilesTest/Level01/Level02/TestFileOps_NewByFileMgrs_01.txt"
+
+  sourceFMgr, err := FileMgr{}.New(sourceFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileMgr{}.New(sourceFile)\n" +
+      "sourceFile='%v'\n" +
+      "Error='%v'\n",
+      sourceFile, err.Error())
+    return
+  }
+
+  destFileMgr, err := FileMgr{}.New(destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileMgr{}.New(destFile)\n" +
+      "destFile='%v'\n" +
+      "Error='%v'\n",
+      destFile, err.Error())
+
+    return
+  }
+
+  fOp, err := FileOps{}.NewByFileMgrs(sourceFMgr, destFileMgr)
+
+
+  if err != nil {
+    t.Errorf("Error returned by #1 FileOps{}.NewByFileMgrs(sourceFMgr, destFileMgr)\n" +
+      "sourceFMgr='%v'\n" +
+      "destFileMgr='%v'\n" +
+      "Error='%v'\n",
+      sourceFMgr.GetAbsolutePath(),
+      destFileMgr.GetAbsolutePath(),
+      err.Error())
+    return
+  }
+
+  isInitialized := fOp.IsInitialized()
+
+  if isInitialized==false{
+    t.Errorf("ERROR: Expected isInitialized=='true'.\n" +
+      "However, the actual returned value is 'false'.\n")
+  }
+
+}
+
