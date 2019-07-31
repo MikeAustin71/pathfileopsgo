@@ -82,11 +82,11 @@ func (fSel FileSelectCriterionMode) IsValid() error {
 //	caseSensitive   bool - If 'true' the search for enumeration names
 //	                       will be case sensitive and will require an
 //	                       exact match. Therefore, 'movesourcefiletodestination' will NOT
-//	                       match the enumeration name, 'MoveSourceFileToDestination'.
+//	                       match the enumeration name, 'MoveSourceFileToDestinationFile'.
 //
 //	                       If 'false' a case insensitive search is conducted
 //	                       for the enumeration name. In this case, 'movesourcefiletodestination'
-//	                       will match match enumeration name 'MoveSourceFileToDestination'.
+//	                       will match match enumeration name 'MoveSourceFileToDestinationFile'.
 //
 // ------------------------------------------------------------------------
 //
@@ -106,12 +106,12 @@ func (fSel FileSelectCriterionMode) IsValid() error {
 //
 // Usage
 //
-//  t, err := FileSelectCriterionMode(0).ParseString("MoveSourceFileToDestination", true)
+//  t, err := FileSelectCriterionMode(0).ParseString("MoveSourceFileToDestinationFile", true)
 //                                       Or
 //  t, err := FileSelectCriterionMode(0).ParseString("movesourcefiletodestination", false)
 //
 //  For all of the cases shown above,
-//	    t is now equal to FileSelectCriterionMode(0).MoveSourceFileToDestination()
+//	    t is now equal to FileSelectCriterionMode(0).MoveSourceFileToDestinationFile()
 //
 func (fSel FileSelectCriterionMode) ParseString(
   valueString string,

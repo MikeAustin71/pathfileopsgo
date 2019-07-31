@@ -1876,7 +1876,7 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //          The FileOperationCode type consists of the following
 //          constants.
 //
-//          FileOperationCode(0).MoveSourceFileToDestination() FileOperationCode = iota
+//          FileOperationCode(0).MoveSourceFileToDestinationFile() FileOperationCode = iota
 //            Moves the source file to the destination file and
 //            then deletes the original source file
 //
@@ -2170,7 +2170,7 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 //    FileOperationCode(0).None()
 //      No Action
 //
-//    FileOperationCode(0).MoveSourceFileToDestination()
+//    FileOperationCode(0).MoveSourceFileToDestinationFile()
 //      Moves the source file to the destination file and
 //      then deletes the original source file
 //

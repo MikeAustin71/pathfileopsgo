@@ -21,13 +21,13 @@ func TestFileOperationCode_01(t *testing.T) {
 
   fopLast := FileOpCode.CreateDestinationFile()
 
-  if int(fopLast) != 14 {
-    t.Errorf("Error: Expected FileOpCode.CreateDestinationFile() = 14.  Instead, "+
+  if int(fopLast) != 15 {
+    t.Errorf("Error: Expected FileOpCode.CreateDestinationFile() = 15.  Instead, "+
       "FileOpCode.CreateDestinationFile() = '%v' ", int(fopLast))
   }
 
-  if 14 != fopLast.Value() {
-    t.Errorf("Error: Expected FileOpCode.CreateDestinationFile() Value = 14.  Instead, "+
+  if 15 != fopLast.Value() {
+    t.Errorf("Error: Expected FileOpCode.CreateDestinationFile() Value = 15.  Instead, "+
       "FileOpCode.CreateDestinationFile() = '%v' ", fopLast.Value())
   }
 
@@ -65,6 +65,7 @@ func TestFileOperationCode_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileOpCode.ParseString(strValue, true). "+
       "strValue='%v' Error='%v' ", strValue, err.Error())
+    return
   }
 
   if fopNone != FileOperationCode(0).None() {
@@ -80,6 +81,7 @@ func TestFileOperationCode_03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by (2) FileOpCode.ParseString(strValue, true). "+
       "strValue='%v' Error='%v' ", strValue, err.Error())
+    return
   }
 
   if fopLast != FileOperationCode(0).CreateDestinationFile() {
@@ -96,7 +98,7 @@ func TestFileOperationCode_04(t *testing.T) {
   opsAry := make([]FileOperationCode, 15)
 
   opsAry[0] = FileOperationCode(0).None()
-  opsAry[1] = FileOpCode.MoveSourceFileToDestination()
+  opsAry[1] = FileOpCode.MoveSourceFileToDestinationFile()
   opsAry[2] = fileOpCode.DeleteDestinationFile()
   opsAry[3] = FileOperationCode(0).DeleteSourceFile()
   opsAry[4] = FileOperationCode(0).DeleteSourceAndDestinationFiles()
@@ -113,7 +115,7 @@ func TestFileOperationCode_04(t *testing.T) {
 
   opsStrings := make([]string, 15)
   opsStrings[0] = "None"
-  opsStrings[1] = "MoveSourceFileToDestination"
+  opsStrings[1] = "MoveSourceFileToDestinationFile"
   opsStrings[2] = "DeleteDestinationFile"
   opsStrings[3] = "DeleteSourceFile"
   opsStrings[4] = "DeleteSourceAndDestinationFiles"
@@ -144,7 +146,7 @@ func TestFileOperationCode_05(t *testing.T) {
   opsAry := make([]FileOperationCode, 15)
 
   opsAry[0] = FileOperationCode(0).None()
-  opsAry[1] = FileOpCode.MoveSourceFileToDestination()
+  opsAry[1] = FileOpCode.MoveSourceFileToDestinationFile()
   opsAry[2] = fileOpCode.DeleteDestinationFile()
   opsAry[3] = FileOperationCode(0).DeleteSourceFile()
   opsAry[4] = FileOperationCode(0).DeleteSourceAndDestinationFiles()
@@ -161,7 +163,7 @@ func TestFileOperationCode_05(t *testing.T) {
 
   opsStrings := make([]string, 15)
   opsStrings[0] = "None"
-  opsStrings[1] = "MoveSourceFileToDestination"
+  opsStrings[1] = "MoveSourceFileToDestinationFile"
   opsStrings[2] = "DeleteDestinationFile"
   opsStrings[3] = "DeleteSourceFile"
   opsStrings[4] = "DeleteSourceAndDestinationFiles"
@@ -183,6 +185,7 @@ func TestFileOperationCode_05(t *testing.T) {
     if err != nil {
       t.Errorf("Error returned by FileOperationCode(0).ParseString(opsStrings[i], true). "+
         "i='%v' opsStrings[%v]='%v' Error='%v' ", i, i, opsStrings[i], err.Error())
+      return
     }
 
     if fop != opsAry[i] {
@@ -198,7 +201,7 @@ func TestFileOperationCode_06(t *testing.T) {
   opsAry := make([]FileOperationCode, 15)
 
   opsAry[0] = FileOperationCode(0).None()
-  opsAry[1] = FileOpCode.MoveSourceFileToDestination()
+  opsAry[1] = FileOpCode.MoveSourceFileToDestinationFile()
   opsAry[2] = fileOpCode.DeleteDestinationFile()
   opsAry[3] = FileOperationCode(0).DeleteSourceFile()
   opsAry[4] = FileOperationCode(0).DeleteSourceAndDestinationFiles()
@@ -215,7 +218,7 @@ func TestFileOperationCode_06(t *testing.T) {
 
   opsStrings := make([]string, 15)
   opsStrings[0] = strings.ToLower("None")
-  opsStrings[1] = strings.ToLower("MoveSourceFileToDestination")
+  opsStrings[1] = strings.ToLower("MoveSourceFileToDestinationFile")
   opsStrings[2] = strings.ToLower("DeleteDestinationFile")
   opsStrings[3] = strings.ToLower("DeleteSourceFile")
   opsStrings[4] = strings.ToLower("DeleteSourceAndDestinationFiles")
@@ -237,6 +240,7 @@ func TestFileOperationCode_06(t *testing.T) {
     if err != nil {
       t.Errorf("Error returned by FileOperationCode(0).ParseString(opsStrings[i], true). "+
         "i='%v' opsStrings[%v]='%v' Error='%v' ", i, i, opsStrings[i], err.Error())
+      return
     }
 
     if fop != opsAry[i] {
@@ -350,6 +354,7 @@ func TestFileOperationCode_ParseString03(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileOpCode.ParseString(inputStr, true). " +
       "inputStr='%v' Error='%v' ", inputStr, err.Error())
+    return
   }
 
   if expectedOpCode != actualOpCode {
@@ -361,15 +366,16 @@ func TestFileOperationCode_ParseString03(t *testing.T) {
 
 func TestFileOperationCode_ParseString04(t *testing.T) {
 
-  inputStr := "MoveSourceFileToDestination"
+  inputStr := "MoveSourceFileToDestinationFile"
 
-  expectedOpCode:= FileOpCode.MoveSourceFileToDestination()
+  expectedOpCode:= FileOpCode.MoveSourceFileToDestinationFile()
 
   actualOpCode, err := FileOpCode.ParseString(inputStr, true)
 
   if err != nil {
     t.Errorf("Error returned by FileOpCode.ParseString(inputStr, true). " +
       "inputStr='%v' Error='%v' ", inputStr, err.Error())
+    return
   }
 
   if expectedOpCode != actualOpCode {
@@ -390,6 +396,7 @@ func TestFileOperationCode_ParseString05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileOpCode.ParseString(inputStr, true). " +
       "inputStr='%v' Error='%v' ", inputStr, err.Error())
+    return
   }
 
   if expectedOpCode != actualOpCode {
@@ -410,6 +417,7 @@ func TestFileOperationCode_ParseString06(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileOpCode.ParseString(inputStr, true). " +
       "inputStr='%v' Error='%v' ", inputStr, err.Error())
+    return
   }
 
   if expectedOpCode != actualOpCode {
@@ -430,6 +438,7 @@ func TestFileOperationCode_ParseString07(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileOpCode.ParseString(inputStr, true). " +
       "inputStr='%v' Error='%v' ", inputStr, err.Error())
+    return
   }
 
   if expectedOpCode != actualOpCode {
@@ -450,6 +459,7 @@ func TestFileOperationCode_ParseString08(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileOpCode.ParseString(inputStr, true). " +
       "inputStr='%v' Error='%v' ", inputStr, err.Error())
+    return
   }
 
   if expectedOpCode != actualOpCode {
@@ -470,6 +480,7 @@ func TestFileOperationCode_ParseString09(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileOpCode.ParseString(inputStr, true). " +
       "inputStr='%v' Error='%v' ", inputStr, err.Error())
+    return
   }
 
   if expectedOpCode != actualOpCode {
@@ -490,6 +501,7 @@ func TestFileOperationCode_ParseString10(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileOpCode.ParseString(inputStr, true). " +
       "inputStr='%v' Error='%v' ", inputStr, err.Error())
+    return
   }
 
   if expectedOpCode != actualOpCode {
@@ -510,6 +522,7 @@ func TestFileOperationCode_ParseString11(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileOpCode.ParseString(inputStr, true). " +
       "inputStr='%v' Error='%v' ", inputStr, err.Error())
+    return
   }
 
   if expectedOpCode != actualOpCode {
@@ -530,6 +543,7 @@ func TestFileOperationCode_ParseString12(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileOpCode.ParseString(inputStr, true). " +
       "inputStr='%v' Error='%v' ", inputStr, err.Error())
+    return
   }
 
   if expectedOpCode != actualOpCode {
@@ -550,6 +564,7 @@ func TestFileOperationCode_ParseString13(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileOpCode.ParseString(inputStr, true). " +
       "inputStr='%v' Error='%v' ", inputStr, err.Error())
+    return
   }
 
   if expectedOpCode != actualOpCode {
@@ -570,6 +585,7 @@ func TestFileOperationCode_ParseString14(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileOpCode.ParseString(inputStr, true). " +
       "inputStr='%v' Error='%v' ", inputStr, err.Error())
+    return
   }
 
   if expectedOpCode != actualOpCode {
@@ -590,6 +606,7 @@ func TestFileOperationCode_ParseString15(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileOpCode.ParseString(inputStr, true). " +
       "inputStr='%v' Error='%v' ", inputStr, err.Error())
+    return
   }
 
   if expectedOpCode != actualOpCode {
@@ -610,6 +627,7 @@ func TestFileOperationCode_ParseString16(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileOpCode.ParseString(inputStr, true). " +
       "inputStr='%v' Error='%v' ", inputStr, err.Error())
+    return
   }
 
   if expectedOpCode != actualOpCode {
@@ -630,6 +648,7 @@ func TestFileOperationCode_ParseString17(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by FileOpCode.ParseString(inputStr, true). " +
       "inputStr='%v' Error='%v' ", inputStr, err.Error())
+    return
   }
 
   if expectedOpCode != actualOpCode {
@@ -721,7 +740,7 @@ func TestFileOperationCode_Value_01(t *testing.T) {
 
   fileOpCode := FileOpCode.CopySourceToDestinationByHardLink()
 
-  expectedCode := 7
+  expectedCode := 8
 
   if expectedCode != fileOpCode.Value() {
     t.Errorf("Error: Expected fileOpCode.Value='%v'. Instead, value='%v'",
@@ -747,7 +766,7 @@ func TestFileOperationCode_Value_03(t *testing.T) {
 
   fileOpCode := FileOpCode.CreateSourceDir()
 
-  expectedCode := 9
+  expectedCode := 10
 
   if expectedCode != fileOpCode.Value() {
     t.Errorf("Error: Expected fileOpCode.Value='%v'. Instead, value='%v'",
@@ -760,7 +779,7 @@ func TestFileOperationCode_Value_04(t *testing.T) {
 
   fileOpCode := FileOpCode.CopySourceToDestinationByHardLinkByIo()
 
-  expectedCode := 5
+  expectedCode := 6
 
   if expectedCode != fileOpCode.Value() {
     t.Errorf("Error: Expected fileOpCode.Value='%v'. Instead, value='%v'",
@@ -773,7 +792,7 @@ func TestFileOperationCode_Value_05(t *testing.T) {
 
   fileOpCode := FileOpCode.CreateDestinationFile()
 
-  expectedCode := 14
+  expectedCode := 15
 
   if expectedCode != fileOpCode.Value() {
     t.Errorf("Error: Expected fileOpCode.Value='%v'. Instead, value='%v'",
@@ -786,7 +805,7 @@ func TestFileOperationCode_Value_06(t *testing.T) {
 
   fileOpCode := FileOpCode.CreateDestinationDirAndFile()
 
-  expectedCode := 13
+  expectedCode := 14
 
   if expectedCode != fileOpCode.Value() {
     t.Errorf("Error: Expected fileOpCode.Value='%v'. Instead, value='%v'",
@@ -799,7 +818,7 @@ func TestFileOperationCode_Value_07(t *testing.T) {
 
   fileOpCode := FileOpCode.CreateDestinationDir()
 
-  expectedCode := 12
+  expectedCode := 13
 
   if expectedCode != fileOpCode.Value() {
     t.Errorf("Error: Expected fileOpCode.Value='%v'. Instead, value='%v'",

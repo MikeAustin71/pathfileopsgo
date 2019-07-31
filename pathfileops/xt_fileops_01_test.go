@@ -55,6 +55,239 @@ func TestFileOps_CopyOut_02(t *testing.T) {
   }
 }
 
+func TestFileOps_Equal_01(t *testing.T) {
+
+  sourcePath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  destPath := "../dirmgrtests/level_0_0_test.txt"
+
+  fOps := FileOps{}
+
+  fOp1, err := fOps.NewByPathFileNameExtStrs(sourcePath, destPath)
+
+  if err != nil {
+    t.Errorf("Error returned by #1 fOps.NewByPathFileNameExtStrs(sourcePath, destPath)\n" +
+      "sourcePath='%v'\n" +
+      "destPath='%v'\n" +
+      "Error='%v'\n",
+      sourcePath, destPath, err.Error())
+
+    return
+  }
+
+
+  fOp2, err := fOps.NewByPathFileNameExtStrs(sourcePath, destPath)
+
+  if err != nil {
+    t.Errorf("Error returned by #2 fOps.NewByPathFileNameExtStrs(sourcePath, destPath)\n" +
+      "sourcePath='%v'\n" +
+      "destPath='%v'\n" +
+      "Error='%v'\n",
+      sourcePath, destPath, err.Error())
+
+    return
+  }
+
+  if !fOp1.Equal(&fOp2) {
+    t.Error("ERROR: fOp1 and fOp2 have equivalent path, file names and file extensions.\n" +
+      "However, fOp1.Equal(&fOp2) returned 'false'!\n")
+  }
+
+}
+
+func TestFileOps_Equal_02(t *testing.T) {
+
+  sourcePath1 := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  destPath1 := "../dirmgrtests/level_0_0_test.txt"
+
+  fOps := FileOps{}
+
+  fOp1, err := fOps.NewByPathFileNameExtStrs(sourcePath1, destPath1)
+
+  if err != nil {
+    t.Errorf("Error returned by #1 fOps.NewByPathFileNameExtStrs(sourcePath1, destPath1)\n" +
+      "sourcePath1='%v'\n" +
+      "destPath1='%v'\n" +
+      "Error='%v'\n",
+      sourcePath1, destPath1, err.Error())
+
+    return
+  }
+
+  sourcePath2 := "../filesfortest/levelfilesfortest/level_0_2_test.txt"
+  destPath2 := "../dirmgrtests/level_0_0_test.txt"
+
+  fOp2, err := fOps.NewByPathFileNameExtStrs(sourcePath2, destPath2)
+
+  if err != nil {
+    t.Errorf("Error returned by #2 fOps.NewByPathFileNameExtStrs(sourcePath2, destPath2)\n" +
+      "sourcePath2='%v'\n" +
+      "destPath2='%v'\n" +
+      "Error='%v'\n",
+      sourcePath2, destPath2, err.Error())
+
+    return
+  }
+
+  if fOp1.Equal(&fOp2) {
+    t.Error("ERROR: fOp1 and fOp2 different source path, file names and file extensions.\n" +
+      "However, fOp1.Equal(&fOp2) returned 'equal'!\n")
+  }
+
+}
+
+func TestFileOps_Equal_03(t *testing.T) {
+
+  sourcePath1 := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  destPath1 := "../dirmgrtests/level_0_0_test.txt"
+
+  fOps := FileOps{}
+
+  fOp1, err := fOps.NewByPathFileNameExtStrs(sourcePath1, destPath1)
+
+  if err != nil {
+    t.Errorf("Error returned by #1 fOps.NewByPathFileNameExtStrs(sourcePath1, destPath1)\n" +
+      "sourcePath1='%v'\n" +
+      "destPath1='%v'\n" +
+      "Error='%v'\n",
+      sourcePath1, destPath1, err.Error())
+
+    return
+  }
+
+  sourcePath2 := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  destPath2 := "../dirmgrtests/level_0_2_test.txt"
+
+  fOp2, err := fOps.NewByPathFileNameExtStrs(sourcePath2, destPath2)
+
+  if err != nil {
+    t.Errorf("Error returned by #2 fOps.NewByPathFileNameExtStrs(sourcePath2, destPath2)\n" +
+      "sourcePath2='%v'\n" +
+      "destPath2='%v'\n" +
+      "Error='%v'\n",
+      sourcePath2, destPath2, err.Error())
+
+    return
+  }
+
+  if fOp1.Equal(&fOp2) {
+    t.Error("ERROR: fOp1 and fOp2 different destination path, file names and file extensions.\n" +
+      "However, fOp1.Equal(&fOp2) returned 'equal'!\n")
+  }
+
+}
+
+func TestFileOps_Equal_04(t *testing.T) {
+
+  sourcePath1 := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  destPath1 := "../dirmgrtests/level_0_0_test.txt"
+
+  fOps := FileOps{}
+
+  fOp1, err := fOps.NewByPathFileNameExtStrs(sourcePath1, destPath1)
+
+  if err != nil {
+    t.Errorf("Error returned by #1 fOps.NewByPathFileNameExtStrs(sourcePath1, destPath1)\n" +
+      "sourcePath1='%v'\n" +
+      "destPath1='%v'\n" +
+      "Error='%v'\n",
+      sourcePath1, destPath1, err.Error())
+
+    return
+  }
+
+  err = fOp1.SetFileOpsCode(FileOpCode.CopySourceToDestinationByIo())
+
+  if err != nil {
+    t.Errorf("Error returned by fOp1.SetFileOpsCode(FileOpCode.CopySourceToDestinationByIo())\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  sourcePath2 := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  destPath2 := "../dirmgrtests/level_0_0_test.txt"
+
+  fOp2, err := fOps.NewByPathFileNameExtStrs(sourcePath2, destPath2)
+
+  if err != nil {
+    t.Errorf("Error returned by #2 fOps.NewByPathFileNameExtStrs(sourcePath2, destPath2)\n" +
+      "sourcePath2='%v'\n" +
+      "destPath2='%v'\n" +
+      "Error='%v'\n",
+      sourcePath2, destPath2, err.Error())
+
+    return
+  }
+
+  err = fOp2.SetFileOpsCode(FileOpCode.CopySourceToDestinationByHardLinkByIo())
+
+  if err != nil {
+    t.Errorf("Error returned by fOp2.SetFileOpsCode(FileOpCode.CopySourceToDestinationByHardLinkByIo())\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  if fOp1.Equal(&fOp2) {
+    t.Error("ERROR: fOp1 and fOp2 different file operation codes.\n" +
+      "However, fOp1.Equal(&fOp2) returned 'equal'!\n")
+  }
+}
+
+func TestFileOps_Equal_05(t *testing.T) {
+
+  sourcePath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  destPath := "../dirmgrtests/level_0_0_test.txt"
+
+  fOps := FileOps{}
+
+  fOp1, err := fOps.NewByPathFileNameExtStrs(sourcePath, destPath)
+
+  if err != nil {
+    t.Errorf("Error returned by #1 fOps.NewByPathFileNameExtStrs(sourcePath, destPath)\n" +
+      "sourcePath='%v'\n" +
+      "destPath='%v'\n" +
+      "Error='%v'\n",
+      sourcePath, destPath, err.Error())
+
+    return
+  }
+
+  fOp2, err := fOps.NewByPathFileNameExtStrs(sourcePath, destPath)
+
+  if err != nil {
+    t.Errorf("Error returned by #2 fOps.NewByPathFileNameExtStrs(sourcePath, destPath)\n" +
+      "sourcePath='%v'\n" +
+      "destPath='%v'\n" +
+      "Error='%v'\n",
+      sourcePath, destPath, err.Error())
+
+    return
+  }
+
+  err = fOp1.SetFileOpsCode(FileOpCode.CopySourceToDestinationByIo())
+
+  if err != nil {
+    t.Errorf("Error returned by fOp1.SetFileOpsCode(FileOpCode.CopySourceToDestinationByIo())\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  err = fOp2.SetFileOpsCode(FileOpCode.CopySourceToDestinationByIo())
+
+  if err != nil {
+    t.Errorf("Error returned by fOp2.SetFileOpsCode(FileOpCode.CopySourceToDestinationByIo())\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  if !fOp1.Equal(&fOp2) {
+    t.Error("ERROR: fOp1 and fOp2 have equivalent path, file names, file extensions and" +
+      "File Ops Codes.\n" +
+      "However, fOp1.Equal(&fOp2) returned 'false'!\n")
+  }
+
+}
+
+
 func TestFileOps_EqualPathFileNameExt_01(t *testing.T) {
   sourcePath := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
   destPath := "../dirmgrtests/level_0_0_test.txt"
@@ -175,8 +408,119 @@ func TestFileOps_EqualPathFileNameExt_03(t *testing.T) {
 
 }
 
-func TestFileOps_IsInitialized(t *testing.T) {
+func TestFileOps_ExecuteFileOperation_01(t *testing.T) {
 
+  sourceFile :=
+    "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_2_0_test.txt"
+
+  destFile :=
+    "../createFilesTest/Level01/Level02/TestFileOps_NewByPathFileNameExtStrs_01.txt"
+
+  fOp1, err := FileOps{}.NewByPathFileNameExtStrs(sourceFile, destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by #1 FileOps{}.NewByPathFileNameExtStrs(sourceFile, destFile)\n" +
+      "sourceFile='%v'\n" +
+      "destFile='%v'\n" +
+      "Error='%v'\n", sourceFile, destFile, err.Error())
+
+    return
+  }
+
+  err = fOp1.ExecuteFileOperation(FileOpCode.None())
+
+  if err == nil {
+    t.Error("Expected an error from fOp1.ExecuteFileOperation(FileOpCode.None())\n" +
+      "because the File Operations Code is 'None'.\n" +
+      "However, NO ERROR WAS RETURNED!!!")
+  }
+
+}
+
+func TestFileOps_ExecuteFileOperation_02(t *testing.T) {
+
+  setupFile := "../filesfortest/htmlFilesForTest/006860_sample.htm"
+
+  sourceFile :=
+    "../checkfiles/checkfiles02/006860_sample.htm"
+
+  fh := FileHelper{}
+
+  err := fh.CopyFileByIo(setupFile, sourceFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, sourceFile)\n" +
+      "setupFile='%v'\n" +
+      "sourceFile='%v'\n" +
+      "Error='%v'\n", setupFile, sourceFile, err.Error())
+    return
+  }
+
+  destFile :=
+    "../createFilesTest/TestFileOps_ExecuteFileOperation_02.htm"
+
+  err = fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(destFile)\n" +
+      "Destination file already exists!\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  fOp1, err := FileOps{}.NewByPathFileNameExtStrs(sourceFile, destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by #1 FileOps{}.NewByPathFileNameExtStrs(sourceFile, destFile)\n" +
+      "sourceFile='%v'\n" +
+      "destFile='%v'\n" +
+      "Error='%v'\n", sourceFile, destFile, err.Error())
+    _ = fh.DeleteDirFile(sourceFile)
+    return
+  }
+
+  err = fOp1.ExecuteFileOperation(FileOpCode.MoveSourceFileToDestinationFile())
+
+  if err != nil {
+    t.Errorf("Error returned by fOp1.ExecuteFileOperation(FileOpCode.MoveSourceFileToDestinationFile())\n" +
+      "Error='%v'.\n", err.Error())
+    return
+  }
+
+  if !fh.DoesFileExist(destFile) {
+    t.Errorf("ERROR: The destination file does NOT exist!\n" +
+      "destFile='%v'\n", destFile)
+
+    _ = fh.DeleteDirFile(destFile)
+    _ = fh.DeleteDirFile(sourceFile)
+
+    return
+  }
+
+  if fh.DoesFileExist(sourceFile) {
+    t.Errorf("ERROR: Source file still exists!\n" +
+      "sourceFile='%v'\n", sourceFile)
+  }
+
+  err = fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirFile(destFile)\n" +
+      "destFile='%v'\n", destFile)
+  }
+
+  err = fh.DeleteDirFile(sourceFile)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirFile(sourceFile)\n" +
+      "sourceFile='%v'\n", sourceFile)
+  }
+
+  return
+
+}
+
+func TestFileOps_IsInitialized(t *testing.T) {
 
   sourceFile := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_2_0_test.txt"
   destFile := "../createFilesTest/Level01/Level02/TestFileOps_NewByFileMgrs_01.txt"
