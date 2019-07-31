@@ -1,6 +1,9 @@
 package pathfileops
 
-import "testing"
+import (
+  "strings"
+  "testing"
+)
 
 func TestFileOps_NewByDirMgrFileName_01(t *testing.T) {
 
@@ -392,6 +395,96 @@ func TestFileOps_NewByDirStrsAndFileNameExtStrs_05(t *testing.T) {
     t.Error("Expected an error return from FileOps{}.NewByDirStrsAndFileNameExtStrs(...)\n" +
       "because 'destFileNameExt' is INVALID.\n" +
       "However, NO ERROR WAS RETURNED!!!\n")
+  }
+}
+
+func TestFileOps_NewByDirStrsAndFileNameExtStrs_06(t *testing.T) {
+
+  // sourceDir := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir"
+  sourceDir := ""
+  sourceFileNameExt := "level_2_0_test.txt"
+
+
+  destDir := "../createFilesTest/Level01/Level02"
+  destFileNameExt := "TestFileOps_NewByDirStrsAndFileNameExtStrs_06.txt"
+
+  _, err := FileOps{}.NewByDirStrsAndFileNameExtStrs(
+    sourceDir,
+    sourceFileNameExt,
+    destDir,
+    destFileNameExt)
+
+  if err == nil {
+    t.Error("Expected an error return by FileOps{}.NewByDirStrsAndFileNameExtStrs(...)\n" +
+      "because 'sourceDir' is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+    return
+  }
+
+}
+
+func TestFileOps_NewByDirStrsAndFileNameExtStrs_07(t *testing.T) {
+
+  sourceDir := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir"
+  // sourceFileNameExt := "level_2_0_test.txt"
+  sourceFileNameExt := ""
+
+
+  destDir := "../createFilesTest/Level01/Level02"
+  destFileNameExt := "TestFileOps_NewByDirStrsAndFileNameExtStrs_07.txt"
+
+  _, err := FileOps{}.NewByDirStrsAndFileNameExtStrs(
+    sourceDir,
+    sourceFileNameExt,
+    destDir,
+    destFileNameExt)
+
+  if err == nil {
+    t.Error("Expected an error return by FileOps{}.NewByDirStrsAndFileNameExtStrs(...)\n" +
+      "because 'sourceFileNameExt' is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+    return
+  }
+}
+
+func TestFileOps_NewByDirStrsAndFileNameExtStrs_08(t *testing.T) {
+
+  sourceDir := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir"
+  sourceFileNameExt := "level_2_0_test.txt"
+
+  destDir := "../createFilesTest/Level01/Level02"
+  // destFileNameExt := "TestFileOps_NewByDirStrsAndFileNameExtStrs_08.txt"
+  destFileNameExt := ""
+
+  expectedAbsDestFile, err := FileHelper{}.MakeAbsolutePath(destDir + "/" + sourceFileNameExt)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}." +
+      "MakeAbsolutePath(destDir + \"/\" + sourceFileNameExt)\n" +
+      "destDir='%v'\n" +
+      "sourceFileNameExt='%v'\n" +
+      "Error='%v'\n", destDir, sourceFileNameExt, err.Error())
+    return
+  }
+
+  expectedAbsDestFile = strings.ToLower(expectedAbsDestFile)
+
+  fOps, err := FileOps{}.NewByDirStrsAndFileNameExtStrs(
+    sourceDir,
+    sourceFileNameExt,
+    destDir,
+    destFileNameExt)
+
+  if err != nil {
+    t.Errorf("Error returned by FileOps{}.NewByDirStrsAndFileNameExtStrs(...)\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  if expectedAbsDestFile != strings.ToLower(fOps.destination.GetAbsolutePathFileName()) {
+    t.Errorf("ERROR: Expected destination='%v'\n" +
+      "Instead, destination='%v'\n",
+      expectedAbsDestFile, strings.ToLower(fOps.destination.GetAbsolutePathFileName()))
   }
 }
 
