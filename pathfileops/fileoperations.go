@@ -585,7 +585,13 @@ func (fops *FileOps) createSrcDirectoryAndFile() error {
   err := fops.source.CreateDirAndFile()
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  err = fops.source.CloseThisFile()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"%v\n", err.Error())
   }
 
   return nil
@@ -601,7 +607,13 @@ func (fops *FileOps) createSrcFile() error {
   err := fops.source.CreateThisFile()
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  err = fops.source.CloseThisFile()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"%v\n", err.Error())
   }
 
   return nil
@@ -635,7 +647,13 @@ func (fops *FileOps) createDestDirectoryAndFile() error {
   err := fops.destination.CreateDirAndFile()
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"%v\n", err.Error())
+  }
+
+  err = fops.destination.CloseThisFile()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"%v\n", err.Error())
   }
 
   return nil
@@ -652,6 +670,12 @@ func (fops *FileOps) createDestFile() error {
 
   if err != nil {
     return fmt.Errorf(ePrefix+"%v", err.Error())
+  }
+
+  err = fops.destination.CloseThisFile()
+
+  if err != nil {
+    return fmt.Errorf(ePrefix+"%v\n", err.Error())
   }
 
   return nil
