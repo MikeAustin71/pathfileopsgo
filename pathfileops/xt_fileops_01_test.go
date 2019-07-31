@@ -520,6 +520,116 @@ func TestFileOps_ExecuteFileOperation_02(t *testing.T) {
 
 }
 
+func TestFileOps_ExecuteFileOperation_03(t *testing.T) {
+
+  setupFile := "../filesfortest/htmlFilesForTest/006860_sample.htm"
+
+  sourceFile :=
+    "../checkfiles/checkfiles02/006860_sample.htm"
+
+  fh := FileHelper{}
+
+  err := fh.CopyFileByIo(setupFile, sourceFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, sourceFile)\n" +
+      "setupFile='%v'\n" +
+      "sourceFile='%v'\n" +
+      "Error='%v'\n", setupFile, sourceFile, err.Error())
+    return
+  }
+
+  destFile :=
+    "../createFilesTest/TestFileOps_ExecuteFileOperation_02.htm"
+
+  err = fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(destFile)\n" +
+      "Destination file already exists!\n" +
+      "destFile='%v'" +
+      "Error='%v'\n",
+      destFile,
+      err.Error())
+    return
+  }
+
+  fOp1, err := FileOps{}.NewByPathFileNameExtStrs(sourceFile, destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by #1 FileOps{}.NewByPathFileNameExtStrs(sourceFile, destFile)\n" +
+      "sourceFile='%v'\n" +
+      "destFile='%v'\n" +
+      "Error='%v'\n", sourceFile, destFile, err.Error())
+    _ = fh.DeleteDirFile(sourceFile)
+    return
+  }
+
+  expectedAbsDestFileName :=
+    "../createFilesTest/006860_sample.htm"
+
+  expectedAbsDestFileName,
+  err = fh.MakeAbsolutePath(expectedAbsDestFileName)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(expectedAbsDestFileName)\n" +
+      "expectedAbsDestFileName='%v'\n" +
+      "Error='%v'\n",
+      expectedAbsDestFileName,
+      err.Error())
+  }
+
+  err = fh.DeleteDirFile(expectedAbsDestFileName)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirFile(expectedAbsDestFileName)\n" +
+      "Destination file already exists!\n" +
+      "expectedAbsDestFileName='%v'" +
+      "Error='%v'\n",
+      expectedAbsDestFileName, err.Error())
+    return
+  }
+
+  err = fOp1.ExecuteFileOperation(FileOpCode.MoveSourceFileToDestinationDir())
+
+  if err != nil {
+    t.Errorf("Error returned by fOp1.ExecuteFileOperation(FileOpCode.MoveSourceFileToDestinationFile())\n" +
+      "Error='%v'.\n", err.Error())
+    return
+  }
+
+  if !fh.DoesFileExist(expectedAbsDestFileName) {
+    t.Errorf("ERROR: The destination file does NOT exist!\n" +
+      "destFile='%v'\n", expectedAbsDestFileName)
+
+    _ = fh.DeleteDirFile(expectedAbsDestFileName)
+    _ = fh.DeleteDirFile(sourceFile)
+
+    return
+  }
+
+  if fh.DoesFileExist(sourceFile) {
+    t.Errorf("ERROR: Source file still exists!\n" +
+      "sourceFile='%v'\n", sourceFile)
+  }
+
+  err = fh.DeleteDirFile(expectedAbsDestFileName)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirFile(destFile)\n" +
+      "destFile='%v'\n", expectedAbsDestFileName)
+  }
+
+  err = fh.DeleteDirFile(sourceFile)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirFile(sourceFile)\n" +
+      "sourceFile='%v'\n", sourceFile)
+  }
+
+  return
+}
+
 func TestFileOps_IsInitialized(t *testing.T) {
 
   sourceFile := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_2_0_test.txt"

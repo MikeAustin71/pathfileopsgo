@@ -188,6 +188,9 @@ func (fops *FileOps) ExecuteFileOperation(fileOp FileOperationCode) error {
   case fileOpCode.None():
     err = errors.New("Error: Input parameter 'fileOp' is 'NONE' or No Operation!")
 
+  case fileOpCode.MoveSourceFileToDestinationDir():
+    err = fops.moveSourceFileToDestinationDir()
+
   case fileOpCode.MoveSourceFileToDestinationFile():
     err = fops.moveSourceFileToDestinationFile()
 
@@ -654,18 +657,39 @@ func (fops *FileOps) createDestFile() error {
   return nil
 }
 
+// moveSourceFileFileToDestinationDir - Moves the source file
+// to the destination directory. The file name will be designated
+// by the destination file name.
+//
+func (fops *FileOps) moveSourceFileToDestinationDir() error {
+
+  ePrefix := "FileOps.moveSourceFileToDestinationDir() "
+
+  _, err := fops.source.MoveFileToNewDirMgr(fops.destination.GetDirMgr())
+
+  if err != nil {
+    return fmt.Errorf(ePrefix + "%v\n",
+      err.Error())
+  }
+
+  return nil
+}
+
 // moveSourceFileToDestinationFile - Moves the source file
 // to the destination by fist copying the source file
 // to the destination and then deleting the source file.
 //
+// The final final name will be the destination file in the
+// destination directory.
+//
 func (fops *FileOps) moveSourceFileToDestinationFile() error {
 
-  ePrefix := "FileOps.createDestFile() "
+  ePrefix := "FileOps.moveSourceFileToDestinationFile() "
 
   err := fops.source.MoveFileToFileMgr(fops.destination)
 
   if err != nil {
-    return fmt.Errorf(ePrefix+"%v", err.Error())
+    return fmt.Errorf(ePrefix+"%v\n", err.Error())
   }
 
   return nil
