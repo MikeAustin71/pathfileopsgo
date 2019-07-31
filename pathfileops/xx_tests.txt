@@ -9,7 +9,7 @@
 === RUN   TestDirMgr_ConsolidateErrors_03
 --- PASS: TestDirMgr_ConsolidateErrors_03 (0.00s)
 === RUN   TestDirMgr_CopyDirectory_01
---- PASS: TestDirMgr_CopyDirectory_01 (3.59s)
+--- PASS: TestDirMgr_CopyDirectory_01 (2.56s)
 === RUN   TestDirMgr_CopyDirectory_02
 --- PASS: TestDirMgr_CopyDirectory_02 (0.00s)
 === RUN   TestDirMgr_CopyDirectory_03
@@ -19,11 +19,11 @@
 === RUN   TestDirMgr_CopyDirectory_05
 --- PASS: TestDirMgr_CopyDirectory_05 (0.00s)
 === RUN   TestDirMgr_CopyDirectory_06
---- PASS: TestDirMgr_CopyDirectory_06 (0.20s)
+--- PASS: TestDirMgr_CopyDirectory_06 (0.33s)
 === RUN   TestDirMgr_CopyDirectory_07
 --- PASS: TestDirMgr_CopyDirectory_07 (0.00s)
 === RUN   TestDirMgr_CopyDirectoryTree_01
---- PASS: TestDirMgr_CopyDirectoryTree_01 (1.24s)
+--- PASS: TestDirMgr_CopyDirectoryTree_01 (2.01s)
 === RUN   TestDirMgr_CopyDirectoryTree_02
 --- PASS: TestDirMgr_CopyDirectoryTree_02 (0.00s)
 === RUN   TestDirMgr_CopyDirectoryTree_03
@@ -31,15 +31,15 @@
 === RUN   TestDirMgr_CopyDirectoryTree_04
 --- PASS: TestDirMgr_CopyDirectoryTree_04 (0.00s)
 === RUN   TestDirMgr_CopyDirectoryTree_05
---- PASS: TestDirMgr_CopyDirectoryTree_05 (0.04s)
+--- PASS: TestDirMgr_CopyDirectoryTree_05 (0.02s)
 === RUN   TestDirMgr_CopyDirectoryTree_06
---- PASS: TestDirMgr_CopyDirectoryTree_06 (2.20s)
+--- PASS: TestDirMgr_CopyDirectoryTree_06 (7.28s)
 === RUN   TestDirMgr_CopyIn_01
 --- PASS: TestDirMgr_CopyIn_01 (0.00s)
 === RUN   TestDirMgr_CopyOut_01
 --- PASS: TestDirMgr_CopyOut_01 (0.00s)
 === RUN   TestDirMgr_CopySubDirectoryTree_01
---- PASS: TestDirMgr_CopySubDirectoryTree_01 (3.42s)
+--- PASS: TestDirMgr_CopySubDirectoryTree_01 (3.32s)
 === RUN   TestDirMgr_CopySubDirectoryTree_02
 --- PASS: TestDirMgr_CopySubDirectoryTree_02 (0.00s)
 === RUN   TestDirMgr_CopySubDirectoryTree_03
@@ -47,9 +47,9 @@
 === RUN   TestDirMgr_CopySubDirectoryTree_04
 --- PASS: TestDirMgr_CopySubDirectoryTree_04 (0.00s)
 === RUN   TestDirMgr_CopySubDirectoryTree_05
---- PASS: TestDirMgr_CopySubDirectoryTree_05 (0.25s)
+--- PASS: TestDirMgr_CopySubDirectoryTree_05 (0.23s)
 === RUN   TestDirMgr_CopySubDirectoryTree_06
---- PASS: TestDirMgr_CopySubDirectoryTree_06 (0.24s)
+--- PASS: TestDirMgr_CopySubDirectoryTree_06 (0.22s)
 === RUN   TestDirMgr_DeleteAll_01
 --- PASS: TestDirMgr_DeleteAll_01 (0.01s)
 === RUN   TestDirMgr_DeleteAll_02
@@ -59,23 +59,23 @@
 === RUN   TestDirMgr_DeleteAllFilesInDir_02
 --- PASS: TestDirMgr_DeleteAllFilesInDir_02 (0.00s)
 === RUN   TestDirMgr_DeleteAllFilesInDir_03
---- PASS: TestDirMgr_DeleteAllFilesInDir_03 (0.74s)
+--- PASS: TestDirMgr_DeleteAllFilesInDir_03 (0.58s)
 === RUN   TestDirMgr_DeleteAllSubDirectories_01
---- PASS: TestDirMgr_DeleteAllSubDirectories_01 (1.22s)
+--- PASS: TestDirMgr_DeleteAllSubDirectories_01 (1.25s)
 === RUN   TestDirMgr_DeleteAllSubDirectories_02
 --- PASS: TestDirMgr_DeleteAllSubDirectories_02 (0.00s)
 === RUN   TestDirMgr_DeleteAllSubDirectories_03
 --- PASS: TestDirMgr_DeleteAllSubDirectories_03 (0.00s)
 === RUN   TestDirMgr_DeleteDirectoryTreeFiles_01
---- PASS: TestDirMgr_DeleteDirectoryTreeFiles_01 (1.12s)
+--- PASS: TestDirMgr_DeleteDirectoryTreeFiles_01 (1.19s)
 === RUN   TestDirMgr_DeleteDirectoryTreeFiles_02
 --- PASS: TestDirMgr_DeleteDirectoryTreeFiles_02 (0.00s)
 === RUN   TestDirMgr_DeleteDirectoryTreeFiles_03
 --- PASS: TestDirMgr_DeleteDirectoryTreeFiles_03 (0.00s)
 === RUN   TestDirMgr_DeleteDirectoryTreeFiles_04
---- PASS: TestDirMgr_DeleteDirectoryTreeFiles_04 (1.14s)
+--- PASS: TestDirMgr_DeleteDirectoryTreeFiles_04 (1.18s)
 === RUN   TestDirMgr_DeleteFilesByNamePattern_01
---- PASS: TestDirMgr_DeleteFilesByNamePattern_01 (0.54s)
+--- PASS: TestDirMgr_DeleteFilesByNamePattern_01 (0.63s)
 === RUN   TestDirMgr_DeleteFilesByNamePattern_02
 --- PASS: TestDirMgr_DeleteFilesByNamePattern_02 (0.00s)
 === RUN   TestDirMgr_DeleteFilesByNamePattern_03
@@ -85,21 +85,21 @@
 === RUN   TestDirMgr_DeleteFilesByNamePattern_05
 --- PASS: TestDirMgr_DeleteFilesByNamePattern_05 (0.00s)
 === RUN   TestDirMgr_DeleteFilesByNamePattern_06
---- PASS: TestDirMgr_DeleteFilesByNamePattern_06 (0.51s)
+--- PASS: TestDirMgr_DeleteFilesByNamePattern_06 (0.61s)
 === RUN   TestDirMgr_DeleteFilesBySelectionCriteria_01
---- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_01 (0.55s)
+--- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_01 (0.39s)
 === RUN   TestDirMgr_DeleteFilesBySelectionCriteria_02
---- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_02 (1.28s)
+--- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_02 (1.60s)
 === RUN   TestDirMgr_DeleteFilesBySelectionCriteria_03
---- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_03 (1.11s)
+--- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_03 (1.48s)
 === RUN   TestDirMgr_DeleteFilesBySelectionCriteria_04
 --- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_04 (0.00s)
 === RUN   TestDirMgr_DeleteSubDirectoryTreeFiles_01
---- PASS: TestDirMgr_DeleteSubDirectoryTreeFiles_01 (0.77s)
+--- PASS: TestDirMgr_DeleteSubDirectoryTreeFiles_01 (0.56s)
 === RUN   TestDirMgr_DeleteSubDirectoryTreeFiles_02
 --- PASS: TestDirMgr_DeleteSubDirectoryTreeFiles_02 (0.00s)
 === RUN   TestDirMgr_DeleteSubDirectoryTreeFiles_03
---- PASS: TestDirMgr_DeleteSubDirectoryTreeFiles_03 (0.49s)
+--- PASS: TestDirMgr_DeleteSubDirectoryTreeFiles_03 (0.66s)
 === RUN   TestDirMgr_DoesAbsolutePathExist_01
 --- PASS: TestDirMgr_DoesAbsolutePathExist_01 (0.00s)
 === RUN   TestDirMgr_DoesAbsolutePathExist_02
@@ -141,7 +141,7 @@
 === RUN   TestDirMgr_EqualPaths_05
 --- PASS: TestDirMgr_EqualPaths_05 (0.00s)
 === RUN   TestDirMgr_ExecuteDirectoryFileOps_01
---- PASS: TestDirMgr_ExecuteDirectoryFileOps_01 (0.41s)
+--- PASS: TestDirMgr_ExecuteDirectoryFileOps_01 (0.25s)
 === RUN   TestDirMgr_ExecuteDirectoryFileOps_02
 --- PASS: TestDirMgr_ExecuteDirectoryFileOps_02 (0.00s)
 === RUN   TestDirMgr_ExecuteDirectoryFileOps_03
@@ -151,7 +151,7 @@
 === RUN   TestDirMgr_ExecuteDirectoryFileOps_05
 --- PASS: TestDirMgr_ExecuteDirectoryFileOps_05 (0.00s)
 === RUN   TestDirMgr_ExecuteDirectoryTreeOps_01
---- PASS: TestDirMgr_ExecuteDirectoryTreeOps_01 (1.69s)
+--- PASS: TestDirMgr_ExecuteDirectoryTreeOps_01 (1.50s)
 === RUN   TestDirMgr_ExecuteDirectoryTreeOps_02
 --- PASS: TestDirMgr_ExecuteDirectoryTreeOps_02 (0.00s)
 === RUN   TestDirMgr_ExecuteDirectoryTreeOps_03
@@ -161,31 +161,31 @@
 === RUN   TestDirMgr_ExecuteDirectoryTreeOps_05
 --- PASS: TestDirMgr_ExecuteDirectoryTreeOps_05 (0.00s)
 === RUN   TestDirMgr_FindFilesByNamePattern_01
---- PASS: TestDirMgr_FindFilesByNamePattern_01 (0.68s)
+--- PASS: TestDirMgr_FindFilesByNamePattern_01 (0.78s)
 === RUN   TestDirMgr_FindFilesByNamePattern_02
---- PASS: TestDirMgr_FindFilesByNamePattern_02 (1.02s)
+--- PASS: TestDirMgr_FindFilesByNamePattern_02 (0.67s)
 === RUN   TestDirMgr_FindFilesByNamePattern_03
---- PASS: TestDirMgr_FindFilesByNamePattern_03 (0.82s)
+--- PASS: TestDirMgr_FindFilesByNamePattern_03 (0.89s)
 === RUN   TestDirMgr_FindFilesByNamePattern_04
---- PASS: TestDirMgr_FindFilesByNamePattern_04 (0.56s)
+--- PASS: TestDirMgr_FindFilesByNamePattern_04 (0.66s)
 === RUN   TestDirMgr_FindFilesByNamePattern_05
 --- PASS: TestDirMgr_FindFilesByNamePattern_05 (0.00s)
 === RUN   TestDirMgr_FindFilesBySelectCriteria_01
---- PASS: TestDirMgr_FindFilesBySelectCriteria_01 (0.64s)
+--- PASS: TestDirMgr_FindFilesBySelectCriteria_01 (0.91s)
 === RUN   TestDirMgr_FindFilesBySelectCriteria_02
---- PASS: TestDirMgr_FindFilesBySelectCriteria_02 (0.65s)
+--- PASS: TestDirMgr_FindFilesBySelectCriteria_02 (0.84s)
 === RUN   TestDirMgr_FindFilesBySelectCriteria_03
 --- PASS: TestDirMgr_FindFilesBySelectCriteria_03 (0.00s)
 === RUN   TestDirMgr_FindFilesBySelectCriteria_04
 --- PASS: TestDirMgr_FindFilesBySelectCriteria_04 (0.00s)
 === RUN   TestDirMgr_FindWalkDirFiles_01
---- PASS: TestDirMgr_FindWalkDirFiles_01 (0.45s)
+--- PASS: TestDirMgr_FindWalkDirFiles_01 (0.50s)
 === RUN   TestDirMgr_FindWalkDirFiles_02
---- PASS: TestDirMgr_FindWalkDirFiles_02 (0.37s)
+--- PASS: TestDirMgr_FindWalkDirFiles_02 (0.30s)
 === RUN   TestDirMgr_FindWalkDirFiles_03
---- PASS: TestDirMgr_FindWalkDirFiles_03 (0.32s)
+--- PASS: TestDirMgr_FindWalkDirFiles_03 (0.25s)
 === RUN   TestDirMgr_FindWalkDirFiles_04
---- PASS: TestDirMgr_FindWalkDirFiles_04 (0.31s)
+--- PASS: TestDirMgr_FindWalkDirFiles_04 (0.23s)
 === RUN   TestDirMgr_FindWalkDirFiles_05
 --- PASS: TestDirMgr_FindWalkDirFiles_05 (0.00s)
 === RUN   TestDirMgr_FindWalkDirFiles_06
@@ -195,25 +195,25 @@
 === RUN   TestDirMgr_FindWalkSubDirFiles_02
 --- PASS: TestDirMgr_FindWalkSubDirFiles_02 (0.00s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_01
---- PASS: TestDirMgr_DeleteWalkDirFiles_01 (0.34s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_01 (0.22s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_02
---- PASS: TestDirMgr_DeleteWalkDirFiles_02 (0.46s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_02 (0.21s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_03
---- PASS: TestDirMgr_DeleteWalkDirFiles_03 (0.33s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_03 (0.22s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_04
---- PASS: TestDirMgr_DeleteWalkDirFiles_04 (0.27s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_04 (0.20s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_05
---- PASS: TestDirMgr_DeleteWalkDirFiles_05 (0.34s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_05 (0.21s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_06
---- PASS: TestDirMgr_DeleteWalkDirFiles_06 (0.35s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_06 (0.36s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_07
---- PASS: TestDirMgr_DeleteWalkDirFiles_07 (0.27s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_07 (0.20s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_08
---- PASS: TestDirMgr_DeleteWalkDirFiles_08 (0.31s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_08 (0.22s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_09
 --- PASS: TestDirMgr_DeleteWalkDirFiles_09 (0.00s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_10
---- PASS: TestDirMgr_DeleteWalkDirFiles_10 (0.32s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_10 (0.20s)
 === RUN   TestDirMgr_GetAbsolutePath_01
 --- PASS: TestDirMgr_GetAbsolutePath_01 (0.00s)
 === RUN   TestDirMgr_GetAbsolutePathElements_01
@@ -223,13 +223,13 @@
 === RUN   TestDirMgr_GetAbsolutePathWithSeparator_01
 --- PASS: TestDirMgr_GetAbsolutePathWithSeparator_01 (0.00s)
 === RUN   TestDirMgr_GetDirectoryTree_01
---- PASS: TestDirMgr_GetDirectoryTree_01 (0.00s)
+--- PASS: TestDirMgr_GetDirectoryTree_01 (2.28s)
 === RUN   TestDirMgr_GetDirectoryTree_02
 --- PASS: TestDirMgr_GetDirectoryTree_02 (0.00s)
 === RUN   TestDirMgr_GetDirectoryTree_03
 --- PASS: TestDirMgr_GetDirectoryTree_03 (0.00s)
 === RUN   TestDirMgr_GetDirectoryTreeStats_01
---- PASS: TestDirMgr_GetDirectoryTreeStats_01 (0.00s)
+--- PASS: TestDirMgr_GetDirectoryTreeStats_01 (0.01s)
 === RUN   TestDirMgr_GetDirectoryTreeStats_02
 --- PASS: TestDirMgr_GetDirectoryTreeStats_02 (0.00s)
 === RUN   TestDirMgr_GetDirectoryTreeStats_03
@@ -239,7 +239,7 @@
 === RUN   TestDirMgr_GetDirPermissionTextCodes_02
 --- PASS: TestDirMgr_GetDirPermissionTextCodes_02 (0.00s)
 === RUN   TestDirMgr_GetDirPermissionTextCodes_03
---- PASS: TestDirMgr_GetDirPermissionTextCodes_03 (0.00s)
+--- PASS: TestDirMgr_GetDirPermissionTextCodes_03 (0.01s)
 === RUN   TestDirMgr_GetFileInfoPlus_01
 --- PASS: TestDirMgr_GetFileInfoPlus_01 (0.00s)
 === RUN   TestDirMgr_GetFileInfoPlus_02
@@ -303,31 +303,31 @@
 === RUN   TestDirMgr_MakeDirWithPermission_04
 --- PASS: TestDirMgr_MakeDirWithPermission_04 (0.00s)
 === RUN   TestDirMgr_MoveDirectory_01
---- PASS: TestDirMgr_MoveDirectory_01 (0.63s)
+--- PASS: TestDirMgr_MoveDirectory_01 (0.56s)
 === RUN   TestDirMgr_MoveDirectory_02
---- PASS: TestDirMgr_MoveDirectory_02 (0.26s)
+--- PASS: TestDirMgr_MoveDirectory_02 (0.23s)
 === RUN   TestDirMgr_MoveDirectory_03
---- PASS: TestDirMgr_MoveDirectory_03 (0.25s)
+--- PASS: TestDirMgr_MoveDirectory_03 (0.40s)
 === RUN   TestDirMgr_MoveDirectory_04
 --- PASS: TestDirMgr_MoveDirectory_04 (0.00s)
 === RUN   TestDirMgr_MoveDirectory_05
---- PASS: TestDirMgr_MoveDirectory_05 (0.19s)
+--- PASS: TestDirMgr_MoveDirectory_05 (0.34s)
 === RUN   TestDirMgr_MoveDirectory_06
---- PASS: TestDirMgr_MoveDirectory_06 (0.61s)
+--- PASS: TestDirMgr_MoveDirectory_06 (0.57s)
 === RUN   TestDirMgr_MoveDirectoryTree_01
---- PASS: TestDirMgr_MoveDirectoryTree_01 (0.74s)
+--- PASS: TestDirMgr_MoveDirectoryTree_01 (0.87s)
 === RUN   TestDirMgr_MoveDirectoryTree_02
---- PASS: TestDirMgr_MoveDirectoryTree_02 (0.47s)
+--- PASS: TestDirMgr_MoveDirectoryTree_02 (0.34s)
 === RUN   TestDirMgr_MoveDirectoryTree_03
---- PASS: TestDirMgr_MoveDirectoryTree_03 (0.43s)
+--- PASS: TestDirMgr_MoveDirectoryTree_03 (0.42s)
 === RUN   TestDirMgr_MoveDirectoryTree_04
 --- PASS: TestDirMgr_MoveDirectoryTree_04 (0.00s)
 === RUN   TestDirMgr_MoveSubDirectoryTree_01
---- PASS: TestDirMgr_MoveSubDirectoryTree_01 (0.60s)
+--- PASS: TestDirMgr_MoveSubDirectoryTree_01 (0.55s)
 === RUN   TestDirMgr_MoveSubDirectoryTree_02
---- PASS: TestDirMgr_MoveSubDirectoryTree_02 (0.35s)
+--- PASS: TestDirMgr_MoveSubDirectoryTree_02 (0.41s)
 === RUN   TestDirMgr_MoveSubDirectoryTree_03
---- PASS: TestDirMgr_MoveSubDirectoryTree_03 (0.35s)
+--- PASS: TestDirMgr_MoveSubDirectoryTree_03 (0.55s)
 === RUN   TestDirMgr_MoveSubDirectoryTree_04
 --- PASS: TestDirMgr_MoveSubDirectoryTree_04 (0.00s)
 === RUN   TestDirMgr_New_01
@@ -695,9 +695,9 @@
 === RUN   TestFileHelper_ChangeFileMode_05
 --- PASS: TestFileHelper_ChangeFileMode_05 (0.03s)
 === RUN   TestFileHelper_ChangeFileMode_06
---- PASS: TestFileHelper_ChangeFileMode_06 (0.04s)
+--- PASS: TestFileHelper_ChangeFileMode_06 (0.03s)
 === RUN   TestFileHelper_ChangeFileTimes_01
---- PASS: TestFileHelper_ChangeFileTimes_01 (0.05s)
+--- PASS: TestFileHelper_ChangeFileTimes_01 (0.12s)
 === RUN   TestFileHelper_ChangeFileTimes_02
 --- PASS: TestFileHelper_ChangeFileTimes_02 (0.00s)
 === RUN   TestFileHelper_ChangeFileTimes_03
@@ -707,9 +707,9 @@
 === RUN   TestFileHelper_ChangeFileTimes_05
 --- PASS: TestFileHelper_ChangeFileTimes_05 (0.00s)
 === RUN   TestFileHelper_ChangeFileTimes_06
---- PASS: TestFileHelper_ChangeFileTimes_06 (0.07s)
+--- PASS: TestFileHelper_ChangeFileTimes_06 (0.05s)
 === RUN   TestFileHelper_ChangeFileTimes_07
---- PASS: TestFileHelper_ChangeFileTimes_07 (0.04s)
+--- PASS: TestFileHelper_ChangeFileTimes_07 (0.05s)
 === RUN   TestFileHelper_ChangeWorkingDir_01
 --- PASS: TestFileHelper_ChangeWorkingDir_01 (0.00s)
 === RUN   TestFileHelper_ChangeWorkingDir_02
@@ -787,19 +787,19 @@
 === RUN   TestFileHelper_CopyFileByIo_08
 --- PASS: TestFileHelper_CopyFileByIo_08 (0.00s)
 === RUN   TestFileHelper_CopyFileByIo_09
---- PASS: TestFileHelper_CopyFileByIo_09 (0.03s)
+--- PASS: TestFileHelper_CopyFileByIo_09 (0.04s)
 === RUN   TestFileHelper_CopyFileByIo_10
---- PASS: TestFileHelper_CopyFileByIo_10 (0.02s)
+--- PASS: TestFileHelper_CopyFileByIo_10 (0.03s)
 === RUN   TestFileHelper_CopyFileByIo_11
---- PASS: TestFileHelper_CopyFileByIo_11 (0.04s)
+--- PASS: TestFileHelper_CopyFileByIo_11 (0.05s)
 === RUN   TestFileHelper_CopyFileByIoByLink_01
---- PASS: TestFileHelper_CopyFileByIoByLink_01 (0.05s)
+--- PASS: TestFileHelper_CopyFileByIoByLink_01 (0.04s)
 === RUN   TestFileHelper_CopyFileByIoByLink_02
 --- PASS: TestFileHelper_CopyFileByIoByLink_02 (0.00s)
 === RUN   TestFileHelper_CopyFileByIoByLink_03
 --- PASS: TestFileHelper_CopyFileByIoByLink_03 (0.00s)
 === RUN   TestFileHelper_CopyFileByLinkByIo_01
---- PASS: TestFileHelper_CopyFileByLinkByIo_01 (0.11s)
+--- PASS: TestFileHelper_CopyFileByLinkByIo_01 (0.03s)
 === RUN   TestFileHelper_CopyFileByLinkByIo_02
 --- PASS: TestFileHelper_CopyFileByLinkByIo_02 (0.00s)
 === RUN   TestFileHelper_CopyFileByLinkByIo_03
@@ -825,9 +825,9 @@
 === RUN   TestFileHelper_CopyFileByLink_10
 --- PASS: TestFileHelper_CopyFileByLink_10 (0.00s)
 === RUN   TestFileHelper_CopyFileByLink_11
---- PASS: TestFileHelper_CopyFileByLink_11 (0.04s)
+--- PASS: TestFileHelper_CopyFileByLink_11 (0.00s)
 === RUN   TestFileHelper_CopyFileByLink_12
---- PASS: TestFileHelper_CopyFileByLink_12 (0.10s)
+--- PASS: TestFileHelper_CopyFileByLink_12 (0.03s)
 === RUN   TestFileHelper_CopyFileByLink_13
 --- PASS: TestFileHelper_CopyFileByLink_13 (0.00s)
 === RUN   TestFileHelper_CopyFileByLink_14
@@ -835,7 +835,7 @@
 === RUN   TestFileHelper_CreateFile_01
 --- PASS: TestFileHelper_CreateFile_01 (0.00s)
 === RUN   TestFileHelper_CreateFile_02
---- PASS: TestFileHelper_CreateFile_02 (0.07s)
+--- PASS: TestFileHelper_CreateFile_02 (0.01s)
 === RUN   TestFileHelper_CreateFile_03
 --- PASS: TestFileHelper_CreateFile_03 (0.00s)
 === RUN   TestFileHelper_CreateFile_04
@@ -857,7 +857,7 @@
 === RUN   TestFileHelper_DeleteDirPathAll_04
 --- PASS: TestFileHelper_DeleteDirPathAll_04 (0.00s)
 === RUN   TestFileHelper_DeleteDirPathAll_05
---- PASS: TestFileHelper_DeleteDirPathAll_05 (0.40s)
+--- PASS: TestFileHelper_DeleteDirPathAll_05 (0.27s)
 === RUN   TestFileHelper_DoesFileExist_01
 --- PASS: TestFileHelper_DoesFileExist_01 (0.00s)
 === RUN   TestFileHelper_DoesFileExist_02
@@ -871,9 +871,9 @@
 === RUN   TestFileHelper_DoesFileInfoExist_04
 --- PASS: TestFileHelper_DoesFileInfoExist_04 (0.00s)
 === RUN   TestFileHelper_DeleteFilesWalkDirectory_01
---- PASS: TestFileHelper_DeleteFilesWalkDirectory_01 (4.43s)
+--- PASS: TestFileHelper_DeleteFilesWalkDirectory_01 (3.58s)
 === RUN   TestFileHelper_DeleteFilesWalkDirectory_02
---- PASS: TestFileHelper_DeleteFilesWalkDirectory_02 (5.13s)
+--- PASS: TestFileHelper_DeleteFilesWalkDirectory_02 (3.66s)
 === RUN   TestFileHelper_DeleteFilesWalkDirectory_03
 --- PASS: TestFileHelper_DeleteFilesWalkDirectory_03 (0.00s)
 === RUN   TestFileHelper_DoesStringEndWithPathSeparator_01
@@ -899,9 +899,9 @@
 === RUN   TestFileHelper_DoesThisFileExist_06
 --- PASS: TestFileHelper_DoesThisFileExist_06 (0.00s)
 === RUN   TestFileHelper_FindFilesInPath_01
---- PASS: TestFileHelper_FindFilesInPath_01 (0.40s)
+--- PASS: TestFileHelper_FindFilesInPath_01 (0.29s)
 === RUN   TestFileHelper_FindFilesInPath_02
---- PASS: TestFileHelper_FindFilesInPath_02 (1.59s)
+--- PASS: TestFileHelper_FindFilesInPath_02 (1.25s)
 === RUN   TestFileHelper_FindFilesInPath_03
 --- PASS: TestFileHelper_FindFilesInPath_03 (0.00s)
 === RUN   TestFileHelper_FindFilesInPath_04
@@ -937,9 +937,9 @@
 === RUN   TestFileHelper_FilterFileName_12
 --- PASS: TestFileHelper_FilterFileName_12 (0.00s)
 === RUN   TestFileHelper_FindFilesWalkDirectory_01
---- PASS: TestFileHelper_FindFilesWalkDirectory_01 (0.06s)
+--- PASS: TestFileHelper_FindFilesWalkDirectory_01 (0.04s)
 === RUN   TestFileHelper_FindFilesWalkDirectory_02
---- PASS: TestFileHelper_FindFilesWalkDirectory_02 (0.05s)
+--- PASS: TestFileHelper_FindFilesWalkDirectory_02 (0.04s)
 === RUN   TestFileHelper_FindFilesWalkDirectory_03
 --- PASS: TestFileHelper_FindFilesWalkDirectory_03 (0.00s)
 === RUN   TestFileHelper_FindFilesWalkDirectory_04
@@ -1001,7 +1001,7 @@
 === RUN   TestFileHelper_GetFileMode_03
 --- PASS: TestFileHelper_GetFileMode_03 (0.00s)
 === RUN   TestFileHelper_GetFileMode_04
---- PASS: TestFileHelper_GetFileMode_04 (0.01s)
+--- PASS: TestFileHelper_GetFileMode_04 (0.00s)
 === RUN   TestFileHelper_GetFileNameWithExt_01
 --- PASS: TestFileHelper_GetFileNameWithExt_01 (0.00s)
 === RUN   TestFileHelper_GetFileNameWithExt_02
@@ -1207,23 +1207,23 @@
 === RUN   TestFileHelper_MakeDir03
 --- PASS: TestFileHelper_MakeDir03 (0.00s)
 === RUN   TestFileHelper_MoveFile_01
---- PASS: TestFileHelper_MoveFile_01 (0.48s)
+--- PASS: TestFileHelper_MoveFile_01 (0.14s)
 === RUN   TestFileHelper_MoveFile_02
 --- PASS: TestFileHelper_MoveFile_02 (0.00s)
 === RUN   TestFileHelper_MoveFile_03
 --- PASS: TestFileHelper_MoveFile_03 (0.00s)
 === RUN   TestFileHelper_MoveFile_04
---- PASS: TestFileHelper_MoveFile_04 (0.18s)
+--- PASS: TestFileHelper_MoveFile_04 (0.03s)
 === RUN   TestFileHelper_MoveFile_05
---- PASS: TestFileHelper_MoveFile_05 (0.12s)
+--- PASS: TestFileHelper_MoveFile_05 (0.03s)
 === RUN   TestFileHelper_MoveFile_06
 --- PASS: TestFileHelper_MoveFile_06 (0.00s)
 === RUN   TestFileHelper_MoveFile_07
---- PASS: TestFileHelper_MoveFile_07 (0.17s)
+--- PASS: TestFileHelper_MoveFile_07 (0.13s)
 === RUN   TestFileHelper_MoveFile_08
 --- PASS: TestFileHelper_MoveFile_08 (0.00s)
 === RUN   TestFileHelper_MoveFile_09
---- PASS: TestFileHelper_MoveFile_09 (0.07s)
+--- PASS: TestFileHelper_MoveFile_09 (0.03s)
 === RUN   TestFileHelper_OpenDirectory_01
 --- PASS: TestFileHelper_OpenDirectory_01 (0.00s)
 === RUN   TestFileHelper_OpenDirectory_02
@@ -1247,7 +1247,7 @@
 === RUN   TestFileHelper_OpenFile_06
 --- PASS: TestFileHelper_OpenFile_06 (0.00s)
 === RUN   TestFileHelper_OpenFileReadOnly_01
---- PASS: TestFileHelper_OpenFileReadOnly_01 (0.07s)
+--- PASS: TestFileHelper_OpenFileReadOnly_01 (0.04s)
 === RUN   TestFileHelper_OpenFileReadOnly_02
 --- PASS: TestFileHelper_OpenFileReadOnly_02 (0.00s)
 === RUN   TestFileHelper_OpenFileReadOnly_03
@@ -1255,7 +1255,7 @@
 === RUN   TestFileHelper_OpenFileReadOnly_04
 --- PASS: TestFileHelper_OpenFileReadOnly_04 (0.00s)
 === RUN   TestFileHelper_OpenFileReadOnly_05
---- PASS: TestFileHelper_OpenFileReadOnly_05 (22.43s)
+--- PASS: TestFileHelper_OpenFileReadOnly_05 (0.07s)
 === RUN   TestFileHelper_OpenFileReadWrite_01
 --- PASS: TestFileHelper_OpenFileReadWrite_01 (0.03s)
 === RUN   TestFileHelper_OpenFileReadWrite_02
@@ -1267,9 +1267,9 @@
 === RUN   TestFileHelper_OpenFileReadWrite_05
 --- PASS: TestFileHelper_OpenFileReadWrite_05 (0.00s)
 === RUN   TestFileHelper_OpenFileWriteOnly_01
---- PASS: TestFileHelper_OpenFileWriteOnly_01 (0.03s)
+--- PASS: TestFileHelper_OpenFileWriteOnly_01 (0.02s)
 === RUN   TestFileHelper_OpenFileWriteOnly_02
---- PASS: TestFileHelper_OpenFileWriteOnly_02 (0.04s)
+--- PASS: TestFileHelper_OpenFileWriteOnly_02 (0.08s)
 === RUN   TestFileHelper_OpenFileWriteOnly_03
 --- PASS: TestFileHelper_OpenFileWriteOnly_03 (0.00s)
 === RUN   TestFileHelper_OpenFileWriteOnly_04
@@ -1335,7 +1335,7 @@
 === RUN   TestFileMgr_CopyOut_01
 --- PASS: TestFileMgr_CopyOut_01 (0.00s)
 === RUN   TestFileMgr_CopyFileMgrByIo_01
---- PASS: TestFileMgr_CopyFileMgrByIo_01 (0.08s)
+--- PASS: TestFileMgr_CopyFileMgrByIo_01 (0.04s)
 === RUN   TestFileMgr_CopyFileMgrByIo_02
 --- PASS: TestFileMgr_CopyFileMgrByIo_02 (0.00s)
 === RUN   TestFileMgr_CopyFileMgrByIo_03
@@ -1349,7 +1349,7 @@
 === RUN   TestFileMgr_CopyFileMgrByIoByLink_01
 --- PASS: TestFileMgr_CopyFileMgrByIoByLink_01 (0.03s)
 === RUN   TestFileMgr_CopyFileMgrByIoByLink_02
---- PASS: TestFileMgr_CopyFileMgrByIoByLink_02 (0.05s)
+--- PASS: TestFileMgr_CopyFileMgrByIoByLink_02 (0.15s)
 === RUN   TestFileMgr_CopyFileMgrByIoByLink_03
 --- PASS: TestFileMgr_CopyFileMgrByIoByLink_03 (0.00s)
 === RUN   TestFileMgr_CopyFileMgrByIoByLink_04
@@ -1361,7 +1361,7 @@
 === RUN   TestFileMgr_CopyFileMgrByIoByLink_07
 --- PASS: TestFileMgr_CopyFileMgrByIoByLink_07 (0.00s)
 === RUN   TestFileMgr_CopyFileMgrByIoWithBuffer_01
---- PASS: TestFileMgr_CopyFileMgrByIoWithBuffer_01 (0.06s)
+--- PASS: TestFileMgr_CopyFileMgrByIoWithBuffer_01 (0.15s)
 === RUN   TestFileMgr_CopyFileMgrByIoWithBuffer_02
 --- PASS: TestFileMgr_CopyFileMgrByIoWithBuffer_02 (0.00s)
 === RUN   TestFileMgr_CopyFileMgrByLink_01
@@ -1399,7 +1399,7 @@
 === RUN   TestFileMgr_CopyFileMgrWithBuffer_05
 --- PASS: TestFileMgr_CopyFileMgrWithBuffer_05 (0.07s)
 === RUN   TestFileMgr_CopyFileStrByIo_01
---- PASS: TestFileMgr_CopyFileStrByIo_01 (0.05s)
+--- PASS: TestFileMgr_CopyFileStrByIo_01 (0.09s)
 === RUN   TestFileMgr_CopyFileStrByIo_02
 --- PASS: TestFileMgr_CopyFileStrByIo_02 (0.00s)
 === RUN   TestFileMgr_CopyFileStrByIo_03
@@ -1413,7 +1413,7 @@
 === RUN   TestFileMgr_CopyFileStrByIo_07
 --- PASS: TestFileMgr_CopyFileStrByIo_07 (0.06s)
 === RUN   TestFileMgr_CopyFileStrByIoByLink_01
---- PASS: TestFileMgr_CopyFileStrByIoByLink_01 (0.05s)
+--- PASS: TestFileMgr_CopyFileStrByIoByLink_01 (0.03s)
 === RUN   TestFileMgr_CopyFileStrByIoByLink_02
 --- PASS: TestFileMgr_CopyFileStrByIoByLink_02 (0.00s)
 === RUN   TestFileMgr_CopyFileStrByIoByLink_03
@@ -1433,7 +1433,7 @@
 === RUN   TestFileMgr_CopyFileStrByLink_05
 --- PASS: TestFileMgr_CopyFileStrByLink_05 (0.00s)
 === RUN   TestFileMgr_CopyFileStrByLinkByIo_01
---- PASS: TestFileMgr_CopyFileStrByLinkByIo_01 (0.01s)
+--- PASS: TestFileMgr_CopyFileStrByLinkByIo_01 (0.00s)
 === RUN   TestFileMgr_CopyFileStrByLinkByIo_02
 --- PASS: TestFileMgr_CopyFileStrByLinkByIo_02 (0.00s)
 === RUN   TestFileMgr_CopyFileStrByLinkByIo_03
@@ -1443,7 +1443,7 @@
 === RUN   TestFileMgr_CopyFileStrByLinkByIo_05
 --- PASS: TestFileMgr_CopyFileStrByLinkByIo_05 (0.00s)
 === RUN   TestFileMgr_CopyFileToDirByIo_01
---- PASS: TestFileMgr_CopyFileToDirByIo_01 (0.04s)
+--- PASS: TestFileMgr_CopyFileToDirByIo_01 (0.03s)
 === RUN   TestFileMgr_CopyFileToDirByIo_02
 --- PASS: TestFileMgr_CopyFileToDirByIo_02 (0.00s)
 === RUN   TestFileMgr_CopyFileToDirByIo_03
@@ -1455,7 +1455,7 @@
 === RUN   TestFileMgr_CopyFileToDirByIo_06
 --- PASS: TestFileMgr_CopyFileToDirByIo_06 (0.00s)
 === RUN   TestFileMgr_CopyFileToDirByIoByLink_01
---- PASS: TestFileMgr_CopyFileToDirByIoByLink_01 (0.04s)
+--- PASS: TestFileMgr_CopyFileToDirByIoByLink_01 (0.08s)
 === RUN   TestFileMgr_CopyFileToDirByIoByLink_02
 --- PASS: TestFileMgr_CopyFileToDirByIoByLink_02 (0.00s)
 === RUN   TestFileMgr_CopyFileToDirByIoByLink_03
@@ -1485,7 +1485,7 @@
 === RUN   TestFileMgr_CopyFileToDirByLink_05
 --- PASS: TestFileMgr_CopyFileToDirByLink_05 (0.00s)
 === RUN   TestFileMgr_CopyFromStrings_01
---- PASS: TestFileMgr_CopyFromStrings_01 (0.04s)
+--- PASS: TestFileMgr_CopyFromStrings_01 (0.05s)
 === RUN   TestFileMgr_CopyFromStrings_02
 --- PASS: TestFileMgr_CopyFromStrings_02 (0.00s)
 === RUN   TestFileMgr_CopyFromStrings_03
@@ -1497,7 +1497,7 @@
 === RUN   TestFileMgr_CreateDir_02
 --- PASS: TestFileMgr_CreateDir_02 (0.00s)
 === RUN   TestFileMgr_CreateDirAndFile_01
---- PASS: TestFileMgr_CreateDirAndFile_01 (0.07s)
+--- PASS: TestFileMgr_CreateDirAndFile_01 (0.03s)
 === RUN   TestFileMgr_CreateDirAndFile_02
 --- PASS: TestFileMgr_CreateDirAndFile_02 (0.00s)
 === RUN   TestFileMgr_CreateThisFile_01
@@ -1625,7 +1625,7 @@
 === RUN   TestFileMgr_GetWriterBufferSize_02
 --- PASS: TestFileMgr_GetWriterBufferSize_02 (0.00s)
 === RUN   TestFileMgr_GetWriterBufferSize_03
---- PASS: TestFileMgr_GetWriterBufferSize_03 (0.15s)
+--- PASS: TestFileMgr_GetWriterBufferSize_03 (0.08s)
 === RUN   TestFileMgr_IsAbsolutePathFileNamePopulated_01
 --- PASS: TestFileMgr_IsAbsolutePathFileNamePopulated_01 (0.00s)
 === RUN   TestFileMgr_IsAbsolutePathFileNamePopulated_02
@@ -1659,35 +1659,35 @@
 === RUN   TestFileMgr_IsInitialized_03
 --- PASS: TestFileMgr_IsInitialized_03 (0.00s)
 === RUN   TestFileMgr_MoveFileToFileMgr_01
---- PASS: TestFileMgr_MoveFileToFileMgr_01 (0.17s)
+--- PASS: TestFileMgr_MoveFileToFileMgr_01 (0.07s)
 === RUN   TestFileMgr_MoveFileToFileMgr_02
---- PASS: TestFileMgr_MoveFileToFileMgr_02 (0.11s)
+--- PASS: TestFileMgr_MoveFileToFileMgr_02 (0.02s)
 === RUN   TestFileMgr_MoveFileToFileStr_01
---- PASS: TestFileMgr_MoveFileToFileStr_01 (0.13s)
+--- PASS: TestFileMgr_MoveFileToFileStr_01 (0.10s)
 === RUN   TestFileMgr_MoveFileToFileStr_02
---- PASS: TestFileMgr_MoveFileToFileStr_02 (0.04s)
+--- PASS: TestFileMgr_MoveFileToFileStr_02 (0.17s)
 === RUN   TestFileMgr_MoveFileToNewDirMgr_01
---- PASS: TestFileMgr_MoveFileToNewDirMgr_01 (0.08s)
+--- PASS: TestFileMgr_MoveFileToNewDirMgr_01 (0.11s)
 === RUN   TestFileMgr_MoveFileToNewDirMgr_02
 --- PASS: TestFileMgr_MoveFileToNewDirMgr_02 (0.04s)
 === RUN   TestFileMgr_MoveFileToNewDirMgr_03
---- PASS: TestFileMgr_MoveFileToNewDirMgr_03 (0.03s)
+--- PASS: TestFileMgr_MoveFileToNewDirMgr_03 (0.09s)
 === RUN   TestFileMgr_MoveFileToNewDirMgr_04
 --- PASS: TestFileMgr_MoveFileToNewDirMgr_04 (0.00s)
 === RUN   TestFileMgr_MoveFileToNewDirMgr_05
---- PASS: TestFileMgr_MoveFileToNewDirMgr_05 (0.07s)
+--- PASS: TestFileMgr_MoveFileToNewDirMgr_05 (0.08s)
 === RUN   TestFileMgr_MoveFileToNewDir_01
---- PASS: TestFileMgr_MoveFileToNewDir_01 (0.07s)
+--- PASS: TestFileMgr_MoveFileToNewDir_01 (0.11s)
 === RUN   TestFileMgr_MoveFileToNewDir_02
 --- PASS: TestFileMgr_MoveFileToNewDir_02 (0.03s)
 === RUN   TestFileMgr_MoveFileToNewDir_03
 --- PASS: TestFileMgr_MoveFileToNewDir_03 (0.03s)
 === RUN   TestFileMgr_MoveFileToNewDir_04
---- PASS: TestFileMgr_MoveFileToNewDir_04 (0.08s)
+--- PASS: TestFileMgr_MoveFileToNewDir_04 (0.11s)
 === RUN   TestFileMgr_MoveFileToNewDir_05
---- PASS: TestFileMgr_MoveFileToNewDir_05 (0.07s)
+--- PASS: TestFileMgr_MoveFileToNewDir_05 (0.08s)
 === RUN   TestFileMgr_MoveFileToNewDir_06
---- PASS: TestFileMgr_MoveFileToNewDir_06 (0.03s)
+--- PASS: TestFileMgr_MoveFileToNewDir_06 (0.09s)
 === RUN   TestFileMgr_MoveFileToNewDir_07
 --- PASS: TestFileMgr_MoveFileToNewDir_07 (0.06s)
 === RUN   TestFileMgr_New_01
@@ -1743,41 +1743,41 @@
 === RUN   TestFileMgr_OpenThisFile_03
 --- PASS: TestFileMgr_OpenThisFile_03 (0.00s)
 === RUN   TestFileMgr_OpenThisFile_04
---- PASS: TestFileMgr_OpenThisFile_04 (0.04s)
+--- PASS: TestFileMgr_OpenThisFile_04 (0.07s)
 === RUN   TestFileMgr_OpenThisFileReadOnly_01
---- PASS: TestFileMgr_OpenThisFileReadOnly_01 (0.04s)
+--- PASS: TestFileMgr_OpenThisFileReadOnly_01 (0.03s)
 === RUN   TestFileMgr_OpenThisFileReadOnly_02
---- PASS: TestFileMgr_OpenThisFileReadOnly_02 (0.03s)
+--- PASS: TestFileMgr_OpenThisFileReadOnly_02 (0.02s)
 === RUN   TestFileMgr_OpenThisFileReadOnly_03
---- PASS: TestFileMgr_OpenThisFileReadOnly_03 (0.00s)
+--- PASS: TestFileMgr_OpenThisFileReadOnly_03 (0.01s)
 === RUN   TestFileMgr_OpenThisFileReadOnly_04
 --- PASS: TestFileMgr_OpenThisFileReadOnly_04 (0.00s)
 === RUN   TestFileMgr_OpenThisFileReadWrite_01
---- PASS: TestFileMgr_OpenThisFileReadWrite_01 (0.04s)
+--- PASS: TestFileMgr_OpenThisFileReadWrite_01 (0.13s)
 === RUN   TestFileMgr_OpenThisFileReadWrite_02
---- PASS: TestFileMgr_OpenThisFileReadWrite_02 (0.04s)
+--- PASS: TestFileMgr_OpenThisFileReadWrite_02 (0.21s)
 === RUN   TestFileMgr_OpenThisFileWriteOnly_01
---- PASS: TestFileMgr_OpenThisFileWriteOnly_01 (0.01s)
+--- PASS: TestFileMgr_OpenThisFileWriteOnly_01 (0.00s)
 === RUN   TestFileMgr_OpenThisFileWriteOnly_02
 --- PASS: TestFileMgr_OpenThisFileWriteOnly_02 (0.04s)
 === RUN   TestFileMgr_OpenThisFileWriteOnlyAppend_01
---- PASS: TestFileMgr_OpenThisFileWriteOnlyAppend_01 (0.08s)
+--- PASS: TestFileMgr_OpenThisFileWriteOnlyAppend_01 (0.12s)
 === RUN   TestFileMgr_OpenThisFileWriteOnlyAppend_02
 --- PASS: TestFileMgr_OpenThisFileWriteOnlyAppend_02 (0.01s)
 === RUN   TestFileMgr_OpenThisFileWriteOnlyAppend_03
 --- PASS: TestFileMgr_OpenThisFileWriteOnlyAppend_03 (0.00s)
 === RUN   TestFileMgr_ReadAllFile_01
---- PASS: TestFileMgr_ReadAllFile_01 (2.08s)
+--- PASS: TestFileMgr_ReadAllFile_01 (2.07s)
 === RUN   TestFileMgr_ReadAllFile_02
---- PASS: TestFileMgr_ReadAllFile_02 (1.06s)
+--- PASS: TestFileMgr_ReadAllFile_02 (1.04s)
 === RUN   TestFileMgr_ReadAllFile_03
---- PASS: TestFileMgr_ReadAllFile_03 (0.06s)
+--- PASS: TestFileMgr_ReadAllFile_03 (0.04s)
 === RUN   TestFileMgr_ReadFileLine_01
 --- PASS: TestFileMgr_ReadFileLine_01 (0.04s)
 === RUN   TestFileMgr_ReadFileLine_02
 --- PASS: TestFileMgr_ReadFileLine_02 (0.04s)
 === RUN   TestFileMgr_ReadFileLine_03
---- PASS: TestFileMgr_ReadFileLine_03 (0.04s)
+--- PASS: TestFileMgr_ReadFileLine_03 (0.08s)
 === RUN   TestFileMgr_ReadFileLine_04
 --- PASS: TestFileMgr_ReadFileLine_04 (0.04s)
 === RUN   TestFileMgr_ReadFileLine_05
@@ -1785,15 +1785,15 @@
 === RUN   TestFileMgr_ReadFileBytes_01
 --- PASS: TestFileMgr_ReadFileBytes_01 (0.04s)
 === RUN   TestFileMgr_ReadFileBytes_02
---- PASS: TestFileMgr_ReadFileBytes_02 (0.04s)
+--- PASS: TestFileMgr_ReadFileBytes_02 (0.08s)
 === RUN   TestFileMgr_ReadFileBytes_03
---- PASS: TestFileMgr_ReadFileBytes_03 (0.13s)
+--- PASS: TestFileMgr_ReadFileBytes_03 (0.03s)
 === RUN   TestFileMgr_ReadFileString_01
---- PASS: TestFileMgr_ReadFileString_01 (0.11s)
+--- PASS: TestFileMgr_ReadFileString_01 (0.04s)
 === RUN   TestFileMgr_ReadFileString_02
---- PASS: TestFileMgr_ReadFileString_02 (0.04s)
+--- PASS: TestFileMgr_ReadFileString_02 (0.13s)
 === RUN   TestFileMgr_ReadFileString_03
---- PASS: TestFileMgr_ReadFileString_03 (0.04s)
+--- PASS: TestFileMgr_ReadFileString_03 (0.06s)
 === RUN   TestFileMgr_ReadFileString_04
 --- PASS: TestFileMgr_ReadFileString_04 (0.04s)
 === RUN   TestFileMgr_ReadFileString_05
@@ -1801,7 +1801,7 @@
 === RUN   TestFileMgr_ReadFileString_06
 --- PASS: TestFileMgr_ReadFileString_06 (0.04s)
 === RUN   TestFileMgr_ReadFileString_07
---- PASS: TestFileMgr_ReadFileString_07 (0.04s)
+--- PASS: TestFileMgr_ReadFileString_07 (0.03s)
 === RUN   TestFileMgr_ResetFileInfo_01
 --- PASS: TestFileMgr_ResetFileInfo_01 (0.04s)
 === RUN   TestFileMgr_SetFileInfo_01
@@ -1811,7 +1811,7 @@
 === RUN   TestFileMgr_SetFileInfo_03
 --- PASS: TestFileMgr_SetFileInfo_03 (0.00s)
 === RUN   TestFileMgr_SetFileInfo_04
---- PASS: TestFileMgr_SetFileInfo_04 (0.01s)
+--- PASS: TestFileMgr_SetFileInfo_04 (0.00s)
 === RUN   TestFileMgr_SetFileMgrFromDirMgrFileName_01
 --- PASS: TestFileMgr_SetFileMgrFromDirMgrFileName_01 (0.00s)
 === RUN   TestFileMgr_SetFileMgrFromDirMgrFileName_02
@@ -1835,11 +1835,11 @@
 === RUN   TestFileMgr_SetFileMgrFromPathFileName_05
 --- PASS: TestFileMgr_SetFileMgrFromPathFileName_05 (0.00s)
 === RUN   TestFileMgr_WriteBytesToFile_01
---- PASS: TestFileMgr_WriteBytesToFile_01 (0.05s)
+--- PASS: TestFileMgr_WriteBytesToFile_01 (0.09s)
 === RUN   TestFileMgr_WriteBytesToFile_02
 --- PASS: TestFileMgr_WriteBytesToFile_02 (0.00s)
 === RUN   TestFileMgr_WriteBytesToFile_03
---- PASS: TestFileMgr_WriteBytesToFile_03 (0.06s)
+--- PASS: TestFileMgr_WriteBytesToFile_03 (0.04s)
 === RUN   TestFileMgr_WriteBytesToFile_04
 --- PASS: TestFileMgr_WriteBytesToFile_04 (0.04s)
 === RUN   TestFileMgr_WriteStrToFile_01
@@ -1847,7 +1847,7 @@
 === RUN   TestFileMgr_WriteStrToFile_02
 --- PASS: TestFileMgr_WriteStrToFile_02 (0.00s)
 === RUN   TestFileMgr_WriteStrToFile_03
---- PASS: TestFileMgr_WriteStrToFile_03 (0.04s)
+--- PASS: TestFileMgr_WriteStrToFile_03 (0.08s)
 === RUN   TestFileMgrCollection_AddFileMgrCollection_01
 --- PASS: TestFileMgrCollection_AddFileMgrCollection_01 (0.02s)
 === RUN   TestFileMgrCollection_AddFileMgrCollection_02
@@ -1867,19 +1867,19 @@
 === RUN   TestFileMgrCollection_AddFileMgrByDirStrFileNameStr_01
 --- PASS: TestFileMgrCollection_AddFileMgrByDirStrFileNameStr_01 (0.03s)
 === RUN   TestFileMgrCollection_AddFileInfo_01
---- PASS: TestFileMgrCollection_AddFileInfo_01 (0.00s)
+--- PASS: TestFileMgrCollection_AddFileInfo_01 (0.01s)
 === RUN   TestFileMgrCollection_CopyFilesToDir_01
---- PASS: TestFileMgrCollection_CopyFilesToDir_01 (1.15s)
+--- PASS: TestFileMgrCollection_CopyFilesToDir_01 (1.13s)
 === RUN   TestFileMgrCollection_CopyFilesToDir_02
 --- PASS: TestFileMgrCollection_CopyFilesToDir_02 (0.00s)
 === RUN   TestFileMgrCollection_CopyOut_01
 --- PASS: TestFileMgrCollection_CopyOut_01 (0.00s)
 === RUN   TestFileMgrCollection_CopyOut_02
---- PASS: TestFileMgrCollection_CopyOut_02 (0.01s)
+--- PASS: TestFileMgrCollection_CopyOut_02 (0.00s)
 === RUN   TestFileMgrCollection_CopyOut_03
 --- PASS: TestFileMgrCollection_CopyOut_03 (0.00s)
 === RUN   TestDirectoryTreeInfo_CopyToDirectoryTree_01
---- PASS: TestDirectoryTreeInfo_CopyToDirectoryTree_01 (7.43s)
+--- PASS: TestDirectoryTreeInfo_CopyToDirectoryTree_01 (7.58s)
 === RUN   TestFileMgrCollection_DeleteAtIndex_01
 --- PASS: TestFileMgrCollection_DeleteAtIndex_01 (0.00s)
 === RUN   TestFileMgrCollection_DeleteAtIndex_02
@@ -1897,7 +1897,7 @@
 === RUN   TestFileMgrCollection_DeleteAtIndex_08
 --- PASS: TestFileMgrCollection_DeleteAtIndex_08 (0.00s)
 === RUN   TestFileMgrCollection_FindFiles_01
---- PASS: TestFileMgrCollection_FindFiles_01 (0.01s)
+--- PASS: TestFileMgrCollection_FindFiles_01 (0.00s)
 === RUN   TestFileMgrCollection_FindFiles_02
 --- PASS: TestFileMgrCollection_FindFiles_02 (0.00s)
 === RUN   TestFileMgrCollection_GetFileMgrArray_01
@@ -1927,7 +1927,7 @@
 === RUN   TestFileMgrCollection_InsertFileMgrAtIndex_02
 --- PASS: TestFileMgrCollection_InsertFileMgrAtIndex_02 (0.00s)
 === RUN   TestFileMgrCollection_InsertFileMgrAtIndex_03
---- PASS: TestFileMgrCollection_InsertFileMgrAtIndex_03 (0.00s)
+--- PASS: TestFileMgrCollection_InsertFileMgrAtIndex_03 (0.01s)
 === RUN   TestFileMgrCollection_InsertFileMgrAtIndex_04
 --- PASS: TestFileMgrCollection_InsertFileMgrAtIndex_04 (0.00s)
 === RUN   TestFileMgrCollection_InsertFileMgrAtIndex_05
@@ -1969,7 +1969,7 @@
 === RUN   TestFileMgrCollection_PopFMgrAtIndex_05
 --- PASS: TestFileMgrCollection_PopFMgrAtIndex_05 (0.00s)
 === RUN   TestFileMgrCollection_PopFMgrAtIndex_06
---- PASS: TestFileMgrCollection_PopFMgrAtIndex_06 (0.00s)
+--- PASS: TestFileMgrCollection_PopFMgrAtIndex_06 (0.01s)
 === RUN   TestFileMgrCollection_PopLastFMgr_01
 --- PASS: TestFileMgrCollection_PopLastFMgr_01 (0.00s)
 === RUN   TestFileMgrCollection_PopLastFMgr_02
@@ -2329,7 +2329,7 @@
 === RUN   TestFileOpenType_ParseString_34
 --- PASS: TestFileOpenType_ParseString_34 (0.00s)
 === RUN   TestFileOps_CopyOut_01
---- PASS: TestFileOps_CopyOut_01 (0.03s)
+--- PASS: TestFileOps_CopyOut_01 (0.00s)
 === RUN   TestFileOps_CopyOut_02
 --- PASS: TestFileOps_CopyOut_02 (0.00s)
 === RUN   TestFileOps_Equal_01
@@ -2351,15 +2351,21 @@
 === RUN   TestFileOps_ExecuteFileOperation_01
 --- PASS: TestFileOps_ExecuteFileOperation_01 (0.00s)
 === RUN   TestFileOps_ExecuteFileOperation_02
---- PASS: TestFileOps_ExecuteFileOperation_02 (0.14s)
+--- PASS: TestFileOps_ExecuteFileOperation_02 (0.11s)
 === RUN   TestFileOps_ExecuteFileOperation_03
---- PASS: TestFileOps_ExecuteFileOperation_03 (0.11s)
+--- PASS: TestFileOps_ExecuteFileOperation_03 (0.12s)
 === RUN   TestFileOps_ExecuteFileOperation_04
 --- PASS: TestFileOps_ExecuteFileOperation_04 (0.07s)
 === RUN   TestFileOps_ExecuteFileOperation_05
---- PASS: TestFileOps_ExecuteFileOperation_05 (0.10s)
+--- PASS: TestFileOps_ExecuteFileOperation_05 (0.11s)
 === RUN   TestFileOps_ExecuteFileOperation_06
---- PASS: TestFileOps_ExecuteFileOperation_06 (0.06s)
+--- PASS: TestFileOps_ExecuteFileOperation_06 (0.07s)
+=== RUN   TestFileOps_ExecuteFileOperation_07
+--- PASS: TestFileOps_ExecuteFileOperation_07 (0.08s)
+=== RUN   TestFileOps_ExecuteFileOperation_08
+--- PASS: TestFileOps_ExecuteFileOperation_08 (0.10s)
+=== RUN   TestFileOps_ExecuteFileOperation_09
+--- PASS: TestFileOps_ExecuteFileOperation_09 (0.09s)
 === RUN   TestFileOps_IsInitialized
 --- PASS: TestFileOps_IsInitialized (0.00s)
 === RUN   TestFileOps_NewByDirMgrFileName_01
@@ -2391,7 +2397,7 @@
 === RUN   TestFileOps_NewByDirStrsAndFileNameExtStrs_08
 --- PASS: TestFileOps_NewByDirStrsAndFileNameExtStrs_08 (0.00s)
 === RUN   TestFileOps_NewByFileMgrs_01
---- PASS: TestFileOps_NewByFileMgrs_01 (0.00s)
+--- PASS: TestFileOps_NewByFileMgrs_01 (0.01s)
 === RUN   TestFileOps_NewByFileMgrs_02
 --- PASS: TestFileOps_NewByFileMgrs_02 (0.00s)
 === RUN   TestFileOps_NewByFileMgrs_03
@@ -2487,9 +2493,9 @@
 === RUN   TestFileOperationCode_Value_07
 --- PASS: TestFileOperationCode_Value_07 (0.00s)
 === RUN   TestFileOpsCollection_AddByPathFileNameExtStrs_01
---- PASS: TestFileOpsCollection_AddByPathFileNameExtStrs_01 (0.02s)
+--- PASS: TestFileOpsCollection_AddByPathFileNameExtStrs_01 (0.01s)
 === RUN   TestFileOpsCollection_AddByDirStrsAndFileNameExtStrs_01
---- PASS: TestFileOpsCollection_AddByDirStrsAndFileNameExtStrs_01 (0.01s)
+--- PASS: TestFileOpsCollection_AddByDirStrsAndFileNameExtStrs_01 (0.00s)
 === RUN   TestFileOpsCollection_AddByFileMgrs_01
 --- PASS: TestFileOpsCollection_AddByFileMgrs_01 (0.02s)
 === RUN   TestFileOpsCollection_AddByDirMgrFileName_01
@@ -3029,4 +3035,4 @@
 === RUN   TestPreProcessPathCode_ParseString_06
 --- PASS: TestPreProcessPathCode_ParseString_06 (0.00s)
 PASS
-ok  	MikeAustin71/pathfileopsgo/pathfileops	94.869s
+ok  	MikeAustin71/pathfileopsgo/pathfileops	76.355s
