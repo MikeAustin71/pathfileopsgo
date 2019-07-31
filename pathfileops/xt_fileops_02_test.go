@@ -453,7 +453,7 @@ func TestFileOps_NewByDirStrsAndFileNameExtStrs_08(t *testing.T) {
   sourceFileNameExt := "level_2_0_test.txt"
 
   destDir := "../createFilesTest/Level01/Level02"
-  // destFileNameExt := "TestFileOps_NewByDirStrsAndFileNameExtStrs_08.txt"
+
   destFileNameExt := ""
 
   expectedAbsDestFile, err := FileHelper{}.MakeAbsolutePath(destDir + "/" + sourceFileNameExt)
