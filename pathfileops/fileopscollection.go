@@ -15,14 +15,23 @@ type FileOpsCollection struct {
 
 // AddByFileOps - Adds a FileOps object to the existing collection
 // based on the 'FileOps' Input parameter.
-func (fOpsCol *FileOpsCollection) AddByFileOps(fileOp FileOps) {
+func (fOpsCol *FileOpsCollection) AddByFileOps(fileOp FileOps) error {
+
+  ePrefix := "FileOpsCollection.AddByFileOps() "
 
   if fOpsCol.fileOps == nil {
     fOpsCol.fileOps = make([]FileOps, 0, 100)
   }
 
+  if !fileOp.IsInitialized() {
+
+    return errors.New(ePrefix +
+      "ERROR: Input parameter 'fileOp' is NOT initialized!\n")
+  }
+
   fOpsCol.fileOps = append(fOpsCol.fileOps, fileOp.CopyOut())
 
+  return nil
 }
 
 // AddByFileMgrs - Adds another FileOps object to the collection based source
@@ -173,7 +182,16 @@ func (fOpsCol *FileOpsCollection) CopyOut() (FileOpsCollection, error) {
   }
 
   for i := 0; i < arrayLen; i++ {
-    fOpsCol2.AddByFileOps(fOpsCol.fileOps[i].CopyOut())
+
+    err := fOpsCol2.AddByFileOps(fOpsCol.fileOps[i].CopyOut())
+
+    if err != nil {
+      return FileOpsCollection{},
+        fmt.Errorf(ePrefix +
+          "Error returned by fOpsCol2.AddByFileOps(fOp)\n" +
+          "Index='%v'\nError='%v'\n",
+          i, err.Error())
+    }
   }
 
   return fOpsCol2, nil

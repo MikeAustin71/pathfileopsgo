@@ -318,7 +318,7 @@ func (fops FileOps) NewByDirMgrFileName(
 
   if err != nil {
     return FileOps{},
-      fmt.Errorf(ePrefix+"Source File Error: %v", err.Error())
+      fmt.Errorf(ePrefix+"Source File Error:\n%v\n", err.Error())
   }
 
   if len(destinationFileNameExt) == 0 {
