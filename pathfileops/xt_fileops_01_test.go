@@ -2069,6 +2069,129 @@ func TestFileOps_ExecuteFileOperation_16(t *testing.T) {
   return
 }
 
+func TestFileOps_ExecuteFileOperation_17(t *testing.T) {
+
+  sourceFile :=
+    "../checkfiles/TestFileOps_ExecuteFileOperationSrc_17/src_sample.htm"
+
+  sourceDir := "../checkfiles/TestFileOps_ExecuteFileOperationSrc_17"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(sourceDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(sourceDir)\n" +
+      "sourceDir='%v'\n" +
+      "Error='%v'\n", sourceDir, err.Error())
+    _ = fh.DeleteDirPathAll(sourceDir)
+    return
+  }
+
+  destFile :=
+    "../createFilesTest/TestFileOps_ExecuteFileOperationDst_17/destSample.htm"
+
+  destDir := "../createFilesTest/TestFileOps_ExecuteFileOperationDst_17"
+
+  err = fh.DeleteDirPathAll(destDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(destDir)\n" +
+      "destDir='%v'\n" +
+      "Error='%v'\n", destDir, err.Error())
+    _ = fh.DeleteDirPathAll(sourceDir)
+    _ = fh.DeleteDirPathAll(destDir)
+    return
+  }
+
+  if fh.DoesFileExist(destDir) {
+    t.Errorf("Test Setup Error: After delete operation, the destination directory\n" +
+      "Still Exists!\n" +
+      "destDir='%v'\n", destDir)
+
+    _ = fh.DeleteDirPathAll(sourceDir)
+    _ = fh.DeleteDirPathAll(destDir)
+
+    return
+  }
+
+  fOp, err := FileOps{}.NewByPathFileNameExtStrs(sourceFile, destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileOps{}.NewByPathFileNameExtStrs(sourceFile, destFile)\n" +
+      "sourceFile='%v'\n" +
+      "destFile='%v'\n" +
+      "Error='%v'\n", sourceFile, destFile, err.Error())
+    _ = fh.DeleteDirPathAll(sourceDir)
+    _ = fh.DeleteDirPathAll(destDir)
+    return
+  }
+
+  err = fOp.ExecuteFileOperation(FileOpCode.CreateDestinationDirAndFile())
+
+  if err != nil {
+    t.Errorf("Error returned by fOp.ExecuteFileOperation(" +
+      "FileOpCode.CreateDestinationDirAndFile())\n" +
+      "Error='%v'.\n", err.Error())
+    _ = fh.DeleteDirPathAll(sourceDir)
+    _ = fh.DeleteDirPathAll(destDir)
+    return
+  }
+
+  if fh.DoesFileExist(sourceDir) {
+    t.Errorf("ERROR: After create destination directory/file operation,\n" +
+      "the source directory DOES EXIST!\n" +
+      "sourceDir='%v'\n", sourceDir)
+
+    _ = fh.DeleteDirPathAll(sourceDir)
+    _ = fh.DeleteDirPathAll(destDir)
+
+    return
+  }
+
+  if !fh.DoesFileExist(destDir) {
+    t.Errorf("ERROR: After create destination directory/file operation," +
+      "the destination directory DOES NOT EXIST!\n" +
+      "destDir='%v'\n", destDir)
+
+    _ = fh.DeleteDirPathAll(sourceDir)
+    _ = fh.DeleteDirPathAll(destDir)
+
+    return
+  }
+
+
+  if !fh.DoesFileExist(destFile) {
+    t.Errorf("ERROR: After create destination directory/file operation," +
+      "the destination file DOES NOT EXIST!\n" +
+      "destFile='%v'\n", destFile)
+
+    _ = fh.DeleteDirPathAll(sourceDir)
+    _ = fh.DeleteDirPathAll(destDir)
+
+    return
+  }
+
+  err = fh.DeleteDirPathAll(destDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(destDir)\n" +
+      "destDir='%v'\n" +
+      "Error='%v'\n",
+      destDir, err.Error())
+  }
+
+  err = fh.DeleteDirPathAll(sourceDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(sourceDir)\n" +
+      "sourceDir='%v'\n" +
+      "Error='%v'\n", sourceDir, err.Error())
+  }
+
+  return
+}
+
 func TestFileOps_IsInitialized_01(t *testing.T) {
 
   sourceFile := "../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_2_0_test.txt"
