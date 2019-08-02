@@ -546,3 +546,19 @@ func TestFileOpsCollection_ExecuteFileOperations_01(t *testing.T) {
   return
 }
 
+func TestFileOpsCollection_ExecuteFileOperations_02(t *testing.T) {
+
+  fOpsCol := FileOpsCollection{}
+
+  fOpsCol.fileOps = nil
+
+  err := fOpsCol.ExecuteFileOperations(FileOpCode.CopySourceToDestinationByIo())
+
+  if err == nil {
+    t.Error("Expected an error return from fOpsCol.ExecuteFileOperations(" +
+      "FileOpCode.CopySourceToDestinationByIo())\n" +
+      "because the File Operations is empty.\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+}
+
