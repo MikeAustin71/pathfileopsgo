@@ -1,6 +1,9 @@
 package pathfileops
 
-import "testing"
+import (
+  "strings"
+  "testing"
+)
 
 func TestFileOpsCollection_DeleteAtIndex_01(t *testing.T) {
 
@@ -419,5 +422,127 @@ func TestFileOpsCollection_GetFileOpsAtIndex_01(t *testing.T) {
       "Instead, destination file[2]='%v' ", df[2], destFile.GetAbsolutePathFileName())
   }
 
+}
+
+func TestFileOpsCollection_ExecuteFileOperations_01(t *testing.T) {
+
+  sf := make([]string, 5, 10)
+
+  sf[0] = "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  sf[1] = "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+  sf[2] = "../filesfortest/levelfilesfortest/level_0_2_test.txt"
+  sf[3] = "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+  sf[4] = "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+
+  destDir := "../dirmgrtests/TestFileOpsCollection_ExecuteFileOperations_01"
+
+  dfFileNameExt := []string{  "level_0_0_test.txt",
+                              "level_0_1_test.txt",
+                              "level_0_2_test.txt",
+                              "level_0_3_test.txt",
+                              "level_0_4_test.txt" }
+
+  df := make([]string, 5, 10)
+
+  df[0] =  destDir + "/" + dfFileNameExt[0]
+  df[1] =  destDir + "/" + dfFileNameExt[1]
+  df[2] =  destDir + "/" + dfFileNameExt[2]
+  df[3] =  destDir + "/" + dfFileNameExt[3]
+  df[4] =  destDir + "/" + dfFileNameExt[4]
+
+
+  dstDMgr,
+  err := DirMgr{}.New(destDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(destDir)\n" +
+      "destDir='%v'\nError='%v'\n", destDir, err.Error())
+    return
+  }
+
+  fOpsCol := FileOpsCollection{}.New()
+
+  for i := 0; i < 5; i++ {
+
+    err := fOpsCol.AddByPathFileNameExtStrs(sf[i], df[i])
+
+    if err != nil {
+      t.Errorf("Error returned by fOpsCol.AddByPathFileNameExtStrs(sf[i], df[i]). "+
+        "i='%v' Error='%v' ", i, err.Error())
+      _ = dstDMgr.DeleteAll()
+      return
+    }
+  }
+
+  err = fOpsCol.ExecuteFileOperations(FileOpCode.CopySourceToDestinationByIo())
+
+  if err != nil {
+    t.Errorf("Error returned by fOpsCol.ExecuteFileOperations(" +
+      "FileOpCode.CopySourceToDestinationByIo())\n" +
+      "Error='%v'\n", err.Error())
+
+    _ = dstDMgr.DeleteAll()
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  destTreeInfo, err := dstDMgr.FindFilesBySelectCriteria(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by dstDMgr.FindFilesBySelectCriteria(fsc)\n" +
+      "Error='%v'\n", err.Error())
+
+    _ = dstDMgr.DeleteAll()
+    return
+  }
+
+  numOfFiles := destTreeInfo.GetNumOfFiles()
+
+  if numOfFiles != 5 {
+    t.Errorf("ERROR: Expected the number of files in the destination directory would equal '5'.\n" +
+      "Instead, number of files='%v'\n", numOfFiles)
+    _ = dstDMgr.DeleteAll()
+    return
+  }
+
+  foundFile := false
+
+  for k:=0; k < 5; k++ {
+
+    fMgr, err :=  destTreeInfo.PeekFileMgrAtIndex(k)
+
+    if err != nil {
+      t.Errorf("Error returned by destTreeInfo.PeekFileMgrAtIndex(%v)\n" +
+        "Error='%v'\n", k, err.Error())
+      _ = dstDMgr.DeleteAll()
+      return
+    }
+
+    fileNameExt := strings.ToLower(fMgr.GetFileNameExt())
+    foundFile = false
+
+    for j:=0; j < 5; j++ {
+
+      if fileNameExt == dfFileNameExt[j] {
+        foundFile = true
+      }
+    }
+
+    if foundFile == false {
+      t.Errorf("Copied File NOT Found: %v", fileNameExt)
+      _ = dstDMgr.DeleteAll()
+      return
+    }
+  }
+
+  err = dstDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Error returned by dstDMgr.DeleteAll()\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  return
 }
 

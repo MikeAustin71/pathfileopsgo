@@ -322,7 +322,7 @@ func (fOpsCol *FileOpsCollection) ExecuteFileOperations(
 
   if err != nil {
     return fmt.Errorf(ePrefix+
-      "Error returned by initial fmt.Fprint(). %v", err.Error())
+      "Error returned by initial fmt.Fprint(). %v\n", err.Error())
   }
 
   errNo := 0
@@ -339,7 +339,7 @@ func (fOpsCol *FileOpsCollection) ExecuteFileOperations(
 
       if err2 != nil {
         return fmt.Errorf(ePrefix+
-          "Error returned by fmt.Fprint(). %s", err2.Error())
+          "Error returned by fmt.Fprint(). %s\n", err2.Error())
       }
 
     }
