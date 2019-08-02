@@ -251,6 +251,47 @@ func (fOpsCol *FileOpsCollection) DeleteAtIndex(idx int) error {
   return nil
 }
 
+// Equal - Compares the input parameter FileOpsCollection to the current
+// FileOpsCollection instance. If they are equal, this method returns
+// true.
+//
+func (fOpsCol *FileOpsCollection) Equal(fOpsCol2 *FileOpsCollection) bool {
+
+  if fOpsCol2 == nil {
+    return false
+  }
+
+  if fOpsCol.fileOps == nil {
+    fOpsCol.fileOps = make([]FileOps, 0, 50)
+  }
+
+  if fOpsCol2.fileOps == nil {
+    fOpsCol2.fileOps = make([]FileOps, 0, 50)
+  }
+
+  if len(fOpsCol.fileOps) != len(fOpsCol2.fileOps) {
+    return false
+  }
+
+  for i:=0; i < len(fOpsCol.fileOps); i++ {
+
+    if !fOpsCol.fileOps[i].source.Equal(&fOpsCol2.fileOps[i].source) {
+      return false
+    }
+
+    if !fOpsCol.fileOps[i].destination.Equal(&fOpsCol2.fileOps[i].destination) {
+      return false
+    }
+
+    if int(fOpsCol.fileOps[i].opToExecute) != int(fOpsCol2.fileOps[i].opToExecute) {
+      return false
+    }
+
+  }
+
+  return true
+}
+
 // ExecuteFileOperations - Executes a file operation on
 // each member of the File Operations Collection. Any
 // errors are collected and returned in an error array.
