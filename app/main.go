@@ -26,44 +26,144 @@ import (
 
 func main() {
 
-  /*
-    basePath, err := mainTests{}.getBaseProjectPath(true)
-
-    if err != nil {
-      fmt.Printf("Error returned by mainTests{}.getBaseProjectPath(true)\n" +
-        "Error='%v'", err.Error())
-      return
-    }
-  fh := pf.FileHelper{}
-
-  xDir, err := fh.GetCurrentDir()
-
-  if err != nil {
-    fmt.Printf("Error returned from fh.GetCurrentDir().\n"+
-      "Error='%v'", err.Error())
-    return
-  }
-
-  volName := fp.VolumeName(xDir)
-
-  origDir := fh.AdjustPathSlash(volName)
-
-  expectedPath := origDir
-
-  if strings.Contains(strings.ToLower(runtime.GOOS), "windows") {
-    expectedPath = expectedPath + string(os.PathSeparator)
-  }
-    origDir := "../createFilesTest/Level01/Level02"
-
-  */
-
-  mainTests{}.mainTest103FHlprConsolidateErrors()
+  mainTests{}.mainTest104FileOpsColEqual()
 
 }
 
 type mainTests struct {
   Input  string
   Output string
+}
+
+func (mtst mainTests) mainTest104FileOpsColEqual() {
+
+  sf := make([]string, 5, 10)
+
+  sf[0] = "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  sf[1] = "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+  sf[2] = "../filesfortest/levelfilesfortest/level_0_2_test.txt"
+  sf[3] = "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+  sf[4] = "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+
+  df := make([]string, 5, 10)
+
+  df[0] = "../dirmgrtests/level_0_0_test.txt"
+  df[1] = "../dirmgrtests/level_0_1_test.txt"
+  df[2] = "../dirmgrtests/level_0_2_test.txt"
+  df[3] = "../dirmgrtests/level_0_3_test.txt"
+  df[4] = "../dirmgrtests/level_0_4_test.txt"
+
+  fOpsCol1 := pf.FileOpsCollection{}.New()
+
+  for i := 0; i < 5; i++ {
+
+    fOp, err := pf.FileOps{}.NewByPathFileNameExtStrs(sf[i], df[i])
+
+    if err != nil {
+      fmt.Printf("Error returned by FileOps{}.NewByPathFileNameExtStrs(sf[i], df[i]). "+
+        "i='%v'\n" +
+        "sf[i]='%v'\n" +
+        "df[i]='%v'\n" +
+        "Error='%v'\n", i,sf[i], df[i], err.Error())
+      return
+    }
+
+    err = fOp.SetFileOpsCode(pf.FileOpCode.CopySourceToDestinationByHardLink())
+
+    if err != nil {
+      fmt.Printf("Error returned by fOp.SetFileOpsCode(FileOpCode.CopySourceToDestinationByIo())\n" +
+        "Error='%v'\n", err.Error())
+      return
+    }
+
+    err = fOpsCol1.AddByFileOps(fOp)
+
+    if err != nil {
+      fmt.Printf("Error returned by fOpsCol1.AddByFileOps(fOp). "+
+        "i='%v'\n" +
+        "srcFile='%v'\n" +
+        "df[i]='%v'\n" +
+        "Error='%v' ", i,sf[i], df[i], err.Error())
+      return
+    }
+
+  }
+
+  fOpsCol2 := pf.FileOpsCollection{}.New()
+
+  for i := 0; i < 5; i++ {
+
+    if i == 2 {
+
+      fOp, err := pf.FileOps{}.NewByPathFileNameExtStrs(sf[i], df[i])
+
+      if err != nil {
+        fmt.Printf("Error returned by FileOps{}.NewByPathFileNameExtStrs(sf[i], df[i]). "+
+          "i='%v'\n" +
+          "sf[i]='%v'\n" +
+          "df[i]='%v'\n" +
+          "Error='%v'\n", i,sf[i], df[i], err.Error())
+        return
+      }
+
+      err = fOp.SetFileOpsCode(pf.FileOpCode.CopySourceToDestinationByIo())
+
+      if err != nil {
+        fmt.Printf("Error returned by fOp.SetFileOpsCode(FileOpCode.CopySourceToDestinationByIo())\n" +
+          "Error='%v'\n", err.Error())
+        return
+      }
+
+      err = fOpsCol2.AddByFileOps(fOp)
+
+      if err != nil {
+        fmt.Printf("Error returned by fOpsCol2.AddByFileOps(fOp). "+
+          "i='%v'\n" +
+          "srcFile='%v'\n" +
+          "df[i]='%v'\n" +
+          "Error='%v' ", i,sf[i], df[i], err.Error())
+        return
+      }
+
+    } else {
+
+      fOp, err := pf.FileOps{}.NewByPathFileNameExtStrs(sf[i], df[i])
+
+      if err != nil {
+        fmt.Printf("Error returned by FileOps{}.NewByPathFileNameExtStrs(sf[i], df[i]). "+
+          "i='%v'\n" +
+          "sf[i]='%v'\n" +
+          "df[i]='%v'\n" +
+          "Error='%v'\n", i,sf[i], df[i], err.Error())
+        return
+      }
+
+      err = fOp.SetFileOpsCode(pf.FileOpCode.CopySourceToDestinationByHardLink())
+
+      if err != nil {
+        fmt.Printf("Error returned by fOp.SetFileOpsCode(FileOpCode.CopySourceToDestinationByIo())\n" +
+          "Error='%v'\n", err.Error())
+        return
+      }
+
+      err = fOpsCol2.AddByFileOps(fOp)
+
+      if err != nil {
+        fmt.Printf("Error returned by fOpsCol2.AddByFileOps(fOp). "+
+          "i='%v'\n" +
+          "srcFile='%v'\n" +
+          "df[i]='%v'\n" +
+          "Error='%v' ", i,sf[i], df[i], err.Error())
+        return
+      }
+    }
+  }
+
+  if fOpsCol1.Equal(&fOpsCol2) == true {
+    fmt.Println("ERROR: Expected that fOpsCol1!=fOpsCol2.\n" +
+      "However, THEY ARE EQUAL!!!")
+  }
+
 }
 
 func (mtst mainTests) mainTest103FHlprConsolidateErrors() {
@@ -194,7 +294,7 @@ func (mtst mainTests) mainTest98ParseValidPathStr(pathStr string) {
   dMgr := pf.DirMgr{}
 
   validPathDto,
-    err := dMgr.ParseValidPathStr(pathStr)
+  err := dMgr.ParseValidPathStr(pathStr)
 
   if err != nil {
     fmt.Printf("Error returned by dMgr.ParseValidPathStr(pathStr)\n"+
@@ -657,7 +757,7 @@ func (mtst mainTests) mainTest89MoveSubDirectoryTree() {
   fsc := pf.FileSelectionCriteria{}
 
   _,
-    errs := originDMgr.CopyDirectoryTree(srcDMgr, true, fsc)
+  errs := originDMgr.CopyDirectoryTree(srcDMgr, true, fsc)
 
   if len(errs) > 0 {
     fmt.Printf("Test Setup Errors returned by originDMgr.CopyDirectoryTree(srcDMgr, true, fsc).\n"+
@@ -667,7 +767,7 @@ func (mtst mainTests) mainTest89MoveSubDirectoryTree() {
   }
 
   dirMoveStats,
-    errs :=
+  errs :=
     srcDMgr.MoveSubDirectoryTree(destDMgr)
 
   if len(errs) > 0 {
@@ -728,7 +828,7 @@ func (mtst mainTests) mainTest88CopySubDirectoryTree() {
   copyEmptyDirectories = false
 
   dTreeStats,
-    errs := srcDMgr.CopySubDirectoryTree(targetDMgr, copyEmptyDirectories, fsc)
+  errs := srcDMgr.CopySubDirectoryTree(targetDMgr, copyEmptyDirectories, fsc)
 
   if len(errs) > 0 {
     fmt.Printf("Errors returned by srcDMgr.CopySubDirectoryTree(targetDMgr, true, fsc)\n"+
@@ -917,7 +1017,7 @@ func (mtst mainTests) mainTest87CopyDirectoryTree() {
   fsc := pf.FileSelectionCriteria{}
 
   _,
-    errs := setUpDMgr1.CopyDirectoryTree(srcDMgr, false, fsc)
+  errs := setUpDMgr1.CopyDirectoryTree(srcDMgr, false, fsc)
 
   if len(errs) > 0 {
     fmt.Printf("Test Setup Errors returned by setUpDMgr1.CopyDirectoryTree(srcDMgr, false, fsc).\n"+
@@ -975,7 +1075,7 @@ func (mtst mainTests) mainTest87CopyDirectoryTree() {
 
   // Copy '.txt' files only to targetDMgr
   dtreeCopyStats,
-    errs := srcDMgr.CopyDirectoryTree(
+  errs := srcDMgr.CopyDirectoryTree(
     targetDMgr,
     false,
     fsc)
@@ -1124,7 +1224,7 @@ func (mtst mainTests) mainTest86CopySubDirTree() {
   copyEmptyDirectories = false
 
   dtreeStats,
-    errs := srcDMgr.CopySubDirectoryTree(targetDMgr, copyEmptyDirectories, fsc)
+  errs := srcDMgr.CopySubDirectoryTree(targetDMgr, copyEmptyDirectories, fsc)
 
   if len(errs) > 0 {
     fmt.Printf("Errors returned by srcDMgr.CopyDirectoryTree("+
@@ -1242,7 +1342,7 @@ func (mtst mainTests) mainTest84CopyDirTree() {
   copyEmptyDirectories = false
 
   dtreeStats,
-    errs := srcDMgr.CopyDirectoryTree(targetDMgr, copyEmptyDirectories, fsc)
+  errs := srcDMgr.CopyDirectoryTree(targetDMgr, copyEmptyDirectories, fsc)
 
   if len(errs) > 0 {
     fmt.Printf("Errors returned by srcDMgr.CopyDirectoryTree("+

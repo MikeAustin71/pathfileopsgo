@@ -1,6 +1,7 @@
 package pathfileops
 
 import (
+  "strings"
   "testing"
 )
 
@@ -343,6 +344,348 @@ func TestFileOpsCollection_DeleteAtIndex_06(t *testing.T) {
   }
 }
 
+func TestFileOpsCollection_Equal_01(t *testing.T) {
+
+  sf := make([]string, 5, 10)
+
+  sf[0] = "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  sf[1] = "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+  sf[2] = "../filesfortest/levelfilesfortest/level_0_2_test.txt"
+  sf[3] = "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+  sf[4] = "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+
+  df := make([]string, 5, 10)
+
+  df[0] = "../dirmgrtests/level_0_0_test.txt"
+  df[1] = "../dirmgrtests/level_0_1_test.txt"
+  df[2] = "../dirmgrtests/level_0_2_test.txt"
+  df[3] = "../dirmgrtests/level_0_3_test.txt"
+  df[4] = "../dirmgrtests/level_0_4_test.txt"
+
+  fOpsCol1 := FileOpsCollection{}.New()
+
+  for i := 0; i < 5; i++ {
+
+    err := fOpsCol1.AddByPathFileNameExtStrs(sf[i], df[i])
+
+    if err != nil {
+      t.Errorf("Error returned by fOpsCol.AddByPathFileNameExtStrs(sf[i], df[i]). "+
+        "i='%v' Error='%v' ", i, err.Error())
+      return
+    }
+
+  }
+
+  fOpsCol2 := FileOpsCollection{}.New()
+
+  for i := 0; i < 4; i++ {
+
+    err := fOpsCol2.AddByPathFileNameExtStrs(sf[i], df[i])
+
+    if err != nil {
+      t.Errorf("Error returned by fOpsCol.AddByPathFileNameExtStrs(sf[i], df[i]). "+
+        "i='%v' Error='%v' ", i, err.Error())
+      return
+    }
+  }
+
+  if fOpsCol1.Equal(&fOpsCol2) {
+    t.Error("ERROR: Expected that fOpsCol1==fOpsCol2.\n" +
+      "However, THEY ARE NOT EQUAL!!!\n")
+  }
+
+}
+
+func TestFileOpsCollection_Equal_02(t *testing.T) {
+
+  fOpsCol1 := FileOpsCollection{}
+
+  var fOpsCol2 *FileOpsCollection
+
+  fOpsCol2 = nil
+
+  fOpsCol1.fileOps = nil
+
+  result := fOpsCol1.Equal(fOpsCol2)
+
+  if result == true {
+    t.Error("ERROR: Expected fOpsCol1.Equal(&fOpsCol2)=='false'.\n" +
+      "Instead, fOpsCol1.Equal(&fOpsCol2)=='true'\n")
+  }
+
+}
+
+func TestFileOpsCollection_Equal_03(t *testing.T) {
+
+  sf := make([]string, 5, 10)
+
+  sf[0] = "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  sf[1] = "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+  sf[2] = "../filesfortest/levelfilesfortest/level_0_2_test.txt"
+  sf[3] = "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+  sf[4] = "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+
+  df := make([]string, 5, 10)
+
+  df[0] = "../dirmgrtests/level_0_0_test.txt"
+  df[1] = "../dirmgrtests/level_0_1_test.txt"
+  df[2] = "../dirmgrtests/level_0_2_test.txt"
+  df[3] = "../dirmgrtests/level_0_3_test.txt"
+  df[4] = "../dirmgrtests/level_0_4_test.txt"
+
+  fOpsCol1 := FileOpsCollection{}.New()
+
+  for i := 0; i < 5; i++ {
+
+    err := fOpsCol1.AddByPathFileNameExtStrs(sf[i], df[i])
+
+    if err != nil {
+      t.Errorf("Error returned by fOpsCol.AddByPathFileNameExtStrs(sf[i], df[i]). "+
+        "i='%v' Error='%v' ", i, err.Error())
+      return
+    }
+
+  }
+
+  fOpsCol2 := FileOpsCollection{}.New()
+
+  for i := 0; i < 5; i++ {
+
+    if i == 2 {
+
+      srcFile := "../checkfiles/checkfiles03/checkfiles03_02/Test.txt"
+
+      err := fOpsCol2.AddByPathFileNameExtStrs(srcFile, df[i])
+
+      if err != nil {
+        t.Errorf("Error returned by fOpsCol.AddByPathFileNameExtStrs(srcFile, df[i]). "+
+          "i='%v'\n" +
+          "srcFile='%v'\n" +
+          "df[i]='%v'\n" +
+          "Error='%v' ", i,srcFile, df[i], err.Error())
+        return
+      }
+
+    } else {
+
+      err := fOpsCol2.AddByPathFileNameExtStrs(sf[i], df[i])
+
+      if err != nil {
+        t.Errorf("Error returned by fOpsCol.AddByPathFileNameExtStrs(sf[i], df[i]). "+
+          "i='%v' Error='%v' ", i, err.Error())
+        return
+      }
+
+    }
+  }
+
+  if fOpsCol1.Equal(&fOpsCol2) == true {
+    t.Error("ERROR: Expected that fOpsCol1!=fOpsCol2.\n" +
+      "However, THEY ARE EQUAL!!!\n")
+  }
+
+}
+
+func TestFileOpsCollection_Equal_04(t *testing.T) {
+
+  sf := make([]string, 5, 10)
+
+  sf[0] = "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  sf[1] = "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+  sf[2] = "../filesfortest/levelfilesfortest/level_0_2_test.txt"
+  sf[3] = "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+  sf[4] = "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+
+  df := make([]string, 5, 10)
+
+  df[0] = "../dirmgrtests/level_0_0_test.txt"
+  df[1] = "../dirmgrtests/level_0_1_test.txt"
+  df[2] = "../dirmgrtests/level_0_2_test.txt"
+  df[3] = "../dirmgrtests/level_0_3_test.txt"
+  df[4] = "../dirmgrtests/level_0_4_test.txt"
+
+  fOpsCol1 := FileOpsCollection{}.New()
+
+  for i := 0; i < 5; i++ {
+
+    err := fOpsCol1.AddByPathFileNameExtStrs(sf[i], df[i])
+
+    if err != nil {
+      t.Errorf("Error returned by fOpsCol.AddByPathFileNameExtStrs(sf[i], df[i]). "+
+        "i='%v' Error='%v' ", i, err.Error())
+      return
+    }
+
+  }
+
+  fOpsCol2 := FileOpsCollection{}.New()
+
+  for i := 0; i < 5; i++ {
+
+    if i == 2 {
+
+      dstFile := "../checkfiles/checkfiles03/checkfiles03_02/Test.txt"
+
+      err := fOpsCol2.AddByPathFileNameExtStrs(sf[i], dstFile)
+
+      if err != nil {
+        t.Errorf("Error returned by fOpsCol.AddByPathFileNameExtStrs(sf[i], dstFile). "+
+          "i='%v'\n" +
+          "sf[i]='%v'\n" +
+          "dstFile='%v'\nError='%v'\n",
+          i, sf[i], dstFile, err.Error())
+        return
+      }
+
+    } else {
+
+      err := fOpsCol2.AddByPathFileNameExtStrs(sf[i], df[i])
+
+      if err != nil {
+        t.Errorf("Error returned by fOpsCol.AddByPathFileNameExtStrs(sf[i], df[i]). "+
+          "i='%v' Error='%v' ", i, err.Error())
+        return
+      }
+
+    }
+  }
+
+  if fOpsCol1.Equal(&fOpsCol2) == true {
+    t.Error("ERROR: Expected that fOpsCol1!=fOpsCol2.\n" +
+      "However, THEY ARE EQUAL!!!\n")
+  }
+
+}
+
+func TestFileOpsCollection_Equal_05(t *testing.T) {
+
+  sf := make([]string, 5, 10)
+
+  sf[0] = "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  sf[1] = "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+  sf[2] = "../filesfortest/levelfilesfortest/level_0_2_test.txt"
+  sf[3] = "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+  sf[4] = "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+
+  df := make([]string, 5, 10)
+
+  df[0] = "../dirmgrtests/level_0_0_test.txt"
+  df[1] = "../dirmgrtests/level_0_1_test.txt"
+  df[2] = "../dirmgrtests/level_0_2_test.txt"
+  df[3] = "../dirmgrtests/level_0_3_test.txt"
+  df[4] = "../dirmgrtests/level_0_4_test.txt"
+
+  fOpsCol1 := FileOpsCollection{}.New()
+
+  for i := 0; i < 5; i++ {
+
+    fOp, err := FileOps{}.NewByPathFileNameExtStrs(sf[i], df[i])
+
+    if err != nil {
+      t.Errorf("Error returned by FileOps{}.NewByPathFileNameExtStrs(sf[i], df[i]). "+
+        "i='%v'\n" +
+        "sf[i]='%v'\n" +
+        "df[i]='%v'\n" +
+        "Error='%v'\n", i,sf[i], df[i], err.Error())
+      return
+    }
+
+    err = fOp.SetFileOpsCode(FileOpCode.CopySourceToDestinationByHardLink())
+
+    if err != nil {
+      t.Errorf("Error returned by fOp.SetFileOpsCode(FileOpCode.CopySourceToDestinationByIo())\n" +
+        "Error='%v'\n", err.Error())
+      return
+    }
+
+    err = fOpsCol1.AddByFileOps(fOp)
+
+    if err != nil {
+      t.Errorf("Error returned by fOpsCol1.AddByFileOps(fOp). "+
+        "i='%v'\n" +
+        "srcFile='%v'\n" +
+        "df[i]='%v'\n" +
+        "Error='%v' ", i,sf[i], df[i], err.Error())
+      return
+    }
+
+  }
+
+  fOpsCol2 := FileOpsCollection{}.New()
+
+  for i := 0; i < 5; i++ {
+
+    if i == 2 {
+
+      fOp, err := FileOps{}.NewByPathFileNameExtStrs(sf[i], df[i])
+
+      if err != nil {
+        t.Errorf("Error returned by FileOps{}.NewByPathFileNameExtStrs(sf[i], df[i]). "+
+          "i='%v'\n" +
+          "sf[i]='%v'\n" +
+          "df[i]='%v'\n" +
+          "Error='%v'\n", i,sf[i], df[i], err.Error())
+        return
+      }
+
+      err = fOp.SetFileOpsCode(FileOpCode.CopySourceToDestinationByIo())
+
+      if err != nil {
+        t.Errorf("Error returned by fOp.SetFileOpsCode(FileOpCode.CopySourceToDestinationByIo())\n" +
+          "Error='%v'\n", err.Error())
+        return
+      }
+
+      err = fOpsCol2.AddByFileOps(fOp)
+
+      if err != nil {
+        t.Errorf("Error returned by fOpsCol2.AddByFileOps(fOp). "+
+          "i='%v'\n" +
+          "srcFile='%v'\n" +
+          "df[i]='%v'\n" +
+          "Error='%v' ", i,sf[i], df[i], err.Error())
+        return
+      }
+
+    } else {
+
+      fOp, err := FileOps{}.NewByPathFileNameExtStrs(sf[i], df[i])
+
+      if err != nil {
+        t.Errorf("Error returned by FileOps{}.NewByPathFileNameExtStrs(sf[i], df[i]). "+
+          "i='%v'\n" +
+          "sf[i]='%v'\n" +
+          "df[i]='%v'\n" +
+          "Error='%v'\n", i,sf[i], df[i], err.Error())
+        return
+      }
+
+      err = fOp.SetFileOpsCode(FileOpCode.CopySourceToDestinationByHardLink())
+
+      if err != nil {
+        t.Errorf("Error returned by fOp.SetFileOpsCode(FileOpCode.CopySourceToDestinationByIo())\n" +
+          "Error='%v'\n", err.Error())
+        return
+      }
+
+      err = fOpsCol2.AddByFileOps(fOp)
+
+      if err != nil {
+        t.Errorf("Error returned by fOpsCol2.AddByFileOps(fOp). "+
+          "i='%v'\n" +
+          "srcFile='%v'\n" +
+          "df[i]='%v'\n" +
+          "Error='%v' ", i,sf[i], df[i], err.Error())
+        return
+      }
+    }
+  }
+
+  if fOpsCol1.Equal(&fOpsCol2) == true {
+    t.Error("ERROR: Expected that fOpsCol1!=fOpsCol2.\n" +
+      "However, THEY ARE EQUAL!!!\n")
+  }
+}
 
 func TestFileOpsCollection_GetFileOpsAtIndex_01(t *testing.T) {
 
@@ -502,3 +845,143 @@ func TestFileOpsCollection_GetNumOfFileOps_01(t *testing.T) {
       "Instead, fOpsCol.GetNumOfFileOps()='%v'\n", fOpsCol.GetNumOfFileOps())
   }
 }
+
+func TestFileOpsCollection_ExecuteFileOperations_01(t *testing.T) {
+
+  sf := make([]string, 5, 10)
+
+  sf[0] = "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  sf[1] = "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+  sf[2] = "../filesfortest/levelfilesfortest/level_0_2_test.txt"
+  sf[3] = "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+  sf[4] = "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+
+  destDir := "../dirmgrtests/TestFileOpsCollection_ExecuteFileOperations_01"
+
+  dfFileNameExt := []string{  "level_0_0_test.txt",
+    "level_0_1_test.txt",
+    "level_0_2_test.txt",
+    "level_0_3_test.txt",
+    "level_0_4_test.txt" }
+
+  df := make([]string, 5, 10)
+
+  df[0] =  destDir + "/" + dfFileNameExt[0]
+  df[1] =  destDir + "/" + dfFileNameExt[1]
+  df[2] =  destDir + "/" + dfFileNameExt[2]
+  df[3] =  destDir + "/" + dfFileNameExt[3]
+  df[4] =  destDir + "/" + dfFileNameExt[4]
+
+
+  dstDMgr,
+  err := DirMgr{}.New(destDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(destDir)\n" +
+      "destDir='%v'\nError='%v'\n", destDir, err.Error())
+    return
+  }
+
+  fOpsCol := FileOpsCollection{}.New()
+
+  for i := 0; i < 5; i++ {
+
+    err := fOpsCol.AddByPathFileNameExtStrs(sf[i], df[i])
+
+    if err != nil {
+      t.Errorf("Error returned by fOpsCol.AddByPathFileNameExtStrs(sf[i], df[i]). "+
+        "i='%v' Error='%v' ", i, err.Error())
+      _ = dstDMgr.DeleteAll()
+      return
+    }
+  }
+
+  err = fOpsCol.ExecuteFileOperations(FileOpCode.CopySourceToDestinationByIo())
+
+  if err != nil {
+    t.Errorf("Error returned by fOpsCol.ExecuteFileOperations(" +
+      "FileOpCode.CopySourceToDestinationByIo())\n" +
+      "Error='%v'\n", err.Error())
+
+    _ = dstDMgr.DeleteAll()
+    return
+  }
+
+  fsc := FileSelectionCriteria{}
+
+  destTreeInfo, err := dstDMgr.FindFilesBySelectCriteria(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by dstDMgr.FindFilesBySelectCriteria(fsc)\n" +
+      "Error='%v'\n", err.Error())
+
+    _ = dstDMgr.DeleteAll()
+    return
+  }
+
+  numOfFiles := destTreeInfo.GetNumOfFiles()
+
+  if numOfFiles != 5 {
+    t.Errorf("ERROR: Expected the number of files in the destination directory would equal '5'.\n" +
+      "Instead, number of files='%v'\n", numOfFiles)
+    _ = dstDMgr.DeleteAll()
+    return
+  }
+
+  foundFile := false
+
+  for k:=0; k < 5; k++ {
+
+    fMgr, err :=  destTreeInfo.PeekFileMgrAtIndex(k)
+
+    if err != nil {
+      t.Errorf("Error returned by destTreeInfo.PeekFileMgrAtIndex(%v)\n" +
+        "Error='%v'\n", k, err.Error())
+      _ = dstDMgr.DeleteAll()
+      return
+    }
+
+    fileNameExt := strings.ToLower(fMgr.GetFileNameExt())
+    foundFile = false
+
+    for j:=0; j < 5; j++ {
+
+      if fileNameExt == dfFileNameExt[j] {
+        foundFile = true
+      }
+    }
+
+    if foundFile == false {
+      t.Errorf("Copied File NOT Found: %v", fileNameExt)
+      _ = dstDMgr.DeleteAll()
+      return
+    }
+  }
+
+  err = dstDMgr.DeleteAll()
+
+  if err != nil {
+    t.Errorf("Error returned by dstDMgr.DeleteAll()\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  return
+}
+
+func TestFileOpsCollection_ExecuteFileOperations_02(t *testing.T) {
+
+  fOpsCol := FileOpsCollection{}
+
+  fOpsCol.fileOps = nil
+
+  err := fOpsCol.ExecuteFileOperations(FileOpCode.CopySourceToDestinationByIo())
+
+  if err == nil {
+    t.Error("Expected an error return from fOpsCol.ExecuteFileOperations(" +
+      "FileOpCode.CopySourceToDestinationByIo())\n" +
+      "because the File Operations is empty.\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+}
+
+

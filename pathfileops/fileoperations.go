@@ -28,6 +28,7 @@ func (fops *FileOps) CopyOut() FileOps {
 
   newFOps.source = fops.source.CopyOut()
   newFOps.destination = fops.destination.CopyOut()
+  newFOps.opToExecute = fops.opToExecute
 
   newFOps.isInitialized = true
 
