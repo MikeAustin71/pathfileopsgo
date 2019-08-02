@@ -1118,3 +1118,19 @@ func TestFileOpsCollection_CopyOut_02(t *testing.T) {
   }
 
 }
+
+func TestFileOpsCollection_CopyOut_03(t *testing.T) {
+
+  fOpsCol := FileOpsCollection{}
+
+  fOpsCol.fileOps = nil
+
+  _, err := fOpsCol.CopyOut()
+
+  if err == nil {
+    t.Error("Expected an error return from fOpsCol.CopyOut()\n" +
+      "because the File Operations Collections is empty.\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+
+}

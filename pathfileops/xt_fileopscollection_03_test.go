@@ -350,7 +350,7 @@ func TestFileOpsCollection_InsertFileOpsAtIndex_04(t *testing.T) {
   fmgrDst, err := FileMgr{}.NewFromPathFileNameExtStr(origAbsPath)
 
   if err != nil {
-    t.Errorf("%v", err.Error())
+    t.Errorf("%v\n", err.Error())
   }
 
   fOp, err := FileOps{}.NewByFileMgrs(fmgrSrc, fmgrDst)
@@ -360,6 +360,113 @@ func TestFileOpsCollection_InsertFileOpsAtIndex_04(t *testing.T) {
   if err == nil {
     t.Error("Error: Expected an error return from err = fOpsCol." +
       "InsertFileOpsAtIndex(fOp, -3). NO ERROR WAS RETURNED!! ")
+  }
+
+}
+
+func TestFileOpsCollection_InsertFileOpsAtIndex_05(t *testing.T) {
+
+  fOpsCol := FileOpsCollection{}
+
+  srcFile := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+
+  destFile := "../dirmgrtests/level_0_0_test.txt"
+
+  fOp, err := FileOps{}.NewByPathFileNameExtStrs(srcFile, destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fOpsCol.AddByPathFileNameExtStrs(srcFile, destFile).\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  fOpsCol.fileOps = nil
+
+  err = fOpsCol.InsertFileOpsAtIndex(fOp, 0)
+
+  if err != nil {
+    t.Errorf("Error returned by fOpsCol.InsertFileOpsAtIndex(fOp, 0)\n" +
+      "Error='%v'\n", err.Error())
+  }
+}
+
+func TestFileOpsCollection_NewFromFileMgrCollection_01(t *testing.T) {
+
+  sf := make([]string, 10, 10)
+
+  sf[0] = "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  sf[1] = "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+  sf[2] = "../filesfortest/levelfilesfortest/level_0_2_test.txt"
+  sf[3] = "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+  sf[4] = "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+  sf[5] = "../filesfortest/levelfilesfortest/level_0_5_test.txt"
+  sf[6] = "../filesfortest/levelfilesfortest/level_0_6_test.txt"
+  sf[7] = "../filesfortest/levelfilesfortest/level_0_7_test.txt"
+  sf[8] = "../filesfortest/levelfilesfortest/level_0_8_test.txt"
+  sf[9] = "../filesfortest/levelfilesfortest/level_0_9_test.txt"
+
+  baseDir :="../filesfortest/levelfilesfortest"
+
+  baseDMgr, err := DirMgr{}.New(baseDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(baseDir)\n" +
+      "baseDir='%v'\n" +
+      "Error='%v'\n", baseDir, err.Error())
+  }
+
+  targetDir := "../dirmgrtests"
+
+  targetDMgr, err := DirMgr{}.New(targetDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(targetDir)\n" +
+      "targetDir='%v'\n" +
+      "Error='%v'\n", targetDir, err.Error())
+  }
+
+  fMgrCol := FileMgrCollection{}
+
+  for i:=0; i < 10; i++ {
+
+    err := fMgrCol.AddFileMgrByPathFileNameExt(sf[i])
+
+    if err != nil {
+      t.Errorf("Error returned by fMgrCol.AddFileMgrByPathFileNameExt(sf[%v])\n" +
+        "sf[%v]='%v'\n" +
+        "Error='%v'\n", i, i, sf[i], err.Error())
+      return
+    }
+  }
+
+  fOpsCol, err := FileOpsCollection{}.NewFromFileMgrCollection(&fMgrCol, &baseDMgr, &targetDMgr)
+
+  if err != nil {
+    t.Errorf("Error returned by FileOpsCollection{}.NewFromFileMgrCollection(" +
+      "&fMgrCol, &baseDMgr, &targetDMgr)\n" +
+      "baseDMgr='%v'\n" +
+      "targetDMgr='%v'\n" +
+      "Error='%v'\n", baseDMgr.GetAbsolutePath(), targetDMgr.GetAbsolutePath(), err.Error())
+    return
+  }
+
+  fOp, err := fOpsCol.PeekFileOpsAtIndex(9)
+
+  if err != nil {
+    t.Errorf("Error returned by fOpsCol.PeekFileOpsAtIndex(9)\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  actualDstFMgr := fOp.GetDestination()
+
+  actualDstDMgr := actualDstFMgr.GetDirMgr()
+
+  if !targetDMgr.EqualAbsPaths(&actualDstDMgr) {
+    t.Errorf("ERROR: Expected targetDMgr==actualDstDMgr.\n" +
+      "Instead, they ARE NOT EQUAL!\n" +
+      "targetDMgr='%v'\n" +
+      "actualDstDMgr='%v'\n", targetDMgr.GetAbsolutePath(), actualDstDMgr.GetAbsolutePath())
   }
 
 }
