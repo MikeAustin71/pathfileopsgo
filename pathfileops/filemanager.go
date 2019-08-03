@@ -1896,7 +1896,19 @@ func (fMgr *FileMgr) GetFileBytesWritten() uint64 {
 //             Returned File Extension: ""
 //
 func (fMgr *FileMgr) GetFileExt() string {
-  return fMgr.fileExt
+  fileExt := ""
+
+  fMgr.dataMutex.Lock()
+
+    if fMgr.isInitialized == false {
+      fileExt = ""
+    } else {
+      fileExt = fMgr.fileExt
+    }
+
+  fMgr.dataMutex.Unlock()
+
+  return fileExt
 }
 
 // GetFileInfo - Wrapper function for os.Stat(). This method
@@ -2114,7 +2126,20 @@ func (fMgr *FileMgr) GetFileModTimeStr(timeFormat string) (string, error) {
 //                  Returned File Name: "newerFileForTest_01"
 //
 func (fMgr *FileMgr) GetFileName() string {
-  return fMgr.fileName
+
+  fileName := ""
+
+  fMgr.dataMutex.Lock()
+
+    if fMgr.isInitialized == false {
+      fileName = ""
+    } else {
+      fileName = fMgr.fileName
+    }
+
+  fMgr.dataMutex.Unlock()
+
+  return fileName
 }
 
 // GetFileNameExt - Returns a string containing the
@@ -2130,7 +2155,21 @@ func (fMgr *FileMgr) GetFileName() string {
 //   Returned File Name Plus Extension: "newerFileForTest_01"
 //
 func (fMgr *FileMgr) GetFileNameExt() string {
-  return fMgr.fileNameExt
+
+  fileNameExt := ""
+
+  fMgr.dataMutex.Lock()
+
+    if fMgr.isInitialized == false {
+      fileNameExt = ""
+
+    } else {
+      fileNameExt = fMgr.fileNameExt
+    }
+
+  fMgr.dataMutex.Unlock()
+
+  return fileNameExt
 }
 
 // GetFilePermissionConfig - Returns a FilePermissionConfig instance encapsulating
@@ -2206,40 +2245,51 @@ func (fMgr *FileMgr) GetFilePermissionTextCodes() (string, error) {
 
   ePrefix := "FileMgr.GetFilePermissionTextCodes() "
 
-  fileDoesExist, err := fMgr.DoesThisFileExist()
+  fMgrHlpr := fileMgrHelper{}
+  filePathDoesExist := false
+  var err, err2 error
+  fPerm := 	FilePermissionConfig{}
+  permissionText := ""
 
-  if err != nil {
-    return "",
-      fmt.Errorf(ePrefix+
-        "Non-Path Error returned by fMgr.DoesThisFileExist()\n"+
-        "fMgr='%v'\nError='%v'\n",
-        fMgr.absolutePathFileName, err.Error())
+  fMgr.dataMutex.Lock()
+
+  filePathDoesExist,
+  err = fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "FileMgr")
+
+  if err == nil && !filePathDoesExist {
+    err =	fmt.Errorf(ePrefix +
+      "Error: The current (FileMgr) path/file name DOES NOT EXIST!\n" +
+      "Therefore no file permissions are available.\n" +
+      "path/file name='%v'\n", fMgr.absolutePathFileName)
   }
 
-  if !fileDoesExist {
-    return "",
-      errors.New(ePrefix + "The current (FileMgr) file DOES NOT EXIST!")
+  if err == nil {
+    fPerm,
+      err2 = FilePermissionConfig{}.NewByFileMode(fMgr.actualFileInfo.Mode())
+
+    if err2 != nil {
+        err = fmt.Errorf(ePrefix+
+          "%v", err2.Error())
+
+    } else {
+
+      permissionText, err2 = fPerm.GetPermissionTextCode()
+
+      if err2 != nil {
+      err =
+          fmt.Errorf(ePrefix+
+            "%v", err2.Error())
+      }
+    }
   }
 
-  fPerm, err := FilePermissionConfig{}.NewByFileMode(fMgr.actualFileInfo.Mode())
+  fMgr.dataMutex.Unlock()
 
-  if err != nil {
-    return "",
-      fmt.Errorf(ePrefix+
-        "%v", err.Error())
-
-  }
-
-  permissionText, err := fPerm.GetPermissionTextCode()
-
-  if err != nil {
-    return "",
-      fmt.Errorf(ePrefix+
-        "%v", err.Error())
-
-  }
-
-  return permissionText, nil
+  return permissionText, err
 }
 
 // GetFilePtr - will return the internal *os.File pointer
