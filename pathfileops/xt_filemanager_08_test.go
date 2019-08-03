@@ -45,7 +45,7 @@ func TestFileMgr_GetAbsolutePath(t *testing.T) {
 
 func TestFileMgr_GetAbsolutePathFileName_01(t *testing.T) {
   fh := FileHelper{}
-  relPath1 := "..\\logTest\\CmdrX\\CmdrX.log"
+  relPath1 := "../logTest/CmdrX/CmdrX.log"
 
   filePath1, err := fh.MakeAbsolutePath(relPath1)
 
@@ -75,6 +75,64 @@ func TestFileMgr_GetAbsolutePathFileName_01(t *testing.T) {
       filePath1, absPathFileName)
   }
 
+}
+
+func TestFileMgr_GetAbsolutePathFileNameLc_01(t *testing.T) {
+  fh := FileHelper{}
+  relPath1 := "../logTest/CmdrX/CmdrX.log"
+
+  expectedAbsolutePath, err := fh.MakeAbsolutePath(relPath1)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1).\n"+
+      "relPath1='%v'\nError='%v'\n",
+      relPath1, err.Error())
+    return
+  }
+
+  expectedAbsolutePath = strings.ToLower(expectedAbsolutePath)
+
+  fileMgr1, err := FileMgr{}.New(relPath1)
+
+  if err != nil {
+    t.Errorf("Received Error on FileMgr{}.New(relPath1).\n"+
+      "relPath1='%v'\nError='%v'\n",
+      relPath1, err.Error())
+    return
+  }
+
+  absPathFileName := fileMgr1.GetAbsolutePathFileNameLc()
+
+  if expectedAbsolutePath != absPathFileName {
+    t.Errorf("Error: Expected absPathFileName='%v'.\n"+
+      "Instead, absPathFileName='%v'\n",
+      expectedAbsolutePath, absPathFileName)
+  }
+}
+
+func TestFileMgr_GetAbsolutePathFileNameLc_02(t *testing.T) {
+  relPath1 := "../logTest/CmdrX/CmdrX.log"
+
+  fileMgr1, err := FileMgr{}.New(relPath1)
+
+  if err != nil {
+    t.Errorf("Received Error on FileMgr{}.New(relPath1).\n"+
+      "relPath1='%v'\nError='%v'\n",
+      relPath1, err.Error())
+    return
+  }
+
+  fileMgr1.isInitialized = false
+
+  absPathFileName := fileMgr1.GetAbsolutePathFileNameLc()
+
+  if "" != absPathFileName {
+    t.Errorf("Error: Expected absPathFileName= \"\" return from " +
+      "fileMgr1.GetAbsolutePathFileNameLc()\n" +
+      "because fileMgr1 is INVALID!\n"+
+      "Instead, absPathFileName='%v'\n",
+      absPathFileName)
+  }
 }
 
 func TestFileMgr_GetBufioReader_01(t *testing.T) {

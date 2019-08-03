@@ -1688,16 +1688,16 @@ func (fMgr *FileMgr) EqualAbsPaths(fmgr2 *FileMgr) bool {
 //
 func (fMgr *FileMgr) EqualFileNameExt(fmgr2 *FileMgr) bool {
 
-  f1 := strings.ToLower(fMgr.GetFileName())
+  f1 := strings.ToLower(fMgr.fileName)
 
-  f2 := strings.ToLower(fmgr2.GetFileName())
+  f2 := strings.ToLower(fmgr2.fileName)
 
   if f1 != f2 {
     return false
   }
 
-  f1 = strings.ToLower(fMgr.GetFileExt())
-  f2 = strings.ToLower(fmgr2.GetFileExt())
+  f1 = strings.ToLower(fMgr.fileExt)
+  f2 = strings.ToLower(fmgr2.fileExt)
 
   if f1 != f2 {
     return false
@@ -1721,8 +1721,8 @@ func (fMgr *FileMgr) EqualFileNameExt(fmgr2 *FileMgr) bool {
 //
 func (fMgr *FileMgr) EqualPathFileNameExt(fmgr2 *FileMgr) bool {
 
-  f1 := strings.ToLower(fMgr.GetAbsolutePathFileName())
-  f2 := strings.ToLower(fmgr2.GetAbsolutePathFileName())
+  f1 := strings.ToLower(fMgr.absolutePathFileName)
+  f2 := strings.ToLower(fmgr2.absolutePathFileName)
 
   if f1 != f2 {
     return false
@@ -1785,8 +1785,60 @@ func (fMgr *FileMgr) GetAbsolutePath() string {
 // file name and file extension for the current File Manager
 // instance.
 //
+// The returned path/file name string may consist of both
+// upper and lower case characters.
+//
+// See the companion method GetAbsolutePathFileNameLc() which
+// returns a path/file name string consisting entirely of
+// lower case characters.
+//
 func (fMgr *FileMgr) GetAbsolutePathFileName() string {
-  return fMgr.absolutePathFileName
+
+  var absolutePathFileName string
+
+  fMgr.dataMutex.Lock()
+
+  if !fMgr.isInitialized {
+
+    absolutePathFileName = ""
+
+  } else{
+
+    absolutePathFileName = fMgr.absolutePathFileName
+  }
+
+  fMgr.dataMutex.Unlock()
+
+  return absolutePathFileName
+}
+
+// GetAbsolutePathFileNameLc - Returns the absolute path,
+// file name and file extension for the current File Manager
+// instance.
+//
+// The returned path/file name string will consist entirely
+// of lower case characters.
+//
+// See companion method GetAbsolutePathFileName() which
+// returns the same path/file name string with upper and
+// lower case characters.
+//
+func (fMgr *FileMgr) GetAbsolutePathFileNameLc() string {
+
+  var absolutePathFileName string
+
+  fMgr.dataMutex.Lock()
+
+  if !fMgr.isInitialized {
+    absolutePathFileName = ""
+  } else{
+
+    absolutePathFileName = strings.ToLower(fMgr.absolutePathFileName)
+  }
+
+  fMgr.dataMutex.Unlock()
+
+  return absolutePathFileName
 }
 
 // GetBufioReader - Returns a pointer to the internal bufio.Reader,
@@ -2104,7 +2156,7 @@ func (fMgr *FileMgr) GetFilePermissionConfig() (FilePermissionConfig, error) {
       fmt.Errorf(ePrefix+
         "Non-Path Error returned by fMgr.DoesThisFileExist()\n"+
         "fMgr='%v'\nError='%v'\n",
-        fMgr.GetAbsolutePathFileName(), err.Error())
+        fMgr.absolutePathFileName, err.Error())
   }
 
   if !fileDoesExist {
@@ -2161,7 +2213,7 @@ func (fMgr *FileMgr) GetFilePermissionTextCodes() (string, error) {
       fmt.Errorf(ePrefix+
         "Non-Path Error returned by fMgr.DoesThisFileExist()\n"+
         "fMgr='%v'\nError='%v'\n",
-        fMgr.GetAbsolutePathFileName(), err.Error())
+        fMgr.absolutePathFileName, err.Error())
   }
 
   if !fileDoesExist {
