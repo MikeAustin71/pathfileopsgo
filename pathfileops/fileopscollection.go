@@ -582,6 +582,110 @@ func (fOpsCol FileOpsCollection) NewFromFileMgrCollection(
   return newFileOpsCol, nil
 }
 
+// PeekFileOpsAtIndex - Returns a deep copy of the File Operations
+// ('FileOps') object located at array index 'idx' in the File
+// Operations Collection ('FileOpsCollection'). This is a 'Peek'
+// method and therefore the original File Operations ('FileOps')
+// object is NOT deleted from the File Operations Collection
+// ('FileOpsCollection') array.
+//
+// At the completion of this method, the length of the File
+// Operations Collection ('FileOpsCollection') array will remain
+// unchanged.
+//
+func (fOpsCol *FileOpsCollection) PeekFileOpsAtIndex(idx int) (FileOps, error) {
+
+  ePrefix := "FileOpsCollection.PeekFileOpsAtIndex() "
+
+  if fOpsCol.fileOps == nil {
+    fOpsCol.fileOps = make([]FileOps, 0, 50)
+  }
+
+  arrayLen := len(fOpsCol.fileOps)
+
+  if arrayLen == 0 {
+    return FileOps{},
+      errors.New(ePrefix +
+        "Error: The File Operations Collection, 'FileOpsCollection' is EMPTY!")
+  }
+
+  if idx < 0 {
+    return FileOps{}, fmt.Errorf(ePrefix+
+      "Error: Input Parameter 'idx' is less than zero. "+
+      "Index Out-Of-Range! idx='%v'", idx)
+  }
+
+  if idx >= arrayLen {
+    return FileOps{},
+      fmt.Errorf(ePrefix+
+        "Error: Input Parameter 'idx' is greater than the "+
+        "length of the collection array. Index Out-Of-Range! "+
+        "idx='%v' Array Length='%v' ",
+        idx, arrayLen)
+
+  }
+
+  return fOpsCol.fileOps[idx].CopyOut(), nil
+}
+
+// PeekFirstFileOps - Returns a deep copy of the first File
+// Operations ('FileOps') object in the File Operations Collection
+// ('FileOpsCollection'). This is a 'Peek' method and therefore
+// the original File Operations ('FileOps') object is NOT
+// deleted from the File Operations Collection ('FileOpsCollection')
+// array.
+//
+// At the completion of this method, the length of the File
+// Operations Collection ('FileOpsCollection') array will remain
+// unchanged.
+//
+func (fOpsCol *FileOpsCollection) PeekFirstFileOps() (FileOps, error) {
+
+  ePrefix := "FileOpsCollection.PeekFirstFileOps() "
+
+  if fOpsCol.fileOps == nil {
+    fOpsCol.fileOps = make([]FileOps, 0, 50)
+  }
+
+  if len(fOpsCol.fileOps) == 0 {
+    return FileOps{},
+      errors.New(ePrefix +
+        "Error: The File Operations Collection ('FileOpsCollection') is EMPTY!")
+  }
+
+  return fOpsCol.fileOps[0].CopyOut(), nil
+}
+
+// PeekLastFileOps - Returns a deep copy of the last File
+// Operations ('FileOps') object in the File Operations
+// Collection ('FileOpsCollection').
+//
+// This is a 'Peek' method and therefore the original File
+// Operations ('FileOps') object is NOT deleted from the
+// File Operations Collection ('FileOpsCollection') array.
+//
+// At the completion of this method, the length of the File
+// Operations Collection ('FileOpsCollection') array will
+// remain unchanged.
+//
+func (fOpsCol *FileOpsCollection) PeekLastFileOps() (FileOps, error) {
+
+  ePrefix := "FileOpsCollection.PeekLastFileOps()"
+
+  if fOpsCol.fileOps == nil {
+    fOpsCol.fileOps = make([]FileOps, 0, 50)
+  }
+
+  arrayLen := len(fOpsCol.fileOps)
+  if arrayLen == 0 {
+    return FileOps{},
+      errors.New(ePrefix +
+        "Error: The File Operations Collection, 'FileOpsCollection' is EMPTY!")
+  }
+
+  return fOpsCol.fileOps[arrayLen-1].CopyOut(), nil
+}
+
 // PopFileOpsAtIndex - Returns a copy of the File Operations (FileOps)
 // object located at index, 'idx', in the File Operations Collection
 // ('FileOpsCollection') array. As a 'Pop' method, the original File
@@ -703,108 +807,3 @@ func (fOpsCol *FileOpsCollection) PopLastFileOps() (FileOps, error) {
   return fileOps, nil
 
 }
-
-// PeekFileOpsAtIndex - Returns a deep copy of the File Operations
-// ('FileOps') object located at array index 'idx' in the File
-// Operations Collection ('FileOpsCollection'). This is a 'Peek'
-// method and therefore the original File Operations ('FileOps')
-// object is NOT deleted from the File Operations Collection
-// ('FileOpsCollection') array.
-//
-// At the completion of this method, the length of the File
-// Operations Collection ('FileOpsCollection') array will remain
-// unchanged.
-//
-func (fOpsCol *FileOpsCollection) PeekFileOpsAtIndex(idx int) (FileOps, error) {
-
-  ePrefix := "FileOpsCollection.PeekFileOpsAtIndex() "
-
-  if fOpsCol.fileOps == nil {
-    fOpsCol.fileOps = make([]FileOps, 0, 50)
-  }
-
-  arrayLen := len(fOpsCol.fileOps)
-
-  if arrayLen == 0 {
-    return FileOps{},
-      errors.New(ePrefix +
-        "Error: The File Operations Collection, 'FileOpsCollection' is EMPTY!")
-  }
-
-  if idx < 0 {
-    return FileOps{}, fmt.Errorf(ePrefix+
-      "Error: Input Parameter 'idx' is less than zero. "+
-      "Index Out-Of-Range! idx='%v'", idx)
-  }
-
-  if idx >= arrayLen {
-    return FileOps{},
-      fmt.Errorf(ePrefix+
-        "Error: Input Parameter 'idx' is greater than the "+
-        "length of the collection array. Index Out-Of-Range! "+
-        "idx='%v' Array Length='%v' ",
-        idx, arrayLen)
-
-  }
-
-  return fOpsCol.fileOps[idx].CopyOut(), nil
-}
-
-// PeekFirstFileOps - Returns a deep copy of the first File
-// Operations ('FileOps') object in the File Operations Collection
-// ('FileOpsCollection'). This is a 'Peek' method and therefore
-// the original File Operations ('FileOps') object is NOT
-// deleted from the File Operations Collection ('FileOpsCollection')
-// array.
-//
-// At the completion of this method, the length of the File
-// Operations Collection ('FileOpsCollection') array will remain
-// unchanged.
-//
-func (fOpsCol *FileOpsCollection) PeekFirstFileOps() (FileOps, error) {
-
-  ePrefix := "FileOpsCollection.PeekFirstFileOps() "
-
-  if fOpsCol.fileOps == nil {
-    fOpsCol.fileOps = make([]FileOps, 0, 50)
-  }
-
-  if len(fOpsCol.fileOps) == 0 {
-    return FileOps{},
-      errors.New(ePrefix +
-        "Error: The File Operations Collection ('FileOpsCollection') is EMPTY!")
-  }
-
-  return fOpsCol.fileOps[0].CopyOut(), nil
-}
-
-// PeekLastFileOps - Returns a deep copy of the last File
-// Operations ('FileOps') object in the File Operations
-// Collection ('FileOpsCollection').
-//
-// This is a 'Peek' method and therefore the original File
-// Operations ('FileOps') object is NOT deleted from the
-// File Operations Collection ('FileOpsCollection') array.
-//
-// At the completion of this method, the length of the File
-// Operations Collection ('FileOpsCollection') array will
-// remain unchanged.
-//
-func (fOpsCol *FileOpsCollection) PeekLastFileOps() (FileOps, error) {
-
-  ePrefix := "FileOpsCollection.PeekLastFileOps()"
-
-  if fOpsCol.fileOps == nil {
-    fOpsCol.fileOps = make([]FileOps, 0, 50)
-  }
-
-  arrayLen := len(fOpsCol.fileOps)
-  if arrayLen == 0 {
-    return FileOps{},
-      errors.New(ePrefix +
-        "Error: The File Operations Collection, 'FileOpsCollection' is EMPTY!")
-  }
-
-  return fOpsCol.fileOps[arrayLen-1].CopyOut(), nil
-}
-

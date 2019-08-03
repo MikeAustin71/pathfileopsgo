@@ -1105,3 +1105,173 @@ func TestFileOpsCollection_PopFileOpsAtIndex_06(t *testing.T) {
       "However, NO ERROR WAS RETURNED!!!\n")
   }
 }
+
+func TestFileOpsCollection_PopFirstFileOps_01(t *testing.T) {
+
+  sf := make([]string, 5, 10)
+
+  sf[0] = "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  sf[1] = "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+  sf[2] = "../filesfortest/levelfilesfortest/level_0_2_test.txt"
+  sf[3] = "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+  sf[4] = "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+
+  df := make([]string, 5, 10)
+
+  df[0] = "../dirmgrtests/level_0_0_test.txt"
+  df[1] = "../dirmgrtests/level_0_1_test.txt"
+  df[2] = "../dirmgrtests/level_0_2_test.txt"
+  df[3] = "../dirmgrtests/level_0_3_test.txt"
+  df[4] = "../dirmgrtests/level_0_4_test.txt"
+
+  fOpsCol := FileOpsCollection{}.New()
+
+  var expectedFileOps FileOps
+
+  for i := 0; i < 5; i++ {
+
+    fOp, err := FileOps{}.NewByPathFileNameExtStrs(sf[i], df[i])
+
+    if err != nil {
+      t.Errorf("Error returned by FileOps{}.NewByPathFileNameExtStrs(sf[i], df[i])\n" +
+        "i='%v'\n" +
+        "Error='%v'\n", i, err.Error())
+      return
+    }
+
+    if i==0 {
+      expectedFileOps = fOp.CopyOut()
+    }
+
+    err = fOpsCol.AddByFileOps(fOp)
+
+    if err != nil {
+      t.Errorf("Error returned by fOpsCol.AddByFileOps(fOp). "+
+        "i='%v'\n" +
+        "sf[i]='%v'\n" +
+        "df[i]='%v'\n" +
+        "Error='%v'\n", i, sf[i], df[i], err.Error())
+      return
+    }
+
+  }
+
+  actualFOp, err := fOpsCol.PopFirstFileOps()
+
+  if err != nil {
+    t.Errorf("Error returned by fOpsCol.PopFirstFileOps()\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  if !expectedFileOps.Equal(&actualFOp) {
+    t.Error("ERROR: Expected expectedFileOps.Equal(&actualFOp)=='true'.\n" +
+      "Instead, expectedFileOps.Equal(&actualFOp)=='false' !!\n")
+  }
+
+  if fOpsCol.GetNumOfFileOps() != 4 {
+    t.Errorf("ERROR: Expected the remaining File Operations object to be '4'.\n" +
+      "Instead, Number Of FileOps='%v'\n", fOpsCol.GetNumOfFileOps())
+  }
+
+}
+
+func TestFileOpsCollection_PopFirstFileOps_02(t *testing.T) {
+
+  fOpsCol := FileOpsCollection{}
+
+  fOpsCol.fileOps = nil
+
+  _, err := fOpsCol.PopFirstFileOps()
+
+  if err == nil {
+    t.Error("ERROR: Expected an error return from fOpsCol.PopFirstFileOps()\n" +
+      "because the File Ops Collection is EMPTY!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+}
+
+func TestFileOpsCollection_PopLastFileOps_01(t *testing.T) {
+
+  sf := make([]string, 5, 10)
+
+  sf[0] = "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  sf[1] = "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+  sf[2] = "../filesfortest/levelfilesfortest/level_0_2_test.txt"
+  sf[3] = "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+  sf[4] = "../filesfortest/levelfilesfortest/level_0_4_test.txt"
+
+  df := make([]string, 5, 10)
+
+  df[0] = "../dirmgrtests/level_0_0_test.txt"
+  df[1] = "../dirmgrtests/level_0_1_test.txt"
+  df[2] = "../dirmgrtests/level_0_2_test.txt"
+  df[3] = "../dirmgrtests/level_0_3_test.txt"
+  df[4] = "../dirmgrtests/level_0_4_test.txt"
+
+  fOpsCol := FileOpsCollection{}.New()
+
+  var expectedFileOps FileOps
+
+  for i := 0; i < 5; i++ {
+
+    fOp, err := FileOps{}.NewByPathFileNameExtStrs(sf[i], df[i])
+
+    if err != nil {
+      t.Errorf("Error returned by FileOps{}.NewByPathFileNameExtStrs(sf[i], df[i])\n" +
+        "i='%v'\n" +
+        "Error='%v'\n", i, err.Error())
+      return
+    }
+
+    if i==4 {
+      expectedFileOps = fOp.CopyOut()
+    }
+
+    err = fOpsCol.AddByFileOps(fOp)
+
+    if err != nil {
+      t.Errorf("Error returned by fOpsCol.AddByFileOps(fOp). "+
+        "i='%v'\n" +
+        "sf[i]='%v'\n" +
+        "df[i]='%v'\n" +
+        "Error='%v'\n", i, sf[i], df[i], err.Error())
+      return
+    }
+
+  }
+
+  actualFOp, err := fOpsCol.PopLastFileOps()
+
+  if err != nil {
+    t.Errorf("Error returned by fOpsCol.PopLastFileOps()\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  if !expectedFileOps.Equal(&actualFOp) {
+    t.Error("ERROR: Expected expectedFileOps.Equal(&actualFOp)=='true'.\n" +
+      "Instead, expectedFileOps.Equal(&actualFOp)=='false' !!\n")
+  }
+
+  if fOpsCol.GetNumOfFileOps() != 4 {
+    t.Errorf("ERROR: Expected the remaining File Operations object to be '4'.\n" +
+      "Instead, Number Of FileOps='%v'\n", fOpsCol.GetNumOfFileOps())
+  }
+
+}
+
+func TestFileOpsCollection_PopLastFileOps_02(t *testing.T) {
+
+  fOpsCol := FileOpsCollection{}
+
+  fOpsCol.fileOps = nil
+
+  _, err := fOpsCol.PopLastFileOps()
+
+  if err == nil {
+    t.Error("ERROR: Expected an error return from fOpsCol.PopLastFileOps()\n" +
+      "because the File Ops Collection is EMPTY!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+}
