@@ -3192,6 +3192,9 @@ func (dMgr *DirMgr) FindWalkSubDirFiles(
 // instance. This string returned by this method
 // will NOT have a trailing path separator.
 //
+// See companion method GetAbsolutePathLc() to
+// acquire a lower case version of absolute path.
+//
 func (dMgr *DirMgr) GetAbsolutePath() string {
 
   dMgrHlpr := dirMgrHelper{}
@@ -3211,6 +3214,43 @@ func (dMgr *DirMgr) GetAbsolutePath() string {
     absolutePath = ""
   } else {
     absolutePath = dMgr.absolutePath
+  }
+
+  dMgr.dataMutex.Unlock()
+
+  return absolutePath
+}
+
+
+// GetAbsolutePath - Returns a string containing the
+// low case version of the absolute path for the current
+// Directory Manager instance.
+
+// This string returned by this method will NOT have a
+// trailing path separator. It will consist of all lower
+// case characters.
+//
+// See the companion method GetAbsolutePath() to return
+// an absolute path string with upper and lower case
+// characters.
+//
+func (dMgr *DirMgr) GetAbsolutePathLc() string {
+  dMgrHlpr := dirMgrHelper{}
+  absolutePath := ""
+
+  dMgr.dataMutex.Lock()
+  _,
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    "",
+    "")
+
+  if err != nil {
+    absolutePath = ""
+  } else {
+    absolutePath = strings.ToLower(dMgr.absolutePath)
   }
 
   dMgr.dataMutex.Unlock()
