@@ -276,6 +276,17 @@ func (dMgrHlpr *dirMgrHelper) copyDirectoryTree(
     ePrefix = ePrefix + "- " + ePrefixCurrMethod
   }
 
+  if targetDMgr == nil {
+
+    err:= fmt.Errorf(ePrefix +
+      "\nError: Input parameter %v pointer is 'nil'!\n", targetDMgrLabel)
+
+    errs = append(errs, err)
+
+    return dTreeCopyStats, errs
+
+  }
+
   dMgrPathDoesExist,
   _,
   err :=
@@ -695,6 +706,14 @@ func (dMgrHlpr *dirMgrHelper) copyIn(
   dMgr *DirMgr,
   dMgrIn *DirMgr) {
 
+  if dMgr == nil {
+    dMgr = &DirMgr{}
+  }
+
+  if dMgrIn == nil {
+    dMgrIn = &DirMgr{}
+  }
+
   dMgr.isInitialized = dMgrIn.isInitialized
   dMgr.originalPath = dMgrIn.originalPath
   dMgr.path = dMgrIn.path
@@ -718,6 +737,10 @@ func (dMgrHlpr *dirMgrHelper) copyIn(
 //
 func (dMgrHlpr *dirMgrHelper) copyOut(
   dMgr *DirMgr) DirMgr {
+
+  if dMgr == nil {
+    dMgr = &DirMgr{}
+  }
 
   dOut := DirMgr{}
 
@@ -1829,6 +1852,12 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
     ePrefix = ePrefix + "- " + ePrefixCurrMethod
   }
 
+  if dMgr == nil {
+    err = fmt.Errorf(ePrefix +
+      "\nError: %v pointer is 'nil'!\n", dMgrLabel)
+    return dirPathDoesExist, fInfo, err
+  }
+
   if !dMgr.isInitialized {
     err = errors.New(ePrefix +
       "\nError: DirMgr is NOT Initialized.\n")
@@ -2085,6 +2114,19 @@ func (dMgrHlpr *dirMgrHelper) empty(
   ePrefix string,
   dMgrLabel string) error {
 
+  ePrefixCurrMethod := "dirMgrHelper.empty() "
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  if dMgr == nil {
+    return errors.New(ePrefix +
+      "\nError: Input parameter 'dMgr' pointer is 'nil'!\n")
+  }
+
   var err error
 
   err = nil
@@ -2114,6 +2156,10 @@ func (dMgrHlpr *dirMgrHelper) empty(
 func (dMgrHlpr *dirMgrHelper) equal(
   dMgr *DirMgr,
   dMgr2 *DirMgr) bool {
+
+  if dMgr==nil || dMgr2 == nil {
+    return false
+  }
 
   if dMgr.isInitialized != dMgr2.isInitialized ||
     dMgr.originalPath != dMgr2.originalPath ||
@@ -4161,6 +4207,16 @@ func (dMgrHlpr *dirMgrHelper) lowLevelCopyFile(
     ePrefix = ePrefix + "- " + ePrefixCurrMethod
   }
 
+  if len(src) == 0 {
+    return fmt.Errorf(ePrefix +
+      "\nError: Input parameter %v is an empty string!\n", srcLabel)
+  }
+
+  if len(dst) == 0 {
+    return fmt.Errorf(ePrefix +
+      "\nError: Input parameter %v is an empty string!\n", dstLabel)
+  }
+
   if !srcFInfo.Mode().IsRegular() {
     return fmt.Errorf(ePrefix+
       "Error: %v is a Non-Regular File and cannot be copied!\n"+
@@ -4355,6 +4411,11 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDeleteDirectoryAll(
 
   var err, err2 error
 
+  if dMgr == nil {
+    return fmt.Errorf(ePrefix +
+      "\nError: Input parameter %v pointer is 'nil' !", dMgrLabel)
+  }
+
   for i := 0; i < 3; i++ {
 
     err2 = os.RemoveAll(dMgr.absolutePath)
@@ -4405,6 +4466,12 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDoesDirectoryExist(
 
   if len(dirPathLabel) == 0 {
     dirPathLabel = "DirMgr"
+  }
+
+  if len(dirPath) == 0 {
+    err = fmt.Errorf(ePrefix +
+      "\nError: Input paramter %v is an empty string!\n", dirPathLabel)
+    return dirPathDoesExist, fInfo, err
   }
 
   var err2 error
@@ -4466,6 +4533,12 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDirMgrFieldConfig(
     ePrefix = ePrefixCurrMethod
   } else {
     ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  if dMgr == nil {
+    err = fmt.Errorf(ePrefix +
+      "\nError: Input parameter %v pointer is 'nil'!\n", dMgrLabel)
+    return isEmpty, err
   }
 
   err = validPathDto.IsDtoValid(ePrefix)
@@ -5006,6 +5079,17 @@ func (dMgrHlpr *dirMgrHelper) moveDirectory(
   var err, err2 error
   var dMgrPathDoesExist, targetDMgrPathDoesExist bool
 
+  if targetDMgr == nil {
+
+    err = fmt.Errorf(ePrefix +
+      "\nError: Input parameter %v pointer is 'nil'!\n", targetDMgrLabel)
+
+    errs = append(errs, err)
+
+    return dirMoveStats, errs
+
+  }
+
   dMgrPathDoesExist,
     _,
     err = dMgrHlpr.doesDirectoryExist(
@@ -5511,6 +5595,14 @@ func (dMgrHlpr *dirMgrHelper) setDirMgr(
     ePrefix = ePrefix + "- " + ePrefixCurrMethod
   }
 
+  if dMgr == nil {
+
+    err = fmt.Errorf(ePrefix +
+      "\nInput parameter %v pointer is 'nil'!\n", dMgrLabel)
+
+    return isEmpty, err
+  }
+
   validPathDto := ValidPathStrDto{}.New()
 
   validPathDto,
@@ -5575,6 +5667,14 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
     ePrefix = ePrefixCurrMethod
   } else {
     ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  if dMgr == nil {
+
+    err = fmt.Errorf(ePrefix +
+      "\nError: Input parameter %v pointer is 'nil' !\n", dirNameLabel)
+
+    return isEmpty, err
   }
 
   strLen := 0
@@ -5721,6 +5821,14 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrWithPathDirectoryName(
     ePrefix = ePrefixCurrMethod
   } else {
     ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  if dMgr == nil {
+
+    err = fmt.Errorf(ePrefix +
+      "\nError: Input parameter %v pointer is 'nil' !\n", dMgrLabel)
+
+    return isEmpty, err
   }
 
   strLen := 0
