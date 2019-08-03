@@ -3289,7 +3289,13 @@ func (dMgr *DirMgr) GetAbsolutePathElements() (pathElements []string) {
 
 // GetAbsolutePathWithSeparator - Returns the current
 // DirMgr.absolutePath with a trailing os.PathSeparator
-// character.
+// character. The path string may consist of upper and
+// lower case characters.
+//
+// See the companion method GetAbsolutePathWithSeparatorLc()
+// which returns a path string consisting of all lower case
+// characters.
+//
 func (dMgr *DirMgr) GetAbsolutePathWithSeparator() string {
 
   dMgrHlpr := dirMgrHelper{}
@@ -3310,6 +3316,52 @@ func (dMgr *DirMgr) GetAbsolutePathWithSeparator() string {
     absolutePath = ""
   } else {
     absolutePath = dMgr.absolutePath
+  }
+
+  dMgr.dataMutex.Unlock()
+
+  lPath := len(absolutePath)
+
+  if lPath == 0 {
+    return ""
+  }
+
+  if absolutePath[lPath-1] != os.PathSeparator {
+    return absolutePath + string(os.PathSeparator)
+  }
+
+  return absolutePath
+}
+
+// GetAbsolutePathWithSeparatorLc - Returns the current
+// DirMgr.absolutePath with a trailing os.PathSeparator
+// character. The path string will consists of all lower
+// case characters.
+//
+// See the companion method GetAbsolutePathWithSeparator()
+// which returns a path string consisting of upper and lower
+// case characters.
+//
+func (dMgr *DirMgr) GetAbsolutePathWithSeparatorLc() string {
+
+  dMgrHlpr := dirMgrHelper{}
+
+  absolutePath := ""
+
+  dMgr.dataMutex.Lock()
+
+  _,
+  _,
+  err := dMgrHlpr.doesDirectoryExist(
+    dMgr,
+    PreProcPathCode.None(),
+    "",
+    "")
+
+  if err != nil {
+    absolutePath = ""
+  } else {
+    absolutePath = strings.ToLower(dMgr.absolutePath)
   }
 
   dMgr.dataMutex.Unlock()

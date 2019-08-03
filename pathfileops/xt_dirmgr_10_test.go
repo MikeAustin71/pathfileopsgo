@@ -31,7 +31,7 @@ func TestDirMgr_GetAbsolutePath_01(t *testing.T) {
 
 func TestDirMgr_GetAbsolutePathLc_01(t *testing.T) {
 
-  testDir := "../dirmgrtests/dir01/dir02"
+  testDir := "../Dirmgrtests/Dir01/Dir02"
 
   expectedAbsoluteTestDir, err := FileHelper{}.MakeAbsolutePath(testDir)
 
@@ -184,6 +184,60 @@ func TestDirMgr_GetAbsolutePathWithSeparator_01(t *testing.T) {
       absPathWithSep)
   }
 
+}
+
+func TestDirMgr_GetAbsolutePathWithSeparatorLc_01(t *testing.T) {
+
+  testDir := "../Dirmgrtests/Dir01/Dir02"
+
+  expectedAbsoluteTestDir, err := FileHelper{}.MakeAbsolutePath(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by FileHelper{}.MakeAbsolutePath(testDir).\n" +
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  expectedAbsoluteTestDir = strings.ToLower(expectedAbsoluteTestDir)
+
+  expectedAbsoluteTestDir = expectedAbsoluteTestDir + string(os.PathSeparator)
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir)\n")
+    return
+  }
+
+  actualAbsoluteDir := testDMgr.GetAbsolutePathWithSeparatorLc()
+
+  if expectedAbsoluteTestDir != actualAbsoluteDir {
+    t.Errorf("Error: Expected actual absolute directory would equal '%v'\n" +
+      "Instead, actual absolute directory='%v'\n",
+      expectedAbsoluteTestDir, actualAbsoluteDir)
+  }
+}
+
+func TestDirMgr_GetAbsolutePathWithSeparatorLc_02(t *testing.T) {
+
+  testDir := "../dirmgrtests/dir01/dir02"
+
+  testDMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir)\n")
+    return
+  }
+
+  testDMgr.isInitialized = false
+
+  actualAbsoluteDir := testDMgr.GetAbsolutePathLc()
+
+  if actualAbsoluteDir != "" {
+    t.Errorf("ERROR: Expected an empty string return from " +
+      "testDMgr.GetAbsolutePathLc()\nbecause 'testDMgr' is INVALID!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
 }
 
 func TestDirMgr_GetDirectoryTree_01(t *testing.T) {
