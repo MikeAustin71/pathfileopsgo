@@ -488,12 +488,36 @@ func (fOpsCol FileOpsCollection) NewFromFileMgrCollection(
 
   ePrefix := "FileOpsCollection.NewFromFileMgrCollection() "
 
+  if fMgrCol == nil {
+    return FileOpsCollection{},
+      errors.New(ePrefix +
+        "ERROR: Input parameter 'fMgrCol' is nil!")
+  }
+
+  if sourceBaseDir == nil {
+    return FileOpsCollection{},
+      errors.New(ePrefix +
+        "ERROR: Input parameter 'sourceBaseDir' is a 'nil' pointer!\n")
+  }
+
+  if targetBaseDir == nil {
+    return FileOpsCollection{},
+      errors.New(ePrefix +
+        "ERROR: Input parameter 'targetBaseDir' is a 'nil' pointer!\n")
+  }
+
   if fOpsCol.fileOps == nil {
     fOpsCol.fileOps = make([]FileOps, 0, 100)
   }
 
   if fMgrCol.fileMgrs == nil {
     fMgrCol.fileMgrs = make([]FileMgr, 0, 100)
+  }
+
+  if len(fMgrCol.fileMgrs) == 0 {
+    return FileOpsCollection{},
+      errors.New(ePrefix +
+        "ERROR: The File Manager Collection input parameter 'fMgrCol' is EMPTY!\n")
   }
 
   srcBaseDir := strings.ToLower(sourceBaseDir.GetAbsolutePath())
