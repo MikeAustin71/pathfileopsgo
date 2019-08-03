@@ -2297,7 +2297,16 @@ func (fMgr *FileMgr) GetFilePermissionTextCodes() (string, error) {
 // this pointer may be nil.
 //
 func (fMgr *FileMgr) GetFilePtr() *os.File {
-  return fMgr.filePtr
+
+  var filePtr *os.File
+
+  fMgr.dataMutex.Lock()
+
+    filePtr = fMgr.filePtr
+
+  fMgr.dataMutex.Unlock()
+
+  return filePtr
 }
 
 // GetFileSize() - Returns os.FileInfo.Size() length in bytes for regular files;
@@ -2308,17 +2317,33 @@ func (fMgr *FileMgr) GetFilePtr() *os.File {
 //
 func (fMgr *FileMgr) GetFileSize() int64 {
 
-  fileDoesExist, err := fMgr.DoesThisFileExist()
+  fMgrHlpr := fileMgrHelper{}
+  filePathDoesExist := false
+  var err error
+  var fileSize int64
 
-  if err != nil {
-    return -1
+  fMgr.dataMutex.Lock()
+
+  filePathDoesExist,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    "",
+    "FileMgr")
+
+  if err == nil && !filePathDoesExist {
+    err = fmt.Errorf("DoesNOTExist")
   }
 
-  if !fileDoesExist {
-    return -1
+  if err == nil {
+    fileSize = fMgr.actualFileInfo.Size()
+  }	else {
+    fileSize = -1
   }
 
-  return fMgr.actualFileInfo.Size()
+  fMgr.dataMutex.Unlock()
+
+  return fileSize
 }
 
 // GetOriginalPathFileName - Returns the path and file name
