@@ -73,7 +73,7 @@ func TestFileMgr_ReadFileString_01(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fMgr.ReadFileString(delim) "+
       "on Line#1.\n"+
-      "fMgr='%v'\nError='%v'",
+      "fMgr='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     _ = fMgr.CloseThisFile()
     return
@@ -87,8 +87,8 @@ func TestFileMgr_ReadFileString_01(t *testing.T) {
   }
 
   if fMgr.filePtr != nil {
-    t.Error("ERROR: After fMgr.CloseThisFile() expected fMgr.filePtr==nil. " +
-      "fMgr.filePtr IS NOT EQUAL TO NIL!")
+    t.Error("ERROR: After fMgr.CloseThisFile() expected fMgr.filePtr==nil.\n" +
+      "However fMgr.filePtr IS NOT EQUAL TO NIL!\n")
   }
 
   if strings.Index(actualStr, "\r\n") > -1 {
@@ -98,8 +98,8 @@ func TestFileMgr_ReadFileString_01(t *testing.T) {
   }
 
   if expectedStr != actualStr {
-    t.Errorf("Expected line #1 = '%v'.  Instead, "+
-      "line #1 = '%v'", expectedStr, actualStr)
+    t.Errorf("Expected line #1 = '%v'.\n" +
+      "Instead, line #1 = '%v'\n", expectedStr, actualStr)
   }
 
   _ = fMgr.DeleteThisFile()
@@ -231,7 +231,8 @@ func TestFileMgr_ReadFileString_02(t *testing.T) {
 
   if !isErrEOF {
     t.Error("ERROR: Expected the last error return from fMgr.ReadFileLine(delim) " +
-      "to be io.EOF. Instead, error WAS NOT equal to io.EOF!")
+      "to be io.EOF.\n" +
+      "Instead, error WAS NOT equal to io.EOF!\n")
   }
 
   _ = fMgr.DeleteThisFile()
@@ -437,7 +438,8 @@ func TestFileMgr_ReadFileString_04(t *testing.T) {
   err = fMgr.CloseThisFile()
 
   if err != nil {
-    t.Errorf("Error returned by fMgr.CloseThisFile(). Error='%v'",
+    t.Errorf("Error returned by fMgr.CloseThisFile().\n" +
+      "Error='%v'\n",
       err.Error())
   }
 
@@ -455,8 +457,8 @@ func TestFileMgr_ReadFileString_04(t *testing.T) {
   }
 
   if expectedStr != actualStr {
-    t.Errorf("Expected line #1 = '%v'.  Instead, "+
-      "line #1 = '%v'", expectedStr, actualStr)
+    t.Errorf("Expected line #1 = '%v'.\n" +
+      "Instead, line #1 = '%v'\n", expectedStr, actualStr)
   }
 
   _ = fMgr.DeleteThisFile()

@@ -24,7 +24,8 @@ func TestFileMgr_ReadAllFile_01(t *testing.T) {
     "../checkfiles/checkfiles03/checkfiles03_02")
 
   if err != nil {
-    t.Errorf("Test Setup Error: Error returned by fh.MakeAbsolutePath"+
+    t.Errorf("Test Setup Error: Error returned by " +
+      "fh.MakeAbsolutePath"+
       "(\"../checkfiles/checkfiles03/checkfiles03_02\").\n"+
       "Error='%v'\n", err.Error())
     return
@@ -33,7 +34,8 @@ func TestFileMgr_ReadAllFile_01(t *testing.T) {
   err = fh.MakeDirAll(absBaseFilePath)
 
   if err != nil {
-    t.Errorf("Test Setup Error: Error returned by fh.MakeDirAll(absBaseFilePath).\n"+
+    t.Errorf("Test Setup Error: Error returned by " +
+      "fh.MakeDirAll(absBaseFilePath).\n"+
       "absBaseFilePath='%v'\nError='%v'\n", absBaseFilePath, err.Error())
     return
   }
@@ -348,7 +350,7 @@ func TestFileMgr_ReadFileLine_01(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fMgr.CloseThisFile().\n"+
-      "fMgr='%v'\nError='%v'",
+      "fMgr='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     return
   }
@@ -367,7 +369,7 @@ func TestFileMgr_ReadFileLine_01(t *testing.T) {
   if "Now is the time for all good men" != actualStr {
     t.Errorf("Expected line #1 = 'Now is the time for "+
       "all good men'.\n"+
-      "Instead, line #1 = '%v'",
+      "Instead, line #1 = '%v'\n",
       actualStr)
   }
 
@@ -546,7 +548,7 @@ func TestFileMgr_ReadFileLine_03(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fMgr.CloseThisFile().\n"+
-      "fMgr='%v'\n Error='%v'",
+      "fMgr='%v'\n Error='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     return
   }
@@ -676,7 +678,7 @@ func TestFileMgr_ReadFileLine_04(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fMgr.CloseThisFile().\n"+
-      "fMgr='%v'\nError='%v'",
+      "fMgr='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     return
   }
@@ -775,7 +777,7 @@ func TestFileMgr_ReadFileLine_05(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned by fMgr.ReadFileLine(delim) "+
       "on Line#1.\n"+
-      "fMgr='%v'\nError='%v'",
+      "fMgr='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     _ = fMgr.CloseThisFile()
     return
@@ -785,7 +787,7 @@ func TestFileMgr_ReadFileLine_05(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fMgr.CloseThisFile().\n"+
-      "fMgr='%v'\nError='%v'",
+      "fMgr='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     return
   }

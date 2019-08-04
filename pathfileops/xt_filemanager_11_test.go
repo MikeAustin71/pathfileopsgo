@@ -20,7 +20,8 @@ func TestFileMgr_OpenThisFile_01(t *testing.T) {
     "../checkfiles/checkfiles03")
 
   if err != nil {
-    t.Errorf("Test Setup Error: Error returned by fh.MakeAbsolutePath"+
+    t.Errorf("Test Setup Error: Error returned by " +
+      "fh.MakeAbsolutePath"+
       "(\"../checkfiles/checkfiles03\").\n"+
       "Error='%v'\n", err.Error())
     return
@@ -29,7 +30,8 @@ func TestFileMgr_OpenThisFile_01(t *testing.T) {
   err = fh.MakeDirAll(absBaseFilePath)
 
   if err != nil {
-    t.Errorf("Test Setup Error: Error returned by fh.MakeDirAll(absBaseFilePath).\n"+
+    t.Errorf("Test Setup Error: Error returned by " +
+      "fh.MakeDirAll(absBaseFilePath).\n"+
       "absBaseFilePath='%v'\nError='%v'\n", absBaseFilePath, err.Error())
     return
   }
@@ -200,8 +202,8 @@ func TestFileMgr_OpenThisFile_03(t *testing.T) {
   err = fMgr.CloseThisFile()
 
   if err != nil {
-    t.Errorf("Error returned from fMgr.CloseThisFile(). "+
-      "Error='%v'", err.Error())
+    t.Errorf("Error returned from fMgr.CloseThisFile().\n"+
+      "Error='%v'\n", err.Error())
     _ = fMgr.DeleteThisFile()
     return
   }
@@ -678,7 +680,8 @@ func TestFileMgr_OpenThisFileReadWrite_01(t *testing.T) {
   err = fMgr.CloseThisFile()
 
   if err != nil {
-    t.Errorf("Error returned from final fMgr.CloseThisFile(). Error='%v' ",
+    t.Errorf("Error returned from final fMgr.CloseThisFile().\n" +
+      "Error='%v'\n",
       err.Error())
   }
 
@@ -794,7 +797,7 @@ func TestFileMgr_OpenThisFileWriteOnly_01(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from #1 fMgr.CloseThisFile().\n"+
-      "filePath='%v'\nError='%v'",
+      "filePath='%v'\nError='%v'\n",
       fMgr.GetAbsolutePathFileName(), err.Error())
     _ = fMgr.DeleteThisFile()
     return
@@ -864,7 +867,7 @@ func TestFileMgr_OpenThisFileWriteOnly_02(t *testing.T) {
   if !fileDoesExist {
     t.Errorf("Error: The test file should have been created.\n"+
       "However, the test file does NOT exist!\n"+
-      "Test File='%v'", fMgr.GetAbsolutePathFileName())
+      "Test File='%v'\n", fMgr.GetAbsolutePathFileName())
 
     _ = fMgr.CloseThisFile()
     _ = fMgr.DeleteThisFile()
@@ -1105,7 +1108,7 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_02(t *testing.T) {
   if err != nil {
     t.Errorf("Error returned from FileMgr{}."+
       "NewFromPathFileNameExtStr(filePath).\n"+
-      "filePath='%v'\nError='%v'",
+      "filePath='%v'\nError='%v'\n",
       filePath, err.Error())
     return
   }
@@ -1134,8 +1137,8 @@ func TestFileMgr_OpenThisFileWriteOnlyAppend_02(t *testing.T) {
 
   if !fileDoesExist {
     t.Errorf("Error: Expected target file to be created.\n"+
-      "However, File:'%v' "+
-      "does NOT exist.", fMgr.GetAbsolutePathFileName())
+      "However, the target file does NOT exist.\n" +
+      "Target File='%v'", fMgr.GetAbsolutePathFileName())
   }
 
   _ = fMgr.CloseThisFile()

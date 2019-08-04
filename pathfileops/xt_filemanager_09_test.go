@@ -472,7 +472,8 @@ func TestFileMgr_MoveFileToFileStr_02(t *testing.T) {
   srcFileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(srcFile)
 
   if err != nil {
-    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(srcFile).\n"+
+    t.Errorf("Error returned from FileMgr{}." +
+      "NewFromPathFileNameExtStr(srcFile).\n"+
       "srcFile='%v'\nError='%v'",
       srcFile, err.Error())
     _ = fh.DeleteDirFile(srcFile)
@@ -485,7 +486,8 @@ func TestFileMgr_MoveFileToFileStr_02(t *testing.T) {
   _, err = srcFileMgr.MoveFileToFileStr(destFile)
 
   if err == nil {
-    t.Errorf("Expected an error return from srcFileMgr.MoveFileToFileStr(destFile) \n"+
+    t.Errorf("Expected an error return from srcFileMgr." +
+      "MoveFileToFileStr(destFile) \n"+
       "because srcFileMgr is INVALID!\n"+
       "However, NO ERROR WAS RETURNED!\n"+
       "srcFile='%v'\ndestFile='%v'\n",
@@ -711,7 +713,7 @@ func TestFileMgr_MoveFileToNewDirMgr_02(t *testing.T) {
 
     if fh.DoesFileExist(srcFile) {
       t.Errorf("Error - Failed to Delete 'srcFile'. 'srcFile'  STILL EXISTS!!\n"+
-        "srcFile='%v'", srcFile)
+        "srcFile='%v'\n", srcFile)
 
       _ = fh.DeleteDirFile(srcFile)
       _ = fh.DeleteDirFile(setupDestFile)

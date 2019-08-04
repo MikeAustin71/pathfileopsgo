@@ -1911,7 +1911,15 @@ func (fMgr *FileMgr) GetAbsolutePathFileNameLc() string {
 //
 func (fMgr *FileMgr) GetBufioReader() *bufio.Reader {
 
-  return fMgr.fileBufRdr
+  var fileBufRdr *bufio.Reader
+
+  fMgr.dataMutex.Lock()
+
+  fileBufRdr = fMgr.fileBufRdr
+
+  fMgr.dataMutex.Unlock()
+
+  return fileBufRdr
 }
 
 // GetBufioWriter - Returns a pointer to the internal bufio.Writer,
@@ -1923,7 +1931,16 @@ func (fMgr *FileMgr) GetBufioReader() *bufio.Reader {
 // 'fMgr.fileBufWriter' may be nil.
 //
 func (fMgr *FileMgr) GetBufioWriter() *bufio.Writer {
-  return fMgr.fileBufWriter
+
+  var bufWriter *bufio.Writer
+
+  fMgr.dataMutex.Lock()
+
+  bufWriter = fMgr.fileBufWriter
+
+  fMgr.dataMutex.Unlock()
+
+  return bufWriter
 }
 
 // GetDirMgr - returns a deep copy of the Directory
@@ -1939,7 +1956,15 @@ func (fMgr *FileMgr) GetDirMgr() DirMgr {
 // target file since it was opened with 'Write' or 'Read-Write' permissions.
 //
 func (fMgr *FileMgr) GetFileBytesWritten() uint64 {
-  return fMgr.buffBytesWritten + fMgr.fileBytesWritten
+  var bytesWritten uint64
+
+  fMgr.dataMutex.Lock()
+
+  bytesWritten = fMgr.buffBytesWritten + fMgr.fileBytesWritten
+
+  fMgr.dataMutex.Unlock()
+
+  return bytesWritten
 }
 
 // GetFileExt() - returns a string containing the File Extension for this
@@ -1987,14 +2012,14 @@ func (fMgr *FileMgr) GetFileExt() string {
 //  }
 func (fMgr *FileMgr) GetFileInfo() (fInfo os.FileInfo, err error) {
 
-  fMgr.dataMutex.Lock()
-
   fInfo = nil
   err = nil
   filePathDoesExist := false
   ePrefix := "FileMgr.GetFileInfo() "
 
   fMgrHelpr := fileMgrHelper{}
+
+  fMgr.dataMutex.Lock()
 
   filePathDoesExist,
     err = fMgrHelpr.doesFileMgrPathFileExist(fMgr,
@@ -2016,6 +2041,7 @@ func (fMgr *FileMgr) GetFileInfo() (fInfo os.FileInfo, err error) {
   }
 
   fMgr.dataMutex.Unlock()
+
   return fInfo, err
 }
 
@@ -2026,7 +2052,6 @@ func (fMgr *FileMgr) GetFileInfo() (fInfo os.FileInfo, err error) {
 //
 func (fMgr *FileMgr) GetFileInfoPlus() (fInfo FileInfoPlus, err error) {
 
-  fMgr.dataMutex.Lock()
 
   fInfo = FileInfoPlus{}
   err = nil
@@ -2034,6 +2059,8 @@ func (fMgr *FileMgr) GetFileInfoPlus() (fInfo FileInfoPlus, err error) {
 
   fMgrHelpr := fileMgrHelper{}
   filePathDoesExist := false
+
+  fMgr.dataMutex.Lock()
 
   filePathDoesExist,
     err = fMgrHelpr.doesFileMgrPathFileExist(fMgr,
@@ -2237,42 +2264,45 @@ func (fMgr *FileMgr) GetFileNameExt() string {
 //
 // If the file does NOT exist, this method will return an error.
 //
-func (fMgr *FileMgr) GetFilePermissionConfig() (FilePermissionConfig, error) {
+func (fMgr *FileMgr) GetFilePermissionConfig() (fPerm FilePermissionConfig, err error) {
 
   ePrefix := "FileMgr.GetFilePermissionConfig() "
 
-  err := fMgr.IsFileMgrValid(ePrefix)
+  fPerm = FilePermissionConfig{}
+  err = nil
+  var filePathDoesExist bool
+  var err2 error
+  fMgrHelpr := fileMgrHelper{}
 
-  if err != nil {
-    return FilePermissionConfig{},
-      fmt.Errorf(ePrefix+" %v\n", err.Error())
-  }
+  fMgr.dataMutex.Lock()
 
-  fileDoesExist, err := fMgr.DoesThisFileExist()
+  filePathDoesExist,
+    err = fMgrHelpr.doesFileMgrPathFileExist(fMgr,
+    PreProcPathCode.None(),
+    ePrefix,
+    "FileMgr.absolutePathFileName")
 
-  if err != nil {
-    return FilePermissionConfig{},
-      fmt.Errorf(ePrefix+
-        "Non-Path Error returned by fMgr.DoesThisFileExist()\n"+
-        "fMgr='%v'\nError='%v'\n",
-        fMgr.absolutePathFileName, err.Error())
-  }
-
-  if !fileDoesExist {
-    return FilePermissionConfig{},
+  if err==nil &&
+      !filePathDoesExist {
+      err =
       errors.New(ePrefix +
-        "The current (FileMgr) file DOES NOT EXIST!\n")
+        "The current FileMgr file DOES NOT EXIST!\n")
   }
 
-  fPerm, err := FilePermissionConfig{}.NewByFileMode(fMgr.actualFileInfo.Mode())
+  if err == nil {
 
-  if err != nil {
-    return FilePermissionConfig{},
-      fmt.Errorf(ePrefix+
-        "%v", err.Error())
+    fPerm, err2 = FilePermissionConfig{}.NewByFileMode(fMgr.actualFileInfo.Mode())
+
+    if err2 != nil {
+      err =
+        fmt.Errorf(ePrefix+
+          "\n%v\n", err2.Error())
+    }
   }
 
-  return fPerm, nil
+  fMgr.dataMutex.Unlock()
+
+  return fPerm, err
 }
 
 // GetFilePermissionTextCodes - If the current file exists on disk,
@@ -2909,8 +2939,6 @@ func (fMgr FileMgr) New(pathFileNameExt string) (FileMgr, error) {
 
   ePrefix := "FileMgr.New() "
 
-  fMgr.dataMutex.Lock()
-
   fMgr2 := FileMgr{}
   fMgrHlpr := fileMgrHelper{}
 
@@ -2927,8 +2955,6 @@ func (fMgr FileMgr) New(pathFileNameExt string) (FileMgr, error) {
         pathFileNameExt)
     }
   }
-
-  fMgr.dataMutex.Unlock()
 
   return fMgr2, err
 }
@@ -2993,8 +3019,6 @@ func (fMgr FileMgr) NewFromDirMgrFileNameExt(
 
   ePrefix := "FileMgr.NewFromDirMgrFileNameExt() "
 
-  fMgr.dataMutex.Lock()
-
   fMgr2 := FileMgr{}
 
   fMgrHlpr := fileMgrHelper{}
@@ -3013,8 +3037,6 @@ func (fMgr FileMgr) NewFromDirMgrFileNameExt(
         dirMgr.absolutePath, fileNameExt)
     }
   }
-
-  fMgr.dataMutex.Unlock()
 
   return fMgr2, err
 }
@@ -3074,8 +3096,6 @@ func (fMgr FileMgr) NewFromDirStrFileNameStr(
         dirStr, err.Error())
   }
 
-  fMgr.dataMutex.Lock()
-
   fMgr2 := FileMgr{}
 
   fMgrHlpr := fileMgrHelper{}
@@ -3094,8 +3114,6 @@ func (fMgr FileMgr) NewFromDirStrFileNameStr(
         dirStr, fileNameExtStr)
     }
   }
-
-  fMgr.dataMutex.Unlock()
 
   return fMgr2, err
 }
@@ -3146,8 +3164,6 @@ func (fMgr FileMgr) NewFromFileInfo(dirPathStr string, info os.FileInfo) (FileMg
         "Error='%v' ", err.Error())
   }
 
-  fMgr.dataMutex.Lock()
-
   fMgr2 := FileMgr{}
 
   fMgrHlpr := fileMgrHelper{}
@@ -3166,8 +3182,6 @@ func (fMgr FileMgr) NewFromFileInfo(dirPathStr string, info os.FileInfo) (FileMg
         dirPathStr, fileName)
     }
   }
-
-  fMgr.dataMutex.Unlock()
 
   return fMgr2, err
 }
@@ -3200,8 +3214,6 @@ func (fMgr FileMgr) NewFromPathFileNameExtStr(pathFileNameExt string) (FileMgr, 
 
   ePrefix := "FileMgr.NewFromPathFileNameExtStr() "
 
-  fMgr.dataMutex.Lock()
-
   fMgr2 := FileMgr{}
 
   fMgrHlpr := fileMgrHelper{}
@@ -3219,8 +3231,6 @@ func (fMgr FileMgr) NewFromPathFileNameExtStr(pathFileNameExt string) (FileMgr, 
         pathFileNameExt)
     }
   }
-
-  fMgr.dataMutex.Unlock()
 
   return fMgr2, err
 }
@@ -3602,6 +3612,7 @@ func (fMgr *FileMgr) ReadFileLine(delim byte) (bytesRead []byte, err error) {
   }
 
   fMgr.dataMutex.Unlock()
+
   return bytesRead, err
 }
 
