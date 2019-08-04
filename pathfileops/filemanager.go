@@ -99,7 +99,7 @@ func (fMgr *FileMgr) ChangePermissionMode(mode FilePermissionConfig) error {
   fMgr.dataMutex.Lock()
 
   filePathDoesExist,
-    err := fMgrHelpr.doesFileMgrPathFileExist(
+  err := fMgrHelpr.doesFileMgrPathFileExist(
     fMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -1361,11 +1361,13 @@ func (fMgr FileMgr) CopyFromStrings(
 func (fMgr *FileMgr) CopyIn(fmgr2 *FileMgr) {
 
   if fmgr2 == nil {
-    panic("FileMgr.CopyIn() - Input parameter is a nil pointer!")
+    fmgr2 = &FileMgr{}
   }
 
   fMgr.dataMutex.Lock()
   fmgr2.dataMutex.Lock()
+
+
   fMgr.isInitialized = fmgr2.isInitialized
   fMgr.dMgr.CopyIn(&fmgr2.dMgr)
   fMgr.originalPathFileName = fmgr2.originalPathFileName
@@ -1386,6 +1388,7 @@ func (fMgr *FileMgr) CopyIn(fmgr2 *FileMgr) {
   fMgr.buffBytesWritten = 0
   fMgr.fileRdrBufSize = fmgr2.fileRdrBufSize
   fMgr.fileWriterBufSize = fmgr2.fileWriterBufSize
+
   fmgr2.dataMutex.Unlock()
   fMgr.dataMutex.Unlock()
 
@@ -1610,6 +1613,15 @@ func (fMgr *FileMgr) DoesThisFileExist() (fileDoesExist bool, nonPathError error
 // in all respects.
 func (fMgr *FileMgr) Equal(fmgr2 *FileMgr) bool {
 
+  if fmgr2 == nil {
+    fmgr2 = &FileMgr{}
+  }
+
+  result := true
+
+  fMgr.dataMutex.Lock()
+  fmgr2.dataMutex.Lock()
+
   if fMgr.isInitialized != fmgr2.isInitialized ||
     fMgr.originalPathFileName != fmgr2.originalPathFileName ||
     fMgr.isAbsolutePathFileNamePopulated != fmgr2.isAbsolutePathFileNamePopulated ||
@@ -1626,22 +1638,29 @@ func (fMgr *FileMgr) Equal(fmgr2 *FileMgr) bool {
     fMgr.fileRdrBufSize != fmgr2.fileRdrBufSize ||
     fMgr.fileWriterBufSize != fmgr2.fileWriterBufSize {
 
-    return false
+    result = false
   }
 
-  if !fMgr.fileAccessStatus.Equal(&fmgr2.fileAccessStatus) {
-    return false
+  if result==true &&
+    !fMgr.fileAccessStatus.Equal(&fmgr2.fileAccessStatus) {
+    result = false
   }
 
-  if !fMgr.dMgr.Equal(&fmgr2.dMgr) {
-    return false
+  if result ==true &&
+    !fMgr.dMgr.Equal(&fmgr2.dMgr) {
+    result = false
   }
 
-  if !fMgr.actualFileInfo.Equal(&fmgr2.actualFileInfo) {
-    return false
+  if result == true &&
+    !fMgr.actualFileInfo.Equal(&fmgr2.actualFileInfo) {
+    result = false
   }
 
-  return true
+
+  fmgr2.dataMutex.Unlock()
+  fMgr.dataMutex.Unlock()
+
+  return result
 }
 
 // EqualAbsPaths - Returns 'true' if both the current File Manager
@@ -1662,6 +1681,10 @@ func (fMgr *FileMgr) Equal(fmgr2 *FileMgr) bool {
 // extensions. ONLY the file paths (directories) will be compared.
 //
 func (fMgr *FileMgr) EqualAbsPaths(fmgr2 *FileMgr) bool {
+
+  if fmgr2 == nil {
+    fmgr2 = &FileMgr{}
+  }
 
   fDirMgr := fMgr.GetDirMgr()
 
@@ -1688,18 +1711,38 @@ func (fMgr *FileMgr) EqualAbsPaths(fmgr2 *FileMgr) bool {
 //
 func (fMgr *FileMgr) EqualFileNameExt(fmgr2 *FileMgr) bool {
 
-  f1 := strings.ToLower(fMgr.fileName)
+  if fmgr2 == nil {
+    fmgr2 = &FileMgr{}
+  }
 
-  f2 := strings.ToLower(fmgr2.fileName)
+  f1FileName := ""
+  f2FileName := ""
+  f1FileExt := ""
+  f2FileExt := ""
 
-  if f1 != f2 {
+  fMgr.dataMutex.Lock()
+  fmgr2.dataMutex.Lock()
+
+  f1FileName = fMgr.fileName
+  f2FileName = fmgr2.fileName
+  f1FileExt = fMgr.fileExt
+  f2FileExt = fmgr2.fileExt
+
+  fmgr2.dataMutex.Unlock()
+  fMgr.dataMutex.Unlock()
+
+  f1FileName = strings.ToLower(f1FileName)
+
+  f2FileName = strings.ToLower(f2FileName)
+
+  if f1FileName != f2FileName {
     return false
   }
 
-  f1 = strings.ToLower(fMgr.fileExt)
-  f2 = strings.ToLower(fmgr2.fileExt)
+  f1FileExt = strings.ToLower(f1FileExt)
+  f2FileExt = strings.ToLower(f2FileExt)
 
-  if f1 != f2 {
+  if f1FileExt != f2FileExt {
     return false
   }
 
@@ -1721,10 +1764,27 @@ func (fMgr *FileMgr) EqualFileNameExt(fmgr2 *FileMgr) bool {
 //
 func (fMgr *FileMgr) EqualPathFileNameExt(fmgr2 *FileMgr) bool {
 
-  f1 := strings.ToLower(fMgr.absolutePathFileName)
-  f2 := strings.ToLower(fmgr2.absolutePathFileName)
+  if fmgr2 == nil {
+    fmgr2 = &FileMgr{}
+  }
 
-  if f1 != f2 {
+  f1AbsolutePathFileName := ""
+  f2AbsolutePathFileName := ""
+
+  fMgr.dataMutex.Lock()
+  fmgr2.dataMutex.Lock()
+
+  f1AbsolutePathFileName = fMgr.absolutePathFileName
+
+  f2AbsolutePathFileName = fmgr2.absolutePathFileName
+
+  fmgr2.dataMutex.Unlock()
+  fMgr.dataMutex.Unlock()
+
+  f1AbsolutePathFileName = strings.ToLower(f1AbsolutePathFileName)
+  f2AbsolutePathFileName = strings.ToLower(f2AbsolutePathFileName)
+
+  if f1AbsolutePathFileName != f2AbsolutePathFileName {
     return false
   }
 
@@ -1900,11 +1960,11 @@ func (fMgr *FileMgr) GetFileExt() string {
 
   fMgr.dataMutex.Lock()
 
-    if fMgr.isInitialized == false {
-      fileExt = ""
-    } else {
-      fileExt = fMgr.fileExt
-    }
+  if fMgr.isInitialized == false {
+    fileExt = ""
+  } else {
+    fileExt = fMgr.fileExt
+  }
 
   fMgr.dataMutex.Unlock()
 
@@ -2131,11 +2191,11 @@ func (fMgr *FileMgr) GetFileName() string {
 
   fMgr.dataMutex.Lock()
 
-    if fMgr.isInitialized == false {
-      fileName = ""
-    } else {
-      fileName = fMgr.fileName
-    }
+  if fMgr.isInitialized == false {
+    fileName = ""
+  } else {
+    fileName = fMgr.fileName
+  }
 
   fMgr.dataMutex.Unlock()
 
@@ -2160,12 +2220,12 @@ func (fMgr *FileMgr) GetFileNameExt() string {
 
   fMgr.dataMutex.Lock()
 
-    if fMgr.isInitialized == false {
-      fileNameExt = ""
+  if fMgr.isInitialized == false {
+    fileNameExt = ""
 
-    } else {
-      fileNameExt = fMgr.fileNameExt
-    }
+  } else {
+    fileNameExt = fMgr.fileNameExt
+  }
 
   fMgr.dataMutex.Unlock()
 
@@ -2254,7 +2314,7 @@ func (fMgr *FileMgr) GetFilePermissionTextCodes() (string, error) {
   fMgr.dataMutex.Lock()
 
   filePathDoesExist,
-  err = fMgrHlpr.doesFileMgrPathFileExist(
+    err = fMgrHlpr.doesFileMgrPathFileExist(
     fMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -2272,15 +2332,15 @@ func (fMgr *FileMgr) GetFilePermissionTextCodes() (string, error) {
       err2 = FilePermissionConfig{}.NewByFileMode(fMgr.actualFileInfo.Mode())
 
     if err2 != nil {
-        err = fmt.Errorf(ePrefix+
-          "%v", err2.Error())
+      err = fmt.Errorf(ePrefix+
+        "%v", err2.Error())
 
     } else {
 
       permissionText, err2 = fPerm.GetPermissionTextCode()
 
       if err2 != nil {
-      err =
+        err =
           fmt.Errorf(ePrefix+
             "%v", err2.Error())
       }
@@ -2302,7 +2362,7 @@ func (fMgr *FileMgr) GetFilePtr() *os.File {
 
   fMgr.dataMutex.Lock()
 
-    filePtr = fMgr.filePtr
+  filePtr = fMgr.filePtr
 
   fMgr.dataMutex.Unlock()
 
@@ -2355,7 +2415,15 @@ func (fMgr *FileMgr) GetFileSize() int64 {
 //
 func (fMgr *FileMgr) GetOriginalPathFileName() string {
 
-  return fMgr.originalPathFileName
+  originalPathName := ""
+
+  fMgr.dataMutex.Lock()
+
+  originalPathName = fMgr.originalPathFileName
+
+  fMgr.dataMutex.Unlock()
+
+  return originalPathName
 }
 
 // GetReaderBufferSize() - Returns the size for the internal
@@ -2365,11 +2433,20 @@ func (fMgr *FileMgr) GetOriginalPathFileName() string {
 //
 func (fMgr *FileMgr) GetReaderBufferSize() int {
 
+  readerBuffSize := 0
+
+  fMgr.dataMutex.Lock()
+
   if fMgr.fileBufRdr != nil {
     fMgr.fileRdrBufSize = fMgr.fileBufRdr.Size()
+    readerBuffSize = fMgr.fileRdrBufSize
+  } else {
+    readerBuffSize = fMgr.fileRdrBufSize
   }
 
-  return fMgr.fileRdrBufSize
+  fMgr.dataMutex.Unlock()
+
+  return readerBuffSize
 }
 
 // GetWriterBufferSize() - Returns the size for the internal
@@ -2379,11 +2456,20 @@ func (fMgr *FileMgr) GetReaderBufferSize() int {
 //
 func (fMgr *FileMgr) GetWriterBufferSize() int {
 
+  writerBuffSize := 0
+
+  fMgr.dataMutex.Lock()
+
   if fMgr.fileBufWriter != nil {
     fMgr.fileWriterBufSize = fMgr.fileBufWriter.Size()
+    writerBuffSize = fMgr.fileWriterBufSize
+  } else {
+    writerBuffSize = fMgr.fileWriterBufSize
   }
 
-  return fMgr.fileWriterBufSize
+  fMgr.dataMutex.Unlock()
+
+  return writerBuffSize
 }
 
 // IsAbsolutePathFileNamePopulated - Returns a boolean value
@@ -2392,15 +2478,29 @@ func (fMgr *FileMgr) GetWriterBufferSize() int {
 //
 func (fMgr *FileMgr) IsAbsolutePathFileNamePopulated() bool {
 
-  fileDoesExist, err := fMgr.DoesThisFileExist()
+  fMgrHlpr := fileMgrHelper{}
+  var err error
+  isAbsolutePathFileNamePopulated := false
+
+  fMgr.dataMutex.Lock()
+  _,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    "",
+    "FileMgr")
 
   if err != nil || len(fMgr.absolutePathFileName) == 0 {
     fMgr.isAbsolutePathFileNamePopulated = false
+    isAbsolutePathFileNamePopulated = false
   } else {
-    fMgr.isAbsolutePathFileNamePopulated = fileDoesExist
+    fMgr.isAbsolutePathFileNamePopulated = true
+    isAbsolutePathFileNamePopulated = true
   }
 
-  return fMgr.isAbsolutePathFileNamePopulated
+  fMgr.dataMutex.Unlock()
+
+  return isAbsolutePathFileNamePopulated
 }
 
 // IsFileExtPopulated - Returns a boolean value indicating
@@ -2409,13 +2509,31 @@ func (fMgr *FileMgr) IsAbsolutePathFileNamePopulated() bool {
 //
 func (fMgr *FileMgr) IsFileExtPopulated() bool {
 
-  if len(fMgr.fileExt) == 0 {
+  fMgrHlpr := fileMgrHelper{}
+  var err error
+  isFileExtPopulated := false
+
+  fMgr.dataMutex.Lock()
+
+  _,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    "",
+    "FileMgr.absolutePathFileName")
+
+  if err != nil ||
+    len(fMgr.fileExt) == 0 {
     fMgr.isFileExtPopulated = false
+    isFileExtPopulated = false
   } else {
     fMgr.isFileExtPopulated = true
+    isFileExtPopulated = true
   }
 
-  return fMgr.isFileExtPopulated
+  fMgr.dataMutex.Unlock()
+
+  return isFileExtPopulated
 }
 
 // IsFileMgrValid - Analyzes the current FileMgr object. If the
@@ -2475,17 +2593,34 @@ func (fMgr *FileMgr) IsFileMgrValid(errorPrefixStr string) (err error) {
 //
 func (fMgr *FileMgr) IsFileNameExtPopulated() bool {
 
-  if len(fMgr.fileExt) > 0 &&
+  fMgrHlpr := fileMgrHelper{}
+  var err error
+  isFileNameExtPopulated := false
+
+  fMgr.dataMutex.Lock()
+
+  _,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    "",
+    "FileMgr.absolutePathFileName")
+
+  if err==nil &&
+    len(fMgr.fileExt) > 0 &&
     len(fMgr.fileName) > 0 {
 
     fMgr.isFileNameExtPopulated = true
-
+    isFileNameExtPopulated = true
   } else {
 
     fMgr.isFileNameExtPopulated = false
+    isFileNameExtPopulated = false
   }
 
-  return fMgr.isFileNameExtPopulated
+  fMgr.dataMutex.Unlock()
+
+  return isFileNameExtPopulated
 }
 
 // IsFileNamePopulated - returns a boolean value
@@ -2494,13 +2629,31 @@ func (fMgr *FileMgr) IsFileNameExtPopulated() bool {
 //
 func (fMgr *FileMgr) IsFileNamePopulated() bool {
 
-  if len(fMgr.fileName) == 0 {
+  fMgrHlpr := fileMgrHelper{}
+  var err error
+  isFileNamePopulated := false
+
+  fMgr.dataMutex.Lock()
+
+  _,
+    err = fMgrHlpr.doesFileMgrPathFileExist(
+    fMgr,
+    PreProcPathCode.None(),
+    "",
+    "FileMgr.absolutePathFileName")
+
+
+  if err != nil || len(fMgr.fileName) == 0 {
     fMgr.isFileNamePopulated = false
+    isFileNamePopulated = false
   } else {
     fMgr.isFileNamePopulated = true
+    isFileNamePopulated = true
   }
 
-  return fMgr.isFileNamePopulated
+  fMgr.dataMutex.Unlock()
+
+  return isFileNamePopulated
 }
 
 // IsFilePointerOpen - Returns a boolean value indicating
@@ -2508,20 +2661,38 @@ func (fMgr *FileMgr) IsFileNamePopulated() bool {
 // instance is open, or not.
 //
 func (fMgr *FileMgr) IsFilePointerOpen() bool {
+
+  var isFilePtrOpen bool
+
+  fMgr.dataMutex.Lock()
+
   if fMgr.filePtr == nil {
     fMgr.isFilePtrOpen = false
+    isFilePtrOpen = false
   } else {
     fMgr.isFilePtrOpen = true
+    isFilePtrOpen = true
   }
 
-  return fMgr.isFilePtrOpen
+  fMgr.dataMutex.Unlock()
+
+  return isFilePtrOpen
 }
 
 // isInitialized - Returns a boolean indicating whether the FileMgr
 // object is properly initialized.
 //
 func (fMgr *FileMgr) IsInitialized() bool {
-  return fMgr.isInitialized
+
+  isInitialized := false
+
+  fMgr.dataMutex.Lock()
+
+  isInitialized = fMgr.isInitialized
+
+  fMgr.dataMutex.Unlock()
+
+  return isInitialized
 }
 
 // MoveFileToFileMgr - This method will move the file identified

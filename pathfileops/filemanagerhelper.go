@@ -481,7 +481,7 @@ func (fMgrHlpr *fileMgrHelper) createDirectory(
   }
 
   _,
-    err := fMgrHlpr.doesFileMgrPathFileExist(
+  err := fMgrHlpr.doesFileMgrPathFileExist(
     fMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -609,7 +609,7 @@ func (fMgrHlpr *fileMgrHelper) deleteFile(
   }
 
   pathFileNameDoesExist,
-    err := fMgrHlpr.doesFileMgrPathFileExist(
+  err := fMgrHlpr.doesFileMgrPathFileExist(
     fMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -1214,7 +1214,7 @@ func (fMgrHlpr *fileMgrHelper) lowLevelCopyByLink(
   }
 
   destinationFileDoesExist,
-    err := fMgrHlpr.doesFileMgrPathFileExist(
+  err := fMgrHlpr.doesFileMgrPathFileExist(
     destFMgr,
     PreProcPathCode.None(),
     ePrefix,
@@ -2089,8 +2089,8 @@ func (fMgrHlpr *fileMgrHelper) setFileMgrDirMgrFileName(
   }
 
   adjustedFileNameExt,
-    isFileNameEmpty,
-    err2 :=
+  isFileNameEmpty,
+  err2 :=
     fh.CleanFileNameExtStr(fileNameExt)
 
   if err2 != nil {
@@ -2193,9 +2193,9 @@ func (fMgrHlpr *fileMgrHelper) setFileMgrDirMgrFileName(
   fMgr.isAbsolutePathFileNamePopulated = true
 
   _,
-    filePathDoesExist,
-    fInfoPlus,
-    nonPathError :=
+  filePathDoesExist,
+  fInfoPlus,
+  nonPathError :=
     fh.doesPathFileExist(
       fMgr.absolutePathFileName,
       PreProcPathCode.None(), // Do NOT perform pre-processing on path
