@@ -3976,12 +3976,12 @@ successExit:
   }
 
   if doesPathExist {
-    validPathDto.pathDoesExist = 1
+    validPathDto.pathDoesExist = PathExistsStatus.Exists()
     validPathDto.pathFInfoPlus = fInfo.CopyOut()
 
   } else {
     // doesPathExist = false
-    validPathDto.pathDoesExist = 0
+    validPathDto.pathDoesExist = PathExistsStatus.DoesNotExist()
   }
 
   doesPathExist,
@@ -3996,29 +3996,28 @@ successExit:
   }
 
   if doesPathExist {
-    validPathDto.absPathDoesExist = 1
+    validPathDto.absPathDoesExist = PathExistsStatus.Exists()
     validPathDto.absPathFInfoPlus = fInfo.CopyOut()
   } else {
     // doesPathExist = false
-    validPathDto.absPathDoesExist = 0
+    validPathDto.absPathDoesExist = PathExistsStatus.DoesNotExist()
   }
 
-  if validPathDto.pathDoesExist !=
-    validPathDto.absPathDoesExist {
+  if validPathDto.pathDoesExist != validPathDto.absPathDoesExist {
 
     err = fmt.Errorf(ePrefix+
       "\nERROR: The path and absolute path show different values for "+
       "existence on disk.\n"+
       "validPathDto.pathDoesExist='%v'\n"+
       "validPathDto.absPathDoesExist='%v'\n",
-      validPathDto.pathDoesExist,
-      validPathDto.absPathDoesExist)
+      validPathDto.pathDoesExist.String(),
+      validPathDto.absPathDoesExist.String())
 
     goto errorExit
   }
 
-  if validPathDto.pathDoesExist == 1 &&
-    validPathDto.absPathDoesExist == 1 {
+  if validPathDto.pathDoesExist == PathExistsStatus.Exists() &&
+     validPathDto.absPathDoesExist == PathExistsStatus.Exists() {
 
     if !validPathDto.absPathFInfoPlus.IsDir() {
       err = fmt.Errorf(ePrefix+
@@ -4449,8 +4448,8 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDoesDirectoryExist(
   dirPath string,
   ePrefix,
   dirPathLabel string) (dirPathDoesExist bool,
-  fInfo FileInfoPlus,
-  err error) {
+                        fInfo FileInfoPlus,
+                        err error) {
 
   ePrefixCurrMethod := "dirMgrHelper.lowLevelDoesDirectoryExist() "
 
@@ -4559,17 +4558,17 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDirMgrFieldConfig(
   var dirPathDoesExist, dirAbsPathDoesExist bool
   var pathFInfoPlus, absPathFInfoPlus FileInfoPlus
 
-  if validPathDto.pathDoesExist > -1 &&
-    validPathDto.absPathDoesExist > -1 {
+  if validPathDto.pathDoesExist != PathExistsStatus.Unknown() &&
+    validPathDto.absPathDoesExist != PathExistsStatus.Unknown() {
 
-    if validPathDto.pathDoesExist == 0 {
+    if validPathDto.pathDoesExist == PathExistsStatus.DoesNotExist() {
       dirPathDoesExist = false
     } else {
       dirPathDoesExist = true
       pathFInfoPlus = validPathDto.pathFInfoPlus.CopyOut()
     }
 
-    if validPathDto.absPathDoesExist == 0 {
+    if validPathDto.absPathDoesExist == PathExistsStatus.DoesNotExist() {
       dirAbsPathDoesExist = false
     } else {
       dirAbsPathDoesExist = true
@@ -5767,8 +5766,8 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
 
   validPathDto.pathStrLength = len(pathStr)
   validPathDto.absPathStrLength = len(validPathDto.absPathStr)
-  validPathDto.pathDoesExist = -1
-  validPathDto.absPathDoesExist = -1
+  validPathDto.pathDoesExist = PathExistsStatus.Unknown()
+  validPathDto.absPathDoesExist = PathExistsStatus.Unknown()
   validPathDto.isInitialized = true
   validPathDto.pathIsValid = 1
 
