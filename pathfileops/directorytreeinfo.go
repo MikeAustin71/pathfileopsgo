@@ -1,7 +1,6 @@
 package pathfileops
 
 import (
-  "errors"
   "fmt"
 )
 
@@ -27,37 +26,41 @@ type DirectoryTreeInfo struct {
 // CopyToDirectoryTree - Copies an entire directory tree to an alternate location.
 // The copy operation includes all files and all directories in the designated directory
 // tree.
-func (dirTree *DirectoryTreeInfo) CopyToDirectoryTree(baseDir, newBaseDir DirMgr) (DirectoryTreeInfo, error) {
+//
+func (dirTree *DirectoryTreeInfo) CopyToDirectoryTree(
+  baseDir, newBaseDir DirMgr) (DirectoryTreeInfo, error) {
 
   ePrefix := "DirectoryTreeInfo.CopyToDirectoryTree() "
 
   newDirTree := DirectoryTreeInfo{}
 
-  if !baseDir.isInitialized {
-    return newDirTree, errors.New(ePrefix + "Error: Input parameter 'baseDir' is NOT initialized. It is EMPTY!")
-  }
-
   err2 := baseDir.IsDirMgrValid("")
 
   if err2 != nil {
-    return newDirTree, fmt.Errorf(ePrefix+"Error: Input Parameter 'baseDir' is INVALID! Error='%v'", err2.Error())
-  }
-
-  if !newBaseDir.isInitialized {
-    return newDirTree, errors.New(ePrefix + "Error: Input parameter 'newBaseDir' is NOT initialized. It is EMPTY!")
-
+    return newDirTree, fmt.Errorf(ePrefix+
+      "Error: Input Parameter 'baseDir' is INVALID!\nError='%v'\n", err2.Error())
   }
 
   err2 = newBaseDir.IsDirMgrValid("")
 
   if err2 != nil {
-    return newDirTree, fmt.Errorf(ePrefix+"Error: Input Parameter 'newBaseDir' is INVALID! Error='%v'", err2.Error())
+    return newDirTree, fmt.Errorf(ePrefix+
+      "Error: Input Parameter 'newBaseDir' is INVALID!\nError='%v'\n", err2.Error())
   }
 
   err2 = newBaseDir.MakeDir()
 
   if err2 != nil {
-    return newDirTree, fmt.Errorf(ePrefix+"Error returned from  newBaseDir.MakeDir(). newBaseDir.absolutePath='%v'  Error='%v'", newBaseDir.absolutePath, err2.Error())
+    return newDirTree, fmt.Errorf(ePrefix+
+      "Error returned from newBaseDir.MakeDir().\n" +
+      "newBaseDir.absolutePath='%v'\nError='%v'\n",
+      newBaseDir.absolutePath, err2.Error())
+  }
+
+  if dirTree.Directories.dirMgrs == nil {
+
+    dirTree.Directories.dirMgrs = make([]DirMgr, 0, 50 )
+
   }
 
   lAry := len(dirTree.Directories.dirMgrs)
@@ -82,6 +85,10 @@ func (dirTree *DirectoryTreeInfo) CopyToDirectoryTree(baseDir, newBaseDir DirMgr
 
   }
 
+  if dirTree.FoundFiles.fileMgrs == nil {
+    dirTree.FoundFiles.fileMgrs = make([]FileMgr, 0, 50)
+  }
+
   lAry = len(dirTree.FoundFiles.fileMgrs)
 
   for j := 0; j < lAry; j++ {
@@ -89,19 +96,33 @@ func (dirTree *DirectoryTreeInfo) CopyToDirectoryTree(baseDir, newBaseDir DirMgr
     fileDMgr, err2 := dirTree.FoundFiles.fileMgrs[j].dMgr.SubstituteBaseDir(baseDir, newBaseDir)
 
     if err2 != nil {
-      return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by dirTree.FoundFiles.fileMgrs[j].dMgr.SubstituteBaseDir(baseDir, newBaseDir). Error='%v'", err2.Error())
+      return DirectoryTreeInfo{},
+      fmt.Errorf(ePrefix+
+        "Error returned by dirTree.FoundFiles.fileMgrs[j].dMgr.SubstituteBaseDir(baseDir, newBaseDir).\n" +
+        "Error='%v'\n", err2.Error())
     }
 
-    newFileMgr, err2 := FileMgr{}.NewFromDirMgrFileNameExt(fileDMgr, dirTree.FoundFiles.fileMgrs[j].fileNameExt)
+    newFileMgr, err2 :=
+      FileMgr{}.NewFromDirMgrFileNameExt(fileDMgr, dirTree.FoundFiles.fileMgrs[j].fileNameExt)
 
     if err2 != nil {
-      return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by FileMgr{}.NewFromDirMgrFileNameExt(dMgr, dirTree.FoundFiles.fileMgrs[j].fileNameExt) dirTree.FoundFiles.fileMgrs[j].fileNameExt='%v' j='%v' Error='%v'", dirTree.FoundFiles.fileMgrs[j].fileNameExt, j, err2.Error())
+      return DirectoryTreeInfo{},
+      fmt.Errorf(ePrefix+
+        "Error returned by FileMgr{}.NewFromDirMgrFileNameExt(" +
+        "dMgr, dirTree.FoundFiles.fileMgrs[j].fileNameExt)\n" +
+        "dirTree.FoundFiles.fileMgrs[j].fileNameExt='%v'\nj='%v'\nError='%v'\n",
+        dirTree.FoundFiles.fileMgrs[j].fileNameExt, j, err2.Error())
     }
 
     err2 = dirTree.FoundFiles.fileMgrs[j].CopyFileMgrByIoByLink(&newFileMgr)
 
     if err2 != nil {
-      return DirectoryTreeInfo{}, fmt.Errorf(ePrefix+"Error returned by fileMgrs[j].CopyFileMgrByIoByLink(&newFileMgr) SrcFileName:'%v'  DestFileName:'%v' Error='%v'", dirTree.FoundFiles.fileMgrs[j].fileNameExt, newFileMgr.fileNameExt, err2.Error())
+      return DirectoryTreeInfo{},
+      fmt.Errorf(ePrefix+
+        "Error returned by fileMgrs[j].CopyFileMgrByIoByLink(&newFileMgr)\n" +
+        "SrcFileName:'%v'\nDestFileName:'%v'\n" +
+        "Error='%v'\n",
+        dirTree.FoundFiles.fileMgrs[j].fileNameExt, newFileMgr.fileNameExt, err2.Error())
 
     }
 

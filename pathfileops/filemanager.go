@@ -3962,5 +3962,6 @@ func (fMgr *FileMgr) WriteStrToFile(str string) (numBytesWritten int, err error)
   }
 
   fMgr.dataMutex.Unlock()
+
   return numBytesWritten, err
 }
