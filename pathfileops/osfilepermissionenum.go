@@ -118,8 +118,8 @@ var mOsPermissionLetterToCode = map[string]os.FileMode{
 //
 // OsFilePermissionCode has been adapted to function as an enumeration of valid
 // File Permission Code values. Since Go does not directly support enumerations,
-// the 'OsFilePermissionCode' has been configured to function in a manner similar
-// to classic enumerations found in other languages like C#. For additional
+// the 'OsFilePermissionCode' type has been configured to function in a manner
+// similar to classic enumerations found in other languages like C#. For additional
 // information, reference:
 //
 //      Jeffrey Richter Using Reflection to implement enumerated types
@@ -217,9 +217,11 @@ func (osPerm OsFilePermissionCode) GetNewFromLetterCode(
   return OsFilePermissionCode(fModeValue), nil
 }
 
-// IsValid - If the value of the current OsFilePermissionCode is 'invalid',
-// this method will return an error. If the OsFilePermissionCode is 'valid',
-// this method will return a value of 'nil'.
+// IsValid - If the value of the current OsFilePermissionCode instance is
+// 'invalid', this method will return an error.
+//
+// If the OsFilePermissionCode instance is 'valid', this method will return
+// a value of 'nil'.
 //
 // This is a standard utility method and is not part of the valid enumerations
 // for this type.
@@ -373,7 +375,15 @@ func (osPerm OsFilePermissionCode) ParseString(
 
   ePrefix := "OsFilePermissionCode.ParseString() "
 
+  valueString = strings.TrimLeft(strings.TrimRight(valueString, " "), " ")
+
   lenValueStr := len(valueString)
+
+  if lenValueStr == 0 {
+    return OsFilePermissionCode(0),
+      errors.New(ePrefix +
+        "Error: Input parameter 'valueString' is an empty string and therefore INVALID!\n")
+  }
 
   if strings.HasSuffix(valueString, "()") {
     valueString = valueString[0 : lenValueStr-2]
@@ -400,7 +410,10 @@ func (osPerm OsFilePermissionCode) ParseString(
     permCode, ok = mOsPermissionStringToCode[valueString]
 
     if !ok {
-      return result, errors.New(ePrefix + "Invalid Permission Code!")
+      return result,
+      fmt.Errorf(ePrefix +
+        "Error: Invalid Permission Code!\n" +
+        "valueString='%v'\n", valueString)
     }
 
     result = OsFilePermissionCode(permCode)
@@ -416,7 +429,10 @@ func (osPerm OsFilePermissionCode) ParseString(
     permCode, ok = mOsPermissionLwrCaseStringToCode[valueString]
 
     if !ok {
-      return result, errors.New(ePrefix + "Invalid Permission Code!")
+      return result,
+      fmt.Errorf(ePrefix +
+        "Error: Invalid Permission Code!\n" +
+        "valueString='%v'\n", valueString)
     }
 
     result = OsFilePermissionCode(permCode)
@@ -462,6 +478,9 @@ func (osPerm OsFilePermissionCode) String() string {
 
 // Value - Returns the value of the OsFilePermissionCode instance
 // as type os.FileMode.
+//
+// This is a standard utility method and is not part of the valid
+// enumerations for this type.
 //
 func (osPerm OsFilePermissionCode) Value() os.FileMode {
 
