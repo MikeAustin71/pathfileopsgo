@@ -96,7 +96,7 @@ func (pathExist PathExistsStatusCode) StatusCodesEqual( statusCode PathExistsSta
   return false
 }
 
-// IsValid - If the value of the current PathExistsStatusCode instance is
+// StatusIsValid - If the value of the current PathExistsStatusCode instance is
 // 'invalid', this method will return an error.
 //
 // If the PathExistsStatusCode is instance is 'valid', this method will return
@@ -120,9 +120,9 @@ func (pathExist PathExistsStatusCode) StatusIsValid() error {
 }
 
 // ParseString - Receives a string and attempts to match it with
-// the string value of the supported enumeration. If successful, a new
-// instance of PathExistsStatusCode is returned set to the value of the
-// associated enumeration.
+// the string value of the supported enumeration. If successful,
+// a new instance of PathExistsStatusCode is returned set to the
+// value of the associated enumeration.
 //
 // This is a standard utility method and is not part of the valid
 // enumerations for this type.
@@ -165,9 +165,9 @@ func (pathExist PathExistsStatusCode) StatusIsValid() error {
 //
 //	t, err := PathExistsStatusCode(0).ParseString("Exists", true)
 //                            OR
-//	t, err := OsFilePermissionCode(0).ParseString("Exists()", true)
+//	t, err := PathExistsStatusCode(0).ParseString("Exists()", true)
 //                            OR
-//	t, err := OsFilePermissionCode(0).ParseString("exists", false)
+//	t, err := PathExistsStatusCode(0).ParseString("exists", false)
 //
 //	For all of the cases shown above,
 //  t is now equal to PathExistsStatusCode(0).Exists()
@@ -176,7 +176,7 @@ func (pathExist PathExistsStatusCode) StatusIsValid() error {
 func (pathExist PathExistsStatusCode) ParseString(
   valueString string, caseSensitive bool) (PathExistsStatusCode, error) {
 
-    ePrefix := "PathExistsStatusCode.StatusCodeParseString() "
+    ePrefix := "PathExistsStatusCode.ParseString() "
 
   result := PathExistsStatusCode(-1)
 
@@ -187,14 +187,14 @@ func (pathExist PathExistsStatusCode) ParseString(
   if lenValueStr == 0 {
     return result,
       errors.New(ePrefix +
-        "Error: Input parameter 'valueString' is an empty string and therefore INVALID!\n")
+        "Error: Input parameter 'valueString' is an empty " +
+        "string and therefore INVALID!\n")
   }
 
   if strings.HasSuffix(valueString, "()") {
     valueString = valueString[0 : lenValueStr-2]
     lenValueStr -= 2
   }
-
 
   if lenValueStr < 6 {
     return result,
@@ -222,13 +222,12 @@ func (pathExist PathExistsStatusCode) ParseString(
     result = PathExistsStatusCode(-1)
     return result,
       fmt.Errorf(ePrefix +
-        "Error: Invalid Permission Code!\n" +
+        "Error: Invalid PathExistsStatusCode Code!\n" +
         "valueString='%v'\n", valueString)
   }
 
   return result, nil
 }
-
 
 // String - Returns a string with the name of the enumeration associated
 // with this instance of 'PathExistsStatusCode'.
@@ -274,4 +273,16 @@ func (pathExist PathExistsStatusCode) Value() PathExistsStatusCode {
 }
 
 
+// PathExistsStatus - public global variable of
+// type 'PathExistsStatusCode'.
+//
+// This variable serves as an easier, short hand
+// technique for accessing PathExistsStatusCode
+// values.
+//
+// Usage:
+//  PathExistsStatus.Unknown()
+//  PathExistsStatus.Invalid()
+//  PathExistsStatus.Valid()
+//
 var PathExistsStatus PathExistsStatusCode
