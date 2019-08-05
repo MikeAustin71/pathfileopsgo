@@ -57,8 +57,8 @@ func (vpDto ValidPathStrDto) New() ValidPathStrDto {
   newValPathDto.pathStrLength = -1
   newValPathDto.absPathStr = ""
   newValPathDto.absPathStrLength = -1
-  newValPathDto.pathDoesExist = -1
-  newValPathDto.absPathDoesExist = -1
+  newValPathDto.pathDoesExist = PathExistsStatus.Unknown()
+  newValPathDto.absPathDoesExist = PathExistsStatus.Unknown()
   newValPathDto.pathIsValid = -1
   newValPathDto.isInitialized = false
   newValPathDto.pathVolumeName = ""
@@ -159,14 +159,16 @@ func (vpDto *ValidPathStrDto) IsDtoValid(ePrefix string) error {
       "The ValidPathStrDto absolute path string is EMPTY!\n")
   }
 
-  if vpDto.pathDoesExist < -1 || vpDto.pathDoesExist > 1 {
+  if vpDto.pathDoesExist < PathExistsStatus.Unknown() ||
+      vpDto.pathDoesExist > PathExistsStatus.Exists() {
     return fmt.Errorf(ePrefix +
       "ERROR: This ValidPathStrDto is INVALID!\n" +
       "ValidPathStrDto.pathDoesExist holds an invalid value.\n" +
       "ValidPathStrDto.pathDoesExist='%v'\n", vpDto.pathDoesExist)
   }
 
-  if vpDto.absPathDoesExist < -1 || vpDto.absPathDoesExist > 1 {
+  if vpDto.absPathDoesExist < PathExistsStatus.Unknown() ||
+      vpDto.absPathDoesExist > PathExistsStatus.Exists() {
     return fmt.Errorf(ePrefix +
       "ERROR: This ValidPathStrDto is INVALID!\n" +
       "ValidPathStrDto.absPathDoesExist holds an invalid value.\n" +
