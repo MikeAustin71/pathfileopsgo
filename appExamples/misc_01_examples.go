@@ -763,7 +763,7 @@ func (mscEx MiscExamples) TestDeleteDirectoryTree() {
 
 }
 
-func (mscEx MiscExamples) TestCopyDirectoryTree_01() {
+func (mscEx MiscExamples) Testcopydirectorytree01() {
 
   ePrefix := "TestCopyDirectoryTree() "
   fh := pathFileOp.FileHelper{}
