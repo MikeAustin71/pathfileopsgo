@@ -20,16 +20,17 @@ func TestOsFilePermissionCode_Equal_01(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by osPerm2=OsFilePermissionCode(0)."+
-      "GetNewFromFileMode(OsFilePermCode.ModeNone()) Error='%v' ",
+      "GetNewFromFileMode(OsFilePermCode.ModeNone())\nError='%v'\n",
       err.Error())
+    return
   }
 
   if !osPerm1.Equal(osPerm2) {
-    t.Error("Expected osPerm1 to Equal osPerm2. THEY ARE NOT EQUAL!")
+    t.Error("Expected osPerm1 to Equal osPerm2.\nTHEY ARE NOT EQUAL!\n")
   }
 
   if !osPerm2.Equal(osPerm1) {
-    t.Error("Expected osPerm2 to Equal osPerm1. THEY ARE NOT EQUAL!")
+    t.Error("Expected osPerm2 to Equal osPerm1.\nTHEY ARE NOT EQUAL!\n")
   }
 
 }
@@ -40,24 +41,26 @@ func TestOsFilePermissionCode_Equal_02(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by osPerm1=OsFilePermCode."+
-      "GetNewFromFileMode(OsFilePermCode.ModeDir()) Error='%v' ",
+      "GetNewFromFileMode(OsFilePermCode.ModeDir())\nError='%v'\n",
       err.Error())
+    return
   }
 
   osPerm2, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeDir())
 
   if err != nil {
     t.Errorf("Error returned by osPerm2=OsFilePermCode."+
-      "GetNewFromFileMode(OsFilePermCode.ModeDir()) Error='%v' ",
+      "GetNewFromFileMode(OsFilePermCode.ModeDir())\nError='%v'\n",
       err.Error())
+    return
   }
 
   if !osPerm1.Equal(osPerm2) {
-    t.Error("Expected osPerm1 to Equal osPerm2. THEY ARE NOT EQUAL!")
+    t.Error("Expected osPerm1 to Equal osPerm2.\nTHEY ARE NOT EQUAL!\n")
   }
 
   if !osPerm2.Equal(osPerm1) {
-    t.Error("Expected osPerm2 to Equal osPerm1. THEY ARE NOT EQUAL!")
+    t.Error("Expected osPerm2 to Equal osPerm1.\nTHEY ARE NOT EQUAL!\n")
   }
 
 }
@@ -68,24 +71,26 @@ func TestOsFilePermissionCode_Equal_03(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by osPerm1=OsFilePermCode."+
-      "GetNewFromFileMode(OsFilePermCode.ModeNamedPipe()) Error='%v' ",
+      "GetNewFromFileMode(OsFilePermCode.ModeNamedPipe())\nError='%v'\n",
       err.Error())
+    return
   }
 
   osPerm2, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeNamedPipe())
 
   if err != nil {
     t.Errorf("Error returned by osPerm2=OsFilePermCode."+
-      "GetNewFromFileMode(OsFilePermCode.ModeNamedPipe()) Error='%v' ",
+      "GetNewFromFileMode(OsFilePermCode.ModeNamedPipe())\nError='%v'\n",
       err.Error())
+    return
   }
 
   if !osPerm1.Equal(osPerm2) {
-    t.Error("Expected osPerm1 to Equal osPerm2. THEY ARE NOT EQUAL!")
+    t.Error("Expected osPerm1 to Equal osPerm2.\nTHEY ARE NOT EQUAL!\n")
   }
 
   if !osPerm2.Equal(osPerm1) {
-    t.Error("Expected osPerm2 to Equal osPerm1. THEY ARE NOT EQUAL!")
+    t.Error("Expected osPerm2 to Equal osPerm1.\nTHEY ARE NOT EQUAL!\n")
   }
 
 }
@@ -96,24 +101,26 @@ func TestOsFilePermissionCode_Equal_04(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by osPerm1=OsFilePermCode."+
-      "GetNewFromFileMode(OsFilePermCode.ModeIrregular()) Error='%v' ",
+      "GetNewFromFileMode(OsFilePermCode.ModeIrregular())\nError='%v'\n",
       err.Error())
+    return
   }
 
   osPerm2, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeIrregular())
 
   if err != nil {
     t.Errorf("Error returned by osPerm2=OsFilePermCode."+
-      "GetNewFromFileMode(OsFilePermCode.ModeIrregular()) Error='%v' ",
+      "GetNewFromFileMode(OsFilePermCode.ModeIrregular())\nError='%v'\n",
       err.Error())
+    return
   }
 
   if !osPerm1.Equal(osPerm2) {
-    t.Error("Expected osPerm1 to Equal osPerm2. THEY ARE NOT EQUAL!")
+    t.Error("Expected osPerm1 to Equal osPerm2.\nTHEY ARE NOT EQUAL!\n")
   }
 
   if !osPerm2.Equal(osPerm1) {
-    t.Error("Expected osPerm2 to Equal osPerm1. THEY ARE NOT EQUAL!")
+    t.Error("Expected osPerm2 to Equal osPerm1.\nTHEY ARE NOT EQUAL!\n")
   }
 
 }
@@ -124,24 +131,26 @@ func TestOsFilePermissionCode_Equal_05(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by osPerm1=OsFilePermCode."+
-      "GetNewFromFileMode(OsFilePermCode.ModeNone()) Error='%v' ",
+      "GetNewFromFileMode(OsFilePermCode.ModeNone())\nError='%v'\n",
       err.Error())
+    return
   }
 
   osPerm2, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeIrregular())
 
   if err != nil {
     t.Errorf("Error returned by osPerm2=OsFilePermCode."+
-      "GetNewFromFileMode(OsFilePermCode.ModeIrregular()) Error='%v' ",
+      "GetNewFromFileMode(OsFilePermCode.ModeIrregular())\nError='%v'\n",
       err.Error())
+    return
   }
 
   if osPerm1.Equal(osPerm2) {
-    t.Error("Expected osPerm1 to NOT Equal osPerm2. However, THEY ARE EQUAL!")
+    t.Error("Expected osPerm1 to NOT Equal osPerm2.\nHowever, THEY ARE EQUAL!\n")
   }
 
   if osPerm2.Equal(osPerm1) {
-    t.Error("Expected osPerm2 to NOT Equal osPerm1. However, THEY ARE NOT EQUAL!")
+    t.Error("Expected osPerm2 to NOT Equal osPerm1.\nHowever, THEY ARE NOT EQUAL!\n")
   }
 
 }
@@ -152,24 +161,26 @@ func TestOsFilePermissionCode_Equal_06(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by osPerm1=OsFilePermCode."+
-      "GetNewFromFileMode(OsFilePermCode.ModeDir()) Error='%v' ",
+      "GetNewFromFileMode(OsFilePermCode.ModeDir())\nError='%v'\n",
       err.Error())
+    return
   }
 
   osPerm2, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeAppend())
 
   if err != nil {
     t.Errorf("Error returned by osPerm2=OsFilePermCode."+
-      "GetNewFromFileMode(OsFilePermCode.ModeAppend()) Error='%v' ",
+      "GetNewFromFileMode(OsFilePermCode.ModeAppend())\nError='%v'\n",
       err.Error())
+    return
   }
 
   if osPerm1.Equal(osPerm2) {
-    t.Error("Expected osPerm1 to NOT Equal osPerm2. However, THEY ARE EQUAL!")
+    t.Error("Expected osPerm1 to NOT Equal osPerm2.\nHowever, THEY ARE EQUAL!\n")
   }
 
   if osPerm2.Equal(osPerm1) {
-    t.Error("Expected osPerm2 to NOT Equal osPerm1. However, THEY ARE NOT EQUAL!")
+    t.Error("Expected osPerm2 to NOT Equal osPerm1.\nHowever, THEY ARE NOT EQUAL!\n")
   }
 
 }
@@ -180,24 +191,26 @@ func TestOsFilePermissionCode_Equal_07(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by osPerm1=OsFilePermCode."+
-      "GetNewFromFileMode(OsFilePermCode.ModeNamedPipe()) Error='%v' ",
+      "GetNewFromFileMode(OsFilePermCode.ModeNamedPipe())\nError='%v'\n",
       err.Error())
+    return
   }
 
   osPerm2, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeIrregular())
 
   if err != nil {
     t.Errorf("Error returned by osPerm2=OsFilePermCode."+
-      "GetNewFromFileMode(OsFilePermCode.ModeIrregular()) Error='%v' ",
+      "GetNewFromFileMode(OsFilePermCode.ModeIrregular())\nError='%v'\n",
       err.Error())
+    return
   }
 
   if osPerm1.Equal(osPerm2) {
-    t.Error("Expected osPerm1 to NOT Equal osPerm2. However, THEY ARE EQUAL!")
+    t.Error("Expected osPerm1 to NOT Equal osPerm2.\nHowever, THEY ARE EQUAL!\n")
   }
 
   if osPerm2.Equal(osPerm1) {
-    t.Error("Expected osPerm2 to NOT Equal osPerm1. However, THEY ARE NOT EQUAL!")
+    t.Error("Expected osPerm2 to NOT Equal osPerm1.\nHowever, THEY ARE NOT EQUAL!\n")
   }
 
 }
@@ -208,24 +221,26 @@ func TestOsFilePermissionCode_Equal_08(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by osPerm1=OsFilePermCode."+
-      "GetNewFromFileMode(OsFilePermCode.ModeSetuid()) Error='%v' ",
+      "GetNewFromFileMode(OsFilePermCode.ModeSetuid())\nError='%v'\n",
       err.Error())
+    return
   }
 
   osPerm2, err := OsFilePermCode.GetNewFromFileMode(OsFilePermCode.ModeSetgid())
 
   if err != nil {
     t.Errorf("Error returned by osPerm2=OsFilePermCode."+
-      "GetNewFromFileMode(OsFilePermCode.ModeSetgid()) Error='%v' ",
+      "GetNewFromFileMode(OsFilePermCode.ModeSetgid())\nError='%v'\n",
       err.Error())
+    return
   }
 
   if osPerm1.Equal(osPerm2) {
-    t.Error("Expected osPerm1 to NOT Equal osPerm2. However, THEY ARE EQUAL!")
+    t.Error("Expected osPerm1 to NOT Equal osPerm2.\nHowever, THEY ARE EQUAL!\n")
   }
 
   if osPerm2.Equal(osPerm1) {
-    t.Error("Expected osPerm2 to NOT Equal osPerm1. However, THEY ARE NOT EQUAL!")
+    t.Error("Expected osPerm2 to NOT Equal osPerm1.\nHowever, THEY ARE NOT EQUAL!\n")
   }
 
 }
@@ -235,9 +250,10 @@ func TestOsFilePermissionCode_IsValid_01(t *testing.T) {
   fpc := OsFilePermCode.ModeDir()
 
   if os.ModeDir != fpc {
-    t.Errorf("Error: Expected fpc to be equal to os.ModeDir. It WAS NOT EQUAL!"+
-      "fpc decimal value = %s octal value = %s",
+    t.Errorf("Error: Expected fpc to be equal to os.ModeDir. It WAS NOT EQUAL!\n"+
+      "fpc decimal value = %s\noctal value = %s\n",
       strconv.FormatInt(int64(fpc), 10), strconv.FormatInt(int64(fpc), 8))
+    return
   }
 
   osPerm := OsFilePermissionCode(fpc)
@@ -245,8 +261,8 @@ func TestOsFilePermissionCode_IsValid_01(t *testing.T) {
   err := osPerm.IsValid()
 
   if err != nil {
-    t.Errorf("Error received from osPerm.IsValid(). "+
-      "Error='%v'", err.Error())
+    t.Errorf("Error received from osPerm.IsValid().\n"+
+      "Error='%v'\n", err.Error())
   }
 
 }
@@ -258,9 +274,10 @@ func TestOsFilePermissionCode_IsValid_02(t *testing.T) {
   fmBase := os.FileMode(0)
 
   if fmBase != fpc {
-    t.Errorf("Error: Expected fpc to be equal to os.ModeNone. It WAS NOT EQUAL!"+
-      "fpc decimal value = %s octal value = %s",
+    t.Errorf("Error: Expected fpc to be equal to os.ModeNone. It WAS NOT EQUAL!\n"+
+      "fpc decimal value = %s\noctal value = %s\n",
       strconv.FormatInt(int64(fpc), 10), strconv.FormatInt(int64(fpc), 8))
+    return
   }
 
   osPerm := OsFilePermissionCode(fpc)
@@ -268,8 +285,8 @@ func TestOsFilePermissionCode_IsValid_02(t *testing.T) {
   err := osPerm.IsValid()
 
   if err != nil {
-    t.Errorf("Error received from osPerm.IsValid(). "+
-      "Error='%v'", err.Error())
+    t.Errorf("Error received from osPerm.IsValid().\n"+
+      "Error='%v'\n", err.Error())
   }
 
 }
@@ -281,8 +298,8 @@ func TestOsFilePermissionCode_IsValid_03(t *testing.T) {
   fmBase := os.ModeAppend
 
   if fmBase != fpc {
-    t.Errorf("Error: Expected fpc to be equal to os.ModeAppend. It WAS NOT EQUAL!"+
-      "fpc decimal value = %s octal value = %s",
+    t.Errorf("Error: Expected fpc to be equal to os.ModeAppend. It WAS NOT EQUAL!\n"+
+      "fpc decimal value = %s\noctal value = %s\n",
       strconv.FormatInt(int64(fpc), 10), strconv.FormatInt(int64(fpc), 8))
   }
 
@@ -291,8 +308,8 @@ func TestOsFilePermissionCode_IsValid_03(t *testing.T) {
   err := osPerm.IsValid()
 
   if err != nil {
-    t.Errorf("Error received from osPerm.IsValid(). "+
-      "Error='%v'", err.Error())
+    t.Errorf("Error received from osPerm.IsValid().\n"+
+      "Error='%v'\n", err.Error())
   }
 
 }
@@ -304,8 +321,8 @@ func TestOsFilePermissionCode_IsValid_04(t *testing.T) {
   fmBase := os.ModeExclusive
 
   if fmBase != fpc {
-    t.Errorf("Error: Expected fpc to be equal to os.ModeExclusive. It WAS NOT EQUAL!"+
-      "fpc decimal value = %s octal value = %s",
+    t.Errorf("Error: Expected fpc to be equal to os.ModeExclusive. It WAS NOT EQUAL!\n"+
+      "fpc decimal value = %s\noctal value = %s\n",
       strconv.FormatInt(int64(fpc), 10), strconv.FormatInt(int64(fpc), 8))
   }
 
@@ -314,8 +331,8 @@ func TestOsFilePermissionCode_IsValid_04(t *testing.T) {
   err := osPerm.IsValid()
 
   if err != nil {
-    t.Errorf("Error received from osPerm.IsValid(). "+
-      "Error='%v'", err.Error())
+    t.Errorf("Error received from osPerm.IsValid().\n"+
+      "Error='%v'\n", err.Error())
   }
 
 }
@@ -327,8 +344,8 @@ func TestOsFilePermissionCode_IsValid_05(t *testing.T) {
   fmBase := os.ModeTemporary
 
   if fmBase != fpc {
-    t.Errorf("Error: Expected fpc to be equal to os.ModeTemporary. It WAS NOT EQUAL!"+
-      "fpc decimal value = %s octal value = %s",
+    t.Errorf("Error: Expected fpc to be equal to os.ModeTemporary. It WAS NOT EQUAL!\n"+
+      "fpc decimal value = %s\noctal value = %s\n",
       strconv.FormatInt(int64(fpc), 10), strconv.FormatInt(int64(fpc), 8))
   }
 
@@ -337,8 +354,8 @@ func TestOsFilePermissionCode_IsValid_05(t *testing.T) {
   err := osPerm.IsValid()
 
   if err != nil {
-    t.Errorf("Error received from osPerm.IsValid(). "+
-      "Error='%v'", err.Error())
+    t.Errorf("Error received from osPerm.IsValid().\n"+
+      "Error='%v'\n", err.Error())
   }
 
 }
@@ -350,8 +367,8 @@ func TestOsFilePermissionCode_IsValid_06(t *testing.T) {
   fmBase := os.ModeSymlink
 
   if fmBase != fpc {
-    t.Errorf("Error: Expected fpc to be equal to os.ModeSymlink. It WAS NOT EQUAL!"+
-      "fpc decimal value = %s octal value = %s",
+    t.Errorf("Error: Expected fpc to be equal to os.ModeSymlink. It WAS NOT EQUAL!\n"+
+      "fpc decimal value = %s\noctal value = %s\n",
       strconv.FormatInt(int64(fpc), 10), strconv.FormatInt(int64(fpc), 8))
   }
 
@@ -360,8 +377,8 @@ func TestOsFilePermissionCode_IsValid_06(t *testing.T) {
   err := osPerm.IsValid()
 
   if err != nil {
-    t.Errorf("Error received from osPerm.IsValid(). "+
-      "Error='%v'", err.Error())
+    t.Errorf("Error received from osPerm.IsValid().\n"+
+      "Error='%v'\n", err.Error())
   }
 
 }
@@ -373,8 +390,8 @@ func TestOsFilePermissionCode_IsValid_07(t *testing.T) {
   fmBase := os.ModeDevice
 
   if fmBase != fpc {
-    t.Errorf("Error: Expected fpc to be equal to os.ModeDevice. It WAS NOT EQUAL!"+
-      "fpc decimal value = %s octal value = %s",
+    t.Errorf("Error: Expected fpc to be equal to os.ModeDevice. It WAS NOT EQUAL!\n"+
+      "fpc decimal value = %s\noctal value = %s\n",
       strconv.FormatInt(int64(fpc), 10), strconv.FormatInt(int64(fpc), 8))
   }
 
@@ -383,8 +400,8 @@ func TestOsFilePermissionCode_IsValid_07(t *testing.T) {
   err := osPerm.IsValid()
 
   if err != nil {
-    t.Errorf("Error received from osPerm.IsValid(). "+
-      "Error='%v'", err.Error())
+    t.Errorf("Error received from osPerm.IsValid().\n"+
+      "Error='%v'\n", err.Error())
   }
 
 }
@@ -396,8 +413,8 @@ func TestOsFilePermissionCode_IsValid_08(t *testing.T) {
   fmBase := os.ModeNamedPipe
 
   if fmBase != fpc {
-    t.Errorf("Error: Expected fpc to be equal to os.ModeNamedPipe. It WAS NOT EQUAL!"+
-      "fpc decimal value = %s octal value = %s",
+    t.Errorf("Error: Expected fpc to be equal to os.ModeNamedPipe. It WAS NOT EQUAL!\n"+
+      "fpc decimal value = %s\noctal value = %s\n",
       strconv.FormatInt(int64(fpc), 10), strconv.FormatInt(int64(fpc), 8))
   }
 
@@ -406,8 +423,8 @@ func TestOsFilePermissionCode_IsValid_08(t *testing.T) {
   err := osPerm.IsValid()
 
   if err != nil {
-    t.Errorf("Error received from osPerm.IsValid(). "+
-      "Error='%v'", err.Error())
+    t.Errorf("Error received from osPerm.IsValid().\n"+
+      "Error='%v'\n", err.Error())
   }
 
 }
@@ -419,8 +436,8 @@ func TestOsFilePermissionCode_IsValid_09(t *testing.T) {
   fmBase := os.ModeSocket
 
   if fmBase != fpc {
-    t.Errorf("Error: Expected fpc to be equal to os.ModeSocket. It WAS NOT EQUAL!"+
-      "fpc decimal value = %s octal value = %s",
+    t.Errorf("Error: Expected fpc to be equal to os.ModeSocket. It WAS NOT EQUAL!\n"+
+      "fpc decimal value = %s\noctal value = %s\n",
       strconv.FormatInt(int64(fpc), 10), strconv.FormatInt(int64(fpc), 8))
   }
 
@@ -429,8 +446,8 @@ func TestOsFilePermissionCode_IsValid_09(t *testing.T) {
   err := osPerm.IsValid()
 
   if err != nil {
-    t.Errorf("Error received from osPerm.IsValid(). "+
-      "Error='%v'", err.Error())
+    t.Errorf("Error received from osPerm.IsValid().\n"+
+      "Error='%v'\n", err.Error())
   }
 
 }
@@ -442,8 +459,8 @@ func TestOsFilePermissionCode_IsValid_10(t *testing.T) {
   fmBase := os.ModeSetuid
 
   if fmBase != fpc {
-    t.Errorf("Error: Expected fpc to be equal to os.ModeSetuid. It WAS NOT EQUAL!"+
-      "fpc decimal value = %s octal value = %s",
+    t.Errorf("Error: Expected fpc to be equal to os.ModeSetuid. It WAS NOT EQUAL!\n"+
+      "fpc decimal value = %s\noctal value = %s\n",
       strconv.FormatInt(int64(fpc), 10), strconv.FormatInt(int64(fpc), 8))
   }
 
@@ -452,8 +469,8 @@ func TestOsFilePermissionCode_IsValid_10(t *testing.T) {
   err := osPerm.IsValid()
 
   if err != nil {
-    t.Errorf("Error received from osPerm.IsValid(). "+
-      "Error='%v'", err.Error())
+    t.Errorf("Error received from osPerm.IsValid().\n"+
+      "Error='%v'\n", err.Error())
   }
 
 }
@@ -465,8 +482,8 @@ func TestOsFilePermissionCode_IsValid_11(t *testing.T) {
   fmBase := os.ModeSetgid
 
   if fmBase != fpc {
-    t.Errorf("Error: Expected fpc to be equal to os.ModeSetgid. It WAS NOT EQUAL!"+
-      "fpc decimal value = %s octal value = %s",
+    t.Errorf("Error: Expected fpc to be equal to os.ModeSetgid. It WAS NOT EQUAL!\n"+
+      "fpc decimal value = %s\noctal value = %s\n",
       strconv.FormatInt(int64(fpc), 10), strconv.FormatInt(int64(fpc), 8))
   }
 
@@ -475,8 +492,8 @@ func TestOsFilePermissionCode_IsValid_11(t *testing.T) {
   err := osPerm.IsValid()
 
   if err != nil {
-    t.Errorf("Error received from osPerm.IsValid(). "+
-      "Error='%v'", err.Error())
+    t.Errorf("Error received from osPerm.IsValid().\n"+
+      "Error='%v'\n", err.Error())
   }
 
 }
@@ -488,8 +505,8 @@ func TestOsFilePermissionCode_IsValid_12(t *testing.T) {
   fmBase := os.ModeCharDevice
 
   if fmBase != fpc {
-    t.Errorf("Error: Expected fpc to be equal to os.ModeCharDevice. It WAS NOT EQUAL!"+
-      "fpc decimal value = %s octal value = %s",
+    t.Errorf("Error: Expected fpc to be equal to os.ModeCharDevice. It WAS NOT EQUAL!\n"+
+      "fpc decimal value = %s\noctal value = %s\n",
       strconv.FormatInt(int64(fpc), 10), strconv.FormatInt(int64(fpc), 8))
   }
 
@@ -498,8 +515,8 @@ func TestOsFilePermissionCode_IsValid_12(t *testing.T) {
   err := osPerm.IsValid()
 
   if err != nil {
-    t.Errorf("Error received from osPerm.IsValid(). "+
-      "Error='%v'", err.Error())
+    t.Errorf("Error received from osPerm.IsValid().\n"+
+      "Error='%v'\n", err.Error())
   }
 
 }
@@ -511,8 +528,8 @@ func TestOsFilePermissionCode_IsValid_13(t *testing.T) {
   fmBase := os.ModeSticky
 
   if fmBase != fpc {
-    t.Errorf("Error: Expected fpc to be equal to os.ModeSticky. It WAS NOT EQUAL!"+
-      "fpc decimal value = %s octal value = %s",
+    t.Errorf("Error: Expected fpc to be equal to os.ModeSticky. It WAS NOT EQUAL!\n"+
+      "fpc decimal value = %s\noctal value = %s\n",
       strconv.FormatInt(int64(fpc), 10), strconv.FormatInt(int64(fpc), 8))
   }
 
@@ -521,8 +538,8 @@ func TestOsFilePermissionCode_IsValid_13(t *testing.T) {
   err := osPerm.IsValid()
 
   if err != nil {
-    t.Errorf("Error received from osPerm.IsValid(). "+
-      "Error='%v'", err.Error())
+    t.Errorf("Error received from osPerm.IsValid().\n"+
+      "Error='%v'\n", err.Error())
   }
 
 }
@@ -534,8 +551,8 @@ func TestOsFilePermissionCode_IsValid_14(t *testing.T) {
   fmBase := os.ModeIrregular
 
   if fmBase != fpc {
-    t.Errorf("Error: Expected fpc to be equal to os.ModeIrregular. It WAS NOT EQUAL!"+
-      "fpc decimal value = %s octal value = %s",
+    t.Errorf("Error: Expected fpc to be equal to os.ModeIrregular. It WAS NOT EQUAL!\n"+
+      "fpc decimal value = %s\noctal value = %s\n",
       strconv.FormatInt(int64(fpc), 10), strconv.FormatInt(int64(fpc), 8))
   }
 
@@ -544,8 +561,8 @@ func TestOsFilePermissionCode_IsValid_14(t *testing.T) {
   err := osPerm.IsValid()
 
   if err != nil {
-    t.Errorf("Error received from osPerm.IsValid(). "+
-      "Error='%v'", err.Error())
+    t.Errorf("Error received from osPerm.IsValid().\n"+
+      "Error='%v'\n", err.Error())
   }
 
 }
@@ -559,8 +576,8 @@ func TestOsFilePermissionCode_IsValid_15(t *testing.T) {
   err := osPerm.IsValid()
 
   if err == nil {
-    t.Error("Expected an Error returned from Invalid FileMode code 999. " +
-      "NO ERROR WAS RETURNED!!!!")
+    t.Error("Expected an Error returned from Invalid FileMode code 999.\n" +
+      "HOWEVER, NO ERROR WAS RETURNED!!!!\n")
   }
 
 }
@@ -573,12 +590,12 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_01(t *testing.T) {
   actualLetter, err := fPerm.GetFileModeLetterCode()
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetFileModeLetterCode(). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetFileModeLetterCode().\n"+
+      "Error='%v'\n", err.Error())
   }
 
   if expectedLetter != actualLetter {
-    t.Errorf("Expected Letter Code: '%v'. Instead, Actual Letter Code='%v'",
+    t.Errorf("Expected Letter Code: '%v'.\nInstead, Actual Letter Code='%v'\n",
       expectedLetter, actualLetter)
   }
 }
@@ -591,12 +608,12 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_02(t *testing.T) {
   actualLetter, err := fPerm.GetFileModeLetterCode()
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetFileModeLetterCode(). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetFileModeLetterCode().\n"+
+      "Error='%v'\n", err.Error())
   }
 
   if expectedLetter != actualLetter {
-    t.Errorf("Expected Letter Code: '%v'. Instead, Actual Letter Code='%v'",
+    t.Errorf("Expected Letter Code: '%v'.\nInstead, Actual Letter Code='%v'\n",
       expectedLetter, actualLetter)
   }
 }
@@ -610,12 +627,12 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_03(t *testing.T) {
   actualLetter, err := fPerm.GetFileModeLetterCode()
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetFileModeLetterCode(). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetFileModeLetterCode().\n"+
+      "Error='%v'\n", err.Error())
   }
 
   if expectedLetter != actualLetter {
-    t.Errorf("Expected Letter Code: '%v'. Instead, Actual Letter Code='%v'",
+    t.Errorf("Expected Letter Code: '%v'.\nInstead, Actual Letter Code='%v'\n",
       expectedLetter, actualLetter)
   }
 }
@@ -630,12 +647,12 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_04(t *testing.T) {
   actualLetter, err := fPerm.GetFileModeLetterCode()
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetFileModeLetterCode(). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetFileModeLetterCode().\n"+
+      "Error='%v'\n", err.Error())
   }
 
   if expectedLetter != actualLetter {
-    t.Errorf("Expected Letter Code: '%v'. Instead, Actual Letter Code='%v'",
+    t.Errorf("Expected Letter Code: '%v'.\nInstead, Actual Letter Code='%v'\n",
       expectedLetter, actualLetter)
   }
 }
@@ -651,12 +668,13 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_05(t *testing.T) {
   actualLetter, err := fPerm.GetFileModeLetterCode()
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetFileModeLetterCode(). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetFileModeLetterCode().\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedLetter != actualLetter {
-    t.Errorf("Expected Letter Code: '%v'. Instead, Actual Letter Code='%v'",
+    t.Errorf("Expected Letter Code: '%v'.\nInstead, Actual Letter Code='%v'\n",
       expectedLetter, actualLetter)
   }
 }
@@ -672,12 +690,13 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_06(t *testing.T) {
   actualLetter, err := fPerm.GetFileModeLetterCode()
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetFileModeLetterCode(). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetFileModeLetterCode().\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedLetter != actualLetter {
-    t.Errorf("Expected Letter Code: '%v'. Instead, Actual Letter Code='%v'",
+    t.Errorf("Expected Letter Code: '%v'.\nInstead, Actual Letter Code='%v'\n",
       expectedLetter, actualLetter)
   }
 }
@@ -693,12 +712,12 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_07(t *testing.T) {
   actualLetter, err := fPerm.GetFileModeLetterCode()
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetFileModeLetterCode(). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetFileModeLetterCode().\n"+
+      "Error='%v'\n", err.Error())
   }
 
   if expectedLetter != actualLetter {
-    t.Errorf("Expected Letter Code: '%v'. Instead, Actual Letter Code='%v'",
+    t.Errorf("Expected Letter Code: '%v'.\nInstead, Actual Letter Code='%v'\n",
       expectedLetter, actualLetter)
   }
 }
@@ -714,12 +733,13 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_08(t *testing.T) {
   actualLetter, err := fPerm.GetFileModeLetterCode()
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetFileModeLetterCode(). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetFileModeLetterCode().\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedLetter != actualLetter {
-    t.Errorf("Expected Letter Code: '%v'. Instead, Actual Letter Code='%v'",
+    t.Errorf("Expected Letter Code: '%v'.\nInstead, Actual Letter Code='%v'\n",
       expectedLetter, actualLetter)
   }
 }
@@ -735,12 +755,12 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_09(t *testing.T) {
   actualLetter, err := fPerm.GetFileModeLetterCode()
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetFileModeLetterCode(). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetFileModeLetterCode().\n"+
+      "Error='%v'\n", err.Error())
   }
 
   if expectedLetter != actualLetter {
-    t.Errorf("Expected Letter Code: '%v'. Instead, Actual Letter Code='%v'",
+    t.Errorf("Expected Letter Code: '%v'.\nInstead, Actual Letter Code='%v'\n",
       expectedLetter, actualLetter)
   }
 }
@@ -756,12 +776,13 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_10(t *testing.T) {
   actualLetter, err := fPerm.GetFileModeLetterCode()
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetFileModeLetterCode(). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetFileModeLetterCode().\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedLetter != actualLetter {
-    t.Errorf("Expected Letter Code: '%v'. Instead, Actual Letter Code='%v'",
+    t.Errorf("Expected Letter Code: '%v'.\nInstead, Actual Letter Code='%v'\n",
       expectedLetter, actualLetter)
   }
 }
@@ -777,12 +798,12 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_11(t *testing.T) {
   actualLetter, err := fPerm.GetFileModeLetterCode()
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetFileModeLetterCode(). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetFileModeLetterCode().\n"+
+      "Error='%v'\n", err.Error())
   }
 
   if expectedLetter != actualLetter {
-    t.Errorf("Expected Letter Code: '%v'. Instead, Actual Letter Code='%v'",
+    t.Errorf("Expected Letter Code: '%v'.\nInstead, Actual Letter Code='%v'\n",
       expectedLetter, actualLetter)
   }
 }
@@ -798,12 +819,13 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_12(t *testing.T) {
   actualLetter, err := fPerm.GetFileModeLetterCode()
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetFileModeLetterCode(). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetFileModeLetterCode().\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedLetter != actualLetter {
-    t.Errorf("Expected Letter Code: '%v'. Instead, Actual Letter Code='%v'",
+    t.Errorf("Expected Letter Code: '%v'.\nInstead, Actual Letter Code='%v'\n",
       expectedLetter, actualLetter)
   }
 }
@@ -819,12 +841,12 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_13(t *testing.T) {
   actualLetter, err := fPerm.GetFileModeLetterCode()
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetFileModeLetterCode(). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetFileModeLetterCode().\n"+
+      "Error='%v'\n", err.Error())
   }
 
   if expectedLetter != actualLetter {
-    t.Errorf("Expected Letter Code: '%v'. Instead, Actual Letter Code='%v'",
+    t.Errorf("Expected Letter Code: '%v'.\nInstead, Actual Letter Code='%v'\n",
       expectedLetter, actualLetter)
   }
 }
@@ -840,12 +862,13 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_14(t *testing.T) {
   actualLetter, err := fPerm.GetFileModeLetterCode()
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetFileModeLetterCode(). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetFileModeLetterCode().\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedLetter != actualLetter {
-    t.Errorf("Expected Letter Code: '%v'. Instead, Actual Letter Code='%v'",
+    t.Errorf("Expected Letter Code: '%v'.\nInstead, Actual Letter Code='%v'\n",
       expectedLetter, actualLetter)
   }
 }
@@ -857,8 +880,8 @@ func TestOsFilePermissionCode_GetFileModeLetterCode_15(t *testing.T) {
   _, err := fPerm.GetFileModeLetterCode()
 
   if err == nil {
-    t.Errorf("Expected an error return from fPerm.GetFileModeLetterCode() " +
-      "because of an invalid OsFilePermissionCode. However, NO ERROR WAS RETURNED!")
+    t.Errorf("Expected an error return from fPerm.GetFileModeLetterCode()\n" +
+      "because of an invalid OsFilePermissionCode.\nHowever, NO ERROR WAS RETURNED!\n")
   }
 }
 
@@ -873,20 +896,21 @@ func TestOsFilePermissionCode_GetNewFromFileMode_01(t *testing.T) {
   osPermCode, err := OsFilePermCode.GetNewFromFileMode(fileMode)
 
   if err != nil {
-    t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedFileMode != osPermCode.Value() {
-    t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode. "+
-      "expected File Mode Octal Value='%s' . Actual File Mode Octal Value= '%s'",
+    t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode.\n"+
+      "expected File Mode Octal Value='%s'.\nActual File Mode Octal Value= '%s'\n",
       strconv.FormatInt(int64(expectedFileMode), 8),
       strconv.FormatInt(int64(osPermCode.Value()), 8))
   }
 
   if !expectedOsPermCode.Equal(osPermCode) {
-    t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL"+
-      "expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
+    t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL!\n"+
+      "Expected expectedOsPermCode Octal Value='%s'.\nActual osPermCode Octal Value= '%s'\n",
       strconv.FormatInt(int64(expectedFileMode), 8),
       strconv.FormatInt(int64(osPermCode.Value()), 8))
   }
@@ -904,20 +928,23 @@ func TestOsFilePermissionCode_GetNewFromFileMode_02(t *testing.T) {
   osPermCode, err := OsFilePermCode.GetNewFromFileMode(fileMode)
 
   if err != nil {
-    t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedFileMode != osPermCode.Value() {
-    t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode. "+
-      "expected File Mode Octal Value='%s' . Actual File Mode Octal Value= '%s'",
+    t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode.\n"+
+      "expected File Mode Octal Value='%s'.\nActual File Mode Octal Value= '%s'\n",
       strconv.FormatInt(int64(expectedFileMode), 8),
       strconv.FormatInt(int64(osPermCode.Value()), 8))
   }
 
   if !expectedOsPermCode.Equal(osPermCode) {
-    t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL"+
-      "expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
+    t.Errorf("Expected expectedOsPermCode==osPermCode.\n" +
+      "HOWEVER THEY ARE NOT EQUAL\n"+
+      "expected expectedOsPermCode Octal Value='%s'.\n" +
+      "Actual osPermCode Octal Value= '%s'\n",
       strconv.FormatInt(int64(expectedFileMode), 8),
       strconv.FormatInt(int64(osPermCode.Value()), 8))
   }
@@ -935,20 +962,24 @@ func TestOsFilePermissionCode_GetNewFromFileMode_03(t *testing.T) {
   osPermCode, err := OsFilePermCode.GetNewFromFileMode(fileMode)
 
   if err != nil {
-    t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedFileMode != osPermCode.Value() {
-    t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode. "+
-      "expected File Mode Octal Value='%s' . Actual File Mode Octal Value= '%s'",
+    t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode.\n"+
+      "expected File Mode Octal Value='%s'.\n" +
+      "Actual File Mode Octal Value= '%s'\n",
       strconv.FormatInt(int64(expectedFileMode), 8),
       strconv.FormatInt(int64(osPermCode.Value()), 8))
   }
 
   if !expectedOsPermCode.Equal(osPermCode) {
-    t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL"+
-      "expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
+    t.Errorf("Expected expectedOsPermCode==osPermCode.\n" +
+      "HOWEVER THEY ARE NOT EQUAL!!!\n"+
+      "expected expectedOsPermCode Octal Value='%s'.\n" +
+      "Actual osPermCode Octal Value= '%s'\n",
       strconv.FormatInt(int64(expectedFileMode), 8),
       strconv.FormatInt(int64(osPermCode.Value()), 8))
   }
@@ -966,20 +997,24 @@ func TestOsFilePermissionCode_GetNewFromFileMode_04(t *testing.T) {
   osPermCode, err := OsFilePermCode.GetNewFromFileMode(fileMode)
 
   if err != nil {
-    t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedFileMode != osPermCode.Value() {
-    t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode. "+
-      "expected File Mode Octal Value='%s' . Actual File Mode Octal Value= '%s'",
+    t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode.\n"+
+      "expected File Mode Octal Value='%s'.\n" +
+      "Actual File Mode Octal Value= '%s'\n",
       strconv.FormatInt(int64(expectedFileMode), 8),
       strconv.FormatInt(int64(osPermCode.Value()), 8))
   }
 
   if !expectedOsPermCode.Equal(osPermCode) {
-    t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL"+
-      "expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
+    t.Errorf("Expected expectedOsPermCode==osPermCode.\n" +
+      "HOWEVER, THEY ARE NOT EQUAL!!\n"+
+      "expected expectedOsPermCode Octal Value='%s'.\n" +
+      "Actual osPermCode Octal Value= '%s'\n",
       strconv.FormatInt(int64(expectedFileMode), 8),
       strconv.FormatInt(int64(osPermCode.Value()), 8))
   }
@@ -997,20 +1032,24 @@ func TestOsFilePermissionCode_GetNewFromFileMode_05(t *testing.T) {
   osPermCode, err := OsFilePermCode.GetNewFromFileMode(fileMode)
 
   if err != nil {
-    t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedFileMode != osPermCode.Value() {
-    t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode. "+
-      "expected File Mode Octal Value='%s' . Actual File Mode Octal Value= '%s'",
+    t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode.\n"+
+      "expected File Mode Octal Value='%s'.\n" +
+      "Actual File Mode Octal Value= '%s'\n",
       strconv.FormatInt(int64(expectedFileMode), 8),
       strconv.FormatInt(int64(osPermCode.Value()), 8))
   }
 
   if !expectedOsPermCode.Equal(osPermCode) {
-    t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL"+
-      "expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
+    t.Errorf("Expected expectedOsPermCode==osPermCode.\n" +
+      "HOWEVER, THEY ARE NOT EQUAL\n"+
+      "expected expectedOsPermCode Octal Value='%s'.\n" +
+      "Actual osPermCode Octal Value= '%s'\n",
       strconv.FormatInt(int64(expectedFileMode), 8),
       strconv.FormatInt(int64(osPermCode.Value()), 8))
   }
@@ -1028,20 +1067,24 @@ func TestOsFilePermissionCode_GetNewFromFileMode_06(t *testing.T) {
   osPermCode, err := OsFilePermCode.GetNewFromFileMode(fileMode)
 
   if err != nil {
-    t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedFileMode != osPermCode.Value() {
-    t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode. "+
-      "expected File Mode Octal Value='%s' . Actual File Mode Octal Value= '%s'",
+    t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode.\n"+
+      "expected File Mode Octal Value='%s'.\n" +
+      "Actual File Mode Octal Value= '%s'\n",
       strconv.FormatInt(int64(expectedFileMode), 8),
       strconv.FormatInt(int64(osPermCode.Value()), 8))
   }
 
   if !expectedOsPermCode.Equal(osPermCode) {
-    t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL"+
-      "expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
+    t.Errorf("Expected expectedOsPermCode==osPermCode.\n" +
+      "HOWEVER, THEY ARE NOT EQUAL!!!\n"+
+      "expected expectedOsPermCode Octal Value='%s'.\n" +
+      "Actual osPermCode Octal Value= '%s'\n",
       strconv.FormatInt(int64(expectedFileMode), 8),
       strconv.FormatInt(int64(osPermCode.Value()), 8))
   }
@@ -1059,20 +1102,24 @@ func TestOsFilePermissionCode_GetNewFromFileMode_07(t *testing.T) {
   osPermCode, err := OsFilePermCode.GetNewFromFileMode(fileMode)
 
   if err != nil {
-    t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode). "+
+    t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode).\n"+
       "Error='%v' ", err.Error())
+    return
   }
 
   if expectedFileMode != osPermCode.Value() {
-    t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode. "+
-      "expected File Mode Octal Value='%s' . Actual File Mode Octal Value= '%s'",
+    t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode.\n"+
+      "Expected File Mode Octal Value='%s'.\n" +
+      "Actual File Mode Octal Value= '%s'\n",
       strconv.FormatInt(int64(expectedFileMode), 8),
       strconv.FormatInt(int64(osPermCode.Value()), 8))
   }
 
   if !expectedOsPermCode.Equal(osPermCode) {
-    t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL"+
-      "expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
+    t.Errorf("Expected expectedOsPermCode==osPermCode.\n" +
+      "HOWEVER, THEY ARE NOT EQUAL!!!\n"+
+      "Expected expectedOsPermCode Octal Value='%s'.\n" +
+      "Actual osPermCode Octal Value= '%s'\n",
       strconv.FormatInt(int64(expectedFileMode), 8),
       strconv.FormatInt(int64(osPermCode.Value()), 8))
   }
@@ -1090,20 +1137,24 @@ func TestOsFilePermissionCode_GetNewFromFileMode_08(t *testing.T) {
   osPermCode, err := OsFilePermCode.GetNewFromFileMode(fileMode)
 
   if err != nil {
-    t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by OsFilePermCode.GetNewFromFileMode(fileMode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedFileMode != osPermCode.Value() {
-    t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode. "+
-      "expected File Mode Octal Value='%s' . Actual File Mode Octal Value= '%s'",
+    t.Errorf("Error: Expected File Mode NOT equal to Actual File Mode.\n"+
+      "Expected File Mode Octal Value='%s'.\n" +
+      "Actual File Mode Octal Value= '%s'\n",
       strconv.FormatInt(int64(expectedFileMode), 8),
       strconv.FormatInt(int64(osPermCode.Value()), 8))
   }
 
   if !expectedOsPermCode.Equal(osPermCode) {
-    t.Errorf("Expected expectedOsPermCode==osPermCode. THEY ARE NOT EQUAL"+
-      "expected expectedOsPermCode Octal Value='%s' . Actual osPermCode Octal Value= '%s'",
+    t.Errorf("Expected expectedOsPermCode==osPermCode.\n" +
+      "HOWEVER, THEY ARE NOT EQUAL!!!\n"+
+      "Expected expectedOsPermCode Octal Value='%s'.\n" +
+      "Actual osPermCode Octal Value= '%s'\n",
       strconv.FormatInt(int64(expectedFileMode), 8),
       strconv.FormatInt(int64(osPermCode.Value()), 8))
   }
@@ -1117,9 +1168,9 @@ func TestOsFilePermissionCode_GetNewFromFileMode_09(t *testing.T) {
   _, err := OsFilePermCode.GetNewFromFileMode(fileMode)
 
   if err == nil {
-    t.Error("Expected an error to be returned by OsFilePermCode." +
-      "GetNewFromFileMode(fileMode) because fileMode is invalid. " +
-      "However, NO ERROR WAS RETURNED!")
+    t.Error("Expected an error to be returned by OsFilePermCode.\n" +
+      "GetNewFromFileMode(fileMode) because fileMode is invalid.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }
@@ -1134,17 +1185,19 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_01(t *testing.T) {
   fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if !expected.Equal(fPerm) {
-    t.Errorf("Error: Expected fPerm='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm='%s'.\nInstead, fPerm='%s'\n",
       expected.String(), fPerm.String())
+    return
   }
 
   if expected.Value() != fPerm.Value() {
-    t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm Value='%s'.\nInstead, fPerm='%s'\n",
       strconv.FormatInt(int64(expected.Value()), 10),
       strconv.FormatInt(int64(fPerm.Value()), 10))
   }
@@ -1161,17 +1214,18 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_02(t *testing.T) {
   fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if !expected.Equal(fPerm) {
-    t.Errorf("Error: Expected fPerm='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm='%s'.\nInstead, fPerm='%s'\n",
       expected.String(), fPerm.String())
   }
 
   if expected.Value() != fPerm.Value() {
-    t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm Value='%s'.\nInstead, fPerm='%s'\n",
       strconv.FormatInt(int64(expected.Value()), 10),
       strconv.FormatInt(int64(fPerm.Value()), 10))
   }
@@ -1189,17 +1243,18 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_03(t *testing.T) {
   fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if !expected.Equal(fPerm) {
-    t.Errorf("Error: Expected fPerm='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm='%s'.\nInstead, fPerm='%s'\n",
       expected.String(), fPerm.String())
   }
 
   if expected.Value() != fPerm.Value() {
-    t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm Value='%s'.\nInstead, fPerm='%s'\n",
       strconv.FormatInt(int64(expected.Value()), 10),
       strconv.FormatInt(int64(fPerm.Value()), 10))
   }
@@ -1217,17 +1272,18 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_04(t *testing.T) {
   fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if !expected.Equal(fPerm) {
-    t.Errorf("Error: Expected fPerm='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm='%s'.\nInstead, fPerm='%s'\n",
       expected.String(), fPerm.String())
   }
 
   if expected.Value() != fPerm.Value() {
-    t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm Value='%s'.\nInstead, fPerm='%s'\n",
       strconv.FormatInt(int64(expected.Value()), 10),
       strconv.FormatInt(int64(fPerm.Value()), 10))
   }
@@ -1245,17 +1301,18 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_05(t *testing.T) {
   fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if !expected.Equal(fPerm) {
-    t.Errorf("Error: Expected fPerm='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm='%s'.\nInstead, fPerm='%s'\n",
       expected.String(), fPerm.String())
   }
 
   if expected.Value() != fPerm.Value() {
-    t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm Value='%s'.\nInstead, fPerm='%s'\n",
       strconv.FormatInt(int64(expected.Value()), 10),
       strconv.FormatInt(int64(fPerm.Value()), 10))
   }
@@ -1273,17 +1330,18 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_06(t *testing.T) {
   fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if !expected.Equal(fPerm) {
-    t.Errorf("Error: Expected fPerm='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm='%s'.\nInstead, fPerm='%s'\n",
       expected.String(), fPerm.String())
   }
 
   if expected.Value() != fPerm.Value() {
-    t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm Value='%s'.\nInstead, fPerm='%s'\n",
       strconv.FormatInt(int64(expected.Value()), 10),
       strconv.FormatInt(int64(fPerm.Value()), 10))
   }
@@ -1301,17 +1359,18 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_07(t *testing.T) {
   fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if !expected.Equal(fPerm) {
-    t.Errorf("Error: Expected fPerm='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm='%s'.\nInstead, fPerm='%s'\n",
       expected.String(), fPerm.String())
   }
 
   if expected.Value() != fPerm.Value() {
-    t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm Value='%s'.\nInstead, fPerm='%s'\n",
       strconv.FormatInt(int64(expected.Value()), 10),
       strconv.FormatInt(int64(fPerm.Value()), 10))
   }
@@ -1329,17 +1388,18 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_08(t *testing.T) {
   fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if !expected.Equal(fPerm) {
-    t.Errorf("Error: Expected fPerm='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm='%s'.\nInstead, fPerm='%s'\n",
       expected.String(), fPerm.String())
   }
 
   if expected.Value() != fPerm.Value() {
-    t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm Value='%s'.\nInstead, fPerm='%s'\n",
       strconv.FormatInt(int64(expected.Value()), 10),
       strconv.FormatInt(int64(fPerm.Value()), 10))
   }
@@ -1357,17 +1417,18 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_09(t *testing.T) {
   fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if !expected.Equal(fPerm) {
-    t.Errorf("Error: Expected fPerm='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm='%s'.\nInstead, fPerm='%s'\n",
       expected.String(), fPerm.String())
   }
 
   if expected.Value() != fPerm.Value() {
-    t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm Value='%s'.\nInstead, fPerm='%s'\n",
       strconv.FormatInt(int64(expected.Value()), 10),
       strconv.FormatInt(int64(fPerm.Value()), 10))
   }
@@ -1385,17 +1446,18 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_10(t *testing.T) {
   fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if !expected.Equal(fPerm) {
-    t.Errorf("Error: Expected fPerm='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm='%s'.\nInstead, fPerm='%s'\n",
       expected.String(), fPerm.String())
   }
 
   if expected.Value() != fPerm.Value() {
-    t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm Value='%s'.\nInstead, fPerm='%s'\n",
       strconv.FormatInt(int64(expected.Value()), 10),
       strconv.FormatInt(int64(fPerm.Value()), 10))
   }
@@ -1413,17 +1475,18 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_11(t *testing.T) {
   fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if !expected.Equal(fPerm) {
-    t.Errorf("Error: Expected fPerm='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm='%s'.\nInstead, fPerm='%s'\n",
       expected.String(), fPerm.String())
   }
 
   if expected.Value() != fPerm.Value() {
-    t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm Value='%s'.\nInstead, fPerm='%s'\n",
       strconv.FormatInt(int64(expected.Value()), 10),
       strconv.FormatInt(int64(fPerm.Value()), 10))
   }
@@ -1441,17 +1504,18 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_12(t *testing.T) {
   fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if !expected.Equal(fPerm) {
-    t.Errorf("Error: Expected fPerm='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm='%s'.\nInstead, fPerm='%s'\n",
       expected.String(), fPerm.String())
   }
 
   if expected.Value() != fPerm.Value() {
-    t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm Value='%s'.\nInstead, fPerm='%s'\n",
       strconv.FormatInt(int64(expected.Value()), 10),
       strconv.FormatInt(int64(fPerm.Value()), 10))
   }
@@ -1469,17 +1533,18 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_13(t *testing.T) {
   fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if !expected.Equal(fPerm) {
-    t.Errorf("Error: Expected fPerm='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm='%s'.\nInstead, fPerm='%s'\n",
       expected.String(), fPerm.String())
   }
 
   if expected.Value() != fPerm.Value() {
-    t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm Value='%s'.\nInstead, fPerm='%s'\n",
       strconv.FormatInt(int64(expected.Value()), 10),
       strconv.FormatInt(int64(fPerm.Value()), 10))
   }
@@ -1497,17 +1562,18 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_14(t *testing.T) {
   fPerm, err := OsFilePermCode.GetNewFromLetterCode(letterCode)
 
   if err != nil {
-    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode). "+
-      "Error='%v' ", err.Error())
+    t.Errorf("Error returned by fPerm.GetNewFromLetterCode(letterCode).\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if !expected.Equal(fPerm) {
-    t.Errorf("Error: Expected fPerm='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm='%s'.\nInstead, fPerm='%s'\n",
       expected.String(), fPerm.String())
   }
 
   if expected.Value() != fPerm.Value() {
-    t.Errorf("Error: Expected fPerm Value='%s'. Instead, fPerm='%s'",
+    t.Errorf("Error: Expected fPerm Value='%s'.\nInstead, fPerm='%s'\n",
       strconv.FormatInt(int64(expected.Value()), 10),
       strconv.FormatInt(int64(fPerm.Value()), 10))
   }
@@ -1522,8 +1588,8 @@ func TestOsFilePermissionCode_GetNewFromLetterCode_15(t *testing.T) {
 
   if err == nil {
     t.Errorf("Expected an error to be returned by fPerm.GetNewFrom" +
-      "LetterCode(letterCode) because the letter 'Q' is invalid. " +
-      "However, NO ERROR WAS RETURNED!")
+      "LetterCode(letterCode)\nbecause the letter 'Q' is invalid.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }

@@ -36,9 +36,9 @@ type ValidPathStrDto struct {
 
   absPathStrLength int            // Length of the absolute path string
 
-  pathIsValid int                 // -1 - don't know
-                                  //  0 - No path is NOT valid
-                                  //  1 - Yes, path is valid
+  pathIsValid PathValidityStatusCode  // -1 - don't know
+                                      //  0 - No path is NOT valid
+                                      //  1 - Yes, path is valid
 
   pathVolumeName string           // Volume name associated with current path
 
@@ -59,7 +59,7 @@ func (vpDto ValidPathStrDto) New() ValidPathStrDto {
   newValPathDto.absPathStrLength = -1
   newValPathDto.pathDoesExist = PathExistsStatus.Unknown()
   newValPathDto.absPathDoesExist = PathExistsStatus.Unknown()
-  newValPathDto.pathIsValid = -1
+  newValPathDto.pathIsValid = PathValidStatus.Unknown()
   newValPathDto.isInitialized = false
   newValPathDto.pathVolumeName = ""
   newValPathDto.pathVolumeIndex = -1
@@ -121,7 +121,7 @@ func (vpDto *ValidPathStrDto) GetError() error {
   return vpDto.err
 }
 
-func (vpDto *ValidPathStrDto) PathIsValid() int {
+func (vpDto *ValidPathStrDto) PathIsValid() PathValidityStatusCode {
   return vpDto.pathIsValid
 }
 
@@ -140,11 +140,11 @@ func (vpDto *ValidPathStrDto) IsDtoValid(ePrefix string) error {
       "vpDto.isInitialized='false'\n")
   }
 
-  if vpDto.pathIsValid != 1 {
+  if vpDto.pathIsValid != PathValidStatus.Valid() {
     return fmt.Errorf(ePrefix +
       "ERROR: This ValidPathStrDto is INVALID!\n" +
       "The ValidPathStrDto 'Path Is Valid flag' is Invalid!\n" +
-      "vpDto.pathIsValid=%v'\n", vpDto.pathIsValid)
+      "vpDto.pathIsValid=%v'\n", vpDto.pathIsValid.String())
   }
 
   if len(vpDto.pathStr) == 0 {

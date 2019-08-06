@@ -3689,19 +3689,19 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
 
   if pathStr == "." {
     validPathDto.pathStr = dotSeparator
-    validPathDto.pathIsValid = 1
+    validPathDto.pathIsValid = PathValidStatus.Valid()
     goto successExit
   } else if pathStr == ".." {
     validPathDto.pathStr = doubleDotSeparator
-    validPathDto.pathIsValid = 1
+    validPathDto.pathIsValid = PathValidStatus.Valid()
     goto successExit
   } else if pathStr == dotSeparator {
     validPathDto.pathStr = dotSeparator
-    validPathDto.pathIsValid = 1
+    validPathDto.pathIsValid = PathValidStatus.Valid()
     goto successExit
   } else if pathStr == doubleDotSeparator {
     validPathDto.pathStr = doubleDotSeparator
-    validPathDto.pathIsValid = 1
+    validPathDto.pathIsValid = PathValidStatus.Valid()
     goto successExit
   }
 
@@ -3713,7 +3713,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     }
 
     validPathDto.pathStr = pathStr
-    validPathDto.pathIsValid = 1
+    validPathDto.pathIsValid = PathValidStatus.Valid()
     goto successExit
   }
 
@@ -3770,7 +3770,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     // No characters but Has slashes and
     // has dots.
     validPathDto.pathStr = pathStr
-    validPathDto.pathIsValid = 1
+    validPathDto.pathIsValid = PathValidStatus.Valid()
 
   } else if lastCharIdx == -1 &&
     lDotIdxs == 0 &&
@@ -3790,7 +3790,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
     lSlashIdxs == 0 {
     // Has characters, but No dots and No slashes
     validPathDto.pathStr = pathStr
-    validPathDto.pathIsValid = 1
+    validPathDto.pathIsValid = PathValidStatus.Valid()
 
   } else if lastCharIdx > -1 &&
     lDotIdxs > 0 &&
@@ -3814,7 +3814,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
       if dotIdxs[0] < firstCharIdx {
         // Example .git = directory
         validPathDto.pathStr = pathStr
-        validPathDto.pathIsValid = 1
+        validPathDto.pathIsValid = PathValidStatus.Valid()
       } else {
         err = fmt.Errorf(ePrefix+
           "\nError: %v contains improperly formatted dot characters!\n"+
@@ -3861,7 +3861,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
       lastCharIdx > dotIdxs[lDotIdxs-1] {
       // ../dir1/dir2/.git
       validPathDto.pathStr = pathStr
-      validPathDto.pathIsValid = 1
+      validPathDto.pathIsValid = PathValidStatus.Valid()
 
     } else if lastCharIdx > dotIdxs[lDotIdxs-1] &&
       dotIdxs[lDotIdxs-1] > slashIdxs[lSlashIdxs-1] &&
@@ -3884,14 +3884,14 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
         goto errorExit
 
       } else {
-        validPathDto.pathIsValid = 1
+        validPathDto.pathIsValid = PathValidStatus.Valid()
       }
 
     } else if lastCharIdx > slashIdxs[lSlashIdxs-1] &&
       slashIdxs[lSlashIdxs-1] > dotIdxs[lDotIdxs-1] {
       // ../dir1/dir2/git
       validPathDto.pathStr = pathStr
-      validPathDto.pathIsValid = 1
+      validPathDto.pathIsValid = PathValidStatus.Valid()
 
     } else {
       // unknown error
@@ -3925,7 +3925,7 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
 
     } else {
       validPathDto.pathStr = pathStr
-      validPathDto.pathIsValid = 1
+      validPathDto.pathIsValid = PathValidStatus.Valid()
     }
 
   } else {
@@ -4091,9 +4091,9 @@ errorExit:
     validPathDto.absPathStr = ""
     validPathDto.pathStrLength =
       len(pathStr)
-    validPathDto.pathIsValid = 0
+    validPathDto.pathIsValid = PathValidStatus.Invalid()
     validPathDto.isInitialized = true
-    validPathDto.pathIsValid = 0
+    validPathDto.pathIsValid = PathValidStatus.Invalid()
     validPathDto.err = fmt.Errorf("%v", err.Error())
     return validPathDto, err
   }
@@ -4104,7 +4104,7 @@ errorExit:
   validPathDto.absPathStrLength =
     len(validPathDto.absPathStr)
 
-  validPathDto.pathIsValid = 1
+  validPathDto.pathIsValid = PathValidStatus.Valid()
   validPathDto.isInitialized = true
 
   err = validPathDto.IsDtoValid(ePrefix)
@@ -5769,7 +5769,7 @@ func (dMgrHlpr *dirMgrHelper) setDirMgrFromKnownPathDirName(
   validPathDto.pathDoesExist = PathExistsStatus.Unknown()
   validPathDto.absPathDoesExist = PathExistsStatus.Unknown()
   validPathDto.isInitialized = true
-  validPathDto.pathIsValid = 1
+  validPathDto.pathIsValid = PathValidStatus.Valid()
 
   err = validPathDto.IsDtoValid(ePrefix)
 

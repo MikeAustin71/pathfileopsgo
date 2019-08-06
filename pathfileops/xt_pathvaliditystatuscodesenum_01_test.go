@@ -694,7 +694,7 @@ func TestPathValidityStatusCode_Invalid_03(t *testing.T) {
 
   status := PathValidStatus.Invalid()
 
-  statusValue := status.Value()
+  statusValue := status.StatusValue()
 
   if int(statusValue) != 0 {
     t.Errorf("Error: For 'PathValidStatus.Invalid()':\n" +
@@ -771,7 +771,7 @@ func TestPathValidityStatusCode_Unknown_03(t *testing.T) {
 
   status := PathValidStatus.Unknown()
 
-  statusValue := status.Value()
+  statusValue := status.StatusValue()
 
   if int(statusValue) != -1 {
     t.Errorf("Error: For 'PathValidStatus.Unknown()':\n" +
@@ -847,7 +847,7 @@ func TestPathValidityStatusCode_Valid_03(t *testing.T) {
 
   status := PathValidStatus.Valid()
 
-  statusValue := status.Value()
+  statusValue := status.StatusValue()
 
   if int(statusValue) != 1 {
     t.Errorf("Error: For 'PathValidStatus.Valid()':\n" +

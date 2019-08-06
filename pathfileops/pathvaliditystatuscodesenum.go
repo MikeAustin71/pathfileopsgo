@@ -268,7 +268,7 @@ func (pathValid PathValidityStatusCode) String() string {
 // This is a standard utility method and is not part of the valid
 // enumerations for this type.
 //
-func (pathValid PathValidityStatusCode) Value() PathValidityStatusCode {
+func (pathValid PathValidityStatusCode) StatusValue() PathValidityStatusCode {
   return pathValid
 }
 

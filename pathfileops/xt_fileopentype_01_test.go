@@ -139,12 +139,13 @@ func TestFileOpenType_ParseString_01(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"ReadWrite\", true). Error='%v' ", err.Error())
+      "(\"ReadWrite\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadWrite() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'ReadWrite'. Instead, it generated type='%v' ", fot.String())
+      "'ReadWrite'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -155,7 +156,7 @@ func TestFileOpenType_ParseString_02(t *testing.T) {
 
   if err == nil {
     t.Error("Expected an error return from FileOpenType(0).ParseString" +
-      "(\"Rx\", true). However, NO ERROR WAS RETURNED!")
+      "(\"Rx\", true).\nHowever, NO ERROR WAS RETURNED!\n")
   }
 
 }
@@ -166,7 +167,7 @@ func TestFileOpenType_ParseString_03(t *testing.T) {
 
   if err == nil {
     t.Error("Expected an error return from FileOpenType(0).ParseString" +
-      "(\"Rxzyjx2v\", true). However, NO ERROR WAS RETURNED!")
+      "(\"Rxzyjx2v\", true).\nHowever, NO ERROR WAS RETURNED!\n")
   }
 
 }
@@ -177,12 +178,13 @@ func TestFileOpenType_ParseString_04(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"ReadWrite\", true). Error='%v' ", err.Error())
+      "(\"ReadWrite\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadWrite() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'ReadWrite'. Instead, it generated type='%v' ", fot.String())
+      "'ReadWrite'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -193,12 +195,13 @@ func TestFileOpenType_ParseString_05(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"TypeReadOnly\", true). Error='%v' ", err.Error())
+      "(\"TypeReadOnly\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadOnly() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeReadOnly'. Instead, it generated type='%v' ", fot.String())
+      "'TypeReadOnly'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -209,7 +212,8 @@ func TestFileOpenType_ParseString_06(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"TypeReadOnly()\", true). Error='%v' ", err.Error())
+      "(\"TypeReadOnly()\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadOnly() != fot {
@@ -225,12 +229,13 @@ func TestFileOpenType_ParseString_07(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"ReadOnly()\", true). Error='%v' ", err.Error())
+      "(\"ReadOnly()\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadOnly() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'ReadOnly'. Instead, it generated type='%v' ", fot.String())
+      "'ReadOnly'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -241,12 +246,13 @@ func TestFileOpenType_ParseString_08(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"ReadOnly\", true). Error='%v' ", err.Error())
+      "(\"ReadOnly\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadOnly() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'ReadOnly'. Instead, it generated type='%v' ", fot.String())
+      "'ReadOnly'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -257,12 +263,13 @@ func TestFileOpenType_ParseString_09(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"WriteOnly\", true). Error='%v' ", err.Error())
+      "(\"WriteOnly\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeWriteOnly() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeWriteOnly'. Instead, it generated type='%v' ", fot.String())
+      "'TypeWriteOnly'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -273,12 +280,13 @@ func TestFileOpenType_ParseString_10(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"WriteOnly()\", true). Error='%v' ", err.Error())
+      "(\"WriteOnly()\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeWriteOnly() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'WriteOnly'. Instead, it generated type='%v' ", fot.String())
+      "'WriteOnly'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -289,12 +297,13 @@ func TestFileOpenType_ParseString_11(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"TypeWriteOnly()\", true). Error='%v' ", err.Error())
+      "(\"TypeWriteOnly()\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeWriteOnly() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeWriteOnly'. Instead, it generated type='%v' ", fot.String())
+      "'TypeWriteOnly'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -305,12 +314,13 @@ func TestFileOpenType_ParseString_12(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"TypeWriteOnly\", true). Error='%v' ", err.Error())
+      "(\"TypeWriteOnly\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeWriteOnly() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeWriteOnly'. Instead, it generated type='%v' ", fot.String())
+      "'TypeWriteOnly'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -321,12 +331,13 @@ func TestFileOpenType_ParseString_13(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"TypeNone()\", true). Error='%v' ", err.Error())
+      "(\"TypeNone()\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeNone() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeNone'. Instead, it generated type='%v' ", fot.String())
+      "'TypeNone'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -337,12 +348,13 @@ func TestFileOpenType_ParseString_14(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"TypeNone\", true). Error='%v' ", err.Error())
+      "(\"TypeNone\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeNone() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeNone'. Instead, it generated type='%v' ", fot.String())
+      "'TypeNone'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -353,12 +365,13 @@ func TestFileOpenType_ParseString_15(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"None\", true). Error='%v' ", err.Error())
+      "(\"None\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeNone() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'None'. Instead, it generated type='%v' ", fot.String())
+      "'None'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -369,12 +382,13 @@ func TestFileOpenType_ParseString_16(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"typEreadwrite()\", false). Error='%v' ", err.Error())
+      "(\"typEreadwrite()\", false).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadWrite() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeReadWrite'. Instead, it generated type='%v' ", fot.String())
+      "'TypeReadWrite'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -385,12 +399,13 @@ func TestFileOpenType_ParseString_17(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"readwrite()\", false). Error='%v' ", err.Error())
+      "(\"readwrite()\", false).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadWrite() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeReadWrite'. Instead, it generated type='%v' ", fot.String())
+      "'TypeReadWrite'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -401,12 +416,13 @@ func TestFileOpenType_ParseString_18(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"readwrite\", false). Error='%v' ", err.Error())
+      "(\"readwrite\", false).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadWrite() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'ReadWrite'. Instead, it generated type='%v' ", fot.String())
+      "'ReadWrite'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -417,12 +433,13 @@ func TestFileOpenType_ParseString_19(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"typereadwrite\", false). Error='%v' ", err.Error())
+      "(\"typereadwrite\", false).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadWrite() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'ReadWrite'. Instead, it generated type='%v' ", fot.String())
+      "'ReadWrite'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -433,12 +450,13 @@ func TestFileOpenType_ParseString_20(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"typereadonly()\", false). Error='%v' ", err.Error())
+      "(\"typereadonly()\", false).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadOnly() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeReadOnly'. Instead, it generated type='%v' ", fot.String())
+      "'TypeReadOnly'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -449,12 +467,13 @@ func TestFileOpenType_ParseString_21(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"readonly()\", false). Error='%v' ", err.Error())
+      "(\"readonly()\", false).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadOnly() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeReadOnly'. Instead, it generated type='%v' ", fot.String())
+      "'TypeReadOnly'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -465,12 +484,13 @@ func TestFileOpenType_ParseString_22(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"typereadonly\", false). Error='%v' ", err.Error())
+      "(\"typereadonly\", false).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadOnly() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeReadOnly'. Instead, it generated type='%v' ", fot.String())
+      "'TypeReadOnly'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -481,12 +501,13 @@ func TestFileOpenType_ParseString_23(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"readonly\", false). Error='%v' ", err.Error())
+      "(\"readonly\", false).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadOnly() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeReadOnly'. Instead, it generated type='%v' ", fot.String())
+      "'TypeReadOnly'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -497,12 +518,13 @@ func TestFileOpenType_ParseString_24(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"typewriteonly()\", false). Error='%v' ", err.Error())
+      "(\"typewriteonly()\", false).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeWriteOnly() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeWriteOnly'. Instead, it generated type='%v' ", fot.String())
+      "'TypeWriteOnly'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -513,12 +535,13 @@ func TestFileOpenType_ParseString_25(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"writeonly()\", false). Error='%v' ", err.Error())
+      "(\"writeonly()\", false).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeWriteOnly() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeWriteOnly'. Instead, it generated type='%v' ", fot.String())
+      "'TypeWriteOnly'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -529,12 +552,13 @@ func TestFileOpenType_ParseString_26(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"typewriteonly\", false). Error='%v' ", err.Error())
+      "(\"typewriteonly\", false).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeWriteOnly() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeWriteOnly'. Instead, it generated type='%v' ", fot.String())
+      "'TypeWriteOnly'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -545,12 +569,13 @@ func TestFileOpenType_ParseString_27(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"writeonly\", false). Error='%v' ", err.Error())
+      "(\"writeonly\", false).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeWriteOnly() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeWriteOnly'. Instead, it generated type='%v' ", fot.String())
+      "'TypeWriteOnly'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -561,12 +586,13 @@ func TestFileOpenType_ParseString_28(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"TypeReadWrite\", true). Error='%v' ", err.Error())
+      "(\"TypeReadWrite\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadWrite() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeReadWrite'. Instead, it generated type='%v' ", fot.String())
+      "'TypeReadWrite'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -577,12 +603,13 @@ func TestFileOpenType_ParseString_29(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"ReadWrite\", true). Error='%v' ", err.Error())
+      "(\"ReadWrite\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadWrite() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeReadWrite'. Instead, it generated type='%v' ", fot.String())
+      "'TypeReadWrite'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -593,12 +620,13 @@ func TestFileOpenType_ParseString_30(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"ReadWrite\", true). Error='%v' ", err.Error())
+      "(\"ReadWrite\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadWrite() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeReadWrite'. Instead, it generated type='%v' ", fot.String())
+      "'TypeReadWrite'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -609,12 +637,13 @@ func TestFileOpenType_ParseString_31(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"ReadWrite()\", true). Error='%v' ", err.Error())
+      "(\"ReadWrite()\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadWrite() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeReadWrite'. Instead, it generated type='%v' ", fot.String())
+      "'TypeReadWrite'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -625,12 +654,13 @@ func TestFileOpenType_ParseString_32(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned from FileOpenType(0).ParseString"+
-      "(\"TypeReadWrite()\", true). Error='%v' ", err.Error())
+      "(\"TypeReadWrite()\", true).\nError='%v'\n", err.Error())
+    return
   }
 
   if FOpenType.TypeReadWrite() != fot {
     t.Errorf("Error: Expected File Open Type Parse String to generate type "+
-      "'TypeReadWrite'. Instead, it generated type='%v' ", fot.String())
+      "'TypeReadWrite'.\nInstead, it generated type='%v'\n", fot.String())
   }
 
 }
@@ -641,7 +671,7 @@ func TestFileOpenType_ParseString_33(t *testing.T) {
 
   if err == nil {
     t.Error("Expected an error return from FileOpenType(0).ParseString" +
-      "(\"XYZ123456()\", true). However, NO ERROR WAS RETURNED!")
+      "(\"XYZ123456()\", true).\nHowever, NO ERROR WAS RETURNED!\n")
   }
 
 }
@@ -652,7 +682,7 @@ func TestFileOpenType_ParseString_34(t *testing.T) {
 
   if err == nil {
     t.Error("Expected an error return from FileOpenType(0).ParseString" +
-      "(\"XYZ123456()\", false). However, NO ERROR WAS RETURNED!")
+      "(\"XYZ123456()\", false).\nHowever, NO ERROR WAS RETURNED!\n")
   }
 
 }
