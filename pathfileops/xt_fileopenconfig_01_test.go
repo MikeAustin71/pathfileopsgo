@@ -14,18 +14,21 @@ func TestFileOpenConfig_CopyIn_01(t *testing.T) {
     FOpenMode.ModeAppend(), FOpenMode.ModeTruncate())
 
   if err != nil {
-    t.Errorf("Error returned by fOpCfg1.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by fOpCfg1.New().\n" +
+      "Error='%v'\n", err.Error())
+    return
   }
 
   actualFOpenCode, err := fOpCfg1.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by fOpCfg1.GetCompositeFileOpenCode(). "+
-      "Error='%v' \n", err.Error())
+    t.Errorf("Error returned by fOpCfg1.GetCompositeFileOpenCode().\n"+
+      "Error='%v'\n", err.Error())
   }
 
   if expectedFOpenCode != actualFOpenCode {
-    t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code='%v'.\n" +
+      "Instead, actual File Open Code='%v'\n",
       expectedFOpenCode, actualFOpenCode)
   }
 
@@ -36,13 +39,13 @@ func TestFileOpenConfig_CopyIn_01(t *testing.T) {
   actualFOpenCode2, err := fOpCfg2.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by fOpCfg2.GetCompositeFileOpenCode(). "+
-      "Error='%v' \n", err.Error())
+    t.Errorf("Error returned by fOpCfg2.GetCompositeFileOpenCode().\n"+
+      "Error='%v'\n", err.Error())
   }
 
   if expectedFOpenCode != actualFOpenCode2 {
-    t.Errorf("Error: Expected File Open Code #2 ='%v'. Instead, "+
-      "actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code #2 ='%v'.\n" +
+      "Instead, actual File Open Code='%v'\n",
       expectedFOpenCode, actualFOpenCode2)
   }
 }
@@ -56,7 +59,8 @@ func TestFileOpenConfig_CopyIn_02(t *testing.T) {
   fOpStatus2.CopyIn(&fOpStatus1)
 
   if !fOpStatus1.Equal(&fOpStatus2) {
-    t.Error("Error: Expected fOpStatus1==fOpStatus2. THEY ARE NOT EQUAL!")
+    t.Error("Error: Expected fOpStatus1==fOpStatus2.\n" +
+      "HOWEVER, THEY ARE NOT EQUAL!\n")
   }
 }
 
@@ -68,18 +72,22 @@ func TestFileOpenConfig_CopyOut_01(t *testing.T) {
     FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus1.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by fOpStatus1.New().\n" +
+      "Error='%v'\n", err.Error())
+    return
   }
 
   actualFOpenCode, err := fOpStatus1.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus1.GetCompositeFileOpenCode(). "+
-      "Error='%v' \n", err.Error())
+    t.Errorf("Error returned by fOpStatus1.GetCompositeFileOpenCode().\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedFOpenCode != actualFOpenCode {
-    t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code='%v'.\n" +
+      "Instead, actual File Open Code='%v' \n",
       expectedFOpenCode, actualFOpenCode)
   }
 
@@ -88,13 +96,14 @@ func TestFileOpenConfig_CopyOut_01(t *testing.T) {
   actualFOpenCode2, err := fOpStatus2.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus2.GetCompositeFileOpenCode(). "+
-      "Error='%v' \n", err.Error())
+    t.Errorf("Error returned by fOpStatus2.GetCompositeFileOpenCode().\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedFOpenCode != actualFOpenCode2 {
-    t.Errorf("Error: Expected File Open Code #2 ='%v'. Instead, "+
-      "actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code #2 ='%v'.\n" +
+      "Instead, actual File Open Code='%v'\n",
       expectedFOpenCode, actualFOpenCode2)
   }
 
@@ -108,18 +117,22 @@ func TestFileOpenConfig_CopyOut_02(t *testing.T) {
     FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus1.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by fOpStatus1.New().\n" +
+      "Error='%v'\n", err.Error())
+    return
   }
 
   actualFOpenCode, err := fOpStatus1.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus1.GetCompositeFileOpenCode(). "+
-      "Error='%v' \n", err.Error())
+    t.Errorf("Error returned by fOpStatus1.GetCompositeFileOpenCode().\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedFOpenCode != actualFOpenCode {
-    t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code='%v'.\n" +
+      "Instead, actual File Open Code='%v'\n",
       expectedFOpenCode, actualFOpenCode)
   }
 
@@ -128,13 +141,14 @@ func TestFileOpenConfig_CopyOut_02(t *testing.T) {
   actualFOpenCode2, err := fOpStatus2.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus2.GetCompositeFileOpenCode(). "+
-      "Error='%v' \n", err.Error())
+    t.Errorf("Error returned by fOpStatus2.GetCompositeFileOpenCode().\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedFOpenCode != actualFOpenCode2 {
-    t.Errorf("Error: Expected File Open Code #2 ='%v'. Instead, "+
-      "actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code #2 ='%v'.\n" +
+      "Instead, actual File Open Code='%v'\n",
       expectedFOpenCode, actualFOpenCode2)
   }
 
@@ -147,18 +161,22 @@ func TestFileOpenConfig_CopyOut_03(t *testing.T) {
   fOpStatus1, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite())
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus1.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by fOpStatus1.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   actualFOpenCode, err := fOpStatus1.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus1.GetCompositeFileOpenCode(). "+
+    t.Errorf("Error returned by fOpStatus1.GetCompositeFileOpenCode().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if expectedFOpenCode != actualFOpenCode {
-    t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code='%v'.\n" +
+      "Instead, actual File Open Code='%v' \n",
       expectedFOpenCode, actualFOpenCode)
   }
 
@@ -167,13 +185,14 @@ func TestFileOpenConfig_CopyOut_03(t *testing.T) {
   actualFOpenCode2, err := fOpStatus2.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus2.GetCompositeFileOpenCode(). "+
+    t.Errorf("Error returned by fOpStatus2.GetCompositeFileOpenCode().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if expectedFOpenCode != actualFOpenCode2 {
-    t.Errorf("Error: Expected File Open Code #2 ='%v'. Instead, "+
-      "actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code #2 ='%v'.\n" +
+      "Instead, actual File Open Code='%v' \n",
       expectedFOpenCode, actualFOpenCode2)
   }
 
@@ -186,18 +205,22 @@ func TestFileOpenConfig_CopyOut_04(t *testing.T) {
   fOpStatus1, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite())
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus1.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by fOpStatus1.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   actualFOpenCode, err := fOpStatus1.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus1.GetCompositeFileOpenCode(). "+
+    t.Errorf("Error returned by fOpStatus1.GetCompositeFileOpenCode().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if expectedFOpenCode != actualFOpenCode {
-    t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code='%v'.\n" +
+      "Instead, actual File Open Code='%v' \n",
       expectedFOpenCode, actualFOpenCode)
   }
 
@@ -208,13 +231,14 @@ func TestFileOpenConfig_CopyOut_04(t *testing.T) {
   actualFOpenCode2, err := fOpStatus2.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus2.GetCompositeFileOpenCode(). "+
+    t.Errorf("Error returned by fOpStatus2.GetCompositeFileOpenCode().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if expectedFOpenCode != actualFOpenCode2 {
-    t.Errorf("Error: Expected File Open Code #2 ='%v'. Instead, "+
-      "actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code #2 ='%v'.\n" +
+      "Instead, actual File Open Code='%v' \n",
       expectedFOpenCode, actualFOpenCode2)
   }
 
@@ -227,14 +251,17 @@ func TestFileOpenConfig_CopyOut_05(t *testing.T) {
   fOpStatus1, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite())
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus1.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by fOpStatus1.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   actualFOpenCode, err := fOpStatus1.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus1.GetCompositeFileOpenCode(). "+
+    t.Errorf("Error returned by fOpStatus1.GetCompositeFileOpenCode().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if expectedFOpenCode != actualFOpenCode {
@@ -249,13 +276,14 @@ func TestFileOpenConfig_CopyOut_05(t *testing.T) {
   actualFOpenCode2, err := fOpStatus2.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus2.GetCompositeFileOpenCode(). "+
+    t.Errorf("Error returned by fOpStatus2.GetCompositeFileOpenCode().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if expectedFOpenCode != actualFOpenCode2 {
-    t.Errorf("Error: Expected File Open Code #2 ='%v'. Instead, "+
-      "actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code #2 ='%v'.\n" +
+      "Instead, actual File Open Code='%v' \n",
       expectedFOpenCode, actualFOpenCode2)
   }
 
@@ -267,17 +295,21 @@ func TestFileOpenConfig_Equal_01(t *testing.T) {
     FileOpenConfig{}.New(FOpenType.TypeWriteOnly(), FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fOpStatus2 := fOpStatus1.CopyOut()
 
   if !fOpStatus2.Equal(&fOpStatus1) {
-    t.Error("Expected fOpStatus2==fOpStatus1. WRONG: They are NOT Equal!")
+    t.Error("Expected fOpStatus2==fOpStatus1.\n" +
+      "WRONG: They are NOT Equal!\n")
   }
 
   if !fOpStatus1.Equal(&fOpStatus2) {
-    t.Error("Expected fOpStatus1==fOpStatus2. WRONG: They are NOT Equal!")
+    t.Error("Expected fOpStatus1==fOpStatus2.\n" +
+      "WRONG: They are NOT Equal!\n")
   }
 
 }
@@ -288,24 +320,27 @@ func TestFileOpenConfig_Equal_02(t *testing.T) {
     FileOpenConfig{}.New(FOpenType.TypeWriteOnly(), FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus1=FileOpenConfig{}.New(). "+
+    t.Errorf("Error returned by fOpStatus1=FileOpenConfig{}.New().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   fOpStatus2, err := FileOpenConfig{}.New(
     FOpenType.TypeWriteOnly(), FOpenMode.ModeAppend(), FOpenMode.ModeExclusive())
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus2=FileOpenConfig{}.New(). "+
+    t.Errorf("Error returned by fOpStatus2=FileOpenConfig{}.New().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if fOpStatus2.Equal(&fOpStatus1) {
-    t.Error("Expected fOpStatus2!=fOpStatus1. WRONG: They ARE Equal!")
+    t.Error("Expected fOpStatus2!=fOpStatus1.\n" +
+      "WRONG: They ARE Equal!\n")
   }
 
   if fOpStatus1.Equal(&fOpStatus2) {
-    t.Error("Expected fOpStatus1!=fOpStatus2. WRONG: They ARE Equal!")
+    t.Error("Expected fOpStatus1!=fOpStatus2.\nWRONG: They ARE Equal!\n")
   }
 
 }
@@ -317,11 +352,11 @@ func TestFileOpenConfig_Equal_03(t *testing.T) {
   fOpStatus2 := FileOpenConfig{}
 
   if !fOpStatus2.Equal(&fOpStatus1) {
-    t.Error("Expected fOpStatus2==fOpStatus1. WRONG: They are NOT Equal!")
+    t.Error("Expected fOpStatus2==fOpStatus1.\nWRONG: They are NOT Equal!\n")
   }
 
   if !fOpStatus1.Equal(&fOpStatus2) {
-    t.Error("Expected fOpStatus ==fOpStatus2. WRONG: They are NOT Equal!")
+    t.Error("Expected fOpStatus ==fOpStatus2.\nWRONG: They are NOT Equal!\n")
   }
 
 }
@@ -332,18 +367,19 @@ func TestFileOpenConfig_Equal_04(t *testing.T) {
     FileOpenConfig{}.New(FOpenType.TypeWriteOnly(), FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus1=FileOpenConfig{}.New(). "+
+    t.Errorf("Error returned by fOpStatus1=FileOpenConfig{}.New().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   fOpStatus2 := FileOpenConfig{}
 
   if fOpStatus2.Equal(&fOpStatus1) {
-    t.Error("Expected fOpStatus2!=fOpStatus1. WRONG: They ARE Equal!")
+    t.Error("Expected fOpStatus2!=fOpStatus1.\nWRONG: They ARE Equal!\n")
   }
 
   if fOpStatus1.Equal(&fOpStatus2) {
-    t.Error("Expected fOpStatus ==fOpStatus2. WRONG: They ARE Equal!")
+    t.Error("Expected fOpStatus ==fOpStatus2.\nWRONG: They ARE Equal!\n")
   }
 
 }
@@ -356,16 +392,17 @@ func TestFileOpenConfig_Equal_05(t *testing.T) {
     FileOpenConfig{}.New(FOpenType.TypeWriteOnly(), FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus2=FileOpenConfig{}.New(). "+
+    t.Errorf("Error returned by fOpStatus2=FileOpenConfig{}.New().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if fOpStatus2.Equal(&fOpStatus1) {
-    t.Error("Expected fOpStatus2!=fOpStatus1. WRONG: They ARE Equal!")
+    t.Error("Expected fOpStatus2!=fOpStatus1.\nWRONG: They ARE Equal!\n")
   }
 
   if fOpStatus1.Equal(&fOpStatus2) {
-    t.Error("Expected fOpStatus ==fOpStatus2. WRONG: They ARE Equal!")
+    t.Error("Expected fOpStatus ==fOpStatus2.\nWRONG: They ARE Equal!\n")
   }
 
 }
@@ -376,24 +413,25 @@ func TestFileOpenConfig_Equal_06(t *testing.T) {
     FileOpenConfig{}.New(FOpenType.TypeReadWrite(), FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus1=FileOpenConfig{}.New(). "+
-      "Error='%v' \n", err.Error())
+    t.Errorf("Error returned by fOpStatus1=FileOpenConfig{}.New().\n"+
+      "Error='%v'\n", err.Error())
   }
 
   fOpStatus2, err :=
     FileOpenConfig{}.New(FOpenType.TypeWriteOnly(), FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus2=FileOpenConfig{}.New(). "+
+    t.Errorf("Error returned by fOpStatus2=FileOpenConfig{}.New().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if fOpStatus2.Equal(&fOpStatus1) {
-    t.Error("Expected fOpStatus2!=fOpStatus1. WRONG: They ARE Equal!")
+    t.Error("Expected fOpStatus2!=fOpStatus1.\nWRONG: They ARE Equal!\n")
   }
 
   if fOpStatus1.Equal(&fOpStatus2) {
-    t.Error("Expected fOpStatus ==fOpStatus2. WRONG: They ARE Equal!")
+    t.Error("Expected fOpStatus ==fOpStatus2.\nWRONG: They ARE Equal!\n")
   }
 
 }
@@ -407,8 +445,9 @@ func TestFileOpenConfig_Equal_07(t *testing.T) {
       FOpenMode.ModeTruncate())
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus1=FileOpenConfig{}.New(). "+
+    t.Errorf("Error returned by fOpStatus1=FileOpenConfig{}.New().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   fOpStatus2, err :=
@@ -418,16 +457,17 @@ func TestFileOpenConfig_Equal_07(t *testing.T) {
       FOpenMode.ModeExclusive())
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus2=FileOpenConfig{}.New(). "+
+    t.Errorf("Error returned by fOpStatus2=FileOpenConfig{}.New().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if fOpStatus2.Equal(&fOpStatus1) {
-    t.Error("Expected fOpStatus2!=fOpStatus1. WRONG: They ARE Equal!")
+    t.Error("Expected fOpStatus2!=fOpStatus1.\nWRONG: They ARE Equal!\n")
   }
 
   if fOpStatus1.Equal(&fOpStatus2) {
-    t.Error("Expected fOpStatus ==fOpStatus2. WRONG: They ARE Equal!")
+    t.Error("Expected fOpStatus ==fOpStatus2.\nWRONG: They ARE Equal!\n")
   }
 
 }
@@ -440,21 +480,24 @@ func TestFileOpenConfig_New_01(t *testing.T) {
     FOpenMode.ModeAppend(), FOpenMode.ModeTruncate())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). "+
+    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if expectedFOpenCode != actualFOpenCode {
-    t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code='%v'.\n" +
+      "Instead, actual File Open Code='%v' \n",
       expectedFOpenCode, actualFOpenCode)
   }
-
 }
 
 func TestFileOpenConfig_New_02(t *testing.T) {
@@ -464,8 +507,9 @@ func TestFileOpenConfig_New_02(t *testing.T) {
   _, err := FileOpenConfig{}.New(fOpenType, FOpenMode.ModeCreate())
 
   if err == nil {
-    t.Error("Expected Error returned by FileOpenConfig{}.New()" + "" +
-      "because of an invalid File Open Type. However, NO ERROR WAS RETURNED! \n")
+    t.Error("Expected Error returned by FileOpenConfig{}.New() " +
+      "because of an invalid File Open Type.\n" +
+      "However, NO ERROR WAS RETURNED! \n")
   }
 
 }
@@ -477,18 +521,22 @@ func TestFileOpenConfig_New_03(t *testing.T) {
   fOpStatus, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). "+
+    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if expectedFOpenCode != actualFOpenCode {
-    t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code='%v'.\n" +
+      "Instead, actual File Open Code='%v' \n",
       expectedFOpenCode, actualFOpenCode)
   }
 
@@ -501,18 +549,22 @@ func TestFileOpenConfig_New_04(t *testing.T) {
   fOpStatus, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(), FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). "+
+    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if expectedFOpenCode != actualFOpenCode {
-    t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code='%v'.\n" +
+      "Instead, actual File Open Code='%v' \n",
       expectedFOpenCode, actualFOpenCode)
   }
 
@@ -525,8 +577,9 @@ func TestFileOpenConfig_New_05(t *testing.T) {
   _, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(), fOpenMode)
 
   if err == nil {
-    t.Error("Expected an error return from FileOpenConfig{}.New() " +
-      "because the File Open Mode was invalid. NO ERROR RETURNED! \n")
+    t.Error("Expected an error return from FileOpenConfig{}.New()\n" +
+      "because the File Open Mode was invalid.\n" +
+      "HOWEVER, NO ERROR WAS RETURNED! \n")
   }
 
 }
@@ -538,7 +591,9 @@ func TestFileOpenConfig_New_06(t *testing.T) {
   fOpStatus, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(), FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fOpStatus.fileOpenModes = nil
@@ -546,12 +601,14 @@ func TestFileOpenConfig_New_06(t *testing.T) {
   actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). "+
+    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if expectedFOpenCode != actualFOpenCode {
-    t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code='%v'.\n" +
+      "Instead, actual File Open Code='%v' \n",
       expectedFOpenCode, actualFOpenCode)
   }
 
@@ -564,8 +621,9 @@ func TestFileOpenConfig_GetCompositeFileOpenCode_01(t *testing.T) {
   _, err := fOpCfg.GetCompositeFileOpenCode()
 
   if err == nil {
-    t.Error("Expected error return from fOpCfg.GetCompositeFileOpenCode() " +
-      "because fOpCfg was NOT initialized. NO ERROR WAS RETURNED!")
+    t.Error("Expected error return from fOpCfg.GetCompositeFileOpenCode()\n" +
+      "because 'fOpCfg' was NOT initialized.\n" +
+      "HOWEVER, NO ERROR WAS RETURNED!\n")
 
   }
 
@@ -576,14 +634,17 @@ func TestFileOpenConfig_GetCompositeFileOpenCode_02(t *testing.T) {
   fOpCfg, err := FileOpenConfig{}.New(FOpenType.TypeNone(), FOpenMode.ModeAppend())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   _, err = fOpCfg.GetCompositeFileOpenCode()
 
   if err == nil {
-    t.Error("Expected error return from fOpCfg.GetCompositeFileOpenCode() " +
-      "because fOpCfg use TypeNone(). However, NO ERROR WAS RETURNED!")
+    t.Error("Expected error return from fOpCfg.GetCompositeFileOpenCode()\n" +
+      "because fOpCfg use TypeNone().\n" +
+      "However, NO ERROR WAS RETURNED!\n")
 
   }
 
@@ -594,7 +655,9 @@ func TestFileOpenConfig_GetCompositeFileOpenCode_03(t *testing.T) {
   fOpCfg, err := FileOpenConfig{}.New(FOpenType.TypeNone(), FOpenMode.ModeAppend())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fOpCfg.fileOpenModes = nil
@@ -602,8 +665,9 @@ func TestFileOpenConfig_GetCompositeFileOpenCode_03(t *testing.T) {
   _, err = fOpCfg.GetCompositeFileOpenCode()
 
   if err == nil {
-    t.Error("Expected error return from fOpCfg.GetCompositeFileOpenCode() " +
-      "because fOpCfg.fileOpenModes == nil . However, NO ERROR WAS RETURNED!")
+    t.Error("Expected error return from fOpCfg.GetCompositeFileOpenCode()\n" +
+      "because fOpCfg.fileOpenModes == nil.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
 
   }
 
@@ -614,7 +678,9 @@ func TestFileOpenConfig_GetCompositeFileOpenCode_04(t *testing.T) {
   fOpCfg, err := FileOpenConfig{}.New(FOpenType.TypeNone(), FOpenMode.ModeAppend())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fOpCfg.fileOpenType = FileOpenType(-99)
@@ -622,8 +688,9 @@ func TestFileOpenConfig_GetCompositeFileOpenCode_04(t *testing.T) {
   _, err = fOpCfg.GetCompositeFileOpenCode()
 
   if err == nil {
-    t.Error("Expected error return from fOpCfg.GetCompositeFileOpenCode() " +
-      "because fOpCfg.fileOpenType is invalid. However, NO ERROR WAS RETURNED!")
+    t.Error("Expected error return from fOpCfg.GetCompositeFileOpenCode()\n" +
+      "because fOpCfg.fileOpenType is invalid.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
 
   }
 
@@ -636,7 +703,9 @@ func TestFileOpenConfig_GetCompositeFileOpenCode_05(t *testing.T) {
   fOpStatus, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(), FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fOpStatus.fileOpenModes = nil
@@ -644,12 +713,14 @@ func TestFileOpenConfig_GetCompositeFileOpenCode_05(t *testing.T) {
   actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). "+
-      "Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode().\n"+
+      "Error='%v'\n", err.Error())
+    return
   }
 
   if expectedFOpenCode != actualFOpenCode {
-    t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code='%v'.\n" +
+      "Instead, actual File Open Code='%v' \n",
       expectedFOpenCode, actualFOpenCode)
   }
 
@@ -664,13 +735,16 @@ func TestFileOpenConfig_GetFileOpenModes_01(t *testing.T) {
     FOpenMode.ModeExclusive())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fileOpenModes := fOpCfg.GetFileOpenModes()
 
   if len(fileOpenModes) != 3 {
-    t.Errorf("Error: Expected fileOpenModes len = 3. Instead, len='%v'",
+    t.Errorf("Error: Expected fileOpenModes len = 3.\n" +
+      "Instead, len='%v'\n",
       len(fileOpenModes))
   }
 
@@ -695,18 +769,18 @@ func TestFileOpenConfig_GetFileOpenModes_01(t *testing.T) {
   }
 
   if hasAppend != 1 {
-    t.Errorf("Error: Could not locate correct number of Appends. "+
-      "hasAppend='%v'", hasAppend)
+    t.Errorf("Error: Could not locate correct number of Appends.\n"+
+      "hasAppend='%v'\n", hasAppend)
   }
 
   if hasCreate != 1 {
-    t.Errorf("Error: Could not locate correct number of Creates. "+
-      "hasCreate='%v'", hasCreate)
+    t.Errorf("Error: Could not locate correct number of Creates.\n"+
+      "hasCreate='%v'\n", hasCreate)
   }
 
   if hasExclusive != 1 {
-    t.Errorf("Error: Could not locate correct number of Exclusives. "+
-      "hasExclusive='%v'", hasExclusive)
+    t.Errorf("Error: Could not locate correct number of Exclusives.\n"+
+      "hasExclusive='%v'\n", hasExclusive)
   }
 
 }
@@ -717,29 +791,32 @@ func TestFileOpenConfig_GetFileOpenModes_02(t *testing.T) {
     FOpenType.TypeReadWrite())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fileOpenModes := fOpCfg.GetFileOpenModes()
 
   if fileOpenModes == nil {
-    t.Error("Error: Returned fileOpenModes is nil!")
+    t.Error("Error: Returned fileOpenModes is nil!\n")
   }
 
   if len(fileOpenModes) == 0 {
-    t.Error("Error: Returned fileOpenModes has Zero Length!")
+    t.Error("Error: Returned fileOpenModes has Zero Length!\n")
+    return
   }
 
   if len(fileOpenModes) != 1 {
-    t.Errorf("Error: Returned fileOpenModes Length is NOT '1' ! "+
-      "Length='%v' ", len(fileOpenModes))
+    t.Errorf("Error: Returned fileOpenModes Length is NOT '1' !\n"+
+      "Length='%v'\n", len(fileOpenModes))
+    return
   }
 
   if fileOpenModes[0] != FOpenMode.ModeNone() {
-    t.Error("Error: Expected fileOpenModes[0] == FOpenMode.ModeNone(). " +
-      "It is NOT!")
+    t.Error("Error: Expected fileOpenModes[0] == FOpenMode.ModeNone().\n" +
+      "It is NOT!\n")
   }
-
 }
 
 func TestFileOpenConfig_GetFileOpenModes_03(t *testing.T) {
@@ -748,27 +825,31 @@ func TestFileOpenConfig_GetFileOpenModes_03(t *testing.T) {
     FOpenType.TypeReadWrite())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fileOpenModes := fOpCfg.GetFileOpenModes()
 
   if fileOpenModes == nil {
-    t.Error("Error: Returned fileOpenModes is nil!")
+    t.Error("Error: Returned fileOpenModes is nil!\n")
+    return
   }
 
   if len(fileOpenModes) == 0 {
-    t.Error("Error: Returned fileOpenModes has Zero Length!")
+    t.Error("Error: Returned fileOpenModes has Zero Length!\n")
+    return
   }
 
   if len(fileOpenModes) != 1 {
-    t.Errorf("Error: Returned fileOpenModes Length is NOT '1' ! "+
-      "Length='%v' ", len(fileOpenModes))
+    t.Errorf("Error: Returned fileOpenModes Length is NOT '1' !\n"+
+      "Length='%v'\n", len(fileOpenModes))
   }
 
   if fileOpenModes[0] != FOpenMode.ModeNone() {
-    t.Error("Error: Expected fileOpenModes[0] == FOpenMode.ModeNone(). " +
-      "It is NOT!")
+    t.Error("Error: Expected fileOpenModes[0] == FOpenMode.ModeNone().\n" +
+      "It is NOT!\n")
   }
 
 }
@@ -779,7 +860,9 @@ func TestFileOpenConfig_GetFileOpenModes_04(t *testing.T) {
     FOpenType.TypeReadWrite())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fOpCfg.fileOpenModes = nil
@@ -787,21 +870,23 @@ func TestFileOpenConfig_GetFileOpenModes_04(t *testing.T) {
   fileOpenModes := fOpCfg.GetFileOpenModes()
 
   if fileOpenModes == nil {
-    t.Error("Error: Returned fileOpenModes is nil!")
+    t.Error("Error: Returned fileOpenModes is nil!\n")
+    return
   }
 
   if len(fileOpenModes) == 0 {
-    t.Error("Error: Returned fileOpenModes has Zero Length!")
+    t.Error("Error: Returned fileOpenModes has Zero Length!\n")
+    return
   }
 
   if len(fileOpenModes) != 1 {
-    t.Errorf("Error: Returned fileOpenModes Length is NOT '1' ! "+
-      "Length='%v' ", len(fileOpenModes))
+    t.Errorf("Error: Returned fileOpenModes Length is NOT '1' !\n"+
+      "Length='%v'\n", len(fileOpenModes))
   }
 
   if fileOpenModes[0] != FOpenMode.ModeNone() {
-    t.Error("Error: Expected fileOpenModes[0] == FOpenMode.ModeNone(). " +
-      "It is NOT!")
+    t.Error("Error: Expected fileOpenModes[0] == FOpenMode.ModeNone().\n" +
+      "It is NOT!\n")
   }
 
 }
@@ -814,21 +899,23 @@ func TestFileOpenConfig_GetFileOpenTextString_01(t *testing.T) {
     FOpenMode.ModeExclusive())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   txt := fOpenCfg.GetFileOpenNarrativeText()
 
   if strings.Index(txt, "ReadWrite") == -1 {
-    t.Error("Error: Could not locate 'ReadWrite' in FileOpen Text!")
+    t.Error("Error: Could not locate 'ReadWrite' in FileOpen Text!\n")
   }
 
   if strings.Index(txt, "Create") == -1 {
-    t.Error("Error: Could not locate 'Create' in FileOpen Text!")
+    t.Error("Error: Could not locate 'Create' in FileOpen Text!\n")
   }
 
   if strings.Index(txt, "Exclusive") == -1 {
-    t.Error("Error: Could not locate 'Exclusive' in FileOpen Text!")
+    t.Error("Error: Could not locate 'Exclusive' in FileOpen Text!\n")
   }
 
 }
@@ -840,7 +927,9 @@ func TestFileOpenConfig_GetFileOpenTextString_02(t *testing.T) {
     FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fOpenCfg.fileOpenModes = nil
@@ -848,11 +937,11 @@ func TestFileOpenConfig_GetFileOpenTextString_02(t *testing.T) {
   txt := fOpenCfg.GetFileOpenNarrativeText()
 
   if strings.Index(txt, "ReadWrite") == -1 {
-    t.Error("Error: Could not locate 'ReadWrite' in FileOpen Text!")
+    t.Error("Error: Could not locate 'ReadWrite' in FileOpen Text!\n")
   }
 
   if strings.Index(txt, "None") == -1 {
-    t.Error("Error: Could not locate 'None' in FileOpen Text!")
+    t.Error("Error: Could not locate 'None' in FileOpen Text!\n")
   }
 
 }
@@ -864,14 +953,16 @@ func TestFileOpenConfig_GetFileOpenType_01(t *testing.T) {
     FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fOpenType := fOpCfg.GetFileOpenType()
 
   if fOpenType != FOpenType.TypeReadWrite() {
-    t.Errorf("Error: Expected fOpenType='ReadWrite'.  Instead, "+
-      "fOpenType='%v' string='%s' ", fOpenType, fOpenType.String())
+    t.Errorf("Error: Expected fOpenType='ReadWrite'.\n" +
+      "Instead, fOpenType='%v'\nstring='%s'\n", fOpenType, fOpenType.String())
   }
 
 }
@@ -883,7 +974,9 @@ func TestFileOpenConfig_GetFileOpenType_02(t *testing.T) {
     FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fOpCfg.fileOpenModes = nil
@@ -891,8 +984,8 @@ func TestFileOpenConfig_GetFileOpenType_02(t *testing.T) {
   fOpenType := fOpCfg.GetFileOpenType()
 
   if fOpenType != FOpenType.TypeReadOnly() {
-    t.Errorf("Error: Expected fOpenType='ReadOnly'.  Instead, "+
-      "fOpenType='%v' string='%s' ", fOpenType, fOpenType.String())
+    t.Errorf("Error: Expected fOpenType='ReadOnly'.\n" +
+      "Instead, fOpenType='%v'\nstring='%s'\n", fOpenType, fOpenType.String())
   }
 
 }
@@ -904,8 +997,9 @@ func TestFileOpenConfig_IsValid_01(t *testing.T) {
   err := fOpCfg.IsValid()
 
   if err == nil {
-    t.Error("Expected an error return from fOpCfg.IsValid() " +
-      "because fOpCfg is uninitialized. However, NO ERROR WAS RETURNED!")
+    t.Error("Expected an error return from fOpCfg.IsValid()\n" +
+      "because fOpCfg is uninitialized.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }
@@ -917,14 +1011,16 @@ func TestFileOpenConfig_IsValid_02(t *testing.T) {
     FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   err = fOpCfg.IsValid()
 
   if err != nil {
-    t.Errorf("Error: Expected no error returned from IsValid(). However, "+
-      "an error was returned! Error='%v' ", err.Error())
+    t.Errorf("Error: Expected no error returned from IsValid().\n" +
+      "However, an error was returned!\nError='%v'\n", err.Error())
   }
 
 }
@@ -938,15 +1034,17 @@ func TestFileOpenConfig_IsValid_03(t *testing.T) {
     FOpenMode.ModeExclusive())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   err = fOpCfg.IsValid()
 
   if err == nil {
-    t.Error("Expected an error return from fOpCfg.IsValid() " +
-      "because fOpCfg File Type=None and multiple Modes. " +
-      "However, NO ERROR WAS RETURNED!")
+    t.Error("Expected an error return from fOpCfg.IsValid()\n" +
+      "because fOpCfg File Type=None and multiple Modes.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }
@@ -958,7 +1056,9 @@ func TestFileOpenConfig_IsValid_04(t *testing.T) {
     FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fOpCfg.fileOpenType = FileOpenType(-99)
@@ -966,9 +1066,9 @@ func TestFileOpenConfig_IsValid_04(t *testing.T) {
   err = fOpCfg.IsValid()
 
   if err == nil {
-    t.Error("Expected an error return from fOpCfg.IsValid() " +
-      "because fOpCfg File Type=-99. " +
-      "However, NO ERROR WAS RETURNED!")
+    t.Error("Expected an error return from fOpCfg.IsValid()\n" +
+      "because fOpCfg File Type=-99.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }
@@ -980,7 +1080,9 @@ func TestFileOpenConfig_IsValid_05(t *testing.T) {
     FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fOpCfg.fileOpenModes[0] = FileOpenMode(9999999)
@@ -988,9 +1090,9 @@ func TestFileOpenConfig_IsValid_05(t *testing.T) {
   err = fOpCfg.IsValid()
 
   if err == nil {
-    t.Error("Expected an error return from fOpCfg.IsValid() " +
-      "because fOpCfg File Type=-99. " +
-      "However, NO ERROR WAS RETURNED!")
+    t.Error("Expected an error return from fOpCfg.IsValid()\n" +
+      "because fOpCfg File Type=-99.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }
@@ -1002,7 +1104,9 @@ func TestFileOpenConfig_IsValid_06(t *testing.T) {
     FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fOpCfg.fileOpenModes = nil
@@ -1010,8 +1114,8 @@ func TestFileOpenConfig_IsValid_06(t *testing.T) {
   err = fOpCfg.IsValid()
 
   if err != nil {
-    t.Errorf("Expected NO ERROR RETURN from IsValid(). "+
-      "However, AN ERROR WAS RETURNED! Error='%v' ", err.Error())
+    t.Errorf("Expected NO ERROR RETURN from IsValid().\n"+
+      "However, AN ERROR WAS RETURNED!\nError='%v'\n", err.Error())
   }
 
 }
@@ -1025,7 +1129,9 @@ func TestFileOpenConfig_IsValid_07(t *testing.T) {
     FOpenMode.ModeTruncate())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fOpCfg.fileOpenModes[0] = FileOpenMode(9999)
@@ -1033,9 +1139,9 @@ func TestFileOpenConfig_IsValid_07(t *testing.T) {
   err = fOpCfg.IsValid()
 
   if err == nil {
-    t.Error("Expected an error return from fOpCfg.IsValid() " +
-      "because fOpCfg contained an invalid File Mode. " +
-      "However, NO ERROR WAS RETURNED!")
+    t.Error("Expected an error return from fOpCfg.IsValid()\n" +
+      "because fOpCfg contained an invalid File Mode.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }
@@ -1049,7 +1155,9 @@ func TestFileOpenConfig_IsValid_08(t *testing.T) {
     FOpenMode.ModeTruncate())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fOpCfg.fileOpenModes[1] = FOpenMode.ModeNone()
@@ -1057,9 +1165,9 @@ func TestFileOpenConfig_IsValid_08(t *testing.T) {
   err = fOpCfg.IsValid()
 
   if err == nil {
-    t.Error("Expected an error return from fOpCfg.IsValid() " +
-      "because fOpCfg has multiple File Modes one of which is 'None'. " +
-      "However, NO ERROR WAS RETURNED!")
+    t.Error("Expected an error return from fOpCfg.IsValid()\n" +
+      "because fOpCfg has multiple File Modes one of which is 'None'.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }
@@ -1073,7 +1181,9 @@ func TestFileOpenConfig_IsValid_09(t *testing.T) {
     FOpenMode.ModeTruncate())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   fOpCfg.fileOpenModes[1] = FOpenMode.ModeNone()
@@ -1081,9 +1191,9 @@ func TestFileOpenConfig_IsValid_09(t *testing.T) {
   err = fOpCfg.IsValid()
 
   if err == nil {
-    t.Error("Expected an error return from fOpCfg.IsValid() " +
-      "because fOpCfg has multiple File Modes one of which is 'None'. " +
-      "However, NO ERROR WAS RETURNED!")
+    t.Error("Expected an error return from fOpCfg.IsValid()\n" +
+      "because fOpCfg has multiple File Modes one of which is 'None'.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }
@@ -1101,9 +1211,9 @@ func TestFileOpenConfig_IsValid_10(t *testing.T) {
   err := fOpCfg.IsValid()
 
   if err == nil {
-    t.Error("Expected an error return from fOpCfg.IsValid() " +
-      "because fOpCfg has File Type='None' and fileOpenModes = ModeCreate. " +
-      "However, NO ERROR WAS RETURNED!")
+    t.Error("Expected an error return from fOpCfg.IsValid()\n" +
+      "because fOpCfg has File Type='None' and fileOpenModes = ModeCreate.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }
@@ -1116,24 +1226,28 @@ func TestFileOpenConfig_SetFileOpenType_01(t *testing.T) {
     FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   err = fOpStatus.SetFileOpenType(FOpenType.TypeReadWrite())
 
   if err != nil {
-    t.Errorf("Error returned by SetFileOpenType{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by SetFileOpenType{}.New().\n" +
+      "Error='%v' \n", err.Error())
   }
 
   actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). "+
+    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode().\n"+
       "Error='%v' \n", err.Error())
   }
 
   if expectedFOpenCode != actualFOpenCode {
-    t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code='%v'.\n" +
+      "Instead, actual File Open Code='%v' \n",
       expectedFOpenCode, actualFOpenCode)
   }
 
@@ -1148,25 +1262,31 @@ func TestFileOpenConfig_SetFileOpenType_02(t *testing.T) {
   err := fOpStatus.SetFileOpenType(FOpenType.TypeReadWrite())
 
   if err != nil {
-    t.Errorf("Error returned by SetFileOpenType{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by SetFileOpenType{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   err = fOpStatus.SetFileOpenModes(FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by fOpStatus.SetFileOpenModes(FOpenMode.ModeNone()). "+
+    t.Errorf("Error returned by fOpStatus." +
+      "SetFileOpenModes(FOpenMode.ModeNone()).\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). "+
+    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode().\n"+
       "Error='%v' \n", err.Error())
+    return
   }
 
   if expectedFOpenCode != actualFOpenCode {
-    t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code='%v'.\n" +
+      "Instead, actual File Open Code='%v' \n",
       expectedFOpenCode, actualFOpenCode)
   }
 
@@ -1179,9 +1299,9 @@ func TestFileOpenConfig_SetFileOpenType_03(t *testing.T) {
   err := fOpStatus.SetFileOpenType(FileOpenType(-99))
 
   if err == nil {
-    t.Error("Expected an error return from fOpStatus." +
-      "SetFileOpenType(FileOpenType(-99)) because FileType== -99. " +
-      "However, NO ERROR WAS RETURNED! \n")
+    t.Error("Expected an error return from fOpStatus.\n" +
+      "SetFileOpenType(FileOpenType(-99)) because FileType== -99.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }
@@ -1195,13 +1315,15 @@ func TestFileOpenConfig_SetFileOpenType_04(t *testing.T) {
   err := fOpCfg.SetFileOpenType(expectedFOpenType)
 
   if err != nil {
-    t.Errorf("Error returned by SetFileOpenType{}.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by SetFileOpenType{}.New().\n" +
+      "Error='%v' \n", err.Error())
+    return
   }
 
   actualFileOpenType := fOpCfg.GetFileOpenType()
 
   if expectedFOpenType != actualFileOpenType {
-    t.Errorf("Error: Expected File Open Type='%v'. "+
+    t.Errorf("Error: Expected File Open Type='%v'.\n"+
       "Instead, actual File Open Type='%v' \n",
       expectedFOpenType.String(), actualFileOpenType.String())
   }
@@ -1217,7 +1339,9 @@ func TestFileOpenConfig_SetFileOpenModes_01(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by FileOpenConfig{}.New(FOpenType.TypeNone()," +
-      "FOpenMode.ModeNone()).\nError='%v'\n", err.Error())
+      "FOpenMode.ModeNone()).\n" +
+      "Error='%v'\n", err.Error())
+    return
   }
 
   err = fOpStatus.SetFileOpenType(FOpenType.TypeWriteOnly())
@@ -1231,19 +1355,21 @@ func TestFileOpenConfig_SetFileOpenModes_01(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpStatus.SetFileOpenModes(FOpenMode.ModeAppend(), "+
-      "FOpenMode.ModeCreate()). Error='%v' \n",
+      "FOpenMode.ModeCreate()).\n" +
+      "Error='%v' \n",
       err.Error())
   }
 
   actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). "+
+    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode().\n"+
       "Error='%v' \n", err.Error())
   }
 
   if expectedFOpenCode != actualFOpenCode {
-    t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code='%v'.\n" +
+      "Instead, actual File Open Code='%v' \n",
       expectedFOpenCode, actualFOpenCode)
   }
 
@@ -1263,19 +1389,21 @@ func TestFileOpenConfig_SetFileOpenModes_02(t *testing.T) {
 
   if err != nil {
     t.Errorf("Error returned by fOpStatus.SetFileOpenModes(FOpenMode.ModeAppend(), "+
-      "FOpenMode.ModeCreate()). Error='%v' \n",
+      "FOpenMode.ModeCreate()).\n" +
+      "Error='%v' \n",
       err.Error())
   }
 
   actualFOpenCode, err := fOpStatus.GetCompositeFileOpenCode()
 
   if err != nil {
-    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode(). "+
+    t.Errorf("Error returned by FileOpenConfig{}.GetCompositeFileOpenCode().\n"+
       "Error='%v' \n", err.Error())
   }
 
   if expectedFOpenCode != actualFOpenCode {
-    t.Errorf("Error: Expected File Open Code='%v'. Instead, actual File Open Code='%v' \n",
+    t.Errorf("Error: Expected File Open Code='%v'.\n" +
+      "Instead, actual File Open Code='%v' \n",
       expectedFOpenCode, actualFOpenCode)
   }
 
@@ -1290,7 +1418,7 @@ func TestFileOpenConfig_SetFileOpenModes_03(t *testing.T) {
   err := fOpnCfg.SetFileOpenModes()
 
   if err != nil {
-    t.Errorf("Error returned by fOpnCfg.SetFileOpenModes() "+
+    t.Errorf("Error returned by fOpnCfg.SetFileOpenModes()\n"+
       "Error='%v' \n",
       err.Error())
   }
@@ -1298,9 +1426,9 @@ func TestFileOpenConfig_SetFileOpenModes_03(t *testing.T) {
   err = fOpnCfg.IsValid()
 
   if err == nil {
-    t.Error("Expected an error return from fOpnCfg.IsValid() with " +
-      "Nil file modes config shows as uninitialized. " +
-      "However, NO ERROR WAS RETURNED!")
+    t.Error("Expected an error return from fOpnCfg.IsValid()\n" +
+      "because file modes config shows as uninitialized.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }
