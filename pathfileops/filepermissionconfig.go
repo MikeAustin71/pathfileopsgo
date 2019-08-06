@@ -32,9 +32,9 @@ import (
 //
 type FilePermissionConfig struct {
   isInitialized bool
-  fileMode      os.FileMode // Holds the consolidated file permission value which
-  //                             consists of the elements making up a permission value:
-  //                             entry type and permission bits.
+  fileMode      os.FileMode   //  Holds the consolidated file permission value which
+//                                consists of the elements making up a permission value:
+//                                entry type and permission bits.
 }
 
 // CopyIn - Receives a FilePermissionConfig instance and copies all
