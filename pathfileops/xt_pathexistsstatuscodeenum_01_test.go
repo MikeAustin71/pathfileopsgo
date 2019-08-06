@@ -1019,7 +1019,7 @@ func TestPathExistsStatusCode_Unknown_01(t *testing.T) {
 
   if intStatus != -1 {
     t.Errorf("Error: Expected PathExistsStatus.Unknown()=='-1'.\n" +
-      "Instead PathExistsStatus.Exists()=='%v'\n", intStatus)
+      "Instead PathExistsStatus.Unknown()=='%v'\n", intStatus)
   }
 }
 
