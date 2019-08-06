@@ -117,11 +117,10 @@ func (pathValid PathValidityStatusCode) StatusIsValid() error {
   return nil
 }
 
-
 // ParseString - Receives a string and attempts to match it with
 // the string value of the supported enumeration. If successful,
-// a new instance of mPathValidityStatusCodeToString is returned
-// set to the value of the associated enumeration.
+// a new instance of PathValidityStatusCode is returned set to
+// the value of the associated enumeration.
 //
 // This is a standard utility method and is not part of the valid
 // enumerations for this type.
@@ -149,15 +148,15 @@ func (pathValid PathValidityStatusCode) StatusIsValid() error {
 //
 // Return Values:
 //
-//	PathExistsStatusCode - Upon successful completion, this method will return a new
-//	                       instance of PathExistsStatusCode set to the value of the
-//	                       enumeration matched by the string search performed on
-//	                       input parameter,'valueString'.
+//	PathValidityStatusCode -  Upon successful completion, this method will return a new
+//	                          instance of PathExistsStatusCode set to the value of the
+//	                          enumeration matched by the string search performed on
+//	                          input parameter,'valueString'.
 //
-//	error                - If this method completes successfully, the returned error
-//	                       Type is set equal to 'nil'. If an error condition is encountered,
-//	                       this method will return an error Type which encapsulates an
-//	                       appropriate error message.
+//	error                   - If this method completes successfully, the returned error
+//	                          Type is set equal to 'nil'. If an error condition is encountered,
+//	                          this method will return an error Type which encapsulates an
+//	                          appropriate error message.
 //
 // ------------------------------------------------------------------------
 //
@@ -171,7 +170,6 @@ func (pathValid PathValidityStatusCode) StatusIsValid() error {
 //
 //	For all of the cases shown above,
 //  t is now equal to PathValidityStatusCode(0).Valid()
-//
 //
 func (pathValid PathValidityStatusCode) ParseString(
   valueString string, caseSensitive bool) (PathValidityStatusCode, error) {
