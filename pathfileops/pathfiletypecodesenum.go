@@ -14,7 +14,7 @@ var mPathFileTypeStringToCode = map[string]PathFileTypeCode{
   "Volume":        PathFileTypeCode(0).Volume(),
   "VolumeName":    PathFileTypeCode(0).Volume(),
   "Volume Name":   PathFileTypeCode(0).Volume(),
-  "indeterminate": PathFileTypeCode(0).Indeterminate(),
+  "Indeterminate": PathFileTypeCode(0).Indeterminate(),
   "Unknown":       PathFileTypeCode(0).Indeterminate(),
 }
 
@@ -72,7 +72,7 @@ var mPathFileTypeCodeToString = map[PathFileTypeCode]string{
 //                                        NOT include a directory path or
 //                                        file name.
 //
-//  Indeterminate()        5            Tests have been conducted on the
+//  Indeterminate()         5           Tests have been conducted on the
 //                                        Path/file name string, but the
 //                                        string cannot be classified and
 //                                        its status cannot be determined
