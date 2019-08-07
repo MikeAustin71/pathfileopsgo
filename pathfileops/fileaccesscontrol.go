@@ -254,7 +254,8 @@ func (fAccess FileAccessControl) NewWriteOnlyTruncateAccess() (FileAccessControl
 
   ePrefix := "FileAccessControl.NewWriteOnlyTruncateAccess() "
 
-  fileOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeWriteOnly(), FOpenMode.ModeTruncate())
+  fileOpenCfg, err :=
+    FileOpenConfig{}.New(FOpenType.TypeWriteOnly(), FOpenMode.ModeTruncate())
 
   if err != nil {
     return FileAccessControl{}, fmt.Errorf(ePrefix+"%v\n", err.Error())
@@ -379,6 +380,12 @@ func (fAccess *FileAccessControl) GetCompositePermissionMode() (os.FileMode, err
 
 // GetCompositePermissionModeText - Returns the composite permission file mode
 // numerical value expressed as text.
+//
+//  Example:
+//
+//        -rw-rw-rw- = returned value "0666"
+//        drwxrwxrwx = returned value "020000000777"
+//
 func (fAccess *FileAccessControl) GetCompositePermissionModeText() string {
 
   ePrefix := "FileAccessControl.GetCompositePermissionModeText() "
@@ -464,6 +471,28 @@ func (fAccess *FileAccessControl) GetFilePermissionConfig() (FilePermissionConfi
 
   return fAccess.permissions.CopyOut(), nil
 
+}
+
+// GetFilePermissionTextCode - Returns the file mode permissions expressed as
+// a text string. The returned string includes the full and complete
+// 10-character permission code.
+//
+//  Example Return Values:
+//        -rwxrwxrwx
+//        -rw-rw-rw-
+//        drwxrwxrwx
+//
+func (fAccess *FileAccessControl) GetFilePermissionTextCode() (string, error) {
+
+  ePrefix := "FileAccessControl.GetFilePermissionTextCode() "
+
+  permTxtCode, err := fAccess.permissions.GetPermissionTextCode()
+
+  if err != nil {
+    return "", fmt.Errorf(ePrefix + "%v\n", err.Error())
+  }
+
+  return permTxtCode, nil
 }
 
 // IsValid - If the current FileAccessControl instance is valid and properly

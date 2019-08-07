@@ -13,22 +13,24 @@ func TestFileAccessControl_CopyIn_01(t *testing.T) {
   fPermCfg, err := FilePermissionConfig{}.New(textCode)
 
   if err != nil {
-    t.Errorf("Error returned by FilePermissionConfig{}.New(textCode). "+
-      "textCode='%v' Error='%v'", textCode, err.Error())
+    t.Errorf("Error returned by FilePermissionConfig{}.New(textCode).\n"+
+      "textCode='%v'\nError='%v'\n", textCode, err.Error())
   }
 
   fOpenCfg, err := FileOpenConfig{}.New(FOpenType.TypeReadWrite(),
     FOpenMode.ModeNone())
 
   if err != nil {
-    t.Errorf("Error returned by fOpenCfg.New(). Error='%v' \n", err.Error())
+    t.Errorf("Error returned by fOpenCfg.New().\n" +
+      "Error='%v' \n", err.Error())
   }
 
   fAccess1, err := FileAccessControl{}.New(fOpenCfg, fPermCfg)
 
   if err != nil {
     t.Errorf("Error returned by FileAccessControl{}.New("+
-      "fOpenCfg, fPermCfg). Error='%v' \n", err.Error())
+      "fOpenCfg, fPermCfg).\n" +
+      "Error='%v' \n", err.Error())
   }
 
   fAccess2 := FileAccessControl{}

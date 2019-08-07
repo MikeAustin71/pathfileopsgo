@@ -90,6 +90,29 @@ func TestFileAccessControl_NewInitialized_01(t *testing.T) {
     t.Error("Expected fMode = OsFilePermCode.ModeNone().\n" +
       "It IS NOT EQUAL!\n")
   }
+}
+
+func TestFileAccessControl_NewWriteOnlyTruncateAccess(t *testing.T) {
+
+  fPermCfg, err := FileAccessControl{}.NewWriteOnlyTruncateAccess()
+
+  if err != nil {
+    t.Errorf("Error returned by FileAccessControl{}.NewWriteOnlyTruncateAccess()\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  permModeTxt, err := fPermCfg.GetFilePermissionTextCode()
+
+  if err != nil {
+    t.Errorf("Error returned by fPermCfg.GetFilePermissionTextCode()\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  if permModeTxt != "--w--w--w-" {
+    t.Errorf("Error: Expected permission text code='--w--w--w-'\n" +
+      "Instead, permission text code='%v'\n", permModeTxt)
+  }
 
 }
 
