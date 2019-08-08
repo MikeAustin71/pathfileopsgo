@@ -78,6 +78,82 @@ func TestPathFileTypeCode_File_05(t *testing.T) {
   }
 }
 
+func TestPathFileTypeCode_Indeterminate_01(t *testing.T) {
+
+  status := PathFileType.Indeterminate()
+
+  intStatus := int(status)
+
+  if intStatus != 5 {
+    t.Errorf("Error: Expected PathFileType.Indeterminate()=='5'.\n" +
+      "Instead PathFileType.Indeterminate()=='%v'\n", intStatus)
+  }
+}
+
+func TestPathFileTypeCode_Indeterminate_02(t *testing.T) {
+
+  status := PathFileType.Indeterminate()
+
+  statusStr := status.String()
+
+  if statusStr != "Indeterminate" {
+    t.Errorf("Error: For 'PathFileType.Indeterminate()':\n" +
+      "Expected PathFileType.String()=='Indeterminate'.\n" +
+      "Instead PathFileType.String()=='%v'\n", statusStr)
+  }
+}
+
+func TestPathFileTypeCode_Indeterminate_03(t *testing.T) {
+
+  status := PathFileType.Indeterminate()
+
+  statusValue := status.StatusValue()
+
+  if int(statusValue) != 5 {
+    t.Errorf("Error: For 'PathFileType.Indeterminate()':\n" +
+      "Expected status.Value()=='5'.\n" +
+      "Instead status.Value()=='%v'\n", int(statusValue))
+  }
+}
+
+func TestPathFileTypeCode_Indeterminate_04(t *testing.T) {
+
+  statusCode, err :=
+    PathFileTypeCode(0).ParseString("Indeterminate", true)
+
+  if err != nil {
+    t.Errorf("Error returned by PathFileTypeCode(0)." +
+      "ParseString(\"Indeterminate\", true)\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  if int(statusCode) != 5 {
+    t.Errorf("Error: For 'PathFileType.Indeterminate()':\n" +
+      "Expected ParseString()=='5'.\n" +
+      "Instead ParseString()=='%v'\n", int(statusCode))
+  }
+}
+
+func TestPathFileTypeCode_Indeterminate_05(t *testing.T) {
+
+  statusCode, err :=
+    PathFileTypeCode(0).ParseString("indeterminate", false)
+
+  if err != nil {
+    t.Errorf("Error returned by PathFileTypeCode(0)." +
+      "ParseString(\"indeterminate\", false)\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  if int(statusCode) != 5 {
+    t.Errorf("Error: For 'PathFileType.Indeterminate()':\n" +
+      "Expected lower case ParseString()=='5'.\n" +
+      "Instead lower case ParseString()=='%v'\n", int(statusCode))
+  }
+}
+
 func TestPathFileTypeCode_None_01(t *testing.T) {
 
   status := PathFileType.None()
@@ -151,6 +227,39 @@ func TestPathFileTypeCode_None_05(t *testing.T) {
     t.Errorf("Error: For 'PathFileType.None()':\n" +
       "Expected lower case ParseString()=='0'.\n" +
       "Instead lower case ParseString()=='%v'\n", int(statusCode))
+  }
+}
+
+func TestPathFileTypeCode_ParseString_01(t *testing.T) {
+
+  statusStr, err := PathFileTypeCode(0).ParseString("Volume()", true)
+
+  if err != nil {
+    t.Errorf("Error returned by ParseString(\"Volume()\", true)\n" +
+      "Error='%v'\n", statusStr)
+  }
+
+}
+
+func TestPathFileTypeCode_ParseString_02(t *testing.T) {
+
+  _, err := PathFileTypeCode(0).ParseString("xy", true)
+
+  if err == nil {
+    t.Error("Expected an error return from ParseString(\"xy\", true)\n" +
+      "because \"xy\" is an invalid string.\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+}
+
+func TestPathFileTypeCode_ParseString_03(t *testing.T) {
+
+  _, err := PathFileTypeCode(0).ParseString("xy", false)
+
+  if err == nil {
+    t.Error("Expected an error return from ParseString(\"xy\", false)\n" +
+      "because \"xy\" is an invalid string.\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
   }
 }
 
@@ -306,6 +415,20 @@ func TestPathFileTypeCode_PathFile_05(t *testing.T) {
   }
 }
 
+func TestPathFileTypeCode_String(t *testing.T) {
+
+  status := PathFileTypeCode(-99)
+
+  statusStr := status.String()
+
+  if statusStr != "" {
+    t.Errorf("Expected an empty string return from status.String()\n" +
+      "because 'status' is invalid.\n" +
+      "Instead, status.String()=='%v'\n", statusStr)
+  }
+
+}
+
 func TestPathFileTypeCode_Volume_01(t *testing.T) {
 
   status := PathFileType.Volume()
@@ -381,81 +504,3 @@ func TestPathFileTypeCode_Volume_05(t *testing.T) {
       "Instead lower case ParseString()=='%v'\n", int(statusCode))
   }
 }
-
-
-func TestPathFileTypeCode_Indeterminate_01(t *testing.T) {
-
-  status := PathFileType.Indeterminate()
-
-  intStatus := int(status)
-
-  if intStatus != 5 {
-    t.Errorf("Error: Expected PathFileType.Indeterminate()=='5'.\n" +
-      "Instead PathFileType.Indeterminate()=='%v'\n", intStatus)
-  }
-}
-
-func TestPathFileTypeCode_Indeterminate_02(t *testing.T) {
-
-  status := PathFileType.Indeterminate()
-
-  statusStr := status.String()
-
-  if statusStr != "Indeterminate" {
-    t.Errorf("Error: For 'PathFileType.Indeterminate()':\n" +
-      "Expected PathFileType.String()=='Indeterminate'.\n" +
-      "Instead PathFileType.String()=='%v'\n", statusStr)
-  }
-}
-
-func TestPathFileTypeCode_Indeterminate_03(t *testing.T) {
-
-  status := PathFileType.Indeterminate()
-
-  statusValue := status.StatusValue()
-
-  if int(statusValue) != 5 {
-    t.Errorf("Error: For 'PathFileType.Indeterminate()':\n" +
-      "Expected status.Value()=='5'.\n" +
-      "Instead status.Value()=='%v'\n", int(statusValue))
-  }
-}
-
-func TestPathFileTypeCode_Indeterminate_04(t *testing.T) {
-
-  statusCode, err :=
-    PathFileTypeCode(0).ParseString("Indeterminate", true)
-
-  if err != nil {
-    t.Errorf("Error returned by PathFileTypeCode(0)." +
-      "ParseString(\"Indeterminate\", true)\n" +
-      "Error='%v'\n", err.Error())
-    return
-  }
-
-  if int(statusCode) != 5 {
-    t.Errorf("Error: For 'PathFileType.Indeterminate()':\n" +
-      "Expected ParseString()=='5'.\n" +
-      "Instead ParseString()=='%v'\n", int(statusCode))
-  }
-}
-
-func TestPathFileTypeCode_Indeterminate_05(t *testing.T) {
-
-  statusCode, err :=
-    PathFileTypeCode(0).ParseString("indeterminate", false)
-
-  if err != nil {
-    t.Errorf("Error returned by PathFileTypeCode(0)." +
-      "ParseString(\"indeterminate\", false)\n" +
-      "Error='%v'\n", err.Error())
-    return
-  }
-
-  if int(statusCode) != 5 {
-    t.Errorf("Error: For 'PathFileType.Indeterminate()':\n" +
-      "Expected lower case ParseString()=='5'.\n" +
-      "Instead lower case ParseString()=='%v'\n", int(statusCode))
-  }
-}
-
