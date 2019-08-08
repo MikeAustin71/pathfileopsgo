@@ -426,7 +426,6 @@ func TestPathFileTypeCode_String(t *testing.T) {
       "because 'status' is invalid.\n" +
       "Instead, status.String()=='%v'\n", statusStr)
   }
-
 }
 
 func TestPathFileTypeCode_Volume_01(t *testing.T) {

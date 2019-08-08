@@ -34,11 +34,13 @@ type ValidPathStrDto struct {
                                         //  0 - No, tests shown path doesn't exist
                                         //  1 - Yes, tests show path does exist
 
-  absPathStrLength int            // Length of the absolute path string
+  absPathStrLength int                  // Length of the absolute path string
 
-  pathIsValid PathValidityStatusCode  // -1 - don't know
-                                      //  0 - No path is NOT valid
-                                      //  1 - Yes, path is valid
+  pathType PathFileTypeCode             // The path type. Path File, Path Directory
+
+  pathIsValid PathValidityStatusCode    // -1 - don't know
+                                        //  0 - No path is NOT valid
+                                        //  1 - Yes, path is valid
 
   pathVolumeName string           // Volume name associated with current path
 
@@ -105,6 +107,10 @@ func (vpDto *ValidPathStrDto) GetOriginalPathStr() string {
   return vpDto.originalPathStr
 }
 
+func (vpDto *ValidPathStrDto) GetPathIsValid() PathValidityStatusCode {
+  return vpDto.pathIsValid
+}
+
 func (vpDto *ValidPathStrDto) GetPathVolumeName() string {
   return vpDto.pathVolumeName
 }
@@ -119,10 +125,6 @@ func (vpDto *ValidPathStrDto) GetPathVolumeStrLength() int {
 
 func (vpDto *ValidPathStrDto) GetError() error {
   return vpDto.err
-}
-
-func (vpDto *ValidPathStrDto) PathIsValid() PathValidityStatusCode {
-  return vpDto.pathIsValid
 }
 
 func (vpDto *ValidPathStrDto) IsDtoValid(ePrefix string) error {
@@ -160,7 +162,7 @@ func (vpDto *ValidPathStrDto) IsDtoValid(ePrefix string) error {
   }
 
   if vpDto.pathDoesExist < PathExistsStatus.Unknown() ||
-      vpDto.pathDoesExist > PathExistsStatus.Exists() {
+    vpDto.pathDoesExist > PathExistsStatus.Exists() {
     return fmt.Errorf(ePrefix +
       "ERROR: This ValidPathStrDto is INVALID!\n" +
       "ValidPathStrDto.pathDoesExist holds an invalid value.\n" +
@@ -168,7 +170,7 @@ func (vpDto *ValidPathStrDto) IsDtoValid(ePrefix string) error {
   }
 
   if vpDto.absPathDoesExist < PathExistsStatus.Unknown() ||
-      vpDto.absPathDoesExist > PathExistsStatus.Exists() {
+    vpDto.absPathDoesExist > PathExistsStatus.Exists() {
     return fmt.Errorf(ePrefix +
       "ERROR: This ValidPathStrDto is INVALID!\n" +
       "ValidPathStrDto.absPathDoesExist holds an invalid value.\n" +
@@ -186,14 +188,16 @@ func (vpDto *ValidPathStrDto) IsPathExistenceTestValid(ePrefix string) error {
     ePrefix = ePrefix + "- ValidPathStrDto.IsPathExistenceTestValid()\n"
   }
 
-  if vpDto.pathDoesExist < 0 || vpDto.pathDoesExist > 1 {
+  if vpDto.pathDoesExist < PathExistsStatus.DoesNotExist() ||
+    vpDto.pathDoesExist > PathExistsStatus.Value() {
     return fmt.Errorf(ePrefix +
       "ERROR: The ValidPathStrDto Path Existence Test is INVALID!\n" +
       "ValidPathStrDto.pathDoesExist holds an invalid value.\n" +
       "ValidPathStrDto.pathDoesExist='%v'\n", vpDto.pathDoesExist)
   }
 
-  if vpDto.absPathDoesExist < 0 || vpDto.absPathDoesExist > 1 {
+  if vpDto.absPathDoesExist < PathExistsStatus.DoesNotExist() ||
+    vpDto.absPathDoesExist > PathExistsStatus.Value() {
     return fmt.Errorf(ePrefix +
       "ERROR: The ValidPathStrDto Absolute Path Existence Test is INVALID!\n" +
       "ValidPathStrDto.absPathDoesExist holds an invalid value.\n" +
@@ -205,5 +209,54 @@ func (vpDto *ValidPathStrDto) IsPathExistenceTestValid(ePrefix string) error {
 
 func (vpDto *ValidPathStrDto) IsInitialized() bool {
   return vpDto.isInitialized
+}
+
+func (vpDto *ValidPathStrDto) PathIsValid() PathValidityStatusCode {
+  return vpDto.pathIsValid
+}
+
+func (vpDto *ValidPathStrDto) SetPath(pathStr string) {
+  vpDto.pathStr = pathStr
+
+  vpDto.pathStrLength = len(pathStr)
+}
+
+func (vpDto *ValidPathStrDto) SetPathFileInfo(fInfPlus FileInfoPlus) {
+  vpDto.pathFInfoPlus = fInfPlus.CopyOut()
+}
+
+func (vpDto *ValidPathStrDto) SetAbsPath(absPathStr string) {
+  vpDto.absPathStr = absPathStr
+  vpDto.absPathStrLength = len(absPathStr)
+}
+
+func (vpDto *ValidPathStrDto) SetAbsPathFileInfo(absFInfo FileInfoPlus) {
+  vpDto.absPathFInfoPlus = absFInfo.CopyOut()
+}
+
+func (vpDto *ValidPathStrDto) SetOriginalPathStr(originalPathStr string) {
+  vpDto.originalPathStr = originalPathStr
+}
+
+func (vpDto *ValidPathStrDto) SetPathDoesExist(pathDoesExist PathExistsStatusCode) {
+  vpDto.pathDoesExist = pathDoesExist
+}
+
+func (vpDto *ValidPathStrDto) SetPathType(pathType PathFileTypeCode) {
+  
+}
+
+
+func (vpDto *ValidPathStrDto) SetPathVolumeName(volumeNameStr string) {
+  vpDto.pathVolumeName = volumeNameStr
+  vpDto.pathVolumeStrLength = len(volumeNameStr)
+}
+
+func (vpDto *ValidPathStrDto) SetPathVolumeIndex(volIndex int) {
+  vpDto.pathVolumeIndex = volIndex
+}
+
+func (vpDto *ValidPathStrDto) SetError(err error) {
+  vpDto.err = fmt.Errorf("%v", err.Error())
 }
 
