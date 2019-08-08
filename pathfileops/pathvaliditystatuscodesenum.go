@@ -79,21 +79,6 @@ func (pathValid PathValidityStatusCode) Valid() PathValidityStatusCode {
   return PathValidityStatusCode(1)
 }
 
-
-// StatusCodesEqual - Compares the current PathValidityStatusCode instance to
-// another PathExistsStatusCode instance passed as an input parameter. If the
-// two are equal in all respects, this method returns 'true'. Otherwise, this
-// method returns 'false'.
-//
-func (pathValid PathValidityStatusCode) StatusCodesEqual( statusCode PathValidityStatusCode) bool {
-
-  if pathValid == statusCode {
-    return true
-  }
-
-  return false
-}
-
 // StatusIsValid - If the value of the current PathValidityStatusCode instance
 // is 'invalid', this method will return an error.
 //
