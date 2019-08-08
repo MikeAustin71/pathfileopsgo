@@ -73,6 +73,18 @@ func TestPreProcessPathCode_String_03(t *testing.T) {
   }
 }
 
+func TestPreProcessPathCode_String_04(t *testing.T) {
+
+  status := PreProcessPathCode(-99)
+
+  statusStr := status.String()
+
+  if statusStr != "" {
+    t.Errorf("Error: Expected status.String()==\"\"\n" +
+      "Instead, status.String()=='%v'\n", status.String())
+  }
+}
+
 func TestPreProcessPathCode_ParseString_01(t *testing.T) {
 
   testValue := "none"
@@ -176,6 +188,51 @@ func TestPreProcessPathCode_ParseString_06(t *testing.T) {
       "(testValue, false)\n" +
       "because testValue='xxxxxx'.\n" +
       "However, NO ERROR WAS RETURNED!!\n",)
+  }
+
+}
+
+func TestPreProcessPathCode_ParseString_07(t *testing.T) {
+
+  statusStr := "xyz()"
+
+  _, err := PreProcessPathCode(0).ParseString(statusStr, false)
+
+  if err == nil {
+    t.Error("Expected an error return from ParseString(statusStr, false)\n" +
+      "because 'statusStr' is invalid.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+}
+
+func TestPreProcessPathCode_ParseString_08(t *testing.T) {
+
+  statusStr := "absoluxxpath"
+
+  _, err := PreProcessPathCode(0).ParseString(statusStr, false)
+
+  if err == nil {
+    t.Error("Expected an error return from ParseString(statusStr, false)\n" +
+      "because 'statusStr' is invalid.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+}
+
+
+func TestPreProcessPathCode_Value_01(t *testing.T) {
+
+  statusCode1 := PreProcPathCode.PathSeparator()
+
+  statusCode2 := statusCode1.Value()
+
+  statusCode3 := PreProcPathCode.PathSeparator()
+
+  if statusCode2 != statusCode3 {
+
+    t.Errorf("Error: Expected statusCode2='%v'.\n" +
+      "Instead, statusCode2='%v'\n", statusCode3, statusCode2)
   }
 
 }

@@ -741,6 +741,54 @@ func TestPathValidityStatusCode_NotEqualOperator_06(t *testing.T) {
   }
 }
 
+func TestPathValidityStatusCode_ParseString_01(t *testing.T) {
+
+  statusStr := " "
+
+  _, err := PathValidityStatusCode(0).ParseString(statusStr, true)
+
+  if err == nil {
+    t.Error("Expected an error return from PathValidityStatusCode(0)." +
+      "ParseString(statusStr, true)\n" +
+      "because 'statusStr' is an Empty String!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+}
+
+func TestPathValidityStatusCode_ParseString_02(t *testing.T) {
+
+  statusStr := "Valid()"
+
+  statusCode, err := PathValidityStatusCode(0).ParseString(statusStr, true)
+
+  if err != nil {
+    t.Errorf("Error returned by PathValidityStatusCode(0)." +
+      "ParseString(statusStr, true)\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  if statusCode != PathValidStatus.Valid() {
+    t.Errorf("Expected stausCode='%v'.\n" +
+      "Instead, statusCode='%v'.\n",
+      statusCode.String(), PathValidStatus.Valid().String())
+  }
+}
+
+func TestPathValidityStatusCode_ParseString_03(t *testing.T) {
+
+  statusStr := "xyz"
+
+  _, err := PathValidityStatusCode(0).ParseString(statusStr, true)
+
+  if err == nil {
+    t.Error("Expected an error return from PathValidityStatusCode(0)." +
+      "ParseString(statusStr, true)\n" +
+      "because 'statusStr' is Invalid!\n" +
+      "HOWEVER, NO ERROR WAS RETURNED!!!\n")
+  }
+}
+
 func TestPathValidityStatusCode_StatusIsValid_01(t *testing.T) {
 
   status := PathValidityStatusCode(-99)
@@ -807,6 +855,17 @@ func TestPathValidityStatusCode_StatusIsValid_05(t *testing.T) {
 
 }
 
+func TestPathValidityStatusCode_String_01(t *testing.T) {
+
+  status := PathValidityStatusCode(-99)
+
+  statusStr := status.String()
+
+  if statusStr != "" {
+    t.Errorf("Error: Expected status.String()==\"\"\n" +
+      "Instead, status.String()=='%v'", statusStr)
+  }
+}
 
 func TestPathValidityStatusCode_Unknown_01(t *testing.T) {
 
