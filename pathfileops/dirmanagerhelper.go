@@ -4104,14 +4104,11 @@ errorExit:
   validPathDto.absPathStrLength =
     len(validPathDto.absPathStr)
 
+  validPathDto.pathType = PathFileType.Path()
   validPathDto.pathIsValid = PathValidStatus.Valid()
   validPathDto.isInitialized = true
 
   err = validPathDto.IsDtoValid(ePrefix)
-
-  if err == nil {
-    err = validPathDto.IsPathExistenceTestValid(ePrefix)
-  }
 
   return validPathDto, err
 }

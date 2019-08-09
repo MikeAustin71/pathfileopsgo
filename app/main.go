@@ -311,13 +311,6 @@ func (mtst mainTests) mainTest98ParseValidPathStr(pathStr string) {
     return
   }
 
-  err = validPathDto.IsPathExistenceTestValid("mainTest97ParseValidPathStr() ")
-
-  if err != nil {
-    fmt.Printf("%v", err.Error())
-    return
-  }
-
   fmt.Println("           mainTest97ParseValidPathStr                  ")
   fmt.Println("********************************************************")
   fmt.Println("                    SUCCESS!!!                          ")

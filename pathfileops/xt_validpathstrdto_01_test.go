@@ -1,11 +1,21 @@
 package pathfileops
 
-import "testing"
+import (
+  "fmt"
+  "testing"
+)
 
 func TestValidPathStrDto_AbsolutePathDoesExist_01(t *testing.T) {
 
   validpathDto := ValidPathStrDto{}
-  validpathDto.absPathDoesExist = PathExistsStatus.Exists()
+
+  err := validpathDto.SetAbsPathDoesExistStatus(PathExistsStatus.Exists())
+
+  if err != nil {
+    t.Errorf("Error returned by validpathDto." +
+      "SetAbsPathDoesExistStatus(PathExistsStatus.Exists())\n" +
+      "Error='%v'\n", err.Error())
+  }
 
   absPathDoesExist := validpathDto.AbsolutePathDoesExist()
 
@@ -14,13 +24,19 @@ func TestValidPathStrDto_AbsolutePathDoesExist_01(t *testing.T) {
     t.Errorf("Expected absPathDoesExist==PathExistsStatus.Exists().\n" +
       "Instead, absPathDoesExist==%v\n", absPathDoesExist.String())
   }
-
 }
 
 func TestValidPathStrDto_PathDoesExist_01(t *testing.T) {
 
   validpathDto := ValidPathStrDto{}
-  validpathDto.pathDoesExist = PathExistsStatus.DoesNotExist()
+
+  err := validpathDto.SetPathDoesExist(PathExistsStatus.DoesNotExist())
+
+  if err != nil {
+    t.Errorf("Error returned by validpathDto.SetPathDoesExist" +
+      "(PathExistsStatus.DoesNotExist())\n" +
+      "Error='%v'\n", err.Error())
+  }
 
   pathDoesExist := validpathDto.PathDoesExist()
 
@@ -29,7 +45,6 @@ func TestValidPathStrDto_PathDoesExist_01(t *testing.T) {
     t.Errorf("Expected pathDoesExist==PathExistsStatus.DoesNotExist().\n" +
       "Instead, pathDoesExist==%v\n", pathDoesExist.String())
   }
-
 }
 
 func TestValidPathStrDto_GetPath_01(t *testing.T) {
@@ -47,7 +62,7 @@ func TestValidPathStrDto_GetPath_01(t *testing.T) {
     return
   }
 
-  validpathDto.pathStr = expectedAbsolutePath
+  validpathDto.SetPath(expectedAbsolutePath)
 
   actualPath := validpathDto.GetPath()
 
@@ -74,9 +89,9 @@ func TestValidPathStrDto_GetPathStrLen_01(t *testing.T) {
     return
   }
 
-  expectedPathStrLen := len(expectedAbsolutePath)
+  validpathDto.SetPath(expectedAbsolutePath)
 
-  validpathDto.pathStrLength = expectedPathStrLen
+  expectedPathStrLen := len(expectedAbsolutePath)
 
   actualPathStrLen := validpathDto.GetPathStrLen()
 
@@ -111,7 +126,7 @@ func TestValidPathStrDto_GetPathFileInfo(t *testing.T) {
 
   validpathDto := ValidPathStrDto{}
 
-  validpathDto.pathFInfoPlus = fInfo.CopyOut()
+  validpathDto.SetPathFileInfo(fInfo)
 
   actualPathFInfoPlus := validpathDto.GetPathFileInfo()
 
@@ -119,7 +134,6 @@ func TestValidPathStrDto_GetPathFileInfo(t *testing.T) {
     t.Error("Error: Expected actualPathFInfoPlus.Equal(&fInfo)=='true'.\n" +
       "Instead actualPathFInfoPlus.Equal(&fInfo)=='false'\n")
   }
-
 }
 
 func TestValidPathStrDto_GetAbsPath_01(t *testing.T) {
@@ -137,19 +151,16 @@ func TestValidPathStrDto_GetAbsPath_01(t *testing.T) {
     return
   }
 
-  validpathDto.absPathStr = expectedAbsolutePath
+  validpathDto.SetAbsPath(expectedAbsolutePath)
 
   actualPath := validpathDto.GetAbsPath()
 
   if expectedAbsolutePath != actualPath {
-
     t.Errorf("Expected validpathDto.GetAbsPath()=='%v'.\n" +
       "Instead, validpathDto.GetAbsPath()==%v\n",
       expectedAbsolutePath, actualPath)
   }
-
 }
-
 
 func TestValidPathStrDto_GetAbsPathStrLen_01(t *testing.T) {
 
@@ -168,7 +179,7 @@ func TestValidPathStrDto_GetAbsPathStrLen_01(t *testing.T) {
 
   expectedAbsPathStrLen := len(expectedAbsolutePath)
 
-  validpathDto.absPathStrLength = expectedAbsPathStrLen
+  validpathDto.SetAbsPath(expectedAbsolutePath)
 
   actualPathStrLen := validpathDto.GetAbsPathStrLen()
 
@@ -204,7 +215,7 @@ func TestValidPathStrDto_GetAbsPathFileInfo(t *testing.T) {
 
   validpathDto := ValidPathStrDto{}
 
-  validpathDto.absPathFInfoPlus = expectedAbsFInfo.CopyOut()
+  validpathDto.SetAbsPathFileInfo(expectedAbsFInfo)
 
   actualAbsPathFInfoPlus := validpathDto.GetAbsPathFileInfo()
 
@@ -221,7 +232,7 @@ func TestValidPathStrDto_GetOriginalPathStr_01(t *testing.T) {
 
   validpathDto := ValidPathStrDto{}
 
-  validpathDto.originalPathStr = expectedOriginalPath
+  validpathDto.SetOriginalPathStr(expectedOriginalPath)
 
   actualOriginalPath := validpathDto.GetOriginalPathStr()
 
@@ -252,7 +263,7 @@ func TestValidPathStrDto_GetPathVolumeName_01(t *testing.T) {
   _,
   expectedVolName := fh.GetVolumeNameIndex(absolutePath)
 
-  validpathDto.pathVolumeName = expectedVolName
+  validpathDto.SetPathVolumeName(expectedVolName)
 
   actualVolumeName := validpathDto.GetPathVolumeName()
 
@@ -283,7 +294,7 @@ func TestValidPathStrDto_GetPathVolumeIndex_01(t *testing.T) {
   _,
   _ := fh.GetVolumeNameIndex(absolutePath)
 
-  validpathDto.pathVolumeIndex = expectedVolumeIndex
+  validpathDto.SetPathVolumeIndex(expectedVolumeIndex)
 
   actualVolumeIndex := validpathDto.GetPathVolumeIndex()
 
@@ -292,7 +303,6 @@ func TestValidPathStrDto_GetPathVolumeIndex_01(t *testing.T) {
       "Instead, validpathDto.GetPathVolumeIndex()='%v'\n",
       expectedVolumeIndex, actualVolumeIndex)
   }
-
 }
 
 func TestValidPathStrDto_GetPathVolumeStrLength_01(t *testing.T) {
@@ -312,9 +322,9 @@ func TestValidPathStrDto_GetPathVolumeStrLength_01(t *testing.T) {
 
   _,
   expectedVolumeStringLength,
-  _ := fh.GetVolumeNameIndex(absolutePath)
+  expectedVolumeStr := fh.GetVolumeNameIndex(absolutePath)
 
-  validpathDto.pathVolumeStrLength = expectedVolumeStringLength
+  validpathDto.SetPathVolumeName(expectedVolumeStr)
 
   actualVolumeStrLength := validpathDto.GetPathVolumeStrLength()
 
@@ -322,6 +332,71 @@ func TestValidPathStrDto_GetPathVolumeStrLength_01(t *testing.T) {
     t.Errorf("Expected validpathDto.GetPathVolumeStrLength()=='%v'\n" +
       "Instead, validpathDto.GetPathVolumeStrLength()='%v'\n",
       expectedVolumeStringLength, actualVolumeStrLength)
+  }
+}
+
+func TestValidPathStrDto_IsInitialized(t *testing.T) {
+
+  validpathDto := ValidPathStrDto{}
+
+  validpathDto.SetIsInitialized(true)
+
+  isInitialized := validpathDto.IsInitialized()
+
+  if isInitialized != true {
+    t.Error("Expected isInitialized=='true'\n" +
+      "Instead, isInitialized='false'\n")
+  }
+}
+
+func TestValidPathStrDto_IsPathExistenceTestValid(t *testing.T) {
+
+  testPath := "../createFilesTest/Level01/Level02"
+
+  dMgr := DirMgr{}
+
+  validPathDto,
+  err := dMgr.ParseValidPathStr(testPath)
+
+  if err != nil {
+    fmt.Printf("Error returned by dMgr.ParseValidPathStr(testPath)\n"+
+      "testPath='%v'\n"+
+      "Error='%v'\n",
+      testPath, err.Error())
+    return
+  }
+
+  err = validPathDto.IsDtoValid("" )
+
+  if err != nil {
+    t.Errorf("Expected error return from validPathDto.IsDtoValid(\"\")\n" +
+      "Instead, an error was returned.\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+}
+
+func TestValidPathStrDto_PathIsValid(t *testing.T) {
+
+  validpathDto := ValidPathStrDto{}
+
+  expectedPathIsValidValue := PathValidStatus.Invalid()
+
+  err := validpathDto.SetPathIsValid(expectedPathIsValidValue)
+
+  if err != nil {
+    t.Errorf("Error returned by SetPathIsValid(expectedPathIsValidValue)\n" +
+      "expectedPathIsValidValue='%v'\n" +
+      "Error='%v'\n", expectedPathIsValidValue.String(), err.Error())
+    return
+  }
+
+  actualPathIsValid := validpathDto.GetPathIsValid()
+
+  if expectedPathIsValidValue != actualPathIsValid {
+    t.Errorf("Expected that actualPathIsValid='%v'\n" +
+      "Instead, actualPathIsValid='%v'\n",
+      expectedPathIsValidValue, actualPathIsValid)
   }
 
 }

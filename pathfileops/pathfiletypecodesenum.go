@@ -44,9 +44,9 @@ var mPathFileTypeCodeToString = map[PathFileTypeCode]string{
 // of a path or path/file name.
 //
 //
-//                    Path Validity
-//   Method            Status Code
-//    Name               Constant       Description
+//                      Path File
+//   Method             Type Code
+//    Name              Constant        Description
 //  ______________________________________________________________________
 //  None()                  0           Path/file name type has NOT been
 //                                        tested and its status not known.
