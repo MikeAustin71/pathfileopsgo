@@ -1,6 +1,7 @@
 package pathfileops
 
 import (
+  "errors"
   "fmt"
   "os"
   "time"
@@ -253,17 +254,16 @@ func (fip FileInfoPlus) NewFromDirMgrFileInfo(
         "%v", err.Error())
   }
 
+  if info == nil {
+    return FileInfoPlus{},
+      errors.New(ePrefix + "ERROR: Input Parameter 'info' is nil !\n")
+  }
+
   newInfo := FileInfoPlus{}.NewFromFileInfo(info)
 
-  err = newInfo.SetDirectoryPath(dMgr.absolutePath)
+  newInfo.dirPath = dMgr.GetAbsolutePath()
 
-  if err != nil {
-    return FileInfoPlus{},
-      fmt.Errorf(ePrefix +
-        "Error returned by newInfo.SetDirectoryPath(dMgr.absolutePath)\n" +
-        "dMgr.absolutePath='%v'\n" +
-        "Error='%v'\n", dMgr.absolutePath, err.Error())
-  }
+  newInfo.isDirPathInitialized = true
 
   return newInfo, nil
 }
@@ -283,6 +283,11 @@ func (fip FileInfoPlus) NewFromDirMgrFileInfo(
 //  fip is now a newly populated FileInfoPlus instance.
 //
 func (fip FileInfoPlus) NewFromFileInfo(info os.FileInfo) FileInfoPlus {
+
+  if info == nil {
+    return FileInfoPlus{}
+  }
+
   newInfo := FileInfoPlus{}
 
   newInfo.SetName(info.Name())
@@ -306,7 +311,7 @@ func (fip FileInfoPlus) NewFromFileInfo(info os.FileInfo) FileInfoPlus {
 //
 // Example Usage:
 //
-//  fip := FileInfoPlus{}.NewFromPathFileInfo(dirPath, info)
+//  fip, err := FileInfoPlus{}.NewFromPathFileInfo(dirPath, info)
 //  fip is now a newly populated FileInfoPlus instance.
 //
 func (fip FileInfoPlus) NewFromPathFileInfo(
@@ -315,14 +320,28 @@ func (fip FileInfoPlus) NewFromPathFileInfo(
 
   ePrefix := "FileInfoPlus.NewFromPathFileInfo() "
 
+  errCode := 0
+
+  errCode,
+    _,
+    dirPath =  FileHelper{}.isStringEmptyOrBlank(dirPath)
+
+  if errCode < 0 {
+    return FileInfoPlus{},
+      fmt.Errorf(ePrefix +
+        "\nError: Input parameter 'dirPath' is an EMPTY String!\n")
+  }
+
+  if info == nil {
+    return FileInfoPlus{},
+      errors.New(ePrefix + "ERROR: Input Parameter 'info' is nil !\n")
+  }
+
   newInfo := FileInfoPlus{}.NewFromFileInfo(info)
 
-  err := newInfo.SetDirectoryPath(dirPath)
+  newInfo.dirPath = dirPath
 
-  if err != nil {
-    return FileInfoPlus{},
-    fmt.Errorf(ePrefix + "%v", err.Error())
-  }
+  newInfo.isDirPathInitialized = true
 
   return newInfo, nil
 }

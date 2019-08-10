@@ -7,6 +7,12 @@ organization and control of disk files and directories.
 The source code repository for this package is located at:
   https://github.com/MikeAustin71/pathfileopsgo.git
 
+ 
+------------------------------------------------------------------------------------------
+    
+[Click To View Source Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops)    
+
+
 #### Installing 'pathfileops' Library
 Use this command to down load and install the datetime library
 locally. 

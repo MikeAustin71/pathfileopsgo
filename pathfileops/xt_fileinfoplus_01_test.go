@@ -383,6 +383,50 @@ func TestFileInfoPlus_NewFromDirMgrFileInfo_01(t *testing.T) {
 
 }
 
+func TestFileInfoPlus_NewFromDirMgrFileInfo_02(t *testing.T) {
+  fh := FileHelper{}
+
+  baseFileName := "newerFileForTest_01.txt"
+  baseDirPath := "../filesfortest/newfilesfortest"
+
+  absBaseDirPath, err := fh.MakeAbsolutePath(baseDirPath)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.MakeAbsolutePath(baseDirPath). baseDirPath='%v' Error='%v'", baseDirPath, err.Error())
+  }
+
+  dMgr, err := DirMgr{}.New(absBaseDirPath)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(absBaseDirPath)\n" +
+      "absBaseDirPath='%v'\n", absBaseDirPath)
+    return
+  }
+
+  absPathFileName, _ := fh.AddPathSeparatorToEndOfPathStr(absBaseDirPath)
+  absPathFileName = absPathFileName + baseFileName
+
+  fInfo, err := fh.GetFileInfo(absPathFileName)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileInfo(absPathFileName).\n" +
+      "absPathFileName='%v'\nError='%v'\n", absPathFileName, err.Error())
+    return
+  }
+
+  dMgr.isInitialized = false
+
+  _, err = FileInfoPlus{}.NewFromDirMgrFileInfo(dMgr, fInfo)
+
+  if err == nil {
+    t.Error("ERROR: Expected an error return from " +
+      "FileInfoPlus{}.NewFromDirMgrFileInfo(dMgr, fInfo)\n" +
+      "because 'dMgr' is INVALID!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+    return
+  }
+}
+
 func TestFileInfoPlus_SetIsFInfoInitialized_01(t *testing.T) {
 
   fInfoPlus := FileInfoPlus{}
