@@ -77,59 +77,6 @@ func TestFileInfoPlus_CopyOut_01(t *testing.T) {
 
 }
 
-func TestFileInfoPlus_NewFromFileInfo_01(t *testing.T) {
-  fh := FileHelper{}
-
-  baseFileName := "newerFileForTest_01.txt"
-  baseDirPath := "../filesfortest/newfilesfortest"
-
-  absBaseDirPath, err := fh.MakeAbsolutePath(baseDirPath)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.MakeAbsolutePath(baseDirPath). baseDirPath='%v' Error='%v'", baseDirPath, err.Error())
-  }
-
-  absPathFileName, _ := fh.AddPathSeparatorToEndOfPathStr(absBaseDirPath)
-  absPathFileName = absPathFileName + baseFileName
-
-  fInfo, err := fh.GetFileInfo(absPathFileName)
-
-  if err != nil {
-    t.Errorf("Error returned from fh.GetFileInfo(absPathFileName). absPathFileName='%v' Error='%v'", absPathFileName, err.Error())
-  }
-
-  fip := FileInfoPlus{}.NewFromFileInfo(fInfo)
-
-  if fip.Name() != baseFileName {
-    t.Errorf("Expected fip.Name()='%v'. Instead, fip.Name()='%v'.", baseFileName, fip.Name())
-  }
-
-  if fip.IsDir() == true {
-    t.Error("Expected  fip.IsDir()=false. Instead, fip.IsDir()=true")
-  }
-
-  if fip.isFInfoInitialized == false {
-    t.Error("Expected fip.isFInfoInitialized='true'.  Instead, fip.isFInfoInitialized='false'")
-  }
-
-  if fip.CreateTimeStamp.IsZero() {
-    t.Error("Expected fip.CreateTimeStamp to be a non-zero value. Instead fip.CreateTimeStamp=time.Zero.")
-  }
-
-  if fip.ModTime().IsZero() {
-    t.Error("Expected fip.ModTime() to be non-zero.  Instead, fip.ModTime() is time.Zero.")
-  }
-
-  var testMode os.FileMode
-
-  testMode = 0666 // rwxrwxrwx
-
-  if fip.Mode() != testMode {
-    t.Errorf("Expected fip.Mode()=777. Instead, fip.Mode()='%v'", fip.Mode())
-  }
-
-}
-
 func TestFileInfoPlus_Equal_01(t *testing.T) {
   fh := FileHelper{}
 
@@ -214,36 +161,6 @@ func TestFileInfoPlus_Equal_02(t *testing.T) {
 
   if fip.Equal(&fip2) == true {
     t.Error("Expected fip to NOT EQUAL fip2. Error- fip==fip2")
-  }
-}
-
-func TestFileInfoPlus_SysAsString_01(t *testing.T) {
-
-  testFile := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
-
-  fMgr, err := FileMgr{}.New(testFile)
-
-  if err != nil {
-    t.Errorf("Error returned from FileMgr{}.New(testFile)\n" +
-      "testFile='%v'\n" +
-      "Error='%v'\n", testFile, err.Error())
-    return
-  }
-
-  fInfoPlus, err := fMgr.GetFileInfoPlus()
-
-  if err != nil {
-    t.Errorf("Error returned from fMgr.GetFileInfoPlus()\n" +
-      "Error='%v'\n", err.Error())
-    return
-  }
-
-  str := fInfoPlus.SysAsString()
-
-  if str == "" {
-    t.Error("Error: Expected that fInfoPlus.SysAsString() would return\n" +
-      "a valid string containing System information.\n" +
-      "However, AN EMPTY STRING WAS RETURNED!!!\n")
   }
 }
 
@@ -337,6 +254,135 @@ func TestFileInfoPlus_IsFileInfoInitialized_02(t *testing.T) {
 
 }
 
+func TestFileInfoPlus_NewFromFileInfo_01(t *testing.T) {
+  fh := FileHelper{}
+
+  baseFileName := "newerFileForTest_01.txt"
+  baseDirPath := "../filesfortest/newfilesfortest"
+
+  absBaseDirPath, err := fh.MakeAbsolutePath(baseDirPath)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.MakeAbsolutePath(baseDirPath). baseDirPath='%v' Error='%v'", baseDirPath, err.Error())
+  }
+
+  absPathFileName, _ := fh.AddPathSeparatorToEndOfPathStr(absBaseDirPath)
+  absPathFileName = absPathFileName + baseFileName
+
+  fInfo, err := fh.GetFileInfo(absPathFileName)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileInfo(absPathFileName). absPathFileName='%v' Error='%v'", absPathFileName, err.Error())
+  }
+
+  fip := FileInfoPlus{}.NewFromFileInfo(fInfo)
+
+  if fip.Name() != baseFileName {
+    t.Errorf("Expected fip.Name()='%v'. Instead, fip.Name()='%v'.", baseFileName, fip.Name())
+  }
+
+  if fip.IsDir() == true {
+    t.Error("Expected  fip.IsDir()=false. Instead, fip.IsDir()=true")
+  }
+
+  if fip.isFInfoInitialized == false {
+    t.Error("Expected fip.isFInfoInitialized='true'.  Instead, fip.isFInfoInitialized='false'")
+  }
+
+  if fip.CreateTimeStamp.IsZero() {
+    t.Error("Expected fip.CreateTimeStamp to be a non-zero value. Instead fip.CreateTimeStamp=time.Zero.")
+  }
+
+  if fip.ModTime().IsZero() {
+    t.Error("Expected fip.ModTime() to be non-zero.  Instead, fip.ModTime() is time.Zero.")
+  }
+
+  var testMode os.FileMode
+
+  testMode = 0666 // rwxrwxrwx
+
+  if fip.Mode() != testMode {
+    t.Errorf("Expected fip.Mode()=777. Instead, fip.Mode()='%v'", fip.Mode())
+  }
+
+}
+
+func TestFileInfoPlus_NewFromDirMgrFileInfo_01(t *testing.T) {
+  fh := FileHelper{}
+
+  baseFileName := "newerFileForTest_01.txt"
+  baseDirPath := "../filesfortest/newfilesfortest"
+
+  absBaseDirPath, err := fh.MakeAbsolutePath(baseDirPath)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.MakeAbsolutePath(baseDirPath). baseDirPath='%v' Error='%v'", baseDirPath, err.Error())
+  }
+
+  dMgr, err := DirMgr{}.New(absBaseDirPath)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(absBaseDirPath)\n" +
+      "absBaseDirPath='%v'\n", absBaseDirPath)
+    return
+  }
+
+  absPathFileName, _ := fh.AddPathSeparatorToEndOfPathStr(absBaseDirPath)
+  absPathFileName = absPathFileName + baseFileName
+
+  fInfo, err := fh.GetFileInfo(absPathFileName)
+
+  if err != nil {
+    t.Errorf("Error returned from fh.GetFileInfo(absPathFileName).\n" +
+      "absPathFileName='%v'\nError='%v'\n", absPathFileName, err.Error())
+    return
+  }
+
+  fip, err := FileInfoPlus{}.NewFromDirMgrFileInfo(dMgr, fInfo)
+
+  if err != nil {
+    t.Errorf("Error returned by FileInfoPlus{}.NewFromDirMgrFileInfo(dMgr, fInfo)\n" +
+      "dMgr='%v'\n" +
+      "fInfo.Name()='%v'\n" +
+      "Error='%v'\n", dMgr.GetAbsolutePath(), fInfo.Name(), err.Error())
+    return
+  }
+
+  if fip.Name() != baseFileName {
+    t.Errorf("Expected fip.Name()='%v'. Instead, fip.Name()='%v'.", baseFileName, fip.Name())
+  }
+
+  if fip.IsDir() == true {
+    t.Error("Expected  fip.IsDir()=false. Instead, fip.IsDir()=true")
+  }
+
+  if fip.isDirPathInitialized == false {
+    t.Error("Expected fip.isDirPathInitialized == 'true'\n" +
+      "Instead fip.isDirPathInitialized == 'false'\n")
+  }
+
+  if fip.isFInfoInitialized == false {
+    t.Error("Expected fip.isFInfoInitialized='true'.  Instead, fip.isFInfoInitialized='false'")
+  }
+
+  if fip.CreateTimeStamp.IsZero() {
+    t.Error("Expected fip.CreateTimeStamp to be a non-zero value. Instead fip.CreateTimeStamp=time.Zero.")
+  }
+
+  if fip.ModTime().IsZero() {
+    t.Error("Expected fip.ModTime() to be non-zero.  Instead, fip.ModTime() is time.Zero.")
+  }
+
+  var testMode os.FileMode
+
+  testMode = 0666 // rwxrwxrwx
+
+  if fip.Mode() != testMode {
+    t.Errorf("Expected fip.Mode()=777. Instead, fip.Mode()='%v'", fip.Mode())
+  }
+
+}
+
 func TestFileInfoPlus_SetIsFInfoInitialized_01(t *testing.T) {
 
   fInfoPlus := FileInfoPlus{}
@@ -367,4 +413,34 @@ func TestFileInfoPlus_SetIsFInfoInitialized_02(t *testing.T) {
       "However, fInfoPlus.IsFileInfoInitialized() returned 'false'!!!\n")
   }
 
+}
+
+func TestFileInfoPlus_SysAsString_01(t *testing.T) {
+
+  testFile := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+
+  fMgr, err := FileMgr{}.New(testFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(testFile)\n" +
+      "testFile='%v'\n" +
+      "Error='%v'\n", testFile, err.Error())
+    return
+  }
+
+  fInfoPlus, err := fMgr.GetFileInfoPlus()
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.GetFileInfoPlus()\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  str := fInfoPlus.SysAsString()
+
+  if str == "" {
+    t.Error("Error: Expected that fInfoPlus.SysAsString() would return\n" +
+      "a valid string containing System information.\n" +
+      "However, AN EMPTY STRING WAS RETURNED!!!\n")
+  }
 }
