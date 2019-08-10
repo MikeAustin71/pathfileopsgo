@@ -327,7 +327,7 @@ func (mtst mainTests) mainTest98ParseValidPathStr(pathStr string) {
   fmt.Println("               Volume Index: ", validPathDto.GetPathVolumeIndex())
   fmt.Println("       Volume String Length: ", validPathDto.GetPathVolumeStrLength())
   fmt.Println(" Valid Path Dto Initialized: ", validPathDto.IsInitialized())
-  fmt.Println(" Valid Path Dto PathIsValid: ", validPathDto.PathIsValid())
+  fmt.Println(" Valid Path Dto PathIsValid: ", validPathDto.GetPathIsValid())
 
   if validPathDto.GetPathStrLen() != len(validPathDto.GetPath()) {
     fmt.Printf("Path String Length Error!\n"+

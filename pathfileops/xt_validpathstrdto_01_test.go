@@ -26,27 +26,6 @@ func TestValidPathStrDto_AbsolutePathDoesExist_01(t *testing.T) {
   }
 }
 
-func TestValidPathStrDto_PathDoesExist_01(t *testing.T) {
-
-  validpathDto := ValidPathStrDto{}
-
-  err := validpathDto.SetPathDoesExist(PathExistsStatus.DoesNotExist())
-
-  if err != nil {
-    t.Errorf("Error returned by validpathDto.SetPathDoesExist" +
-      "(PathExistsStatus.DoesNotExist())\n" +
-      "Error='%v'\n", err.Error())
-  }
-
-  pathDoesExist := validpathDto.PathDoesExist()
-
-  if pathDoesExist != PathExistsStatus.DoesNotExist() {
-
-    t.Errorf("Expected pathDoesExist==PathExistsStatus.DoesNotExist().\n" +
-      "Instead, pathDoesExist==%v\n", pathDoesExist.String())
-  }
-}
-
 func TestValidPathStrDto_GetPath_01(t *testing.T) {
 
   validpathDto := ValidPathStrDto{}
@@ -226,6 +205,33 @@ func TestValidPathStrDto_GetAbsPathFileInfo(t *testing.T) {
 
 }
 
+func TestValidPathStrDto_GetError(t *testing.T) {
+
+  validpathDto := ValidPathStrDto{}
+
+  expectedErr := fmt.Errorf("Error Test!")
+
+  validpathDto.SetError(expectedErr)
+
+  actualErr := validpathDto.GetError()
+
+  if actualErr == nil {
+    t.Errorf("Expected an error return from validpathDto.GetError().\n" +
+      "Instead, the return value was 'nil'.\n")
+    return
+  }
+
+  actualErrStr := actualErr.Error()
+  expectedErrStr := expectedErr.Error()
+
+  if actualErrStr != expectedErrStr {
+    t.Errorf("Expected actualErrStr='%v'\n" +
+      "Instead, actualErrStr='%v'\n",
+      actualErrStr, expectedErrStr)
+    return
+  }
+}
+
 func TestValidPathStrDto_GetOriginalPathStr_01(t *testing.T) {
 
   expectedOriginalPath := "../filesfortest/checkfiles/testRead918256.txt"
@@ -240,6 +246,24 @@ func TestValidPathStrDto_GetOriginalPathStr_01(t *testing.T) {
     t.Errorf("Expected validpathDto.GetOriginalPathStr()=='%v'\n" +
       "Instead, validpathDto.GetOriginalPathStr()=='%v'\n",
       expectedOriginalPath, actualOriginalPath)
+  }
+
+}
+
+func TestValidPathStrDto_GetPathType(t *testing.T) {
+
+  validpathDto := ValidPathStrDto{}
+
+  expectedPathType := PathFileType.Path()
+
+  validpathDto.SetPathType(expectedPathType)
+
+  actualPathType := validpathDto.GetPathType()
+
+  if expectedPathType != actualPathType {
+    t.Errorf("Error: Expected actualPathType='%v'\n" +
+      "Instead, actualPathType='%v'\n",
+      expectedPathType, actualPathType)
   }
 
 }
@@ -349,7 +373,7 @@ func TestValidPathStrDto_IsInitialized(t *testing.T) {
   }
 }
 
-func TestValidPathStrDto_IsPathExistenceTestValid(t *testing.T) {
+func TestValidPathStrDto_IsDtoValid_01(t *testing.T) {
 
   testPath := "../createFilesTest/Level01/Level02"
 
@@ -369,11 +393,206 @@ func TestValidPathStrDto_IsPathExistenceTestValid(t *testing.T) {
   err = validPathDto.IsDtoValid("" )
 
   if err != nil {
-    t.Errorf("Expected error return from validPathDto.IsDtoValid(\"\")\n" +
+    t.Errorf("Expected no error return from validPathDto.IsDtoValid(\"\")\n" +
       "Instead, an error was returned.\n" +
       "Error='%v'\n", err.Error())
   }
 
+}
+
+func TestValidPathStrDto_IsDtoValid_02(t *testing.T) {
+
+  testPath := "../createFilesTest/Level01/Level02"
+
+  dMgr := DirMgr{}
+
+  validPathDto,
+  err := dMgr.ParseValidPathStr(testPath)
+
+  if err != nil {
+    fmt.Printf("Error returned by dMgr.ParseValidPathStr(testPath)\n"+
+      "testPath='%v'\n"+
+      "Error='%v'\n",
+      testPath, err.Error())
+    return
+  }
+
+  validPathDto.isInitialized = false
+
+  err = validPathDto.IsDtoValid("" )
+
+  if err == nil {
+    t.Error("Expected an error return from validPathDto.IsDtoValid(\"\")\n" +
+      "because inInitialized='false'.\n" +
+      "However, NO ERROR WAS RETURNED!!!'\n")
+  }
+
+}
+
+func TestValidPathStrDto_IsDtoValid_03(t *testing.T) {
+
+  testPath := "../createFilesTest/Level01/Level02"
+
+  dMgr := DirMgr{}
+
+  validPathDto,
+  err := dMgr.ParseValidPathStr(testPath)
+
+  if err != nil {
+    fmt.Printf("Error returned by dMgr.ParseValidPathStr(testPath)\n"+
+      "testPath='%v'\n"+
+      "Error='%v'\n",
+      testPath, err.Error())
+    return
+  }
+
+  validPathDto.pathIsValid = PathValidStatus.Unknown()
+
+  err = validPathDto.IsDtoValid("" )
+
+  if err == nil {
+    t.Error("Expected an error return from validPathDto.IsDtoValid(\"\")\n" +
+      "because validPathDto.pathIsValid = PathValidStatus.Unknown().\n" +
+      "However, NO ERROR WAS RETURNED!!!'\n")
+  }
+
+}
+
+func TestValidPathStrDto_IsDtoValid_04(t *testing.T) {
+
+  testPath := "../createFilesTest/Level01/Level02"
+
+  dMgr := DirMgr{}
+
+  validPathDto,
+  err := dMgr.ParseValidPathStr(testPath)
+
+  if err != nil {
+    fmt.Printf("Error returned by dMgr.ParseValidPathStr(testPath)\n"+
+      "testPath='%v'\n"+
+      "Error='%v'\n",
+      testPath, err.Error())
+    return
+  }
+
+  validPathDto.pathStr = ""
+
+  err = validPathDto.IsDtoValid("" )
+
+  if err == nil {
+    t.Error("Expected an error return from validPathDto.IsDtoValid(\"\")\n" +
+      "because validPathDto.pathStr = \"\".\n" +
+      "However, NO ERROR WAS RETURNED!!!'\n")
+  }
+
+}
+
+func TestValidPathStrDto_IsDtoValid_05(t *testing.T) {
+
+  testPath := "../createFilesTest/Level01/Level02"
+
+  dMgr := DirMgr{}
+
+  validPathDto,
+  err := dMgr.ParseValidPathStr(testPath)
+
+  if err != nil {
+    fmt.Printf("Error returned by dMgr.ParseValidPathStr(testPath)\n"+
+      "testPath='%v'\n"+
+      "Error='%v'\n",
+      testPath, err.Error())
+    return
+  }
+
+  validPathDto.absPathStr = ""
+
+  err = validPathDto.IsDtoValid("" )
+
+  if err == nil {
+    t.Error("Expected an error return from validPathDto.IsDtoValid(\"\")\n" +
+      "because validPathDto.absPathStr = \"\".\n" +
+      "However, NO ERROR WAS RETURNED!!!'\n")
+  }
+
+}
+
+func TestValidPathStrDto_IsDtoValid_06(t *testing.T) {
+
+  testPath := "../createFilesTest/Level01/Level02"
+
+  dMgr := DirMgr{}
+
+  validPathDto,
+  err := dMgr.ParseValidPathStr(testPath)
+
+  if err != nil {
+    fmt.Printf("Error returned by dMgr.ParseValidPathStr(testPath)\n"+
+      "testPath='%v'\n"+
+      "Error='%v'\n",
+      testPath, err.Error())
+    return
+  }
+
+  validPathDto.pathDoesExist  = PathExistsStatusCode(-99)
+
+  err = validPathDto.IsDtoValid("" )
+
+  if err == nil {
+    t.Error("Expected an error return from validPathDto.IsDtoValid(\"\")\n" +
+      "because validPathDto.pathDoesExist is invalid.\n" +
+      "However, NO ERROR WAS RETURNED!!!'\n")
+  }
+
+}
+
+func TestValidPathStrDto_IsDtoValid_07(t *testing.T) {
+
+  testPath := "../createFilesTest/Level01/Level02"
+
+  dMgr := DirMgr{}
+
+  validPathDto,
+  err := dMgr.ParseValidPathStr(testPath)
+
+  if err != nil {
+    fmt.Printf("Error returned by dMgr.ParseValidPathStr(testPath)\n"+
+      "testPath='%v'\n"+
+      "Error='%v'\n",
+      testPath, err.Error())
+    return
+  }
+
+  validPathDto.absPathDoesExist  = PathExistsStatusCode(-99)
+
+  err = validPathDto.IsDtoValid("" )
+
+  if err == nil {
+    t.Error("Expected an error return from validPathDto.IsDtoValid(\"\")\n" +
+      "because validPathDto.absPathDoesExist is invalid.\n" +
+      "However, NO ERROR WAS RETURNED!!!'\n")
+  }
+
+}
+
+func TestValidPathStrDto_PathDoesExist_01(t *testing.T) {
+
+  validpathDto := ValidPathStrDto{}
+
+  err := validpathDto.SetPathDoesExist(PathExistsStatus.DoesNotExist())
+
+  if err != nil {
+    t.Errorf("Error returned by validpathDto.SetPathDoesExist" +
+      "(PathExistsStatus.DoesNotExist())\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  pathDoesExist := validpathDto.PathDoesExist()
+
+  if pathDoesExist != PathExistsStatus.DoesNotExist() {
+
+    t.Errorf("Expected pathDoesExist==PathExistsStatus.DoesNotExist().\n" +
+      "Instead, pathDoesExist==%v\n", pathDoesExist.String())
+  }
 }
 
 func TestValidPathStrDto_PathIsValid(t *testing.T) {
@@ -398,5 +617,22 @@ func TestValidPathStrDto_PathIsValid(t *testing.T) {
       "Instead, actualPathIsValid='%v'\n",
       expectedPathIsValidValue, actualPathIsValid)
   }
+}
+
+func TestValidPathStrDto_SetAbsPathDoesExistStatus(t *testing.T) {
+
+  validpathDto := ValidPathStrDto{}
+
+  invalidPathExistsStatus := PathExistsStatusCode(-99)
+
+  err := validpathDto.SetAbsPathDoesExistStatus(invalidPathExistsStatus)
+
+  if err == nil {
+    t.Error("Expected an error return validpathDto." +
+      "SetAbsPathDoesExistStatus(invalidPathExistsStatus)\n" +
+      "because the PathExistStatusCode is invalid.\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+
 
 }

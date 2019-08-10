@@ -120,6 +120,19 @@ func (vpDto *ValidPathStrDto) GetPathFileInfo() FileInfoPlus {
 // GetPathIsValid - "getter" method for internal field,
 // ValidPathStrDto.pathIsValid .
 //
+//                                        Int
+//     Enumeration Value                 Value         Definition
+//  ----------------------------------------------------------------------------
+//  PathValidityStatusCode(0).Unknown()   -1  Path/file name validity has NOT been
+//                                            tested and its status as 'Valid' or
+//                                            'Invalid' is Unknown.
+//
+//  PathValidityStatusCode(0).Invalid()    0  Tests have verified that the Path/file
+//                                            name is 'Invalid'.
+//
+//  PathValidityStatusCode(0).Valid()     +1  Tests have verified that the Path/file
+//                                            name is 'Valid'.
+//
 func (vpDto *ValidPathStrDto) GetPathIsValid() PathValidityStatusCode {
   return vpDto.pathIsValid
 }
@@ -254,27 +267,6 @@ func (vpDto *ValidPathStrDto) IsInitialized() bool {
 //
 func (vpDto *ValidPathStrDto) PathDoesExist() PathExistsStatusCode {
   return vpDto.pathDoesExist
-}
-
-// PathIsValid - Returns an PathValidityStatusCode enumeration indicating
-// whether the path encapsulated by this ValidPathStrDto instance is
-// valid.
-//
-//                                        Int
-//     Enumeration Value                 Value         Definition
-//  ----------------------------------------------------------------------------
-//  PathValidityStatusCode(0).Unknown()   -1  Path/file name validity has NOT been
-//                                            tested and its status as 'Valid' or
-//                                            'Invalid' is Unknown.
-//
-//  PathValidityStatusCode(0).Invalid()    0  Tests have verified that the Path/file
-//                                            name is 'Invalid'.
-//
-//  PathValidityStatusCode(0).Valid()     +1  Tests have verified that the Path/file
-//                                            name is 'Valid'.
-//
-func (vpDto *ValidPathStrDto) PathIsValid() PathValidityStatusCode {
-  return vpDto.pathIsValid
 }
 
 // SetIsInitialized - "setter" method for internal data field
