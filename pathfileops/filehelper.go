@@ -2261,7 +2261,7 @@ func (fh *FileHelper) FilterFileName(
 
   // If using the AND File Select Criterion Mode, then for criteria that
   // are set and active, they must all be 'matched'.
-  if fileSelectionCriteria.SelectCriterionMode == fileSelectMode.ANDSelect() {
+  if fileSelectionCriteria.SelectCriterionMode == FileSelectMode.ANDSelect() {
 
     if isPatternSet && !isPatternMatch {
       isMatchedFile = false

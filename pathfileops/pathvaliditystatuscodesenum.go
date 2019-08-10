@@ -58,6 +58,9 @@ type PathValidityStatusCode int
 // 'Unknown'. This means that no validity tests have yet been performed
 // on the subject file or directory path string.
 //
+// This method is part of the standard enumeration.
+//
+
 func (pathValid PathValidityStatusCode) Unknown() PathValidityStatusCode {
   return PathValidityStatusCode(-1)
 }
@@ -67,6 +70,8 @@ func (pathValid PathValidityStatusCode) Unknown() PathValidityStatusCode {
 // on the subject file/directory path string and it was found to be
 // 'Invalid'.
 //
+// This method is part of the standard enumeration.
+//
 func (pathValid PathValidityStatusCode) Invalid() PathValidityStatusCode {
   return PathValidityStatusCode(0)
 }
@@ -75,31 +80,10 @@ func (pathValid PathValidityStatusCode) Invalid() PathValidityStatusCode {
 // on the subject file/directory path string and it was found to be
 // a 'Valid' path/file name.
 //
+// This method is part of the standard enumeration.
+//
 func (pathValid PathValidityStatusCode) Valid() PathValidityStatusCode {
   return PathValidityStatusCode(1)
-}
-
-// StatusIsValid - If the value of the current PathValidityStatusCode instance
-// is 'invalid', this method will return an error.
-//
-// If the PathValidityStatusCode is instance is 'valid', this method will
-// return a value of 'nil'.
-//
-// This is a standard utility method and is not part of the valid enumerations
-// for this type.
-//
-func (pathValid PathValidityStatusCode) StatusIsValid() error {
-
-  _, ok := mPathValidityStatusCodeToString[pathValid]
-
-  if !ok {
-    ePrefix := "PathValidityStatusCode.StatusIsValid()\n"
-    return fmt.Errorf(ePrefix+
-      "Error: The current PathValidityStatusCode is INVALID! "+
-      "PathValidityStatusCode Value='%v'", int(pathValid))
-  }
-
-  return nil
 }
 
 // ParseString - Receives a string and attempts to match it with
@@ -209,6 +193,29 @@ func (pathValid PathValidityStatusCode) ParseString(
   }
 
   return result, nil
+}
+
+// StatusIsValid - If the value of the current PathValidityStatusCode instance
+// is 'invalid', this method will return an error.
+//
+// If the PathValidityStatusCode is instance is 'valid', this method will
+// return a value of 'nil'.
+//
+// This is a standard utility method and is not part of the valid enumerations
+// for this type.
+//
+func (pathValid PathValidityStatusCode) StatusIsValid() error {
+
+  _, ok := mPathValidityStatusCodeToString[pathValid]
+
+  if !ok {
+    ePrefix := "PathValidityStatusCode.StatusIsValid()\n"
+    return fmt.Errorf(ePrefix+
+      "Error: The current PathValidityStatusCode is INVALID! "+
+      "PathValidityStatusCode Value='%v'", int(pathValid))
+  }
+
+  return nil
 }
 
 
