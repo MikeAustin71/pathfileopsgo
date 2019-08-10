@@ -3,7 +3,6 @@ package pathfileops
 import (
   "fmt"
   "os"
-  "strings"
   "time"
 )
 
@@ -135,7 +134,6 @@ func (fip *FileInfoPlus) CopyOut() FileInfoPlus {
   newInfo.SetSysDataSrc(fip.Sys())
   _ = newInfo.SetDirectoryPath(fip.DirPath())
   newInfo.isFInfoInitialized = fip.isFInfoInitialized
-  newInfo.isDirPathInitialized = fip.isDirPathInitialized
   newInfo.CreateTimeStamp = fip.CreateTimeStamp
   newInfo.origFileInfo = fip.origFileInfo
 
@@ -227,10 +225,55 @@ func (fip *FileInfoPlus) IsDirectoryPathInitialized() bool {
   return fip.isDirPathInitialized
 }
 
+
+// NewFromDirMgrFileInfo - Creates and returns a new FileInfoPlus object
+// populated with a Directory Manager (DirMgr) and File Info data (os.FileInfo)
+// received from the input parameters 'dMgr' and 'info'.
+//
+// This method is NOT part of the FileInfo interface.
+//
+// ------------------------------------------------------------------------
+//
+// Example Usage:
+//
+//  fip, err := FileInfoPlus{}.NewFromDirMgrFileInfo(dMgr, info)
+//  fip is now configured as a newly populated FileInfoPlus instance.
+//
+func (fip FileInfoPlus) NewFromDirMgrFileInfo(
+  dMgr DirMgr,
+  info os.FileInfo) (FileInfoPlus, error) {
+
+  ePrefix := "FileInfoPlus.NewFromDirMgrFileInfo() "
+
+  err := dMgr.IsDirMgrValid("")
+
+  if err != nil {
+    return FileInfoPlus{},
+      fmt.Errorf(ePrefix + "ERROR: Input Parameter 'dMgr' is INVALID!\n" +
+        "%v", err.Error())
+  }
+
+  newInfo := FileInfoPlus{}.NewFromFileInfo(info)
+
+  err = newInfo.SetDirectoryPath(dMgr.absolutePath)
+
+  if err != nil {
+    return FileInfoPlus{},
+      fmt.Errorf(ePrefix +
+        "Error returned by newInfo.SetDirectoryPath(dMgr.absolutePath)\n" +
+        "dMgr.absolutePath='%v'\n" +
+        "Error='%v'\n", dMgr.absolutePath, err.Error())
+  }
+
+  return newInfo, nil
+}
+
 // NewFromFileInfo - Creates and returns a new FileInfoPlus object
 // populated with FileInfo data received from the input parameter.
 // Notice that this version of the 'NewFromPathFileNameExtStr' method does NOT set the
-// Directory path. This method is NOT part of the FileInfo interface.
+// Directory path.
+//
+// This method is NOT part of the FileInfo interface.
 //
 // ------------------------------------------------------------------------
 //
@@ -257,6 +300,8 @@ func (fip FileInfoPlus) NewFromFileInfo(info os.FileInfo) FileInfoPlus {
 // populated with directory path and FileInfo data received from
 // the input parameters.
 //
+// This method is NOT part of the FileInfo interface.
+//
 // ------------------------------------------------------------------------
 //
 // Example Usage:
@@ -266,26 +311,44 @@ func (fip FileInfoPlus) NewFromFileInfo(info os.FileInfo) FileInfoPlus {
 //
 func (fip FileInfoPlus) NewFromPathFileInfo(
   dirPath string,
-  info os.FileInfo) FileInfoPlus {
+  info os.FileInfo) (FileInfoPlus, error) {
+
+  ePrefix := "FileInfoPlus.NewFromPathFileInfo() "
 
   newInfo := FileInfoPlus{}.NewFromFileInfo(info)
-  _ = newInfo.SetDirectoryPath(dirPath)
-  return newInfo
+
+  err := newInfo.SetDirectoryPath(dirPath)
+
+  if err != nil {
+    return FileInfoPlus{},
+    fmt.Errorf(ePrefix + "%v", err.Error())
+  }
+
+  return newInfo, nil
 }
 
 // SetDirectoryPath - Sets the dirPath field. This
 // field is not part of the standard FileInfo data structure.
 func (fip *FileInfoPlus) SetDirectoryPath(dirPath string) error {
-  fh := FileHelper{}
-  dirPath = strings.TrimLeft(strings.TrimRight(dirPath, " "), " ")
 
-  if len(dirPath) == 0 {
-    return fmt.Errorf("FileInfoPlus.SetDirectoryPath() Error: 'dirPath' is a Zero Length String!")
+  fh := FileHelper{}
+  errCode := 0
+
+  errCode,
+  _,
+  dirPath =  fh.isStringEmptyOrBlank(dirPath)
+
+  if errCode < 0 {
+    return fmt.Errorf("FileInfoPlus.SetDirectoryPath()\n" +
+      "Error: Input parameter 'dirPath' is an EMPTY String!\n")
   }
 
   dirPath = fh.RemovePathSeparatorFromEndOfPathString(dirPath)
+
   fip.dirPath = dirPath
+
   fip.isDirPathInitialized = true
+
   return nil
 }
 

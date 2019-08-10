@@ -1970,7 +1970,7 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
     dMgr.volumeName = vn
   }
 
-  var absFInfo, pathFInfo os.FileInfo
+  var absFInfo, pathFInfo FileInfoPlus
 
   dMgr.doesAbsolutePathExist,
     absFInfo,
@@ -2099,13 +2099,13 @@ func (dMgrHlpr *dirMgrHelper) doesDirectoryExist(
   // both dMgr.path and dMgr.doesAbsolutePathExist
   // exist. And, there are no errors
 
+  dMgr.actualDirFileInfo = absFInfo.CopyOut()
   dMgr.doesAbsolutePathExist = true
   dMgr.doesPathExist = true
-  dMgr.actualDirFileInfo =
-    FileInfoPlus{}.NewFromFileInfo(absFInfo)
   fInfo = dMgr.actualDirFileInfo.CopyOut()
   dirPathDoesExist = true
   err = nil
+
   return dirPathDoesExist, fInfo, err
 }
 
@@ -4442,7 +4442,7 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDeleteDirectoryAll(
 // of directory path.
 //
 func (dMgrHlpr *dirMgrHelper) lowLevelDoesDirectoryExist(
-  dirPath string,
+  dirPath,
   ePrefix,
   dirPathLabel string) (dirPathDoesExist bool,
                         fInfo FileInfoPlus,
@@ -4464,7 +4464,13 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDoesDirectoryExist(
     dirPathLabel = "DirMgr"
   }
 
-  if len(dirPath) == 0 {
+  errCode := 0
+
+  errCode,
+  _,
+  dirPath = FileHelper{}.isStringEmptyOrBlank(dirPath)
+
+  if errCode < 0 {
     err = fmt.Errorf(ePrefix +
       "\nError: Input paramter %v is an empty string!\n", dirPathLabel)
     return dirPathDoesExist, fInfo, err
@@ -4504,7 +4510,15 @@ func (dMgrHlpr *dirMgrHelper) lowLevelDoesDirectoryExist(
       // The path really does exist!
       dirPathDoesExist = true
       err = nil
-      fInfo = FileInfoPlus{}.NewFromFileInfo(info)
+      fInfo, err2 = FileInfoPlus{}.NewFromPathFileInfo(dirPath, info)
+
+      if err2 != nil {
+        err = fmt.Errorf(ePrefix +
+          "\nError returned by FileInfoPlus{}.NewFromPathFileInfo(dirPath, info)\n" +
+          "Error='%v'\n", err2.Error())
+        fInfo = FileInfoPlus{}
+      }
+
       return dirPathDoesExist, fInfo, err
     }
 

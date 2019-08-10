@@ -1546,8 +1546,14 @@ func TestDirMgr_NewFromFileInfo_05(t *testing.T) {
     return
   }
 
-  targetFileInfoPlus :=
+  targetFileInfoPlus, err :=
     FileInfoPlus{}.NewFromPathFileInfo(targetDir, targetFileInfo)
+
+  if err != nil {
+    t.Errorf("Error returned by FileInfoPlus{}.NewFromPathFileInfo(targetDir, targetFileInfo)\n" +
+      "targetDir='%v'\n" +
+      "Error='%v'\n", targetDir, err.Error())
+  }
 
   targetDMgr, err := DirMgr{}.NewFromFileInfo(baseDir, targetFileInfoPlus)
 

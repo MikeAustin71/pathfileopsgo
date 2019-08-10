@@ -26,13 +26,45 @@ import (
 
 func main() {
 
-  mainTests{}.mainTest104FileOpsColEqual()
+  mainTests{}.mainTest105FMgrFInfo()
 
 }
 
 type mainTests struct {
   Input  string
   Output string
+}
+
+func (mtst mainTests) mainTest105FMgrFInfo() {
+
+  testFile :=
+    "D:\\gowork\\src\\MikeAustin71\\pathfileopsgo\\filesfortest\\levelfilesfortest\\level_0_3_test.txt"
+
+  fMgr, err := pf.FileMgr{}.New(testFile)
+
+  if err != nil {
+    fmt.Printf("Error returned from FileMgr{}.New(testFile)\n" +
+      "testFile='%v'\n" +
+      "Error='%v'\n", testFile, err.Error())
+    return
+  }
+
+  fInfoPlus, err := fMgr.GetFileInfoPlus()
+
+  if err != nil {
+    fmt.Printf("Error returned from fMgr.GetFileInfoPlus()\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  result := fInfoPlus.IsDirectoryPathInitialized()
+
+  if result == false {
+    fmt.Printf("ERROR: Expected fInfoPlus.IsDirectoryPathInitialized() would return 'true'\n" +
+      "because 'fInfoPlus' is properly initialized.\n" +
+      "However, fInfoPlus.IsFileInfoInitialized() returned 'false'\n")
+  }
+
 }
 
 func (mtst mainTests) mainTest104FileOpsColEqual() {

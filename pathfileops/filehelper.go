@@ -6299,8 +6299,20 @@ func (fh *FileHelper) makeFileHelperWalkDirDeleteFilesFunc(dInfo *DirectoryDelet
         return nil
       }
 
-      subDir.actualDirFileInfo = FileInfoPlus{}.NewFromPathFileInfo(pathFile, info)
-      dInfo.Directories.AddDirMgr(subDir)
+      subDir.actualDirFileInfo, err = FileInfoPlus{}.NewFromPathFileInfo(pathFile, info)
+
+      if err != nil {
+        ex := fmt.Errorf( ePrefix +
+          "Error returned by FileInfoPlus{}.NewFromPathFileInfo(pathFile, info)\n" +
+          "pathFile='%v'\ninfo.Name='%v'\nError='%v'\n",
+          pathFile, info.Name(), err.Error())
+
+        dInfo.ErrReturns = append(dInfo.ErrReturns, ex)
+
+      } else {
+
+        dInfo.Directories.AddDirMgr(subDir)
+      }
 
       return nil
     }

@@ -144,7 +144,7 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
       filePathDoesExist = true
       nonPathError = nil
       fileMgr.doesAbsolutePathFileNameExist = true
-      fileMgr.actualFileInfo = FileInfoPlus{}.NewFromFileInfo(info)
+      fileMgr.actualFileInfo, _ = FileInfoPlus{}.NewFromPathFileInfo(fileMgr.dMgr.absolutePath, info)
 
       permCode, err := FilePermissionConfig{}.NewByFileMode(fileMgr.actualFileInfo.Mode())
 
@@ -1363,6 +1363,118 @@ func (fMgrHlpr *fileMgrHelper) lowLevelDeleteFile(
   }
 
   return err
+}
+
+func (fMgrHlpr *fileMgrHelper) lowLevelDoesFileExist(
+  pathFileName,
+  directoryPath,
+  ePrefix,
+  pathFileNameLabel,
+  directoryPathLabel string) (pathFileDoesExist bool,
+                             fInfoPlus FileInfoPlus,
+                             err error) {
+
+  ePrefixCurrMethod := "fileMgrHelper.lowLevelDoesFileExist() "
+
+  pathFileDoesExist = false
+  fInfoPlus = FileInfoPlus{}
+  err = nil
+
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
+  } else {
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
+  }
+
+  if len(pathFileNameLabel) == 0 {
+    pathFileNameLabel = "pathFileName"
+  }
+
+  if len(directoryPathLabel) == 0 {
+    directoryPathLabel = "dirPath"
+  }
+
+  errCode := 0
+  fh := FileHelper{}
+
+  errCode,
+  _,
+  pathFileName = fh.isStringEmptyOrBlank(pathFileName)
+
+  if errCode < 0 {
+    err = fmt.Errorf(ePrefix +
+      "\nERROR: Input parameter %v is an EMPTY STRING!\n",
+      pathFileNameLabel)
+
+    return pathFileDoesExist, fInfoPlus, err
+  }
+
+  errCode,
+  _,
+  directoryPath = fh.isStringEmptyOrBlank(directoryPath)
+
+  var err2 error
+  var info os.FileInfo
+
+  for i := 0; i < 3; i++ {
+
+    pathFileDoesExist = false
+    fInfoPlus = FileInfoPlus{}
+    err = nil
+
+    info, err2 = os.Stat(pathFileName)
+
+    if err2 != nil {
+
+      if os.IsNotExist(err2) {
+
+        pathFileDoesExist = false
+        fInfoPlus = FileInfoPlus{}
+        err = nil
+        return pathFileDoesExist, fInfoPlus, err
+      }
+      // err == nil and err != os.IsNotExist(err)
+      // This is a non-path error. The non-path error will be test
+      // up to 3-times before it is returned.
+      err = fmt.Errorf(ePrefix+"Non-Path error returned by os.Stat(%v)\n"+
+        "%v='%v'\nError='%v'\n\n",
+        pathFileNameLabel, pathFileNameLabel, err2.Error())
+      fInfoPlus = FileInfoPlus{}
+      pathFileDoesExist = false
+
+    } else {
+      // err == nil
+      // The path really does exist!
+      pathFileDoesExist = true
+      err = nil
+
+      if errCode < 0 {
+        // If the directoryPath is an empty string,
+        // only record the the os.FileInfo data, not the path.
+        //
+        fInfoPlus = FileInfoPlus{}.NewFromFileInfo(info)
+
+      } else {
+
+        // directoryPath is a string with length greater than zero,
+        // record the os.FileInfo data AND the path.
+        fInfoPlus, err2 = FileInfoPlus{}.NewFromPathFileInfo(directoryPath, info)
+
+        if err2 != nil {
+          err = fmt.Errorf(ePrefix +
+            "\nError returned by FileInfoPlus{}.NewFromPathFileInfo(dirPath, info)\n" +
+            "Error='%v'\n", err2.Error())
+          fInfoPlus = FileInfoPlus{}
+        }
+      }
+
+      return pathFileDoesExist, fInfoPlus, err
+    }
+
+    time.Sleep(30 * time.Millisecond)
+  }
+
+  return pathFileDoesExist, fInfoPlus, err
 }
 
 // lowLevelOpenFile - Helper method which is designed
