@@ -215,5 +215,156 @@ func TestFileInfoPlus_Equal_02(t *testing.T) {
   if fip.Equal(&fip2) == true {
     t.Error("Expected fip to NOT EQUAL fip2. Error- fip==fip2")
   }
+}
+
+func TestFileInfoPlus_SysAsString_01(t *testing.T) {
+
+  testFile := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+
+  fMgr, err := FileMgr{}.New(testFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(testFile)\n" +
+      "testFile='%v'\n" +
+      "Error='%v'\n", testFile, err.Error())
+    return
+  }
+
+  fInfoPlus, err := fMgr.GetFileInfoPlus()
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.GetFileInfoPlus()\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  str := fInfoPlus.SysAsString()
+
+  if str == "" {
+    t.Error("Error: Expected that fInfoPlus.SysAsString() would return\n" +
+      "a valid string containing System information.\n" +
+      "However, AN EMPTY STRING WAS RETURNED!!!\n")
+  }
+}
+
+func TestFileInfoPlus_IsDirectoryPathInitialized_01(t *testing.T) {
+
+  testFile := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+
+  fMgr, err := FileMgr{}.New(testFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(testFile)\n" +
+      "testFile='%v'\n" +
+      "Error='%v'\n", testFile, err.Error())
+    return
+  }
+
+  fInfoPlus, err := fMgr.GetFileInfoPlus()
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.GetFileInfoPlus()\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  result := fInfoPlus.IsDirectoryPathInitialized()
+
+  if result == false {
+    t.Error("ERROR: Expected fInfoPlus.IsDirectoryPathInitialized() would return 'true'\n" +
+      "because 'fInfoPlus' is properly initialized.\n" +
+      "However, fInfoPlus.IsFileInfoInitialized() returned 'false'\n")
+  }
+
+}
+
+func TestFileInfoPlus_IsDirectoryPathInitialized_02(t *testing.T) {
+
+  fInfoPlus := FileInfoPlus{}
+
+  result := fInfoPlus.IsDirectoryPathInitialized()
+
+  if result == true {
+    t.Error("ERROR: Expected fInfoPlus.IsDirectoryPathInitialized() would return 'false'\n" +
+      "because 'fInfoPlus' was NOT properly initialized.\n" +
+      "However, fInfoPlus.IsFileInfoInitialized() returned 'true'\n")
+  }
+
+}
+
+func TestFileInfoPlus_IsFileInfoInitialized_01(t *testing.T) {
+
+  fInfoPlus := FileInfoPlus{}
+
+  result := fInfoPlus.IsFileInfoInitialized()
+
+  if result == true {
+    t.Error("ERROR: Expected fInfoPlus.IsFileInfoInitialized() would return 'false'\n" +
+      "because 'fInfoPlus' has NOT initialized.\n" +
+      "However, fInfoPlus.IsFileInfoInitialized() returned 'true'\n")
+  }
+
+}
+
+func TestFileInfoPlus_IsFileInfoInitialized_02(t *testing.T) {
+
+  testFile := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
+
+  fMgr, err := FileMgr{}.New(testFile)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.New(testFile)\n" +
+      "testFile='%v'\n" +
+      "Error='%v'\n", testFile, err.Error())
+    return
+  }
+
+  fInfoPlus, err := fMgr.GetFileInfoPlus()
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.GetFileInfoPlus()\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  result := fInfoPlus.IsFileInfoInitialized()
+
+  if result == false {
+    t.Error("ERROR: Expected fInfoPlus.IsFileInfoInitialized() would return 'true'\n" +
+      "because 'fInfoPlus' is properly initialized.\n" +
+      "However, fInfoPlus.IsFileInfoInitialized() returned 'false'\n")
+  }
+
+}
+
+func TestFileInfoPlus_SetIsFInfoInitialized_01(t *testing.T) {
+
+  fInfoPlus := FileInfoPlus{}
+
+  fInfoPlus.SetIsFInfoInitialized(false)
+
+  result := fInfoPlus.IsFileInfoInitialized()
+
+  if result == true {
+    t.Error("ERROR: Expected that fInfoPlus.IsFileInfoInitialized() would return 'false'\n" +
+      "because of the previous call fInfoPlus.SetIsFInfoInitialized(false).\n" +
+      "However, fInfoPlus.IsFileInfoInitialized() returned 'true'!!!\n")
+  }
+
+}
+
+func TestFileInfoPlus_SetIsFInfoInitialized_02(t *testing.T) {
+
+  fInfoPlus := FileInfoPlus{}
+
+  fInfoPlus.SetIsFInfoInitialized(true)
+
+  result := fInfoPlus.IsFileInfoInitialized()
+
+  if result == false {
+    t.Error("ERROR: Expected that fInfoPlus.IsFileInfoInitialized() would return 'true'\n" +
+      "because of the previous call fInfoPlus.SetIsFInfoInitialized(true).\n" +
+      "However, fInfoPlus.IsFileInfoInitialized() returned 'false'!!!\n")
+  }
 
 }

@@ -108,7 +108,9 @@ func (fip FileInfoPlus) Sys() interface{} {
   return fip.dataSrc
 }
 
-// Sys - underlying data source (can return nil)
+// SysAsString - underlying data source. If Sys is
+// 'nil', this method will return an empty string.
+//
 func (fip FileInfoPlus) SysAsString() string {
   if fip.dataSrc == nil {
     return ""
@@ -119,8 +121,9 @@ func (fip FileInfoPlus) SysAsString() string {
   return str
 }
 
-// CopyOut - Creates a copy of the current FileInfoPlus
+// CopyOut - Creates a deep copy of the current FileInfoPlus
 // instance and returns it.
+//
 func (fip *FileInfoPlus) CopyOut() FileInfoPlus {
   newInfo := FileInfoPlus{}
 

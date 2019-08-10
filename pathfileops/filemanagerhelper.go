@@ -2205,6 +2205,20 @@ func (fMgrHlpr *fileMgrHelper) setFileMgrDirMgrFileName(
   if filePathDoesExist && nonPathError == nil {
     fMgr.doesAbsolutePathFileNameExist = true
     fMgr.actualFileInfo = fInfoPlus.CopyOut()
+
+    err2 = fMgr.actualFileInfo.SetDirectoryPath(dMgr.absolutePath)
+
+    if err2 != nil {
+      isEmpty = true
+      err = fmt.Errorf(ePrefix +
+        "\nError returned by fMgr.actualFileInfo.SetDirectoryPath(dMgr.absolutePath)\n" +
+        "dMgr.absolutePath='%v'\n" +
+        "%v", dMgr.absolutePath, err2.Error())
+
+      _ = fMgrHlpr.emptyFileMgr(fMgr, ePrefix)
+      return isEmpty, err
+    }
+
   } else {
     fMgr.doesAbsolutePathFileNameExist = false
     fMgr.actualFileInfo = FileInfoPlus{}
