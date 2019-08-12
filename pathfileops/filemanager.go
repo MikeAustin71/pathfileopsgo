@@ -1421,7 +1421,9 @@ func (fMgr *FileMgr) CopyOut() FileMgr {
   fmgr2.filePtr = nil
   fmgr2.isFilePtrOpen = false
   fmgr2.fileAccessStatus = fMgr.fileAccessStatus.CopyOut()
+
   fmgr2.actualFileInfo = fMgr.actualFileInfo.CopyOut()
+
   fmgr2.fileBytesWritten = 0
   fmgr2.buffBytesWritten = 0
   fmgr2.fileRdrBufSize = fMgr.fileRdrBufSize

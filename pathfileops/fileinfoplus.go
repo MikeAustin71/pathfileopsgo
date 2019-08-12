@@ -196,6 +196,29 @@ func (fip *FileInfoPlus) Equal(fip2 *FileInfoPlus) bool {
 
 }
 
+// Empty - Sets the internal data fields of the current
+// FileInfoPlus instances to their zero or nil value.
+//
+// This method is NOT part of the FileInfo interface.
+//
+func (fip *FileInfoPlus) Empty() {
+
+  fip.isFInfoInitialized = false
+
+  fip.isDirPathInitialized = false
+
+  fip.CreateTimeStamp = time.Time{}
+
+  fip.dirPath = ""
+  fip.fName = ""
+  fip.fSize = 0
+  fip.fMode = os.FileMode(0000)
+  fip.fModTime = time.Time{}
+  fip.isDir = false
+  fip.dataSrc = nil
+  fip.origFileInfo = nil
+}
+
 // GetOriginalFileInfo - If the FileInfoPlus instance was initialized
 // with an os.FileInfo value, this method will return that original
 // os.FileInfo value. This is useful for passing parameters to some

@@ -26,13 +26,394 @@ import (
 
 func main() {
 
-  mainTests{}.mainTest107CopyFileMgrByIo06()
+  mainTests{}.mainTest113AreSameFile()
 
 }
 
 type mainTests struct {
   Input  string
   Output string
+}
+
+func (mtst mainTests) mainTest113AreSameFile() {
+
+  fmt.Println("               mainTest113AreSameFile                   ")
+  fmt.Println("********************************************************")
+  fmt.Println("                      START!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+
+  expectedFileNameExt := "newerFileForTest_01.txt"
+
+  fh := pf.FileHelper{}
+
+  baseDir, err := mtst.getBaseProjectPath(true)
+
+  if err != nil {
+    fmt.Printf("Error returned from mtst.getBaseProjectPath(true)\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  targetDir := baseDir + "filesfortest\\newfilesfortest"
+  adjustedPath := fh.AdjustPathSlash(targetDir)
+
+  dMgr, err := pf.DirMgr{}.New(adjustedPath)
+
+  if err != nil {
+    fmt.Printf("Error returned from DirMgr{}."+
+      "NewFromPathFileNameExtStr(adjustedPath).\n"+
+      "adjustedPath='%v'\nError='%v'\n",
+      adjustedPath, err.Error())
+    return
+  }
+
+  srcFMgr, err := pf.FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
+
+  if err != nil {
+    fmt.Printf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, "+
+      "expectedFileNameExt).\n"+
+      "dMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
+      dMgr.GetAbsolutePath(), adjustedPath, err.Error())
+    return
+  }
+
+  destFMgr := srcFMgr.CopyOut()
+
+  srcFInfo, err := srcFMgr.GetFileInfo()
+
+  if err != nil {
+    fmt.Printf("Error returned by srcFMgr.GetFileInfo()\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  destFInfo, err := destFMgr.GetFileInfo()
+
+  if err != nil {
+    fmt.Printf("Error returned by destFMgr.GetFileInfo()\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  result := os.SameFile(srcFInfo, destFInfo)
+
+  if result == false {
+    fmt.Printf("ERROR: After 'destFMgr := srcFMgr.CopyOut()',\n" +
+      "Expected os.SameFile(srcFInfoPlus.GetOriginalFileInfo(), " +
+      "destFInfoPlus.GetOriginalFileInfo())) == 'true'.\n" +
+      "Instead, the comparison return value was 'false'.\n")
+    return
+  }
+
+  fmt.Println("               mainTest113AreSameFile                   ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+
+}
+
+func (mtst mainTests) mainTest112AreSameFile() {
+
+  expectedFileNameExt := "newerFileForTest_01.txt"
+
+  fh := pf.FileHelper{}
+
+  baseDir, err := mtst.getBaseProjectPath(true)
+
+  if err != nil {
+    fmt.Printf("Error returned from mtst.getBaseProjectPath(true)\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  targetDir := baseDir + "filesfortest\\newfilesfortest"
+  adjustedPath := fh.AdjustPathSlash(targetDir)
+
+  dMgr, err := pf.DirMgr{}.New(adjustedPath)
+
+  if err != nil {
+    fmt.Printf("Error returned from DirMgr{}."+
+      "NewFromPathFileNameExtStr(adjustedPath).\n"+
+      "adjustedPath='%v'\nError='%v'\n",
+      adjustedPath, err.Error())
+    return
+  }
+
+  srcFMgr, err := pf.FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
+
+  if err != nil {
+    fmt.Printf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, "+
+      "expectedFileNameExt).\n"+
+      "dMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
+      dMgr.GetAbsolutePath(), adjustedPath, err.Error())
+    return
+  }
+
+  destFMgr := srcFMgr.CopyOut()
+
+
+  srcFInfo, err := srcFMgr.GetFileInfoPlus()
+
+  if err != nil {
+    fmt.Printf("Error returned by srcFMgr.GetFileInfoPlus()\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  destFInfo, err := destFMgr.GetFileInfoPlus()
+
+  if err != nil {
+    fmt.Printf("Error returned by destFMgr.GetFileInfoPlus()\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  result := os.SameFile(srcFInfo.GetOriginalFileInfo(), destFInfo.GetOriginalFileInfo())
+
+  if result == false {
+    fmt.Printf("ERROR: After 'destFMgr := srcFMgr.CopyOut()',\n" +
+      "Expected os.SameFile(srcFInfo.GetOriginalFileInfo(), " +
+      "destFInfo.GetOriginalFileInfo())) == 'true'.\n" +
+      "Instead, the comparison return value was 'false'.\n")
+    return
+  }
+
+  fmt.Println("               mainTest112AreSameFile                   ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+
+}
+
+func (mtst mainTests) mainTest111AreSameFile() {
+
+  fh := pf.FileHelper{}
+
+  baseDir, err := mtst.getBaseProjectPath(true)
+
+  if err != nil {
+    fmt.Printf("Error returned from mtst.getBaseProjectPath(true)\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  targetDir := baseDir + "filesfortest\\newfilesfortest"
+  targetDir = fh.AdjustPathSlash(targetDir)
+
+  targetFile := targetDir + string(os.PathSeparator) + "newerFileForTest_01.txt"
+
+  tDMgr, err := pf.DirMgr{}.New(targetDir)
+
+  if err != nil {
+    fmt.Printf("Error returned by DirMgr{}.New(targetDir)\n" +
+      "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
+    return
+  }
+
+  fInfo, err := os.Stat(targetFile)
+
+  if err != nil {
+    fmt.Printf("Error returned by os.Stat(targetFile)\n" +
+      "targetFile='%v'\n" +
+      "Error='%v'\n", targetFile, err.Error() )
+    return
+  }
+
+  fInfoPlus, err := pf.FileInfoPlus{}.NewFromDirMgrFileInfo(tDMgr, fInfo)
+
+  if err != nil {
+    fmt.Printf("Error returned by FileInfoPlus{}.NewFromPathFileInfo(tDMgr, fInfo)\n" +
+      "tDMgr='%v'\nError='%v'\n", tDMgr.GetAbsolutePath(), err.Error())
+    return
+  }
+
+  fInfoPlus2 := fInfoPlus.CopyOut()
+
+  fInfoPlus3 := fInfoPlus2.CopyOut()
+
+  result := os.SameFile(fInfoPlus.GetOriginalFileInfo(), fInfoPlus3.GetOriginalFileInfo())
+
+  if result == false {
+    fmt.Printf("ERROR: After 'fInfoPlus3 := fInfoPlus2.CopyOut()',\n" +
+      "Expected os.SameFile(fInfoPlus, fInfoPlus3) == 'true'.\n" +
+      "Instead, the comparison return value was 'false'.\n")
+    return
+  }
+
+
+  fmt.Println("               mainTest111AreSameFile                   ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+}
+
+func (mtst mainTests) mainTest110AreSameFile() {
+
+  fh := pf.FileHelper{}
+
+  baseDir, err := mtst.getBaseProjectPath(true)
+
+  if err != nil {
+    fmt.Printf("Error returned from mtst.getBaseProjectPath(true)\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  targetDir := baseDir + "filesfortest\\newfilesfortest"
+  targetDir = fh.AdjustPathSlash(targetDir)
+
+  targetFile := targetDir + string(os.PathSeparator) + "newerFileForTest_01.txt"
+
+  tDMgr, err := pf.DirMgr{}.New(targetDir)
+
+  if err != nil {
+    fmt.Printf("Error returned by DirMgr{}.New(targetDir)\n" +
+      "targetDir='%v'\nError='%v'\n", targetDir, err.Error())
+    return
+  }
+
+  fInfo, err := os.Stat(targetFile)
+
+  if err != nil {
+    fmt.Printf("Error returned by os.Stat(targetFile)\n" +
+      "targetFile='%v'\n" +
+      "Error='%v'\n", targetFile, err.Error() )
+    return
+  }
+
+  fInfoPlus, err := pf.FileInfoPlus{}.NewFromDirMgrFileInfo(tDMgr, fInfo)
+
+  if err != nil {
+    fmt.Printf("Error returned by FileInfoPlus{}.NewFromPathFileInfo(tDMgr, fInfo)\n" +
+      "tDMgr='%v'\nError='%v'\n", tDMgr.GetAbsolutePath(), err.Error())
+    return
+  }
+
+  fInfoPlus2 := fInfoPlus.CopyOut()
+
+  result := os.SameFile(fInfoPlus.GetOriginalFileInfo(), fInfoPlus2.GetOriginalFileInfo())
+
+  if result == false {
+    fmt.Printf("ERROR: After 'fInfoPlus2 := fInfoPlus.CopyOut()',\n" +
+      "Expected os.SameFile(fInfoPlus, fInfoPlus2) == 'true'.\n" +
+      "Instead, the comparison return value was 'false'.\n")
+    return
+  }
+
+
+  fmt.Println("               mainTest110AreSameFile                   ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+}
+
+func (mtst mainTests) mainTest109AreSameFile() {
+
+  fh := pf.FileHelper{}
+
+  baseDir, err := mtst.getBaseProjectPath(true)
+
+  if err != nil {
+    fmt.Printf("Error returned from mtst.getBaseProjectPath(true)\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  targetDir := baseDir + "filesfortest\\newfilesfortest"
+  targetDir = fh.AdjustPathSlash(targetDir)
+
+  targetFile := targetDir + string(os.PathSeparator) + "newerFileForTest_01.txt"
+
+
+  fInfo, err := os.Stat(targetFile)
+
+  if err != nil {
+    fmt.Printf("Error returned by os.Stat(targetFile)\n" +
+      "targetFile='%v'\n" +
+      "Error='%v'\n", targetFile, err.Error() )
+    return
+  }
+
+  fInfoPlus, err := pf.FileInfoPlus{}.NewFromPathFileInfo(targetDir, fInfo)
+
+  if err != nil {
+    fmt.Printf("Error returned by FileInfoPlus{}.NewFromPathFileInfo(targetDir, fInfo)\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  fInfoPlus2 := fInfoPlus.CopyOut()
+
+  fInfoPlus3 := fInfoPlus2.CopyOut()
+
+  result := os.SameFile(fInfoPlus.GetOriginalFileInfo(), fInfoPlus3.GetOriginalFileInfo())
+
+  if result == false {
+    fmt.Printf("ERROR: After 'fInfoPlus3 := fInfoPlus2.CopyOut()',\n" +
+      "Expected os.SameFile(fInfoPlus, fInfoPlus3) == 'true'.\n" +
+      "Instead, the comparison return value was 'false'.\n")
+    return
+  }
+
+
+  fmt.Println("               mainTest109AreSameFile                   ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+}
+
+func (mtst mainTests) mainTest108AreSameFile() {
+
+  fh := pf.FileHelper{}
+
+  baseDir, err := mtst.getBaseProjectPath(true)
+
+  if err != nil {
+    fmt.Printf("Error returned from mtst.getBaseProjectPath(true)\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  targetDir := baseDir + "filesfortest\\newfilesfortest"
+  targetDir = fh.AdjustPathSlash(targetDir)
+
+  targetFile := targetDir + string(os.PathSeparator) + "newerFileForTest_01.txt"
+
+
+  fInfo, err := os.Stat(targetFile)
+
+  if err != nil {
+    fmt.Printf("Error returned by os.Stat(targetFile)\n" +
+      "targetFile='%v'\n" +
+      "Error='%v'\n", targetFile, err.Error() )
+    return
+  }
+
+  fInfoPlus, err := pf.FileInfoPlus{}.NewFromPathFileInfo(targetDir, fInfo)
+
+  if err != nil {
+    fmt.Printf("Error returned by FileInfoPlus{}.NewFromPathFileInfo(targetDir, fInfo)\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  fInfoPlus2 := fInfoPlus.CopyOut()
+
+  result := os.SameFile(fInfoPlus.GetOriginalFileInfo(), fInfoPlus2.GetOriginalFileInfo())
+
+  if result == false {
+    fmt.Printf("ERROR: After 'fInfoPlus2 := fInfoPlus.CopyOut()',\n" +
+      "Expected os.SameFile(fInfoPlus, fInfoPlus2) == 'true'.\n" +
+      "Instead, the comparison return value was 'false'.\n")
+    return
+  }
+
+
+  fmt.Println("               mainTest108AreSameFile                   ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
 }
 
 func (mtst mainTests) mainTest107CopyFileMgrByIo06() {
@@ -80,16 +461,30 @@ func (mtst mainTests) mainTest107CopyFileMgrByIo06() {
   if err == nil {
     fmt.Println("Expected error return from CopyFileMgrByIo(&destFMgr) because " +
       "source file is equivalent to destination file. However, NO ERROR WAS RETURNED!")
+    return
   }
-  
-  
+
+  fmt.Println("              mainTest107CopyFileMgrByIo06              ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+
 } 
 
 func (mtst mainTests) mainTest106GetFileSize() {
 
   fh := pf.FileHelper{}
 
-  targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+  baseDir, err := mtst.getBaseProjectPath(true)
+
+  if err != nil {
+    fmt.Printf("Error returned from mtst.getBaseProjectPath(true)\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+
+  targetFile := fh.AdjustPathSlash(baseDir + "filesfortest/newfilesfortest/newerFileForTest_01.txt")
 
   srcFMgr, err := pf.FileMgr{}.New(targetFile)
 
@@ -109,7 +504,13 @@ func (mtst mainTests) mainTest106GetFileSize() {
     fmt.Printf("Expected file size='29'.\nInstead, file size='%v'\n"+
       "File='%v'",
       actualFileSize, srcFMgr.GetAbsolutePathFileName())
+    return
   }
+
+  fmt.Println("               mainTest106GetFileSize                   ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
 
 }
 
@@ -141,7 +542,13 @@ func (mtst mainTests) mainTest105FMgrFInfo() {
     fmt.Printf("ERROR: Expected fInfoPlus.IsDirectoryPathInitialized() would return 'true'\n" +
       "because 'fInfoPlus' is properly initialized.\n" +
       "However, fInfoPlus.IsFileInfoInitialized() returned 'false'\n")
+    return
   }
+
+  fmt.Println("              mainTest105FMgrFInfo                      ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
 
 }
 
@@ -272,8 +679,14 @@ func (mtst mainTests) mainTest104FileOpsColEqual() {
   if fOpsCol1.Equal(&fOpsCol2) == true {
     fmt.Println("ERROR: Expected that fOpsCol1!=fOpsCol2.\n" +
       "However, THEY ARE EQUAL!!!")
+    return
   }
 
+
+  fmt.Println("            mainTest104FileOpsColEqual                  ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
 }
 
 func (mtst mainTests) mainTest103FHlprConsolidateErrors() {

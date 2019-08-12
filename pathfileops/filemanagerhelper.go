@@ -21,7 +21,7 @@ type fileMgrHelper struct {
 func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
   fileMgr *FileMgr,
   preProcessCode PreProcessPathCode,
-  errorPrefix,
+  ePrefix,
   filePathTitle string) (filePathDoesExist bool,
   nonPathError error) {
 
@@ -30,10 +30,10 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
 
   ePrefixCurrMethod := "fileMgrHelper.doesDirPathExist() "
 
-  if len(errorPrefix) == 0 {
-    errorPrefix = ePrefixCurrMethod
+  if len(ePrefix) == 0 {
+    ePrefix = ePrefixCurrMethod
   } else {
-    errorPrefix = errorPrefix + "- " + ePrefixCurrMethod
+    ePrefix = ePrefix + "- " + ePrefixCurrMethod
   }
 
   if len(filePathTitle) == 0 {
@@ -41,7 +41,7 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
   }
 
   if fileMgr == nil {
-    nonPathError = fmt.Errorf(errorPrefix +
+    nonPathError = fmt.Errorf(ePrefix +
       "\nError: Input parameter 'fMgr' is a nil pointer!\n")
     return filePathDoesExist, nonPathError
   }
@@ -54,7 +54,7 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
 
   if errCode == -1 {
     fileMgr.isAbsolutePathFileNamePopulated = false
-    nonPathError = fmt.Errorf(errorPrefix+
+    nonPathError = fmt.Errorf(ePrefix+
       "\nError: '%v' is an empty string!\n",
       filePathTitle)
 
@@ -63,7 +63,7 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
 
   if errCode == -2 {
     fileMgr.isAbsolutePathFileNamePopulated = false
-    nonPathError = fmt.Errorf(errorPrefix+
+    nonPathError = fmt.Errorf(ePrefix+
       "\nError: '%v' consists of blank spaces!\n",
       filePathTitle)
 
@@ -71,7 +71,7 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
   }
 
   if !fileMgr.isInitialized {
-    nonPathError = errors.New(errorPrefix +
+    nonPathError = errors.New(ePrefix +
       "\nError: This data structure is NOT initialized.\n" +
       "fileMgr.isInitialized='false'\n")
 
@@ -80,7 +80,7 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
 
   var  err2, err3 error
 
-  err2 = fileMgr.dMgr.IsDirMgrValid(errorPrefix)
+  err2 = fileMgr.dMgr.IsDirMgrValid(ePrefix)
 
   if err2 != nil {
     nonPathError = fmt.Errorf("\nFileMgr Directory Manager INVALID!\n"+
@@ -97,7 +97,7 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
     fileMgr.absolutePathFileName, err2 = FileHelper{}.MakeAbsolutePath(fileMgr.absolutePathFileName)
 
     if err2 != nil {
-      nonPathError = fmt.Errorf(errorPrefix+
+      nonPathError = fmt.Errorf(ePrefix+
         "\nFileHelper{}.MakeAbsolutePath() FAILED!\n"+
         "%v='%v'"+
         "%v", filePathTitle, fileMgr.absolutePathFileName, err2.Error())
@@ -113,68 +113,9 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
         fMgrHlpr.lowLevelDoesFileExist(
           fileMgr.absolutePathFileName,
           fileMgr.dMgr.absolutePath,
-          errorPrefix,
+          ePrefix,
           "fileMgr.absolutePathFileName",
           "fileMgr.dMgr.absolutePath")
-
-  /*
-  var info os.FileInfo
-
-  for i := 0; i < 3; i++ {
-
-    filePathDoesExist = false
-    nonPathError = nil
-
-    info, err = os.Stat(fileMgr.absolutePathFileName)
-
-    if err != nil {
-
-      if os.IsNotExist(err) {
-        fileMgr.doesAbsolutePathFileNameExist = false
-        fileMgr.actualFileInfo = FileInfoPlus{}
-        fileMgr.fileAccessStatus.Empty()
-        filePathDoesExist = false
-        nonPathError = nil
-        _ = fileMgr.dMgr.DoesPathExist()
-        _ = fileMgr.dMgr.DoesAbsolutePathExist()
-        return filePathDoesExist, nonPathError
-      }
-      // err == nil and err != os.IsNotExist(err)
-      // This is a non-path error. The non-path error will be tested
-      // up to 3-times before it is returned.
-      nonPathError = fmt.Errorf(errorPrefix+
-        "\nNon-Path error returned by os.Stat(%v)\n"+
-        "%v='%v'\nError='%v'\n",
-        filePathTitle, filePathTitle, fileMgr.absolutePathFileName, err.Error())
-
-      fileMgr.doesAbsolutePathFileNameExist = false
-      fileMgr.actualFileInfo = FileInfoPlus{}
-      filePathDoesExist = false
-
-    } else {
-      // err == nil
-      // The path really does exist!
-      filePathDoesExist = true
-      nonPathError = nil
-      fileMgr.doesAbsolutePathFileNameExist = true
-      fileMgr.actualFileInfo, _ = FileInfoPlus{}.NewFromPathFileInfo(fileMgr.dMgr.absolutePath, info)
-
-      permCode, err := FilePermissionConfig{}.NewByFileMode(fileMgr.actualFileInfo.Mode())
-
-      if err == nil {
-        _ = fileMgr.fileAccessStatus.SetFilePermissionCodes(permCode)
-      }
-
-      _ = fileMgr.dMgr.DoesPathExist()
-      _ = fileMgr.dMgr.DoesAbsolutePathExist()
-
-      return filePathDoesExist, nonPathError
-    }
-
-    time.Sleep(30 * time.Millisecond)
-  }
-
-*/
 
   if nonPathError != nil {
     fileMgr.doesAbsolutePathFileNameExist = false
@@ -206,7 +147,7 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
 
   if err2 != nil {
 
-    err3 = fmt.Errorf(errorPrefix +
+    err3 = fmt.Errorf(ePrefix+
       "\nError returned by FileInfoPlus{}.NewFromPathFileInfo(fileMgr.dMgr.absolutePath, info)\n" +
       "fileMgr.dMgr.absolutePath='%v'\n" +
       "info.Name()='%v'\n" +
@@ -219,7 +160,7 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
     permCode, err2 := FilePermissionConfig{}.NewByFileMode(fileMgr.actualFileInfo.Mode())
 
     if err2 != nil {
-      err3 = fmt.Errorf(errorPrefix +
+      err3 = fmt.Errorf(ePrefix+
         "\nError returned by FilePermissionConfig{}.NewByFileMode(fileMgr.actualFileInfo.Mode())\n" +
         "Error='%v'\n", err2.Error())
 
@@ -230,7 +171,7 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
       err2 = fileMgr.fileAccessStatus.SetFilePermissionCodes(permCode)
 
       if err2 != nil {
-        err3 = fmt.Errorf(errorPrefix +
+        err3 = fmt.Errorf(ePrefix+
           "\nError returned by fileMgr.fileAccessStatus.SetFilePermissionCodes(permCode)\n" +
           "Error='%v'\n", err2.Error())
 
