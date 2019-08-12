@@ -2,6 +2,7 @@ package pathfileops
 
 import (
   "fmt"
+  "io"
   "strings"
   "testing"
 )
@@ -1051,7 +1052,18 @@ func TestFileMgr_GetFilePtr_01(t *testing.T) {
 
   fh := FileHelper{}
 
-  targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+  setupFile :=  "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
+
+  targetFile := fh.AdjustPathSlash("../createFilesTest/Level01/Level02/newerFileForTest_01.txt")
+
+  err := fh.CopyFileByIo(setupFile, targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.CopyFileByIo(setupFile, targetFile)\n" +
+      "setupFile='%v'\ntargetFile='%v'\nError='%v'\n",
+      setupFile, targetFile, err.Error())
+    return
+  }
 
   srcFMgr, err := FileMgr{}.New(targetFile)
 
@@ -1071,6 +1083,8 @@ func TestFileMgr_GetFilePtr_01(t *testing.T) {
     t.Errorf("Error returned by srcFMgr.OpenThisFileReadOnly().\n"+
       "srcFMgr='%v'\nError='%v'\n",
       srcFMgr.GetAbsolutePathFileName(), err.Error())
+
+    _ = srcFMgr.DeleteThisFile()
     return
   }
 
@@ -1080,6 +1094,8 @@ func TestFileMgr_GetFilePtr_01(t *testing.T) {
     t.Errorf("Error: Expected a populated file pointer.\n"+
       "However, the file pointer is nil!\n"+
       "srcFMgr='%v'\n", srcFMgr.GetAbsolutePathFileName())
+    _ = srcFMgr.CloseThisFile()
+    _ = srcFMgr.DeleteThisFile()
     return
   }
 
@@ -1090,6 +1106,9 @@ func TestFileMgr_GetFilePtr_01(t *testing.T) {
       "srcFMgr='%v'\nError='%v'\n",
       srcFMgr.GetAbsolutePathFileName(), err.Error())
   }
+
+  _ = srcFMgr.DeleteThisFile()
+
 }
 
 func TestFileMgr_GetFileSize_01(t *testing.T) {
@@ -1261,8 +1280,22 @@ func TestFileMgr_GetReaderBufferSize_03(t *testing.T) {
 
   fh := FileHelper{}
 
-  targetFile := fh.AdjustPathSlash(
+  setupFile := fh.AdjustPathSlash(
     "../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+  targetFile := fh.AdjustPathSlash(
+    "../createFilesTest/Level01/Level02/newerFileForTest_01.txt")
+
+  err := fh.CopyFileByIo(setupFile, targetFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.CopyFileByIo(setupFile, targetFile)\n" +
+      "setupFile='%v'\n" +
+      "targetFile='%v'\n" +
+      "Error='%v'\n",
+      setupFile, targetFile, err.Error())
+    return
+  }
 
   srcFMgr, err := FileMgr{}.New(targetFile)
 
@@ -1276,10 +1309,11 @@ func TestFileMgr_GetReaderBufferSize_03(t *testing.T) {
   err = srcFMgr.OpenThisFileReadOnly()
 
   if err != nil {
-    _ = srcFMgr.CloseThisFile()
     t.Errorf("Error returned by srcFMgr.OpenThisFileReadOnly().\n"+
       "srcFMgr='%v'\nError='%v'",
       srcFMgr.GetAbsolutePathFileName(), err.Error())
+    _ = srcFMgr.CloseThisFile()
+    _ = srcFMgr.DeleteThisFile()
     return
   }
 
@@ -1287,17 +1321,20 @@ func TestFileMgr_GetReaderBufferSize_03(t *testing.T) {
 
   _, err = srcFMgr.ReadFileBytes(bytes)
 
-  if err != nil {
-    _ = srcFMgr.CloseThisFile()
-    t.Errorf("Error returned by srcFMgr.ReadFileBytes(bytes)."+
-      "srcFMgr='%v'\nError='%v'",
+  if err != nil &&
+    err != io.EOF {
+    t.Errorf("Error returned by srcFMgr.ReadFileBytes(bytes).\n"+
+      "srcFMgr='%v'\nError='%v'\n",
       srcFMgr.GetAbsolutePathFileName(), err.Error())
+    _ = srcFMgr.CloseThisFile()
+    _ = srcFMgr.DeleteThisFile()
     return
   }
 
   readBufSize := srcFMgr.GetReaderBufferSize()
 
   _ = srcFMgr.CloseThisFile()
+  _ = srcFMgr.DeleteThisFile()
 
   if readBufSize < 10 {
     t.Errorf("Error: Expected Bufio Read Buffer Size >10.\n"+

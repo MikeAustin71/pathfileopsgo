@@ -78,13 +78,13 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
     return filePathDoesExist, nonPathError
   }
 
-  var err error
+  var  err2, err3 error
 
-  err = fileMgr.dMgr.IsDirMgrValid(errorPrefix)
+  err2 = fileMgr.dMgr.IsDirMgrValid(errorPrefix)
 
-  if err != nil {
+  if err2 != nil {
     nonPathError = fmt.Errorf("\nFileMgr Directory Manager INVALID!\n"+
-      "\nError='%v'", err.Error())
+      "\nError='%v'", err2.Error())
     return filePathDoesExist, nonPathError
   }
 
@@ -94,17 +94,30 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
 
   } else if preProcessCode == PreProcPathCode.AbsolutePath() {
 
-    fileMgr.absolutePathFileName, err = FileHelper{}.MakeAbsolutePath(fileMgr.absolutePathFileName)
+    fileMgr.absolutePathFileName, err2 = FileHelper{}.MakeAbsolutePath(fileMgr.absolutePathFileName)
 
-    if err != nil {
+    if err2 != nil {
       nonPathError = fmt.Errorf(errorPrefix+
         "\nFileHelper{}.MakeAbsolutePath() FAILED!\n"+
         "%v='%v'"+
-        "%v", filePathTitle, fileMgr.absolutePathFileName, err.Error())
+        "%v", filePathTitle, fileMgr.absolutePathFileName, err2.Error())
       return filePathDoesExist, nonPathError
     }
   }
 
+  var info FileInfoPlus
+
+  filePathDoesExist,
+  info,
+  nonPathError =
+        fMgrHlpr.lowLevelDoesFileExist(
+          fileMgr.absolutePathFileName,
+          fileMgr.dMgr.absolutePath,
+          errorPrefix,
+          "fileMgr.absolutePathFileName",
+          "fileMgr.dMgr.absolutePath")
+
+  /*
   var info os.FileInfo
 
   for i := 0; i < 3; i++ {
@@ -161,12 +174,79 @@ func (fMgrHlpr *fileMgrHelper) doesFileMgrPathFileExist(
     time.Sleep(30 * time.Millisecond)
   }
 
-  if !filePathDoesExist {
+*/
+
+  if nonPathError != nil {
+    fileMgr.doesAbsolutePathFileNameExist = false
+    fileMgr.actualFileInfo = FileInfoPlus{}
+    filePathDoesExist = false
     fileMgr.fileAccessStatus.Empty()
+    return filePathDoesExist, nonPathError
+  }
+
+  if !filePathDoesExist {
+    fileMgr.doesAbsolutePathFileNameExist = false
+    fileMgr.actualFileInfo = FileInfoPlus{}
+    fileMgr.fileAccessStatus.Empty()
+    filePathDoesExist = false
+    nonPathError = nil
+    _ = fileMgr.dMgr.DoesPathExist()
+    _ = fileMgr.dMgr.DoesAbsolutePathExist()
+    return filePathDoesExist, nonPathError
+  }
+
+  // The path really does exist!
+  errs := make([]error, 0, 10)
+  filePathDoesExist = true
+  nonPathError = nil
+  fileMgr.doesAbsolutePathFileNameExist = true
+
+  fileMgr.actualFileInfo, err2 =
+    FileInfoPlus{}.NewFromPathFileInfo(fileMgr.dMgr.absolutePath, info)
+
+  if err2 != nil {
+
+    err3 = fmt.Errorf(errorPrefix +
+      "\nError returned by FileInfoPlus{}.NewFromPathFileInfo(fileMgr.dMgr.absolutePath, info)\n" +
+      "fileMgr.dMgr.absolutePath='%v'\n" +
+      "info.Name()='%v'\n" +
+      "Error='%v'\n", fileMgr.dMgr.absolutePath, info.Name(), err2.Error())
+
+    errs = append(errs, err3)
+
+  } else {
+
+    permCode, err2 := FilePermissionConfig{}.NewByFileMode(fileMgr.actualFileInfo.Mode())
+
+    if err2 != nil {
+      err3 = fmt.Errorf(errorPrefix +
+        "\nError returned by FilePermissionConfig{}.NewByFileMode(fileMgr.actualFileInfo.Mode())\n" +
+        "Error='%v'\n", err2.Error())
+
+      errs= append(errs, err3)
+
+    } else {
+
+      err2 = fileMgr.fileAccessStatus.SetFilePermissionCodes(permCode)
+
+      if err2 != nil {
+        err3 = fmt.Errorf(errorPrefix +
+          "\nError returned by fileMgr.fileAccessStatus.SetFilePermissionCodes(permCode)\n" +
+          "Error='%v'\n", err2.Error())
+
+        errs= append(errs, err3)
+      }
+
+    }
   }
 
   _ = fileMgr.dMgr.DoesPathExist()
+
   _ = fileMgr.dMgr.DoesAbsolutePathExist()
+
+  if len(errs) > 0 {
+    nonPathError = FileHelper{}.ConsolidateErrors(errs)
+  }
 
   return filePathDoesExist, nonPathError
 }
@@ -374,8 +454,11 @@ func (fMgrHlpr *fileMgrHelper) copyFileSetup(
   }
 
   if fMgrFileDoesExist && targetFMgrFileDoesExist {
+
     if os.SameFile(srcFMgr.actualFileInfo.origFileInfo,
-      destFMgr.actualFileInfo.origFileInfo) {
+      destFMgr.actualFileInfo.origFileInfo) ||
+      strings.ToLower(srcFMgr.absolutePathFileName) ==
+          strings.ToLower(destFMgr.absolutePathFileName) {
       return fmt.Errorf(ePrefix+
         "\nError: %v FileInfo is same as %v FileInfo.\n"+
         "These two files are one in the same file!\n"+
@@ -1365,6 +1448,15 @@ func (fMgrHlpr *fileMgrHelper) lowLevelDeleteFile(
   return err
 }
 
+
+// lowLevelDoesFileExist - Tests input parameter
+// 'pathFileName' to determine if the file exists
+// on disk.
+//
+// The method makes three calls to os.Stat(pathFileName)
+// to ensure that non-path errors are real and not due
+// to operating system timing issues.
+//
 func (fMgrHlpr *fileMgrHelper) lowLevelDoesFileExist(
   pathFileName,
   directoryPath,

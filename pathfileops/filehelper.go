@@ -151,9 +151,14 @@ func (fh FileHelper) AreSameFile(pathFile1, pathFile2 string) (bool, error) {
     return false, err
   }
 
+
+  pathFile1 = strings.ToLower(pathFile1)
+  pathFile2 = strings.ToLower(pathFile2)
+
   if pathFile1DoesExist && pathFile2DoesExist {
 
-    if os.SameFile(fInfoPathFile1.GetOriginalFileInfo(), fInfoPathFile2.GetOriginalFileInfo()) {
+    if os.SameFile(fInfoPathFile1.GetOriginalFileInfo(), fInfoPathFile2.GetOriginalFileInfo()) ||
+      pathFile1 == pathFile2 {
       // pathFile1 and pathFile2 are the same
       // path and file name.
 
@@ -163,9 +168,6 @@ func (fh FileHelper) AreSameFile(pathFile1, pathFile2 string) (bool, error) {
 
     return false, nil
   }
-
-  pathFile1 = strings.ToLower(pathFile1)
-  pathFile2 = strings.ToLower(pathFile2)
 
   if pathFile1 == pathFile2 {
     return true, nil

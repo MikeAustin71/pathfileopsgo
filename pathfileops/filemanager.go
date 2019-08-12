@@ -3502,8 +3502,9 @@ func (fMgr *FileMgr) ReadAllFile() (bytesRead []byte, err error) {
 // object. Bytes are stored in 'byteBuff', a byte array passed in as an input
 // parameter.
 //
-// If successful, the returned error value is 'nil'. The returned value 'int'
-// contains the number of bytes read from the current file.
+// If successful, the returned error value is 'nil' or io.EOF.
+//
+// The returned value 'int' contains the number of bytes read from the current file.
 //
 // At End of File (EOF), the byte count will be zero and err will be equal to
 // 'io.EOF'.

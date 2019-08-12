@@ -124,6 +124,8 @@ func (fip FileInfoPlus) SysAsString() string {
 // CopyOut - Creates a deep copy of the current FileInfoPlus
 // instance and returns it.
 //
+// This method is NOT part of the FileInfo interface.
+//
 func (fip *FileInfoPlus) CopyOut() FileInfoPlus {
   newInfo := FileInfoPlus{}
 
@@ -143,12 +145,18 @@ func (fip *FileInfoPlus) CopyOut() FileInfoPlus {
 
 // DirPath - Returns the directory path. This field, FileInfoPlus.dirPath,
 // is not part of the standard FileInfo interface.
+//
+// This method is NOT part of the FileInfo interface.
+//
 func (fip *FileInfoPlus) DirPath() string {
   return fip.dirPath
 }
 
 // Equal - Compares two FileInfoPlus objects to determine
 // if they are equal.
+//
+// This method is NOT part of the FileInfo interface.
+//
 func (fip *FileInfoPlus) Equal(fip2 *FileInfoPlus) bool {
 
   if fip.Name() != fip2.Name() ||
@@ -193,6 +201,8 @@ func (fip *FileInfoPlus) Equal(fip2 *FileInfoPlus) bool {
 // os.FileInfo value. This is useful for passing parameters to some
 // low level go routines such as os.SameFile().
 //
+// This method is NOT part of the FileInfo interface.
+//
 func (fip *FileInfoPlus) GetOriginalFileInfo() os.FileInfo {
   return fip.origFileInfo
 }
@@ -206,6 +216,8 @@ func (fip *FileInfoPlus) GetOriginalFileInfo() os.FileInfo {
 // 1. FileInfoPlus.NewFromFileInfo()
 // 2. FileInfoPlus.NewFromPathFileInfo()
 // 3. FileInfoPlus.SetIsFInfoInitialized()
+//
+// This method is NOT part of the FileInfo interface.
 //
 func (fip *FileInfoPlus) IsFileInfoInitialized() bool {
   return fip.isFInfoInitialized
@@ -221,6 +233,8 @@ func (fip *FileInfoPlus) IsFileInfoInitialized() bool {
 //
 // 1. FileInfoPlus.NewFromPathFileInfo()
 // 2. FileInfoPlus.SetDirectoryPath
+//
+// This method is NOT part of the FileInfo interface.
 //
 func (fip *FileInfoPlus) IsDirectoryPathInitialized() bool {
   return fip.isDirPathInitialized

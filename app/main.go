@@ -26,13 +26,91 @@ import (
 
 func main() {
 
-  mainTests{}.mainTest105FMgrFInfo()
+  mainTests{}.mainTest107CopyFileMgrByIo06()
 
 }
 
 type mainTests struct {
   Input  string
   Output string
+}
+
+func (mtst mainTests) mainTest107CopyFileMgrByIo06() {
+
+
+  expectedFileNameExt := "newerFileForTest_01.txt"
+
+  fh := pf.FileHelper{}
+
+  baseDir, err := mtst.getBaseProjectPath(true)
+
+  if err != nil {
+    fmt.Printf("Error returned from mtst.getBaseProjectPath(true)\n" +
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  targetDir := baseDir + "filesfortest\\newfilesfortest"
+  adjustedPath := fh.AdjustPathSlash(targetDir)
+
+  dMgr, err := pf.DirMgr{}.New(adjustedPath)
+
+  if err != nil {
+    fmt.Printf("Error returned from DirMgr{}."+
+      "NewFromPathFileNameExtStr(adjustedPath).\n"+
+      "adjustedPath='%v'\nError='%v'\n",
+      adjustedPath, err.Error())
+    return
+  }
+
+  srcFMgr, err := pf.FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
+
+  if err != nil {
+    fmt.Printf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, "+
+      "expectedFileNameExt).\n"+
+      "dMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
+      dMgr.GetAbsolutePath(), adjustedPath, err.Error())
+    return
+  }
+
+  destFMgr := srcFMgr.CopyOut()
+
+  err = srcFMgr.CopyFileMgrByIo(&destFMgr)
+
+  if err == nil {
+    fmt.Println("Expected error return from CopyFileMgrByIo(&destFMgr) because " +
+      "source file is equivalent to destination file. However, NO ERROR WAS RETURNED!")
+  }
+  
+  
+} 
+
+func (mtst mainTests) mainTest106GetFileSize() {
+
+  fh := pf.FileHelper{}
+
+  targetFile := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+
+  srcFMgr, err := pf.FileMgr{}.New(targetFile)
+
+  if err != nil {
+    fmt.Printf("Error returned from FileMgr{}.New(targetFile).\n"+
+      "targetFile='%v'\nError='%v'\n",
+      targetFile, err.Error())
+
+    return
+  }
+
+  actualFileSize := srcFMgr.GetFileSize()
+
+  expectedFileSize := int64(29)
+
+  if expectedFileSize != actualFileSize {
+    fmt.Printf("Expected file size='29'.\nInstead, file size='%v'\n"+
+      "File='%v'",
+      actualFileSize, srcFMgr.GetAbsolutePathFileName())
+  }
+
 }
 
 func (mtst mainTests) mainTest105FMgrFInfo() {

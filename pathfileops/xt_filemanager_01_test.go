@@ -349,11 +349,13 @@ func TestFileMgr_CopyFileMgrByIo_01(t *testing.T) {
   }
 
   if !fh.DoesFileExist(destFMgr.absolutePathFileName) {
-    t.Errorf("Expected fh.DoesFileExist(destFMgr.absolutePathFileName)=true. Instead it was 'false' destFMgr.absolutePathFileName='%v'", destFMgr.absolutePathFileName)
+    t.Errorf("Expected fh.DoesFileExist(destFMgr.absolutePathFileName)=true.\n" +
+      "Instead it was 'false' destFMgr.absolutePathFileName='%v'", destFMgr.absolutePathFileName)
   }
 
   if !destFMgr.doesAbsolutePathFileNameExist {
-    t.Error("Expected destFMgr.doesAbsolutePathFileNameExist='true'.  ERROR  destFMgr.doesAbsolutePathFileNameExist='false'")
+    t.Error("Expected destFMgr.doesAbsolutePathFileNameExist='true'.\n" +
+      "ERROR:  destFMgr.doesAbsolutePathFileNameExist='false'")
   }
 
   err = fh.DeleteDirFile(destFMgr.absolutePathFileName)
@@ -1078,12 +1080,10 @@ func TestFileMgr_CopyFileMgrByIoWithBuffer_02(t *testing.T) {
     t.Errorf("Expected an error returned by srcFMgr.CopyFileMgrByIoWithBuffer(&destFMgr, 15000)\n"+
       "because srcFMgr DOES NOT EXIST!\n"+
       "However, NO ERROR WAS RETURNED!\nsrcFMgr='%v'\n", srcFMgr.absolutePathFileName)
-    _ = fh.DeleteDirPathAll(sourceDir)
-    _ = fh.DeleteDirFile(destFile)
-    return
   }
 
   _ = fh.DeleteDirPathAll(sourceDir)
   _ = fh.DeleteDirFile(destFile)
   return
 }
+
