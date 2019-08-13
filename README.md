@@ -16,18 +16,32 @@ Mac-OS, Linux and Windows.
 
 __`To date, the source code has only been tested on Windows.`__
 
+# Table Of Contents
+1. [Getting Started](#getting-started)
+2. [Operating Systems](#operating-systems)
+3. [Installation](#installation)
+4. [Source Code Import](#import)
+5. [Version](#version)
+6. [Primary Types](#primary-types)
+6. [Source Code Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops)
+8. [File Helper](#filehelpler)
+9. [Directory Manager](#dirmgr)
+10. [File Manager](#filemgr)
+11. [Collections](#collections)
 
-## Version Number 1.5.0
-This version significantly expands the capabilities of *DirMgr*, as
-well as expanding the read/write features for *FileMgr*. Unit Testing
-and code coverage have also been significantly expanded. 
+<a name="getting-started"></a>
+# Getting Started 
 
-This version does NOT support *Go* modules.
-___    
-[Click To View Source Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops)    
-___
+<a name="operating-systems"></a>
+## Operating Systems
+This package was developed and tested on Windows, although the package
+was designed to operate on multiple operating systems including 
+Mac-OS, Linux and Windows.
 
-## Installing The 'pathfileops' Package
+__`To date, the source code has only been tested on Windows.`__
+
+<a name="installation"></a>
+## Installation
 Use this command to down load and install the *pathfileops* package
 locally. 
 
@@ -36,7 +50,9 @@ locally.
 To update the library run:
     
     go get -u github.com/MikeAustin71/pathfileopsgo/pathfileops
-        
+
+<a name="import"></a>
+## Import        
 After installation, you may import and reference the library
 as follows:
 
@@ -47,8 +63,25 @@ as follows:
 All of the active production files are located in directory path:
 
      github.com/MikeAustin71/pathfileopsgo/pathfileops
+
+
+## Version
+
+This is Version 1.5.0.
+
+This version significantly expands the capabilities of *DirMgr*, as
+well as expanding the read/write features for *FileMgr*. Unit Testing
+and code coverage have also been significantly expanded. 
+
+This version does NOT support *Go* modules.
+___    
+[Click To View Source Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops)    
+___
+
+<a name="primarytypes"></a>
+## Primary Types
       
-This package incorporate three primary types: 
+This package incorporates three primary types: 
     
     1. FileHelper
     
@@ -56,23 +89,27 @@ This package incorporate three primary types:
     
     3. FileMgr
 
+<a name="filehelper"></a>
 #### FileHelpler
 The type, *FileHelper* is located in directory *./pathfilego/pathfileops*.
 The source code is located in source file, *filehelper.go*. This type includes a variety
 of general utility functions for managing files and directories.
 
+<a name="dirmgr"></a>
 #### DirMgr
 The type, *DirMgr*, is located in directory *./pathfilego/pathfileops*.
 The source code is located in source file, *dirmanager.go*. Directory Manager
 is designed to manage file paths or directories. *DirMgr* is dependent on type *FileHelper*
 discussed above.
 
+<a name="filemgr"></a>
 #### FileMgr 
 The type, *FileMgr*, is located in directory *./pathfilego/pathfileopos*. 
 The source code is located in source file, *filemanager.go*. The File Manager
 type is designed to manage disc files. *FileMgr* is dependent on *FileHelper*
 and *DirMgr*, discussed above.
 
+<a name="collections"></a>
 ### Collections
 This library also provides collections to manage groups of file and directory
 managers.
@@ -84,6 +121,7 @@ managers.
 3. FileOpsCollection - Manages collections of operations performed on disk
  files.
  
+<a name="dependencies"></a> 
 ### Dependencies
 The three types discussed above are interdependent.
 
@@ -93,6 +131,7 @@ The three types discussed above are interdependent.
 
 3. *./pathfilego/pathfileops/filemanager.go*
 
+<a name="tests"></a>
 ## Tests
 This version includes 1,793 tests with a source code coverage of 82%.
 All tests are currently completing successfully as documented in the
@@ -100,26 +139,6 @@ following text file:
 
       '../pathfilego/pathfileops/xx_tests.txt'
 
-## Operating Systems
-This package was developed and tested on Windows, although the package
-was designed to operate on multiple operating systems including 
-Mac-OS, Linux and Windows.
-
-__`To date, the source code has only been tested on Windows.`__
-
- 
-## Version Number 1.5.0
-This version significantly expands the capabilities of *DirMgr*, as
-well as expanding the read/write features for *FileMgr*. Unit Testing
-and code coverage have also been significantly expanded.
-
-This version does NOT support *Go* modules.
- 
-___
-    
-[Click To View Source Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops)
-
-___    
 
  
 
