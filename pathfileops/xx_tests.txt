@@ -1,13 +1,123 @@
+=== RUN   TestDirectoryTreeInfo_CopyToDirectoryTree_01
+--- PASS: TestDirectoryTreeInfo_CopyToDirectoryTree_01 (4.51s)
+=== RUN   TestDirectoryTreeInfo_CopyToDirectoryTree_02
+--- PASS: TestDirectoryTreeInfo_CopyToDirectoryTree_02 (0.08s)
+=== RUN   TestDirectoryTreeInfo_CopyToDirectoryTree_03
+--- PASS: TestDirectoryTreeInfo_CopyToDirectoryTree_03 (0.08s)
 === RUN   TestCleanDir
 --- PASS: TestCleanDir (0.00s)
-=== RUN   TestChangeDir
---- PASS: TestChangeDir (0.00s)
+=== RUN   TestDirMgr_ChangeWorkingDir_01
+--- PASS: TestDirMgr_ChangeWorkingDir_01 (0.00s)
+=== RUN   TestDirMgr_ConsolidateErrors_01
+--- PASS: TestDirMgr_ConsolidateErrors_01 (0.00s)
+=== RUN   TestDirMgr_ConsolidateErrors_02
+--- PASS: TestDirMgr_ConsolidateErrors_02 (0.00s)
+=== RUN   TestDirMgr_ConsolidateErrors_03
+--- PASS: TestDirMgr_ConsolidateErrors_03 (0.00s)
+=== RUN   TestDirMgr_CopyDirectory_01
+--- PASS: TestDirMgr_CopyDirectory_01 (0.23s)
+=== RUN   TestDirMgr_CopyDirectory_02
+--- PASS: TestDirMgr_CopyDirectory_02 (0.00s)
+=== RUN   TestDirMgr_CopyDirectory_03
+--- PASS: TestDirMgr_CopyDirectory_03 (0.00s)
+=== RUN   TestDirMgr_CopyDirectory_04
+--- PASS: TestDirMgr_CopyDirectory_04 (0.00s)
+=== RUN   TestDirMgr_CopyDirectory_05
+--- PASS: TestDirMgr_CopyDirectory_05 (0.00s)
+=== RUN   TestDirMgr_CopyDirectory_06
+--- PASS: TestDirMgr_CopyDirectory_06 (0.13s)
+=== RUN   TestDirMgr_CopyDirectory_07
+--- PASS: TestDirMgr_CopyDirectory_07 (0.00s)
+=== RUN   TestDirMgr_CopyDirectoryTree_01
+--- PASS: TestDirMgr_CopyDirectoryTree_01 (0.91s)
+=== RUN   TestDirMgr_CopyDirectoryTree_02
+--- PASS: TestDirMgr_CopyDirectoryTree_02 (0.00s)
+=== RUN   TestDirMgr_CopyDirectoryTree_03
+--- PASS: TestDirMgr_CopyDirectoryTree_03 (0.00s)
+=== RUN   TestDirMgr_CopyDirectoryTree_04
+--- PASS: TestDirMgr_CopyDirectoryTree_04 (0.00s)
+=== RUN   TestDirMgr_CopyDirectoryTree_05
+--- PASS: TestDirMgr_CopyDirectoryTree_05 (0.02s)
+=== RUN   TestDirMgr_CopyDirectoryTree_06
+--- PASS: TestDirMgr_CopyDirectoryTree_06 (1.87s)
 === RUN   TestDirMgr_CopyIn_01
 --- PASS: TestDirMgr_CopyIn_01 (0.00s)
 === RUN   TestDirMgr_CopyOut_01
 --- PASS: TestDirMgr_CopyOut_01 (0.00s)
+=== RUN   TestDirMgr_CopySubDirectoryTree_01
+--- PASS: TestDirMgr_CopySubDirectoryTree_01 (2.94s)
+=== RUN   TestDirMgr_CopySubDirectoryTree_02
+--- PASS: TestDirMgr_CopySubDirectoryTree_02 (0.00s)
+=== RUN   TestDirMgr_CopySubDirectoryTree_03
+--- PASS: TestDirMgr_CopySubDirectoryTree_03 (0.00s)
+=== RUN   TestDirMgr_CopySubDirectoryTree_04
+--- PASS: TestDirMgr_CopySubDirectoryTree_04 (0.00s)
+=== RUN   TestDirMgr_CopySubDirectoryTree_05
+--- PASS: TestDirMgr_CopySubDirectoryTree_05 (0.16s)
+=== RUN   TestDirMgr_CopySubDirectoryTree_06
+--- PASS: TestDirMgr_CopySubDirectoryTree_06 (0.14s)
 === RUN   TestDirMgr_DeleteAll_01
---- PASS: TestDirMgr_DeleteAll_01 (0.02s)
+--- PASS: TestDirMgr_DeleteAll_01 (0.01s)
+=== RUN   TestDirMgr_DeleteAll_02
+--- PASS: TestDirMgr_DeleteAll_02 (0.00s)
+=== RUN   TestDirMgr_DeleteAllFilesInDir_01
+--- PASS: TestDirMgr_DeleteAllFilesInDir_01 (0.00s)
+=== RUN   TestDirMgr_DeleteAllFilesInDir_02
+--- PASS: TestDirMgr_DeleteAllFilesInDir_02 (0.00s)
+=== RUN   TestDirMgr_DeleteAllFilesInDir_03
+--- PASS: TestDirMgr_DeleteAllFilesInDir_03 (0.45s)
+=== RUN   TestDirMgr_DeleteAllSubDirectories_01
+--- PASS: TestDirMgr_DeleteAllSubDirectories_01 (0.78s)
+=== RUN   TestDirMgr_DeleteAllSubDirectories_02
+--- PASS: TestDirMgr_DeleteAllSubDirectories_02 (0.00s)
+=== RUN   TestDirMgr_DeleteAllSubDirectories_03
+--- PASS: TestDirMgr_DeleteAllSubDirectories_03 (0.00s)
+=== RUN   TestDirMgr_DeleteDirectoryTreeFiles_01
+--- PASS: TestDirMgr_DeleteDirectoryTreeFiles_01 (1.19s)
+=== RUN   TestDirMgr_DeleteDirectoryTreeFiles_02
+--- PASS: TestDirMgr_DeleteDirectoryTreeFiles_02 (0.00s)
+=== RUN   TestDirMgr_DeleteDirectoryTreeFiles_03
+--- PASS: TestDirMgr_DeleteDirectoryTreeFiles_03 (0.00s)
+=== RUN   TestDirMgr_DeleteDirectoryTreeFiles_04
+--- PASS: TestDirMgr_DeleteDirectoryTreeFiles_04 (0.82s)
+=== RUN   TestDirMgr_DeleteFilesByNamePattern_01
+--- PASS: TestDirMgr_DeleteFilesByNamePattern_01 (0.44s)
+=== RUN   TestDirMgr_DeleteFilesByNamePattern_02
+--- PASS: TestDirMgr_DeleteFilesByNamePattern_02 (0.00s)
+=== RUN   TestDirMgr_DeleteFilesByNamePattern_03
+--- PASS: TestDirMgr_DeleteFilesByNamePattern_03 (0.00s)
+=== RUN   TestDirMgr_DeleteFilesByNamePattern_04
+--- PASS: TestDirMgr_DeleteFilesByNamePattern_04 (0.00s)
+=== RUN   TestDirMgr_DeleteFilesByNamePattern_05
+--- PASS: TestDirMgr_DeleteFilesByNamePattern_05 (0.00s)
+=== RUN   TestDirMgr_DeleteFilesByNamePattern_06
+--- PASS: TestDirMgr_DeleteFilesByNamePattern_06 (0.69s)
+=== RUN   TestDirMgr_DeleteFilesBySelectionCriteria_01
+--- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_01 (0.33s)
+=== RUN   TestDirMgr_DeleteFilesBySelectionCriteria_02
+--- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_02 (1.60s)
+=== RUN   TestDirMgr_DeleteFilesBySelectionCriteria_03
+--- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_03 (1.48s)
+=== RUN   TestDirMgr_DeleteFilesBySelectionCriteria_04
+--- PASS: TestDirMgr_DeleteFilesBySelectionCriteria_04 (0.00s)
+=== RUN   TestDirMgr_DeleteSubDirectoryTreeFiles_01
+--- PASS: TestDirMgr_DeleteSubDirectoryTreeFiles_01 (0.55s)
+=== RUN   TestDirMgr_DeleteSubDirectoryTreeFiles_02
+--- PASS: TestDirMgr_DeleteSubDirectoryTreeFiles_02 (0.00s)
+=== RUN   TestDirMgr_DeleteSubDirectoryTreeFiles_03
+--- PASS: TestDirMgr_DeleteSubDirectoryTreeFiles_03 (0.32s)
+=== RUN   TestDirMgr_DoesAbsolutePathExist_01
+--- PASS: TestDirMgr_DoesAbsolutePathExist_01 (0.00s)
+=== RUN   TestDirMgr_DoesAbsolutePathExist_02
+--- PASS: TestDirMgr_DoesAbsolutePathExist_02 (0.00s)
+=== RUN   TestDirMgr_DoesPathExist_01
+--- PASS: TestDirMgr_DoesPathExist_01 (0.00s)
+=== RUN   TestDirMgr_DoesPathExist_02
+--- PASS: TestDirMgr_DoesPathExist_02 (0.00s)
+=== RUN   TestDirMgr_DoesThisDirectoryExist_01
+--- PASS: TestDirMgr_DoesThisDirectoryExist_01 (0.00s)
+=== RUN   TestDirMgr_DoesThisDirectoryExist_02
+--- PASS: TestDirMgr_DoesThisDirectoryExist_02 (0.00s)
 === RUN   TestDirMgr_Equal_01
 --- PASS: TestDirMgr_Equal_01 (0.00s)
 === RUN   TestDirMgr_Equal_02
@@ -18,48 +128,222 @@
 --- PASS: TestDirMgr_EqualAbsPaths_02 (0.00s)
 === RUN   TestDirMgr_EqualAbsPaths_03
 --- PASS: TestDirMgr_EqualAbsPaths_03 (0.00s)
+=== RUN   TestDirMgr_EqualAbsPaths_04
+--- PASS: TestDirMgr_EqualAbsPaths_04 (0.00s)
+=== RUN   TestDirMgr_EqualAbsPaths_05
+--- PASS: TestDirMgr_EqualAbsPaths_05 (0.00s)
+=== RUN   TestDirMgr_EqualAbsPaths_06
+--- PASS: TestDirMgr_EqualAbsPaths_06 (0.00s)
+=== RUN   TestDirMgr_EqualAbsPaths_07
+--- PASS: TestDirMgr_EqualAbsPaths_07 (0.00s)
 === RUN   TestDirMgr_EqualPaths_01
 --- PASS: TestDirMgr_EqualPaths_01 (0.00s)
 === RUN   TestDirMgr_EqualPaths_02
 --- PASS: TestDirMgr_EqualPaths_02 (0.00s)
 === RUN   TestDirMgr_EqualPaths_03
 --- PASS: TestDirMgr_EqualPaths_03 (0.00s)
+=== RUN   TestDirMgr_EqualPaths_04
+--- PASS: TestDirMgr_EqualPaths_04 (0.00s)
+=== RUN   TestDirMgr_EqualPaths_05
+--- PASS: TestDirMgr_EqualPaths_05 (0.00s)
 === RUN   TestDirMgr_ExecuteDirectoryFileOps_01
---- PASS: TestDirMgr_ExecuteDirectoryFileOps_01 (0.50s)
+--- PASS: TestDirMgr_ExecuteDirectoryFileOps_01 (0.27s)
+=== RUN   TestDirMgr_ExecuteDirectoryFileOps_02
+--- PASS: TestDirMgr_ExecuteDirectoryFileOps_02 (0.00s)
+=== RUN   TestDirMgr_ExecuteDirectoryFileOps_03
+--- PASS: TestDirMgr_ExecuteDirectoryFileOps_03 (0.00s)
+=== RUN   TestDirMgr_ExecuteDirectoryFileOps_04
+--- PASS: TestDirMgr_ExecuteDirectoryFileOps_04 (0.00s)
+=== RUN   TestDirMgr_ExecuteDirectoryFileOps_05
+--- PASS: TestDirMgr_ExecuteDirectoryFileOps_05 (0.00s)
 === RUN   TestDirMgr_ExecuteDirectoryTreeOps_01
---- PASS: TestDirMgr_ExecuteDirectoryTreeOps_01 (1.89s)
-=== RUN   TestDirMgr_GetAbsolutePathElements
---- PASS: TestDirMgr_GetAbsolutePathElements (0.00s)
+--- PASS: TestDirMgr_ExecuteDirectoryTreeOps_01 (1.23s)
+=== RUN   TestDirMgr_ExecuteDirectoryTreeOps_02
+--- PASS: TestDirMgr_ExecuteDirectoryTreeOps_02 (0.00s)
+=== RUN   TestDirMgr_ExecuteDirectoryTreeOps_03
+--- PASS: TestDirMgr_ExecuteDirectoryTreeOps_03 (0.00s)
+=== RUN   TestDirMgr_ExecuteDirectoryTreeOps_04
+--- PASS: TestDirMgr_ExecuteDirectoryTreeOps_04 (0.00s)
+=== RUN   TestDirMgr_ExecuteDirectoryTreeOps_05
+--- PASS: TestDirMgr_ExecuteDirectoryTreeOps_05 (0.00s)
+=== RUN   TestDirMgr_FindFilesByNamePattern_01
+--- PASS: TestDirMgr_FindFilesByNamePattern_01 (0.46s)
+=== RUN   TestDirMgr_FindFilesByNamePattern_02
+--- PASS: TestDirMgr_FindFilesByNamePattern_02 (4.02s)
+=== RUN   TestDirMgr_FindFilesByNamePattern_03
+--- PASS: TestDirMgr_FindFilesByNamePattern_03 (0.92s)
+=== RUN   TestDirMgr_FindFilesByNamePattern_04
+--- PASS: TestDirMgr_FindFilesByNamePattern_04 (0.71s)
+=== RUN   TestDirMgr_FindFilesByNamePattern_05
+--- PASS: TestDirMgr_FindFilesByNamePattern_05 (0.00s)
+=== RUN   TestDirMgr_FindFilesBySelectCriteria_01
+--- PASS: TestDirMgr_FindFilesBySelectCriteria_01 (0.70s)
+=== RUN   TestDirMgr_FindFilesBySelectCriteria_02
+--- PASS: TestDirMgr_FindFilesBySelectCriteria_02 (0.83s)
+=== RUN   TestDirMgr_FindFilesBySelectCriteria_03
+--- PASS: TestDirMgr_FindFilesBySelectCriteria_03 (0.00s)
+=== RUN   TestDirMgr_FindFilesBySelectCriteria_04
+--- PASS: TestDirMgr_FindFilesBySelectCriteria_04 (0.00s)
 === RUN   TestDirMgr_FindWalkDirFiles_01
---- PASS: TestDirMgr_FindWalkDirFiles_01 (0.17s)
+--- PASS: TestDirMgr_FindWalkDirFiles_01 (0.42s)
 === RUN   TestDirMgr_FindWalkDirFiles_02
---- PASS: TestDirMgr_FindWalkDirFiles_02 (0.05s)
+--- PASS: TestDirMgr_FindWalkDirFiles_02 (0.21s)
+=== RUN   TestDirMgr_FindWalkDirFiles_03
+--- PASS: TestDirMgr_FindWalkDirFiles_03 (0.36s)
+=== RUN   TestDirMgr_FindWalkDirFiles_04
+--- PASS: TestDirMgr_FindWalkDirFiles_04 (0.29s)
 === RUN   TestDirMgr_FindWalkDirFiles_05
---- PASS: TestDirMgr_FindWalkDirFiles_05 (0.13s)
+--- PASS: TestDirMgr_FindWalkDirFiles_05 (0.00s)
 === RUN   TestDirMgr_FindWalkDirFiles_06
---- PASS: TestDirMgr_FindWalkDirFiles_06 (0.15s)
+--- PASS: TestDirMgr_FindWalkDirFiles_06 (0.00s)
+=== RUN   TestDirMgr_FindWalkSubDirFiles_01
+--- PASS: TestDirMgr_FindWalkSubDirFiles_01 (0.01s)
+=== RUN   TestDirMgr_FindWalkSubDirFiles_02
+--- PASS: TestDirMgr_FindWalkSubDirFiles_02 (0.00s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_01
---- PASS: TestDirMgr_DeleteWalkDirFiles_01 (0.14s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_01 (0.18s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_02
---- PASS: TestDirMgr_DeleteWalkDirFiles_02 (0.13s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_02 (0.17s)
+=== RUN   TestDirMgr_DeleteWalkDirFiles_03
+--- PASS: TestDirMgr_DeleteWalkDirFiles_03 (0.26s)
+=== RUN   TestDirMgr_DeleteWalkDirFiles_04
+--- PASS: TestDirMgr_DeleteWalkDirFiles_04 (0.14s)
+=== RUN   TestDirMgr_DeleteWalkDirFiles_05
+--- PASS: TestDirMgr_DeleteWalkDirFiles_05 (0.29s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_06
---- PASS: TestDirMgr_DeleteWalkDirFiles_06 (0.13s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_06 (0.25s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_07
---- PASS: TestDirMgr_DeleteWalkDirFiles_07 (0.14s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_07 (0.15s)
 === RUN   TestDirMgr_DeleteWalkDirFiles_08
---- PASS: TestDirMgr_DeleteWalkDirFiles_08 (0.13s)
-=== RUN   TestDirMgr_GetParentDirMgr_01
---- PASS: TestDirMgr_GetParentDirMgr_01 (0.00s)
-=== RUN   TestDirMgr_GetParentDirMgr_02
---- PASS: TestDirMgr_GetParentDirMgr_02 (0.00s)
+--- PASS: TestDirMgr_DeleteWalkDirFiles_08 (0.17s)
+=== RUN   TestDirMgr_DeleteWalkDirFiles_09
+--- PASS: TestDirMgr_DeleteWalkDirFiles_09 (0.00s)
+=== RUN   TestDirMgr_DeleteWalkDirFiles_10
+--- PASS: TestDirMgr_DeleteWalkDirFiles_10 (0.24s)
+=== RUN   TestDirMgr_GetAbsolutePath_01
+--- PASS: TestDirMgr_GetAbsolutePath_01 (0.00s)
+=== RUN   TestDirMgr_GetAbsolutePathLc_01
+--- PASS: TestDirMgr_GetAbsolutePathLc_01 (0.00s)
+=== RUN   TestDirMgr_GetAbsolutePathLc_02
+--- PASS: TestDirMgr_GetAbsolutePathLc_02 (0.00s)
+=== RUN   TestDirMgr_GetAbsolutePathElements_01
+--- PASS: TestDirMgr_GetAbsolutePathElements_01 (0.00s)
+=== RUN   TestDirMgr_GetAbsolutePathElements_02
+--- PASS: TestDirMgr_GetAbsolutePathElements_02 (0.00s)
+=== RUN   TestDirMgr_GetAbsolutePathWithSeparator_01
+--- PASS: TestDirMgr_GetAbsolutePathWithSeparator_01 (0.00s)
+=== RUN   TestDirMgr_GetAbsolutePathWithSeparatorLc_01
+--- PASS: TestDirMgr_GetAbsolutePathWithSeparatorLc_01 (0.00s)
+=== RUN   TestDirMgr_GetAbsolutePathWithSeparatorLc_02
+--- PASS: TestDirMgr_GetAbsolutePathWithSeparatorLc_02 (0.00s)
+=== RUN   TestDirMgr_GetDirectoryTree_01
+--- PASS: TestDirMgr_GetDirectoryTree_01 (0.02s)
+=== RUN   TestDirMgr_GetDirectoryTree_02
+--- PASS: TestDirMgr_GetDirectoryTree_02 (0.00s)
+=== RUN   TestDirMgr_GetDirectoryTree_03
+--- PASS: TestDirMgr_GetDirectoryTree_03 (0.00s)
+=== RUN   TestDirMgr_GetDirectoryTreeStats_01
+--- PASS: TestDirMgr_GetDirectoryTreeStats_01 (0.01s)
+=== RUN   TestDirMgr_GetDirectoryTreeStats_02
+--- PASS: TestDirMgr_GetDirectoryTreeStats_02 (0.00s)
+=== RUN   TestDirMgr_GetDirectoryTreeStats_03
+--- PASS: TestDirMgr_GetDirectoryTreeStats_03 (0.00s)
+=== RUN   TestDirMgr_GetDirPermissionTextCodes_01
+--- PASS: TestDirMgr_GetDirPermissionTextCodes_01 (0.00s)
+=== RUN   TestDirMgr_GetDirPermissionTextCodes_02
+--- PASS: TestDirMgr_GetDirPermissionTextCodes_02 (0.00s)
+=== RUN   TestDirMgr_GetDirPermissionTextCodes_03
+--- PASS: TestDirMgr_GetDirPermissionTextCodes_03 (0.00s)
+=== RUN   TestDirMgr_GetFileInfoPlus_01
+--- PASS: TestDirMgr_GetFileInfoPlus_01 (0.00s)
+=== RUN   TestDirMgr_GetFileInfoPlus_02
+--- PASS: TestDirMgr_GetFileInfoPlus_02 (0.00s)
+=== RUN   TestDirMgr_GetFileInfoPlus_03
+--- PASS: TestDirMgr_GetFileInfoPlus_03 (0.00s)
 === RUN   TestDirMgr_GetNumberOfAbsPathElements_01
 --- PASS: TestDirMgr_GetNumberOfAbsPathElements_01 (0.00s)
 === RUN   TestDirMgr_GetNumberOfAbsPathElements_02
 --- PASS: TestDirMgr_GetNumberOfAbsPathElements_02 (0.00s)
 === RUN   TestDirMgr_GetNumberOfAbsPathElements_03
 --- PASS: TestDirMgr_GetNumberOfAbsPathElements_03 (0.00s)
+=== RUN   TestDirMgr_GetOriginalPath_01
+--- PASS: TestDirMgr_GetOriginalPath_01 (0.00s)
+=== RUN   TestDirMgr_GetParentDirMgr_01
+--- PASS: TestDirMgr_GetParentDirMgr_01 (0.00s)
+=== RUN   TestDirMgr_GetParentDirMgr_02
+--- PASS: TestDirMgr_GetParentDirMgr_02 (0.00s)
+=== RUN   TestDirMgr_GetParentDirMgr_03
+--- PASS: TestDirMgr_GetParentDirMgr_03 (0.00s)
+=== RUN   TestDirMgr_GetParentPath_01
+--- PASS: TestDirMgr_GetParentPath_01 (0.00s)
+=== RUN   TestDirMgr_GetPath_01
+--- PASS: TestDirMgr_GetPath_01 (0.00s)
+=== RUN   TestDirMgr_GetPathWithSeparator_01
+--- PASS: TestDirMgr_GetPathWithSeparator_01 (0.00s)
+=== RUN   TestDirMgr_GetPathWithSeparator_02
+--- PASS: TestDirMgr_GetPathWithSeparator_02 (0.00s)
+=== RUN   TestDirMgr_GetPathWithSeparator_03
+--- PASS: TestDirMgr_GetPathWithSeparator_03 (0.00s)
+=== RUN   TestDirMgr_GetVolumeName_01
+--- PASS: TestDirMgr_GetVolumeName_01 (0.00s)
+=== RUN   TestDirMgr_IsDirMgrValid_01
+--- PASS: TestDirMgr_IsDirMgrValid_01 (0.00s)
+=== RUN   TestDirMgr_IsInitialized_01
+--- PASS: TestDirMgr_IsInitialized_01 (0.00s)
+=== RUN   TestDirMgr_IsInitialized_02
+--- PASS: TestDirMgr_IsInitialized_02 (0.00s)
+=== RUN   TestDirMgr_IsParentPathPopulated_01
+--- PASS: TestDirMgr_IsParentPathPopulated_01 (0.00s)
+=== RUN   TestDirMgr_IsParentPathPopulated_02
+--- PASS: TestDirMgr_IsParentPathPopulated_02 (0.00s)
+=== RUN   TestDirMgr_IsPathPopulated_01
+--- PASS: TestDirMgr_IsPathPopulated_01 (0.00s)
+=== RUN   TestDirMgr_IsPathPopulated_02
+--- PASS: TestDirMgr_IsPathPopulated_02 (0.00s)
+=== RUN   TestDirMgr_IsVolumeNamePopulated_01
+--- PASS: TestDirMgr_IsVolumeNamePopulated_01 (0.00s)
+=== RUN   TestDirMgr_IsVolumeNamePopulated_02
+--- PASS: TestDirMgr_IsVolumeNamePopulated_02 (0.00s)
 === RUN   TestDirMgr_MakeDir_01
 --- PASS: TestDirMgr_MakeDir_01 (0.00s)
+=== RUN   TestDirMgr_MakeDir_02
+--- PASS: TestDirMgr_MakeDir_02 (0.00s)
+=== RUN   TestDirMgr_MakeDirWithPermission_01
+--- PASS: TestDirMgr_MakeDirWithPermission_01 (0.00s)
+=== RUN   TestDirMgr_MakeDirWithPermission_02
+--- PASS: TestDirMgr_MakeDirWithPermission_02 (0.00s)
+=== RUN   TestDirMgr_MakeDirWithPermission_03
+--- PASS: TestDirMgr_MakeDirWithPermission_03 (0.00s)
+=== RUN   TestDirMgr_MakeDirWithPermission_04
+--- PASS: TestDirMgr_MakeDirWithPermission_04 (0.00s)
+=== RUN   TestDirMgr_MoveDirectory_01
+--- PASS: TestDirMgr_MoveDirectory_01 (0.53s)
+=== RUN   TestDirMgr_MoveDirectory_02
+--- PASS: TestDirMgr_MoveDirectory_02 (0.19s)
+=== RUN   TestDirMgr_MoveDirectory_03
+--- PASS: TestDirMgr_MoveDirectory_03 (0.23s)
+=== RUN   TestDirMgr_MoveDirectory_04
+--- PASS: TestDirMgr_MoveDirectory_04 (0.00s)
+=== RUN   TestDirMgr_MoveDirectory_05
+--- PASS: TestDirMgr_MoveDirectory_05 (0.23s)
+=== RUN   TestDirMgr_MoveDirectory_06
+--- PASS: TestDirMgr_MoveDirectory_06 (0.61s)
+=== RUN   TestDirMgr_MoveDirectoryTree_01
+--- PASS: TestDirMgr_MoveDirectoryTree_01 (0.63s)
+=== RUN   TestDirMgr_MoveDirectoryTree_02
+--- PASS: TestDirMgr_MoveDirectoryTree_02 (0.30s)
+=== RUN   TestDirMgr_MoveDirectoryTree_03
+--- PASS: TestDirMgr_MoveDirectoryTree_03 (0.38s)
+=== RUN   TestDirMgr_MoveDirectoryTree_04
+--- PASS: TestDirMgr_MoveDirectoryTree_04 (0.00s)
+=== RUN   TestDirMgr_MoveSubDirectoryTree_01
+--- PASS: TestDirMgr_MoveSubDirectoryTree_01 (0.40s)
+=== RUN   TestDirMgr_MoveSubDirectoryTree_02
+--- PASS: TestDirMgr_MoveSubDirectoryTree_02 (0.21s)
+=== RUN   TestDirMgr_MoveSubDirectoryTree_03
+--- PASS: TestDirMgr_MoveSubDirectoryTree_03 (0.19s)
+=== RUN   TestDirMgr_MoveSubDirectoryTree_04
+--- PASS: TestDirMgr_MoveSubDirectoryTree_04 (0.00s)
 === RUN   TestDirMgr_New_01
 --- PASS: TestDirMgr_New_01 (0.00s)
 === RUN   TestDirMgr_New_02
@@ -78,36 +362,116 @@
 --- PASS: TestDirMgr_New_08 (0.00s)
 === RUN   TestDirMgr_New_09
 --- PASS: TestDirMgr_New_09 (0.00s)
+=== RUN   TestDirMgr_New_10
+--- PASS: TestDirMgr_New_10 (0.00s)
+=== RUN   TestDirMgr_New_11
+--- PASS: TestDirMgr_New_11 (0.00s)
+=== RUN   TestDirMgr_New_12
+--- PASS: TestDirMgr_New_12 (0.00s)
+=== RUN   TestDirMgr_New_13
+--- PASS: TestDirMgr_New_13 (0.00s)
+=== RUN   TestDirMgr_New_14
+--- PASS: TestDirMgr_New_14 (0.00s)
+=== RUN   TestDirMgr_New_15
+--- PASS: TestDirMgr_New_15 (0.00s)
+=== RUN   TestDirMgr_NewFromDirMgrFileInfo_01
+--- PASS: TestDirMgr_NewFromDirMgrFileInfo_01 (0.00s)
+=== RUN   TestDirMgr_NewFromDirMgrFileInfo_02
+--- PASS: TestDirMgr_NewFromDirMgrFileInfo_02 (0.00s)
+=== RUN   TestDirMgr_NewFromDirMgrFileInfo_03
+--- PASS: TestDirMgr_NewFromDirMgrFileInfo_03 (0.00s)
+=== RUN   TestDirMgr_NewFromFileInfo_01
+--- PASS: TestDirMgr_NewFromFileInfo_01 (0.00s)
+=== RUN   TestDirMgr_NewFromFileInfo_02
+--- PASS: TestDirMgr_NewFromFileInfo_02 (0.00s)
+=== RUN   TestDirMgr_NewFromFileInfo_03
+--- PASS: TestDirMgr_NewFromFileInfo_03 (0.00s)
+=== RUN   TestDirMgr_NewFromFileInfo_04
+--- PASS: TestDirMgr_NewFromFileInfo_04 (0.00s)
+=== RUN   TestDirMgr_NewFromFileInfo_05
+--- PASS: TestDirMgr_NewFromFileInfo_05 (0.00s)
+=== RUN   TestDirMgr_NewFromFileMgr_01
+--- PASS: TestDirMgr_NewFromFileMgr_01 (0.00s)
+=== RUN   TestDirMgr_NewFromFileMgr_02
+--- PASS: TestDirMgr_NewFromFileMgr_02 (0.00s)
+=== RUN   TestDirMgr_NewFromFileMgr_03
+--- PASS: TestDirMgr_NewFromFileMgr_03 (0.00s)
+=== RUN   TestDirMgr_NewFromKnownPathDirectoryName_01
+--- PASS: TestDirMgr_NewFromKnownPathDirectoryName_01 (0.00s)
+=== RUN   TestDirMgr_NewFromKnownPathDirectoryName_02
+--- PASS: TestDirMgr_NewFromKnownPathDirectoryName_02 (0.00s)
+=== RUN   TestDirMgr_NewFromKnownPathDirectoryName_03
+--- PASS: TestDirMgr_NewFromKnownPathDirectoryName_03 (0.00s)
+=== RUN   TestDirMgr_NewFromKnownPathDirectoryName_04
+--- PASS: TestDirMgr_NewFromKnownPathDirectoryName_04 (0.00s)
+=== RUN   TestDirMgr_NewFromKnownPathDirectoryName_05
+--- PASS: TestDirMgr_NewFromKnownPathDirectoryName_05 (0.00s)
+=== RUN   TestDirMgr_NewFromKnownPathDirectoryName_06
+--- PASS: TestDirMgr_NewFromKnownPathDirectoryName_06 (0.00s)
+=== RUN   TestDirMgr_NewFromKnownPathDirectoryName_07
+--- PASS: TestDirMgr_NewFromKnownPathDirectoryName_07 (0.00s)
+=== RUN   TestDirMgr_NewFromKnownPathDirectoryName_08
+--- PASS: TestDirMgr_NewFromKnownPathDirectoryName_08 (0.00s)
+=== RUN   TestDirMgr_NewFromKnownPathDirectoryName_09
+--- PASS: TestDirMgr_NewFromKnownPathDirectoryName_09 (0.00s)
+=== RUN   TestDirMgr_SetDirMgr_01
+--- PASS: TestDirMgr_SetDirMgr_01 (0.00s)
+=== RUN   TestDirMgr_SetDirMgr_02
+--- PASS: TestDirMgr_SetDirMgr_02 (0.00s)
+=== RUN   TestDirMgr_SetDirMgrFromKnownPathDirName_01
+--- PASS: TestDirMgr_SetDirMgrFromKnownPathDirName_01 (0.00s)
+=== RUN   TestDirMgr_SetDirMgrFromKnownPathDirName_02
+--- PASS: TestDirMgr_SetDirMgrFromKnownPathDirName_02 (0.00s)
+=== RUN   TestDirMgr_SetDirMgrFromKnownPathDirName_03
+--- PASS: TestDirMgr_SetDirMgrFromKnownPathDirName_03 (0.00s)
+=== RUN   TestDirMgr_SetDirMgrFromKnownPathDirName_04
+--- PASS: TestDirMgr_SetDirMgrFromKnownPathDirName_04 (0.00s)
+=== RUN   TestDirMgr_SetDirMgrFromKnownPathDirName_05
+--- PASS: TestDirMgr_SetDirMgrFromKnownPathDirName_05 (0.00s)
+=== RUN   TestDirMgr_SetDirMgrFromKnownPathDirName_06
+--- PASS: TestDirMgr_SetDirMgrFromKnownPathDirName_06 (0.00s)
+=== RUN   TestDirMgr_SetDirMgrFromKnownPathDirName_07
+--- PASS: TestDirMgr_SetDirMgrFromKnownPathDirName_07 (0.00s)
+=== RUN   TestDirMgr_SetDirMgrWithFileInfo_01
+--- PASS: TestDirMgr_SetDirMgrWithFileInfo_01 (0.00s)
+=== RUN   TestDirMgr_SetDirMgrWithFileInfo_02
+--- PASS: TestDirMgr_SetDirMgrWithFileInfo_02 (0.00s)
+=== RUN   TestDirMgr_SetDirMgrWithFileInfo_03
+--- PASS: TestDirMgr_SetDirMgrWithFileInfo_03 (0.00s)
+=== RUN   TestDirMgr_SetPermissions_01
+--- PASS: TestDirMgr_SetPermissions_01 (0.00s)
+=== RUN   TestDirMgr_SetPermissions_02
+--- PASS: TestDirMgr_SetPermissions_02 (0.00s)
+=== RUN   TestDirMgr_SetPermissions_03
+--- PASS: TestDirMgr_SetPermissions_03 (0.00s)
+=== RUN   TestDirMgr_SetPermissions_04
+--- PASS: TestDirMgr_SetPermissions_04 (0.00s)
 === RUN   TestDirMgr_SubstituteBaseDir_01
 --- PASS: TestDirMgr_SubstituteBaseDir_01 (0.00s)
 === RUN   TestDirMgr_SubstituteBaseDir_02
 --- PASS: TestDirMgr_SubstituteBaseDir_02 (0.00s)
+=== RUN   TestDirMgr_SubstituteBaseDir_03
+--- PASS: TestDirMgr_SubstituteBaseDir_03 (0.00s)
+=== RUN   TestDirMgr_SubstituteBaseDir_04
+--- PASS: TestDirMgr_SubstituteBaseDir_04 (0.00s)
+=== RUN   TestDirMgr_SubstituteBaseDir_05
+--- PASS: TestDirMgr_SubstituteBaseDir_05 (0.00s)
 === RUN   TestDirMgrCollection_AddDirMgr_01
 --- PASS: TestDirMgrCollection_AddDirMgr_01 (0.00s)
-=== RUN   TestDirMgrCollection_AddDirMgrCollection
---- PASS: TestDirMgrCollection_AddDirMgrCollection (0.00s)
-=== RUN   TestDirMgrCollection_GetDirMgrArray_01
---- PASS: TestDirMgrCollection_GetDirMgrArray_01 (0.00s)
-=== RUN   TestDirMgrCollection_InsertDirMgrAtIndex_01
---- PASS: TestDirMgrCollection_InsertDirMgrAtIndex_01 (0.00s)
-=== RUN   TestDirMgrCollection_InsertDirMgrAtIndex_02
---- PASS: TestDirMgrCollection_InsertDirMgrAtIndex_02 (0.00s)
-=== RUN   TestDirMgrCollection_InsertDirMgrAtIndex_03
---- PASS: TestDirMgrCollection_InsertDirMgrAtIndex_03 (0.00s)
-=== RUN   TestDirMgrCollection_InsertDirMgrAtIndex_04
---- PASS: TestDirMgrCollection_InsertDirMgrAtIndex_04 (0.00s)
-=== RUN   TestDirMgrCollection_InsertDirMgrAtIndex_05
---- PASS: TestDirMgrCollection_InsertDirMgrAtIndex_05 (0.00s)
-=== RUN   TestDirMgrCollection_PopLastDirMgr_01
---- PASS: TestDirMgrCollection_PopLastDirMgr_01 (0.00s)
-=== RUN   TestDirMgrCollection_PopFirstDirMgr_01
---- PASS: TestDirMgrCollection_PopFirstDirMgr_01 (0.00s)
-=== RUN   TestDirMgrCollection_PopDirMgrAtIndex
---- PASS: TestDirMgrCollection_PopDirMgrAtIndex (0.00s)
-=== RUN   TestDirMgrCollection_PeekDirMgrAtIndex_01
---- PASS: TestDirMgrCollection_PeekDirMgrAtIndex_01 (0.00s)
-=== RUN   TestDirMgrCollection_FindDirectories_01
---- PASS: TestDirMgrCollection_FindDirectories_01 (0.05s)
+=== RUN   TestDirMgrCollection_AddDirMgrByKnownPathDirName_01
+--- PASS: TestDirMgrCollection_AddDirMgrByKnownPathDirName_01 (0.00s)
+=== RUN   TestDirMgrCollection_AddDirMgrByPathNameStr_01
+--- PASS: TestDirMgrCollection_AddDirMgrByPathNameStr_01 (0.00s)
+=== RUN   TestDirMgrCollection_AddDirMgrCollection_01
+--- PASS: TestDirMgrCollection_AddDirMgrCollection_01 (0.00s)
+=== RUN   TestDirMgrCollection_AddDirMgrCollection_02
+--- PASS: TestDirMgrCollection_AddDirMgrCollection_02 (0.00s)
+=== RUN   TestDirMgrCollection_AddFileInfo_01
+--- PASS: TestDirMgrCollection_AddFileInfo_01 (0.00s)
+=== RUN   TestDirMgrCollection_CopyOut_01
+--- PASS: TestDirMgrCollection_CopyOut_01 (0.00s)
+=== RUN   TestDirMgrCollection_CopyOut_02
+--- PASS: TestDirMgrCollection_CopyOut_02 (0.00s)
 === RUN   TestDirMgrCollection_DeleteAtIndex_01
 --- PASS: TestDirMgrCollection_DeleteAtIndex_01 (0.00s)
 === RUN   TestDirMgrCollection_DeleteAtIndex_02
@@ -118,8 +482,258 @@
 --- PASS: TestDirMgrCollection_DeleteAtIndex_04 (0.00s)
 === RUN   TestDirMgrCollection_DeleteAtIndex_05
 --- PASS: TestDirMgrCollection_DeleteAtIndex_05 (0.00s)
+=== RUN   TestDirMgrCollection_DeleteAtIndex_06
+--- PASS: TestDirMgrCollection_DeleteAtIndex_06 (0.00s)
+=== RUN   TestDirMgrCollection_DeleteAtIndex_07
+--- PASS: TestDirMgrCollection_DeleteAtIndex_07 (0.00s)
+=== RUN   TestDirMgrCollection_DeleteAtIndex_08
+--- PASS: TestDirMgrCollection_DeleteAtIndex_08 (0.00s)
+=== RUN   TestDirMgrCollection_FindDirectories_01
+--- PASS: TestDirMgrCollection_FindDirectories_01 (0.01s)
+=== RUN   TestDirMgrCollection_FindDirectories_02
+--- PASS: TestDirMgrCollection_FindDirectories_02 (0.00s)
 === RUN   TestDirMgrCollection_GetFileMgrAtIndex_01
 --- PASS: TestDirMgrCollection_GetFileMgrAtIndex_01 (0.00s)
+=== RUN   TestDirMgrCollection_GetDirMgrAtIndex_01
+--- PASS: TestDirMgrCollection_GetDirMgrAtIndex_01 (0.00s)
+=== RUN   TestDirMgrCollection_GetDirMgrAtIndex_02
+--- PASS: TestDirMgrCollection_GetDirMgrAtIndex_02 (0.00s)
+=== RUN   TestDirMgrCollection_GetDirMgrAtIndex_03
+--- PASS: TestDirMgrCollection_GetDirMgrAtIndex_03 (0.00s)
+=== RUN   TestDirMgrCollection_GetDirMgrAtIndex_04
+--- PASS: TestDirMgrCollection_GetDirMgrAtIndex_04 (0.00s)
+=== RUN   TestDirMgrCollection_GetDirMgrAtIndex_05
+--- PASS: TestDirMgrCollection_GetDirMgrAtIndex_05 (0.00s)
+=== RUN   TestDirMgrCollection_GetDirMgrAtIndex_06
+--- PASS: TestDirMgrCollection_GetDirMgrAtIndex_06 (0.00s)
+=== RUN   TestDirMgrCollection_GetDirMgrArray_01
+--- PASS: TestDirMgrCollection_GetDirMgrArray_01 (0.00s)
+=== RUN   TestDirMgrCollection_GetDirMgrArray_02
+--- PASS: TestDirMgrCollection_GetDirMgrArray_02 (0.00s)
+=== RUN   TestDirMgrCollection_GetNumOfDirs
+--- PASS: TestDirMgrCollection_GetNumOfDirs (0.00s)
+=== RUN   TestDirMgrCollection_InsertDirMgrAtIndex_01
+--- PASS: TestDirMgrCollection_InsertDirMgrAtIndex_01 (0.00s)
+=== RUN   TestDirMgrCollection_InsertDirMgrAtIndex_02
+--- PASS: TestDirMgrCollection_InsertDirMgrAtIndex_02 (0.00s)
+=== RUN   TestDirMgrCollection_InsertDirMgrAtIndex_03
+--- PASS: TestDirMgrCollection_InsertDirMgrAtIndex_03 (0.00s)
+=== RUN   TestDirMgrCollection_InsertDirMgrAtIndex_04
+--- PASS: TestDirMgrCollection_InsertDirMgrAtIndex_04 (0.00s)
+=== RUN   TestDirMgrCollection_InsertDirMgrAtIndex_05
+--- PASS: TestDirMgrCollection_InsertDirMgrAtIndex_05 (0.00s)
+=== RUN   TestDirMgrCollection_InsertDirMgrAtIndex_06
+--- PASS: TestDirMgrCollection_InsertDirMgrAtIndex_06 (0.00s)
+=== RUN   TestDirMgrCollection_InsertDirMgrAtIndex_07
+--- PASS: TestDirMgrCollection_InsertDirMgrAtIndex_07 (0.00s)
+=== RUN   TestDirMgrCollection_PeekDirMgrAtIndex_01
+--- PASS: TestDirMgrCollection_PeekDirMgrAtIndex_01 (0.00s)
+=== RUN   TestDirMgrCollection_PeekDirMgrAtIndex_02
+--- PASS: TestDirMgrCollection_PeekDirMgrAtIndex_02 (0.00s)
+=== RUN   TestDirMgrCollection_PeekDirMgrAtIndex_03
+--- PASS: TestDirMgrCollection_PeekDirMgrAtIndex_03 (0.00s)
+=== RUN   TestDirMgrCollection_PeekDirMgrAtIndex_04
+--- PASS: TestDirMgrCollection_PeekDirMgrAtIndex_04 (0.00s)
+=== RUN   TestDirMgrCollection_PeekFirstDirMgr_01
+--- PASS: TestDirMgrCollection_PeekFirstDirMgr_01 (0.00s)
+=== RUN   TestDirMgrCollection_PeekFirstDirMgr_02
+--- PASS: TestDirMgrCollection_PeekFirstDirMgr_02 (0.00s)
+=== RUN   TestDirMgrCollection_PeekFirstDirMgr_03
+--- PASS: TestDirMgrCollection_PeekFirstDirMgr_03 (0.00s)
+=== RUN   TestDirMgrCollection_PeekLastDirMgr_01
+--- PASS: TestDirMgrCollection_PeekLastDirMgr_01 (0.00s)
+=== RUN   TestDirMgrCollection_PeekLastDirMgr_02
+--- PASS: TestDirMgrCollection_PeekLastDirMgr_02 (0.00s)
+=== RUN   TestDirMgrCollection_PeekLastDirMgr_03
+--- PASS: TestDirMgrCollection_PeekLastDirMgr_03 (0.00s)
+=== RUN   TestDirMgrCollection_PopFirstDirMgr_01
+--- PASS: TestDirMgrCollection_PopFirstDirMgr_01 (0.00s)
+=== RUN   TestDirMgrCollection_PopFirstDirMgr_02
+--- PASS: TestDirMgrCollection_PopFirstDirMgr_02 (0.00s)
+=== RUN   TestDirMgrCollection_PopLastDirMgr_01
+--- PASS: TestDirMgrCollection_PopLastDirMgr_01 (0.00s)
+=== RUN   TestDirMgrCollection_PopLastDirMgr_02
+--- PASS: TestDirMgrCollection_PopLastDirMgr_02 (0.00s)
+=== RUN   TestDirMgrCollection_PopLastDirMgr_03
+--- PASS: TestDirMgrCollection_PopLastDirMgr_03 (0.00s)
+=== RUN   TestDirMgrCollection_PopLastDirMgr_04
+--- PASS: TestDirMgrCollection_PopLastDirMgr_04 (0.00s)
+=== RUN   TestDirMgrCollection_PopDirMgrAtIndex_01
+--- PASS: TestDirMgrCollection_PopDirMgrAtIndex_01 (0.00s)
+=== RUN   TestDirMgrCollection_PopDirMgrAtIndex_02
+--- PASS: TestDirMgrCollection_PopDirMgrAtIndex_02 (0.00s)
+=== RUN   TestDirMgrCollection_PopDirMgrAtIndex_03
+--- PASS: TestDirMgrCollection_PopDirMgrAtIndex_03 (0.00s)
+=== RUN   TestDirMgrCollection_PopDirMgrAtIndex_04
+--- PASS: TestDirMgrCollection_PopDirMgrAtIndex_04 (0.00s)
+=== RUN   TestFileAccessControl_CopyIn_01
+--- PASS: TestFileAccessControl_CopyIn_01 (0.00s)
+=== RUN   TestFileAccessControl_CopyIn_02
+--- PASS: TestFileAccessControl_CopyIn_02 (0.00s)
+=== RUN   TestFileAccessControl_CopyOut_01
+--- PASS: TestFileAccessControl_CopyOut_01 (0.00s)
+=== RUN   TestFileAccessControl_CopyOut_02
+--- PASS: TestFileAccessControl_CopyOut_02 (0.00s)
+=== RUN   TestFileAccessControl_Empty_01
+--- PASS: TestFileAccessControl_Empty_01 (0.00s)
+=== RUN   TestFileAccessControl_Empty_02
+--- PASS: TestFileAccessControl_Empty_02 (0.00s)
+=== RUN   TestFileAccessControl_Equal_01
+--- PASS: TestFileAccessControl_Equal_01 (0.00s)
+=== RUN   TestFileAccessControl_Equal_02
+--- PASS: TestFileAccessControl_Equal_02 (0.00s)
+=== RUN   TestFileAccessControl_GetCompositeFileOpenCode_01
+--- PASS: TestFileAccessControl_GetCompositeFileOpenCode_01 (0.00s)
+=== RUN   TestFileAccessControl_GetCompositeFileOpenCode_02
+--- PASS: TestFileAccessControl_GetCompositeFileOpenCode_02 (0.00s)
+=== RUN   TestFileAccessControl_GetCompositeFileOpenCode_03
+--- PASS: TestFileAccessControl_GetCompositeFileOpenCode_03 (0.00s)
+=== RUN   TestFileAccessControl_GetCompositeFileOpenCode_04
+--- PASS: TestFileAccessControl_GetCompositeFileOpenCode_04 (0.00s)
+=== RUN   TestFileAccessControl_GetCompositePermissionCode01
+--- PASS: TestFileAccessControl_GetCompositePermissionCode01 (0.00s)
+=== RUN   TestFileAccessControl_GetCompositePermissionCode02
+--- PASS: TestFileAccessControl_GetCompositePermissionCode02 (0.00s)
+=== RUN   TestFileAccessControl_GetCompositePermissionCode03
+--- PASS: TestFileAccessControl_GetCompositePermissionCode03 (0.00s)
+=== RUN   TestFileAccessControl_GetCompositePermissionCode04
+--- PASS: TestFileAccessControl_GetCompositePermissionCode04 (0.00s)
+=== RUN   TestFileAccessControl_GetCompositePermissionCode05
+--- PASS: TestFileAccessControl_GetCompositePermissionCode05 (0.00s)
+=== RUN   TestFileAccessControl_GetCompositePermissionModeText_01
+--- PASS: TestFileAccessControl_GetCompositePermissionModeText_01 (0.00s)
+=== RUN   TestFileAccessControl_GetCompositePermissionModeText_02
+--- PASS: TestFileAccessControl_GetCompositePermissionModeText_02 (0.00s)
+=== RUN   TestFileAccessControl_GetCompositePermissionModeText_03
+--- PASS: TestFileAccessControl_GetCompositePermissionModeText_03 (0.00s)
+=== RUN   TestFileAccessControl_GetCompositePermissionModeText_04
+--- PASS: TestFileAccessControl_GetCompositePermissionModeText_04 (0.00s)
+=== RUN   TestFileAccessControl_GetFileOpenAndPermissionCodes_01
+--- PASS: TestFileAccessControl_GetFileOpenAndPermissionCodes_01 (0.00s)
+=== RUN   TestFileAccessControl_GetFileOpenAndPermissionCodes_02
+--- PASS: TestFileAccessControl_GetFileOpenAndPermissionCodes_02 (0.00s)
+=== RUN   TestFileAccessControl_GetFileOpenAndPermissionCodes_03
+--- PASS: TestFileAccessControl_GetFileOpenAndPermissionCodes_03 (0.00s)
+=== RUN   TestFileAccessControl_GetFileOpenAndPermissionCodes_04
+--- PASS: TestFileAccessControl_GetFileOpenAndPermissionCodes_04 (0.00s)
+=== RUN   TestFileAccessControl_GetFileOpenAndPermissionCodes_05
+--- PASS: TestFileAccessControl_GetFileOpenAndPermissionCodes_05 (0.00s)
+=== RUN   TestFileAccessControl_GetFileOpenAndPermissionCodes_06
+--- PASS: TestFileAccessControl_GetFileOpenAndPermissionCodes_06 (0.00s)
+=== RUN   TestFileAccessControl_GetFileOpenAndPermissionCodes_07
+--- PASS: TestFileAccessControl_GetFileOpenAndPermissionCodes_07 (0.00s)
+=== RUN   TestFileAccessControl_GetFileOpenAndPermissionCodes_08
+--- PASS: TestFileAccessControl_GetFileOpenAndPermissionCodes_08 (0.00s)
+=== RUN   TestFileAccessControl_GetFileOpenConfig_01
+--- PASS: TestFileAccessControl_GetFileOpenConfig_01 (0.00s)
+=== RUN   TestFileAccessControl_GetFileOpenConfig_02
+--- PASS: TestFileAccessControl_GetFileOpenConfig_02 (0.00s)
+=== RUN   TestFileAccessControl_GetFileOpenConfig_03
+--- PASS: TestFileAccessControl_GetFileOpenConfig_03 (0.00s)
+=== RUN   TestFileAccessControl_GetFileOpenConfig_04
+--- PASS: TestFileAccessControl_GetFileOpenConfig_04 (0.00s)
+=== RUN   TestFileAccessControl_GetFilePermissionConfig_01
+--- PASS: TestFileAccessControl_GetFilePermissionConfig_01 (0.00s)
+=== RUN   TestFileAccessControl_GetFilePermissionConfig_02
+--- PASS: TestFileAccessControl_GetFilePermissionConfig_02 (0.00s)
+=== RUN   TestFileAccessControl_GetFilePermissionConfig_03
+--- PASS: TestFileAccessControl_GetFilePermissionConfig_03 (0.00s)
+=== RUN   TestFileAccessControl_GetFilePermissionConfig_04
+--- PASS: TestFileAccessControl_GetFilePermissionConfig_04 (0.00s)
+=== RUN   TestFileAccessControl_New_01
+--- PASS: TestFileAccessControl_New_01 (0.00s)
+=== RUN   TestFileAccessControl_New_02
+--- PASS: TestFileAccessControl_New_02 (0.00s)
+=== RUN   TestFileAccessControl_NewInitialized_01
+--- PASS: TestFileAccessControl_NewInitialized_01 (0.00s)
+=== RUN   TestFileAccessControl_NewWriteOnlyTruncateAccess
+--- PASS: TestFileAccessControl_NewWriteOnlyTruncateAccess (0.00s)
+=== RUN   TestFileAccessControl_SetFileOpenCodes_01
+--- PASS: TestFileAccessControl_SetFileOpenCodes_01 (0.00s)
+=== RUN   TestFileAccessControl_SetFileOpenCodes_02
+--- PASS: TestFileAccessControl_SetFileOpenCodes_02 (0.00s)
+=== RUN   TestFileAccessControl_SetFileOpenCodes_03
+--- PASS: TestFileAccessControl_SetFileOpenCodes_03 (0.00s)
+=== RUN   TestFileAccessControl_SetFileOpenCodes_04
+--- PASS: TestFileAccessControl_SetFileOpenCodes_04 (0.00s)
+=== RUN   TestFileAccessControl_SetFilePermissionCodes_01
+--- PASS: TestFileAccessControl_SetFilePermissionCodes_01 (0.00s)
+=== RUN   TestFileAccessControl_SetFilePermissionCodes_02
+--- PASS: TestFileAccessControl_SetFilePermissionCodes_02 (0.00s)
+=== RUN   TestFileAccessControl_SetFilePermissionCodes_03
+--- PASS: TestFileAccessControl_SetFilePermissionCodes_03 (0.00s)
+=== RUN   TestFileAccessControl_SetFilePermissionCodes_04
+--- PASS: TestFileAccessControl_SetFilePermissionCodes_04 (0.00s)
+=== RUN   TestFileHelper_AddPathSeparatorToEndOfPathStr_01
+--- PASS: TestFileHelper_AddPathSeparatorToEndOfPathStr_01 (0.00s)
+=== RUN   TestFileHelper_AddPathSeparatorToEndOfPathStr_02
+--- PASS: TestFileHelper_AddPathSeparatorToEndOfPathStr_02 (0.00s)
+=== RUN   TestFileHelper_AddPathSeparatorToEndOfPathStr_03
+--- PASS: TestFileHelper_AddPathSeparatorToEndOfPathStr_03 (0.00s)
+=== RUN   TestFileHelper_AddPathSeparatorToEndOfPathStr_04
+--- PASS: TestFileHelper_AddPathSeparatorToEndOfPathStr_04 (0.00s)
+=== RUN   TestFileHelper_AddPathSeparatorToEndOfPathStr_05
+--- PASS: TestFileHelper_AddPathSeparatorToEndOfPathStr_05 (0.00s)
+=== RUN   TestFileHelper_AreSameFile_01
+--- PASS: TestFileHelper_AreSameFile_01 (0.00s)
+=== RUN   TestFileHelper_AreSameFile_02
+--- PASS: TestFileHelper_AreSameFile_02 (0.01s)
+=== RUN   TestFileHelper_AreSameFile_03
+--- PASS: TestFileHelper_AreSameFile_03 (0.00s)
+=== RUN   TestFileHelper_AreSameFile_04
+--- PASS: TestFileHelper_AreSameFile_04 (0.00s)
+=== RUN   TestFileHelper_AreSameFile_05
+--- PASS: TestFileHelper_AreSameFile_05 (0.00s)
+=== RUN   TestFileHelper_AreSameFile_06
+--- PASS: TestFileHelper_AreSameFile_06 (0.00s)
+=== RUN   TestFileHelper_AreSameFile_07
+--- PASS: TestFileHelper_AreSameFile_07 (0.00s)
+=== RUN   TestFileHelper_AreSameFile_08
+--- PASS: TestFileHelper_AreSameFile_08 (0.00s)
+=== RUN   TestFileHelper_AreSameFile_09
+--- PASS: TestFileHelper_AreSameFile_09 (0.00s)
+=== RUN   TestFileHelper_AreSameFile_10
+--- PASS: TestFileHelper_AreSameFile_10 (0.00s)
+=== RUN   TestFileHelper_AreSameFile_11
+--- PASS: TestFileHelper_AreSameFile_11 (0.00s)
+=== RUN   TestFileHelper_AreSameFile_12
+--- PASS: TestFileHelper_AreSameFile_12 (0.00s)
+=== RUN   TestFileHelper_AreSameFile_13
+--- PASS: TestFileHelper_AreSameFile_13 (0.00s)
+=== RUN   TestFileHelper_AreSameFile_14
+--- PASS: TestFileHelper_AreSameFile_14 (0.00s)
+=== RUN   TestFileHelper_ChangeFileMode_01
+--- PASS: TestFileHelper_ChangeFileMode_01 (0.00s)
+=== RUN   TestFileHelper_ChangeFileMode_02
+--- PASS: TestFileHelper_ChangeFileMode_02 (0.00s)
+=== RUN   TestFileHelper_ChangeFileMode_04
+--- PASS: TestFileHelper_ChangeFileMode_04 (0.00s)
+=== RUN   TestFileHelper_ChangeFileMode_05
+--- PASS: TestFileHelper_ChangeFileMode_05 (0.10s)
+=== RUN   TestFileHelper_ChangeFileMode_06
+--- PASS: TestFileHelper_ChangeFileMode_06 (0.04s)
+=== RUN   TestFileHelper_ChangeFileTimes_01
+--- PASS: TestFileHelper_ChangeFileTimes_01 (0.05s)
+=== RUN   TestFileHelper_ChangeFileTimes_02
+--- PASS: TestFileHelper_ChangeFileTimes_02 (0.00s)
+=== RUN   TestFileHelper_ChangeFileTimes_03
+--- PASS: TestFileHelper_ChangeFileTimes_03 (0.00s)
+=== RUN   TestFileHelper_ChangeFileTimes_04
+--- PASS: TestFileHelper_ChangeFileTimes_04 (0.00s)
+=== RUN   TestFileHelper_ChangeFileTimes_05
+--- PASS: TestFileHelper_ChangeFileTimes_05 (0.00s)
+=== RUN   TestFileHelper_ChangeFileTimes_06
+--- PASS: TestFileHelper_ChangeFileTimes_06 (0.04s)
+=== RUN   TestFileHelper_ChangeFileTimes_07
+--- PASS: TestFileHelper_ChangeFileTimes_07 (0.09s)
+=== RUN   TestFileHelper_ChangeWorkingDir_01
+--- PASS: TestFileHelper_ChangeWorkingDir_01 (0.00s)
+=== RUN   TestFileHelper_ChangeWorkingDir_02
+--- PASS: TestFileHelper_ChangeWorkingDir_02 (0.00s)
+=== RUN   TestFileHelper_ChangeWorkingDir_03
+--- PASS: TestFileHelper_ChangeWorkingDir_03 (0.00s)
+=== RUN   TestFileHelper_ChangeWorkingDir_04
+--- PASS: TestFileHelper_ChangeWorkingDir_04 (0.00s)
 === RUN   TestFileHelper_CleanDirStr_01
 --- PASS: TestFileHelper_CleanDirStr_01 (0.00s)
 === RUN   TestFileHelper_CleanDirStr_02
@@ -140,20 +754,180 @@
 --- PASS: TestFileHelper_CleanDirStr_09 (0.00s)
 === RUN   TestFileHelper_CleanDirStr_10
 --- PASS: TestFileHelper_CleanDirStr_10 (0.00s)
+=== RUN   TestFileHelper_CleanDirStr_11
+--- PASS: TestFileHelper_CleanDirStr_11 (0.00s)
+=== RUN   TestFileHelper_CleanDirStr_12
+--- PASS: TestFileHelper_CleanDirStr_12 (0.00s)
 === RUN   TestFileHelper_CleanFileNameExtStr_01
 --- PASS: TestFileHelper_CleanFileNameExtStr_01 (0.00s)
 === RUN   TestFileHelper_CleanFileNameExtStr_02
 --- PASS: TestFileHelper_CleanFileNameExtStr_02 (0.00s)
 === RUN   TestFileHelper_CleanFileNameExtStr_03
 --- PASS: TestFileHelper_CleanFileNameExtStr_03 (0.00s)
-=== RUN   TestFileHelper_CopyFile_01
---- PASS: TestFileHelper_CopyFile_01 (0.08s)
+=== RUN   TestFileHelper_CleanFileNameExtStr_04
+--- PASS: TestFileHelper_CleanFileNameExtStr_04 (0.00s)
+=== RUN   TestFileHelper_CleanFileNameExtStr_05
+--- PASS: TestFileHelper_CleanFileNameExtStr_05 (0.00s)
+=== RUN   TestFileHelper_CleanFileNameExtStr_06
+--- PASS: TestFileHelper_CleanFileNameExtStr_06 (0.00s)
+=== RUN   TestFileHelper_CleanFileNameExtStr_07
+--- PASS: TestFileHelper_CleanFileNameExtStr_07 (0.00s)
+=== RUN   TestFileHelper_CleanFileNameExtStr_08
+--- PASS: TestFileHelper_CleanFileNameExtStr_08 (0.00s)
+=== RUN   TestFileHelper_ConsolidateErrors_01
+--- PASS: TestFileHelper_ConsolidateErrors_01 (0.00s)
+=== RUN   TestFileHelper_ConsolidateErrors_02
+--- PASS: TestFileHelper_ConsolidateErrors_02 (0.00s)
+=== RUN   TestFileHelper_ConvertOctalToDecimal_01
+--- PASS: TestFileHelper_ConvertOctalToDecimal_01 (0.00s)
+=== RUN   TestFileHelper_ConvertOctalToDecimal_02
+--- PASS: TestFileHelper_ConvertOctalToDecimal_02 (0.00s)
+=== RUN   TestFileHelper_ConvertDecimalToOctal_01
+--- PASS: TestFileHelper_ConvertDecimalToOctal_01 (0.00s)
+=== RUN   TestFileHelper_ConvertDecimalToOctal_02
+--- PASS: TestFileHelper_ConvertDecimalToOctal_02 (0.00s)
+=== RUN   TestFileHelper_CopyFileByIo_01
+--- PASS: TestFileHelper_CopyFileByIo_01 (0.00s)
+=== RUN   TestFileHelper_CopyFileByIo_02
+--- PASS: TestFileHelper_CopyFileByIo_02 (0.00s)
+=== RUN   TestFileHelper_CopyFileByIo_03
+--- PASS: TestFileHelper_CopyFileByIo_03 (0.00s)
+=== RUN   TestFileHelper_CopyFileByIo_04
+--- PASS: TestFileHelper_CopyFileByIo_04 (0.00s)
+=== RUN   TestFileHelper_CopyFileByIo_05
+--- PASS: TestFileHelper_CopyFileByIo_05 (0.00s)
+=== RUN   TestFileHelper_CopyFileByIo_06
+--- PASS: TestFileHelper_CopyFileByIo_06 (0.00s)
+=== RUN   TestFileHelper_CopyFileByIo_07
+--- PASS: TestFileHelper_CopyFileByIo_07 (0.00s)
+=== RUN   TestFileHelper_CopyFileByIo_08
+--- PASS: TestFileHelper_CopyFileByIo_08 (0.00s)
+=== RUN   TestFileHelper_CopyFileByIo_09
+--- PASS: TestFileHelper_CopyFileByIo_09 (0.03s)
+=== RUN   TestFileHelper_CopyFileByIo_10
+--- PASS: TestFileHelper_CopyFileByIo_10 (0.02s)
+=== RUN   TestFileHelper_CopyFileByIo_11
+--- PASS: TestFileHelper_CopyFileByIo_11 (0.09s)
+=== RUN   TestFileHelper_CopyFileByIoByLink_01
+--- PASS: TestFileHelper_CopyFileByIoByLink_01 (0.03s)
+=== RUN   TestFileHelper_CopyFileByIoByLink_02
+--- PASS: TestFileHelper_CopyFileByIoByLink_02 (0.00s)
+=== RUN   TestFileHelper_CopyFileByIoByLink_03
+--- PASS: TestFileHelper_CopyFileByIoByLink_03 (0.00s)
+=== RUN   TestFileHelper_CopyFileByLinkByIo_01
+--- PASS: TestFileHelper_CopyFileByLinkByIo_01 (0.07s)
+=== RUN   TestFileHelper_CopyFileByLinkByIo_02
+--- PASS: TestFileHelper_CopyFileByLinkByIo_02 (0.00s)
+=== RUN   TestFileHelper_CopyFileByLinkByIo_03
+--- PASS: TestFileHelper_CopyFileByLinkByIo_03 (0.01s)
+=== RUN   TestFileHelper_CopyFileByLink_01
+--- PASS: TestFileHelper_CopyFileByLink_01 (0.00s)
+=== RUN   TestFileHelper_CopyFileByLink_02
+--- PASS: TestFileHelper_CopyFileByLink_02 (0.00s)
+=== RUN   TestFileHelper_CopyFileByLink_03
+--- PASS: TestFileHelper_CopyFileByLink_03 (0.00s)
+=== RUN   TestFileHelper_CopyFileByLink_04
+--- PASS: TestFileHelper_CopyFileByLink_04 (0.00s)
+=== RUN   TestFileHelper_CopyFileByLink_05
+--- PASS: TestFileHelper_CopyFileByLink_05 (0.00s)
+=== RUN   TestFileHelper_CopyFileByLink_06
+--- PASS: TestFileHelper_CopyFileByLink_06 (0.00s)
+=== RUN   TestFileHelper_CopyFileByLink_07
+--- PASS: TestFileHelper_CopyFileByLink_07 (0.00s)
+=== RUN   TestFileHelper_CopyFileByLink_08
+--- PASS: TestFileHelper_CopyFileByLink_08 (0.00s)
+=== RUN   TestFileHelper_CopyFileByLink_09
+--- PASS: TestFileHelper_CopyFileByLink_09 (0.00s)
+=== RUN   TestFileHelper_CopyFileByLink_10
+--- PASS: TestFileHelper_CopyFileByLink_10 (0.00s)
+=== RUN   TestFileHelper_CopyFileByLink_11
+--- PASS: TestFileHelper_CopyFileByLink_11 (0.02s)
+=== RUN   TestFileHelper_CopyFileByLink_12
+--- PASS: TestFileHelper_CopyFileByLink_12 (0.03s)
+=== RUN   TestFileHelper_CopyFileByLink_13
+--- PASS: TestFileHelper_CopyFileByLink_13 (0.00s)
+=== RUN   TestFileHelper_CopyFileByLink_14
+--- PASS: TestFileHelper_CopyFileByLink_14 (0.00s)
 === RUN   TestFileHelper_CreateFile_01
 --- PASS: TestFileHelper_CreateFile_01 (0.00s)
 === RUN   TestFileHelper_CreateFile_02
---- PASS: TestFileHelper_CreateFile_02 (0.04s)
-=== RUN   TestFileHelper_ExtractBlankFileExt
---- PASS: TestFileHelper_ExtractBlankFileExt (0.00s)
+--- PASS: TestFileHelper_CreateFile_02 (0.01s)
+=== RUN   TestFileHelper_CreateFile_03
+--- PASS: TestFileHelper_CreateFile_03 (0.00s)
+=== RUN   TestFileHelper_CreateFile_04
+--- PASS: TestFileHelper_CreateFile_04 (0.00s)
+=== RUN   TestFileHelper_CreateFile_05
+--- PASS: TestFileHelper_CreateFile_05 (0.00s)
+=== RUN   TestFileHelper_CreateFile_06
+--- PASS: TestFileHelper_CreateFile_06 (0.00s)
+=== RUN   TestFileHelper_DeleteDirFile_01
+--- PASS: TestFileHelper_DeleteDirFile_01 (0.00s)
+=== RUN   TestFileHelper_DeleteDirFile_02
+--- PASS: TestFileHelper_DeleteDirFile_02 (0.00s)
+=== RUN   TestFileHelper_DeleteDirPathAll_01
+--- PASS: TestFileHelper_DeleteDirPathAll_01 (0.00s)
+=== RUN   TestFileHelper_DeleteDirPathAll_02
+--- PASS: TestFileHelper_DeleteDirPathAll_02 (0.00s)
+=== RUN   TestFileHelper_DeleteDirPathAll_03
+--- PASS: TestFileHelper_DeleteDirPathAll_03 (0.00s)
+=== RUN   TestFileHelper_DeleteDirPathAll_04
+--- PASS: TestFileHelper_DeleteDirPathAll_04 (0.00s)
+=== RUN   TestFileHelper_DeleteDirPathAll_05
+--- PASS: TestFileHelper_DeleteDirPathAll_05 (0.15s)
+=== RUN   TestFileHelper_DoesFileExist_01
+--- PASS: TestFileHelper_DoesFileExist_01 (0.00s)
+=== RUN   TestFileHelper_DoesFileExist_02
+--- PASS: TestFileHelper_DoesFileExist_02 (0.00s)
+=== RUN   TestFileHelper_DoesFileInfoExist_01
+--- PASS: TestFileHelper_DoesFileInfoExist_01 (0.00s)
+=== RUN   TestFileHelper_DoesFileInfoExist_02
+--- PASS: TestFileHelper_DoesFileInfoExist_02 (0.00s)
+=== RUN   TestFileHelper_DoesFileInfoExist_03
+--- PASS: TestFileHelper_DoesFileInfoExist_03 (0.00s)
+=== RUN   TestFileHelper_DoesFileInfoExist_04
+--- PASS: TestFileHelper_DoesFileInfoExist_04 (0.00s)
+=== RUN   TestFileHelper_DeleteFilesWalkDirectory_01
+--- PASS: TestFileHelper_DeleteFilesWalkDirectory_01 (3.18s)
+=== RUN   TestFileHelper_DeleteFilesWalkDirectory_02
+--- PASS: TestFileHelper_DeleteFilesWalkDirectory_02 (3.44s)
+=== RUN   TestFileHelper_DeleteFilesWalkDirectory_03
+--- PASS: TestFileHelper_DeleteFilesWalkDirectory_03 (0.00s)
+=== RUN   TestFileHelper_DoesStringEndWithPathSeparator_01
+--- PASS: TestFileHelper_DoesStringEndWithPathSeparator_01 (0.00s)
+=== RUN   TestFileHelper_DoesStringEndWithPathSeparator_02
+--- PASS: TestFileHelper_DoesStringEndWithPathSeparator_02 (0.00s)
+=== RUN   TestFileHelper_DoesStringEndWithPathSeparator_03
+--- PASS: TestFileHelper_DoesStringEndWithPathSeparator_03 (0.00s)
+=== RUN   TestFileHelper_DoesStringEndWithPathSeparator_04
+--- PASS: TestFileHelper_DoesStringEndWithPathSeparator_04 (0.00s)
+=== RUN   TestFileHelper_DoesStringEndWithPathSeparator_05
+--- PASS: TestFileHelper_DoesStringEndWithPathSeparator_05 (0.00s)
+=== RUN   TestFileHelper_DoesThisFileExist_01
+--- PASS: TestFileHelper_DoesThisFileExist_01 (0.00s)
+=== RUN   TestFileHelper_DoesThisFileExist_02
+--- PASS: TestFileHelper_DoesThisFileExist_02 (0.00s)
+=== RUN   TestFileHelper_DoesThisFileExist_03
+--- PASS: TestFileHelper_DoesThisFileExist_03 (0.00s)
+=== RUN   TestFileHelper_DoesThisFileExist_04
+--- PASS: TestFileHelper_DoesThisFileExist_04 (0.00s)
+=== RUN   TestFileHelper_DoesThisFileExist_05
+--- PASS: TestFileHelper_DoesThisFileExist_05 (0.00s)
+=== RUN   TestFileHelper_DoesThisFileExist_06
+--- PASS: TestFileHelper_DoesThisFileExist_06 (0.00s)
+=== RUN   TestFileHelper_FindFilesInPath_01
+--- PASS: TestFileHelper_FindFilesInPath_01 (0.19s)
+=== RUN   TestFileHelper_FindFilesInPath_02
+--- PASS: TestFileHelper_FindFilesInPath_02 (1.24s)
+=== RUN   TestFileHelper_FindFilesInPath_03
+--- PASS: TestFileHelper_FindFilesInPath_03 (0.00s)
+=== RUN   TestFileHelper_FindFilesInPath_04
+--- PASS: TestFileHelper_FindFilesInPath_04 (0.00s)
+=== RUN   TestFileHelper_FindFilesInPath_05
+--- PASS: TestFileHelper_FindFilesInPath_05 (0.00s)
+=== RUN   TestFileHelper_FindFilesInPath_06
+--- PASS: TestFileHelper_FindFilesInPath_06 (0.00s)
+=== RUN   TestFileHelper_FindFilesInPath_07
+--- PASS: TestFileHelper_FindFilesInPath_07 (0.00s)
 === RUN   TestFileHelper_FilterFileName_01
 --- PASS: TestFileHelper_FilterFileName_01 (0.00s)
 === RUN   TestFileHelper_FilterFileName_02
@@ -176,10 +950,30 @@
 --- PASS: TestFileHelper_FilterFileName_10 (0.00s)
 === RUN   TestFileHelper_FilterFileName_11
 --- PASS: TestFileHelper_FilterFileName_11 (0.00s)
-=== RUN   TestFileHelper_FindFilesInPath_01
---- PASS: TestFileHelper_FindFilesInPath_01 (0.29s)
-=== RUN   TestFileHelper_FindFilesInPath_02
---- PASS: TestFileHelper_FindFilesInPath_02 (1.63s)
+=== RUN   TestFileHelper_FilterFileName_12
+--- PASS: TestFileHelper_FilterFileName_12 (0.00s)
+=== RUN   TestFileHelper_FindFilesWalkDirectory_01
+--- PASS: TestFileHelper_FindFilesWalkDirectory_01 (0.05s)
+=== RUN   TestFileHelper_FindFilesWalkDirectory_02
+--- PASS: TestFileHelper_FindFilesWalkDirectory_02 (0.04s)
+=== RUN   TestFileHelper_FindFilesWalkDirectory_03
+--- PASS: TestFileHelper_FindFilesWalkDirectory_03 (0.00s)
+=== RUN   TestFileHelper_FindFilesWalkDirectory_04
+--- PASS: TestFileHelper_FindFilesWalkDirectory_04 (0.00s)
+=== RUN   TestFileHelper_FindFilesWalkDirectory_05
+--- PASS: TestFileHelper_FindFilesWalkDirectory_05 (0.00s)
+=== RUN   TestFileHelper_FindFilesWalkDirectory_06
+--- PASS: TestFileHelper_FindFilesWalkDirectory_06 (0.00s)
+=== RUN   TestFileHelper_GetAbsPathFromFilePath_01
+--- PASS: TestFileHelper_GetAbsPathFromFilePath_01 (0.00s)
+=== RUN   TestFileHelper_GetAbsPathFromFilePath_02
+--- PASS: TestFileHelper_GetAbsPathFromFilePath_02 (0.00s)
+=== RUN   TestFileHelper_GetDotSeparatorIndexesInPathStr_01
+--- PASS: TestFileHelper_GetDotSeparatorIndexesInPathStr_01 (0.00s)
+=== RUN   TestFileHelper_GetDotSeparatorIndexesInPathStr_02
+--- PASS: TestFileHelper_GetDotSeparatorIndexesInPathStr_02 (0.00s)
+=== RUN   TestFileHelper_GetExecutablePathFileName_01
+--- PASS: TestFileHelper_GetExecutablePathFileName_01 (0.00s)
 === RUN   TestFileHelper_GetFileExtension_01
 --- PASS: TestFileHelper_GetFileExtension_01 (0.00s)
 === RUN   TestFileHelper_GetFileExtension_02
@@ -198,6 +992,32 @@
 --- PASS: TestFileHelper_GetFileExtension_08 (0.00s)
 === RUN   TestFileHelper_GetFileExtension_09
 --- PASS: TestFileHelper_GetFileExtension_09 (0.00s)
+=== RUN   TestFileHelper_GetFileExtension_10
+--- PASS: TestFileHelper_GetFileExtension_10 (0.00s)
+=== RUN   TestFileHelper_GetFileExtension_11
+--- PASS: TestFileHelper_GetFileExtension_11 (0.00s)
+=== RUN   TestFileHelper_GetFileInfoFromPath_01
+--- PASS: TestFileHelper_GetFileInfoFromPath_01 (0.00s)
+=== RUN   TestFileHelper_GetFileInfoFromPath_02
+--- PASS: TestFileHelper_GetFileInfoFromPath_02 (0.00s)
+=== RUN   TestFileHelper_GetFileInfoFromPath_03
+--- PASS: TestFileHelper_GetFileInfoFromPath_03 (0.00s)
+=== RUN   TestFileHelper_GetFileLastModificationDate_01
+--- PASS: TestFileHelper_GetFileLastModificationDate_01 (0.00s)
+=== RUN   TestFileHelper_GetFileLastModificationDate_02
+--- PASS: TestFileHelper_GetFileLastModificationDate_02 (0.00s)
+=== RUN   TestFileHelper_GetFileLastModificationDate_03
+--- PASS: TestFileHelper_GetFileLastModificationDate_03 (0.00s)
+=== RUN   TestFileHelper_GetFileLastModificationDate_04
+--- PASS: TestFileHelper_GetFileLastModificationDate_04 (0.00s)
+=== RUN   TestFileHelper_GetFileMode_01
+--- PASS: TestFileHelper_GetFileMode_01 (0.00s)
+=== RUN   TestFileHelper_GetFileMode_02
+--- PASS: TestFileHelper_GetFileMode_02 (0.00s)
+=== RUN   TestFileHelper_GetFileMode_03
+--- PASS: TestFileHelper_GetFileMode_03 (0.00s)
+=== RUN   TestFileHelper_GetFileMode_04
+--- PASS: TestFileHelper_GetFileMode_04 (0.00s)
 === RUN   TestFileHelper_GetFileNameWithExt_01
 --- PASS: TestFileHelper_GetFileNameWithExt_01 (0.00s)
 === RUN   TestFileHelper_GetFileNameWithExt_02
@@ -216,10 +1036,8 @@
 --- PASS: TestFileHelper_GetFileNameWithExt_08 (0.00s)
 === RUN   TestFileHelper_GetFileNameWithExt_09
 --- PASS: TestFileHelper_GetFileNameWithExt_09 (0.00s)
-=== RUN   TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_01
---- PASS: TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_01 (0.00s)
-=== RUN   TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_02
---- PASS: TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_02 (0.00s)
+=== RUN   TestFileHelper_GetFileNameWithExt_10
+--- PASS: TestFileHelper_GetFileNameWithExt_10 (0.00s)
 === RUN   TestFileHelper_GetFileNameWithoutExt_01
 --- PASS: TestFileHelper_GetFileNameWithoutExt_01 (0.00s)
 === RUN   TestFileHelper_GetFileNameWithoutExt_02
@@ -232,6 +1050,30 @@
 --- PASS: TestFileHelper_GetFileNameWithoutExt_05 (0.00s)
 === RUN   TestFileHelper_GetFileNameWithoutExt_06
 --- PASS: TestFileHelper_GetFileNameWithoutExt_06 (0.00s)
+=== RUN   TestFileHelper_GetFileNameWithoutExt_07
+--- PASS: TestFileHelper_GetFileNameWithoutExt_07 (0.00s)
+=== RUN   TestFileHelper_GetFileNameWithoutExt_08
+--- PASS: TestFileHelper_GetFileNameWithoutExt_08 (0.00s)
+=== RUN   TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_01
+--- PASS: TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_01 (0.00s)
+=== RUN   TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_02
+--- PASS: TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_02 (0.00s)
+=== RUN   TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_03
+--- PASS: TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_03 (0.00s)
+=== RUN   TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_04
+--- PASS: TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_04 (0.00s)
+=== RUN   TestFileHelper_GetLastPathElement_01
+--- PASS: TestFileHelper_GetLastPathElement_01 (0.00s)
+=== RUN   TestFileHelper_GetLastPathElement_02
+--- PASS: TestFileHelper_GetLastPathElement_02 (0.00s)
+=== RUN   TestFileHelper_GetLastPathElement_03
+--- PASS: TestFileHelper_GetLastPathElement_03 (0.00s)
+=== RUN   TestFileHelper_GetLastPathElement_04
+--- PASS: TestFileHelper_GetLastPathElement_04 (0.00s)
+=== RUN   TestFileHelper_GetLastPathElement_05
+--- PASS: TestFileHelper_GetLastPathElement_05 (0.00s)
+=== RUN   TestFileHelper_GetLastPathElement_06
+--- PASS: TestFileHelper_GetLastPathElement_06 (0.00s)
 === RUN   TestFileHelper_GetPathFromPathFileName_01
 --- PASS: TestFileHelper_GetPathFromPathFileName_01 (0.00s)
 === RUN   TestFileHelper_GetPathFromPathFileName_02
@@ -256,6 +1098,10 @@
 --- PASS: TestFileHelper_GetPathFromPathFileName_11 (0.00s)
 === RUN   TestFileHelper_GetPathFromPathFileName_12
 --- PASS: TestFileHelper_GetPathFromPathFileName_12 (0.00s)
+=== RUN   TestFileHelper_GetPathFromPathFileName_13
+--- PASS: TestFileHelper_GetPathFromPathFileName_13 (0.00s)
+=== RUN   TestFileHelper_GetPathFromPathFileName_14
+--- PASS: TestFileHelper_GetPathFromPathFileName_14 (0.00s)
 === RUN   TestFileHelper_GetPathAndFileNameExt_01
 --- PASS: TestFileHelper_GetPathAndFileNameExt_01 (0.00s)
 === RUN   TestFileHelper_GetPathAndFileNameExt_02
@@ -264,48 +1110,464 @@
 --- PASS: TestFileHelper_GetPathAndFileNameExt_03 (0.00s)
 === RUN   TestFileHelper_GetPathAndFileNameExt_04
 --- PASS: TestFileHelper_GetPathAndFileNameExt_04 (0.00s)
-=== RUN   TestFileHelper_GetFileLastModificationDate
---- PASS: TestFileHelper_GetFileLastModificationDate (0.00s)
-=== RUN   TestFileHelper_IsAbsolutePath
---- PASS: TestFileHelper_IsAbsolutePath (0.00s)
+=== RUN   TestFileHelper_GetPathAndFileNameExt_05
+--- PASS: TestFileHelper_GetPathAndFileNameExt_05 (0.00s)
+=== RUN   TestFileHelper_GetPathAndFileNameExt_06
+--- PASS: TestFileHelper_GetPathAndFileNameExt_06 (0.00s)
+=== RUN   TestFileHelper_GetPathSeparatorIndexesInPathStr_01
+--- PASS: TestFileHelper_GetPathSeparatorIndexesInPathStr_01 (0.00s)
+=== RUN   TestFileHelper_GetPathSeparatorIndexesInPathStr_02
+--- PASS: TestFileHelper_GetPathSeparatorIndexesInPathStr_02 (0.00s)
+=== RUN   TestFileHelper_GetVolumeName_01
+--- PASS: TestFileHelper_GetVolumeName_01 (0.00s)
+=== RUN   TestFileHelper_GetVolumeName_02
+--- PASS: TestFileHelper_GetVolumeName_02 (0.00s)
+=== RUN   TestFileHelper_GetVolumeName_03
+--- PASS: TestFileHelper_GetVolumeName_03 (0.00s)
+=== RUN   TestFileHelper_GetVolumeName_04
+--- PASS: TestFileHelper_GetVolumeName_04 (0.00s)
+=== RUN   TestFileHelper_GetVolumeName_05
+--- PASS: TestFileHelper_GetVolumeName_05 (0.00s)
+=== RUN   TestFileHelper_IsAbsolutePath_01
+--- PASS: TestFileHelper_IsAbsolutePath_01 (0.00s)
+=== RUN   TestFileHelper_IsAbsolutePath_02
+--- PASS: TestFileHelper_IsAbsolutePath_02 (0.00s)
+=== RUN   TestFileHelper_IsAbsolutePath_03
+--- PASS: TestFileHelper_IsAbsolutePath_03 (0.00s)
+=== RUN   TestFileHelper_IsPathFileString_01
+--- PASS: TestFileHelper_IsPathFileString_01 (0.00s)
+=== RUN   TestFileHelper_IsPathFileString_02
+--- PASS: TestFileHelper_IsPathFileString_02 (0.00s)
+=== RUN   TestFileHelper_IsPathFileString_03
+--- PASS: TestFileHelper_IsPathFileString_03 (0.00s)
+=== RUN   TestFileHelper_IsPathFileString_04
+--- PASS: TestFileHelper_IsPathFileString_04 (0.00s)
+=== RUN   TestFileHelper_IsPathFileString_05
+--- PASS: TestFileHelper_IsPathFileString_05 (0.00s)
+=== RUN   TestFileHelper_IsPathFileString_06
+--- PASS: TestFileHelper_IsPathFileString_06 (0.00s)
+=== RUN   TestFileHelper_IsPathFileString_07
+--- PASS: TestFileHelper_IsPathFileString_07 (0.00s)
+=== RUN   TestFileHelper_IsPathFileString_08
+--- PASS: TestFileHelper_IsPathFileString_08 (0.00s)
+=== RUN   TestFileHelper_IsPathFileString_09
+--- PASS: TestFileHelper_IsPathFileString_09 (0.00s)
+=== RUN   TestFileHelper_IsPathFileString_10
+--- PASS: TestFileHelper_IsPathFileString_10 (0.00s)
+=== RUN   TestFileHelper_IsPathFileString_11
+--- PASS: TestFileHelper_IsPathFileString_11 (0.00s)
+=== RUN   TestFileHelper_IsPathFileString_12
+--- PASS: TestFileHelper_IsPathFileString_12 (0.00s)
+=== RUN   TestFileHelper_IsPathFileString_13
+--- PASS: TestFileHelper_IsPathFileString_13 (0.00s)
+=== RUN   TestFileHelper_IsPathFileString_14
+--- PASS: TestFileHelper_IsPathFileString_14 (0.00s)
+=== RUN   TestFileHelper_IsPathFileString_15
+--- PASS: TestFileHelper_IsPathFileString_15 (0.00s)
+=== RUN   TestFileHelper_IsPathFileString_16
+--- PASS: TestFileHelper_IsPathFileString_16 (0.00s)
+=== RUN   TestFileHelper_IsPathString_01
+--- PASS: TestFileHelper_IsPathString_01 (0.00s)
+=== RUN   TestFileHelper_IsPathString_02
+--- PASS: TestFileHelper_IsPathString_02 (0.00s)
+=== RUN   TestFileHelper_IsPathString_03
+--- PASS: TestFileHelper_IsPathString_03 (0.00s)
+=== RUN   TestFileHelper_IsPathString_04
+--- PASS: TestFileHelper_IsPathString_04 (0.00s)
+=== RUN   TestFileHelper_IsPathString_05
+--- PASS: TestFileHelper_IsPathString_05 (0.00s)
+=== RUN   TestFileHelper_IsPathString_06
+--- PASS: TestFileHelper_IsPathString_06 (0.00s)
 === RUN   TestFileHelper_JoinPathsAdjustSeparators_01
 --- PASS: TestFileHelper_JoinPathsAdjustSeparators_01 (0.00s)
-=== RUN   TestFileHelper_JoinMismatchedPathsAdjustSeparators_02
---- PASS: TestFileHelper_JoinMismatchedPathsAdjustSeparators_02 (0.00s)
-=== RUN   TestFileHelper_JoinMismatchedPathsAdjustSeparators_03
---- PASS: TestFileHelper_JoinMismatchedPathsAdjustSeparators_03 (0.00s)
-=== RUN   TestFileHelper_JoinMismatchedPathsAdjustSeparators_04
---- PASS: TestFileHelper_JoinMismatchedPathsAdjustSeparators_04 (0.00s)
-=== RUN   TestFileHelper_JoinMismatchedPathsAdjustSeparators_05
---- PASS: TestFileHelper_JoinMismatchedPathsAdjustSeparators_05 (0.00s)
-=== RUN   TestFileHelper_JoinMismatchedPathsAdjustSeparators_06
---- PASS: TestFileHelper_JoinMismatchedPathsAdjustSeparators_06 (0.00s)
-=== RUN   TestFileHelper_JoinMismatchedPathsAdjustSeparators_07
---- PASS: TestFileHelper_JoinMismatchedPathsAdjustSeparators_07 (0.00s)
+=== RUN   TestFileHelper_JoinPathsAdjustSeparators_02
+--- PASS: TestFileHelper_JoinPathsAdjustSeparators_02 (0.00s)
+=== RUN   TestFileHelper_JoinPathsAdjustSeparators_03
+--- PASS: TestFileHelper_JoinPathsAdjustSeparators_03 (0.00s)
+=== RUN   TestFileHelper_JoinPathsAdjustSeparators_04
+--- PASS: TestFileHelper_JoinPathsAdjustSeparators_04 (0.00s)
+=== RUN   TestFileHelper_JoinPathsAdjustSeparators_05
+--- PASS: TestFileHelper_JoinPathsAdjustSeparators_05 (0.00s)
+=== RUN   TestFileHelper_JoinPathsAdjustSeparators_06
+--- PASS: TestFileHelper_JoinPathsAdjustSeparators_06 (0.00s)
+=== RUN   TestFileHelper_JoinPathsAdjustSeparators_07
+--- PASS: TestFileHelper_JoinPathsAdjustSeparators_07 (0.00s)
+=== RUN   TestFileHelper_JoinPathsAdjustSeparators_08
+--- PASS: TestFileHelper_JoinPathsAdjustSeparators_08 (0.00s)
+=== RUN   TestFileHelper_JoinPathsAdjustSeparators_09
+--- PASS: TestFileHelper_JoinPathsAdjustSeparators_09 (0.00s)
+=== RUN   TestFileHelper_JoinPaths_01
+--- PASS: TestFileHelper_JoinPaths_01 (0.00s)
+=== RUN   TestFileHelper_JoinPaths_02
+--- PASS: TestFileHelper_JoinPaths_02 (0.00s)
 === RUN   TestFileHelper_JoinPaths_03
 --- PASS: TestFileHelper_JoinPaths_03 (0.00s)
-=== RUN   TestFileHelper_JoinBadPaths_04
---- PASS: TestFileHelper_JoinBadPaths_04 (0.00s)
+=== RUN   TestFileHelper_MakeAbsolutePath_01
+--- PASS: TestFileHelper_MakeAbsolutePath_01 (0.00s)
+=== RUN   TestFileHelper_MakeAbsolutePath_02
+--- PASS: TestFileHelper_MakeAbsolutePath_02 (0.00s)
+=== RUN   TestFileHelper_MakeDirAll_01
+--- PASS: TestFileHelper_MakeDirAll_01 (0.00s)
+=== RUN   TestFileHelper_MakeDirAll_02
+--- PASS: TestFileHelper_MakeDirAll_02 (0.00s)
+=== RUN   TestFileHelper_MakeDirAll_03
+--- PASS: TestFileHelper_MakeDirAll_03 (0.00s)
+=== RUN   TestFileHelper_MakeDirAllPerm01
+--- PASS: TestFileHelper_MakeDirAllPerm01 (0.00s)
+=== RUN   TestFileHelper_MakeDirPerm_01
+--- PASS: TestFileHelper_MakeDirPerm_01 (0.00s)
+=== RUN   TestFileHelper_MakeDir01
+--- PASS: TestFileHelper_MakeDir01 (0.00s)
+=== RUN   TestFileHelper_MakeDir02
+--- PASS: TestFileHelper_MakeDir02 (0.00s)
+=== RUN   TestFileHelper_MakeDir03
+--- PASS: TestFileHelper_MakeDir03 (0.00s)
 === RUN   TestFileHelper_MoveFile_01
---- PASS: TestFileHelper_MoveFile_01 (0.26s)
+--- PASS: TestFileHelper_MoveFile_01 (0.10s)
+=== RUN   TestFileHelper_MoveFile_02
+--- PASS: TestFileHelper_MoveFile_02 (0.00s)
+=== RUN   TestFileHelper_MoveFile_03
+--- PASS: TestFileHelper_MoveFile_03 (0.00s)
+=== RUN   TestFileHelper_MoveFile_04
+--- PASS: TestFileHelper_MoveFile_04 (0.02s)
+=== RUN   TestFileHelper_MoveFile_05
+--- PASS: TestFileHelper_MoveFile_05 (0.02s)
+=== RUN   TestFileHelper_MoveFile_06
+--- PASS: TestFileHelper_MoveFile_06 (0.00s)
+=== RUN   TestFileHelper_MoveFile_07
+--- PASS: TestFileHelper_MoveFile_07 (0.16s)
+=== RUN   TestFileHelper_MoveFile_08
+--- PASS: TestFileHelper_MoveFile_08 (0.01s)
+=== RUN   TestFileHelper_MoveFile_09
+--- PASS: TestFileHelper_MoveFile_09 (0.03s)
+=== RUN   TestFileHelper_OpenDirectory_01
+--- PASS: TestFileHelper_OpenDirectory_01 (0.00s)
+=== RUN   TestFileHelper_OpenDirectory_02
+--- PASS: TestFileHelper_OpenDirectory_02 (0.00s)
+=== RUN   TestFileHelper_OpenDirectory_03
+--- PASS: TestFileHelper_OpenDirectory_03 (0.00s)
+=== RUN   TestFileHelper_OpenDirectory_04
+--- PASS: TestFileHelper_OpenDirectory_04 (0.01s)
+=== RUN   TestFileHelper_OpenDirectory_05
+--- PASS: TestFileHelper_OpenDirectory_05 (0.01s)
 === RUN   TestFileHelper_OpenFile_01
 --- PASS: TestFileHelper_OpenFile_01 (0.00s)
+=== RUN   TestFileHelper_OpenFile_02
+--- PASS: TestFileHelper_OpenFile_02 (0.00s)
+=== RUN   TestFileHelper_OpenFile_03
+--- PASS: TestFileHelper_OpenFile_03 (0.00s)
+=== RUN   TestFileHelper_OpenFile_04
+--- PASS: TestFileHelper_OpenFile_04 (0.00s)
+=== RUN   TestFileHelper_OpenFile_05
+--- PASS: TestFileHelper_OpenFile_05 (0.00s)
+=== RUN   TestFileHelper_OpenFile_06
+--- PASS: TestFileHelper_OpenFile_06 (0.00s)
+=== RUN   TestFileHelper_OpenFileReadOnly_01
+--- PASS: TestFileHelper_OpenFileReadOnly_01 (0.03s)
+=== RUN   TestFileHelper_OpenFileReadOnly_02
+--- PASS: TestFileHelper_OpenFileReadOnly_02 (0.00s)
+=== RUN   TestFileHelper_OpenFileReadOnly_03
+--- PASS: TestFileHelper_OpenFileReadOnly_03 (0.00s)
+=== RUN   TestFileHelper_OpenFileReadOnly_04
+--- PASS: TestFileHelper_OpenFileReadOnly_04 (0.00s)
+=== RUN   TestFileHelper_OpenFileReadOnly_05
+--- PASS: TestFileHelper_OpenFileReadOnly_05 (0.07s)
+=== RUN   TestFileHelper_OpenFileReadWrite_01
+--- PASS: TestFileHelper_OpenFileReadWrite_01 (0.02s)
+=== RUN   TestFileHelper_OpenFileReadWrite_02
+--- PASS: TestFileHelper_OpenFileReadWrite_02 (0.13s)
+=== RUN   TestFileHelper_OpenFileReadWrite_03
+--- PASS: TestFileHelper_OpenFileReadWrite_03 (0.00s)
+=== RUN   TestFileHelper_OpenFileReadWrite_04
+--- PASS: TestFileHelper_OpenFileReadWrite_04 (0.00s)
+=== RUN   TestFileHelper_OpenFileReadWrite_05
+--- PASS: TestFileHelper_OpenFileReadWrite_05 (0.00s)
+=== RUN   TestFileHelper_OpenFileWriteOnly_01
+--- PASS: TestFileHelper_OpenFileWriteOnly_01 (0.02s)
+=== RUN   TestFileHelper_OpenFileWriteOnly_02
+--- PASS: TestFileHelper_OpenFileWriteOnly_02 (0.04s)
+=== RUN   TestFileHelper_OpenFileWriteOnly_03
+--- PASS: TestFileHelper_OpenFileWriteOnly_03 (0.00s)
+=== RUN   TestFileHelper_OpenFileWriteOnly_04
+--- PASS: TestFileHelper_OpenFileWriteOnly_04 (0.00s)
+=== RUN   TestFileHelper_OpenFileWriteOnly_05
+--- PASS: TestFileHelper_OpenFileWriteOnly_05 (0.00s)
+=== RUN   TestFileHelper_OpenFileWriteOnly_06
+--- PASS: TestFileHelper_OpenFileWriteOnly_06 (0.00s)
+=== RUN   TestFileHelper_RemovePathSeparatorFromEndOfPathString_01
+--- PASS: TestFileHelper_RemovePathSeparatorFromEndOfPathString_01 (0.00s)
+=== RUN   TestFileHelper_RemovePathSeparatorFromEndOfPathString_02
+--- PASS: TestFileHelper_RemovePathSeparatorFromEndOfPathString_02 (0.00s)
+=== RUN   TestFileHelper_RemovePathSeparatorFromEndOfPathString_03
+--- PASS: TestFileHelper_RemovePathSeparatorFromEndOfPathString_03 (0.00s)
+=== RUN   TestFileHelper_RemovePathSeparatorFromEndOfPathString_04
+--- PASS: TestFileHelper_RemovePathSeparatorFromEndOfPathString_04 (0.00s)
+=== RUN   TestFileHelper_RemovePathSeparatorFromEndOfPathString_05
+--- PASS: TestFileHelper_RemovePathSeparatorFromEndOfPathString_05 (0.00s)
+=== RUN   TestFileHelper_RemovePathSeparatorFromEndOfPathString_06
+--- PASS: TestFileHelper_RemovePathSeparatorFromEndOfPathString_06 (0.00s)
+=== RUN   TestFileHelper_SearchFileModeMatch_01
+--- PASS: TestFileHelper_SearchFileModeMatch_01 (0.00s)
+=== RUN   TestFileHelper_SearchFileModeMatch_02
+--- PASS: TestFileHelper_SearchFileModeMatch_02 (0.00s)
+=== RUN   TestFileHelper_SearchFileModeMatch_03
+--- PASS: TestFileHelper_SearchFileModeMatch_03 (0.00s)
 === RUN   TestFileHelper_SwapBasePath_01
 --- PASS: TestFileHelper_SwapBasePath_01 (0.00s)
 === RUN   TestFileHelper_SwapBasePath_02
 --- PASS: TestFileHelper_SwapBasePath_02 (0.00s)
 === RUN   TestFileHelper_SwapBasePath_03
 --- PASS: TestFileHelper_SwapBasePath_03 (0.00s)
+=== RUN   TestFileHelper_SwapBasePath_04
+--- PASS: TestFileHelper_SwapBasePath_04 (0.00s)
+=== RUN   TestFileHelper_SwapBasePath_05
+--- PASS: TestFileHelper_SwapBasePath_05 (0.00s)
+=== RUN   TestFileHelper_SwapBasePath_06
+--- PASS: TestFileHelper_SwapBasePath_06 (0.00s)
+=== RUN   TestFileHelper_SwapBasePath_07
+--- PASS: TestFileHelper_SwapBasePath_07 (0.00s)
+=== RUN   TestFileHelper_SwapBasePath_08
+--- PASS: TestFileHelper_SwapBasePath_08 (0.00s)
+=== RUN   TestFileHelper_SwapBasePath_09
+--- PASS: TestFileHelper_SwapBasePath_09 (0.00s)
+=== RUN   TestFileHelper_SwapBasePath_10
+--- PASS: TestFileHelper_SwapBasePath_10 (0.00s)
+=== RUN   TestFileHelper_SwapBasePath_11
+--- PASS: TestFileHelper_SwapBasePath_11 (0.00s)
+=== RUN   TestFileInfoPlus_CopyOut_01
+--- PASS: TestFileInfoPlus_CopyOut_01 (0.00s)
+=== RUN   TestFileInfoPlus_Equal_01
+--- PASS: TestFileInfoPlus_Equal_01 (0.03s)
+=== RUN   TestFileInfoPlus_Equal_02
+--- PASS: TestFileInfoPlus_Equal_02 (0.00s)
+=== RUN   TestFileInfoPlus_IsDirectoryPathInitialized_01
+--- PASS: TestFileInfoPlus_IsDirectoryPathInitialized_01 (0.01s)
+=== RUN   TestFileInfoPlus_IsDirectoryPathInitialized_02
+--- PASS: TestFileInfoPlus_IsDirectoryPathInitialized_02 (0.00s)
+=== RUN   TestFileInfoPlus_IsFileInfoInitialized_01
+--- PASS: TestFileInfoPlus_IsFileInfoInitialized_01 (0.00s)
+=== RUN   TestFileInfoPlus_IsFileInfoInitialized_02
+--- PASS: TestFileInfoPlus_IsFileInfoInitialized_02 (0.01s)
+=== RUN   TestFileInfoPlus_NewFromFileInfo_01
+--- PASS: TestFileInfoPlus_NewFromFileInfo_01 (0.00s)
+=== RUN   TestFileInfoPlus_NewFromDirMgrFileInfo_01
+--- PASS: TestFileInfoPlus_NewFromDirMgrFileInfo_01 (0.00s)
+=== RUN   TestFileInfoPlus_NewFromDirMgrFileInfo_02
+--- PASS: TestFileInfoPlus_NewFromDirMgrFileInfo_02 (0.00s)
+=== RUN   TestFileInfoPlus_SetIsFInfoInitialized_01
+--- PASS: TestFileInfoPlus_SetIsFInfoInitialized_01 (0.00s)
+=== RUN   TestFileInfoPlus_SetIsFInfoInitialized_02
+--- PASS: TestFileInfoPlus_SetIsFInfoInitialized_02 (0.00s)
+=== RUN   TestFileInfoPlus_SysAsString_01
+--- PASS: TestFileInfoPlus_SysAsString_01 (0.01s)
+=== RUN   TestFileMgr_ChangePermissionMode_01
+--- PASS: TestFileMgr_ChangePermissionMode_01 (0.02s)
+=== RUN   TestFileMgr_ChangePermissionMode_02
+--- PASS: TestFileMgr_ChangePermissionMode_02 (0.00s)
+=== RUN   TestFileMgr_ChangePermissionMode_03
+--- PASS: TestFileMgr_ChangePermissionMode_03 (0.00s)
+=== RUN   TestFileMgr_ChangePermissionMode_04
+--- PASS: TestFileMgr_ChangePermissionMode_04 (0.00s)
+=== RUN   TestFileMgr_CloseThisFile_01
+--- PASS: TestFileMgr_CloseThisFile_01 (0.00s)
+=== RUN   TestFileMgr_CloseThisFile_02
+--- PASS: TestFileMgr_CloseThisFile_02 (0.00s)
+=== RUN   TestFileMgr_CopyIn_01
+--- PASS: TestFileMgr_CopyIn_01 (0.00s)
 === RUN   TestFileMgr_CopyOut_01
 --- PASS: TestFileMgr_CopyOut_01 (0.00s)
-=== RUN   TestFileMgr_CopyFileMgr_01
---- PASS: TestFileMgr_CopyFileMgr_01 (0.05s)
+=== RUN   TestFileMgr_CopyFileMgrByIo_01
+--- PASS: TestFileMgr_CopyFileMgrByIo_01 (0.08s)
+=== RUN   TestFileMgr_CopyFileMgrByIo_02
+--- PASS: TestFileMgr_CopyFileMgrByIo_02 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByIo_03
+--- PASS: TestFileMgr_CopyFileMgrByIo_03 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByIo_04
+--- PASS: TestFileMgr_CopyFileMgrByIo_04 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByIo_05
+--- PASS: TestFileMgr_CopyFileMgrByIo_05 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByIo_06
+--- PASS: TestFileMgr_CopyFileMgrByIo_06 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByIoByLink_01
+--- PASS: TestFileMgr_CopyFileMgrByIoByLink_01 (0.03s)
+=== RUN   TestFileMgr_CopyFileMgrByIoByLink_02
+--- PASS: TestFileMgr_CopyFileMgrByIoByLink_02 (0.02s)
+=== RUN   TestFileMgr_CopyFileMgrByIoByLink_03
+--- PASS: TestFileMgr_CopyFileMgrByIoByLink_03 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByIoByLink_04
+--- PASS: TestFileMgr_CopyFileMgrByIoByLink_04 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByIoByLink_05
+--- PASS: TestFileMgr_CopyFileMgrByIoByLink_05 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByIoByLink_06
+--- PASS: TestFileMgr_CopyFileMgrByIoByLink_06 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByIoByLink_07
+--- PASS: TestFileMgr_CopyFileMgrByIoByLink_07 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByIoWithBuffer_01
+--- PASS: TestFileMgr_CopyFileMgrByIoWithBuffer_01 (0.13s)
+=== RUN   TestFileMgr_CopyFileMgrByIoWithBuffer_02
+--- PASS: TestFileMgr_CopyFileMgrByIoWithBuffer_02 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByLink_01
+--- PASS: TestFileMgr_CopyFileMgrByLink_01 (0.01s)
+=== RUN   TestFileMgr_CopyFileMgrByLink_02
+--- PASS: TestFileMgr_CopyFileMgrByLink_02 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByLink_03
+--- PASS: TestFileMgr_CopyFileMgrByLink_03 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByLink_04
+--- PASS: TestFileMgr_CopyFileMgrByLink_04 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByLink_05
+--- PASS: TestFileMgr_CopyFileMgrByLink_05 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByLink_06
+--- PASS: TestFileMgr_CopyFileMgrByLink_06 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByLinkByIo_01
+--- PASS: TestFileMgr_CopyFileMgrByLinkByIo_01 (0.01s)
+=== RUN   TestFileMgr_CopyFileMgrByLinkByIo_02
+--- PASS: TestFileMgr_CopyFileMgrByLinkByIo_02 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByLinkByIo_03
+--- PASS: TestFileMgr_CopyFileMgrByLinkByIo_03 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByLinkByIo_04
+--- PASS: TestFileMgr_CopyFileMgrByLinkByIo_04 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByLinkByIo_05
+--- PASS: TestFileMgr_CopyFileMgrByLinkByIo_05 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrByLinkByIo_06
+--- PASS: TestFileMgr_CopyFileMgrByLinkByIo_06 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrWithBuffer_01
+--- PASS: TestFileMgr_CopyFileMgrWithBuffer_01 (0.08s)
+=== RUN   TestFileMgr_CopyFileMgrWithBuffer_02
+--- PASS: TestFileMgr_CopyFileMgrWithBuffer_02 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrWithBuffer_03
+--- PASS: TestFileMgr_CopyFileMgrWithBuffer_03 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrWithBuffer_04
+--- PASS: TestFileMgr_CopyFileMgrWithBuffer_04 (0.00s)
+=== RUN   TestFileMgr_CopyFileMgrWithBuffer_05
+--- PASS: TestFileMgr_CopyFileMgrWithBuffer_05 (0.26s)
+=== RUN   TestFileMgr_CopyFileStrByIo_01
+--- PASS: TestFileMgr_CopyFileStrByIo_01 (0.03s)
+=== RUN   TestFileMgr_CopyFileStrByIo_02
+--- PASS: TestFileMgr_CopyFileStrByIo_02 (0.00s)
+=== RUN   TestFileMgr_CopyFileStrByIo_03
+--- PASS: TestFileMgr_CopyFileStrByIo_03 (0.00s)
+=== RUN   TestFileMgr_CopyFileStrByIo_04
+--- PASS: TestFileMgr_CopyFileStrByIo_04 (0.00s)
+=== RUN   TestFileMgr_CopyFileStrByIo_05
+--- PASS: TestFileMgr_CopyFileStrByIo_05 (0.00s)
+=== RUN   TestFileMgr_CopyFileStrByIo_06
+--- PASS: TestFileMgr_CopyFileStrByIo_06 (0.00s)
+=== RUN   TestFileMgr_CopyFileStrByIo_07
+--- PASS: TestFileMgr_CopyFileStrByIo_07 (0.14s)
+=== RUN   TestFileMgr_CopyFileStrByIoByLink_01
+--- PASS: TestFileMgr_CopyFileStrByIoByLink_01 (0.08s)
+=== RUN   TestFileMgr_CopyFileStrByIoByLink_02
+--- PASS: TestFileMgr_CopyFileStrByIoByLink_02 (0.01s)
+=== RUN   TestFileMgr_CopyFileStrByIoByLink_03
+--- PASS: TestFileMgr_CopyFileStrByIoByLink_03 (0.01s)
+=== RUN   TestFileMgr_CopyFileStrByIoByLink_04
+--- PASS: TestFileMgr_CopyFileStrByIoByLink_04 (0.01s)
+=== RUN   TestFileMgr_CopyFileStrByIoByLink_05
+--- PASS: TestFileMgr_CopyFileStrByIoByLink_05 (0.01s)
+=== RUN   TestFileMgr_CopyFileStrByLink_01
+--- PASS: TestFileMgr_CopyFileStrByLink_01 (0.10s)
+=== RUN   TestFileMgr_CopyFileStrByLink_02
+--- PASS: TestFileMgr_CopyFileStrByLink_02 (0.00s)
+=== RUN   TestFileMgr_CopyFileStrByLink_03
+--- PASS: TestFileMgr_CopyFileStrByLink_03 (0.00s)
+=== RUN   TestFileMgr_CopyFileStrByLink_04
+--- PASS: TestFileMgr_CopyFileStrByLink_04 (0.00s)
+=== RUN   TestFileMgr_CopyFileStrByLink_05
+--- PASS: TestFileMgr_CopyFileStrByLink_05 (0.01s)
+=== RUN   TestFileMgr_CopyFileStrByLinkByIo_01
+--- PASS: TestFileMgr_CopyFileStrByLinkByIo_01 (0.01s)
+=== RUN   TestFileMgr_CopyFileStrByLinkByIo_02
+--- PASS: TestFileMgr_CopyFileStrByLinkByIo_02 (0.00s)
+=== RUN   TestFileMgr_CopyFileStrByLinkByIo_03
+--- PASS: TestFileMgr_CopyFileStrByLinkByIo_03 (0.00s)
+=== RUN   TestFileMgr_CopyFileStrByLinkByIo_04
+--- PASS: TestFileMgr_CopyFileStrByLinkByIo_04 (0.00s)
+=== RUN   TestFileMgr_CopyFileStrByLinkByIo_05
+--- PASS: TestFileMgr_CopyFileStrByLinkByIo_05 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByIo_01
+--- PASS: TestFileMgr_CopyFileToDirByIo_01 (0.02s)
+=== RUN   TestFileMgr_CopyFileToDirByIo_02
+--- PASS: TestFileMgr_CopyFileToDirByIo_02 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByIo_03
+--- PASS: TestFileMgr_CopyFileToDirByIo_03 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByIo_04
+--- PASS: TestFileMgr_CopyFileToDirByIo_04 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByIo_05
+--- PASS: TestFileMgr_CopyFileToDirByIo_05 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByIo_06
+--- PASS: TestFileMgr_CopyFileToDirByIo_06 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByIoByLink_01
+--- PASS: TestFileMgr_CopyFileToDirByIoByLink_01 (0.02s)
+=== RUN   TestFileMgr_CopyFileToDirByIoByLink_02
+--- PASS: TestFileMgr_CopyFileToDirByIoByLink_02 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByIoByLink_03
+--- PASS: TestFileMgr_CopyFileToDirByIoByLink_03 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByIoByLink_04
+--- PASS: TestFileMgr_CopyFileToDirByIoByLink_04 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByIoByLink_05
+--- PASS: TestFileMgr_CopyFileToDirByIoByLink_05 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByLinkByIo_01
+--- PASS: TestFileMgr_CopyFileToDirByLinkByIo_01 (0.01s)
+=== RUN   TestFileMgr_CopyFileToDirByLinkByIo_02
+--- PASS: TestFileMgr_CopyFileToDirByLinkByIo_02 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByLinkByIo_03
+--- PASS: TestFileMgr_CopyFileToDirByLinkByIo_03 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByLinkByIo_04
+--- PASS: TestFileMgr_CopyFileToDirByLinkByIo_04 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByLinkByIo_05
+--- PASS: TestFileMgr_CopyFileToDirByLinkByIo_05 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByLink_01
+--- PASS: TestFileMgr_CopyFileToDirByLink_01 (0.01s)
+=== RUN   TestFileMgr_CopyFileToDirByLink_02
+--- PASS: TestFileMgr_CopyFileToDirByLink_02 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByLink_03
+--- PASS: TestFileMgr_CopyFileToDirByLink_03 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByLink_04
+--- PASS: TestFileMgr_CopyFileToDirByLink_04 (0.00s)
+=== RUN   TestFileMgr_CopyFileToDirByLink_05
+--- PASS: TestFileMgr_CopyFileToDirByLink_05 (0.00s)
+=== RUN   TestFileMgr_CopyFromStrings_01
+--- PASS: TestFileMgr_CopyFromStrings_01 (0.02s)
+=== RUN   TestFileMgr_CopyFromStrings_02
+--- PASS: TestFileMgr_CopyFromStrings_02 (0.00s)
+=== RUN   TestFileMgr_CopyFromStrings_03
+--- PASS: TestFileMgr_CopyFromStrings_03 (0.00s)
+=== RUN   TestFileMgr_CopyFromStrings_04
+--- PASS: TestFileMgr_CopyFromStrings_04 (0.00s)
+=== RUN   TestFileMgr_CreateDir_01
+--- PASS: TestFileMgr_CreateDir_01 (0.00s)
+=== RUN   TestFileMgr_CreateDir_02
+--- PASS: TestFileMgr_CreateDir_02 (0.00s)
 === RUN   TestFileMgr_CreateDirAndFile_01
---- PASS: TestFileMgr_CreateDirAndFile_01 (0.04s)
+--- PASS: TestFileMgr_CreateDirAndFile_01 (0.07s)
+=== RUN   TestFileMgr_CreateDirAndFile_02
+--- PASS: TestFileMgr_CreateDirAndFile_02 (0.00s)
+=== RUN   TestFileMgr_CreateThisFile_01
+--- PASS: TestFileMgr_CreateThisFile_01 (0.00s)
+=== RUN   TestFileMgr_CreateThisFile_02
+--- PASS: TestFileMgr_CreateThisFile_02 (0.00s)
+=== RUN   TestFileMgr_DeleteThisFile_01
+--- PASS: TestFileMgr_DeleteThisFile_01 (0.00s)
+=== RUN   TestFileMgr_DeleteThisFile_02
+--- PASS: TestFileMgr_DeleteThisFile_02 (0.00s)
+=== RUN   TestFileMgr_DoesFileExist_01
+--- PASS: TestFileMgr_DoesFileExist_01 (0.00s)
+=== RUN   TestFileMgr_DoesFileExist_02
+--- PASS: TestFileMgr_DoesFileExist_02 (0.00s)
+=== RUN   TestFileMgr_DoesThisFileExist_01
+--- PASS: TestFileMgr_DoesThisFileExist_01 (0.00s)
+=== RUN   TestFileMgr_Empty_01
+--- PASS: TestFileMgr_Empty_01 (0.00s)
 === RUN   TestFileMgr_Equal_01
 --- PASS: TestFileMgr_Equal_01 (0.00s)
 === RUN   TestFileMgr_Equal_02
 --- PASS: TestFileMgr_Equal_02 (0.00s)
+=== RUN   TestFileMgr_Equal_03
+--- PASS: TestFileMgr_Equal_03 (0.00s)
+=== RUN   TestFileMgr_Equal_04
+--- PASS: TestFileMgr_Equal_04 (0.00s)
+=== RUN   TestFileMgr_Equal_05
+--- PASS: TestFileMgr_Equal_05 (0.00s)
 === RUN   TestFileMgr_EqualAbsPaths_01
 --- PASS: TestFileMgr_EqualAbsPaths_01 (0.00s)
 === RUN   TestFileMgr_EqualAbsPaths_02
@@ -332,16 +1594,158 @@
 --- PASS: TestFileMgr_EqualPathFileNameExt_04 (0.00s)
 === RUN   TestFileMgr_EqualPathFileNameExt_05
 --- PASS: TestFileMgr_EqualPathFileNameExt_05 (0.00s)
+=== RUN   TestFileMgr_GetAbsolutePath
+--- PASS: TestFileMgr_GetAbsolutePath (0.00s)
+=== RUN   TestFileMgr_GetAbsolutePathFileName_01
+--- PASS: TestFileMgr_GetAbsolutePathFileName_01 (0.00s)
+=== RUN   TestFileMgr_GetAbsolutePathFileNameLc_01
+--- PASS: TestFileMgr_GetAbsolutePathFileNameLc_01 (0.00s)
+=== RUN   TestFileMgr_GetAbsolutePathFileNameLc_02
+--- PASS: TestFileMgr_GetAbsolutePathFileNameLc_02 (0.00s)
+=== RUN   TestFileMgr_GetBufioReader_01
+--- PASS: TestFileMgr_GetBufioReader_01 (0.00s)
+=== RUN   TestFileMgr_GetBufioWriter_01
+--- PASS: TestFileMgr_GetBufioWriter_01 (0.01s)
+=== RUN   TestFileMgr_GetDirMgr_01
+--- PASS: TestFileMgr_GetDirMgr_01 (0.00s)
+=== RUN   TestFileMgr_GetFileExt
+--- PASS: TestFileMgr_GetFileExt (0.00s)
+=== RUN   TestFileMgr_GetFileInfo_01
+--- PASS: TestFileMgr_GetFileInfo_01 (0.00s)
+=== RUN   TestFileMgr_GetFileInfo_02
+--- PASS: TestFileMgr_GetFileInfo_02 (0.00s)
+=== RUN   TestFileMgr_GetFileInfo_03
+--- PASS: TestFileMgr_GetFileInfo_03 (0.00s)
+=== RUN   TestFileMgr_GetFileInfoPlus_01
+--- PASS: TestFileMgr_GetFileInfoPlus_01 (0.00s)
+=== RUN   TestFileMgr_GetFileInfoPlus_02
+--- PASS: TestFileMgr_GetFileInfoPlus_02 (0.00s)
+=== RUN   TestFileMgr_GetFileInfoPlus_03
+--- PASS: TestFileMgr_GetFileInfoPlus_03 (0.00s)
+=== RUN   TestFileMgr_GetFileModTime_01
+--- PASS: TestFileMgr_GetFileModTime_01 (0.00s)
+=== RUN   TestFileMgr_GetFileModTime_02
+--- PASS: TestFileMgr_GetFileModTime_02 (0.00s)
+=== RUN   TestFileMgr_GetFileModTime_03
+--- PASS: TestFileMgr_GetFileModTime_03 (0.00s)
+=== RUN   TestFileMgr_GetFileModTime_04
+--- PASS: TestFileMgr_GetFileModTime_04 (0.00s)
+=== RUN   TestFileMgr_GetFileModTime_05
+--- PASS: TestFileMgr_GetFileModTime_05 (0.00s)
+=== RUN   TestFileMgr_GetFileName_01
+--- PASS: TestFileMgr_GetFileName_01 (0.00s)
+=== RUN   TestFileMgr_GetFileNameExt_01
+--- PASS: TestFileMgr_GetFileNameExt_01 (0.00s)
+=== RUN   TestFileMgr_GetFileNameExt_02
+--- PASS: TestFileMgr_GetFileNameExt_02 (0.00s)
+=== RUN   TestFileMgr_GetFilePermissionConfig_01
+--- PASS: TestFileMgr_GetFilePermissionConfig_01 (0.00s)
+=== RUN   TestFileMgr_GetFilePermissionConfig_02
+--- PASS: TestFileMgr_GetFilePermissionConfig_02 (0.00s)
+=== RUN   TestFileMgr_GetFilePermissionConfig_03
+--- PASS: TestFileMgr_GetFilePermissionConfig_03 (0.00s)
+=== RUN   TestFileMgr_GetFilePermissionTextCodes_01
+--- PASS: TestFileMgr_GetFilePermissionTextCodes_01 (0.00s)
+=== RUN   TestFileMgr_GetFilePermissionTextCodes_02
+--- PASS: TestFileMgr_GetFilePermissionTextCodes_02 (0.00s)
+=== RUN   TestFileMgr_GetFilePermissionTextCodes_03
+--- PASS: TestFileMgr_GetFilePermissionTextCodes_03 (0.00s)
+=== RUN   TestFileMgr_GetFilePtr_01
+--- PASS: TestFileMgr_GetFilePtr_01 (0.02s)
+=== RUN   TestFileMgr_GetFileSize_01
+--- PASS: TestFileMgr_GetFileSize_01 (0.00s)
+=== RUN   TestFileMgr_GetFileSize_02
+--- PASS: TestFileMgr_GetFileSize_02 (0.00s)
+=== RUN   TestFileMgr_GetFileSize_03
+--- PASS: TestFileMgr_GetFileSize_03 (0.00s)
+=== RUN   TestFileMgr_GetOriginalPathFileName_01
+--- PASS: TestFileMgr_GetOriginalPathFileName_01 (0.00s)
+=== RUN   TestFileMgr_GetReaderBufferSize_01
+--- PASS: TestFileMgr_GetReaderBufferSize_01 (0.00s)
+=== RUN   TestFileMgr_GetReaderBufferSize_02
+--- PASS: TestFileMgr_GetReaderBufferSize_02 (0.00s)
+=== RUN   TestFileMgr_GetReaderBufferSize_03
+--- PASS: TestFileMgr_GetReaderBufferSize_03 (0.02s)
+=== RUN   TestFileMgr_GetWriterBufferSize_01
+--- PASS: TestFileMgr_GetWriterBufferSize_01 (0.00s)
+=== RUN   TestFileMgr_GetWriterBufferSize_02
+--- PASS: TestFileMgr_GetWriterBufferSize_02 (0.00s)
+=== RUN   TestFileMgr_GetWriterBufferSize_03
+--- PASS: TestFileMgr_GetWriterBufferSize_03 (0.07s)
+=== RUN   TestFileMgr_IsAbsolutePathFileNamePopulated_01
+--- PASS: TestFileMgr_IsAbsolutePathFileNamePopulated_01 (0.00s)
+=== RUN   TestFileMgr_IsAbsolutePathFileNamePopulated_02
+--- PASS: TestFileMgr_IsAbsolutePathFileNamePopulated_02 (0.00s)
+=== RUN   TestFileMgr_IsFileExtPopulated_01
+--- PASS: TestFileMgr_IsFileExtPopulated_01 (0.00s)
+=== RUN   TestFileMgr_IsFileExtPopulated_02
+--- PASS: TestFileMgr_IsFileExtPopulated_02 (0.00s)
+=== RUN   TestFileMgr_IsFileNameExtPopulated_01
+--- PASS: TestFileMgr_IsFileNameExtPopulated_01 (0.00s)
+=== RUN   TestFileMgr_IsFileNameExtPopulated_02
+--- PASS: TestFileMgr_IsFileNameExtPopulated_02 (0.00s)
+=== RUN   TestFileMgr_IsFileNameExtPopulated_03
+--- PASS: TestFileMgr_IsFileNameExtPopulated_03 (0.00s)
+=== RUN   TestFileMgr_IsFileNamePopulated_01
+--- PASS: TestFileMgr_IsFileNamePopulated_01 (0.00s)
+=== RUN   TestFileMgr_IsFileNamePopulated_02
+--- PASS: TestFileMgr_IsFileNamePopulated_02 (0.00s)
+=== RUN   TestFileMgr_IsFileNamePopulated_03
+--- PASS: TestFileMgr_IsFileNamePopulated_03 (0.00s)
+=== RUN   TestFileMgr_IsFilePointerOpen_01
+--- PASS: TestFileMgr_IsFilePointerOpen_01 (0.00s)
+=== RUN   TestFileMgr_IsFilePointerOpen_02
+--- PASS: TestFileMgr_IsFilePointerOpen_02 (0.00s)
+=== RUN   TestFileMgr_IsFilePointerOpen_03
+--- PASS: TestFileMgr_IsFilePointerOpen_03 (0.00s)
+=== RUN   TestFileMgr_IsInitialized_01
+--- PASS: TestFileMgr_IsInitialized_01 (0.00s)
+=== RUN   TestFileMgr_IsInitialized_02
+--- PASS: TestFileMgr_IsInitialized_02 (0.00s)
+=== RUN   TestFileMgr_IsInitialized_03
+--- PASS: TestFileMgr_IsInitialized_03 (0.00s)
+=== RUN   TestFileMgr_MoveFileToFileMgr_01
+--- PASS: TestFileMgr_MoveFileToFileMgr_01 (0.34s)
+=== RUN   TestFileMgr_MoveFileToFileMgr_02
+--- PASS: TestFileMgr_MoveFileToFileMgr_02 (0.03s)
+=== RUN   TestFileMgr_MoveFileToFileStr_01
+--- PASS: TestFileMgr_MoveFileToFileStr_01 (0.06s)
+=== RUN   TestFileMgr_MoveFileToFileStr_02
+--- PASS: TestFileMgr_MoveFileToFileStr_02 (0.09s)
 === RUN   TestFileMgr_MoveFileToNewDirMgr_01
---- PASS: TestFileMgr_MoveFileToNewDirMgr_01 (0.09s)
+--- PASS: TestFileMgr_MoveFileToNewDirMgr_01 (0.05s)
+=== RUN   TestFileMgr_MoveFileToNewDirMgr_02
+--- PASS: TestFileMgr_MoveFileToNewDirMgr_02 (0.08s)
+=== RUN   TestFileMgr_MoveFileToNewDirMgr_03
+--- PASS: TestFileMgr_MoveFileToNewDirMgr_03 (0.03s)
+=== RUN   TestFileMgr_MoveFileToNewDirMgr_04
+--- PASS: TestFileMgr_MoveFileToNewDirMgr_04 (0.00s)
+=== RUN   TestFileMgr_MoveFileToNewDirMgr_05
+--- PASS: TestFileMgr_MoveFileToNewDirMgr_05 (0.04s)
 === RUN   TestFileMgr_MoveFileToNewDir_01
---- PASS: TestFileMgr_MoveFileToNewDir_01 (0.08s)
+--- PASS: TestFileMgr_MoveFileToNewDir_01 (0.09s)
+=== RUN   TestFileMgr_MoveFileToNewDir_02
+--- PASS: TestFileMgr_MoveFileToNewDir_02 (0.02s)
+=== RUN   TestFileMgr_MoveFileToNewDir_03
+--- PASS: TestFileMgr_MoveFileToNewDir_03 (0.02s)
+=== RUN   TestFileMgr_MoveFileToNewDir_04
+--- PASS: TestFileMgr_MoveFileToNewDir_04 (0.09s)
+=== RUN   TestFileMgr_MoveFileToNewDir_05
+--- PASS: TestFileMgr_MoveFileToNewDir_05 (0.13s)
+=== RUN   TestFileMgr_MoveFileToNewDir_06
+--- PASS: TestFileMgr_MoveFileToNewDir_06 (0.03s)
+=== RUN   TestFileMgr_MoveFileToNewDir_07
+--- PASS: TestFileMgr_MoveFileToNewDir_07 (0.09s)
 === RUN   TestFileMgr_New_01
---- PASS: TestFileMgr_New_01 (0.00s)
+--- PASS: TestFileMgr_New_01 (0.01s)
 === RUN   TestFileMgr_New_02
 --- PASS: TestFileMgr_New_02 (0.00s)
+=== RUN   TestFileMgr_New_03
+--- PASS: TestFileMgr_New_03 (0.00s)
+=== RUN   TestFileMgr_New_04
+--- PASS: TestFileMgr_New_04 (0.09s)
 === RUN   TestFileMgr_NewFromPathFileNameExtStr_01
---- PASS: TestFileMgr_NewFromPathFileNameExtStr_01 (0.00s)
+--- PASS: TestFileMgr_NewFromPathFileNameExtStr_01 (0.01s)
 === RUN   TestFileMgr_NewFromPathFileNameExtStr_02
 --- PASS: TestFileMgr_NewFromPathFileNameExtStr_02 (0.00s)
 === RUN   TestFileMgr_NewFromPathFileNameExtStr_03
@@ -350,38 +1754,218 @@
 --- PASS: TestFileMgr_NewFromPathFileNameExtStr_04 (0.00s)
 === RUN   TestFileMgr_NewFromFileInfo_01
 --- PASS: TestFileMgr_NewFromFileInfo_01 (0.00s)
+=== RUN   TestFileMgr_NewFromFileInfo_02
+--- PASS: TestFileMgr_NewFromFileInfo_02 (0.00s)
+=== RUN   TestFileMgr_NewFromFileInfo_03
+--- PASS: TestFileMgr_NewFromFileInfo_03 (0.00s)
+=== RUN   TestFileMgr_NewFromFileInfo_04
+--- PASS: TestFileMgr_NewFromFileInfo_04 (0.00s)
 === RUN   TestFileMgr_NewFromDirMgrFileNameExt_01
 --- PASS: TestFileMgr_NewFromDirMgrFileNameExt_01 (0.00s)
 === RUN   TestFileMgr_NewFromDirMgrFileNameExt_02
 --- PASS: TestFileMgr_NewFromDirMgrFileNameExt_02 (0.00s)
+=== RUN   TestFileMgr_NewFromDirMgrFileNameExt_03
+--- PASS: TestFileMgr_NewFromDirMgrFileNameExt_03 (0.00s)
+=== RUN   TestFileMgr_NewFromDirMgrFileNameExt_04
+--- PASS: TestFileMgr_NewFromDirMgrFileNameExt_04 (0.00s)
+=== RUN   TestFileMgr_NewFromDirMgrFileNameExt_05
+--- PASS: TestFileMgr_NewFromDirMgrFileNameExt_05 (0.09s)
 === RUN   TestFileMgr_NewFromDirStrFileNameStr_01
 --- PASS: TestFileMgr_NewFromDirStrFileNameStr_01 (0.00s)
+=== RUN   TestFileMgr_NewFromDirStrFileNameStr_02
+--- PASS: TestFileMgr_NewFromDirStrFileNameStr_02 (0.00s)
+=== RUN   TestFileMgr_NewFromDirStrFileNameStr_03
+--- PASS: TestFileMgr_NewFromDirStrFileNameStr_03 (0.00s)
+=== RUN   TestFileMgr_NewFromDirStrFileNameStr_04
+--- PASS: TestFileMgr_NewFromDirStrFileNameStr_04 (0.00s)
+=== RUN   TestFileMgr_NewFromDirStrFileNameStr_05
+--- PASS: TestFileMgr_NewFromDirStrFileNameStr_05 (0.00s)
+=== RUN   TestFileMgr_NewFromDirStrFileNameStr_06
+--- PASS: TestFileMgr_NewFromDirStrFileNameStr_06 (0.00s)
+=== RUN   TestFileMgr_OpenThisFile_01
+--- PASS: TestFileMgr_OpenThisFile_01 (0.05s)
+=== RUN   TestFileMgr_OpenThisFile_02
+--- PASS: TestFileMgr_OpenThisFile_02 (0.00s)
+=== RUN   TestFileMgr_OpenThisFile_03
+--- PASS: TestFileMgr_OpenThisFile_03 (0.00s)
+=== RUN   TestFileMgr_OpenThisFile_04
+--- PASS: TestFileMgr_OpenThisFile_04 (0.02s)
 === RUN   TestFileMgr_OpenThisFileReadOnly_01
---- PASS: TestFileMgr_OpenThisFileReadOnly_01 (0.01s)
+--- PASS: TestFileMgr_OpenThisFileReadOnly_01 (0.02s)
+=== RUN   TestFileMgr_OpenThisFileReadOnly_02
+--- PASS: TestFileMgr_OpenThisFileReadOnly_02 (0.07s)
+=== RUN   TestFileMgr_OpenThisFileReadOnly_03
+--- PASS: TestFileMgr_OpenThisFileReadOnly_03 (0.01s)
+=== RUN   TestFileMgr_OpenThisFileReadOnly_04
+--- PASS: TestFileMgr_OpenThisFileReadOnly_04 (0.00s)
 === RUN   TestFileMgr_OpenThisFileReadWrite_01
 --- PASS: TestFileMgr_OpenThisFileReadWrite_01 (0.03s)
+=== RUN   TestFileMgr_OpenThisFileReadWrite_02
+--- PASS: TestFileMgr_OpenThisFileReadWrite_02 (0.02s)
+=== RUN   TestFileMgr_OpenThisFileWriteOnly_01
+--- PASS: TestFileMgr_OpenThisFileWriteOnly_01 (0.00s)
+=== RUN   TestFileMgr_OpenThisFileWriteOnly_02
+--- PASS: TestFileMgr_OpenThisFileWriteOnly_02 (0.07s)
+=== RUN   TestFileMgr_OpenThisFileWriteOnlyAppend_01
+--- PASS: TestFileMgr_OpenThisFileWriteOnlyAppend_01 (0.05s)
+=== RUN   TestFileMgr_OpenThisFileWriteOnlyAppend_02
+--- PASS: TestFileMgr_OpenThisFileWriteOnlyAppend_02 (0.01s)
+=== RUN   TestFileMgr_OpenThisFileWriteOnlyAppend_03
+--- PASS: TestFileMgr_OpenThisFileWriteOnlyAppend_03 (0.00s)
+=== RUN   TestFileMgr_ReadAllFile_01
+--- PASS: TestFileMgr_ReadAllFile_01 (2.11s)
+=== RUN   TestFileMgr_ReadAllFile_02
+--- PASS: TestFileMgr_ReadAllFile_02 (1.07s)
+=== RUN   TestFileMgr_ReadAllFile_03
+--- PASS: TestFileMgr_ReadAllFile_03 (0.04s)
+=== RUN   TestFileMgr_ReadFileLine_01
+--- PASS: TestFileMgr_ReadFileLine_01 (0.02s)
+=== RUN   TestFileMgr_ReadFileLine_02
+--- PASS: TestFileMgr_ReadFileLine_02 (0.02s)
+=== RUN   TestFileMgr_ReadFileLine_03
+--- PASS: TestFileMgr_ReadFileLine_03 (0.08s)
+=== RUN   TestFileMgr_ReadFileLine_04
+--- PASS: TestFileMgr_ReadFileLine_04 (0.03s)
+=== RUN   TestFileMgr_ReadFileLine_05
+--- PASS: TestFileMgr_ReadFileLine_05 (0.02s)
 === RUN   TestFileMgr_ReadFileBytes_01
---- PASS: TestFileMgr_ReadFileBytes_01 (0.00s)
-=== RUN   TestFileMgr_SetFileInfo
---- PASS: TestFileMgr_SetFileInfo (0.00s)
+--- PASS: TestFileMgr_ReadFileBytes_01 (0.08s)
+=== RUN   TestFileMgr_ReadFileBytes_02
+--- PASS: TestFileMgr_ReadFileBytes_02 (0.02s)
+=== RUN   TestFileMgr_ReadFileBytes_03
+--- PASS: TestFileMgr_ReadFileBytes_03 (0.03s)
+=== RUN   TestFileMgr_ReadFileString_01
+--- PASS: TestFileMgr_ReadFileString_01 (0.02s)
+=== RUN   TestFileMgr_ReadFileString_02
+--- PASS: TestFileMgr_ReadFileString_02 (0.08s)
+=== RUN   TestFileMgr_ReadFileString_03
+--- PASS: TestFileMgr_ReadFileString_03 (0.03s)
+=== RUN   TestFileMgr_ReadFileString_04
+--- PASS: TestFileMgr_ReadFileString_04 (0.02s)
+=== RUN   TestFileMgr_ReadFileString_05
+--- PASS: TestFileMgr_ReadFileString_05 (0.11s)
+=== RUN   TestFileMgr_ReadFileString_06
+--- PASS: TestFileMgr_ReadFileString_06 (0.25s)
+=== RUN   TestFileMgr_ReadFileString_07
+--- PASS: TestFileMgr_ReadFileString_07 (0.02s)
+=== RUN   TestFileMgr_ResetFileInfo_01
+--- PASS: TestFileMgr_ResetFileInfo_01 (0.02s)
+=== RUN   TestFileMgr_SetFileInfo_01
+--- PASS: TestFileMgr_SetFileInfo_01 (0.00s)
+=== RUN   TestFileMgr_SetFileInfo_02
+--- PASS: TestFileMgr_SetFileInfo_02 (0.00s)
+=== RUN   TestFileMgr_SetFileInfo_03
+--- PASS: TestFileMgr_SetFileInfo_03 (0.00s)
+=== RUN   TestFileMgr_SetFileInfo_04
+--- PASS: TestFileMgr_SetFileInfo_04 (0.01s)
+=== RUN   TestFileMgr_SetFileMgrFromDirMgrFileName_01
+--- PASS: TestFileMgr_SetFileMgrFromDirMgrFileName_01 (0.00s)
+=== RUN   TestFileMgr_SetFileMgrFromDirMgrFileName_02
+--- PASS: TestFileMgr_SetFileMgrFromDirMgrFileName_02 (0.00s)
+=== RUN   TestFileMgr_SetFileMgrFromDirMgrFileName_03
+--- PASS: TestFileMgr_SetFileMgrFromDirMgrFileName_03 (0.00s)
+=== RUN   TestFileMgr_SetFileMgrFromDirMgrFileName_04
+--- PASS: TestFileMgr_SetFileMgrFromDirMgrFileName_04 (0.00s)
+=== RUN   TestFileMgr_SetFileMgrFromDirMgrFileName_05
+--- PASS: TestFileMgr_SetFileMgrFromDirMgrFileName_05 (0.00s)
+=== RUN   TestFileMgr_SetFileMgrFromDirMgrFileName_06
+--- PASS: TestFileMgr_SetFileMgrFromDirMgrFileName_06 (0.00s)
+=== RUN   TestFileMgr_SetFileMgrFromPathFileName_01
+--- PASS: TestFileMgr_SetFileMgrFromPathFileName_01 (0.00s)
+=== RUN   TestFileMgr_SetFileMgrFromPathFileName_02
+--- PASS: TestFileMgr_SetFileMgrFromPathFileName_02 (0.00s)
+=== RUN   TestFileMgr_SetFileMgrFromPathFileName_03
+--- PASS: TestFileMgr_SetFileMgrFromPathFileName_03 (0.00s)
+=== RUN   TestFileMgr_SetFileMgrFromPathFileName_04
+--- PASS: TestFileMgr_SetFileMgrFromPathFileName_04 (0.00s)
+=== RUN   TestFileMgr_SetFileMgrFromPathFileName_05
+--- PASS: TestFileMgr_SetFileMgrFromPathFileName_05 (0.00s)
+=== RUN   TestFileMgr_WriteBytesToFile_01
+--- PASS: TestFileMgr_WriteBytesToFile_01 (0.09s)
+=== RUN   TestFileMgr_WriteBytesToFile_02
+--- PASS: TestFileMgr_WriteBytesToFile_02 (0.02s)
+=== RUN   TestFileMgr_WriteBytesToFile_03
+--- PASS: TestFileMgr_WriteBytesToFile_03 (0.06s)
+=== RUN   TestFileMgr_WriteBytesToFile_04
+--- PASS: TestFileMgr_WriteBytesToFile_04 (0.08s)
 === RUN   TestFileMgr_WriteStrToFile_01
---- PASS: TestFileMgr_WriteStrToFile_01 (0.06s)
-=== RUN   TestFileMgrCollection_AddFileMgrCollection
---- PASS: TestFileMgrCollection_AddFileMgrCollection (0.01s)
+--- PASS: TestFileMgr_WriteStrToFile_01 (0.02s)
+=== RUN   TestFileMgr_WriteStrToFile_02
+--- PASS: TestFileMgr_WriteStrToFile_02 (0.00s)
+=== RUN   TestFileMgr_WriteStrToFile_03
+--- PASS: TestFileMgr_WriteStrToFile_03 (0.02s)
+=== RUN   TestFileMgrCollection_AddFileMgrCollection_01
+--- PASS: TestFileMgrCollection_AddFileMgrCollection_01 (0.01s)
+=== RUN   TestFileMgrCollection_AddFileMgrCollection_02
+--- PASS: TestFileMgrCollection_AddFileMgrCollection_02 (0.00s)
 === RUN   TestFileMgrCollection_AddFileMgr_01
 --- PASS: TestFileMgrCollection_AddFileMgr_01 (0.00s)
-=== RUN   TestFileMgrCollection_AddFileMgrByPathFile
---- PASS: TestFileMgrCollection_AddFileMgrByPathFile (0.01s)
+=== RUN   TestFileMgrCollection_AddFileMgrByPathFileNameExt_01
+--- PASS: TestFileMgrCollection_AddFileMgrByPathFileNameExt_01 (0.01s)
+=== RUN   TestFileMgrCollection_AddFileMgrByPathFileNameExt_02
+--- PASS: TestFileMgrCollection_AddFileMgrByPathFileNameExt_02 (0.00s)
+=== RUN   TestFileMgrCollection_AddFileMgrByDirFileNameExt_01
+--- PASS: TestFileMgrCollection_AddFileMgrByDirFileNameExt_01 (0.00s)
+=== RUN   TestFileMgrCollection_AddFileMgrByDirFileNameExt_02
+--- PASS: TestFileMgrCollection_AddFileMgrByDirFileNameExt_02 (0.00s)
+=== RUN   TestFileMgrCollection_AddFileMgrByDirFileNameExt_03
+--- PASS: TestFileMgrCollection_AddFileMgrByDirFileNameExt_03 (0.00s)
+=== RUN   TestFileMgrCollection_AddFileMgrByDirStrFileNameStr_01
+--- PASS: TestFileMgrCollection_AddFileMgrByDirStrFileNameStr_01 (0.03s)
 === RUN   TestFileMgrCollection_AddFileInfo_01
---- PASS: TestFileMgrCollection_AddFileInfo_01 (0.01s)
-=== RUN   TestDirectoryTreeInfo_CopyToDirectoryTree_01
---- PASS: TestDirectoryTreeInfo_CopyToDirectoryTree_01 (8.50s)
-=== RUN   TestFileMgrCollection_FindFiles
---- PASS: TestFileMgrCollection_FindFiles (0.00s)
-=== RUN   TestFileMgrCollection_GetFileMgrArray
---- PASS: TestFileMgrCollection_GetFileMgrArray (0.01s)
+--- PASS: TestFileMgrCollection_AddFileInfo_01 (0.00s)
+=== RUN   TestFileMgrCollection_CopyFilesToDir_01
+--- PASS: TestFileMgrCollection_CopyFilesToDir_01 (1.22s)
+=== RUN   TestFileMgrCollection_CopyFilesToDir_02
+--- PASS: TestFileMgrCollection_CopyFilesToDir_02 (0.00s)
+=== RUN   TestFileMgrCollection_CopyOut_01
+--- PASS: TestFileMgrCollection_CopyOut_01 (0.00s)
+=== RUN   TestFileMgrCollection_CopyOut_02
+--- PASS: TestFileMgrCollection_CopyOut_02 (0.01s)
+=== RUN   TestFileMgrCollection_CopyOut_03
+--- PASS: TestFileMgrCollection_CopyOut_03 (0.00s)
+=== RUN   TestFileMgrCollection_DeleteAtIndex_01
+--- PASS: TestFileMgrCollection_DeleteAtIndex_01 (0.00s)
+=== RUN   TestFileMgrCollection_DeleteAtIndex_02
+--- PASS: TestFileMgrCollection_DeleteAtIndex_02 (0.01s)
+=== RUN   TestFileMgrCollection_DeleteAtIndex_03
+--- PASS: TestFileMgrCollection_DeleteAtIndex_03 (0.00s)
+=== RUN   TestFileMgrCollection_DeleteAtIndex_04
+--- PASS: TestFileMgrCollection_DeleteAtIndex_04 (0.00s)
+=== RUN   TestFileMgrCollection_DeleteAtIndex_05
+--- PASS: TestFileMgrCollection_DeleteAtIndex_05 (0.00s)
+=== RUN   TestFileMgrCollection_DeleteAtIndex_06
+--- PASS: TestFileMgrCollection_DeleteAtIndex_06 (0.00s)
+=== RUN   TestFileMgrCollection_DeleteAtIndex_07
+--- PASS: TestFileMgrCollection_DeleteAtIndex_07 (0.00s)
+=== RUN   TestFileMgrCollection_DeleteAtIndex_08
+--- PASS: TestFileMgrCollection_DeleteAtIndex_08 (0.00s)
+=== RUN   TestFileMgrCollection_FindFiles_01
+--- PASS: TestFileMgrCollection_FindFiles_01 (0.01s)
+=== RUN   TestFileMgrCollection_FindFiles_02
+--- PASS: TestFileMgrCollection_FindFiles_02 (0.00s)
+=== RUN   TestFileMgrCollection_GetFileMgrArray_01
+--- PASS: TestFileMgrCollection_GetFileMgrArray_01 (0.01s)
+=== RUN   TestFileMgrCollection_GetFileMgrArray_02
+--- PASS: TestFileMgrCollection_GetFileMgrArray_02 (0.00s)
 === RUN   TestFileMgrCollection_GetFileMgrAtIndex_01
---- PASS: TestFileMgrCollection_GetFileMgrAtIndex_01 (0.00s)
+--- PASS: TestFileMgrCollection_GetFileMgrAtIndex_01 (0.01s)
+=== RUN   TestFileMgrCollection_GetFileMgrAtIndex_02
+--- PASS: TestFileMgrCollection_GetFileMgrAtIndex_02 (0.00s)
+=== RUN   TestFileMgrCollection_GetFileMgrAtIndex_03
+--- PASS: TestFileMgrCollection_GetFileMgrAtIndex_03 (0.00s)
+=== RUN   TestFileMgrCollection_GetFileMgrAtIndex_04
+--- PASS: TestFileMgrCollection_GetFileMgrAtIndex_04 (0.00s)
+=== RUN   TestFileMgrCollection_GetNumOfFileMgrs_01
+--- PASS: TestFileMgrCollection_GetNumOfFileMgrs_01 (0.00s)
+=== RUN   TestFileMgrCollection_GetNumOfFileMgrs_02
+--- PASS: TestFileMgrCollection_GetNumOfFileMgrs_02 (0.00s)
+=== RUN   TestFileMgrCollection_GetNumOfFiles_01
+--- PASS: TestFileMgrCollection_GetNumOfFiles_01 (0.00s)
+=== RUN   TestFileMgrCollection_GetNumOfFiles_02
+--- PASS: TestFileMgrCollection_GetNumOfFiles_02 (0.00s)
+=== RUN   TestFileMgrCollection_GetTotalFileBytes_01
+--- PASS: TestFileMgrCollection_GetTotalFileBytes_01 (0.00s)
 === RUN   TestFileMgrCollection_InsertFileMgrAtIndex_01
 --- PASS: TestFileMgrCollection_InsertFileMgrAtIndex_01 (0.01s)
 === RUN   TestFileMgrCollection_InsertFileMgrAtIndex_02
@@ -392,24 +1976,500 @@
 --- PASS: TestFileMgrCollection_InsertFileMgrAtIndex_04 (0.01s)
 === RUN   TestFileMgrCollection_InsertFileMgrAtIndex_05
 --- PASS: TestFileMgrCollection_InsertFileMgrAtIndex_05 (0.01s)
-=== RUN   TestFileMgrCollection_PopFMgrAtIndex
---- PASS: TestFileMgrCollection_PopFMgrAtIndex (0.00s)
-=== RUN   TestFileMgrCollection_PeekFMgrAtIndex
---- PASS: TestFileMgrCollection_PeekFMgrAtIndex (0.00s)
-=== RUN   TestFileMgrCollection_PopLastFMgr
---- PASS: TestFileMgrCollection_PopLastFMgr (0.00s)
-=== RUN   TestFileMgrCollection_DeleteAtIndex_01
---- PASS: TestFileMgrCollection_DeleteAtIndex_01 (0.00s)
-=== RUN   TestFileMgrCollection_DeleteAtIndex_02
---- PASS: TestFileMgrCollection_DeleteAtIndex_02 (0.00s)
-=== RUN   TestFileMgrCollection_DeleteAtIndex_03
---- PASS: TestFileMgrCollection_DeleteAtIndex_03 (0.00s)
-=== RUN   TestFileMgrCollection_DeleteAtIndex_04
---- PASS: TestFileMgrCollection_DeleteAtIndex_04 (0.00s)
-=== RUN   TestFileMgrCollection_DeleteAtIndex_05
---- PASS: TestFileMgrCollection_DeleteAtIndex_05 (0.00s)
-=== RUN   TestFileOpenStatus_New_01
---- PASS: TestFileOpenStatus_New_01 (0.00s)
+=== RUN   TestFileMgrCollection_InsertFileMgrAtIndex_06
+--- PASS: TestFileMgrCollection_InsertFileMgrAtIndex_06 (0.00s)
+=== RUN   TestFileMgrCollection_InsertFileMgrAtIndex_07
+--- PASS: TestFileMgrCollection_InsertFileMgrAtIndex_07 (0.01s)
+=== RUN   TestFileMgrCollection_InsertFileMgrAtIndex_08
+--- PASS: TestFileMgrCollection_InsertFileMgrAtIndex_08 (0.00s)
+=== RUN   TestFileMgrCollection_PeekFirstFileMgr_01
+--- PASS: TestFileMgrCollection_PeekFirstFileMgr_01 (0.00s)
+=== RUN   TestFileMgrCollection_PeekFirstFileMgr_02
+--- PASS: TestFileMgrCollection_PeekFirstFileMgr_02 (0.00s)
+=== RUN   TestFileMgrCollection_PeekFMgrAtIndex_01
+--- PASS: TestFileMgrCollection_PeekFMgrAtIndex_01 (0.00s)
+=== RUN   TestFileMgrCollection_PeekFMgrAtIndex_02
+--- PASS: TestFileMgrCollection_PeekFMgrAtIndex_02 (0.00s)
+=== RUN   TestFileMgrCollection_PeekFMgrAtIndex_03
+--- PASS: TestFileMgrCollection_PeekFMgrAtIndex_03 (0.00s)
+=== RUN   TestFileMgrCollection_PeekFMgrAtIndex_04
+--- PASS: TestFileMgrCollection_PeekFMgrAtIndex_04 (0.00s)
+=== RUN   TestFileMgrCollection_PeekLastFileMgr_01
+--- PASS: TestFileMgrCollection_PeekLastFileMgr_01 (0.00s)
+=== RUN   TestFileMgrCollection_PeekLastFileMgr_02
+--- PASS: TestFileMgrCollection_PeekLastFileMgr_02 (0.00s)
+=== RUN   TestFileMgrCollection_PopFirstFileMgr_01
+--- PASS: TestFileMgrCollection_PopFirstFileMgr_01 (0.00s)
+=== RUN   TestFileMgrCollection_PopFirstFileMgr_02
+--- PASS: TestFileMgrCollection_PopFirstFileMgr_02 (0.00s)
+=== RUN   TestFileMgrCollection_PopFMgrAtIndex_01
+--- PASS: TestFileMgrCollection_PopFMgrAtIndex_01 (0.00s)
+=== RUN   TestFileMgrCollection_PopFMgrAtIndex_02
+--- PASS: TestFileMgrCollection_PopFMgrAtIndex_02 (0.00s)
+=== RUN   TestFileMgrCollection_PopFMgrAtIndex_03
+--- PASS: TestFileMgrCollection_PopFMgrAtIndex_03 (0.00s)
+=== RUN   TestFileMgrCollection_PopFMgrAtIndex_04
+--- PASS: TestFileMgrCollection_PopFMgrAtIndex_04 (0.01s)
+=== RUN   TestFileMgrCollection_PopFMgrAtIndex_05
+--- PASS: TestFileMgrCollection_PopFMgrAtIndex_05 (0.00s)
+=== RUN   TestFileMgrCollection_PopFMgrAtIndex_06
+--- PASS: TestFileMgrCollection_PopFMgrAtIndex_06 (0.00s)
+=== RUN   TestFileMgrCollection_PopLastFMgr_01
+--- PASS: TestFileMgrCollection_PopLastFMgr_01 (0.00s)
+=== RUN   TestFileMgrCollection_PopLastFMgr_02
+--- PASS: TestFileMgrCollection_PopLastFMgr_02 (0.00s)
+=== RUN   TestFileOpenConfig_CopyIn_01
+--- PASS: TestFileOpenConfig_CopyIn_01 (0.00s)
+=== RUN   TestFileOpenConfig_CopyIn_02
+--- PASS: TestFileOpenConfig_CopyIn_02 (0.00s)
+=== RUN   TestFileOpenConfig_CopyOut_01
+--- PASS: TestFileOpenConfig_CopyOut_01 (0.00s)
+=== RUN   TestFileOpenConfig_CopyOut_02
+--- PASS: TestFileOpenConfig_CopyOut_02 (0.00s)
+=== RUN   TestFileOpenConfig_CopyOut_03
+--- PASS: TestFileOpenConfig_CopyOut_03 (0.00s)
+=== RUN   TestFileOpenConfig_CopyOut_04
+--- PASS: TestFileOpenConfig_CopyOut_04 (0.00s)
+=== RUN   TestFileOpenConfig_CopyOut_05
+--- PASS: TestFileOpenConfig_CopyOut_05 (0.00s)
+=== RUN   TestFileOpenConfig_Equal_01
+--- PASS: TestFileOpenConfig_Equal_01 (0.00s)
+=== RUN   TestFileOpenConfig_Equal_02
+--- PASS: TestFileOpenConfig_Equal_02 (0.00s)
+=== RUN   TestFileOpenConfig_Equal_03
+--- PASS: TestFileOpenConfig_Equal_03 (0.00s)
+=== RUN   TestFileOpenConfig_Equal_04
+--- PASS: TestFileOpenConfig_Equal_04 (0.00s)
+=== RUN   TestFileOpenConfig_Equal_05
+--- PASS: TestFileOpenConfig_Equal_05 (0.00s)
+=== RUN   TestFileOpenConfig_Equal_06
+--- PASS: TestFileOpenConfig_Equal_06 (0.00s)
+=== RUN   TestFileOpenConfig_Equal_07
+--- PASS: TestFileOpenConfig_Equal_07 (0.00s)
+=== RUN   TestFileOpenConfig_New_01
+--- PASS: TestFileOpenConfig_New_01 (0.00s)
+=== RUN   TestFileOpenConfig_New_02
+--- PASS: TestFileOpenConfig_New_02 (0.00s)
+=== RUN   TestFileOpenConfig_New_03
+--- PASS: TestFileOpenConfig_New_03 (0.00s)
+=== RUN   TestFileOpenConfig_New_04
+--- PASS: TestFileOpenConfig_New_04 (0.00s)
+=== RUN   TestFileOpenConfig_New_05
+--- PASS: TestFileOpenConfig_New_05 (0.00s)
+=== RUN   TestFileOpenConfig_New_06
+--- PASS: TestFileOpenConfig_New_06 (0.00s)
+=== RUN   TestFileOpenConfig_GetCompositeFileOpenCode_01
+--- PASS: TestFileOpenConfig_GetCompositeFileOpenCode_01 (0.00s)
+=== RUN   TestFileOpenConfig_GetCompositeFileOpenCode_02
+--- PASS: TestFileOpenConfig_GetCompositeFileOpenCode_02 (0.00s)
+=== RUN   TestFileOpenConfig_GetCompositeFileOpenCode_03
+--- PASS: TestFileOpenConfig_GetCompositeFileOpenCode_03 (0.00s)
+=== RUN   TestFileOpenConfig_GetCompositeFileOpenCode_04
+--- PASS: TestFileOpenConfig_GetCompositeFileOpenCode_04 (0.00s)
+=== RUN   TestFileOpenConfig_GetCompositeFileOpenCode_05
+--- PASS: TestFileOpenConfig_GetCompositeFileOpenCode_05 (0.00s)
+=== RUN   TestFileOpenConfig_GetFileOpenModes_01
+--- PASS: TestFileOpenConfig_GetFileOpenModes_01 (0.00s)
+=== RUN   TestFileOpenConfig_GetFileOpenModes_02
+--- PASS: TestFileOpenConfig_GetFileOpenModes_02 (0.00s)
+=== RUN   TestFileOpenConfig_GetFileOpenModes_03
+--- PASS: TestFileOpenConfig_GetFileOpenModes_03 (0.00s)
+=== RUN   TestFileOpenConfig_GetFileOpenModes_04
+--- PASS: TestFileOpenConfig_GetFileOpenModes_04 (0.00s)
+=== RUN   TestFileOpenConfig_GetFileOpenTextString_01
+--- PASS: TestFileOpenConfig_GetFileOpenTextString_01 (0.00s)
+=== RUN   TestFileOpenConfig_GetFileOpenTextString_02
+--- PASS: TestFileOpenConfig_GetFileOpenTextString_02 (0.00s)
+=== RUN   TestFileOpenConfig_GetFileOpenType_01
+--- PASS: TestFileOpenConfig_GetFileOpenType_01 (0.00s)
+=== RUN   TestFileOpenConfig_GetFileOpenType_02
+--- PASS: TestFileOpenConfig_GetFileOpenType_02 (0.00s)
+=== RUN   TestFileOpenConfig_IsValid_01
+--- PASS: TestFileOpenConfig_IsValid_01 (0.00s)
+=== RUN   TestFileOpenConfig_IsValid_02
+--- PASS: TestFileOpenConfig_IsValid_02 (0.00s)
+=== RUN   TestFileOpenConfig_IsValid_03
+--- PASS: TestFileOpenConfig_IsValid_03 (0.00s)
+=== RUN   TestFileOpenConfig_IsValid_04
+--- PASS: TestFileOpenConfig_IsValid_04 (0.00s)
+=== RUN   TestFileOpenConfig_IsValid_05
+--- PASS: TestFileOpenConfig_IsValid_05 (0.00s)
+=== RUN   TestFileOpenConfig_IsValid_06
+--- PASS: TestFileOpenConfig_IsValid_06 (0.00s)
+=== RUN   TestFileOpenConfig_IsValid_07
+--- PASS: TestFileOpenConfig_IsValid_07 (0.00s)
+=== RUN   TestFileOpenConfig_IsValid_08
+--- PASS: TestFileOpenConfig_IsValid_08 (0.00s)
+=== RUN   TestFileOpenConfig_IsValid_09
+--- PASS: TestFileOpenConfig_IsValid_09 (0.00s)
+=== RUN   TestFileOpenConfig_IsValid_10
+--- PASS: TestFileOpenConfig_IsValid_10 (0.00s)
+=== RUN   TestFileOpenConfig_SetFileOpenType_01
+--- PASS: TestFileOpenConfig_SetFileOpenType_01 (0.00s)
+=== RUN   TestFileOpenConfig_SetFileOpenType_02
+--- PASS: TestFileOpenConfig_SetFileOpenType_02 (0.00s)
+=== RUN   TestFileOpenConfig_SetFileOpenType_03
+--- PASS: TestFileOpenConfig_SetFileOpenType_03 (0.00s)
+=== RUN   TestFileOpenConfig_SetFileOpenType_04
+--- PASS: TestFileOpenConfig_SetFileOpenType_04 (0.00s)
+=== RUN   TestFileOpenConfig_SetFileOpenModes_01
+--- PASS: TestFileOpenConfig_SetFileOpenModes_01 (0.00s)
+=== RUN   TestFileOpenConfig_SetFileOpenModes_02
+--- PASS: TestFileOpenConfig_SetFileOpenModes_02 (0.00s)
+=== RUN   TestFileOpenConfig_SetFileOpenModes_03
+--- PASS: TestFileOpenConfig_SetFileOpenModes_03 (0.00s)
+=== RUN   TestFileOpenMode_IsValid_01
+--- PASS: TestFileOpenMode_IsValid_01 (0.00s)
+=== RUN   TestFileOpenMode_IsValid_02
+--- PASS: TestFileOpenMode_IsValid_02 (0.00s)
+=== RUN   TestFileOpenMode_IsValid_03
+--- PASS: TestFileOpenMode_IsValid_03 (0.00s)
+=== RUN   TestFileOpenMode_IsValid_04
+--- PASS: TestFileOpenMode_IsValid_04 (0.00s)
+=== RUN   TestFileOpenMode_IsValid_05
+--- PASS: TestFileOpenMode_IsValid_05 (0.00s)
+=== RUN   TestFileOpenMode_IsValid_06
+--- PASS: TestFileOpenMode_IsValid_06 (0.00s)
+=== RUN   TestFileOpenMode_IsValid_07
+--- PASS: TestFileOpenMode_IsValid_07 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_01
+--- PASS: TestFileOpenMode_ParseString_01 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_02
+--- PASS: TestFileOpenMode_ParseString_02 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_03
+--- PASS: TestFileOpenMode_ParseString_03 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_04
+--- PASS: TestFileOpenMode_ParseString_04 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_05
+--- PASS: TestFileOpenMode_ParseString_05 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_06
+--- PASS: TestFileOpenMode_ParseString_06 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_07
+--- PASS: TestFileOpenMode_ParseString_07 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_08
+--- PASS: TestFileOpenMode_ParseString_08 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_09
+--- PASS: TestFileOpenMode_ParseString_09 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_10
+--- PASS: TestFileOpenMode_ParseString_10 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_11
+--- PASS: TestFileOpenMode_ParseString_11 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_12
+--- PASS: TestFileOpenMode_ParseString_12 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_13
+--- PASS: TestFileOpenMode_ParseString_13 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_14
+--- PASS: TestFileOpenMode_ParseString_14 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_15
+--- PASS: TestFileOpenMode_ParseString_15 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_16
+--- PASS: TestFileOpenMode_ParseString_16 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_17
+--- PASS: TestFileOpenMode_ParseString_17 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_18
+--- PASS: TestFileOpenMode_ParseString_18 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_19
+--- PASS: TestFileOpenMode_ParseString_19 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_20
+--- PASS: TestFileOpenMode_ParseString_20 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_21
+--- PASS: TestFileOpenMode_ParseString_21 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_22
+--- PASS: TestFileOpenMode_ParseString_22 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_23
+--- PASS: TestFileOpenMode_ParseString_23 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_24
+--- PASS: TestFileOpenMode_ParseString_24 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_25
+--- PASS: TestFileOpenMode_ParseString_25 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_26
+--- PASS: TestFileOpenMode_ParseString_26 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_27
+--- PASS: TestFileOpenMode_ParseString_27 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_28
+--- PASS: TestFileOpenMode_ParseString_28 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_29
+--- PASS: TestFileOpenMode_ParseString_29 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_30
+--- PASS: TestFileOpenMode_ParseString_30 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_31
+--- PASS: TestFileOpenMode_ParseString_31 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_32
+--- PASS: TestFileOpenMode_ParseString_32 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_33
+--- PASS: TestFileOpenMode_ParseString_33 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_34
+--- PASS: TestFileOpenMode_ParseString_34 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_35
+--- PASS: TestFileOpenMode_ParseString_35 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_36
+--- PASS: TestFileOpenMode_ParseString_36 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_37
+--- PASS: TestFileOpenMode_ParseString_37 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_38
+--- PASS: TestFileOpenMode_ParseString_38 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_39
+--- PASS: TestFileOpenMode_ParseString_39 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_40
+--- PASS: TestFileOpenMode_ParseString_40 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_41
+--- PASS: TestFileOpenMode_ParseString_41 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_42
+--- PASS: TestFileOpenMode_ParseString_42 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_43
+--- PASS: TestFileOpenMode_ParseString_43 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_44
+--- PASS: TestFileOpenMode_ParseString_44 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_45
+--- PASS: TestFileOpenMode_ParseString_45 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_46
+--- PASS: TestFileOpenMode_ParseString_46 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_47
+--- PASS: TestFileOpenMode_ParseString_47 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_48
+--- PASS: TestFileOpenMode_ParseString_48 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_49
+--- PASS: TestFileOpenMode_ParseString_49 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_50
+--- PASS: TestFileOpenMode_ParseString_50 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_51
+--- PASS: TestFileOpenMode_ParseString_51 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_52
+--- PASS: TestFileOpenMode_ParseString_52 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_53
+--- PASS: TestFileOpenMode_ParseString_53 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_54
+--- PASS: TestFileOpenMode_ParseString_54 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_55
+--- PASS: TestFileOpenMode_ParseString_55 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_56
+--- PASS: TestFileOpenMode_ParseString_56 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_57
+--- PASS: TestFileOpenMode_ParseString_57 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_58
+--- PASS: TestFileOpenMode_ParseString_58 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_59
+--- PASS: TestFileOpenMode_ParseString_59 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_60
+--- PASS: TestFileOpenMode_ParseString_60 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_61
+--- PASS: TestFileOpenMode_ParseString_61 (0.00s)
+=== RUN   TestFileOpenMode_ParseString_62
+--- PASS: TestFileOpenMode_ParseString_62 (0.00s)
+=== RUN   TestFileOpenMode_String_01
+--- PASS: TestFileOpenMode_String_01 (0.00s)
+=== RUN   TestFileOpenMode_String_02
+--- PASS: TestFileOpenMode_String_02 (0.00s)
+=== RUN   TestFileOpenMode_String_03
+--- PASS: TestFileOpenMode_String_03 (0.00s)
+=== RUN   TestFileOpenMode_String_04
+--- PASS: TestFileOpenMode_String_04 (0.00s)
+=== RUN   TestFileOpenMode_String_05
+--- PASS: TestFileOpenMode_String_05 (0.00s)
+=== RUN   TestFileOpenMode_String_06
+--- PASS: TestFileOpenMode_String_06 (0.00s)
+=== RUN   TestFileOpenMode_String_07
+--- PASS: TestFileOpenMode_String_07 (0.00s)
+=== RUN   TestFileOpenMode_Value_01
+--- PASS: TestFileOpenMode_Value_01 (0.00s)
+=== RUN   TestFileOpenMode_Value_02
+--- PASS: TestFileOpenMode_Value_02 (0.00s)
+=== RUN   TestFileOpenMode_Value_03
+--- PASS: TestFileOpenMode_Value_03 (0.00s)
+=== RUN   TestFileOpenMode_Value_04
+--- PASS: TestFileOpenMode_Value_04 (0.00s)
+=== RUN   TestFileOpenMode_Value_05
+--- PASS: TestFileOpenMode_Value_05 (0.00s)
+=== RUN   TestFileOpenMode_Value_06
+--- PASS: TestFileOpenMode_Value_06 (0.00s)
+=== RUN   TestFileOpenMode_Value_07
+--- PASS: TestFileOpenMode_Value_07 (0.00s)
+=== RUN   TestFileOpenType_Value_01
+--- PASS: TestFileOpenType_Value_01 (0.00s)
+=== RUN   TestFileOpenType_Value_02
+--- PASS: TestFileOpenType_Value_02 (0.00s)
+=== RUN   TestFileOpenType_Value_03
+--- PASS: TestFileOpenType_Value_03 (0.00s)
+=== RUN   TestFileOpenType_Value_04
+--- PASS: TestFileOpenType_Value_04 (0.00s)
+=== RUN   TestFileOpenType_String_01
+--- PASS: TestFileOpenType_String_01 (0.00s)
+=== RUN   TestFileOpenType_String_02
+--- PASS: TestFileOpenType_String_02 (0.00s)
+=== RUN   TestFileOpenType_String_03
+--- PASS: TestFileOpenType_String_03 (0.00s)
+=== RUN   TestFileOpenType_String_04
+--- PASS: TestFileOpenType_String_04 (0.00s)
+=== RUN   TestFileOpenType_IsValid_01
+--- PASS: TestFileOpenType_IsValid_01 (0.00s)
+=== RUN   TestFileOpenType_IsValid_02
+--- PASS: TestFileOpenType_IsValid_02 (0.00s)
+=== RUN   TestFileOpenType_ParseString_01
+--- PASS: TestFileOpenType_ParseString_01 (0.00s)
+=== RUN   TestFileOpenType_ParseString_02
+--- PASS: TestFileOpenType_ParseString_02 (0.00s)
+=== RUN   TestFileOpenType_ParseString_03
+--- PASS: TestFileOpenType_ParseString_03 (0.00s)
+=== RUN   TestFileOpenType_ParseString_04
+--- PASS: TestFileOpenType_ParseString_04 (0.00s)
+=== RUN   TestFileOpenType_ParseString_05
+--- PASS: TestFileOpenType_ParseString_05 (0.00s)
+=== RUN   TestFileOpenType_ParseString_06
+--- PASS: TestFileOpenType_ParseString_06 (0.00s)
+=== RUN   TestFileOpenType_ParseString_07
+--- PASS: TestFileOpenType_ParseString_07 (0.00s)
+=== RUN   TestFileOpenType_ParseString_08
+--- PASS: TestFileOpenType_ParseString_08 (0.00s)
+=== RUN   TestFileOpenType_ParseString_09
+--- PASS: TestFileOpenType_ParseString_09 (0.00s)
+=== RUN   TestFileOpenType_ParseString_10
+--- PASS: TestFileOpenType_ParseString_10 (0.00s)
+=== RUN   TestFileOpenType_ParseString_11
+--- PASS: TestFileOpenType_ParseString_11 (0.00s)
+=== RUN   TestFileOpenType_ParseString_12
+--- PASS: TestFileOpenType_ParseString_12 (0.00s)
+=== RUN   TestFileOpenType_ParseString_13
+--- PASS: TestFileOpenType_ParseString_13 (0.00s)
+=== RUN   TestFileOpenType_ParseString_14
+--- PASS: TestFileOpenType_ParseString_14 (0.00s)
+=== RUN   TestFileOpenType_ParseString_15
+--- PASS: TestFileOpenType_ParseString_15 (0.00s)
+=== RUN   TestFileOpenType_ParseString_16
+--- PASS: TestFileOpenType_ParseString_16 (0.00s)
+=== RUN   TestFileOpenType_ParseString_17
+--- PASS: TestFileOpenType_ParseString_17 (0.00s)
+=== RUN   TestFileOpenType_ParseString_18
+--- PASS: TestFileOpenType_ParseString_18 (0.00s)
+=== RUN   TestFileOpenType_ParseString_19
+--- PASS: TestFileOpenType_ParseString_19 (0.00s)
+=== RUN   TestFileOpenType_ParseString_20
+--- PASS: TestFileOpenType_ParseString_20 (0.00s)
+=== RUN   TestFileOpenType_ParseString_21
+--- PASS: TestFileOpenType_ParseString_21 (0.00s)
+=== RUN   TestFileOpenType_ParseString_22
+--- PASS: TestFileOpenType_ParseString_22 (0.00s)
+=== RUN   TestFileOpenType_ParseString_23
+--- PASS: TestFileOpenType_ParseString_23 (0.00s)
+=== RUN   TestFileOpenType_ParseString_24
+--- PASS: TestFileOpenType_ParseString_24 (0.00s)
+=== RUN   TestFileOpenType_ParseString_25
+--- PASS: TestFileOpenType_ParseString_25 (0.00s)
+=== RUN   TestFileOpenType_ParseString_26
+--- PASS: TestFileOpenType_ParseString_26 (0.00s)
+=== RUN   TestFileOpenType_ParseString_27
+--- PASS: TestFileOpenType_ParseString_27 (0.00s)
+=== RUN   TestFileOpenType_ParseString_28
+--- PASS: TestFileOpenType_ParseString_28 (0.00s)
+=== RUN   TestFileOpenType_ParseString_29
+--- PASS: TestFileOpenType_ParseString_29 (0.00s)
+=== RUN   TestFileOpenType_ParseString_30
+--- PASS: TestFileOpenType_ParseString_30 (0.00s)
+=== RUN   TestFileOpenType_ParseString_31
+--- PASS: TestFileOpenType_ParseString_31 (0.00s)
+=== RUN   TestFileOpenType_ParseString_32
+--- PASS: TestFileOpenType_ParseString_32 (0.00s)
+=== RUN   TestFileOpenType_ParseString_33
+--- PASS: TestFileOpenType_ParseString_33 (0.00s)
+=== RUN   TestFileOpenType_ParseString_34
+--- PASS: TestFileOpenType_ParseString_34 (0.00s)
+=== RUN   TestFileOps_CopyOut_01
+--- PASS: TestFileOps_CopyOut_01 (0.00s)
+=== RUN   TestFileOps_CopyOut_02
+--- PASS: TestFileOps_CopyOut_02 (0.00s)
+=== RUN   TestFileOps_Equal_01
+--- PASS: TestFileOps_Equal_01 (0.00s)
+=== RUN   TestFileOps_Equal_02
+--- PASS: TestFileOps_Equal_02 (0.00s)
+=== RUN   TestFileOps_Equal_03
+--- PASS: TestFileOps_Equal_03 (0.00s)
+=== RUN   TestFileOps_Equal_04
+--- PASS: TestFileOps_Equal_04 (0.00s)
+=== RUN   TestFileOps_Equal_05
+--- PASS: TestFileOps_Equal_05 (0.00s)
+=== RUN   TestFileOps_EqualPathFileNameExt_01
+--- PASS: TestFileOps_EqualPathFileNameExt_01 (0.00s)
+=== RUN   TestFileOps_EqualPathFileNameExt_02
+--- PASS: TestFileOps_EqualPathFileNameExt_02 (0.00s)
+=== RUN   TestFileOps_EqualPathFileNameExt_03
+--- PASS: TestFileOps_EqualPathFileNameExt_03 (0.00s)
+=== RUN   TestFileOps_ExecuteFileOperation_01
+--- PASS: TestFileOps_ExecuteFileOperation_01 (0.00s)
+=== RUN   TestFileOps_ExecuteFileOperation_02
+--- PASS: TestFileOps_ExecuteFileOperation_02 (0.04s)
+=== RUN   TestFileOps_ExecuteFileOperation_03
+--- PASS: TestFileOps_ExecuteFileOperation_03 (0.10s)
+=== RUN   TestFileOps_ExecuteFileOperation_04
+--- PASS: TestFileOps_ExecuteFileOperation_04 (0.05s)
+=== RUN   TestFileOps_ExecuteFileOperation_05
+--- PASS: TestFileOps_ExecuteFileOperation_05 (0.09s)
+=== RUN   TestFileOps_ExecuteFileOperation_06
+--- PASS: TestFileOps_ExecuteFileOperation_06 (0.04s)
+=== RUN   TestFileOps_ExecuteFileOperation_07
+--- PASS: TestFileOps_ExecuteFileOperation_07 (0.14s)
+=== RUN   TestFileOps_ExecuteFileOperation_08
+--- PASS: TestFileOps_ExecuteFileOperation_08 (0.15s)
+=== RUN   TestFileOps_ExecuteFileOperation_09
+--- PASS: TestFileOps_ExecuteFileOperation_09 (0.04s)
+=== RUN   TestFileOps_ExecuteFileOperation_10
+--- PASS: TestFileOps_ExecuteFileOperation_10 (0.01s)
+=== RUN   TestFileOps_ExecuteFileOperation_11
+--- PASS: TestFileOps_ExecuteFileOperation_11 (0.01s)
+=== RUN   TestFileOps_ExecuteFileOperation_12
+--- PASS: TestFileOps_ExecuteFileOperation_12 (0.01s)
+=== RUN   TestFileOps_ExecuteFileOperation_13
+--- PASS: TestFileOps_ExecuteFileOperation_13 (0.00s)
+=== RUN   TestFileOps_ExecuteFileOperation_14
+--- PASS: TestFileOps_ExecuteFileOperation_14 (0.01s)
+=== RUN   TestFileOps_ExecuteFileOperation_15
+--- PASS: TestFileOps_ExecuteFileOperation_15 (0.00s)
+=== RUN   TestFileOps_ExecuteFileOperation_16
+--- PASS: TestFileOps_ExecuteFileOperation_16 (0.01s)
+=== RUN   TestFileOps_ExecuteFileOperation_17
+--- PASS: TestFileOps_ExecuteFileOperation_17 (0.01s)
+=== RUN   TestFileOps_IsInitialized_01
+--- PASS: TestFileOps_IsInitialized_01 (0.00s)
+=== RUN   TestFileOps_NewByDirMgrFileName_01
+--- PASS: TestFileOps_NewByDirMgrFileName_01 (0.00s)
+=== RUN   TestFileOps_NewByDirMgrFileName_02
+--- PASS: TestFileOps_NewByDirMgrFileName_02 (0.00s)
+=== RUN   TestFileOps_NewByDirMgrFileName_03
+--- PASS: TestFileOps_NewByDirMgrFileName_03 (0.00s)
+=== RUN   TestFileOps_NewByDirMgrFileName_04
+--- PASS: TestFileOps_NewByDirMgrFileName_04 (0.00s)
+=== RUN   TestFileOps_NewByDirMgrFileName_05
+--- PASS: TestFileOps_NewByDirMgrFileName_05 (0.00s)
+=== RUN   TestFileOps_NewByDirMgrFileName_06
+--- PASS: TestFileOps_NewByDirMgrFileName_06 (0.09s)
+=== RUN   TestFileOps_NewByDirStrsAndFileNameExtStrs_01
+--- PASS: TestFileOps_NewByDirStrsAndFileNameExtStrs_01 (0.00s)
+=== RUN   TestFileOps_NewByDirStrsAndFileNameExtStrs_02
+--- PASS: TestFileOps_NewByDirStrsAndFileNameExtStrs_02 (0.00s)
+=== RUN   TestFileOps_NewByDirStrsAndFileNameExtStrs_03
+--- PASS: TestFileOps_NewByDirStrsAndFileNameExtStrs_03 (0.00s)
+=== RUN   TestFileOps_NewByDirStrsAndFileNameExtStrs_04
+--- PASS: TestFileOps_NewByDirStrsAndFileNameExtStrs_04 (0.00s)
+=== RUN   TestFileOps_NewByDirStrsAndFileNameExtStrs_05
+--- PASS: TestFileOps_NewByDirStrsAndFileNameExtStrs_05 (0.00s)
+=== RUN   TestFileOps_NewByDirStrsAndFileNameExtStrs_06
+--- PASS: TestFileOps_NewByDirStrsAndFileNameExtStrs_06 (0.00s)
+=== RUN   TestFileOps_NewByDirStrsAndFileNameExtStrs_07
+--- PASS: TestFileOps_NewByDirStrsAndFileNameExtStrs_07 (0.00s)
+=== RUN   TestFileOps_NewByDirStrsAndFileNameExtStrs_08
+--- PASS: TestFileOps_NewByDirStrsAndFileNameExtStrs_08 (0.00s)
+=== RUN   TestFileOps_NewByFileMgrs_01
+--- PASS: TestFileOps_NewByFileMgrs_01 (0.01s)
+=== RUN   TestFileOps_NewByFileMgrs_02
+--- PASS: TestFileOps_NewByFileMgrs_02 (0.00s)
+=== RUN   TestFileOps_NewByFileMgrs_03
+--- PASS: TestFileOps_NewByFileMgrs_03 (0.00s)
+=== RUN   TestFileOps_NewByPathFileNameExtStrs_01
+--- PASS: TestFileOps_NewByPathFileNameExtStrs_01 (0.00s)
+=== RUN   TestFileOps_NewByPathFileNameExtStrs_02
+--- PASS: TestFileOps_NewByPathFileNameExtStrs_02 (0.00s)
+=== RUN   TestFileOps_NewByPathFileNameExtStrs_03
+--- PASS: TestFileOps_NewByPathFileNameExtStrs_03 (0.09s)
+=== RUN   TestFileOps_SetFileOpsCode_01
+--- PASS: TestFileOps_SetFileOpsCode_01 (0.00s)
 === RUN   TestFileOperationCode_01
 --- PASS: TestFileOperationCode_01 (0.00s)
 === RUN   TestFileOperationCode_02
@@ -422,38 +2482,686 @@
 --- PASS: TestFileOperationCode_05 (0.00s)
 === RUN   TestFileOperationCode_06
 --- PASS: TestFileOperationCode_06 (0.00s)
-=== RUN   TestFileOpsCollection_AddByPathFileNameExtStrs_01
---- PASS: TestFileOpsCollection_AddByPathFileNameExtStrs_01 (0.02s)
+=== RUN   TestFileOperationCode_IsValid_01
+--- PASS: TestFileOperationCode_IsValid_01 (0.00s)
+=== RUN   TestFileOperationCode_IsValid_02
+--- PASS: TestFileOperationCode_IsValid_02 (0.00s)
+=== RUN   TestFileOperationCode_IsValid_03
+--- PASS: TestFileOperationCode_IsValid_03 (0.00s)
+=== RUN   TestFileOperationCode_IsValid_04
+--- PASS: TestFileOperationCode_IsValid_04 (0.00s)
+=== RUN   TestFileOperationCode_IsValid_05
+--- PASS: TestFileOperationCode_IsValid_05 (0.00s)
+=== RUN   TestFileOperationCode_ParseString_01
+--- PASS: TestFileOperationCode_ParseString_01 (0.00s)
+=== RUN   TestFileOperationCode_ParseString_02
+--- PASS: TestFileOperationCode_ParseString_02 (0.00s)
+=== RUN   TestFileOperationCode_ParseString03
+--- PASS: TestFileOperationCode_ParseString03 (0.00s)
+=== RUN   TestFileOperationCode_ParseString04
+--- PASS: TestFileOperationCode_ParseString04 (0.00s)
+=== RUN   TestFileOperationCode_ParseString05
+--- PASS: TestFileOperationCode_ParseString05 (0.00s)
+=== RUN   TestFileOperationCode_ParseString06
+--- PASS: TestFileOperationCode_ParseString06 (0.00s)
+=== RUN   TestFileOperationCode_ParseString07
+--- PASS: TestFileOperationCode_ParseString07 (0.00s)
+=== RUN   TestFileOperationCode_ParseString08
+--- PASS: TestFileOperationCode_ParseString08 (0.00s)
+=== RUN   TestFileOperationCode_ParseString09
+--- PASS: TestFileOperationCode_ParseString09 (0.00s)
+=== RUN   TestFileOperationCode_ParseString10
+--- PASS: TestFileOperationCode_ParseString10 (0.00s)
+=== RUN   TestFileOperationCode_ParseString11
+--- PASS: TestFileOperationCode_ParseString11 (0.00s)
+=== RUN   TestFileOperationCode_ParseString12
+--- PASS: TestFileOperationCode_ParseString12 (0.00s)
+=== RUN   TestFileOperationCode_ParseString13
+--- PASS: TestFileOperationCode_ParseString13 (0.00s)
+=== RUN   TestFileOperationCode_ParseString14
+--- PASS: TestFileOperationCode_ParseString14 (0.00s)
+=== RUN   TestFileOperationCode_ParseString15
+--- PASS: TestFileOperationCode_ParseString15 (0.00s)
+=== RUN   TestFileOperationCode_ParseString16
+--- PASS: TestFileOperationCode_ParseString16 (0.00s)
+=== RUN   TestFileOperationCode_ParseString17
+--- PASS: TestFileOperationCode_ParseString17 (0.00s)
+=== RUN   TestFileOperationCode_ParseString_17
+--- PASS: TestFileOperationCode_ParseString_17 (0.00s)
+=== RUN   TestFileOperationCode_ParseString_18
+--- PASS: TestFileOperationCode_ParseString_18 (0.00s)
+=== RUN   TestFileOperationCode_String_19
+--- PASS: TestFileOperationCode_String_19 (0.00s)
+=== RUN   TestFileOperationCode_String_02
+--- PASS: TestFileOperationCode_String_02 (0.00s)
+=== RUN   TestFileOperationCode_String_03
+--- PASS: TestFileOperationCode_String_03 (0.00s)
+=== RUN   TestFileOperationCode_String_04
+--- PASS: TestFileOperationCode_String_04 (0.00s)
+=== RUN   TestFileOperationCode_Value_01
+--- PASS: TestFileOperationCode_Value_01 (0.00s)
+=== RUN   TestFileOperationCode_Value_02
+--- PASS: TestFileOperationCode_Value_02 (0.00s)
+=== RUN   TestFileOperationCode_Value_03
+--- PASS: TestFileOperationCode_Value_03 (0.00s)
+=== RUN   TestFileOperationCode_Value_04
+--- PASS: TestFileOperationCode_Value_04 (0.00s)
+=== RUN   TestFileOperationCode_Value_05
+--- PASS: TestFileOperationCode_Value_05 (0.00s)
+=== RUN   TestFileOperationCode_Value_06
+--- PASS: TestFileOperationCode_Value_06 (0.00s)
+=== RUN   TestFileOperationCode_Value_07
+--- PASS: TestFileOperationCode_Value_07 (0.00s)
 === RUN   TestFileOpsCollection_AddByDirStrsAndFileNameExtStrs_01
 --- PASS: TestFileOpsCollection_AddByDirStrsAndFileNameExtStrs_01 (0.01s)
-=== RUN   TestFileOpsCollection_AddByFileMgrs_01
---- PASS: TestFileOpsCollection_AddByFileMgrs_01 (0.01s)
+=== RUN   TestFileOpsCollection_AddByDirStrsAndFileNameExtStrs_02
+--- PASS: TestFileOpsCollection_AddByDirStrsAndFileNameExtStrs_02 (0.00s)
+=== RUN   TestFileOpsCollection_AddByDirStrsAndFileNameExtStrs_03
+--- PASS: TestFileOpsCollection_AddByDirStrsAndFileNameExtStrs_03 (0.00s)
+=== RUN   TestFileOpsCollection_AddByDirStrsAndFileNameExtStrs_04
+--- PASS: TestFileOpsCollection_AddByDirStrsAndFileNameExtStrs_04 (0.09s)
 === RUN   TestFileOpsCollection_AddByDirMgrFileName_01
---- PASS: TestFileOpsCollection_AddByDirMgrFileName_01 (0.01s)
+--- PASS: TestFileOpsCollection_AddByDirMgrFileName_01 (0.02s)
+=== RUN   TestFileOpsCollection_AddByDirMgrFileName_02
+--- PASS: TestFileOpsCollection_AddByDirMgrFileName_02 (0.00s)
+=== RUN   TestFileOpsCollection_AddByDirMgrFileName_03
+--- PASS: TestFileOpsCollection_AddByDirMgrFileName_03 (0.00s)
+=== RUN   TestFileOpsCollection_AddByDirMgrFileName_04
+--- PASS: TestFileOpsCollection_AddByDirMgrFileName_04 (0.00s)
+=== RUN   TestFileOpsCollection_AddByDirMgrFileName_05
+--- PASS: TestFileOpsCollection_AddByDirMgrFileName_05 (0.00s)
+=== RUN   TestFileOpsCollection_AddByDirMgrFileName_06
+--- PASS: TestFileOpsCollection_AddByDirMgrFileName_06 (0.00s)
+=== RUN   TestFileOpsCollection_AddByDirMgrFileName_07
+--- PASS: TestFileOpsCollection_AddByDirMgrFileName_07 (0.00s)
+=== RUN   TestFileOpsCollection_AddByDirMgrFileName_08
+--- PASS: TestFileOpsCollection_AddByDirMgrFileName_08 (0.00s)
+=== RUN   TestFileOpsCollection_AddByFileOps_01
+--- PASS: TestFileOpsCollection_AddByFileOps_01 (0.02s)
+=== RUN   TestFileOpsCollection_AddByFileOps_02
+--- PASS: TestFileOpsCollection_AddByFileOps_02 (0.00s)
+=== RUN   TestFileOpsCollection_AddByFileOps_03
+--- PASS: TestFileOpsCollection_AddByFileOps_03 (0.00s)
+=== RUN   TestFileOpsCollection_AddByFileOps_04
+--- PASS: TestFileOpsCollection_AddByFileOps_04 (0.00s)
+=== RUN   TestFileOpsCollection_AddByFileMgrs_01
+--- PASS: TestFileOpsCollection_AddByFileMgrs_01 (0.02s)
+=== RUN   TestFileOpsCollection_AddByFileMgrs_02
+--- PASS: TestFileOpsCollection_AddByFileMgrs_02 (0.00s)
+=== RUN   TestFileOpsCollection_AddByFileMgrs_03
+--- PASS: TestFileOpsCollection_AddByFileMgrs_03 (0.00s)
+=== RUN   TestFileOpsCollection_AddByPathFileNameExtStrs_01
+--- PASS: TestFileOpsCollection_AddByPathFileNameExtStrs_01 (0.01s)
+=== RUN   TestFileOpsCollection_AddByPathFileNameExtStrs_02
+--- PASS: TestFileOpsCollection_AddByPathFileNameExtStrs_02 (0.00s)
+=== RUN   TestFileOpsCollection_AddByPathFileNameExtStrs_03
+--- PASS: TestFileOpsCollection_AddByPathFileNameExtStrs_03 (0.00s)
+=== RUN   TestFileOpsCollection_AddByPathFileNameExtStrs_04
+--- PASS: TestFileOpsCollection_AddByPathFileNameExtStrs_04 (0.00s)
+=== RUN   TestFileOpsCollection_CopyOut_01
+--- PASS: TestFileOpsCollection_CopyOut_01 (0.00s)
+=== RUN   TestFileOpsCollection_CopyOut_02
+--- PASS: TestFileOpsCollection_CopyOut_02 (0.00s)
+=== RUN   TestFileOpsCollection_CopyOut_03
+--- PASS: TestFileOpsCollection_CopyOut_03 (0.00s)
 === RUN   TestFileOpsCollection_DeleteAtIndex_01
 --- PASS: TestFileOpsCollection_DeleteAtIndex_01 (0.01s)
 === RUN   TestFileOpsCollection_DeleteAtIndex_02
 --- PASS: TestFileOpsCollection_DeleteAtIndex_02 (0.01s)
+=== RUN   TestFileOpsCollection_DeleteAtIndex_03
+--- PASS: TestFileOpsCollection_DeleteAtIndex_03 (0.01s)
+=== RUN   TestFileOpsCollection_DeleteAtIndex_04
+--- PASS: TestFileOpsCollection_DeleteAtIndex_04 (0.01s)
+=== RUN   TestFileOpsCollection_DeleteAtIndex_05
+--- PASS: TestFileOpsCollection_DeleteAtIndex_05 (0.00s)
+=== RUN   TestFileOpsCollection_DeleteAtIndex_06
+--- PASS: TestFileOpsCollection_DeleteAtIndex_06 (0.00s)
+=== RUN   TestFileOpsCollection_Equal_01
+--- PASS: TestFileOpsCollection_Equal_01 (0.01s)
+=== RUN   TestFileOpsCollection_Equal_02
+--- PASS: TestFileOpsCollection_Equal_02 (0.00s)
+=== RUN   TestFileOpsCollection_Equal_03
+--- PASS: TestFileOpsCollection_Equal_03 (0.01s)
+=== RUN   TestFileOpsCollection_Equal_04
+--- PASS: TestFileOpsCollection_Equal_04 (0.01s)
+=== RUN   TestFileOpsCollection_Equal_05
+--- PASS: TestFileOpsCollection_Equal_05 (0.01s)
 === RUN   TestFileOpsCollection_GetFileOpsAtIndex_01
 --- PASS: TestFileOpsCollection_GetFileOpsAtIndex_01 (0.01s)
+=== RUN   TestFileOpsCollection_GetFileOpsAtIndex_02
+--- PASS: TestFileOpsCollection_GetFileOpsAtIndex_02 (0.01s)
+=== RUN   TestFileOpsCollection_GetFileOpsAtIndex_03
+--- PASS: TestFileOpsCollection_GetFileOpsAtIndex_03 (0.00s)
+=== RUN   TestFileOpsCollection_GetNumOfFileOps_01
+--- PASS: TestFileOpsCollection_GetNumOfFileOps_01 (0.00s)
+=== RUN   TestFileOpsCollection_ExecuteFileOperations_01
+--- PASS: TestFileOpsCollection_ExecuteFileOperations_01 (0.27s)
+=== RUN   TestFileOpsCollection_ExecuteFileOperations_02
+--- PASS: TestFileOpsCollection_ExecuteFileOperations_02 (0.00s)
 === RUN   TestFileOpsCollection_InsertFileOpsAtIndex_01
---- PASS: TestFileOpsCollection_InsertFileOpsAtIndex_01 (0.01s)
+--- PASS: TestFileOpsCollection_InsertFileOpsAtIndex_01 (0.02s)
 === RUN   TestFileOpsCollection_InsertFileOpsAtIndex_02
 --- PASS: TestFileOpsCollection_InsertFileOpsAtIndex_02 (0.01s)
 === RUN   TestFileOpsCollection_InsertFileOpsAtIndex_03
 --- PASS: TestFileOpsCollection_InsertFileOpsAtIndex_03 (0.01s)
 === RUN   TestFileOpsCollection_InsertFileOpsAtIndex_04
 --- PASS: TestFileOpsCollection_InsertFileOpsAtIndex_04 (0.01s)
-=== RUN   TestFileInfoPlus_CopyOut_01
---- PASS: TestFileInfoPlus_CopyOut_01 (0.00s)
-=== RUN   TestFileInfoPlus_NewFromFileInfo_01
---- PASS: TestFileInfoPlus_NewFromFileInfo_01 (0.00s)
-=== RUN   TestFileInfoPlus_Equal_01
---- PASS: TestFileInfoPlus_Equal_01 (0.00s)
-=== RUN   TestFileInfoPlus_Equal_02
---- PASS: TestFileInfoPlus_Equal_02 (0.00s)
-=== RUN   TestFileSelectionCriteria_01
---- PASS: TestFileSelectionCriteria_01 (0.00s)
+=== RUN   TestFileOpsCollection_InsertFileOpsAtIndex_05
+--- PASS: TestFileOpsCollection_InsertFileOpsAtIndex_05 (0.00s)
+=== RUN   TestFileOpsCollection_InsertFileOpsAtIndex_06
+--- PASS: TestFileOpsCollection_InsertFileOpsAtIndex_06 (0.01s)
+=== RUN   TestFileOpsCollection_NewFromFileMgrCollection_01
+--- PASS: TestFileOpsCollection_NewFromFileMgrCollection_01 (0.03s)
+=== RUN   TestFileOpsCollection_NewFromFileMgrCollection_02
+--- PASS: TestFileOpsCollection_NewFromFileMgrCollection_02 (0.03s)
+=== RUN   TestFileOpsCollection_NewFromFileMgrCollection_03
+--- PASS: TestFileOpsCollection_NewFromFileMgrCollection_03 (0.00s)
+=== RUN   TestFileOpsCollection_NewFromFileMgrCollection_04
+--- PASS: TestFileOpsCollection_NewFromFileMgrCollection_04 (0.01s)
+=== RUN   TestFileOpsCollection_NewFromFileMgrCollection_05
+--- PASS: TestFileOpsCollection_NewFromFileMgrCollection_05 (0.01s)
+=== RUN   TestFileOpsCollection_PopFileOpsAtIndex_01
+--- PASS: TestFileOpsCollection_PopFileOpsAtIndex_01 (0.01s)
+=== RUN   TestFileOpsCollection_PopFileOpsAtIndex_02
+--- PASS: TestFileOpsCollection_PopFileOpsAtIndex_02 (0.01s)
+=== RUN   TestFileOpsCollection_PopFileOpsAtIndex_03
+--- PASS: TestFileOpsCollection_PopFileOpsAtIndex_03 (0.01s)
+=== RUN   TestFileOpsCollection_PopFileOpsAtIndex_04
+--- PASS: TestFileOpsCollection_PopFileOpsAtIndex_04 (0.01s)
+=== RUN   TestFileOpsCollection_PopFileOpsAtIndex_05
+--- PASS: TestFileOpsCollection_PopFileOpsAtIndex_05 (0.01s)
+=== RUN   TestFileOpsCollection_PopFileOpsAtIndex_06
+--- PASS: TestFileOpsCollection_PopFileOpsAtIndex_06 (0.00s)
+=== RUN   TestFileOpsCollection_PopFirstFileOps_01
+--- PASS: TestFileOpsCollection_PopFirstFileOps_01 (0.01s)
+=== RUN   TestFileOpsCollection_PopFirstFileOps_02
+--- PASS: TestFileOpsCollection_PopFirstFileOps_02 (0.00s)
+=== RUN   TestFileOpsCollection_PopLastFileOps_01
+--- PASS: TestFileOpsCollection_PopLastFileOps_01 (0.01s)
+=== RUN   TestFileOpsCollection_PopLastFileOps_02
+--- PASS: TestFileOpsCollection_PopLastFileOps_02 (0.00s)
+=== RUN   TestFileOpsCollection_PeekFileOpsAtIndex_01
+--- PASS: TestFileOpsCollection_PeekFileOpsAtIndex_01 (0.01s)
+=== RUN   TestFileOpsCollection_PeekFileOpsAtIndex_02
+--- PASS: TestFileOpsCollection_PeekFileOpsAtIndex_02 (0.01s)
+=== RUN   TestFileOpsCollection_PeekFileOpsAtIndex_03
+--- PASS: TestFileOpsCollection_PeekFileOpsAtIndex_03 (0.01s)
+=== RUN   TestFileOpsCollection_PeekFileOpsAtIndex_04
+--- PASS: TestFileOpsCollection_PeekFileOpsAtIndex_04 (0.01s)
+=== RUN   TestFileOpsCollection_PeekFileOpsAtIndex_05
+--- PASS: TestFileOpsCollection_PeekFileOpsAtIndex_05 (0.01s)
+=== RUN   TestFileOpsCollection_PeekFileOpsAtIndex_06
+--- PASS: TestFileOpsCollection_PeekFileOpsAtIndex_06 (0.00s)
+=== RUN   TestFileOpsCollection_PeekFirstFileOps_01
+--- PASS: TestFileOpsCollection_PeekFirstFileOps_01 (0.01s)
+=== RUN   TestFileOpsCollection_PeekFirstFileOps_02
+--- PASS: TestFileOpsCollection_PeekFirstFileOps_02 (0.00s)
+=== RUN   TestFileOpsCollection_PeekLastFileOps_01
+--- PASS: TestFileOpsCollection_PeekLastFileOps_01 (0.01s)
+=== RUN   TestFileOpsCollection_PeekLastFileOps_02
+--- PASS: TestFileOpsCollection_PeekLastFileOps_02 (0.00s)
+=== RUN   TestFilePermissionConfig_CopyIn_01
+--- PASS: TestFilePermissionConfig_CopyIn_01 (0.00s)
+=== RUN   TestFilePermissionConfig_CopyIn_02
+--- PASS: TestFilePermissionConfig_CopyIn_02 (0.00s)
+=== RUN   TestFilePermissionConfig_CopyOut_01
+--- PASS: TestFilePermissionConfig_CopyOut_01 (0.00s)
+=== RUN   TestFilePermissionConfig_CopyOut_02
+--- PASS: TestFilePermissionConfig_CopyOut_02 (0.00s)
+=== RUN   TestFilePermissionConfig_CopyOut_03
+--- PASS: TestFilePermissionConfig_CopyOut_03 (0.00s)
+=== RUN   TestFilePermissionConfig_CopyOut_04
+--- PASS: TestFilePermissionConfig_CopyOut_04 (0.00s)
+=== RUN   TestFilePermissionConfig_CopyOut_05
+--- PASS: TestFilePermissionConfig_CopyOut_05 (0.00s)
+=== RUN   TestFilePermissionConfig_CopyOut_06
+--- PASS: TestFilePermissionConfig_CopyOut_06 (0.00s)
+=== RUN   TestFilePermissionConfig_CopyOut_07
+--- PASS: TestFilePermissionConfig_CopyOut_07 (0.00s)
+=== RUN   TestFilePermissionConfig_CopyOut_08
+--- PASS: TestFilePermissionConfig_CopyOut_08 (0.00s)
+=== RUN   TestFilePermissionConfig_CopyOut_09
+--- PASS: TestFilePermissionConfig_CopyOut_09 (0.00s)
+=== RUN   TestFilePermissionConfig_CopyOut_10
+--- PASS: TestFilePermissionConfig_CopyOut_10 (0.00s)
+=== RUN   TestFilePermissionConfig_Empty_01
+--- PASS: TestFilePermissionConfig_Empty_01 (0.00s)
+=== RUN   TestFilePermissionConfig_Empty_02
+--- PASS: TestFilePermissionConfig_Empty_02 (0.00s)
+=== RUN   TestFilePermissionConfig_Empty_03
+--- PASS: TestFilePermissionConfig_Empty_03 (0.00s)
+=== RUN   TestFilePermissionConfig_Empty_04
+--- PASS: TestFilePermissionConfig_Empty_04 (0.00s)
+=== RUN   TestFilePermissionConfig_Empty_05
+--- PASS: TestFilePermissionConfig_Empty_05 (0.00s)
+=== RUN   TestFilePermissionConfig_Equal_01
+--- PASS: TestFilePermissionConfig_Equal_01 (0.00s)
+=== RUN   TestFilePermissionConfig_Equal_02
+--- PASS: TestFilePermissionConfig_Equal_02 (0.00s)
+=== RUN   TestFilePermissionConfig_GetCompositePermissionMode_01
+--- PASS: TestFilePermissionConfig_GetCompositePermissionMode_01 (0.00s)
+=== RUN   TestFilePermissionConfig_GetCompositePermissionMode_02
+--- PASS: TestFilePermissionConfig_GetCompositePermissionMode_02 (0.00s)
+=== RUN   TestFilePermissionConfig_GetEntryTypeComponent_01
+--- PASS: TestFilePermissionConfig_GetEntryTypeComponent_01 (0.00s)
+=== RUN   TestFilePermissionConfig_GetEntryTypeComponent_02
+--- PASS: TestFilePermissionConfig_GetEntryTypeComponent_02 (0.00s)
+=== RUN   TestFilePermissionConfig_GetEntryTypeComponent_03
+--- PASS: TestFilePermissionConfig_GetEntryTypeComponent_03 (0.00s)
+=== RUN   TestFilePermissionConfig_GetEntryTypeComponent_04
+--- PASS: TestFilePermissionConfig_GetEntryTypeComponent_04 (0.00s)
+=== RUN   TestFilePermissionConfig_GetEntryTypeComponent_05
+--- PASS: TestFilePermissionConfig_GetEntryTypeComponent_05 (0.00s)
+=== RUN   TestFilePermissionConfig_GetEntryTypeComponent_06
+--- PASS: TestFilePermissionConfig_GetEntryTypeComponent_06 (0.00s)
+=== RUN   TestFilePermissionConfig_GetEntryTypeComponent_07
+--- PASS: TestFilePermissionConfig_GetEntryTypeComponent_07 (0.00s)
+=== RUN   TestFilePermissionConfig_GetIsDir_01
+--- PASS: TestFilePermissionConfig_GetIsDir_01 (0.00s)
+=== RUN   TestFilePermissionConfig_GetIsDir_02
+--- PASS: TestFilePermissionConfig_GetIsDir_02 (0.00s)
+=== RUN   TestFilePermissionConfig_GetIsDir_03
+--- PASS: TestFilePermissionConfig_GetIsDir_03 (0.00s)
+=== RUN   TestFilePermissionConfig_GetIsRegular_01
+--- PASS: TestFilePermissionConfig_GetIsRegular_01 (0.00s)
+=== RUN   TestFilePermissionConfig_GetIsRegular_02
+--- PASS: TestFilePermissionConfig_GetIsRegular_02 (0.00s)
+=== RUN   TestFilePermissionConfig_GetIsRegular_03
+--- PASS: TestFilePermissionConfig_GetIsRegular_03 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionBits_01
+--- PASS: TestFilePermissionConfig_GetPermissionBits_01 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionBits_02
+--- PASS: TestFilePermissionConfig_GetPermissionBits_02 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionBits_03
+--- PASS: TestFilePermissionConfig_GetPermissionBits_03 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionBits_04
+--- PASS: TestFilePermissionConfig_GetPermissionBits_04 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionBits_05
+--- PASS: TestFilePermissionConfig_GetPermissionBits_05 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionBits_06
+--- PASS: TestFilePermissionConfig_GetPermissionBits_06 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionBits_07
+--- PASS: TestFilePermissionConfig_GetPermissionBits_07 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionBits_08
+--- PASS: TestFilePermissionConfig_GetPermissionBits_08 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionBits_09
+--- PASS: TestFilePermissionConfig_GetPermissionBits_09 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionBits_10
+--- PASS: TestFilePermissionConfig_GetPermissionBits_10 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionBits_11
+--- PASS: TestFilePermissionConfig_GetPermissionBits_11 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionBits_12
+--- PASS: TestFilePermissionConfig_GetPermissionBits_12 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionBits_13
+--- PASS: TestFilePermissionConfig_GetPermissionBits_13 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionBits_14
+--- PASS: TestFilePermissionConfig_GetPermissionBits_14 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionBits_15
+--- PASS: TestFilePermissionConfig_GetPermissionBits_15 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionComponents_01
+--- PASS: TestFilePermissionConfig_GetPermissionComponents_01 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionComponents_02
+--- PASS: TestFilePermissionConfig_GetPermissionComponents_02 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionComponents_03
+--- PASS: TestFilePermissionConfig_GetPermissionComponents_03 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionComponents_04
+--- PASS: TestFilePermissionConfig_GetPermissionComponents_04 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionComponents_05
+--- PASS: TestFilePermissionConfig_GetPermissionComponents_05 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionComponents_06
+--- PASS: TestFilePermissionConfig_GetPermissionComponents_06 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionComponents_07
+--- PASS: TestFilePermissionConfig_GetPermissionComponents_07 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionComponents_08
+--- PASS: TestFilePermissionConfig_GetPermissionComponents_08 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionComponents_09
+--- PASS: TestFilePermissionConfig_GetPermissionComponents_09 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionComponents_10
+--- PASS: TestFilePermissionConfig_GetPermissionComponents_10 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionComponents_11
+--- PASS: TestFilePermissionConfig_GetPermissionComponents_11 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionFileModeValueText_01
+--- PASS: TestFilePermissionConfig_GetPermissionFileModeValueText_01 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionFileModeValueText_02
+--- PASS: TestFilePermissionConfig_GetPermissionFileModeValueText_02 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionFileModeValueText_03
+--- PASS: TestFilePermissionConfig_GetPermissionFileModeValueText_03 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionNarrativeText_01
+--- PASS: TestFilePermissionConfig_GetPermissionNarrativeText_01 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionNarrativeText_02
+--- PASS: TestFilePermissionConfig_GetPermissionNarrativeText_02 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionNarrativeText_03
+--- PASS: TestFilePermissionConfig_GetPermissionNarrativeText_03 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionTextCode_01
+--- PASS: TestFilePermissionConfig_GetPermissionTextCode_01 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionTextCode_02
+--- PASS: TestFilePermissionConfig_GetPermissionTextCode_02 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionTextCode_03
+--- PASS: TestFilePermissionConfig_GetPermissionTextCode_03 (0.00s)
+=== RUN   TestFilePermissionConfig_GetPermissionTextCode_04
+--- PASS: TestFilePermissionConfig_GetPermissionTextCode_04 (0.00s)
+=== RUN   TestFilePermissionConfig_IsValid_01
+--- PASS: TestFilePermissionConfig_IsValid_01 (0.00s)
+=== RUN   TestFilePermissionConfig_IsValid_02
+--- PASS: TestFilePermissionConfig_IsValid_02 (0.00s)
+=== RUN   TestFilePermissionConfig_IsValid_03
+--- PASS: TestFilePermissionConfig_IsValid_03 (0.00s)
+=== RUN   TestFilePermissionConfig_New_01
+--- PASS: TestFilePermissionConfig_New_01 (0.00s)
+=== RUN   TestFilePermissionConfig_New_02
+--- PASS: TestFilePermissionConfig_New_02 (0.00s)
+=== RUN   TestFilePermissionConfig_NewByComponents_01
+--- PASS: TestFilePermissionConfig_NewByComponents_01 (0.00s)
+=== RUN   TestFilePermissionConfig_NewByComponents_02
+--- PASS: TestFilePermissionConfig_NewByComponents_02 (0.00s)
+=== RUN   TestFilePermissionConfig_NewByComponents_03
+--- PASS: TestFilePermissionConfig_NewByComponents_03 (0.00s)
+=== RUN   TestFilePermissionConfig_NewByComponents_04
+--- PASS: TestFilePermissionConfig_NewByComponents_04 (0.00s)
+=== RUN   TestFilePermissionConfig_NewByFileMode_01
+--- PASS: TestFilePermissionConfig_NewByFileMode_01 (0.00s)
+=== RUN   TestFilePermissionConfig_NewByFileMode_02
+--- PASS: TestFilePermissionConfig_NewByFileMode_02 (0.00s)
+=== RUN   TestFilePermissionConfig_NewByFileMode_03
+--- PASS: TestFilePermissionConfig_NewByFileMode_03 (0.00s)
+=== RUN   TestFilePermissionConfig_NewByOctalDigits_01
+--- PASS: TestFilePermissionConfig_NewByOctalDigits_01 (0.00s)
+=== RUN   TestFilePermissionConfig_NewByOctalDigits_02
+--- PASS: TestFilePermissionConfig_NewByOctalDigits_02 (0.00s)
+=== RUN   TestFilePermissionConfig_NewByOctalDigits_03
+--- PASS: TestFilePermissionConfig_NewByOctalDigits_03 (0.00s)
+=== RUN   TestFilePermissionConfig_NewByOctalDigits_04
+--- PASS: TestFilePermissionConfig_NewByOctalDigits_04 (0.00s)
+=== RUN   TestFilePermissionConfig_NewByOctalDigits_05
+--- PASS: TestFilePermissionConfig_NewByOctalDigits_05 (0.00s)
+=== RUN   TestFilePermissionConfig_NewByOctalDigits_06
+--- PASS: TestFilePermissionConfig_NewByOctalDigits_06 (0.00s)
+=== RUN   TestFilePermissionConfig_NewByOctalDigits_07
+--- PASS: TestFilePermissionConfig_NewByOctalDigits_07 (0.00s)
+=== RUN   TestFilePermissionConfig_NewByOctalDigits_08
+--- PASS: TestFilePermissionConfig_NewByOctalDigits_08 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByComponents_01
+--- PASS: TestFilePermissionConfig_SetFileModeByComponents_01 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByComponents_02
+--- PASS: TestFilePermissionConfig_SetFileModeByComponents_02 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByComponents_03
+--- PASS: TestFilePermissionConfig_SetFileModeByComponents_03 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByComponents_04
+--- PASS: TestFilePermissionConfig_SetFileModeByComponents_04 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByComponents_05
+--- PASS: TestFilePermissionConfig_SetFileModeByComponents_05 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByComponents_06
+--- PASS: TestFilePermissionConfig_SetFileModeByComponents_06 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByComponents_07
+--- PASS: TestFilePermissionConfig_SetFileModeByComponents_07 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByComponents_08
+--- PASS: TestFilePermissionConfig_SetFileModeByComponents_08 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByComponents_09
+--- PASS: TestFilePermissionConfig_SetFileModeByComponents_09 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByComponents_10
+--- PASS: TestFilePermissionConfig_SetFileModeByComponents_10 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByComponents_11
+--- PASS: TestFilePermissionConfig_SetFileModeByComponents_11 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByComponents_12
+--- PASS: TestFilePermissionConfig_SetFileModeByComponents_12 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByComponents_13
+--- PASS: TestFilePermissionConfig_SetFileModeByComponents_13 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByComponents_14
+--- PASS: TestFilePermissionConfig_SetFileModeByComponents_14 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByOctalDigits_01
+--- PASS: TestFilePermissionConfig_SetFileModeByOctalDigits_01 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByOctalDigits_02
+--- PASS: TestFilePermissionConfig_SetFileModeByOctalDigits_02 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_01
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_01 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_02
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_02 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_03
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_03 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_04
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_04 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_05
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_05 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_06
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_06 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_07
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_07 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_08
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_08 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_09
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_09 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_10
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_10 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_11
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_11 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_12
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_12 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_13
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_13 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_14
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_14 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_15
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_15 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_16
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_16 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_17
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_17 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_18
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_18 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_19
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_19 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_20
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_20 (0.00s)
+=== RUN   TestFilePermissionConfig_SetFileModeByTextCode_21
+--- PASS: TestFilePermissionConfig_SetFileModeByTextCode_21 (0.00s)
+=== RUN   TestOsFilePermissionCode_Equal_01
+--- PASS: TestOsFilePermissionCode_Equal_01 (0.00s)
+=== RUN   TestOsFilePermissionCode_Equal_02
+--- PASS: TestOsFilePermissionCode_Equal_02 (0.00s)
+=== RUN   TestOsFilePermissionCode_Equal_03
+--- PASS: TestOsFilePermissionCode_Equal_03 (0.00s)
+=== RUN   TestOsFilePermissionCode_Equal_04
+--- PASS: TestOsFilePermissionCode_Equal_04 (0.00s)
+=== RUN   TestOsFilePermissionCode_Equal_05
+--- PASS: TestOsFilePermissionCode_Equal_05 (0.00s)
+=== RUN   TestOsFilePermissionCode_Equal_06
+--- PASS: TestOsFilePermissionCode_Equal_06 (0.00s)
+=== RUN   TestOsFilePermissionCode_Equal_07
+--- PASS: TestOsFilePermissionCode_Equal_07 (0.00s)
+=== RUN   TestOsFilePermissionCode_Equal_08
+--- PASS: TestOsFilePermissionCode_Equal_08 (0.00s)
+=== RUN   TestOsFilePermissionCode_IsValid_01
+--- PASS: TestOsFilePermissionCode_IsValid_01 (0.00s)
+=== RUN   TestOsFilePermissionCode_IsValid_02
+--- PASS: TestOsFilePermissionCode_IsValid_02 (0.00s)
+=== RUN   TestOsFilePermissionCode_IsValid_03
+--- PASS: TestOsFilePermissionCode_IsValid_03 (0.00s)
+=== RUN   TestOsFilePermissionCode_IsValid_04
+--- PASS: TestOsFilePermissionCode_IsValid_04 (0.00s)
+=== RUN   TestOsFilePermissionCode_IsValid_05
+--- PASS: TestOsFilePermissionCode_IsValid_05 (0.00s)
+=== RUN   TestOsFilePermissionCode_IsValid_06
+--- PASS: TestOsFilePermissionCode_IsValid_06 (0.00s)
+=== RUN   TestOsFilePermissionCode_IsValid_07
+--- PASS: TestOsFilePermissionCode_IsValid_07 (0.00s)
+=== RUN   TestOsFilePermissionCode_IsValid_08
+--- PASS: TestOsFilePermissionCode_IsValid_08 (0.00s)
+=== RUN   TestOsFilePermissionCode_IsValid_09
+--- PASS: TestOsFilePermissionCode_IsValid_09 (0.00s)
+=== RUN   TestOsFilePermissionCode_IsValid_10
+--- PASS: TestOsFilePermissionCode_IsValid_10 (0.00s)
+=== RUN   TestOsFilePermissionCode_IsValid_11
+--- PASS: TestOsFilePermissionCode_IsValid_11 (0.00s)
+=== RUN   TestOsFilePermissionCode_IsValid_12
+--- PASS: TestOsFilePermissionCode_IsValid_12 (0.00s)
+=== RUN   TestOsFilePermissionCode_IsValid_13
+--- PASS: TestOsFilePermissionCode_IsValid_13 (0.00s)
+=== RUN   TestOsFilePermissionCode_IsValid_14
+--- PASS: TestOsFilePermissionCode_IsValid_14 (0.00s)
+=== RUN   TestOsFilePermissionCode_IsValid_15
+--- PASS: TestOsFilePermissionCode_IsValid_15 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetFileModeLetterCode_01
+--- PASS: TestOsFilePermissionCode_GetFileModeLetterCode_01 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetFileModeLetterCode_02
+--- PASS: TestOsFilePermissionCode_GetFileModeLetterCode_02 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetFileModeLetterCode_03
+--- PASS: TestOsFilePermissionCode_GetFileModeLetterCode_03 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetFileModeLetterCode_04
+--- PASS: TestOsFilePermissionCode_GetFileModeLetterCode_04 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetFileModeLetterCode_05
+--- PASS: TestOsFilePermissionCode_GetFileModeLetterCode_05 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetFileModeLetterCode_06
+--- PASS: TestOsFilePermissionCode_GetFileModeLetterCode_06 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetFileModeLetterCode_07
+--- PASS: TestOsFilePermissionCode_GetFileModeLetterCode_07 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetFileModeLetterCode_08
+--- PASS: TestOsFilePermissionCode_GetFileModeLetterCode_08 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetFileModeLetterCode_09
+--- PASS: TestOsFilePermissionCode_GetFileModeLetterCode_09 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetFileModeLetterCode_10
+--- PASS: TestOsFilePermissionCode_GetFileModeLetterCode_10 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetFileModeLetterCode_11
+--- PASS: TestOsFilePermissionCode_GetFileModeLetterCode_11 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetFileModeLetterCode_12
+--- PASS: TestOsFilePermissionCode_GetFileModeLetterCode_12 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetFileModeLetterCode_13
+--- PASS: TestOsFilePermissionCode_GetFileModeLetterCode_13 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetFileModeLetterCode_14
+--- PASS: TestOsFilePermissionCode_GetFileModeLetterCode_14 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetFileModeLetterCode_15
+--- PASS: TestOsFilePermissionCode_GetFileModeLetterCode_15 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromFileMode_01
+--- PASS: TestOsFilePermissionCode_GetNewFromFileMode_01 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromFileMode_02
+--- PASS: TestOsFilePermissionCode_GetNewFromFileMode_02 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromFileMode_03
+--- PASS: TestOsFilePermissionCode_GetNewFromFileMode_03 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromFileMode_04
+--- PASS: TestOsFilePermissionCode_GetNewFromFileMode_04 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromFileMode_05
+--- PASS: TestOsFilePermissionCode_GetNewFromFileMode_05 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromFileMode_06
+--- PASS: TestOsFilePermissionCode_GetNewFromFileMode_06 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromFileMode_07
+--- PASS: TestOsFilePermissionCode_GetNewFromFileMode_07 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromFileMode_08
+--- PASS: TestOsFilePermissionCode_GetNewFromFileMode_08 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromFileMode_09
+--- PASS: TestOsFilePermissionCode_GetNewFromFileMode_09 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromLetterCode_01
+--- PASS: TestOsFilePermissionCode_GetNewFromLetterCode_01 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromLetterCode_02
+--- PASS: TestOsFilePermissionCode_GetNewFromLetterCode_02 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromLetterCode_03
+--- PASS: TestOsFilePermissionCode_GetNewFromLetterCode_03 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromLetterCode_04
+--- PASS: TestOsFilePermissionCode_GetNewFromLetterCode_04 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromLetterCode_05
+--- PASS: TestOsFilePermissionCode_GetNewFromLetterCode_05 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromLetterCode_06
+--- PASS: TestOsFilePermissionCode_GetNewFromLetterCode_06 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromLetterCode_07
+--- PASS: TestOsFilePermissionCode_GetNewFromLetterCode_07 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromLetterCode_08
+--- PASS: TestOsFilePermissionCode_GetNewFromLetterCode_08 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromLetterCode_09
+--- PASS: TestOsFilePermissionCode_GetNewFromLetterCode_09 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromLetterCode_10
+--- PASS: TestOsFilePermissionCode_GetNewFromLetterCode_10 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromLetterCode_11
+--- PASS: TestOsFilePermissionCode_GetNewFromLetterCode_11 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromLetterCode_12
+--- PASS: TestOsFilePermissionCode_GetNewFromLetterCode_12 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromLetterCode_13
+--- PASS: TestOsFilePermissionCode_GetNewFromLetterCode_13 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromLetterCode_14
+--- PASS: TestOsFilePermissionCode_GetNewFromLetterCode_14 (0.00s)
+=== RUN   TestOsFilePermissionCode_GetNewFromLetterCode_15
+--- PASS: TestOsFilePermissionCode_GetNewFromLetterCode_15 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_01
+--- PASS: TestOsFilePermissionCode_ParseString_01 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_02
+--- PASS: TestOsFilePermissionCode_ParseString_02 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_03
+--- PASS: TestOsFilePermissionCode_ParseString_03 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_04
+--- PASS: TestOsFilePermissionCode_ParseString_04 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_05
+--- PASS: TestOsFilePermissionCode_ParseString_05 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_06
+--- PASS: TestOsFilePermissionCode_ParseString_06 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_07
+--- PASS: TestOsFilePermissionCode_ParseString_07 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_08
+--- PASS: TestOsFilePermissionCode_ParseString_08 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_09
+--- PASS: TestOsFilePermissionCode_ParseString_09 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_10
+--- PASS: TestOsFilePermissionCode_ParseString_10 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_11
+--- PASS: TestOsFilePermissionCode_ParseString_11 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_12
+--- PASS: TestOsFilePermissionCode_ParseString_12 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_13
+--- PASS: TestOsFilePermissionCode_ParseString_13 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_14
+--- PASS: TestOsFilePermissionCode_ParseString_14 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_15
+--- PASS: TestOsFilePermissionCode_ParseString_15 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_16
+--- PASS: TestOsFilePermissionCode_ParseString_16 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_17
+--- PASS: TestOsFilePermissionCode_ParseString_17 (0.00s)
+=== RUN   TestOsFilePermissionCode_ParseString_18
+--- PASS: TestOsFilePermissionCode_ParseString_18 (0.00s)
+=== RUN   TestOsFilePermissionCode_String_01
+--- PASS: TestOsFilePermissionCode_String_01 (0.00s)
+=== RUN   TestOsFilePermissionCode_String_02
+--- PASS: TestOsFilePermissionCode_String_02 (0.00s)
+=== RUN   TestOsFilePermissionCode_String_03
+--- PASS: TestOsFilePermissionCode_String_03 (0.00s)
+=== RUN   TestOsFilePermissionCode_String_04
+--- PASS: TestOsFilePermissionCode_String_04 (0.00s)
+=== RUN   TestOsFilePermissionCode_String_05
+--- PASS: TestOsFilePermissionCode_String_05 (0.00s)
+=== RUN   TestOsFilePermissionCode_String_06
+--- PASS: TestOsFilePermissionCode_String_06 (0.00s)
+=== RUN   TestOsFilePermissionCode_String_07
+--- PASS: TestOsFilePermissionCode_String_07 (0.00s)
+=== RUN   TestOsFilePermissionCode_String_08
+--- PASS: TestOsFilePermissionCode_String_08 (0.00s)
+=== RUN   TestOsFilePermissionCode_String_09
+--- PASS: TestOsFilePermissionCode_String_09 (0.00s)
+=== RUN   TestOsFilePermissionCode_String_10
+--- PASS: TestOsFilePermissionCode_String_10 (0.00s)
+=== RUN   TestOsFilePermissionCode_String_11
+--- PASS: TestOsFilePermissionCode_String_11 (0.00s)
+=== RUN   TestOsFilePermissionCode_String_12
+--- PASS: TestOsFilePermissionCode_String_12 (0.00s)
+=== RUN   TestOsFilePermissionCode_String_13
+--- PASS: TestOsFilePermissionCode_String_13 (0.00s)
+=== RUN   TestOsFilePermissionCode_String_14
+--- PASS: TestOsFilePermissionCode_String_14 (0.00s)
+=== RUN   TestOsFilePermissionCode_String_15
+--- PASS: TestOsFilePermissionCode_String_15 (0.00s)
+=== RUN   TestOsFilePermissionCode_String_16
+--- PASS: TestOsFilePermissionCode_String_16 (0.00s)
+=== RUN   TestOsFilePermissionCode_Value_01
+--- PASS: TestOsFilePermissionCode_Value_01 (0.00s)
+=== RUN   TestOsFilePermissionCode_Value_02
+--- PASS: TestOsFilePermissionCode_Value_02 (0.00s)
+=== RUN   TestOsFilePermissionCode_Value_03
+--- PASS: TestOsFilePermissionCode_Value_03 (0.00s)
+=== RUN   TestFileSelectionCriteria_ANDSelect_01
+--- PASS: TestFileSelectionCriteria_ANDSelect_01 (0.00s)
+=== RUN   TestFileSelectCriterionMode_ParseString_01
+--- PASS: TestFileSelectCriterionMode_ParseString_01 (0.00s)
+=== RUN   TestFileSelectCriterionMode_StatusIsValid_01
+--- PASS: TestFileSelectCriterionMode_StatusIsValid_01 (0.00s)
+=== RUN   TestFileSelectCriterionMode_StatusIsValid_02
+--- PASS: TestFileSelectCriterionMode_StatusIsValid_02 (0.00s)
+=== RUN   TestFileSelectCriterionMode_String_01
+--- PASS: TestFileSelectCriterionMode_String_01 (0.00s)
 === RUN   TestFileSelectCriterionMode_Text_01
 --- PASS: TestFileSelectCriterionMode_Text_01 (0.00s)
 === RUN   TestFileSelectCriterionMode_Text_02
@@ -488,5 +3196,394 @@
 --- PASS: TestFileSelectCriterionMode_Value_05 (0.00s)
 === RUN   TestFileSelectCriterionMode_Value_06
 --- PASS: TestFileSelectCriterionMode_Value_06 (0.00s)
+=== RUN   TestPathExistsStatusCode_DoesNotExist_01
+--- PASS: TestPathExistsStatusCode_DoesNotExist_01 (0.00s)
+=== RUN   TestPathExistsStatusCode_DoesNotExist_02
+--- PASS: TestPathExistsStatusCode_DoesNotExist_02 (0.00s)
+=== RUN   TestPathExistsStatusCode_DoesNotExist_03
+--- PASS: TestPathExistsStatusCode_DoesNotExist_03 (0.00s)
+=== RUN   TestPathExistsStatusCode_DoesNotExist_04
+--- PASS: TestPathExistsStatusCode_DoesNotExist_04 (0.00s)
+=== RUN   TestPathExistsStatusCode_DoesNotExist_05
+--- PASS: TestPathExistsStatusCode_DoesNotExist_05 (0.00s)
+=== RUN   TestPathExistsStatusCode_EqualOperator_01
+--- PASS: TestPathExistsStatusCode_EqualOperator_01 (0.00s)
+=== RUN   TestPathExistsStatusCode_EqualOperator_02
+--- PASS: TestPathExistsStatusCode_EqualOperator_02 (0.00s)
+=== RUN   TestPathExistsStatusCode_EqualOperator_03
+--- PASS: TestPathExistsStatusCode_EqualOperator_03 (0.00s)
+=== RUN   TestPathExistsStatusCode_EqualOperator_04
+--- PASS: TestPathExistsStatusCode_EqualOperator_04 (0.00s)
+=== RUN   TestPathExistsStatusCode_EqualOperator_05
+--- PASS: TestPathExistsStatusCode_EqualOperator_05 (0.00s)
+=== RUN   TestPathExistsStatusCode_EqualOperator_06
+--- PASS: TestPathExistsStatusCode_EqualOperator_06 (0.00s)
+=== RUN   TestPathExistsStatusCode_Exists_01
+--- PASS: TestPathExistsStatusCode_Exists_01 (0.00s)
+=== RUN   TestPathExistsStatusCode_Exists_02
+--- PASS: TestPathExistsStatusCode_Exists_02 (0.00s)
+=== RUN   TestPathExistsStatusCode_Exists_03
+--- PASS: TestPathExistsStatusCode_Exists_03 (0.00s)
+=== RUN   TestPathExistsStatusCode_Exists_04
+--- PASS: TestPathExistsStatusCode_Exists_04 (0.00s)
+=== RUN   TestPathExistsStatusCode_Exists_05
+--- PASS: TestPathExistsStatusCode_Exists_05 (0.00s)
+=== RUN   TestPathExistsStatusCode_Exists_06
+--- PASS: TestPathExistsStatusCode_Exists_06 (0.00s)
+=== RUN   TestPathExistsStatusCode_GreaterThanOperator_01
+--- PASS: TestPathExistsStatusCode_GreaterThanOperator_01 (0.00s)
+=== RUN   TestPathExistsStatusCode_GreaterThanOperator_02
+--- PASS: TestPathExistsStatusCode_GreaterThanOperator_02 (0.00s)
+=== RUN   TestPathExistsStatusCode_GreaterThanOperator_03
+--- PASS: TestPathExistsStatusCode_GreaterThanOperator_03 (0.00s)
+=== RUN   TestPathExistsStatusCode_GreaterThanOperator_04
+--- PASS: TestPathExistsStatusCode_GreaterThanOperator_04 (0.00s)
+=== RUN   TestPathExistsStatusCode_GreaterThanOperator_05
+--- PASS: TestPathExistsStatusCode_GreaterThanOperator_05 (0.00s)
+=== RUN   TestPathExistsStatusCode_GreaterThanOperator_06
+--- PASS: TestPathExistsStatusCode_GreaterThanOperator_06 (0.00s)
+=== RUN   TestPathExistsStatusCode_GreaterThanOrEqualOperator_01
+--- PASS: TestPathExistsStatusCode_GreaterThanOrEqualOperator_01 (0.00s)
+=== RUN   TestPathExistsStatusCode_GreaterThanOrEqualOperator_02
+--- PASS: TestPathExistsStatusCode_GreaterThanOrEqualOperator_02 (0.00s)
+=== RUN   TestPathExistsStatusCode_GreaterThanOrEqualOperator_03
+--- PASS: TestPathExistsStatusCode_GreaterThanOrEqualOperator_03 (0.00s)
+=== RUN   TestPathExistsStatusCode_GreaterThanOrEqualOperator_04
+--- PASS: TestPathExistsStatusCode_GreaterThanOrEqualOperator_04 (0.00s)
+=== RUN   TestPathExistsStatusCode_GreaterThanOrEqualOperator_05
+--- PASS: TestPathExistsStatusCode_GreaterThanOrEqualOperator_05 (0.00s)
+=== RUN   TestPathExistsStatusCode_GreaterThanOrEqualOperator_06
+--- PASS: TestPathExistsStatusCode_GreaterThanOrEqualOperator_06 (0.00s)
+=== RUN   TestPathExistsStatusCode_GreaterThanOrEqualOperator_07
+--- PASS: TestPathExistsStatusCode_GreaterThanOrEqualOperator_07 (0.00s)
+=== RUN   TestPathExistsStatusCode_LessThanOrEqualOperator_01
+--- PASS: TestPathExistsStatusCode_LessThanOrEqualOperator_01 (0.00s)
+=== RUN   TestPathExistsStatusCode_LessThanOrEqualOperator_02
+--- PASS: TestPathExistsStatusCode_LessThanOrEqualOperator_02 (0.00s)
+=== RUN   TestPathExistsStatusCode_LessThanOrEqualOperator_03
+--- PASS: TestPathExistsStatusCode_LessThanOrEqualOperator_03 (0.00s)
+=== RUN   TestPathExistsStatusCode_LessThanOrEqualOperator_04
+--- PASS: TestPathExistsStatusCode_LessThanOrEqualOperator_04 (0.00s)
+=== RUN   TestPathExistsStatusCode_LessThanOrEqualOperator_05
+--- PASS: TestPathExistsStatusCode_LessThanOrEqualOperator_05 (0.00s)
+=== RUN   TestPathExistsStatusCode_LessThanOrEqualOperator_06
+--- PASS: TestPathExistsStatusCode_LessThanOrEqualOperator_06 (0.00s)
+=== RUN   TestPathExistsStatusCode_LessThanOrEqualOperator_07
+--- PASS: TestPathExistsStatusCode_LessThanOrEqualOperator_07 (0.00s)
+=== RUN   TestPathExistsStatusCode_LessThanOrEqualOperator_08
+--- PASS: TestPathExistsStatusCode_LessThanOrEqualOperator_08 (0.00s)
+=== RUN   TestPathExistsStatusCode_NotEqualOperator_01
+--- PASS: TestPathExistsStatusCode_NotEqualOperator_01 (0.00s)
+=== RUN   TestPathExistsStatusCode_NotEqualOperator_02
+--- PASS: TestPathExistsStatusCode_NotEqualOperator_02 (0.00s)
+=== RUN   TestPathExistsStatusCode_NotEqualOperator_03
+--- PASS: TestPathExistsStatusCode_NotEqualOperator_03 (0.00s)
+=== RUN   TestPathExistsStatusCode_NotEqualOperator_04
+--- PASS: TestPathExistsStatusCode_NotEqualOperator_04 (0.00s)
+=== RUN   TestPathExistsStatusCode_NotEqualOperator_05
+--- PASS: TestPathExistsStatusCode_NotEqualOperator_05 (0.00s)
+=== RUN   TestPathExistsStatusCode_NotEqualOperator_06
+--- PASS: TestPathExistsStatusCode_NotEqualOperator_06 (0.00s)
+=== RUN   TestPathExistsStatusCode_StatusCodesEqual_01
+--- PASS: TestPathExistsStatusCode_StatusCodesEqual_01 (0.00s)
+=== RUN   TestPathExistsStatusCode_StatusCodesEqual_02
+--- PASS: TestPathExistsStatusCode_StatusCodesEqual_02 (0.00s)
+=== RUN   TestPathExistsStatusCode_StatusCodesEqual_03
+--- PASS: TestPathExistsStatusCode_StatusCodesEqual_03 (0.00s)
+=== RUN   TestPathExistsStatusCode_StatusCodesEqual_04
+--- PASS: TestPathExistsStatusCode_StatusCodesEqual_04 (0.00s)
+=== RUN   TestPathExistsStatusCode_StatusCodesEqual_05
+--- PASS: TestPathExistsStatusCode_StatusCodesEqual_05 (0.00s)
+=== RUN   TestPathExistsStatusCode_StatusCodesEqual_06
+--- PASS: TestPathExistsStatusCode_StatusCodesEqual_06 (0.00s)
+=== RUN   TestPathExistsStatusCode_StatusIsValid_01
+--- PASS: TestPathExistsStatusCode_StatusIsValid_01 (0.00s)
+=== RUN   TestPathExistsStatusCode_StatusIsValid_02
+--- PASS: TestPathExistsStatusCode_StatusIsValid_02 (0.00s)
+=== RUN   TestPathExistsStatusCode_StatusIsValid_03
+--- PASS: TestPathExistsStatusCode_StatusIsValid_03 (0.00s)
+=== RUN   TestPathExistsStatusCode_StatusIsValid_04
+--- PASS: TestPathExistsStatusCode_StatusIsValid_04 (0.00s)
+=== RUN   TestPathExistsStatusCode_StatusIsValid_05
+--- PASS: TestPathExistsStatusCode_StatusIsValid_05 (0.00s)
+=== RUN   TestPathExistsStatusCode_StatusIsValid_06
+--- PASS: TestPathExistsStatusCode_StatusIsValid_06 (0.00s)
+=== RUN   TestPathExistsStatusCode_StatusIsValid_07
+--- PASS: TestPathExistsStatusCode_StatusIsValid_07 (0.00s)
+=== RUN   TestPathExistsStatusCode_Unknown_01
+--- PASS: TestPathExistsStatusCode_Unknown_01 (0.00s)
+=== RUN   TestPathExistsStatusCode_Unknown_02
+--- PASS: TestPathExistsStatusCode_Unknown_02 (0.00s)
+=== RUN   TestPathExistsStatusCode_Unknown_03
+--- PASS: TestPathExistsStatusCode_Unknown_03 (0.00s)
+=== RUN   TestPathExistsStatusCode_Unknown_04
+--- PASS: TestPathExistsStatusCode_Unknown_04 (0.00s)
+=== RUN   TestPathExistsStatusCode_Unknown_05
+--- PASS: TestPathExistsStatusCode_Unknown_05 (0.00s)
+=== RUN   TestPathFileTypeCode_File_01
+--- PASS: TestPathFileTypeCode_File_01 (0.00s)
+=== RUN   TestPathFileTypeCode_File_02
+--- PASS: TestPathFileTypeCode_File_02 (0.00s)
+=== RUN   TestPathFileTypeCode_File_03
+--- PASS: TestPathFileTypeCode_File_03 (0.00s)
+=== RUN   TestPathFileTypeCode_File_04
+--- PASS: TestPathFileTypeCode_File_04 (0.00s)
+=== RUN   TestPathFileTypeCode_File_05
+--- PASS: TestPathFileTypeCode_File_05 (0.00s)
+=== RUN   TestPathFileTypeCode_Indeterminate_01
+--- PASS: TestPathFileTypeCode_Indeterminate_01 (0.00s)
+=== RUN   TestPathFileTypeCode_Indeterminate_02
+--- PASS: TestPathFileTypeCode_Indeterminate_02 (0.00s)
+=== RUN   TestPathFileTypeCode_Indeterminate_03
+--- PASS: TestPathFileTypeCode_Indeterminate_03 (0.00s)
+=== RUN   TestPathFileTypeCode_Indeterminate_04
+--- PASS: TestPathFileTypeCode_Indeterminate_04 (0.00s)
+=== RUN   TestPathFileTypeCode_Indeterminate_05
+--- PASS: TestPathFileTypeCode_Indeterminate_05 (0.00s)
+=== RUN   TestPathFileTypeCode_None_01
+--- PASS: TestPathFileTypeCode_None_01 (0.00s)
+=== RUN   TestPathFileTypeCode_None_02
+--- PASS: TestPathFileTypeCode_None_02 (0.00s)
+=== RUN   TestPathFileTypeCode_None_03
+--- PASS: TestPathFileTypeCode_None_03 (0.00s)
+=== RUN   TestPathFileTypeCode_None_04
+--- PASS: TestPathFileTypeCode_None_04 (0.00s)
+=== RUN   TestPathFileTypeCode_None_05
+--- PASS: TestPathFileTypeCode_None_05 (0.00s)
+=== RUN   TestPathFileTypeCode_ParseString_01
+--- PASS: TestPathFileTypeCode_ParseString_01 (0.00s)
+=== RUN   TestPathFileTypeCode_ParseString_02
+--- PASS: TestPathFileTypeCode_ParseString_02 (0.00s)
+=== RUN   TestPathFileTypeCode_ParseString_03
+--- PASS: TestPathFileTypeCode_ParseString_03 (0.00s)
+=== RUN   TestPathFileTypeCode_Path_01
+--- PASS: TestPathFileTypeCode_Path_01 (0.00s)
+=== RUN   TestPathFileTypeCode_Path_02
+--- PASS: TestPathFileTypeCode_Path_02 (0.00s)
+=== RUN   TestPathFileTypeCode_Path_03
+--- PASS: TestPathFileTypeCode_Path_03 (0.00s)
+=== RUN   TestPathFileTypeCode_Path_04
+--- PASS: TestPathFileTypeCode_Path_04 (0.00s)
+=== RUN   TestPathFileTypeCode_Path_05
+--- PASS: TestPathFileTypeCode_Path_05 (0.00s)
+=== RUN   TestPathFileTypeCode_PathFile_01
+--- PASS: TestPathFileTypeCode_PathFile_01 (0.00s)
+=== RUN   TestPathFileTypeCode_PathFile_02
+--- PASS: TestPathFileTypeCode_PathFile_02 (0.00s)
+=== RUN   TestPathFileTypeCode_PathFile_03
+--- PASS: TestPathFileTypeCode_PathFile_03 (0.00s)
+=== RUN   TestPathFileTypeCode_PathFile_04
+--- PASS: TestPathFileTypeCode_PathFile_04 (0.00s)
+=== RUN   TestPathFileTypeCode_PathFile_05
+--- PASS: TestPathFileTypeCode_PathFile_05 (0.00s)
+=== RUN   TestPathFileTypeCode_String
+--- PASS: TestPathFileTypeCode_String (0.00s)
+=== RUN   TestPathFileTypeCode_Volume_01
+--- PASS: TestPathFileTypeCode_Volume_01 (0.00s)
+=== RUN   TestPathFileTypeCode_Volume_02
+--- PASS: TestPathFileTypeCode_Volume_02 (0.00s)
+=== RUN   TestPathFileTypeCode_Volume_03
+--- PASS: TestPathFileTypeCode_Volume_03 (0.00s)
+=== RUN   TestPathFileTypeCode_Volume_04
+--- PASS: TestPathFileTypeCode_Volume_04 (0.00s)
+=== RUN   TestPathFileTypeCode_Volume_05
+--- PASS: TestPathFileTypeCode_Volume_05 (0.00s)
+=== RUN   TestPathValidityStatusCode_EqualOperator_01
+--- PASS: TestPathValidityStatusCode_EqualOperator_01 (0.00s)
+=== RUN   TestPathValidityStatusCode_EqualOperator_02
+--- PASS: TestPathValidityStatusCode_EqualOperator_02 (0.00s)
+=== RUN   TestPathValidityStatusCode_EqualOperator_03
+--- PASS: TestPathValidityStatusCode_EqualOperator_03 (0.00s)
+=== RUN   TestPathValidityStatusCode_EqualOperator_04
+--- PASS: TestPathValidityStatusCode_EqualOperator_04 (0.00s)
+=== RUN   TestPathValidityStatusCode_EqualOperator_05
+--- PASS: TestPathValidityStatusCode_EqualOperator_05 (0.00s)
+=== RUN   TestPathValidityStatusCode_EqualOperator_06
+--- PASS: TestPathValidityStatusCode_EqualOperator_06 (0.00s)
+=== RUN   TestPathValidityStatusCode_GreaterThanOperator_01
+--- PASS: TestPathValidityStatusCode_GreaterThanOperator_01 (0.00s)
+=== RUN   TestPathValidityStatusCode_GreaterThanOperator_02
+--- PASS: TestPathValidityStatusCode_GreaterThanOperator_02 (0.00s)
+=== RUN   TestPathValidityStatusCode_GreaterThanOperator_03
+--- PASS: TestPathValidityStatusCode_GreaterThanOperator_03 (0.00s)
+=== RUN   TestPathValidityStatusCode_GreaterThanOperator_04
+--- PASS: TestPathValidityStatusCode_GreaterThanOperator_04 (0.00s)
+=== RUN   TestPathValidityStatusCode_GreaterThanOperator_05
+--- PASS: TestPathValidityStatusCode_GreaterThanOperator_05 (0.00s)
+=== RUN   TestPathValidityStatusCode_GreaterThanOperator_06
+--- PASS: TestPathValidityStatusCode_GreaterThanOperator_06 (0.00s)
+=== RUN   TestPathValidityStatusCode_GreaterThanOrEqualOperator_01
+--- PASS: TestPathValidityStatusCode_GreaterThanOrEqualOperator_01 (0.00s)
+=== RUN   TestPathValidityStatusCode_GreaterThanOrEqualOperator_02
+--- PASS: TestPathValidityStatusCode_GreaterThanOrEqualOperator_02 (0.00s)
+=== RUN   TestPathValidityStatusCode_GreaterThanOrEqualOperator_03
+--- PASS: TestPathValidityStatusCode_GreaterThanOrEqualOperator_03 (0.00s)
+=== RUN   TestPathValidityStatusCode_GreaterThanOrEqualOperator_04
+--- PASS: TestPathValidityStatusCode_GreaterThanOrEqualOperator_04 (0.00s)
+=== RUN   TestPathValidityStatusCode_GreaterThanOrEqualOperator_05
+--- PASS: TestPathValidityStatusCode_GreaterThanOrEqualOperator_05 (0.00s)
+=== RUN   TestPathValidityStatusCode_GreaterThanOrEqualOperator_06
+--- PASS: TestPathValidityStatusCode_GreaterThanOrEqualOperator_06 (0.00s)
+=== RUN   TestPathValidityStatusCode_GreaterThanOrEqualOperator_07
+--- PASS: TestPathValidityStatusCode_GreaterThanOrEqualOperator_07 (0.00s)
+=== RUN   TestPathValidityStatusCode_Invalid_01
+--- PASS: TestPathValidityStatusCode_Invalid_01 (0.00s)
+=== RUN   TestPathValidityStatusCode_Invalid_02
+--- PASS: TestPathValidityStatusCode_Invalid_02 (0.00s)
+=== RUN   TestPathValidityStatusCode_Invalid_03
+--- PASS: TestPathValidityStatusCode_Invalid_03 (0.00s)
+=== RUN   TestPathValidityStatusCode_Invalid_04
+--- PASS: TestPathValidityStatusCode_Invalid_04 (0.00s)
+=== RUN   TestPathValidityStatusCode_Invalid_05
+--- PASS: TestPathValidityStatusCode_Invalid_05 (0.00s)
+=== RUN   TestPathValidityStatusCode_LessThanOrEqualOperator_01
+--- PASS: TestPathValidityStatusCode_LessThanOrEqualOperator_01 (0.00s)
+=== RUN   TestPathValidityStatusCode_LessThanOrEqualOperator_02
+--- PASS: TestPathValidityStatusCode_LessThanOrEqualOperator_02 (0.00s)
+=== RUN   TestPathValidityStatusCode_LessThanOrEqualOperator_03
+--- PASS: TestPathValidityStatusCode_LessThanOrEqualOperator_03 (0.00s)
+=== RUN   TestPathValidityStatusCode_LessThanOrEqualOperator_04
+--- PASS: TestPathValidityStatusCode_LessThanOrEqualOperator_04 (0.00s)
+=== RUN   TestPathValidityStatusCode_LessThanOrEqualOperator_05
+--- PASS: TestPathValidityStatusCode_LessThanOrEqualOperator_05 (0.00s)
+=== RUN   TestPathValidityStatusCode_LessThanOrEqualOperator_06
+--- PASS: TestPathValidityStatusCode_LessThanOrEqualOperator_06 (0.00s)
+=== RUN   TestPathValidityStatusCode_LessThanOrEqualOperator_07
+--- PASS: TestPathValidityStatusCode_LessThanOrEqualOperator_07 (0.00s)
+=== RUN   TestPathValidityStatusCode_LessThanOrEqualOperator_08
+--- PASS: TestPathValidityStatusCode_LessThanOrEqualOperator_08 (0.00s)
+=== RUN   TestPathValidityStatusCode_NotEqualOperator_01
+--- PASS: TestPathValidityStatusCode_NotEqualOperator_01 (0.00s)
+=== RUN   TestPathValidityStatusCode_NotEqualOperator_02
+--- PASS: TestPathValidityStatusCode_NotEqualOperator_02 (0.00s)
+=== RUN   TestPathValidityStatusCode_NotEqualOperator_03
+--- PASS: TestPathValidityStatusCode_NotEqualOperator_03 (0.00s)
+=== RUN   TestPathValidityStatusCode_NotEqualOperator_04
+--- PASS: TestPathValidityStatusCode_NotEqualOperator_04 (0.00s)
+=== RUN   TestPathValidityStatusCode_NotEqualOperator_05
+--- PASS: TestPathValidityStatusCode_NotEqualOperator_05 (0.00s)
+=== RUN   TestPathValidityStatusCode_NotEqualOperator_06
+--- PASS: TestPathValidityStatusCode_NotEqualOperator_06 (0.00s)
+=== RUN   TestPathValidityStatusCode_ParseString_01
+--- PASS: TestPathValidityStatusCode_ParseString_01 (0.00s)
+=== RUN   TestPathValidityStatusCode_ParseString_02
+--- PASS: TestPathValidityStatusCode_ParseString_02 (0.00s)
+=== RUN   TestPathValidityStatusCode_ParseString_03
+--- PASS: TestPathValidityStatusCode_ParseString_03 (0.00s)
+=== RUN   TestPathValidityStatusCode_StatusIsValid_01
+--- PASS: TestPathValidityStatusCode_StatusIsValid_01 (0.00s)
+=== RUN   TestPathValidityStatusCode_StatusIsValid_02
+--- PASS: TestPathValidityStatusCode_StatusIsValid_02 (0.00s)
+=== RUN   TestPathValidityStatusCode_StatusIsValid_03
+--- PASS: TestPathValidityStatusCode_StatusIsValid_03 (0.00s)
+=== RUN   TestPathValidityStatusCode_StatusIsValid_04
+--- PASS: TestPathValidityStatusCode_StatusIsValid_04 (0.00s)
+=== RUN   TestPathValidityStatusCode_StatusIsValid_05
+--- PASS: TestPathValidityStatusCode_StatusIsValid_05 (0.00s)
+=== RUN   TestPathValidityStatusCode_String_01
+--- PASS: TestPathValidityStatusCode_String_01 (0.00s)
+=== RUN   TestPathValidityStatusCode_Unknown_01
+--- PASS: TestPathValidityStatusCode_Unknown_01 (0.00s)
+=== RUN   TestPathValidityStatusCode_Unknown_02
+--- PASS: TestPathValidityStatusCode_Unknown_02 (0.00s)
+=== RUN   TestPathValidityStatusCode_Unknown_03
+--- PASS: TestPathValidityStatusCode_Unknown_03 (0.00s)
+=== RUN   TestPathValidityStatusCode_Unknown_04
+--- PASS: TestPathValidityStatusCode_Unknown_04 (0.00s)
+=== RUN   TestPathValidityStatusCode_Unknown_05
+--- PASS: TestPathValidityStatusCode_Unknown_05 (0.00s)
+=== RUN   TestPathValidityStatusCode_Valid_01
+--- PASS: TestPathValidityStatusCode_Valid_01 (0.00s)
+=== RUN   TestPathValidityStatusCode_Valid_02
+--- PASS: TestPathValidityStatusCode_Valid_02 (0.00s)
+=== RUN   TestPathValidityStatusCode_Valid_03
+--- PASS: TestPathValidityStatusCode_Valid_03 (0.00s)
+=== RUN   TestPathValidityStatusCode_Valid_04
+--- PASS: TestPathValidityStatusCode_Valid_04 (0.00s)
+=== RUN   TestPathValidityStatusCode_Valid_05
+--- PASS: TestPathValidityStatusCode_Valid_05 (0.00s)
+=== RUN   TestPathValidityStatusCode_Valid_06
+--- PASS: TestPathValidityStatusCode_Valid_06 (0.00s)
+=== RUN   TestPreProcessPathCode_None_01
+--- PASS: TestPreProcessPathCode_None_01 (0.00s)
+=== RUN   TestPreProcessPathCode_PathSeparator_01
+--- PASS: TestPreProcessPathCode_PathSeparator_01 (0.00s)
+=== RUN   TestPreProcessPathCode_AbsolutePath_01
+--- PASS: TestPreProcessPathCode_AbsolutePath_01 (0.00s)
+=== RUN   TestPreProcessPathCode_String_01
+--- PASS: TestPreProcessPathCode_String_01 (0.00s)
+=== RUN   TestPreProcessPathCode_String_02
+--- PASS: TestPreProcessPathCode_String_02 (0.00s)
+=== RUN   TestPreProcessPathCode_String_03
+--- PASS: TestPreProcessPathCode_String_03 (0.00s)
+=== RUN   TestPreProcessPathCode_String_04
+--- PASS: TestPreProcessPathCode_String_04 (0.00s)
+=== RUN   TestPreProcessPathCode_ParseString_01
+--- PASS: TestPreProcessPathCode_ParseString_01 (0.00s)
+=== RUN   TestPreProcessPathCode_ParseString_02
+--- PASS: TestPreProcessPathCode_ParseString_02 (0.00s)
+=== RUN   TestPreProcessPathCode_ParseString_03
+--- PASS: TestPreProcessPathCode_ParseString_03 (0.00s)
+=== RUN   TestPreProcessPathCode_ParseString_04
+--- PASS: TestPreProcessPathCode_ParseString_04 (0.00s)
+=== RUN   TestPreProcessPathCode_ParseString_05
+--- PASS: TestPreProcessPathCode_ParseString_05 (0.00s)
+=== RUN   TestPreProcessPathCode_ParseString_06
+--- PASS: TestPreProcessPathCode_ParseString_06 (0.00s)
+=== RUN   TestPreProcessPathCode_ParseString_07
+--- PASS: TestPreProcessPathCode_ParseString_07 (0.00s)
+=== RUN   TestPreProcessPathCode_ParseString_08
+--- PASS: TestPreProcessPathCode_ParseString_08 (0.00s)
+=== RUN   TestPreProcessPathCode_Value_01
+--- PASS: TestPreProcessPathCode_Value_01 (0.00s)
+=== RUN   TestValidPathStrDto_AbsolutePathDoesExist_01
+--- PASS: TestValidPathStrDto_AbsolutePathDoesExist_01 (0.00s)
+=== RUN   TestValidPathStrDto_GetPath_01
+--- PASS: TestValidPathStrDto_GetPath_01 (0.00s)
+=== RUN   TestValidPathStrDto_GetPathStrLen_01
+--- PASS: TestValidPathStrDto_GetPathStrLen_01 (0.00s)
+=== RUN   TestValidPathStrDto_GetPathFileInfo
+--- PASS: TestValidPathStrDto_GetPathFileInfo (0.00s)
+=== RUN   TestValidPathStrDto_GetAbsPath_01
+--- PASS: TestValidPathStrDto_GetAbsPath_01 (0.00s)
+=== RUN   TestValidPathStrDto_GetAbsPathStrLen_01
+--- PASS: TestValidPathStrDto_GetAbsPathStrLen_01 (0.00s)
+=== RUN   TestValidPathStrDto_GetAbsPathFileInfo
+--- PASS: TestValidPathStrDto_GetAbsPathFileInfo (0.00s)
+=== RUN   TestValidPathStrDto_GetError
+--- PASS: TestValidPathStrDto_GetError (0.00s)
+=== RUN   TestValidPathStrDto_GetOriginalPathStr_01
+--- PASS: TestValidPathStrDto_GetOriginalPathStr_01 (0.00s)
+=== RUN   TestValidPathStrDto_GetPathType
+--- PASS: TestValidPathStrDto_GetPathType (0.00s)
+=== RUN   TestValidPathStrDto_GetPathVolumeName_01
+--- PASS: TestValidPathStrDto_GetPathVolumeName_01 (0.00s)
+=== RUN   TestValidPathStrDto_GetPathVolumeIndex_01
+--- PASS: TestValidPathStrDto_GetPathVolumeIndex_01 (0.00s)
+=== RUN   TestValidPathStrDto_GetPathVolumeStrLength_01
+--- PASS: TestValidPathStrDto_GetPathVolumeStrLength_01 (0.00s)
+=== RUN   TestValidPathStrDto_IsInitialized
+--- PASS: TestValidPathStrDto_IsInitialized (0.00s)
+=== RUN   TestValidPathStrDto_IsDtoValid_01
+--- PASS: TestValidPathStrDto_IsDtoValid_01 (0.00s)
+=== RUN   TestValidPathStrDto_IsDtoValid_02
+--- PASS: TestValidPathStrDto_IsDtoValid_02 (0.00s)
+=== RUN   TestValidPathStrDto_IsDtoValid_03
+--- PASS: TestValidPathStrDto_IsDtoValid_03 (0.00s)
+=== RUN   TestValidPathStrDto_IsDtoValid_04
+--- PASS: TestValidPathStrDto_IsDtoValid_04 (0.00s)
+=== RUN   TestValidPathStrDto_IsDtoValid_05
+--- PASS: TestValidPathStrDto_IsDtoValid_05 (0.00s)
+=== RUN   TestValidPathStrDto_IsDtoValid_06
+--- PASS: TestValidPathStrDto_IsDtoValid_06 (0.00s)
+=== RUN   TestValidPathStrDto_IsDtoValid_07
+--- PASS: TestValidPathStrDto_IsDtoValid_07 (0.00s)
+=== RUN   TestValidPathStrDto_PathDoesExist_01
+--- PASS: TestValidPathStrDto_PathDoesExist_01 (0.00s)
+=== RUN   TestValidPathStrDto_PathIsValid
+--- PASS: TestValidPathStrDto_PathIsValid (0.00s)
+=== RUN   TestValidPathStrDto_SetAbsPathDoesExistStatus
+--- PASS: TestValidPathStrDto_SetAbsPathDoesExistStatus (0.00s)
 PASS
-ok  	MikeAustin71/pathfileopsgo/pathfileops	18.448s
+coverage: 82.1% of statements
+ok  	MikeAustin71/pathfileopsgo/pathfileops	60.703s

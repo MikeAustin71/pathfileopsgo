@@ -1,1034 +1,1087 @@
-
 package pathfileops
 
-import (
-	fp "path/filepath"
-	"strings"
-	"testing"
-)
+import "testing"
 
-func TestDirMgr_MakeDir_01(t *testing.T) {
+func TestDirMgr_DeleteFilesByNamePattern_01(t *testing.T) {
 
-	fh := FileHelper{}
+  testDir := "../checkfiles/TestDirMgr_DeleteFilesByNamePattern_01"
 
-	origDir := fh.AdjustPathSlash("../checkfiles/checkfiles99/checkfiles999")
+  fh := FileHelper{}
 
-	dMgr, err := DirMgr{}.New(origDir)
+  err := fh.DeleteDirPathAll(testDir)
 
-	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v'  Error='%v'", origDir, err.Error())
-	}
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
 
-	if dMgr.doesAbsolutePathExist {
+  err = fh.MakeDirAll(testDir)
 
-		err = dMgr.DeleteAll()
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
 
-		if err != nil {
-			t.Errorf("%v", err.Error())
-		}
+  srcFiles := make([]string, 0, 50)
 
-	}
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_3_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_4_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006860_sample.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006870_ReadingFiles.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006890_WritingFiles.htm")
 
-	if dMgr.doesAbsolutePathExist {
-		t.Errorf("Error: Attempted to delete dMgr.absolutePath='%v'. Deletion Attempt FAILED. This directory still exists.", dMgr.absolutePath)
-	}
+  destFiles := make([]string, 0, 50)
+  destFiles = append(destFiles, testDir+"/level_0_0_test.txt")
+  destFiles = append(destFiles, testDir+"/level_0_1_test.txt")
+  destFiles = append(destFiles, testDir+"/level_0_2_test.txt")
+  destFiles = append(destFiles, testDir+"/level_0_3_test.txt")
+  destFiles = append(destFiles, testDir+"/level_0_4_test.txt")
+  destFiles = append(destFiles, testDir+"/006860_sample.htm")
+  destFiles = append(destFiles, testDir+"/006870_ReadingFiles.htm")
+  destFiles = append(destFiles, testDir+"/006890_WritingFiles.htm")
 
-	err = dMgr.MakeDir()
+  for i := 0; i < len(srcFiles); i++ {
 
-	if err != nil {
-		t.Errorf("%v", err.Error())
-	}
+    err = fh.CopyFileByIo(srcFiles[i], destFiles[i])
 
-	if !dMgr.doesAbsolutePathExist {
-		t.Errorf("Error: Attempted to create dMgr.absolutePath='%v'. Creation Attempt FAILED. This directory does NOT exist.", dMgr.absolutePath)
-	}
+    if err != nil {
+      t.Errorf("Test Setup Error returned by fh.CopyFileByIo(srcFiles[%v], destFiles[%v])\n"+
+        "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
+        i, i, srcFiles[i], destFiles[i], err.Error())
+
+      _ = fh.DeleteDirPathAll(testDir)
+
+      return
+    }
+
+  }
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  fMgrCollection, err := dMgr.FindFilesByNamePattern("*.htm")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr.FindFilesByNamePattern(\"*.htm\").\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 3 {
+    t.Errorf("Test Setup Error: Expected to find 3-html files in 'testDir'.\n"+
+      "Instead, %v-html files were found.", fMgrCollection.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  deleteDirStats,
+  errArray := dMgr.DeleteFilesByNamePattern("*.htm")
+
+  if len(errArray) > 0 {
+
+    t.Errorf("Errors returned by dMgr.DeleteFilesByNamePattern(\"*.htm\").\n"+
+      "testDir='%v'\nErrors Follow:\n\n%v",
+      testDir,
+      dMgr.ConsolidateErrors(errArray))
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  fMgrCollection, err = dMgr.FindFilesByNamePattern("*.htm")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr.FindFilesByNamePattern(\"*.htm\").\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if fMgrCollection.GetNumOfFileMgrs() != 0 {
+    t.Errorf("Error: Expected to find 0-html files in 'testDir'.\n"+
+      "Instead, %v-html files were found.", fMgrCollection.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.FilesDeleted != 3 {
+    t.Errorf("Expected deleteDirStats.FilesDeleted='3'.\n"+
+      "Instead, deleteDirStats.FilesDeleted='%v'.",
+      deleteDirStats.FilesDeleted)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.FilesRemaining != 5 {
+    t.Errorf("Expected deleteDirStats.FilesRemaining='5'.\n"+
+      "Instead, deleteDirStats.FilesRemaining='%v'.",
+      deleteDirStats.FilesRemaining)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.TotalFilesProcessed != 8 {
+    t.Errorf("Expected deleteDirStats.TotalFilesProcessed='8'.\n"+
+      "Instead, deleteDirStats.TotalFilesProcessed='%v'.",
+      deleteDirStats.TotalFilesProcessed)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.TotalSubDirectories != 0 {
+    t.Errorf("Expected deleteDirStats.TotalSubDirectories='0'.\n"+
+      "Instead, deleteDirStats.TotalSubDirectories='%v'.",
+      deleteDirStats.TotalSubDirectories)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  if deleteDirStats.TotalDirsScanned != 1 {
+    t.Errorf("Expected deleteDirStats.TotalDirsScanned='1'.\n"+
+      "Instead, deleteDirStats.TotalDirsScanned='%v'.",
+      deleteDirStats.TotalDirsScanned)
+
+    _ = fh.DeleteDirPathAll(testDir)
+    return
+  }
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by "+
+      "fh.DeleteDirPathAll(testDir)\ntestDir='%v'\n"+
+      "Error='%v'\n", testDir, err.Error())
+  }
+
+  return
+}
+
+func TestDirMgr_DeleteFilesByNamePattern_02(t *testing.T) {
+
+  testDir := "../checkfiles/TestDirMgr_DeleteFilesByNamePattern_02"
+
+  fh := FileHelper{}
+
+  err := fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  err = fh.MakeDirAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
+
+  dMgr, err := DirMgr{}.New(testDir)
+
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  _,
+  errs := dMgr.DeleteFilesByNamePattern("")
+
+  if len(errs) == 0 {
+    t.Error("Expected an error return from dMgr.DeleteFilesByNamePattern(\"\")\n" +
+      "because the file search parameter is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  _ = fh.DeleteDirPathAll(testDir)
 
 }
 
-func TestDirMgr_New_01(t *testing.T) {
-	fh := FileHelper{}
-	origDir := fh.AdjustPathSlash("../testfiles/testfiles2")
-	expectedPath := fh.AdjustPathSlash("../testfiles/testfiles2")
-	expectedAbsDir, err := fh.MakeAbsolutePath(origDir)
+func TestDirMgr_DeleteFilesByNamePattern_03(t *testing.T) {
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
-	}
+  testDir := "../checkfiles/TestDirMgr_DeleteFilesByNamePattern_02"
 
-	expectedPathDoesExist := fh.DoesFileExist(origDir)
+  fh := FileHelper{}
 
-	expectedAbsPathDoesExist := fh.DoesFileExist(origDir)
+  err := fh.DeleteDirPathAll(testDir)
 
-	expectedVolumeName := fp.VolumeName(expectedAbsDir)
-	var expectedVolumeIsPopulated bool
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
 
-	if expectedVolumeName != "" {
-		expectedVolumeIsPopulated = true
-	} else {
-		expectedVolumeIsPopulated = false
-	}
+  err = fh.MakeDirAll(testDir)
 
-	expectedParentPath := strings.TrimSuffix(expectedAbsDir, fh.AdjustPathSlash("/testfiles2"))
-	expectedIsParentPathPopulated := false
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
 
-	if expectedParentPath != "" {
-		expectedIsParentPathPopulated = true
-	}
+  dMgr, err := DirMgr{}.New(testDir)
 
-	expectedRelativePath := "testfiles2"
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
 
-	dMgr, err := DirMgr{}.New(origDir)
+    _ = fh.DeleteDirPathAll(testDir)
 
-	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
-	}
+    return
+  }
 
-	if true != dMgr.isInitialized {
-		t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'", true, dMgr.isInitialized)
-	}
+  _,
+  errs := dMgr.DeleteFilesByNamePattern("     ")
 
-	if true != dMgr.isPathPopulated {
-		t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'", true, dMgr.isPathPopulated)
-	}
+  if len(errs) == 0 {
+    t.Error("Expected an error return from dMgr.DeleteFilesByNamePattern(\"     \")\n" +
+      "because the file search parameter consists entirely of blank spaces.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
 
-	if expectedPath != dMgr.path {
-		t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
-	}
-
-	if expectedPathDoesExist != dMgr.doesPathExist {
-		t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.", expectedPathDoesExist, dMgr.doesPathExist)
-	}
-
-	if true != dMgr.isAbsolutePathPopulated {
-		t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.", true, dMgr.isAbsolutePathPopulated)
-	}
-
-	if expectedAbsDir != dMgr.absolutePath {
-		t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'", expectedAbsDir, dMgr.absolutePath)
-	}
-
-	if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-		t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.", expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
-	}
-
-	if true != dMgr.isAbsolutePathDifferentFromPath {
-		t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.", true, dMgr.isAbsolutePathDifferentFromPath)
-	}
-
-	if expectedVolumeName != dMgr.volumeName {
-		t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.", expectedVolumeName, dMgr.volumeName)
-	}
-
-	if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-		t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.", expectedVolumeIsPopulated, dMgr.isVolumePopulated)
-	}
-
-	if expectedParentPath != dMgr.parentPath {
-		t.Errorf("Expected parentPath=='%v'. Instead, parentPath=='%v'.", expectedParentPath, dMgr.parentPath)
-	}
-
-	if expectedIsParentPathPopulated != dMgr.isParentPathPopulated {
-		t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.", expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
-	}
-
-	if expectedRelativePath != dMgr.relativePath {
-		t.Errorf("Expected relativePath=='%v'. Instead, relativePath=='%v'.", expectedRelativePath, dMgr.relativePath)
-	}
-
-	if true != dMgr.isRelativePathPopulated {
-		t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.", true, dMgr.isRelativePathPopulated)
-	}
+  _ = fh.DeleteDirPathAll(testDir)
 
 }
 
-func TestDirMgr_New_02(t *testing.T) {
-	fh := FileHelper{}
-	origDir := fh.AdjustPathSlash("./")
-	expectedPath := fh.AdjustPathSlash(".")
-	expectedAbsDir, err := fh.MakeAbsolutePath(origDir)
+func TestDirMgr_DeleteFilesByNamePattern_04(t *testing.T) {
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
-	}
+  testDir := "../checkfiles/TestDirMgr_DeleteFilesByNamePattern_02"
 
-	expectedPathDoesExist := fh.DoesFileExist(origDir)
+  fh := FileHelper{}
 
-	expectedAbsPathDoesExist := fh.DoesFileExist(origDir)
+  err := fh.DeleteDirPathAll(testDir)
 
-	expectedVolumeName := fp.VolumeName(expectedAbsDir)
-	var expectedVolumeIsPopulated bool
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
 
-	if expectedVolumeName != "" {
-		expectedVolumeIsPopulated = true
-	} else {
-		expectedVolumeIsPopulated = false
-	}
+  err = fh.MakeDirAll(testDir)
 
-	dMgr, err := DirMgr{}.New(origDir)
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
 
-	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
-	}
+  dMgr, err := DirMgr{}.New(testDir)
 
-	if true != dMgr.isInitialized {
-		t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'", true, dMgr.isInitialized)
-	}
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
 
-	if true != dMgr.isPathPopulated {
-		t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'", true, dMgr.isPathPopulated)
-	}
+    _ = fh.DeleteDirPathAll(testDir)
 
-	if expectedPath != dMgr.path {
-		t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
-	}
+    return
+  }
 
-	if expectedPathDoesExist != dMgr.doesPathExist {
-		t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.", expectedPathDoesExist, dMgr.doesPathExist)
-	}
+  dMgr.isInitialized = false
 
-	if true != dMgr.isAbsolutePathPopulated {
-		t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.", true, dMgr.isAbsolutePathPopulated)
-	}
+  _,
+  errs := dMgr.DeleteFilesByNamePattern("*.*")
 
-	if expectedAbsDir != dMgr.absolutePath {
-		t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'", expectedAbsDir, dMgr.absolutePath)
-	}
+  if len(errs) == 0 {
+    t.Error("Expected an error return from dMgr.DeleteFilesByNamePattern(\"*.*\")\n" +
+      "because the Directory Manager instance (dMgr) is INVALID.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
 
-	if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-		t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.", expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
-	}
-
-	if true != dMgr.isAbsolutePathDifferentFromPath {
-		t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.", true, dMgr.isAbsolutePathDifferentFromPath)
-	}
-
-	if expectedVolumeName != dMgr.volumeName {
-		t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.", expectedVolumeName, dMgr.volumeName)
-	}
-
-	if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-		t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.", expectedVolumeIsPopulated, dMgr.isVolumePopulated)
-	}
-
-	if true != dMgr.isParentPathPopulated {
-		t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.", true, dMgr.isParentPathPopulated)
-	}
-
-	if true != dMgr.isRelativePathPopulated {
-		t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.", true, dMgr.isRelativePathPopulated)
-	}
+  _ = fh.DeleteDirPathAll(testDir)
 
 }
 
-func TestDirMgr_New_03(t *testing.T) {
-	fh := FileHelper{}
-	origDir := fh.AdjustPathSlash("../")
-	expectedPath := fh.AdjustPathSlash("..")
-	expectedAbsDir, err := fh.MakeAbsolutePath(origDir)
+func TestDirMgr_DeleteFilesByNamePattern_05(t *testing.T) {
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
-	}
+  testDir := "../checkfiles/TestDirMgr_DeleteFilesByNamePattern_05"
 
-	expectedPathDoesExist := fh.DoesFileExist(origDir)
+  fh := FileHelper{}
 
-	expectedAbsPathDoesExist := fh.DoesFileExist(origDir)
+  err := fh.DeleteDirPathAll(testDir)
 
-	expectedVolumeName := fp.VolumeName(expectedAbsDir)
-	var expectedVolumeIsPopulated bool
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
 
-	if expectedVolumeName != "" {
-		expectedVolumeIsPopulated = true
-	} else {
-		expectedVolumeIsPopulated = false
-	}
+  dMgr, err := DirMgr{}.New(testDir)
 
-	dMgr, err := DirMgr{}.New(origDir)
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
 
-	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'",
-			origDir, err.Error())
-	}
+    _ = fh.DeleteDirPathAll(testDir)
 
-	if true != dMgr.isInitialized {
-		t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
-			true, dMgr.isInitialized)
-	}
+    return
+  }
 
-	if true != dMgr.isPathPopulated {
-		t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
-			true, dMgr.isPathPopulated)
-	}
+  _,
+  errs := dMgr.DeleteFilesByNamePattern("*.*")
 
-	if expectedPath != dMgr.path {
-		t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
-	}
+  if len(errs) == 0 {
+    t.Error("Expected an error return from dMgr.DeleteFilesByNamePattern(\"*.*\")\n" +
+      "because the Directory Manager instance (dMgr) is DOES NOT EXIST.\n" +
+      "However, NO ERROR WAS RETURNED!!!!")
+  }
 
-	if expectedPathDoesExist != dMgr.doesPathExist {
-		t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.",
-			expectedPathDoesExist, dMgr.doesPathExist)
-	}
-
-	if true != dMgr.isAbsolutePathPopulated {
-		t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
-			true, dMgr.isAbsolutePathPopulated)
-	}
-
-	if expectedAbsDir != dMgr.absolutePath {
-		t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
-			expectedAbsDir, dMgr.absolutePath)
-	}
-
-	if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-		t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
-			expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
-	}
-
-	if true != dMgr.isAbsolutePathDifferentFromPath {
-		t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.",
-			true, dMgr.isAbsolutePathDifferentFromPath)
-	}
-
-	if expectedVolumeName != dMgr.volumeName {
-		t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.",
-			expectedVolumeName, dMgr.volumeName)
-	}
-
-	if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-		t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.",
-			expectedVolumeIsPopulated, dMgr.isVolumePopulated)
-	}
-
-	if true != dMgr.isParentPathPopulated {
-		t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
-			true, dMgr.isParentPathPopulated)
-	}
-
-	if true != dMgr.isRelativePathPopulated {
-		t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-			true, dMgr.isRelativePathPopulated)
-	}
+  _ = fh.DeleteDirPathAll(testDir)
 
 }
 
-func TestDirMgr_New_04(t *testing.T) {
-	fh := FileHelper{}
-	xDir, err := fh.GetCurrentDir()
+func TestDirMgr_DeleteFilesByNamePattern_06(t *testing.T) {
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetCurrentDir(). Error='%v'", err.Error())
-	}
+  baseTestDir := "../checkfiles/TestDirMgr_DeleteFilesByNamePattern_01"
 
-	volName := fp.VolumeName(xDir)
+  testDir := baseTestDir + "/xDir01"
 
-	origDir := fh.AdjustPathSlash(volName)
-	expectedPath := fh.AdjustPathSlash(origDir)
-	expectedAbsDir := origDir
+  fh := FileHelper{}
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
-	}
+  err := fh.DeleteDirPathAll(baseTestDir)
 
-	expectedPathDoesExist := fh.DoesFileExist(origDir)
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(baseTestDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
 
-	expectedAbsPathDoesExist := fh.DoesFileExist(origDir)
+  err = fh.MakeDirAll(testDir)
 
-	expectedVolumeName := fp.VolumeName(expectedAbsDir)
-	var expectedVolumeIsPopulated bool
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.MakeDirAll(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
 
-	if expectedVolumeName != "" {
-		expectedVolumeIsPopulated = true
-	} else {
-		expectedVolumeIsPopulated = false
-	}
+  srcFiles := make([]string, 0, 50)
 
-	dMgr, err := DirMgr{}.New(origDir)
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_3_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_0_4_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006860_sample.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006870_ReadingFiles.htm")
+  srcFiles = append(srcFiles, "../filesfortest/htmlFilesForTest/006890_WritingFiles.htm")
+  // For Sub-Directory files
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_0_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_1_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_2_test.txt")
+  srcFiles = append(srcFiles, "../filesfortest/levelfilesfortest/level_01_dir/level_1_3_test.txt")
 
-	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
-	}
+  destFiles := make([]string, 0, 50)
+  destFiles = append(destFiles, baseTestDir+"/level_0_0_test.txt")
+  destFiles = append(destFiles, baseTestDir+"/level_0_1_test.txt")
+  destFiles = append(destFiles, baseTestDir+"/level_0_2_test.txt")
+  destFiles = append(destFiles, baseTestDir+"/level_0_3_test.txt")
+  destFiles = append(destFiles, baseTestDir+"/level_0_4_test.txt")
+  destFiles = append(destFiles, baseTestDir+"/006860_sample.htm")
+  destFiles = append(destFiles, baseTestDir+"/006870_ReadingFiles.htm")
+  destFiles = append(destFiles, baseTestDir+"/006890_WritingFiles.htm")
+  // Sub Directory files
+  destFiles = append(destFiles, testDir+"/level_1_0_test.txt")
+  destFiles = append(destFiles, testDir+"/level_1_1_test.txt")
+  destFiles = append(destFiles, testDir+"/level_1_2_test.txt")
+  destFiles = append(destFiles, testDir+"/level_1_3_test.txt")
 
-	if true != dMgr.isInitialized {
-		t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
-			true, dMgr.isInitialized)
-	}
+  for i := 0; i < len(srcFiles); i++ {
 
-	if true != dMgr.isPathPopulated {
-		t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
-			true, dMgr.isPathPopulated)
-	}
+    err = fh.CopyFileByIo(srcFiles[i], destFiles[i])
 
-	if expectedPath != dMgr.path {
-		t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
-	}
+    if err != nil {
+      t.Errorf("Test Setup Error returned by fh.CopyFileByIo(srcFiles[%v], destFiles[%v])\n"+
+        "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
+        i, i, srcFiles[i], destFiles[i], err.Error())
 
-	if expectedPathDoesExist != dMgr.doesPathExist {
-		t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.", expectedPathDoesExist, dMgr.doesPathExist)
-	}
+      _ = fh.DeleteDirPathAll(baseTestDir)
 
-	if true != dMgr.isAbsolutePathPopulated {
-		t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
-			true, dMgr.isAbsolutePathPopulated)
-	}
+      return
+    }
 
-	if expectedAbsDir != dMgr.absolutePath {
-		t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
-			expectedAbsDir, dMgr.absolutePath)
-	}
+  }
 
-	if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-		t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
-			expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
-	}
+  dMgr, err := DirMgr{}.New(baseTestDir)
 
-	if false != dMgr.isAbsolutePathDifferentFromPath {
-		t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.",
-			false, dMgr.isAbsolutePathDifferentFromPath)
-	}
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(baseTestDir).\n"+
+      "baseTestDir='%v'\nError='%v'\n", baseTestDir, err.Error())
 
-	if expectedVolumeName != dMgr.volumeName {
-		t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.", expectedVolumeName, dMgr.volumeName)
-	}
+    _ = fh.DeleteDirPathAll(baseTestDir)
 
-	if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-		t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.", expectedVolumeIsPopulated, dMgr.isVolumePopulated)
-	}
+    return
+  }
 
-	if false != dMgr.isParentPathPopulated {
-		t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
-			false, dMgr.isParentPathPopulated)
-	}
+  dMgr2Sub, err := DirMgr{}.New(testDir)
 
-	if false != dMgr.isRelativePathPopulated {
-		t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-			false, dMgr.isRelativePathPopulated)
-	}
+  if err != nil {
+    t.Errorf("Error returned by DirMgr{}.New(testDir).\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
 
+    _ = fh.DeleteDirPathAll(baseTestDir)
+
+    return
+  }
+
+  fMgrHtmCollection, err := dMgr.FindFilesByNamePattern("*.htm")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fMgrHtmCollection, err :=\n"+
+      "dMgr.FindFilesByNamePattern(\"*.htm\").\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+
+    return
+  }
+
+  expectedNumOfFilesDeleted := uint64(fMgrHtmCollection.GetNumOfFileMgrs())
+
+  if expectedNumOfFilesDeleted != 3 {
+    t.Errorf("Test Setup Error: Expected to find 3-html files in 'testDir'.\n"+
+      "Instead, %v-html files were found.", expectedNumOfFilesDeleted)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+
+    return
+  }
+
+  expectedNumOfFileBytesDeleted := fMgrHtmCollection.GetTotalFileBytes()
+
+  fMgrTxtCollection, err := dMgr.FindFilesByNamePattern("*.txt")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fMgrTxtCollection, err :=\n"+
+      "dMgr.FindFilesByNamePattern(\"*.htm\").\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+
+    return
+  }
+
+  expectedNumOfFilesRemaining := uint64(fMgrTxtCollection.GetNumOfFileMgrs())
+
+  expectedNumOfFileBytesRemaining := fMgrTxtCollection.GetTotalFileBytes()
+
+  expectedNumOfFilesProcessed := expectedNumOfFilesDeleted + expectedNumOfFilesRemaining
+
+  expectedNumOfSubDirectories := uint64(1)
+
+  expectedNumOfDirsScanned := uint64(1)
+
+  deleteDirStats,
+  errArray := dMgr.DeleteFilesByNamePattern("*.htm")
+
+  if len(errArray) > 0 {
+
+    t.Errorf("Errors returned by dMgr.DeleteFilesByNamePattern(\"*.htm\").\n"+
+      "testDir='%v'\nErrors Follow:\n\n%v",
+      testDir,
+      dMgr.ConsolidateErrors(errArray))
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  fMgrHtmCollection, err = dMgr.FindFilesByNamePattern("*.htm")
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by dMgr.FindFilesByNamePattern(\"*.htm\").\n"+
+      "baseTestDir='%v'\nError='%v'\n", baseTestDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if fMgrHtmCollection.GetNumOfFileMgrs() != 0 {
+    t.Errorf("Error: Expected to find 0-html files in 'testDir'.\n"+
+      "Instead, %v-html files were found.", fMgrHtmCollection.GetNumOfFileMgrs())
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if expectedNumOfFileBytesDeleted != deleteDirStats.FilesDeletedBytes {
+    t.Errorf("Error: Expected deleteDirStats.FilesDeletedBytes=='%v'.\n"+
+      "Instead, deleteDirStats.FilesDeletedBytes=='%v'\n",
+      expectedNumOfFileBytesDeleted,
+      deleteDirStats.FilesDeleted)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if expectedNumOfFilesRemaining != deleteDirStats.FilesRemaining {
+    t.Errorf("Error: Expected deleteDirStats.FilesRemaining=='%v'.\n"+
+      "Instead, deleteDirStats.FilesDeleted=='%v'\n",
+      expectedNumOfFilesRemaining,
+      deleteDirStats.FilesRemaining)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if deleteDirStats.DirectoriesDeleted != 0 {
+    t.Errorf("Error: Expected deleteDirStats.DirectoriesDeleted=='0'.\n"+
+      "Instead, deleteDirStats.DirectoriesDeleted=='%v'\n",
+      deleteDirStats.DirectoriesDeleted)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if expectedNumOfDirsScanned != deleteDirStats.TotalDirsScanned {
+
+    t.Errorf("Error: Expected deleteDirStats.TotalDirsScanned=='%v'.\n"+
+      "Instead, deleteDirStats.TotalDirsScanned=='%v'\n",
+      expectedNumOfDirsScanned,
+      deleteDirStats.TotalDirsScanned)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if expectedNumOfSubDirectories != deleteDirStats.TotalSubDirectories {
+
+    t.Errorf("Error: Expected deleteDirStats.TotalSubDirectories=='%v'.\n"+
+      "Instead, deleteDirStats.TotalSubDirectories=='%v'\n",
+      expectedNumOfSubDirectories,
+      deleteDirStats.TotalDirsScanned)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if expectedNumOfFileBytesDeleted != deleteDirStats.FilesDeletedBytes {
+
+    t.Errorf("Error: Expected deleteDirStats.FilesDeletedBytes=='%v'.\n"+
+      "Instead, deleteDirStats.FilesDeletedBytes=='%v'\n",
+      expectedNumOfFileBytesDeleted,
+      deleteDirStats.FilesDeletedBytes)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if expectedNumOfFileBytesRemaining != deleteDirStats.FilesRemainingBytes {
+
+    t.Errorf("Error: Expected deleteDirStats.FilesDeletedBytes=='%v'.\n"+
+      "Instead, deleteDirStats.FilesDeletedBytes=='%v'\n",
+      expectedNumOfFileBytesRemaining,
+      deleteDirStats.FilesDeletedBytes)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  if expectedNumOfFilesProcessed != deleteDirStats.TotalFilesProcessed {
+
+    t.Errorf("Error: Expected deleteDirStats.TotalFilesProcessed=='%v'.\n"+
+      "Instead, deleteDirStats.TotalFilesProcessed=='%v'\n",
+      expectedNumOfFilesProcessed,
+      deleteDirStats.TotalFilesProcessed)
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+    return
+  }
+
+  fMgrHtmCollection, err = dMgr2Sub.FindFilesByNamePattern("*.txt")
+
+  if err != nil {
+    t.Errorf("Error returned by dMgr2Sub.FindFilesByNamePattern(\"*.txt\").\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+
+    _ = fh.DeleteDirPathAll(baseTestDir)
+
+    return
+  }
+
+  if fMgrHtmCollection.GetNumOfFileMgrs() != 4 {
+    t.Errorf("Error expected 4-txt files in the sub-directory. However, the number of\n"+
+      "found txt file='%v'", fMgrHtmCollection.GetNumOfFileMgrs())
+  }
+
+  err = fh.DeleteDirPathAll(baseTestDir)
+
+  if err != nil {
+    t.Errorf("Test File Clean-Up error returned by fh.DeleteDirPathAll(baseTestDir).\n"+
+      "baseTestDir='%v'\nError='%v'\n", baseTestDir, err.Error())
+  }
+
+  return
 }
 
-func TestDirMgr_New_05(t *testing.T) {
-	fh := FileHelper{}
-	origDir, err := fh.GetCurrentDir()
+func TestDirMgr_DeleteFilesBySelectionCriteria_01(t *testing.T) {
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetCurrentDir(). Error='%v'", err.Error())
-	}
+  fh := FileHelper{}
 
-	expectedPath := fh.AdjustPathSlash(origDir)
-	expectedAbsDir, err := fh.MakeAbsolutePath(origDir)
+  testDir := "../dirmgrtests/TestDirMgr_DeleteFilesBySelectionCriteria_01"
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
-	}
+  sourceDir1 := "../filesfortest/levelfilesfortest"
 
-	expectedPathDoesExist := fh.DoesFileExist(origDir)
+  sourceDir2 := "../filesfortest/htmlFilesForTest"
 
-	expectedAbsPathDoesExist := fh.DoesFileExist(origDir)
+  testDMgr, err := DirMgr{}.New(testDir)
 
-	expectedVolumeName := fp.VolumeName(expectedAbsDir)
-	var expectedVolumeIsPopulated bool
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir)\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
 
-	if expectedVolumeName != "" {
-		expectedVolumeIsPopulated = true
-	} else {
-		expectedVolumeIsPopulated = false
-	}
+    _ = fh.DeleteDirPathAll(testDir)
 
-	dMgr, err := DirMgr{}.New(origDir)
+    return
+  }
 
-	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
-	}
+  err = fh.DeleteDirPathAll(testDir)
 
-	if true != dMgr.isInitialized {
-		t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
-			true, dMgr.isInitialized)
-	}
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.DeleteDirPathAll(testDir)\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+  }
 
-	if true != dMgr.isPathPopulated {
-		t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
-			true, dMgr.isPathPopulated)
-	}
+  sourceDMgr1, err := DirMgr{}.New(sourceDir1)
 
-	if expectedPath != dMgr.path {
-		t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
-	}
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir1)\n"+
+      "sourceDir1='%v'\nError='%v'\n", sourceDir1, err.Error())
 
-	if expectedPathDoesExist != dMgr.doesPathExist {
-		t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.", expectedPathDoesExist, dMgr.doesPathExist)
-	}
+    _ = fh.DeleteDirPathAll(testDir)
 
-	if true != dMgr.isAbsolutePathPopulated {
-		t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
-			true, dMgr.isAbsolutePathPopulated)
-	}
+    return
+  }
 
-	if expectedAbsDir != dMgr.absolutePath {
-		t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'", expectedAbsDir, dMgr.absolutePath)
-	}
+  sourceDMgr2, err := DirMgr{}.New(sourceDir2)
 
-	if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-		t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.", expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
-	}
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir2)\n"+
+      "sourceDir2='%v'\nError='%v'\n", sourceDir2, err.Error())
 
-	if false != dMgr.isAbsolutePathDifferentFromPath {
-		t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.",
-			false, dMgr.isAbsolutePathDifferentFromPath)
-	}
+    _ = fh.DeleteDirPathAll(testDir)
 
-	if expectedVolumeName != dMgr.volumeName {
-		t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.", expectedVolumeName, dMgr.volumeName)
-	}
+    return
+  }
 
-	if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-		t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.", expectedVolumeIsPopulated, dMgr.isVolumePopulated)
-	}
+  fsc := FileSelectionCriteria{}
 
-	if true != dMgr.isParentPathPopulated {
-		t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
-			true, dMgr.isParentPathPopulated)
-	}
+  _,
+  errs := sourceDMgr1.CopyDirectory(testDMgr, fsc, false)
 
-	if true != dMgr.isRelativePathPopulated {
-		t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-			true, dMgr.isRelativePathPopulated)
-	}
+  if len(errs) != 0 {
+    t.Errorf("Setup Errors returned by sourceDMgr1.CopyDirectory(testDMgr, fsc)\n"+
+      "sourceDMgr1='%v'\ntestDMgr='%v'\nErrors Follow:\n\n",
+      sourceDMgr1.GetAbsolutePath(), testDMgr.GetAbsolutePath())
 
+    for i := 0; i < len(errs); i++ {
+      t.Errorf("%v\n", errs[i])
+    }
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  _,
+    errs = sourceDMgr2.CopyDirectory(testDMgr, fsc, false)
+
+  if len(errs) != 0 {
+    t.Errorf("Setup Errors returned by sourceDMgr2.CopyDirectoryTree(testDMgr, true, fsc)\n"+
+      "sourceDMgr2='%v'\ntestDMgr='%v'\nErrors Follow:\n\n",
+      sourceDMgr2.GetAbsolutePath(), testDMgr.GetAbsolutePath())
+
+    for i := 0; i < len(errs); i++ {
+      t.Errorf("%v\n", errs[i])
+    }
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  testFileMgrInfo, err := testDMgr.FindFilesBySelectCriteria(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by testDMgr.FindWalkDirFiles(fsc)\n"+
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  expectedNumOfDeletedFiles := uint64(testFileMgrInfo.GetNumOfFileMgrs())
+  expectedNumOfFileBytesDeleted := testFileMgrInfo.GetTotalFileBytes()
+  expectedNumOfFilesProcessed := expectedNumOfDeletedFiles
+
+  expectedTotalDirsScanned := uint64(1)
+  expectedNumOfDirsWhereFilesDeleted := uint64(1)
+
+  deleteDirStats,
+  errs := testDMgr.DeleteFilesBySelectionCriteria(fsc)
+
+  if len(errs) != 0 {
+    t.Errorf("Errors returned by testDMgr.DeleteFilesBySelectionCriteria(fsc).\n"+
+      "testDMgr='%v'\nErrors Follow:\n\n%v",
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  if expectedNumOfDeletedFiles != deleteDirStats.FilesDeleted {
+    t.Errorf("Error: Expected numOfDeletedFiles='%v'.\nInstead, numOfDeletedFils='%v'\n",
+      expectedNumOfDeletedFiles, deleteDirStats.FilesDeleted)
+  }
+
+  if deleteDirStats.FilesRemaining != 0 {
+    t.Errorf("Error: Expected deleteDirStats.FilesRemaining=0.\n"+
+      "Instead, deleteDirStats.FilesRemaining='%v'\n",
+      deleteDirStats.FilesRemaining)
+  }
+
+  if deleteDirStats.FilesRemainingBytes != 0 {
+    t.Errorf("Error: Expected deleteDirStats.FilesRemainingBytes=0.\n"+
+      "Instead, deleteDirStats.FilesRemainingBytes='%v'\n",
+      deleteDirStats.FilesRemainingBytes)
+  }
+
+  if expectedNumOfFilesProcessed != deleteDirStats.TotalFilesProcessed {
+    t.Errorf("Error: Expected deleteDirStats.TotalFilesProcessed=%v.\n"+
+      "Instead, deleteDirStats.TotalFilesProcessed='%v'\n",
+      expectedNumOfFilesProcessed,
+      deleteDirStats.TotalFilesProcessed)
+  }
+
+  if expectedTotalDirsScanned != deleteDirStats.TotalDirsScanned {
+    t.Errorf("Error: Expected deleteDirStats.TotalDirsScanned=%v.\n"+
+      "Instead, deleteDirStats.TotalDirsScanned='%v'\n",
+      expectedTotalDirsScanned,
+      deleteDirStats.TotalDirsScanned)
+  }
+
+  if expectedNumOfDirsWhereFilesDeleted != deleteDirStats.NumOfDirsWhereFilesDeleted {
+    t.Errorf("Error: Expected deleteDirStats.NumOfDirsWhereFilesDeleted=%v.\n"+
+      "Instead, deleteDirStats.NumOfDirsWhereFilesDeleted='%v'\n",
+      expectedNumOfDirsWhereFilesDeleted,
+      deleteDirStats.NumOfDirsWhereFilesDeleted)
+  }
+
+  if expectedNumOfFileBytesDeleted != deleteDirStats.FilesDeletedBytes {
+    t.Errorf("Error: Expected deleteDirStats.FilesDeletedBytes=%v.\n"+
+      "Instead, deleteDirStats.FilesDeletedBytes='%v'\n",
+      expectedNumOfFileBytesDeleted,
+      deleteDirStats.FilesDeletedBytes)
+  }
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(testDir)\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+  }
 }
 
-func TestDirMgr_New_06(t *testing.T) {
-	fh := FileHelper{}
-	origDir := fh.AdjustPathSlash("../testfiles/testfiles2/test2007.txt")
-	expectedPath := fh.AdjustPathSlash("../testfiles/testfiles2")
-	expectedAbsDir, err := fh.MakeAbsolutePath(expectedPath)
+func TestDirMgr_DeleteFilesBySelectionCriteria_02(t *testing.T) {
 
-	expectedPathDoesExist := fh.DoesFileExist(expectedPath)
+  fh := FileHelper{}
 
-	expectedAbsPathDoesExist := fh.DoesFileExist(expectedAbsDir)
+  testDir := "../dirmgrtests/TestDirMgr_DeleteFilesBySelectionCriteria_02"
 
-	expectedVolumeName := fp.VolumeName(expectedAbsDir)
-	var expectedVolumeIsPopulated bool
+  testDir2 := "../dirmgrtests/TestDirMgr_DeleteFilesBySelectionCriteria_02/levelfilesfortest/level_01_dir/level_02_dir/level_03_dir/level_04_dir"
 
-	if expectedVolumeName != "" {
-		expectedVolumeIsPopulated = true
-	} else {
-		expectedVolumeIsPopulated = false
-	}
+  sourceDir1 := "../filesfortest/levelfilesfortest"
 
-	expectedParentPath := strings.TrimSuffix(expectedAbsDir, fh.AdjustPathSlash("/testfiles2"))
-	expectedIsParentPathPopulated := false
+  sourceDir2 := "../filesfortest/htmlFilesForTest"
 
-	if expectedParentPath != "" {
-		expectedIsParentPathPopulated = true
-	}
+  testDMgr, err := DirMgr{}.New(testDir)
 
-	expectedRelativePath := "testfiles2"
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir)\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+    return
+  }
 
-	dMgr, err := DirMgr{}.New(origDir)
+  err = testDMgr.DeleteAll()
 
-	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
-	}
+  if err != nil {
+    t.Errorf("Test Setup Error returned by testDMgr.DeleteAll()\n"+
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+  }
 
-	if true != dMgr.isInitialized {
-		t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
-			true, dMgr.isInitialized)
-	}
+  testDMgr2, err := DirMgr{}.New(testDir2)
 
-	if true != dMgr.isPathPopulated {
-		t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
-			true, dMgr.isPathPopulated)
-	}
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir2)\n"+
+      "testDir2='%v'\nError='%v'\n", testDir2, err.Error())
+  }
 
-	if expectedPath != dMgr.path {
-		t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
-	}
+  sourceDMgr1, err := DirMgr{}.New(sourceDir1)
 
-	if expectedPathDoesExist != dMgr.doesPathExist {
-		t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.", expectedPathDoesExist, dMgr.doesPathExist)
-	}
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir1)\n"+
+      "sourceDir1='%v'\nError='%v'\n", sourceDir1, err.Error())
 
-	if true != dMgr.isAbsolutePathPopulated {
-		t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
-			true, dMgr.isAbsolutePathPopulated)
-	}
+    _ = fh.DeleteDirPathAll(testDir)
 
-	if expectedAbsDir != dMgr.absolutePath {
-		t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
-			expectedAbsDir, dMgr.absolutePath)
-	}
+    return
+  }
 
-	if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-		t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
-			expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
-	}
+  sourceDMgr2, err := DirMgr{}.New(sourceDir2)
 
-	if true != dMgr.isAbsolutePathDifferentFromPath {
-		t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, isAbsolutePathDifferentFromPath=='%v'.",
-			true, dMgr.isAbsolutePathDifferentFromPath)
-	}
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir2)\n"+
+      "sourceDir2='%v'\nError='%v'\n", sourceDir2, err.Error())
 
-	if expectedVolumeName != dMgr.volumeName {
-		t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.",
-			expectedVolumeName, dMgr.volumeName)
-	}
+    _ = fh.DeleteDirPathAll(testDir)
 
-	if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-		t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.",
-			expectedVolumeIsPopulated, dMgr.isVolumePopulated)
-	}
+    return
+  }
 
-	if expectedParentPath != dMgr.parentPath {
-		t.Errorf("Expected parentPath=='%v'. Instead, parentPath=='%v'.",
-			expectedParentPath, dMgr.parentPath)
-	}
+  fsc := FileSelectionCriteria{}
 
-	if expectedIsParentPathPopulated != dMgr.isParentPathPopulated {
-		t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
-			expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
-	}
+  _,
+  errs := sourceDMgr1.CopyDirectoryTree(testDMgr, true, fsc)
 
-	if expectedRelativePath != dMgr.relativePath {
-		t.Errorf("Expected relativePath=='%v'. Instead, relativePath=='%v'.",
-			expectedRelativePath, dMgr.relativePath)
-	}
+  if len(errs) != 0 {
+    t.Errorf("Setup Errors returned by sourceDMgr1.CopyDirectoryTree(testDMgr, true, fsc)\n"+
+      "sourceDMgr1='%v'\ntestDMgr='%v'\nErrors Follow:\n\n%v",
+      sourceDMgr1.GetAbsolutePath(),
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
 
-	if true != dMgr.isRelativePathPopulated {
-		t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-			true, dMgr.isRelativePathPopulated)
-	}
+    _ = fh.DeleteDirPathAll(testDir)
 
+    return
+  }
+
+  _,
+    errs = sourceDMgr2.CopyDirectory(testDMgr2, fsc, false)
+
+  if len(errs) != 0 {
+
+    t.Errorf("Setup Errors returned by sourceDMgr2.CopyDirectoryTree(testDMgr2, true, fsc)\n"+
+      "sourceDMgr2='%v'\ntestDMgr2='%v'\nErrors Follow:\n\n%v",
+      sourceDMgr2.GetAbsolutePath(),
+      testDMgr2.GetAbsolutePath(),
+      testDMgr2.ConsolidateErrors(errs))
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  fsc = FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{"*.txt"}
+
+  testFileMgrInfo, err := testDMgr.FindFilesBySelectCriteria(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by testDMgr.FindFilesBySelectCriteria(fsc)\n"+
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  expectedNumOfDeletedFiles := uint64(testFileMgrInfo.GetNumOfFileMgrs())
+  expectedNumOfDeletedFileBytes := testFileMgrInfo.GetTotalFileBytes()
+
+  fsc = FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{"*.htm"}
+
+  remainingFileMgrInfo, err := testDMgr.FindFilesBySelectCriteria(fsc)
+
+  if err != nil {
+    t.Errorf("Error returned by testDMgr.FindWalkDirFiles(fsc)\n"+
+      "testDMgr='%v'\nError='%v'\n", testDMgr.GetAbsolutePath(), err.Error())
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  expectedNumOfRemainingFiles := uint64(remainingFileMgrInfo.GetNumOfFileMgrs())
+  expectedNumOfRemainingFileBytes := remainingFileMgrInfo.GetTotalFileBytes()
+
+  fsc = FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{"*.txt"}
+
+  deleteDirStats,
+  errs := testDMgr.DeleteFilesBySelectionCriteria(fsc)
+
+  if len(errs) != 0 {
+    t.Errorf("Errors returned by testDMgr.DeleteFilesBySelectionCriteria(fsc).\n"+
+      "testDMgr='%v'\nErrors Follow:\n\n%v",
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
+
+    _ = fh.DeleteDirPathAll(testDir)
+
+    return
+  }
+
+  if expectedNumOfDeletedFiles != deleteDirStats.FilesDeleted {
+    t.Errorf("Error: Expected deleteDirStats.FilesDeleted='%v'.\n"+
+      "Instead, deleteDirStats.FilesDeleted='%v'\n",
+      expectedNumOfDeletedFiles, deleteDirStats.FilesDeleted)
+  }
+
+  if expectedNumOfDeletedFileBytes != deleteDirStats.FilesDeletedBytes {
+    t.Errorf("Error: Expected deleteDirStats.FilesDeletedBytes='%v'.\n"+
+      "Instead, deleteDirStats.FilesDeletedBytes='%v'\n",
+      expectedNumOfDeletedFileBytes,
+      deleteDirStats.FilesDeletedBytes)
+  }
+
+  if expectedNumOfRemainingFiles != deleteDirStats.FilesRemaining {
+    t.Errorf("Error: Expected numOfDeletedFiles='%v'.\n"+
+      "Instead, numOfDeletedFils='%v'\n",
+      expectedNumOfDeletedFiles, deleteDirStats.FilesDeleted)
+  }
+
+  if expectedNumOfRemainingFileBytes != deleteDirStats.FilesRemainingBytes {
+    t.Errorf("Error: Expected deleteDirStats.FilesRemainingBytes='%v'.\n"+
+      "Instead, deleteDirStats.FilesRemainingBytes='%v'\n",
+      expectedNumOfRemainingFileBytes,
+      deleteDirStats.FilesRemainingBytes)
+  }
+
+  err = fh.DeleteDirPathAll(testDir)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(testDir)\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+  }
 }
 
-func TestDirMgr_New_07(t *testing.T) {
-	fh := FileHelper{}
-	origDir := fh.AdjustPathSlash("../testfiles/testfiles2/")
-	expectedPath := fh.AdjustPathSlash("../testfiles/testfiles2")
-	expectedAbsDir, err := fh.MakeAbsolutePath(expectedPath)
+func TestDirMgr_DeleteFilesBySelectionCriteria_03(t *testing.T) {
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetAbsPathFromFilePath(origDir). origDir=='%v'  Error='%v'", origDir, err.Error())
-	}
+  fh := FileHelper{}
 
-	expectedPathDoesExist := fh.DoesFileExist(expectedPath)
+  testDir := "../dirmgrtests/TestDirMgr_DeleteFilesBySelectionCriteria_03"
 
-	expectedAbsPathDoesExist := fh.DoesFileExist(expectedAbsDir)
+  sourceDir1 := "../filesfortest/levelfilesfortest"
 
-	expectedVolumeName := fp.VolumeName(expectedAbsDir)
-	var expectedVolumeIsPopulated bool
+  testDMgr, err := DirMgr{}.New(testDir)
 
-	if expectedVolumeName != "" {
-		expectedVolumeIsPopulated = true
-	} else {
-		expectedVolumeIsPopulated = false
-	}
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir)\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
 
-	expectedParentPath := strings.TrimSuffix(expectedAbsDir, fh.AdjustPathSlash("/testfiles2"))
-	expectedIsParentPathPopulated := false
+    _ = fh.DeleteDirPathAll(testDir)
 
-	if expectedParentPath != "" {
-		expectedIsParentPathPopulated = true
-	}
+    return
+  }
 
-	expectedRelativePath := "testfiles2"
+  sourceDMgr1, err := DirMgr{}.New(sourceDir1)
 
-	dMgr, err := DirMgr{}.New(origDir)
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(sourceDir1)\n"+
+      "sourceDir1='%v'\nError='%v'\n", sourceDir1, err.Error())
 
-	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir=='%v' Error='%v'", origDir, err.Error())
-	}
+    _ = fh.DeleteDirPathAll(testDir)
 
-	if true != dMgr.isInitialized {
-		t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
-			true, dMgr.isInitialized)
-	}
+    return
+  }
 
-	if true != dMgr.isPathPopulated {
-		t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
-			true, dMgr.isPathPopulated)
-	}
+  fsc := FileSelectionCriteria{}
+  _,
+  errs := sourceDMgr1.CopyDirectoryTree(testDMgr, true, fsc)
 
-	if expectedPath != dMgr.path {
-		t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
-	}
+  if len(errs) != 0 {
+    t.Errorf("Setup Errors returned by sourceDMgr1.CopyDirectoryTree(testDMgr, true, fsc)\n"+
+      "sourceDMgr1='%v'\ntestDMgr='%v'\nErrors Follow:\n\n%v",
+      sourceDMgr1.GetAbsolutePath(),
+      testDMgr.GetAbsolutePath(),
+      testDMgr.ConsolidateErrors(errs))
 
-	if expectedPathDoesExist != dMgr.doesPathExist {
-		t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.",
-			expectedPathDoesExist, dMgr.doesPathExist)
-	}
+    _ = fh.DeleteDirPathAll(testDir)
 
-	if true != dMgr.isAbsolutePathPopulated {
-		t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
-			true, dMgr.isAbsolutePathPopulated)
-	}
+    return
+  }
 
-	if expectedAbsDir != dMgr.absolutePath {
-		t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
-			expectedAbsDir, dMgr.absolutePath)
-	}
+  testDMgr.isInitialized = false
 
-	if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-		t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
-			expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
-	}
+  _,
+    errs = testDMgr.DeleteFilesBySelectionCriteria(fsc)
 
-	if true != dMgr.isAbsolutePathDifferentFromPath {
-		t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. Instead, "+
-			"isAbsolutePathDifferentFromPath=='%v'.",
-			true, dMgr.isAbsolutePathDifferentFromPath)
-	}
+  if len(errs) == 0 {
+    t.Errorf("Expected an error return from testDMgr.DeleteFilesBySelectionCriteria(fsc)\n" +
+      "because 'testDMgr' is INVALID!\nHowever, NO ERROR WAS RETURNED!!!\n")
+  }
 
-	if expectedVolumeName != dMgr.volumeName {
-		t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.",
-			expectedVolumeName, dMgr.volumeName)
-	}
+  err = fh.DeleteDirPathAll(testDir)
 
-	if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-		t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.",
-			expectedVolumeIsPopulated, dMgr.isVolumePopulated)
-	}
-
-	if expectedParentPath != dMgr.parentPath {
-		t.Errorf("Expected parentPath=='%v'. Instead, parentPath=='%v'.",
-			expectedParentPath, dMgr.parentPath)
-	}
-
-	if expectedIsParentPathPopulated != dMgr.isParentPathPopulated {
-		t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
-			expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
-	}
-
-	if expectedRelativePath != dMgr.relativePath {
-		t.Errorf("Expected relativePath=='%v'. Instead, relativePath=='%v'.",
-			expectedRelativePath, dMgr.relativePath)
-	}
-
-	if true != dMgr.isRelativePathPopulated {
-		t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-			true, dMgr.isRelativePathPopulated)
-	}
-
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(testDir)\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+  }
 }
 
-func TestDirMgr_New_08(t *testing.T) {
-	fh := FileHelper{}
-	rawDir := "D:/"
-	expectedPath := fh.AdjustPathSlash("D:")
-	expectedAbsDir := expectedPath
+func TestDirMgr_DeleteFilesBySelectionCriteria_04(t *testing.T) {
 
-	expectedPathDoesExist := fh.DoesFileExist(expectedPath)
+  fh := FileHelper{}
 
-	expectedAbsPathDoesExist := fh.DoesFileExist(expectedAbsDir)
+  testDir := "../dirmgrtests/TestDirMgr_DeleteFilesBySelectionCriteria_03"
 
-	expectedVolumeName := fp.VolumeName(expectedAbsDir)
-	var expectedVolumeIsPopulated bool
+  testDMgr, err := DirMgr{}.New(testDir)
 
-	if expectedVolumeName != "" {
-		expectedVolumeIsPopulated = true
-	} else {
-		expectedVolumeIsPopulated = false
-	}
+  if err != nil {
+    t.Errorf("Test Setup Error returned by DirMgr{}.New(testDir)\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
 
-	expectedParentPath := ""
+    _ = fh.DeleteDirPathAll(testDir)
 
-	expectedRelativePath := ""
+    return
+  }
 
-	dMgr, err := DirMgr{}.New(rawDir)
+  fsc := FileSelectionCriteria{}
 
-	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawDir). rawDir=='%v' Error='%v'", rawDir, err.Error())
-	}
+  _,
+  errs := testDMgr.DeleteFilesBySelectionCriteria(fsc)
 
-	if true != dMgr.isInitialized {
-		t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
-			true, dMgr.isInitialized)
-	}
+  if len(errs) == 0 {
+    t.Errorf("Expected an error return from testDMgr.DeleteFilesBySelectionCriteria(fsc)\n" +
+      "because 'testDMgr' directory DOES NOT EXIST!\nHowever, NO ERROR WAS RETURNED!!!\n")
+  }
 
-	if true != dMgr.isPathPopulated {
-		t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
-			true, dMgr.isPathPopulated)
-	}
+  err = fh.DeleteDirPathAll(testDir)
 
-	if expectedPath != dMgr.path {
-		t.Errorf("Expected path=='%v'. Instead, path=='%v'.",
-			expectedPath, dMgr.path)
-	}
-
-	if expectedPathDoesExist != dMgr.doesPathExist {
-		t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.",
-			expectedPathDoesExist, dMgr.doesPathExist)
-	}
-
-	if true != dMgr.isAbsolutePathPopulated {
-		t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
-			true, dMgr.isAbsolutePathPopulated)
-	}
-
-	if expectedAbsDir != dMgr.absolutePath {
-		t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
-			expectedAbsDir, dMgr.absolutePath)
-	}
-
-	if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-		t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
-			expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
-	}
-
-	if false != dMgr.isAbsolutePathDifferentFromPath {
-		t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. "+
-			"Instead, isAbsolutePathDifferentFromPath=='%v'.",
-			false, dMgr.isAbsolutePathDifferentFromPath)
-	}
-
-	if expectedVolumeName != dMgr.volumeName {
-		t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.",
-			expectedVolumeName, dMgr.volumeName)
-	}
-
-	if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-		t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.",
-			expectedVolumeIsPopulated, dMgr.isVolumePopulated)
-	}
-
-	if expectedParentPath != dMgr.parentPath {
-		t.Errorf("Expected parentPath=='%v'. Instead, parentPath=='%v'.",
-			expectedParentPath, dMgr.parentPath)
-	}
-
-	if false != dMgr.isParentPathPopulated {
-		t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
-			false, dMgr.isParentPathPopulated)
-	}
-
-	if expectedRelativePath != dMgr.relativePath {
-		t.Errorf("Expected relativePath=='%v'. Instead, relativePath=='%v'.",
-			expectedRelativePath, dMgr.relativePath)
-	}
-
-	if false != dMgr.isRelativePathPopulated {
-		t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-			false, dMgr.isRelativePathPopulated)
-	}
-
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirPathAll(testDir)\n"+
+      "testDir='%v'\nError='%v'\n", testDir, err.Error())
+  }
 }
 
-func TestDirMgr_New_09(t *testing.T) {
-	fh := FileHelper{}
-	rawPath := "../filesfortest/newfilesfortest"
-	expectedPath := fh.AdjustPathSlash(rawPath)
-	expectedAbsPath, err := fh.MakeAbsolutePath(expectedPath)
-
-	if err != nil {
-		t.Errorf("Error returned from fh.GetAbsPathFromFilePath(expectedPath). expectedPath=='%v'  Error='%v'", expectedPath, err.Error())
-	}
-
-	expectedPathDoesExist := fh.DoesFileExist(expectedPath)
-
-	expectedAbsPathDoesExist := fh.DoesFileExist(expectedAbsPath)
-
-	expectedVolumeName := fp.VolumeName(expectedAbsPath)
-	var expectedVolumeIsPopulated bool
-
-	if expectedVolumeName != "" {
-		expectedVolumeIsPopulated = true
-	} else {
-		expectedVolumeIsPopulated = false
-	}
-
-	expectedParentPath := strings.TrimSuffix(expectedAbsPath, fh.AdjustPathSlash("/newfilesfortest"))
-	expectedIsParentPathPopulated := false
-
-	if expectedParentPath != "" {
-		expectedIsParentPathPopulated = true
-	}
-
-	expectedRelativePath := "newfilesfortest"
-
-	dMgr, err := DirMgr{}.New(rawPath)
-
-	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawPath). rawPath=='%v' Error='%v'",
-			rawPath, err.Error())
-	}
-
-	if true != dMgr.isInitialized {
-		t.Errorf("Expected DirMgr.IsFInfoInitialized=='%v'. Instead, DirMgr.IsFInfoInitialized=='%v'",
-			true, dMgr.isInitialized)
-	}
-
-	if true != dMgr.isPathPopulated {
-		t.Errorf("Expected DirMgr.isPathPopulated=='%v'. Instead, DirMgr.isPathPopulated=='%v'",
-			true, dMgr.isPathPopulated)
-	}
-
-	if expectedPath != dMgr.path {
-		t.Errorf("Expected path=='%v'. Instead, path=='%v'.", expectedPath, dMgr.path)
-	}
-
-	if expectedPathDoesExist != dMgr.doesPathExist {
-		t.Errorf("Expected doesPathExist=='%v'. Instead, doesPathExist=='%v'.",
-			expectedPathDoesExist, dMgr.doesPathExist)
-	}
-
-	if true != dMgr.isAbsolutePathPopulated {
-		t.Errorf("Expected isAbsolutePathPopulated=='%v'. Instead, isAbsolutePathPopulated=='%v'.",
-			true, dMgr.isAbsolutePathPopulated)
-	}
-
-	if expectedAbsPath != dMgr.absolutePath {
-		t.Errorf("Expected absolutePath=='%v'. Instead, absolutePath=='%v'",
-			expectedAbsPath, dMgr.absolutePath)
-	}
-
-	if expectedAbsPathDoesExist != dMgr.doesAbsolutePathExist {
-		t.Errorf("Expected doesAbsolutePathExist=='%v'. Instead, doesAbsolutePathExist=='%v'.",
-			expectedAbsPathDoesExist, dMgr.doesAbsolutePathExist)
-	}
-
-	if true != dMgr.isAbsolutePathDifferentFromPath {
-		t.Errorf("Expected isAbsolutePathDifferentFromPath=='%v'. "+
-			"Instead, isAbsolutePathDifferentFromPath=='%v'.",
-			true, dMgr.isAbsolutePathDifferentFromPath)
-	}
-
-	if expectedVolumeName != dMgr.volumeName {
-		t.Errorf("Expected volumeName=='%v'. Instead, volumeName=='%v'.",
-			expectedVolumeName, dMgr.volumeName)
-	}
-
-	if expectedVolumeIsPopulated != dMgr.isVolumePopulated {
-		t.Errorf("Expected isVolumePopulated=='%v'. Instead, isVolumePopulated=='%v'.",
-			expectedVolumeIsPopulated, dMgr.isVolumePopulated)
-	}
-
-	if expectedParentPath != dMgr.parentPath {
-		t.Errorf("Expected parentPath=='%v'. Instead, parentPath=='%v'.",
-			expectedParentPath, dMgr.parentPath)
-	}
-
-	if expectedIsParentPathPopulated != dMgr.isParentPathPopulated {
-		t.Errorf("Expected isParentPathPopulated=='%v'. Instead, isParentPathPopulated=='%v'.",
-			expectedIsParentPathPopulated, dMgr.isParentPathPopulated)
-	}
-
-	if expectedRelativePath != dMgr.relativePath {
-		t.Errorf("Expected relativePath=='%v'. Instead, relativePath=='%v'.",
-			expectedRelativePath, dMgr.relativePath)
-	}
-
-	if true != dMgr.isRelativePathPopulated {
-		t.Errorf("Expected isRelativePathPopulated=='%v'. Instead, isRelativePathPopulated=='%v'.",
-			true, dMgr.isRelativePathPopulated)
-	}
-
-}
-
-func TestDirMgr_SubstituteBaseDir_01(t *testing.T) {
-
-	fh := FileHelper{}
-
-	rawOrigPath := fh.AdjustPathSlash("../dirwalktests/dir01/dir02/dir03")
-
-	rawBasePath := fh.AdjustPathSlash("../dirwalktests/dir01")
-
-	substitutePath := fh.AdjustPathSlash("../checkfiles")
-
-	expectedPath := fh.AdjustPathSlash("../checkfiles/dir02/dir03")
-
-	expectedAbsPath, err := fh.GetAbsPathFromFilePath(expectedPath)
-
-	if err != nil {
-		t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath). expectedPath='%v'  Error='%v'", expectedPath, err.Error())
-	}
-
-	dMgrOrig, err := DirMgr{}.New(rawOrigPath)
-
-	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawOrigPath). rawOrigPath='%v'  Error='%v'", rawOrigPath, err.Error())
-	}
-
-	dMgrBase, err := DirMgr{}.New(rawBasePath)
-
-	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawBasePath). rawBasePath='%v'  Error='%v'", rawBasePath, err.Error())
-	}
-
-	dMgrSubstitute, err := DirMgr{}.New(substitutePath)
-
-	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(substitutePath). substitutePath='%v'  Error='%v'", substitutePath, err.Error())
-	}
-
-	dMgrResult, err := dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute)
-
-	if err != nil {
-		t.Errorf("Error returned by dMgrOrig.SubstituteBaseDir(dMgrBase, "+
-			"dMgrSubstitute).  Error='%v'",
-			err.Error())
-	}
-
-	if expectedPath != dMgrResult.path {
-		t.Errorf("Expected final substituted path = '%v'.  Instead substituted "+
-			"path = '%v' ",
-			expectedPath, dMgrResult.path)
-	}
-
-	if expectedAbsPath != dMgrResult.absolutePath {
-		t.Errorf("Expected final substituted absolute path = '%v'.  Instead "+
-			"substituted absolute path = '%v' ",
-			expectedAbsPath, dMgrResult.absolutePath)
-	}
-
-}
-
-func TestDirMgr_SubstituteBaseDir_02(t *testing.T) {
-
-	fh := FileHelper{}
-
-	rawOrigPath := fh.AdjustPathSlash("../dirwalktests/dir01/dir02/dir03/")
-
-	rawBasePath := fh.AdjustPathSlash("../dirwalktests/dir01/")
-
-	substitutePath := fh.AdjustPathSlash("../checkfiles/")
-
-	expectedPath := fh.AdjustPathSlash("../checkfiles/dir02/dir03")
-
-	expectedAbsPath, err := fh.GetAbsPathFromFilePath(expectedPath)
-
-	if err != nil {
-		t.Errorf("Error returned by fh.GetAbsPathFromFilePath(expectedPath). expectedPath='%v'  Error='%v'", expectedPath, err.Error())
-	}
-
-	dMgrOrig, err := DirMgr{}.New(rawOrigPath)
-
-	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawOrigPath). rawOrigPath='%v'  Error='%v'", rawOrigPath, err.Error())
-	}
-
-	dMgrBase, err := DirMgr{}.New(rawBasePath)
-
-	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(rawBasePath). rawBasePath='%v'  Error='%v'", rawBasePath, err.Error())
-	}
-
-	dMgrSubstitute, err := DirMgr{}.New(substitutePath)
-
-	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(substitutePath). substitutePath='%v'  Error='%v'", substitutePath, err.Error())
-	}
-
-	dMgrResult, err := dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute)
-
-	if err != nil {
-		t.Errorf("Error returned by dMgrOrig.SubstituteBaseDir(dMgrBase, dMgrSubstitute).  Error='%v'", err.Error())
-	}
-
-	if expectedPath != dMgrResult.path {
-		t.Errorf("Expected final substituted path = '%v'.  Instead substituted path = '%v' ", expectedPath, dMgrResult.path)
-	}
-
-	if expectedAbsPath != dMgrResult.absolutePath {
-		t.Errorf("Expected final substituted absolute path = '%v'.  Instead substituted absolute path = '%v' ", expectedAbsPath, dMgrResult.absolutePath)
-	}
-
-}

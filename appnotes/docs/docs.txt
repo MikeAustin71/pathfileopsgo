@@ -1,0 +1,10 @@
+To display documented source code, run the following command
+from the terminal:
+================================================
+godoc -http=:6060
+================================================
+
+Next, copy the following url to your browser:
+================================================
+http://localhost:6060/pkg/MikeAustin71/pathfileopsgo/pathfileops
+================================================

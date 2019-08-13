@@ -1,0 +1,1 @@
+This file is used exclusively for permissions mode testing. Do not alter contents.

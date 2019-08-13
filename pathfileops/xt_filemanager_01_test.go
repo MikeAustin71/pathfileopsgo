@@ -1,1420 +1,1089 @@
 package pathfileops
 
 import (
-	"fmt"
-	"os"
-	"testing"
+  "fmt"
+  "testing"
 )
+
+func TestFileMgr_ChangePermissionMode_01(t *testing.T) {
+
+  filePath := "../filesfortest/modefilesfortest/modeFileTest_01.txt"
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePathName='%v'  Error='%v'", filePath, err.Error())
+    return
+  }
+
+  basePermission, err := FilePermissionConfig{}.New("-rw-rw-rw-")
+
+  if err != nil {
+    t.Errorf("Error returned from FilePermissionConfig{}.New(\"-rw-rw-rw-\"). "+
+      "Error='%v'", err.Error())
+    return
+  }
+
+  basePermissionText, _ := basePermission.GetPermissionTextCode()
+
+  err = fMgr.ChangePermissionMode(basePermission)
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.ChangePermissionMode(basePermission). "+
+      "basePermission='%v' Error='%v'", basePermissionText, err.Error())
+    return
+  }
+
+  requestedNewPerm, err := FilePermissionConfig{}.New("-r--r--r--")
+
+  if err != nil {
+    t.Errorf("Error returned from FilePermissionConfig{}.New(\"-r--r--r--\"). "+
+      "Error='%v'", err.Error())
+    return
+  }
+
+  requestedNewPermText, err := requestedNewPerm.GetPermissionTextCode()
+
+  if err != nil {
+    t.Errorf("Error returned from requestedNewPerm.GetPermissionTextCode(). "+
+      "Error='%v' ", err.Error())
+    return
+  }
+
+  err = fMgr.ChangePermissionMode(requestedNewPerm)
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.ChangePermissionMode(requestedNewPerm). "+
+      "Error='%v'", err.Error())
+    return
+  }
+
+  actualNewPermCodeText, err := fMgr.GetFilePermissionTextCodes()
+
+  if err != nil {
+    t.Errorf("Error returned from #1 fMgr.GetFilePermissionTextCodes(). "+
+      "Error='%v'", err.Error())
+    return
+  }
+
+  if requestedNewPermText != actualNewPermCodeText {
+    t.Errorf("Error expected permission='%v'. Instead, permission='%v' ",
+      requestedNewPermText, actualNewPermCodeText)
+  }
+
+  err = fMgr.ChangePermissionMode(basePermission)
+
+  if err != nil {
+    t.Errorf("Error returned from fMgr.ChangePermissionMode(basePermission). "+
+      "basePermission='%v' Error='%v'", basePermissionText, err.Error())
+    return
+  }
+
+}
+
+func TestFileMgr_ChangePermissionMode_02(t *testing.T) {
+
+  filePath := "../filesfortest/modefilesfortest/iDoNotExist.txt"
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePathName='%v'  Error='%v'", filePath, err.Error())
+    return
+  }
+
+  basePermission, err := FilePermissionConfig{}.New("-rw-rw-rw-")
+
+  if err != nil {
+    t.Errorf("Error returned from FilePermissionConfig{}.New(\"-rw-rw-rw-\"). "+
+      "Error='%v'", err.Error())
+  }
+
+  err = fMgr.ChangePermissionMode(basePermission)
+
+  if err == nil {
+    t.Errorf(" Expected error return from fMgr.ChangePermissionMode(basePermission) " +
+      "because file does NOT exist. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_ChangePermissionMode_03(t *testing.T) {
+
+  filePath := "../filesfortest/modefilesfortest/modeFileTest_01.txt"
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePathName='%v'  Error='%v'", filePath, err.Error())
+    return
+  }
+
+  basePermission, err := FilePermissionConfig{}.New("-rw-rw-rw-")
+
+  if err != nil {
+    t.Errorf("Error returned from FilePermissionConfig{}.New(\"-rw-rw-rw-\"). "+
+      "Error='%v'", err.Error())
+    return
+  }
+
+  basePermission.isInitialized = false
+
+  err = fMgr.ChangePermissionMode(basePermission)
+
+  if err == nil {
+    t.Errorf(" Expected error return from fMgr.ChangePermissionMode(basePermission) " +
+      "because file does NOT exist. However, NO ERROR WAS RETURNED!")
+  }
+
+  return
+}
+
+func TestFileMgr_ChangePermissionMode_04(t *testing.T) {
+
+  filePath := "../filesfortest/modefilesfortest/iDoNotExist.txt"
+
+  fMgr, err := FileMgr{}.NewFromPathFileNameExtStr(filePath)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(filePath). "+
+      "filePathName='%v'  Error='%v'", filePath, err.Error())
+    return
+  }
+
+  basePermission, err := FilePermissionConfig{}.New("-rw-rw-rw-")
+
+  if err != nil {
+    t.Errorf("Error returned from FilePermissionConfig{}.New(\"-rw-rw-rw-\"). "+
+      "Error='%v'", err.Error())
+    return
+  }
+
+  fMgr.isInitialized = false
+
+  err = fMgr.ChangePermissionMode(basePermission)
+
+  if err == nil {
+    t.Errorf(" Expected error return from fMgr.ChangePermissionMode(basePermission) " +
+      "because file does NOT exist. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_CloseThisFile_01(t *testing.T) {
+  fh := FileHelper{}
+
+  testFile := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
+
+  fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(testFile)
+
+  if err != nil {
+    t.Error("Received Error on GetPathFileNameElements Error:", err)
+  }
+
+  fileMgr.isInitialized = false
+
+  err = fileMgr.CloseThisFile()
+
+  if err == nil {
+    t.Error("Expected error return from fileMgr.CloseThisFile() because " +
+      "fileMgr is Invalid. However, NO ERROR WAS RETURNED!")
+  }
+
+}
+
+func TestFileMgr_CloseThisFile_02(t *testing.T) {
+  fh := FileHelper{}
+
+  testFile := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
+
+  fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(testFile)
+
+  if err != nil {
+    t.Error("Received Error on GetPathFileNameElements Error:", err)
+  }
+
+  err = fileMgr.CloseThisFile()
+
+  if err != nil {
+    t.Error("Error: File Pointer is 'nil' and NO ERROR should have been returned!")
+  }
+
+}
+
+func TestFileMgr_CopyIn_01(t *testing.T) {
+  fh := FileHelper{}
+
+  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
+  expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
+  fileName := "xt_dirmgr_01_test"
+  fileNameExt := "xt_dirmgr_01_test.go"
+  extName := ".go"
+
+  fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(commonDir)
+
+  if err != nil {
+    t.Error("Received Error on GetPathFileNameElements Error:", err)
+  }
+
+  fMgr2 := FileMgr{}
+
+  fMgr2.CopyIn(&fileMgr)
+
+  if fMgr2.fileName != fileName {
+    t.Error(fmt.Sprintf("Expected CopyToThis to return fileName == '%v', instead got: ", fileName), fMgr2.fileName)
+  }
+
+  if fMgr2.fileExt != extName {
+    t.Error(fmt.Sprintf("Expected CopyToThis to return fileExt == '%v', instead got: ", extName), fMgr2.fileExt)
+  }
+
+  if fMgr2.fileNameExt != fileNameExt {
+    t.Error(fmt.Sprintf("Expected CopyToThis to return fileNameExt == '%v', instead got: ", fileNameExt), fMgr2.fileNameExt)
+  }
+
+  if fMgr2.dMgr.path != expectedDir {
+    t.Error(fmt.Sprintf("Expected CopyToThis to return path == '%v', instead got: ", expectedDir), fMgr2.dMgr.path)
+  }
+
+  result := fMgr2.Equal(&fileMgr)
+
+  if result != true {
+    t.Error("Expected Equal to return 'true' for fMgr2==fileMgr, instead got: ", result)
+  }
+
+}
 
 func TestFileMgr_CopyOut_01(t *testing.T) {
 
-	fh := FileHelper{}
+  fh := FileHelper{}
 
-	commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
-	expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
-	fileName := "xt_dirmgr_01_test"
-	fileNameExt := "xt_dirmgr_01_test.go"
-	extName := ".go"
+  commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
+  expectedDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common")
+  fileName := "xt_dirmgr_01_test"
+  fileNameExt := "xt_dirmgr_01_test.go"
+  extName := ".go"
 
-	fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(commonDir)
+  fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(commonDir)
 
-	if err != nil {
-		t.Error("Received Error on GetPathFileNameElements Error:", err)
-	}
+  if err != nil {
+    t.Error("Received Error on GetPathFileNameElements Error:", err)
+  }
 
-	fMgr2 := fileMgr.CopyOut()
+  fMgr2 := fileMgr.CopyOut()
 
-	if fMgr2.fileName != fileName {
-		t.Error(fmt.Sprintf("Expected CopyToThis to return fileName == '%v', instead got: ", fileName), fMgr2.fileName)
-	}
+  if fMgr2.fileName != fileName {
+    t.Error(fmt.Sprintf("Expected CopyToThis to return fileName == '%v', instead got: ", fileName), fMgr2.fileName)
+  }
 
-	if fMgr2.fileExt != extName {
-		t.Error(fmt.Sprintf("Expected CopyToThis to return fileExt == '%v', instead got: ", extName), fMgr2.fileExt)
-	}
+  if fMgr2.fileExt != extName {
+    t.Error(fmt.Sprintf("Expected CopyToThis to return fileExt == '%v', instead got: ", extName), fMgr2.fileExt)
+  }
 
-	if fMgr2.fileNameExt != fileNameExt {
-		t.Error(fmt.Sprintf("Expected CopyToThis to return fileNameExt == '%v', instead got: ", fileNameExt), fMgr2.fileNameExt)
-	}
+  if fMgr2.fileNameExt != fileNameExt {
+    t.Error(fmt.Sprintf("Expected CopyToThis to return fileNameExt == '%v', instead got: ", fileNameExt), fMgr2.fileNameExt)
+  }
 
-	if fMgr2.dMgr.path != expectedDir {
-		t.Error(fmt.Sprintf("Expected CopyToThis to return path == '%v', instead got: ", expectedDir), fMgr2.dMgr.path)
-	}
+  if fMgr2.dMgr.path != expectedDir {
+    t.Error(fmt.Sprintf("Expected CopyToThis to return path == '%v', instead got: ", expectedDir), fMgr2.dMgr.path)
+  }
 
-	result := fMgr2.Equal(&fileMgr)
+  result := fMgr2.Equal(&fileMgr)
 
-	if result != true {
-		t.Error("Expected Equal to return 'true' for fMgr2==fileMgr, instead got: ", result)
-	}
-
-}
-
-func TestFileMgr_CopyFileMgr_01(t *testing.T) {
-
-	expectedFileNameExt := "newerFileForTest_01.txt"
-
-	fh := FileHelper{}
-	adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
-
-	dMgr, err := DirMgr{}.New(adjustedPath)
-
-	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
-	}
-
-	srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
-
-	if err != nil {
-		t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt). dMgr.absolutePath='%v' expectedFileNameExt='%v'  Error='%v'", dMgr.absolutePath, adjustedPath, err.Error())
-	}
-
-	rawDestPath := "../checkfiles/checkfiles02"
-
-	destDMgr, err := DirMgr{}.New(rawDestPath)
-
-	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawDestPath). rawDestPath='%v'  Error='%v'", rawDestPath, err.Error())
-	}
-
-	destFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt)
-
-	if err != nil {
-		t.Errorf("Error returned from  FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt). destDMgr.absolutePath='%v'  expectedFileNameExt='%v'   Error='%v'", destDMgr.absolutePath, expectedFileNameExt, err.Error())
-	}
-
-	err = srcFMgr.CopyFileMgrByIoByLink(&destFMgr)
-
-	if err != nil {
-		t.Errorf("Error returned from srcFMgr.CopyFileMgrByIoByLink(&destFMgr). srcFMgr.absolutePathFileName='%v'  destFMgr.absolutePathFileName='%v'  Error='%v'", srcFMgr.absolutePathFileName, destFMgr.absolutePathFileName, err.Error())
-	}
-
-	if !fh.DoesFileExist(destFMgr.absolutePathFileName) {
-		t.Errorf("Expected fh.DoesFileExist(destFMgr.absolutePathFileName)=true. Instead it was 'false' destFMgr.absolutePathFileName='%v'", destFMgr.absolutePathFileName)
-	}
-
-	if !destFMgr.doesAbsolutePathFileNameExist {
-		t.Error("Expected destFMgr.doesAbsolutePathFileNameExist='true'.  ERROR  destFMgr.doesAbsolutePathFileNameExist='false'")
-	}
-
-	err = fh.DeleteDirFile(destFMgr.absolutePathFileName)
-
-	if err != nil {
-		t.Errorf("Error returned from fh.DeleteDirFile(destFMgr.absolutePathFileName) destFMgr.absolutePathFileName='%v' Error='%v'", destFMgr.absolutePathFileName, err.Error())
-	}
-
-	if fh.DoesFileExist(destFMgr.absolutePathFileName) {
-		t.Errorf("Expected fh.DoesFileExist(destFMgr.absolutePathFileName)=false. Instead it was 'true' destFMgr.absolutePathFileName='%v'", destFMgr.absolutePathFileName)
-	}
+  if result != true {
+    t.Error("Expected Equal to return 'true' for fMgr2==fileMgr, instead got: ", result)
+  }
 
 }
 
-func TestFileMgr_CreateDirAndFile_01(t *testing.T) {
-	fh := FileHelper{}
-	testFile := fh.AdjustPathSlash("../createFilesTest/Level01/Level02/Level03/TestFile011.txt")
-	fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(testFile)
+func TestFileMgr_CopyFileMgrByIo_01(t *testing.T) {
 
-	if err != nil {
-		t.Errorf("Error thrown on FileHelper:GetPathFileNameElements():'%v'", err.Error())
-	}
+  expectedFileNameExt := "newerFileForTest_01.txt"
 
-	if fh.DoesFileExist(fileMgr.dMgr.absolutePath) {
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
 
-		err = fh.DeleteDirPathAll(fileMgr.dMgr.absolutePath)
+  dMgr, err := DirMgr{}.New(adjustedPath)
 
-		if err != nil {
-			t.Errorf("Error thrown on fh.DeleteDirPathAll(fileMgr.dMgr.absolutePath). "+
-				" fileMgr.dMgr.absolutePath='%v'   Error='%v' ", fileMgr.dMgr.absolutePath, err.Error())
-		}
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). "+
+      "adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
 
-	}
+  srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
-	if fh.DoesFileExist(fileMgr.dMgr.absolutePath) {
-		t.Errorf(fmt.Sprintf("Error: Failed to delete existing path '%v'", fileMgr.dMgr.absolutePath))
-	}
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt). "+
+      "dMgr.absolutePath='%v' expectedFileNameExt='%v'  Error='%v'", dMgr.absolutePath, adjustedPath, err.Error())
+  }
 
-	err = fileMgr.CreateDirAndFile()
+  rawDestPath := "../checkfiles/checkfiles02"
 
-	if err != nil {
-		t.Errorf("Failed to Create Directory and File '%v', received Error:'%v'", fileMgr.absolutePathFileName, err.Error())
-	}
+  destDMgr, err := DirMgr{}.New(rawDestPath)
 
-	if !fh.DoesFileExist(fileMgr.absolutePathFileName) {
-		t.Errorf(fmt.Sprintf("File Verfication failed file '%v' DOES NOT EXIST", fileMgr.absolutePathFileName))
-	}
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawDestPath). "+
+      "rawDestPath='%v'  Error='%v'", rawDestPath, err.Error())
+  }
 
-	s := "Created by File:'filemgr_test.go' Test Method: TestFileHelper_CreateDirAndFile()"
+  destFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt)
 
-	_, err = fileMgr.WriteStrToFile(s)
+  if err != nil {
+    t.Errorf("Error returned from  FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt). "+
+      "destDMgr.absolutePath='%v'  expectedFileNameExt='%v'   Error='%v'",
+      destDMgr.absolutePath, expectedFileNameExt, err.Error())
+    return
+  }
 
-	if err != nil {
-		t.Errorf("Received error from fileMgr.WriteStrToFile(s). s='%v'  Error='%v' ", s, err.Error())
-	}
+  err = srcFMgr.CopyFileMgrByIo(&destFMgr)
 
-	err = fileMgr.CloseFile()
+  if err != nil {
+    t.Errorf("Error returned from srcFMgr.CopyFileMgrByIo(&destFMgr). "+
+      "srcFMgr.absolutePathFileName='%v'  destFMgr.absolutePathFileName='%v'  Error='%v'",
+      srcFMgr.absolutePathFileName, destFMgr.absolutePathFileName, err.Error())
+    _ = fh.DeleteDirFile(destFMgr.absolutePathFileName)
+    return
+  }
 
-	if err != nil {
-		t.Errorf("Received error from fileMgr.CloseFile(). fileMgr.absolutePathFileName='%v'  Error='%v' ", fileMgr.absolutePathFileName, err.Error())
-	}
+  if !fh.DoesFileExist(destFMgr.absolutePathFileName) {
+    t.Errorf("Expected fh.DoesFileExist(destFMgr.absolutePathFileName)=true.\n" +
+      "Instead it was 'false' destFMgr.absolutePathFileName='%v'", destFMgr.absolutePathFileName)
+  }
 
-	err = fileMgr.dMgr.DeleteAll()
+  if !destFMgr.doesAbsolutePathFileNameExist {
+    t.Error("Expected destFMgr.doesAbsolutePathFileNameExist='true'.\n" +
+      "ERROR:  destFMgr.doesAbsolutePathFileNameExist='false'")
+  }
 
-	if err != nil {
-		t.Errorf("Error returned by fileMgr.dMgr.DeleteAll(). Attempted Deletion of %v. Error='%v'", fileMgr.absolutePathFileName, err.Error())
-	}
+  err = fh.DeleteDirFile(destFMgr.absolutePathFileName)
 
-}
+  if err != nil {
+    t.Errorf("Error returned from fh.DeleteDirFile(destFMgr.absolutePathFileName) "+
+      "destFMgr.absolutePathFileName='%v' Error='%v'", destFMgr.absolutePathFileName, err.Error())
+  }
 
-func TestFileMgr_Equal_01(t *testing.T) {
-	fh := FileHelper{}
-
-	relPath1 := "..\\logTest\\CmdrX\\CmdrX.log"
-	filePath1, err := fh.MakeAbsolutePath(relPath1)
-
-	if err != nil {
-		t.Errorf("Error returned by filePath1, err := fh.MakeAbsolutePath(relPath1). "+
-			"relPath1='%v' Error='%v'", relPath1, err.Error())
-	}
-
-	fileMgr1, err := FileMgr{}.New(filePath1)
-
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.NewFromPathFileNameExtStr(filePath1). "+
-			"filePath1='%v' Error='%v'", filePath1, err.Error())
-	}
-
-	fileMgr2 := fileMgr1.CopyOut()
-
-	if fileMgr2.Equal(&fileMgr1) != true {
-		t.Error("Expected Equal to return 'true' for fileMgr1==fileMgr1, instead got: ", "false")
-	}
+  if fh.DoesFileExist(destFMgr.absolutePathFileName) {
+    t.Errorf("Expected fh.DoesFileExist(destFMgr.absolutePathFileName)=false. "+
+      "Instead it was 'true' destFMgr.absolutePathFileName='%v'", destFMgr.absolutePathFileName)
+  }
 
 }
 
-func TestFileMgr_Equal_02(t *testing.T) {
-	fh := FileHelper{}
+func TestFileMgr_CopyFileMgrByIo_02(t *testing.T) {
 
-	relPath1 := "..\\logTest\\CmdrX\\CmdrX.log"
-	filePath1, err := fh.MakeAbsolutePath(relPath1)
+  expectedFileNameExt := "newerFileForTest_01.txt"
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1). "+
-			"relPath1='%v' Error='%v'", relPath1, err.Error())
-	}
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
 
-	fileMgr1, err := FileMgr{}.New(filePath1)
+  dMgr, err := DirMgr{}.New(adjustedPath)
 
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.New(filePath1). Error='%v' ", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
 
-	relPath2 := "..\\logTest\\FileMgmnt\\TestFile003.txt"
-	filePath2, err := fh.MakeAbsolutePath(relPath2)
+  srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath2). "+
-			"relPath2='%v' Error='%v'", relPath2, err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt("+
+      "dMgr, expectedFileNameExt). dMgr.absolutePath='%v'\n"+
+      "expectedFileNameExt='%v'\nError='%v'\n",
+      dMgr.absolutePath, adjustedPath, err.Error())
+  }
 
-	fileMgr2, err := FileMgr{}.New(filePath2)
+  rawDestPath := "../checkfiles/checkfiles02"
 
-	if err != nil {
-		t.Errorf("Error returned by FileMgr{}.New(filePath2). "+
-			"filePath2='%v' Error='%v'", filePath2, err.Error())
-	}
+  destDMgr, err := DirMgr{}.New(rawDestPath)
 
-	if fileMgr2.Equal(&fileMgr1) != false {
-		t.Error("Expected Equal to return 'false' for fileMgr1==fileMgr2, instead got: 'true'")
-	}
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawDestPath).\n"+
+      "rawDestPath='%v'\nError='%v'\n",
+      rawDestPath, err.Error())
+    return
+  }
 
-}
+  destFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt)
 
-func TestFileMgr_EqualAbsPaths_01(t *testing.T) {
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt("+
+      "destDMgr, expectedFileNameExt).\n"+
+      "destDMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
+      destDMgr.absolutePath, expectedFileNameExt, err.Error())
+    return
+  }
 
-	fh := FileHelper{}
+  srcFMgr.isInitialized = false
 
-	relPath1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.txt"
-	filePath1, err := fh.MakeAbsolutePath(relPath1)
+  err = srcFMgr.CopyFileMgrByIo(&destFMgr)
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1). "+
-			"relPath1='%v' Error='%v'", relPath1, err.Error())
-	}
-
-	fileMgr1, err := FileMgr{}.New(filePath1)
-
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.New(filePath1). "+
-			"filePath1='%v' Error='%v' ", filePath1, err.Error())
-	}
-
-	relPath2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_1_test.txt"
-	filePath2, err := fh.MakeAbsolutePath(relPath2)
-
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath2). "+
-			"relPath2='%v' Error='%v'", relPath2, err.Error())
-	}
-
-	fileMgr2, err := FileMgr{}.New(filePath2)
-
-	if err != nil {
-		t.Errorf("Error returned by FileMgr{}.New(filePath2). "+
-			"filePath2='%v' Error='%v'", filePath2, err.Error())
-	}
-
-	if !fileMgr1.EqualAbsPaths(&fileMgr2) {
-		t.Errorf("Error: expected fileMgr1 absolute path to equal fileMgr2 absolute path. "+
-			"Paths ARE NOT EQUAL! \n fileMgr1='%v' \n fileMgr2='%v'\n",
-			fileMgr1.GetAbsolutePath(), fileMgr2.GetAbsolutePath())
-	}
+  if err == nil {
+    t.Error("Expected error return from srcFMgr.CopyFileMgrByIo(&destFMgr) because " +
+      "srcFMgr.isInitialized == false. However, NO ERROR WAS RETURNED!")
+  }
 
 }
 
-func TestFileMgr_EqualAbsPaths_02(t *testing.T) {
+func TestFileMgr_CopyFileMgrByIo_03(t *testing.T) {
 
-	fh := FileHelper{}
+  expectedFileNameExt := "newerFileForTest_01.txt"
 
-	relPath1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.txt"
-	filePath1, err := fh.MakeAbsolutePath(relPath1)
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1). "+
-			"relPath1='%v' Error='%v'", relPath1, err.Error())
-	}
+  dMgr, err := DirMgr{}.New(adjustedPath)
 
-	fileMgr1, err := FileMgr{}.New(filePath1)
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr"+
+      "(adjustedPath).\n"+
+      "adjustedPath='%v'\nError='%v'\n",
+      adjustedPath, err.Error())
+  }
 
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.New(filePath1). "+
-			"filePath1='%v' Error='%v' ", filePath1, err.Error())
-	}
+  srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
-	relPath2 := "..\\FILESFORTEST\\LEVELFILESFORTEST\\LEVEL_01_DIR\\level_1_1_test.txt"
-	filePath2, err := fh.MakeAbsolutePath(relPath2)
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt("+
+      "dMgr, expectedFileNameExt).\n"+
+      "dMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
+      dMgr.absolutePath, adjustedPath, err.Error())
+    return
+  }
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath2). "+
-			"relPath2='%v' Error='%v'", relPath2, err.Error())
-	}
+  rawDestPath := "../checkfiles/checkfiles02"
 
-	fileMgr2, err := FileMgr{}.New(filePath2)
+  destDMgr, err := DirMgr{}.New(rawDestPath)
 
-	if err != nil {
-		t.Errorf("Error returned by FileMgr{}.New(filePath2). "+
-			"filePath2='%v' Error='%v'", filePath2, err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr("+
+      "rawDestPath).\nrawDestPath='%v'\nError='%v'\n",
+      rawDestPath, err.Error())
+    return
+  }
 
-	if !fileMgr1.EqualAbsPaths(&fileMgr2) {
-		t.Errorf("Error: expected fileMgr1 absolute path to equal fileMgr2 absolute path. "+
-			"Paths ARE NOT EQUAL! \n fileMgr1='%v' \n fileMgr2='%v'\n",
-			fileMgr1.GetAbsolutePath(), fileMgr2.GetAbsolutePath())
-	}
+  destFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, "+
+      "expectedFileNameExt).\n"+
+      "destDMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
+      destDMgr.absolutePath, expectedFileNameExt, err.Error())
+    return
+  }
+
+  destFMgr.isInitialized = false
+
+  err = srcFMgr.CopyFileMgrByIo(&destFMgr)
+
+  if err == nil {
+    t.Error("Expected error return from srcFMgr.CopyFileMgrByIo(&destFMgr) because " +
+      "destFMgr.isInitialized = false. However, NO ERROR WAS RETURNED!")
+  }
+
+  destFMgr.isInitialized = true
+
+  err = destFMgr.DeleteThisFile()
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by destFMgr.DeleteThisFile().\n"+
+      "destFMgr='%v'\nError='%v'\n", destFMgr.GetAbsolutePath(), err.Error())
+  }
+}
+
+func TestFileMgr_CopyFileMgrByIo_04(t *testing.T) {
+
+  expectedFileNameExt := "newerFileForTest_01.txt"
+
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
+
+  dMgr, err := DirMgr{}.New(adjustedPath)
+
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr"+
+      "(adjustedPath).\nadjustedPath='%v'\nError='%v'\n",
+      adjustedPath, err.Error())
+    return
+  }
+
+  srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
+
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, "+
+      "expectedFileNameExt).\n"+
+      "dMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
+      dMgr.absolutePath, adjustedPath, err.Error())
+    return
+  }
+
+  err = srcFMgr.CopyFileMgrByIo(nil)
+
+  if err == nil {
+    t.Error("Expected error return from CopyFileMgrByIo(nil) because " +
+      "nil was passed to method. However, NO ERROR WAS RETURNED!")
+  }
 
 }
 
-func TestFileMgr_EqualAbsPaths_03(t *testing.T) {
+func TestFileMgr_CopyFileMgrByIo_05(t *testing.T) {
 
-	fh := FileHelper{}
+  expectedFileNameExt := "iDoNotExist.txt"
 
-	relPath1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.txt"
-	filePath1, err := fh.MakeAbsolutePath(relPath1)
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1). "+
-			"relPath1='%v' Error='%v'", relPath1, err.Error())
-	}
+  dMgr, err := DirMgr{}.New(adjustedPath)
 
-	fileMgr1, err := FileMgr{}.New(filePath1)
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr"+
+      "(adjustedPath).\nadjustedPath='%v'\nError='%v'\n",
+      adjustedPath, err.Error())
+    return
+  }
 
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.New(filePath1). "+
-			"filePath1='%v' Error='%v' ", filePath1, err.Error())
-	}
+  srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
-	relPath2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir\\level_2_0_test.txt"
-	filePath2, err := fh.MakeAbsolutePath(relPath2)
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt"+
+      "(dMgr, expectedFileNameExt).\n"+
+      "dMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
+      dMgr.absolutePath, adjustedPath, err.Error())
+    return
+  }
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath2). "+
-			"relPath2='%v' Error='%v'", relPath2, err.Error())
-	}
+  rawDestPath := "../checkfiles/checkfiles02"
 
-	fileMgr2, err := FileMgr{}.New(filePath2)
+  destDMgr, err := DirMgr{}.New(rawDestPath)
 
-	if err != nil {
-		t.Errorf("Error returned by FileMgr{}.New(filePath2). "+
-			"filePath2='%v' Error='%v'", filePath2, err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr"+
+      "(rawDestPath).\nrawDestPath='%v'\nError='%v'\n",
+      rawDestPath, err.Error())
+    return
+  }
 
-	if fileMgr1.EqualAbsPaths(&fileMgr2) {
-		t.Errorf("Error: expected fileMgr1 absolute path to NOT fileMgr2 absolute path. "+
-			"Paths ARE EQUAL! \n fileMgr1='%v' \n fileMgr2='%v'\n",
-			fileMgr1.GetAbsolutePath(), fileMgr2.GetAbsolutePath())
-	}
+  destFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt)
 
-}
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt"+
+      "(destDMgr, expectedFileNameExt).\n"+
+      "destDMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
+      destDMgr.absolutePath, expectedFileNameExt, err.Error())
+    return
+  }
 
-func TestFileMgr_EqualFileNameExt_01(t *testing.T) {
+  err = srcFMgr.CopyFileMgrByIo(&destFMgr)
 
-	fh := FileHelper{}
-
-	relPath1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.txt"
-	filePath1, err := fh.MakeAbsolutePath(relPath1)
-
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1). "+
-			"relPath1='%v' Error='%v'", relPath1, err.Error())
-	}
-
-	fileMgr1, err := FileMgr{}.New(filePath1)
-
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.New(filePath1). "+
-			"filePath1='%v' Error='%v' ", filePath1, err.Error())
-	}
-
-	relPath2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.txt"
-	filePath2, err := fh.MakeAbsolutePath(relPath2)
-
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath2). "+
-			"relPath2='%v' Error='%v'", relPath2, err.Error())
-	}
-
-	fileMgr2, err := FileMgr{}.New(filePath2)
-
-	if err != nil {
-		t.Errorf("Error returned by FileMgr{}.New(filePath2). "+
-			"filePath2='%v' Error='%v'", filePath2, err.Error())
-	}
-
-	if !fileMgr1.EqualFileNameExt(&fileMgr2) {
-		t.Errorf("Error: expected fileMgr1 file name ext to equal fileMgr2 file name ext. "+
-			"They ARE NOT EQUAL! \n fileMgr1='%v' \n fileMgr2='%v'\n",
-			fileMgr1.GetFileNameExt(), fileMgr2.GetFileNameExt())
-	}
+  if err == nil {
+    t.Error("Expected error return from CopyFileMgrByIo(&destFMgr) because " +
+      "source file does NOT exist. However, NO ERROR WAS RETURNED!")
+  }
 
 }
 
-func TestFileMgr_EqualFileNameExt_02(t *testing.T) {
+func TestFileMgr_CopyFileMgrByIo_06(t *testing.T) {
 
-	fh := FileHelper{}
+  expectedFileNameExt := "newerFileForTest_01.txt"
 
-	relPath1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.txt"
-	filePath1, err := fh.MakeAbsolutePath(relPath1)
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1). "+
-			"relPath1='%v' Error='%v'", relPath1, err.Error())
-	}
+  dMgr, err := DirMgr{}.New(adjustedPath)
 
-	fileMgr1, err := FileMgr{}.New(filePath1)
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}."+
+      "NewFromPathFileNameExtStr(adjustedPath).\n"+
+      "adjustedPath='%v'\nError='%v'\n",
+      adjustedPath, err.Error())
+    return
+  }
 
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.New(filePath1). "+
-			"filePath1='%v' Error='%v' ", filePath1, err.Error())
-	}
+  srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
-	relPath2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\LEVEL_1_0_TEST.TXT"
-	filePath2, err := fh.MakeAbsolutePath(relPath2)
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, "+
+      "expectedFileNameExt).\n"+
+      "dMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
+      dMgr.absolutePath, adjustedPath, err.Error())
+    return
+  }
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath2). "+
-			"relPath2='%v' Error='%v'", relPath2, err.Error())
-	}
+  destFMgr := srcFMgr.CopyOut()
 
-	fileMgr2, err := FileMgr{}.New(filePath2)
+  err = srcFMgr.CopyFileMgrByIo(&destFMgr)
 
-	if err != nil {
-		t.Errorf("Error returned by FileMgr{}.New(filePath2). "+
-			"filePath2='%v' Error='%v'", filePath2, err.Error())
-	}
-
-	if !fileMgr1.EqualFileNameExt(&fileMgr2) {
-		t.Errorf("Error: expected fileMgr1 file name ext to equal fileMgr2 file name ext. "+
-			"They ARE NOT EQUAL! \n fileMgr1='%v' \n fileMgr2='%v'\n",
-			fileMgr1.GetFileNameExt(), fileMgr2.GetFileNameExt())
-	}
+  if err == nil {
+    t.Error("Expected error return from CopyFileMgrByIo(&destFMgr) because " +
+      "source file is equivalent to destination file. However, NO ERROR WAS RETURNED!")
+  }
 
 }
 
-func TestFileMgr_EqualFileNameExt_03(t *testing.T) {
+func TestFileMgr_CopyFileMgrByIoByLink_01(t *testing.T) {
 
-	fh := FileHelper{}
+  expectedFileNameExt := "newerFileForTest_01.txt"
 
-	relPath1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.txt"
-	filePath1, err := fh.MakeAbsolutePath(relPath1)
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1). "+
-			"relPath1='%v' Error='%v'", relPath1, err.Error())
-	}
+  dMgr, err := DirMgr{}.New(adjustedPath)
 
-	fileMgr1, err := FileMgr{}.New(filePath1)
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
 
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.New(filePath1). "+
-			"filePath1='%v' Error='%v' ", filePath1, err.Error())
-	}
+  srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
-	relPath2 := "..\\filesfortest\\levelfilesfortest\\level_02_dir\\LEVEL_1_0_TEST.TXT"
-	filePath2, err := fh.MakeAbsolutePath(relPath2)
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt). dMgr.absolutePath='%v' expectedFileNameExt='%v'  Error='%v'", dMgr.absolutePath, adjustedPath, err.Error())
+  }
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath2). "+
-			"relPath2='%v' Error='%v'", relPath2, err.Error())
-	}
+  rawDestPath := "../checkfiles/checkfiles02"
 
-	fileMgr2, err := FileMgr{}.New(filePath2)
+  destDMgr, err := DirMgr{}.New(rawDestPath)
 
-	if err != nil {
-		t.Errorf("Error returned by FileMgr{}.New(filePath2). "+
-			"filePath2='%v' Error='%v'", filePath2, err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawDestPath). rawDestPath='%v'  Error='%v'", rawDestPath, err.Error())
+  }
 
-	if !fileMgr1.EqualFileNameExt(&fileMgr2) {
-		t.Errorf("Error: expected fileMgr1 file name ext to equal fileMgr2 file name ext. "+
-			"They ARE NOT EQUAL! \n fileMgr1='%v' \n fileMgr2='%v'\n",
-			fileMgr1.GetFileNameExt(), fileMgr2.GetFileNameExt())
-	}
+  destFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt)
 
-}
+  if err != nil {
+    t.Errorf("Error returned from  FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt). destDMgr.absolutePath='%v'  expectedFileNameExt='%v'   Error='%v'", destDMgr.absolutePath, expectedFileNameExt, err.Error())
+  }
 
-func TestFileMgr_EqualFileNameExt_04(t *testing.T) {
+  err = srcFMgr.CopyFileMgrByIoByLink(&destFMgr)
 
-	fh := FileHelper{}
+  if err != nil {
+    t.Errorf("Error returned from srcFMgr.CopyFileMgrByIoByLink(&destFMgr). srcFMgr.absolutePathFileName='%v'  destFMgr.absolutePathFileName='%v'  Error='%v'", srcFMgr.absolutePathFileName, destFMgr.absolutePathFileName, err.Error())
+  }
 
-	relPath1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.txt"
-	filePath1, err := fh.MakeAbsolutePath(relPath1)
+  if !fh.DoesFileExist(destFMgr.absolutePathFileName) {
+    t.Errorf("Expected fh.DoesFileExist(destFMgr.absolutePathFileName)=true. Instead it was 'false' destFMgr.absolutePathFileName='%v'", destFMgr.absolutePathFileName)
+  }
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1). "+
-			"relPath1='%v' Error='%v'", relPath1, err.Error())
-	}
+  if !destFMgr.doesAbsolutePathFileNameExist {
+    t.Error("Expected destFMgr.doesAbsolutePathFileNameExist='true'.  ERROR  destFMgr.doesAbsolutePathFileNameExist='false'")
+  }
 
-	fileMgr1, err := FileMgr{}.New(filePath1)
+  err = fh.DeleteDirFile(destFMgr.absolutePathFileName)
 
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.New(filePath1). "+
-			"filePath1='%v' Error='%v' ", filePath1, err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from fh.DeleteDirFile(destFMgr.absolutePathFileName) "+
+      "destFMgr.absolutePathFileName='%v' Error='%v'", destFMgr.absolutePathFileName, err.Error())
+  }
 
-	relPath2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_2_2_xray.txt"
-	filePath2, err := fh.MakeAbsolutePath(relPath2)
-
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath2). "+
-			"relPath2='%v' Error='%v'", relPath2, err.Error())
-	}
-
-	fileMgr2, err := FileMgr{}.New(filePath2)
-
-	if err != nil {
-		t.Errorf("Error returned by FileMgr{}.New(filePath2). "+
-			"filePath2='%v' Error='%v'", filePath2, err.Error())
-	}
-
-	if fileMgr1.EqualFileNameExt(&fileMgr2) {
-		t.Errorf("Error: expected fileMgr1 file name ext to NOT equal fileMgr2 file name ext. "+
-			"However, they ARE EQUAL! \n fileMgr1='%v' \n fileMgr2='%v'\n",
-			fileMgr1.GetFileNameExt(), fileMgr2.GetFileNameExt())
-	}
+  if fh.DoesFileExist(destFMgr.absolutePathFileName) {
+    t.Errorf("Expected fh.DoesFileExist(destFMgr.absolutePathFileName)=false. "+
+      "Instead it was 'true' destFMgr.absolutePathFileName='%v'", destFMgr.absolutePathFileName)
+  }
 
 }
 
-func TestFileMgr_EqualFileNameExt_05(t *testing.T) {
+func TestFileMgr_CopyFileMgrByIoByLink_02(t *testing.T) {
 
-	fh := FileHelper{}
+  expectedFileNameExt := "newerFileForTest_01.txt"
 
-	relPath1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.txt"
-	filePath1, err := fh.MakeAbsolutePath(relPath1)
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1). "+
-			"relPath1='%v' Error='%v'", relPath1, err.Error())
-	}
+  dMgr, err := DirMgr{}.New(adjustedPath)
 
-	fileMgr1, err := FileMgr{}.New(filePath1)
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
 
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.New(filePath1). "+
-			"filePath1='%v' Error='%v' ", filePath1, err.Error())
-	}
+  srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
-	relPath2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.jag"
-	filePath2, err := fh.MakeAbsolutePath(relPath2)
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt). dMgr.absolutePath='%v' expectedFileNameExt='%v'  Error='%v'", dMgr.absolutePath, adjustedPath, err.Error())
+  }
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath2). "+
-			"relPath2='%v' Error='%v'", relPath2, err.Error())
-	}
+  rawDestPath := "../checkfiles/checkfiles02"
 
-	fileMgr2, err := FileMgr{}.New(filePath2)
+  destDMgr, err := DirMgr{}.New(rawDestPath)
 
-	if err != nil {
-		t.Errorf("Error returned by FileMgr{}.New(filePath2). "+
-			"filePath2='%v' Error='%v'", filePath2, err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawDestPath). rawDestPath='%v'  Error='%v'", rawDestPath, err.Error())
+  }
 
-	if fileMgr1.EqualFileNameExt(&fileMgr2) {
-		t.Errorf("Error: expected fileMgr1 file name ext to NOT equal fileMgr2 file name ext. "+
-			"However, they ARE EQUAL! \n fileMgr1='%v' \n fileMgr2='%v'\n",
-			fileMgr1.GetFileNameExt(), fileMgr2.GetFileNameExt())
-	}
+  destFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt)
 
-}
+  if err != nil {
+    t.Errorf("Error returned from  FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt). destDMgr.absolutePath='%v'  expectedFileNameExt='%v'   Error='%v'", destDMgr.absolutePath, expectedFileNameExt, err.Error())
+  }
 
-func TestFileMgr_EqualPathFileNameExt_01(t *testing.T) {
+  err = srcFMgr.CopyFileMgrByIoByLink(&destFMgr)
 
-	fh := FileHelper{}
+  if err != nil {
+    t.Errorf("Error returned from srcFMgr.CopyFileMgrByIoByLink(&destFMgr). srcFMgr.absolutePathFileName='%v'  destFMgr.absolutePathFileName='%v'  Error='%v'", srcFMgr.absolutePathFileName, destFMgr.absolutePathFileName, err.Error())
+  }
 
-	relPath1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.txt"
-	filePath1, err := fh.MakeAbsolutePath(relPath1)
+  if !fh.DoesFileExist(destFMgr.absolutePathFileName) {
+    t.Errorf("Expected fh.DoesFileExist(destFMgr.absolutePathFileName)=true. Instead it was 'false' destFMgr.absolutePathFileName='%v'", destFMgr.absolutePathFileName)
+  }
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1). "+
-			"relPath1='%v' Error='%v'", relPath1, err.Error())
-	}
+  if !destFMgr.doesAbsolutePathFileNameExist {
+    t.Error("Expected destFMgr.doesAbsolutePathFileNameExist='true'.  ERROR  destFMgr.doesAbsolutePathFileNameExist='false'")
+  }
 
-	fileMgr1, err := FileMgr{}.New(filePath1)
+  err = fh.DeleteDirFile(destFMgr.absolutePathFileName)
 
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.New(filePath1). "+
-			"filePath1='%v' Error='%v' ", filePath1, err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from fh.DeleteDirFile(destFMgr.absolutePathFileName) destFMgr.absolutePathFileName='%v' Error='%v'", destFMgr.absolutePathFileName, err.Error())
+  }
 
-	relPath2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.txt"
-	filePath2, err := fh.MakeAbsolutePath(relPath2)
-
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath2). "+
-			"relPath2='%v' Error='%v'", relPath2, err.Error())
-	}
-
-	fileMgr2, err := FileMgr{}.New(filePath2)
-
-	if err != nil {
-		t.Errorf("Error returned by FileMgr{}.New(filePath2). "+
-			"filePath2='%v' Error='%v'", filePath2, err.Error())
-	}
-
-	if !fileMgr1.EqualPathFileNameExt(&fileMgr2) {
-		t.Errorf("Error: expected fileMgr1 absolute path file name ext to equal "+
-			"fileMgr2 absolute path file name ext. "+
-			"Paths ARE NOT EQUAL! \n fileMgr1='%v' \n fileMgr2='%v'\n",
-			fileMgr1.GetAbsolutePath(), fileMgr2.GetAbsolutePath())
-	}
+  if fh.DoesFileExist(destFMgr.absolutePathFileName) {
+    t.Errorf("Expected fh.DoesFileExist(destFMgr.absolutePathFileName)=false. Instead it was 'true' destFMgr.absolutePathFileName='%v'", destFMgr.absolutePathFileName)
+  }
 
 }
 
-func TestFileMgr_EqualPathFileNameExt_02(t *testing.T) {
+func TestFileMgr_CopyFileMgrByIoByLink_03(t *testing.T) {
 
-	fh := FileHelper{}
+  expectedFileNameExt := "newerFileForTest_01.txt"
 
-	relPath1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.txt"
-	filePath1, err := fh.MakeAbsolutePath(relPath1)
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1). "+
-			"relPath1='%v' Error='%v'", relPath1, err.Error())
-	}
+  dMgr, err := DirMgr{}.New(adjustedPath)
 
-	fileMgr1, err := FileMgr{}.New(filePath1)
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
+  }
 
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.New(filePath1). "+
-			"filePath1='%v' Error='%v' ", filePath1, err.Error())
-	}
+  srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
-	relPath2 := "..\\FILESFORTEST\\LEVELFILESFORTEST\\LEVEL_01_DIR\\LEVEL_1_0_TEST.TXT"
-	filePath2, err := fh.MakeAbsolutePath(relPath2)
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt). dMgr.absolutePath='%v' expectedFileNameExt='%v'  Error='%v'", dMgr.absolutePath, adjustedPath, err.Error())
+  }
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath2). "+
-			"relPath2='%v' Error='%v'", relPath2, err.Error())
-	}
+  rawDestPath := "../checkfiles/checkfiles02"
 
-	fileMgr2, err := FileMgr{}.New(filePath2)
+  destDMgr, err := DirMgr{}.New(rawDestPath)
 
-	if err != nil {
-		t.Errorf("Error returned by FileMgr{}.New(filePath2). "+
-			"filePath2='%v' Error='%v'", filePath2, err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawDestPath). rawDestPath='%v'  Error='%v'", rawDestPath, err.Error())
+  }
 
-	if !fileMgr1.EqualPathFileNameExt(&fileMgr2) {
-		t.Errorf("Error: expected fileMgr1 absolute path file name ext to equal fileMgr2 "+
-			"absolute path file name ext. Paths ARE NOT EQUAL! \n fileMgr1='%v' \n fileMgr2='%v'\n",
-			fileMgr1.GetAbsolutePath(), fileMgr2.GetAbsolutePath())
-	}
+  destFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt)
 
-}
+  if err != nil {
+    t.Errorf("Error returned from  FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt). destDMgr.absolutePath='%v'  expectedFileNameExt='%v'   Error='%v'", destDMgr.absolutePath, expectedFileNameExt, err.Error())
+  }
 
-func TestFileMgr_EqualPathFileNameExt_03(t *testing.T) {
+  srcFMgr.isInitialized = false
 
-	fh := FileHelper{}
+  err = srcFMgr.CopyFileMgrByIoByLink(&destFMgr)
 
-	relPath1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.txt"
-	filePath1, err := fh.MakeAbsolutePath(relPath1)
-
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1). "+
-			"relPath1='%v' Error='%v'", relPath1, err.Error())
-	}
-
-	fileMgr1, err := FileMgr{}.New(filePath1)
-
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.New(filePath1). "+
-			"filePath1='%v' Error='%v' ", filePath1, err.Error())
-	}
-
-	relPath2 := "..\\filesfortest\\levelfilesfortest\\level_02_dir\\level_1_0_test.txt"
-	filePath2, err := fh.MakeAbsolutePath(relPath2)
-
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath2). "+
-			"relPath2='%v' Error='%v'", relPath2, err.Error())
-	}
-
-	fileMgr2, err := FileMgr{}.New(filePath2)
-
-	if err != nil {
-		t.Errorf("Error returned by FileMgr{}.New(filePath2). "+
-			"filePath2='%v' Error='%v'", filePath2, err.Error())
-	}
-
-	if fileMgr1.EqualPathFileNameExt(&fileMgr2) {
-		t.Errorf("Error: expected fileMgr1 absolute path file name ext to NOT equal fileMgr2 "+
-			"absolute path file name ext. Paths ARE EQUAL! \n fileMgr1='%v' \n fileMgr2='%v'\n",
-			fileMgr1.GetAbsolutePath(), fileMgr2.GetAbsolutePath())
-	}
+  if err == nil {
+    t.Error("Expected error return from  srcFMgr.CopyFileMgrByIoByLink(&destFMgr) because " +
+      "srcFMgr.isInitialized == false. However, NO ERROR WAS RETURNED!")
+  }
 
 }
 
-func TestFileMgr_EqualPathFileNameExt_04(t *testing.T) {
+func TestFileMgr_CopyFileMgrByIoByLink_04(t *testing.T) {
 
-	fh := FileHelper{}
+  expectedFileNameExt := "newerFileForTest_01.txt"
 
-	relPath1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.txt"
-	filePath1, err := fh.MakeAbsolutePath(relPath1)
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1). "+
-			"relPath1='%v' Error='%v'", relPath1, err.Error())
-	}
+  dMgr, err := DirMgr{}.New(adjustedPath)
 
-	fileMgr1, err := FileMgr{}.New(filePath1)
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath).\n"+
+      "adjustedPath='%v'  Error='%v'",
+      adjustedPath, err.Error())
+    return
+  }
 
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.New(filePath1). "+
-			"filePath1='%v' Error='%v' ", filePath1, err.Error())
-	}
+  srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
-	relPath2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_X_0_test.txt"
-	filePath2, err := fh.MakeAbsolutePath(relPath2)
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, "+
+      "expectedFileNameExt).\n"+
+      "dMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'",
+      dMgr.absolutePath, adjustedPath, err.Error())
+    return
+  }
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath2). "+
-			"relPath2='%v' Error='%v'", relPath2, err.Error())
-	}
+  rawDestPath := "../checkfiles/checkfiles02"
 
-	fileMgr2, err := FileMgr{}.New(filePath2)
+  destDMgr, err := DirMgr{}.New(rawDestPath)
 
-	if err != nil {
-		t.Errorf("Error returned by FileMgr{}.New(filePath2). "+
-			"filePath2='%v' Error='%v'", filePath2, err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawDestPath).\n"+
+      "rawDestPath='%v'\nError='%v'\n",
+      rawDestPath, err.Error())
+    return
+  }
 
-	if fileMgr1.EqualPathFileNameExt(&fileMgr2) {
-		t.Errorf("Error: expected fileMgr1 absolute path file name ext to NOT equal fileMgr2 "+
-			"absolute path file name ext. Paths ARE EQUAL! \n fileMgr1='%v' \n fileMgr2='%v'\n",
-			fileMgr1.GetAbsolutePath(), fileMgr2.GetAbsolutePath())
-	}
+  destFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt)
 
-}
+  if err != nil {
+    t.Errorf("Error returned from  FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, "+
+      "expectedFileNameExt).\n"+
+      "destDMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'",
+      destDMgr.absolutePath, expectedFileNameExt, err.Error())
+    return
+  }
 
-func TestFileMgr_EqualPathFileNameExt_05(t *testing.T) {
+  destFMgr.isInitialized = false
 
-	fh := FileHelper{}
+  err = srcFMgr.CopyFileMgrByIoByLink(&destFMgr)
 
-	relPath1 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.txt"
-	filePath1, err := fh.MakeAbsolutePath(relPath1)
+  if err == nil {
+    t.Error("Expected error return from  srcFMgr.CopyFileMgrByIoByLink(&destFMgr) because " +
+      "destFMgr.isInitialized = false. However, NO ERROR WAS RETURNED!")
+  }
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath1). "+
-			"relPath1='%v' Error='%v'", relPath1, err.Error())
-	}
+  destFMgr.isInitialized = true
 
-	fileMgr1, err := FileMgr{}.New(filePath1)
+  err = destFMgr.DeleteThisFile()
 
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.New(filePath1). "+
-			"filePath1='%v' Error='%v' ", filePath1, err.Error())
-	}
-
-	relPath2 := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_1_0_test.log"
-	filePath2, err := fh.MakeAbsolutePath(relPath2)
-
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(relPath2). "+
-			"relPath2='%v' Error='%v'", relPath2, err.Error())
-	}
-
-	fileMgr2, err := FileMgr{}.New(filePath2)
-
-	if err != nil {
-		t.Errorf("Error returned by FileMgr{}.New(filePath2). "+
-			"filePath2='%v' Error='%v'", filePath2, err.Error())
-	}
-
-	if fileMgr1.EqualPathFileNameExt(&fileMgr2) {
-		t.Errorf("Error: expected fileMgr1 absolute path file name ext to NOT equal fileMgr2 "+
-			"absolute path file name ext. Paths ARE EQUAL! \n fileMgr1='%v' \n fileMgr2='%v'\n",
-			fileMgr1.GetAbsolutePath(), fileMgr2.GetAbsolutePath())
-	}
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by destFMgr.DeleteThisFile().\n"+
+      "destFMgr='%v'\nError='%v'\n", destFMgr.GetAbsolutePath(), err.Error())
+  }
 
 }
 
-func TestFileMgr_MoveFileToNewDirMgr_01(t *testing.T) {
-	fh := FileHelper{}
-	setupSrcFile := fh.AdjustPathSlash("..\\logTest\\FileMgmnt\\TestFile003.txt")
-	srcFile := fh.AdjustPathSlash("..\\logTest\\FileSrc\\TestFile003.txt")
-	destDir := fh.AdjustPathSlash("..\\logTest")
-	setupDestFile := fh.AdjustPathSlash("..\\logTest\\TestFile003.txt")
+func TestFileMgr_CopyFileMgrByIoByLink_05(t *testing.T) {
 
-	if fh.DoesFileExist(setupDestFile) {
-		err := fh.DeleteDirFile(setupDestFile)
+  expectedFileNameExt := "newerFileForTest_01.txt"
 
-		if err != nil {
-			t.Errorf("Error on DeleteDirFile() deleting destination file, '%v'. Error:'%v'", setupDestFile, err.Error())
-		}
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
 
-		if fh.DoesFileExist(setupDestFile) {
-			t.Error(fmt.Sprintf("Error - destination file, '%v' STILL EXISTS!", setupDestFile))
-		}
-	}
+  dMgr, err := DirMgr{}.New(adjustedPath)
 
-	if fh.DoesFileExist(srcFile) {
-		err := fh.DeleteDirFile(srcFile)
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.New(adjustedPath).\n"+
+      "adjustedPath='%v'\nError='%v'\n",
+      adjustedPath, err.Error())
 
-		if err != nil {
-			t.Errorf("Error on DeleteDirFile() deleting source file, '%v'. Error:'%v'", srcFile, err.Error())
-		}
+    return
+  }
 
-		if fh.DoesFileExist(srcFile) {
-			t.Errorf("Error - Failed to Delete 'srcFile', '%v' STILL EXISTS!", srcFile)
-		}
-	}
+  srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
-	err := fh.CopyFileByIo(setupSrcFile, srcFile)
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt(dMgr, "+
+      "expectedFileNameExt).\n"+
+      "dMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
+      dMgr.absolutePath, adjustedPath, err.Error())
+    return
+  }
 
-	if err != nil {
-		t.Errorf("Received error copying setup file '%v' to source file. srcFile '%v' does NOT Exist. Error='%v'", setupSrcFile, srcFile, err.Error())
-	}
+  err = srcFMgr.CopyFileMgrByIoByLink(nil)
 
-	if !fh.DoesFileExist(srcFile) {
-		t.Errorf("Source File '%v' does NOT EXIST!!", srcFile)
-	}
-
-	srcFileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(srcFile)
-
-	if err != nil {
-		t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(srcFile). srcFile='%v'  Error='%v'", srcFile, err.Error())
-	}
-
-	dMgr, err := DirMgr{}.New(destDir)
-
-	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.NewFromPathFileNameExtStr(destDir). destDir='%v' Error='%v'", destDir, err.Error())
-	}
-
-	newFMgr, err := srcFileMgr.MoveFileToNewDirMgr(dMgr)
-
-	if err != nil {
-		t.Errorf("Error returned by srcFileMgr.MoveFileToNewDirMgr(dMgr). dMgr.path='%v'  Error='%v'", dMgr.path, err.Error())
-	}
-
-	if !fh.DoesFileExist(newFMgr.absolutePathFileName) {
-		t.Errorf("Error: NewFromPathFileNameExtStr Destination 'Moved' File DOES NOT EXIST! newFMgr.absolutePathFileName='%v'", newFMgr.absolutePathFileName)
-	}
-
-	doesExist, err := newFMgr.DoesThisFileExist()
-
-	if err != nil {
-		t.Errorf("Error returned by newFMgr.DoesThisFileExist(). newFMgr.absolutePathFileName='%v' Error='%v'", newFMgr.absolutePathFileName, err.Error())
-	}
-
-	if !doesExist {
-		t.Errorf("Error: NewFromPathFileNameExtStr Destination 'Moved' File DOES NOT EXIST! newFMgr.DoesThisFileExist()=='FALSE' newFMgr.absolutePathFileName='%v'", newFMgr.absolutePathFileName)
-	}
-
-	err = newFMgr.DeleteThisFile()
-
-	if err != nil {
-		t.Errorf("Error: Attempted clean-up and deletion of destination file FAILED!. newFMgr.absolutePathFileName='%v'", newFMgr.absolutePathFileName)
-	}
+  if err == nil {
+    t.Error("Expected error return from  srcFMgr.CopyFileMgrByIoByLink(&destFMgr) because " +
+      "destFMgr is 'nil'. However, NO ERROR WAS RETURNED!")
+  }
 
 }
 
-func TestFileMgr_MoveFileToNewDir_01(t *testing.T) {
-	fh := FileHelper{}
-	setupSrcFile := fh.AdjustPathSlash("..\\logTest\\FileMgmnt\\TestFile003.txt")
-	srcFile := fh.AdjustPathSlash("..\\logTest\\FileSrc\\TestFile003.txt")
-	destDir := fh.AdjustPathSlash("..\\logTest")
-	setupDestFile := fh.AdjustPathSlash("..\\logTest\\TestFile003.txt")
+func TestFileMgr_CopyFileMgrByIoByLink_06(t *testing.T) {
 
-	if fh.DoesFileExist(setupDestFile) {
-		err := fh.DeleteDirFile(setupDestFile)
+  expectedFileNameExt := "iDoNotExist.txt"
 
-		if err != nil {
-			t.Errorf("Error on DeleteDirFile() deleting destination file, '%v'. Error:'%v'", setupDestFile, err.Error())
-		}
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
 
-		if fh.DoesFileExist(setupDestFile) {
-			t.Error(fmt.Sprintf("Error - destination file, '%v' STILL EXISTS!", setupDestFile))
-		}
-	}
+  dMgr, err := DirMgr{}.New(adjustedPath)
 
-	if fh.DoesFileExist(srcFile) {
-		err := fh.DeleteDirFile(srcFile)
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath).\n"+
+      "adjustedPath='%v'\nError='%v'\n",
+      adjustedPath, err.Error())
+    return
+  }
 
-		if err != nil {
-			t.Errorf("Error on DeleteDirFile() deleting source file, '%v'. Error:'%v'", srcFile, err.Error())
-		}
+  srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
-		if fh.DoesFileExist(srcFile) {
-			t.Errorf("Error - Failed to Delete 'srcFile', '%v' STILL EXISTS!", srcFile)
-		}
-	}
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt"+
+      "(dMgr, expectedFileNameExt).\n"+
+      "dMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
+      dMgr.absolutePath, adjustedPath, err.Error())
+    return
+  }
 
-	err := fh.CopyFileByIo(setupSrcFile, srcFile)
+  rawDestPath := "../checkfiles/checkfiles02"
 
-	if err != nil {
-		t.Errorf("Received error copying setup file '%v' to source file. srcFile '%v' does NOT Exist. Error='%v'", setupSrcFile, srcFile, err.Error())
-	}
+  destDMgr, err := DirMgr{}.New(rawDestPath)
 
-	if !fh.DoesFileExist(srcFile) {
-		t.Errorf("Source File '%v' does NOT EXIST!!", srcFile)
-	}
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.New(rawDestPath).\n"+
+      "rawDestPath='%v'\nError='%v'\n",
+      rawDestPath, err.Error())
+    return
+  }
 
-	srcFileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(srcFile)
+  destFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(destDMgr, expectedFileNameExt)
 
-	if err != nil {
-		t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(srcFile). srcFile='%v'  Error='%v'", srcFile, err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from  FileMgr{}.NewFromDirMgrFileNameExt("+
+      "destDMgr, expectedFileNameExt).\n"+
+      "destDMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
+      destDMgr.absolutePath, expectedFileNameExt, err.Error())
+    return
+  }
 
-	newFMgr, err := srcFileMgr.MoveFileToNewDir(destDir)
+  err = srcFMgr.CopyFileMgrByIoByLink(&destFMgr)
 
-	if err != nil {
-		t.Errorf("Error returned by srcFileMgr.MoveFileToNewDir(destDir). destDir='%v'  Error='%v'", destDir, err.Error())
-	}
-
-	if !fh.DoesFileExist(newFMgr.absolutePathFileName) {
-		t.Errorf("Error: NewFromPathFileNameExtStr Destination 'Moved' File DOES NOT EXIST! newFMgr.absolutePathFileName='%v'", newFMgr.absolutePathFileName)
-	}
-
-	doesExist, err := newFMgr.DoesThisFileExist()
-
-	if err != nil {
-		t.Errorf("Error returned by newFMgr.DoesThisFileExist(). newFMgr.absolutePathFileName='%v' Error='%v'", newFMgr.absolutePathFileName, err.Error())
-	}
-
-	if !doesExist {
-		t.Errorf("Error: NewFromPathFileNameExtStr Destination 'Moved' File DOES NOT EXIST! newFMgr.DoesThisFileExist()=='FALSE' newFMgr.absolutePathFileName='%v'", newFMgr.absolutePathFileName)
-	}
-
-	err = newFMgr.DeleteThisFile()
-
-	if err != nil {
-		t.Errorf("Error: Attempted clean-up and deletion of destination file FAILED!. newFMgr.absolutePathFileName='%v'", newFMgr.absolutePathFileName)
-	}
+  if err == nil {
+    t.Error("Expected error return from  srcFMgr.CopyFileMgrByIoByLink(&destFMgr) because " +
+      "srcFMgr does NOT exist. However, NO ERROR WAS RETURNED!")
+  }
 
 }
 
-func TestFileMgr_New_01(t *testing.T) {
+func TestFileMgr_CopyFileMgrByIoByLink_07(t *testing.T) {
 
-	fh := FileHelper{}
+  expectedFileNameExt := "newerFileForTest_01.txt"
 
-	relPath := "..\\logTest\\CmdrX\\CmdrX.log"
-	commonDir, err := fh.MakeAbsolutePath(relPath)
+  fh := FileHelper{}
+  adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
 
-	if err != nil {
-		t.Errorf("Received Error on fh.MakeAbsolutePath(relPath). "+
-			"relPath='%v'  Error='%v'", relPath, err.Error())
-	}
+  dMgr, err := DirMgr{}.New(adjustedPath)
 
-	fileName := "CmdrX"
-	fileNameExt := "CmdrX.log"
-	extName := ".log"
+  if err != nil {
+    t.Errorf("Error returned from DirMgr{}.New(adjustedPath).\n"+
+      "adjustedPath='%v'\nError='%v'\n",
+      adjustedPath, err.Error())
+    return
+  }
 
-	fileMgr, err := FileMgr{}.New(commonDir)
+  srcFMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
 
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.New(commonDir)  Error='%v'", err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned from FileMgr{}.NewFromDirMgrFileNameExt"+
+      "(dMgr, expectedFileNameExt).\n"+
+      "dMgr.absolutePath='%v'\nexpectedFileNameExt='%v'\nError='%v'\n",
+      dMgr.absolutePath, adjustedPath, err.Error())
+    return
+  }
 
-	if fileMgr.fileName != fileName {
-		t.Error(fmt.Sprintf("Expected File Name, %v, got:", fileName), fileMgr.fileName)
-	}
+  destFMgr := srcFMgr.CopyOut()
 
-	if fileMgr.fileExt != extName {
-		t.Error(fmt.Sprintf("Expected File Extension, %v, got:", extName), fileMgr.fileExt)
-	}
+  err = srcFMgr.CopyFileMgrByIoByLink(&destFMgr)
 
-	if fileMgr.fileNameExt != fileNameExt {
-		t.Error(fmt.Sprintf("Expected File Name + Extension, %v, got:", fileNameExt), fileMgr.fileNameExt)
-	}
-
-	if !fileMgr.isInitialized {
-		t.Error("Expected fileMgr.isInitialized=='true', got:", fileMgr.isInitialized)
-	}
-
-	if !fileMgr.isFileNamePopulated {
-		t.Error("Expected fileMgr.isFileNamePopulated=='true', got:", fileMgr.isFileNamePopulated)
-	}
-
-	if !fileMgr.isFileNameExtPopulated {
-		t.Error("Expected fileMgr.isFileNameExtPopulated=='true', got:", fileMgr.isFileNameExtPopulated)
-	}
-
-	if !fileMgr.isFileExtPopulated {
-		t.Error("Expected fileMgr.isFileExtPopulated=='true', got:", fileMgr.isFileExtPopulated)
-	}
-
-	if !fileMgr.isAbsolutePathFileNamePopulated {
-		t.Error("Expected fileMgr.isAbsolutePathFileNamePopulated=='true', got:", fileMgr.isAbsolutePathFileNamePopulated)
-	}
+  if err == nil {
+    t.Error("Expected error return from  srcFMgr.CopyFileMgrByIoByLink(&destFMgr) because " +
+      "srcFMgr is equivalent to destFMgr. However, NO ERROR WAS RETURNED!")
+  }
 
 }
 
-func TestFileMgr_New_02(t *testing.T) {
+func TestFileMgr_CopyFileMgrByIoWithBuffer_01(t *testing.T) {
 
-	fh := FileHelper{}
+  setupFile := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
 
-	commonDir := fh.AdjustPathSlash("..\\logTest\\CmdrX\\CmdrX.log")
+  fh := FileHelper{}
 
-	fileName := "CmdrX"
-	fileNameExt := "CmdrX.log"
-	extName := ".log"
+  setupFile = fh.AdjustPathSlash(setupFile)
 
-	fileMgr, err := FileMgr{}.New(commonDir)
+  sourceFile := "../createFilesTest/level_0_3_test.txt"
 
-	if err != nil {
-		t.Errorf("Received Error on FileMgr{}.New(commonDir)  Error='%v'", err.Error())
-	}
+  sourceFile = fh.AdjustPathSlash(sourceFile)
 
-	if fileMgr.fileName != fileName {
-		t.Error(fmt.Sprintf("Expected File Name, %v, got:", fileName), fileMgr.fileName)
-	}
+  err := fh.CopyFileByIo(setupFile, sourceFile)
 
-	if fileMgr.fileExt != extName {
-		t.Error(fmt.Sprintf("Expected File Extension, %v, got:", extName), fileMgr.fileExt)
-	}
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupFile, sourceFile)\n"+
+      "setupFile='%v'\nsourceFile='%v'\nError='%v'\n",
+      setupFile, sourceFile, err.Error())
+    return
+  }
 
-	if fileMgr.fileNameExt != fileNameExt {
-		t.Error(fmt.Sprintf("Expected File Name + Extension, %v, got:", fileNameExt), fileMgr.fileNameExt)
-	}
+  destFile := "../createFilesTest/TestFileMgr_CopyFileMgrByIoWithBuffer_01.txt"
 
-	if !fileMgr.isInitialized {
-		t.Error("Expected fileMgr.isInitialized=='true', got:", fileMgr.isInitialized)
-	}
+  destFile = fh.AdjustPathSlash(destFile)
 
-	if !fileMgr.isFileNamePopulated {
-		t.Error("Expected fileMgr.isFileNamePopulated=='true', got:", fileMgr.isFileNamePopulated)
-	}
+  srcFMgr, err := FileMgr{}.New(sourceFile)
 
-	if !fileMgr.isFileNameExtPopulated {
-		t.Error("Expected fileMgr.isFileNameExtPopulated=='true', got:", fileMgr.isFileNameExtPopulated)
-	}
+  if err != nil {
+    t.Errorf("Error returned by FileMgr{}.New(sourceFile).\n"+
+      "sourceFile='%v'\nError='%v'\n", sourceFile, err.Error())
+    return
+  }
 
-	if !fileMgr.isFileExtPopulated {
-		t.Error("Expected fileMgr.isFileExtPopulated=='true', got:", fileMgr.isFileExtPopulated)
-	}
+  destFMgr, err := FileMgr{}.New(destFile)
 
-	if !fileMgr.isAbsolutePathFileNamePopulated {
-		t.Error("Expected fileMgr.isAbsolutePathFileNamePopulated=='true', got:", fileMgr.isAbsolutePathFileNamePopulated)
-	}
+  if err != nil {
+    t.Errorf("Error returned by FileMgr{}.New(destFile).\n"+
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
+    return
+  }
 
+  err = srcFMgr.CopyFileMgrByIoWithBuffer(&destFMgr, 15000)
+
+  if err != nil {
+    t.Errorf("Error returned by srcFMgr.CopyFileMgrByIoWithBuffer(&destFMgr, 15000)\n"+
+      "srcFMgr='%v'\nError='%v'\n", srcFMgr.absolutePathFileName, err.Error())
+    _ = fh.DeleteDirFile(sourceFile)
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
+
+  if !fh.DoesFileExist(destFile) {
+    t.Errorf("Error: After Copy Operation, the destination file DOES NOT EXIST!\n"+
+      "destFile='%v'\n", destFile)
+  }
+
+  _ = fh.DeleteDirFile(sourceFile)
+  _ = fh.DeleteDirFile(destFile)
+  return
 }
 
-func TestFileMgr_NewFromPathFileNameExtStr_01(t *testing.T) {
+func TestFileMgr_CopyFileMgrByIoWithBuffer_02(t *testing.T) {
 
-	fh := FileHelper{}
+  fh := FileHelper{}
 
-	commonDir := fh.AdjustPathSlash(".\\xt_dirmgr_01_test.go")
-	fileName := "xt_dirmgr_01_test"
-	fileNameExt := "xt_dirmgr_01_test.go"
-	extName := ".go"
+  sourceDir := "../iDoNotExist"
 
-	fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(commonDir)
+  sourceDir = fh.AdjustPathSlash(sourceDir)
 
-	if err != nil {
-		t.Error("Received Error on GetPathFileNameElements Error:", err)
-	}
+  sourceFile := "../iDoNotExist/iDoNotExist.txt"
 
-	if fileMgr.fileName != fileName {
-		t.Error(fmt.Sprintf("Expected File Name, %v, got:", fileName), fileMgr.fileName)
-	}
+  sourceFile = fh.AdjustPathSlash(sourceFile)
 
-	if fileMgr.fileExt != extName {
-		t.Error(fmt.Sprintf("Expected File Extension, %v, got:", extName), fileMgr.fileExt)
-	}
+  destFile := "../createFilesTest/TestFileMgr_CopyFileMgrByIoWithBuffer_02.txt"
 
-	if fileMgr.fileNameExt != fileNameExt {
-		t.Error(fmt.Sprintf("Expected File Name + Extension, %v, got:", fileNameExt), fileMgr.fileNameExt)
-	}
+  destFile = fh.AdjustPathSlash(destFile)
 
-	if !fileMgr.isInitialized {
-		t.Error("Expected fileMgr.isInitialized=='true', got:", fileMgr.isInitialized)
-	}
+  srcFMgr, err := FileMgr{}.New(sourceFile)
 
-	if !fileMgr.isFileNamePopulated {
-		t.Error("Expected fileMgr.isFileNamePopulated=='true', got:", fileMgr.isFileNamePopulated)
-	}
+  if err != nil {
+    t.Errorf("Error returned by FileMgr{}.New(sourceFile).\n"+
+      "sourceFile='%v'\nError='%v'\n", sourceFile, err.Error())
+    return
+  }
 
-	if !fileMgr.isFileNameExtPopulated {
-		t.Error("Expected fileMgr.isFileNameExtPopulated=='true', got:", fileMgr.isFileNameExtPopulated)
-	}
+  destFMgr, err := FileMgr{}.New(destFile)
 
-	if !fileMgr.isFileExtPopulated {
-		t.Error("Expected fileMgr.isFileExtPopulated=='true', got:", fileMgr.isFileExtPopulated)
-	}
+  if err != nil {
+    t.Errorf("Error returned by FileMgr{}.New(destFile).\n"+
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
+    return
+  }
 
-	if !fileMgr.isAbsolutePathFileNamePopulated {
-		t.Error("Expected fileMgr.isAbsolutePathFileNamePopulated=='true', got:", fileMgr.isAbsolutePathFileNamePopulated)
-	}
+  err = srcFMgr.CopyFileMgrByIoWithBuffer(&destFMgr, 15000)
 
+  if err == nil {
+    t.Errorf("Expected an error returned by srcFMgr.CopyFileMgrByIoWithBuffer(&destFMgr, 15000)\n"+
+      "because srcFMgr DOES NOT EXIST!\n"+
+      "However, NO ERROR WAS RETURNED!\nsrcFMgr='%v'\n", srcFMgr.absolutePathFileName)
+  }
+
+  _ = fh.DeleteDirPathAll(sourceDir)
+  _ = fh.DeleteDirFile(destFile)
+  return
 }
 
-func TestFileMgr_NewFromPathFileNameExtStr_02(t *testing.T) {
-
-	path := "../appExamples/filehelperexamples.go"
-
-	eFileNameExt := "filehelperexamples.go"
-
-	fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(path)
-
-	if err != nil {
-		t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(path) "+
-			"path== '%v' Error: %v", path, err)
-	}
-
-	if eFileNameExt != fileMgr.fileNameExt {
-		t.Errorf("Expected extracted fileNameExt == %v, instead got: %v",
-			eFileNameExt, fileMgr.fileNameExt)
-	}
-
-	if fileMgr.fileName != "filehelperexamples" {
-		t.Errorf("Expected fileMgr.fileName== 'filehelperexamples', "+
-			"instead got: fileMgr.fileName== %v", fileMgr.fileName)
-	}
-
-	if fileMgr.fileExt != ".go" {
-		t.Errorf("Expected fileMgr.fileExt== '.go', instead got: fileMgr.fileExt== %v",
-			fileMgr.fileExt)
-	}
-
-	if !fileMgr.dMgr.isPathPopulated {
-		t.Errorf("Expected 'fileMgr.isPathPopulated==true', instead got: fileMgr.isPathPopulated==%v",
-			fileMgr.dMgr.isPathPopulated)
-	}
-
-	if !fileMgr.doesAbsolutePathFileNameExist {
-		t.Errorf("Expected 'fileMgr.doesAbsolutePathFileNameExist==true', instead got: "+
-			"fileMgr.doesAbsolutePathFileNameExist==%v", fileMgr.doesAbsolutePathFileNameExist)
-	}
-
-	if !fileMgr.isAbsolutePathFileNamePopulated {
-		t.Error("Expected fileMgr.isAbsolutePathFileNamePopulated == 'true'.  Instead, it is 'false'")
-	}
-
-	if !fileMgr.dMgr.doesAbsolutePathExist {
-		t.Error("Expected fileMgr.doesAbsolutePathExist == 'true'.  Instead, it is 'false'")
-	}
-
-}
-
-func TestFileMgr_NewFromPathFileNameExtStr_03(t *testing.T) {
-
-	path := "filehelperexamples"
-
-	fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(path)
-
-	if err != nil {
-		t.Errorf("Error returned from FileHelper:GetPathFileNameElements() path== '%v' Error: %v", path, err)
-	}
-
-	if fileMgr.fileName != path {
-		t.Error("Expected fileMgr.fileName=='dirmgr_test', instead got:", fileMgr.fileName)
-	}
-
-	if fileMgr.dMgr.isPathPopulated {
-		t.Error("Expected fileMgr.isPathPopulated==false, instead got:", fileMgr.dMgr.isPathPopulated)
-	}
-
-	if fileMgr.isFileExtPopulated {
-		t.Error("Expected fileMgr.isFileExtPopulated==false, instead got:", fileMgr.isFileExtPopulated)
-	}
-
-	if !fileMgr.isAbsolutePathFileNamePopulated {
-		t.Error("Expected fileMgr.isAbsolutePathFileNamePopulated==true, instead got:",
-			fileMgr.isAbsolutePathFileNamePopulated)
-	}
-
-	if fileMgr.dMgr.isAbsolutePathPopulated {
-		t.Error("Expected fileMgr.isAbsolutePathPopulated==false, instead got:",
-			fileMgr.dMgr.isAbsolutePathPopulated)
-	}
-}
-
-func TestFileMgr_NewFromPathFileNameExtStr_04(t *testing.T) {
-
-	path := "../appExamples/filehelperexamples.go"
-
-	eFileNameExt := "filehelperexamples.go"
-
-	fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(path)
-
-	if err != nil {
-		t.Errorf("Error returned from FileMgr{}.NewFromPathFileNameExtStr(path) "+
-			"path=='%v' Error: %v ", path, err)
-	}
-
-	if eFileNameExt != fileMgr.fileNameExt {
-		t.Errorf("Expected extracted fileNameExt == '%v', instead got: '%v' ",
-			eFileNameExt, fileMgr.fileNameExt)
-	}
-
-	if "filehelperexamples" != fileMgr.fileName {
-		t.Errorf("Expected fileMgr.fileName== '%v', instead got: fileMgr.fileName== '%v'",
-			"filehelperexamples", fileMgr.fileName)
-	}
-
-	if ".go" != fileMgr.fileExt {
-		t.Errorf("Expected fileMgr.fileExt== '.go', instead got: fileMgr.fileExt== %v",
-			fileMgr.fileExt)
-	}
-
-	if !fileMgr.dMgr.isPathPopulated {
-		t.Errorf("Expected 'fileMgr.dMgr.isPathPopulated==true', instead got: "+
-			"fileMgr.isPathPopulated==%v",
-			fileMgr.dMgr.isPathPopulated)
-	}
-
-	if !fileMgr.doesAbsolutePathFileNameExist {
-		t.Errorf("Expected 'fileMgr.doesAbsolutePathFileNameExist==true', instead got: "+
-			"fileMgr.doesAbsolutePathFileNameExist== %v", fileMgr.dMgr.isPathPopulated)
-	}
-
-	if !fileMgr.isAbsolutePathFileNamePopulated {
-		t.Errorf("Expected fileMgr.isAbsolutePathFileNamePopulated == 'true'.  Instead, "+
-			"fileMgr.isAbsolutePathFileNamePopulated == '%v' ", fileMgr.isAbsolutePathFileNamePopulated)
-	}
-
-	if !fileMgr.dMgr.doesAbsolutePathExist {
-		t.Errorf("Expected fileMgr.doesAbsolutePathExist == 'true'.  Instead, it is '%v'",
-			fileMgr.dMgr.doesAbsolutePathExist)
-	}
-
-}
-
-func TestFileMgr_NewFromFileInfo_01(t *testing.T) {
-
-	expectedFileNameExt := "newerFileForTest_01.txt"
-	expectedFileName := "newerFileForTest_01"
-	expectedExt := ".txt"
-	fh := FileHelper{}
-	adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
-
-	absPath, err := fh.MakeAbsolutePath(adjustedPath)
-
-	if err != nil {
-		t.Errorf("Error returned from fh.MakeAbsolutePath(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
-	}
-
-	absPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
-
-	info, err := fh.GetFileInfoFromPath(absPathFileNameExt)
-
-	if err != nil {
-		t.Errorf("Error returned from fh.GetFileInfoFromPath(absPathFileNameExt). absPathFileNameExt='%v'  Error='%v'", absPathFileNameExt, err.Error())
-	}
-
-	fileMgr, err := FileMgr{}.NewFromFileInfo(absPath, info)
-
-	if err != nil {
-		t.Errorf("Error returned from FileMgr{}.NewFromFileInfo(absPath, info). absPath='%v' info.Name()='%v'  Error='%v'", absPath, info.Name(), err.Error())
-	}
-
-	if fileMgr.fileNameExt != expectedFileNameExt {
-		t.Errorf("Expected extracted fileMgr.fileNameExt == %v, instead fileMgr.fileNameExt='%v' ", expectedFileNameExt, fileMgr.fileNameExt)
-	}
-
-	if fileMgr.fileName != expectedFileName {
-		t.Errorf("Expected fileMgr.fileName== '%v', instead fileMgr.fileName== '%v'", expectedFileName, fileMgr.fileName)
-	}
-
-	if fileMgr.fileExt != expectedExt {
-		t.Errorf("Expected fileMgr.fileExt== '%v', instead got: fileMgr.fileExt=='%v'", expectedExt, fileMgr.fileName)
-	}
-
-	if !fileMgr.dMgr.isPathPopulated {
-		t.Errorf("Expected 'fileMgr.isPathPopulated==true', instead got: fileMgr.isPathPopulated=='%v'", fileMgr.dMgr.isPathPopulated)
-	}
-
-	if !fileMgr.doesAbsolutePathFileNameExist {
-		t.Errorf("Expected 'fileMgr.doesAbsolutePathFileNameExist==true', instead got: fileMgr.doesAbsolutePathFileNameExist=='%v'", fileMgr.doesAbsolutePathFileNameExist)
-	}
-
-	if !fileMgr.isAbsolutePathFileNamePopulated {
-		t.Error("Expected fileMgr.isAbsolutePathFileNamePopulated == 'true'.  Instead, it is 'false'")
-	}
-
-	if !fileMgr.dMgr.doesAbsolutePathExist {
-		t.Error("Expected fileMgr.doesAbsolutePathExist == 'true'.  Instead, it is 'false'")
-	}
-
-	if !fileMgr.actualFileInfo.IsFInfoInitialized {
-		t.Error("Expected fileMgr.actualFileInfo.IsFInfoInitialized='true'.  Error, it is 'false'")
-	}
-
-	if fileMgr.actualFileInfo.Name() != expectedFileNameExt {
-		t.Errorf("Expected fileMgr.actualFileInfo.Name()=='%v'.  Instead, fileMgr.actualFileInfo.Name()=='%v'.", expectedFileNameExt, fileMgr.actualFileInfo.Name())
-	}
-
-}
-
-func TestFileMgr_NewFromDirMgrFileNameExt_01(t *testing.T) {
-
-	expectedFileNameExt := "newerFileForTest_01.txt"
-
-	fh := FileHelper{}
-	adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
-
-	dMgr, err := DirMgr{}.New(adjustedPath)
-
-	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
-	}
-
-	fMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, expectedFileNameExt)
-
-	absPath, err := fh.MakeAbsolutePath(adjustedPath)
-
-	if err != nil {
-		t.Errorf("Error returned from fh.MakeAbsolutePath(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
-	}
-
-	expectedAbsPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
-
-	if expectedAbsPathFileNameExt != fMgr.absolutePathFileName {
-		t.Errorf("Expected absolutePathFileName='%v'.  Instead, absolutePathFileName='%v'", expectedAbsPathFileNameExt, fMgr.absolutePathFileName)
-	}
-
-}
-
-func TestFileMgr_NewFromDirMgrFileNameExt_02(t *testing.T) {
-
-	rawFileNameExt := "./newerFileForTest_01.txt"
-	expectedFileNameExt := "newerFileForTest_01.txt"
-
-	fh := FileHelper{}
-	adjustedPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest")
-
-	absolutePath, err := fh.MakeAbsolutePath(adjustedPath)
-
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(adjustedPath). adjustedPath='%v' Error='%v'", adjustedPath, err.Error())
-	}
-
-	dMgr, err := DirMgr{}.New(adjustedPath)
-
-	if err != nil {
-		t.Errorf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
-	}
-
-	if absolutePath != dMgr.absolutePath {
-		t.Errorf("Expected dMgr.absolutePath='%v'.  Instead, dMgr.absolutePath='%v'", absolutePath, dMgr.absolutePath)
-	}
-
-	fMgr, err := FileMgr{}.NewFromDirMgrFileNameExt(dMgr, rawFileNameExt)
-
-	absPath, err := fh.MakeAbsolutePath(adjustedPath)
-
-	if err != nil {
-		t.Errorf("Error returned from fh.MakeAbsolutePath(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
-	}
-
-	expectedAbsPathFileNameExt := absPath + string(os.PathSeparator) + expectedFileNameExt
-
-	if expectedAbsPathFileNameExt != fMgr.absolutePathFileName {
-		t.Errorf("Expected absolutePathFileName='%v'.  Instead, absolutePathFileName='%v'", expectedAbsPathFileNameExt, fMgr.absolutePathFileName)
-	}
-
-}
-
-func TestFileMgr_NewFromDirStrFileNameStr_01(t *testing.T) {
-
-	expectedFileNameExt := "newerFileForTest_01.txt"
-	expectedFileName := "newerFileForTest_01"
-	expectedExt := ".txt"
-
-	fh := FileHelper{}
-	rawPath := "../filesfortest/newfilesfortest"
-	expectedPath := fh.AdjustPathSlash(rawPath)
-	expectedAbsPath, err := fh.MakeAbsolutePath(expectedPath)
-
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath(expectedPath). expectedPath='%v'  Error='%v'", expectedPath, err.Error())
-	}
-
-	fileMgr, err := FileMgr{}.NewFromDirStrFileNameStr(rawPath, expectedFileNameExt)
-
-	if err != nil {
-		t.Errorf("Error returned from FileMgr{}.NewFromDirStrFileNameStr(rawPath, expectedFileNameExt). rawPath='%v' expectedFileNameExt='%v'  Error='%v'", rawPath, expectedFileNameExt, err.Error())
-	}
-
-	if fileMgr.fileNameExt != expectedFileNameExt {
-		t.Errorf("Expected extracted fileMgr.fileNameExt == %v, instead fileMgr.fileNameExt='%v' ", expectedFileNameExt, fileMgr.fileNameExt)
-	}
-
-	if fileMgr.fileName != expectedFileName {
-		t.Errorf("Expected fileMgr.fileName== '%v', instead fileMgr.fileName== '%v'", expectedFileName, fileMgr.fileName)
-	}
-
-	if fileMgr.fileExt != expectedExt {
-		t.Errorf("Expected fileMgr.fileExt== '%v', instead got: fileMgr.fileExt=='%v'", expectedExt, fileMgr.fileName)
-	}
-
-	if !fileMgr.dMgr.isPathPopulated {
-		t.Errorf("Expected 'fileMgr.isPathPopulated==true', instead got: fileMgr.isPathPopulated=='%v'", fileMgr.dMgr.isPathPopulated)
-	}
-
-	if !fileMgr.doesAbsolutePathFileNameExist {
-		t.Errorf("Expected 'fileMgr.doesAbsolutePathFileNameExist==true', instead got: fileMgr.doesAbsolutePathFileNameExist=='%v'", fileMgr.dMgr.isPathPopulated)
-	}
-
-	if !fileMgr.isAbsolutePathFileNamePopulated {
-		t.Error("Expected fileMgr.isAbsolutePathFileNamePopulated == 'true'.  Instead, it is 'false'")
-	}
-
-	if !fileMgr.dMgr.doesAbsolutePathExist {
-		t.Error("Expected fileMgr.doesAbsolutePathExist == 'true'.  Instead, it is 'false'")
-	}
-
-	if !fileMgr.actualFileInfo.IsFInfoInitialized {
-		t.Error("Expected fileMgr.actualFileInfo.IsFInfoInitialized='true'.  Error, it is 'false'")
-	}
-
-	if fileMgr.actualFileInfo.Name() != expectedFileNameExt {
-		t.Errorf("Expected fileMgr.actualFileInfo.Name()=='%v'.  Instead, fileMgr.actualFileInfo.Name()=='%v'.", expectedFileNameExt, fileMgr.actualFileInfo.Name())
-	}
-
-	if expectedAbsPath != fileMgr.dMgr.absolutePath {
-		t.Errorf("Expected absolutePath='%v'.  Instead, absolutePath='%v' ", expectedAbsPath, fileMgr.dMgr.absolutePath)
-	}
-
-	if expectedPath != fileMgr.dMgr.path {
-		t.Errorf("Expected path='%v'.  Instead, path='%v' ", expectedPath, fileMgr.dMgr.path)
-	}
-
-}

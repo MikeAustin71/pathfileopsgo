@@ -1,39 +1,44 @@
 package appExamples
 
 import (
-	"fmt"
-	"path/filepath"
+  "fmt"
+  "path/filepath"
 )
 
-func TestFilePathMatch002() {
-	// filename := "D:\\Test03\\start.txt"
-	// Note: This doesn't work. \\ generates
-	// and invalid response from Match
+type DirWalkerExamples struct {
+  Input  string
+  Output string
+}
 
-	filename := "start.txt"
+func (dWalkEx DirWalkerExamples) TestFilePathMatch002() {
+  // filename := "D:\\Test03\\start.txt"
+  // Note: This doesn't work. \\ generates
+  // and invalid response from Match
 
-	pattern := "*.txt"
+  filename := "start.txt"
 
-	matched, err := filepath.Match(pattern, filename)
+  pattern := "*.txt"
 
-	if err != nil {
-		fmt.Println(err)
-	}
+  matched, err := filepath.Match(pattern, filename)
 
-	fmt.Println(matched)
+  if err != nil {
+    fmt.Println(err)
+  }
+
+  fmt.Println(matched)
 
 }
 
-func TestFilePathGlob003(dirPathAndPattern string) {
+func (dWalkEx DirWalkerExamples) TestFilePathGlob003(dirPathAndPattern string) {
 
-	matches, err := filepath.Glob(dirPathAndPattern)
+  matches, err := filepath.Glob(dirPathAndPattern)
 
-	if err != nil {
-		panic(err)
-	}
+  if err != nil {
+    panic(err)
+  }
 
-	for i, f := range matches {
-		fmt.Println(i, " - ", f)
-	}
+  for i, f := range matches {
+    fmt.Println(i, " - ", f)
+  }
 
 }

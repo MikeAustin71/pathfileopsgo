@@ -1,221 +1,225 @@
 package appExamples
 
 import (
-	appLib "../appLibs"
-	pathFileOps "../pathfileops"
-	"errors"
-	"fmt"
-	"time"
+  appLib "../appLibs"
+  pathFileOps "../pathfileops"
+  "errors"
+  "fmt"
+  "time"
 )
 
-func ExampleExtractPathElements() {
-
-	fh := pathFileOps.FileHelper{}
-	commonDir := fh.AdjustPathSlash("..\\..\\003_filehelper\\common\\xt_dirmgr_01_test.go")
-
-	fileMgr, err := pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(commonDir)
-
-	if err != nil {
-		panic(errors.New("ExampleExtractPathElements()- Error returned on fh.GetPathFileNameElements(), Error:" + err.Error()))
-	}
-
-	fmgr2 := fileMgr.CopyOut()
-
-	if !fileMgr.Equal(&fmgr2) {
-		panic(errors.New("ExampleExtractPathElements() - CopyToThis Equal Analysis Failed!"))
-	}
-
-	PrintFileManagerFields(fileMgr)
+type FileHelperExamples struct {
+  Input  string
+  Output string
 }
 
-func PathElementsAnalysis(pathFile string) {
-	fh := pathFileOps.FileHelper{}
-	commonDir := fh.AdjustPathSlash(pathFile)
+func (fhEx FileHelperExamples) ExampleExtractPathElements() {
 
-	fMgr, err := pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(commonDir)
+  fh := pathFileOps.FileHelper{}
+  commonDir := fh.AdjustPathSlash("..\\..\\003_filehelper\\common\\xt_dirmgr_01_test.go")
 
-	if err != nil {
-		panic(errors.New("PathElementsAnalysis()- Error returned on fh.GetPathFileNameElements(), Error:" +
-			err.Error()))
-	}
+  fileMgr, err := pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(commonDir)
 
-	fMgr2 := fMgr.CopyOut()
+  if err != nil {
+    panic(errors.New("ExampleExtractPathElements()- Error returned on " +
+      "fh.GetPathFileNameElements(), Error:" + err.Error()))
+  }
 
-	if !fMgr.Equal(&fMgr2) {
-		panic(errors.New("PathElementsAnalysis() - CopyOut Equal Analysis Failed!"))
-	}
+  fmgr2 := fileMgr.CopyOut()
 
-	PrintFileManagerFields(fMgr)
+  if !fileMgr.Equal(&fmgr2) {
+    panic(errors.New("ExampleExtractPathElements() - CopyToThis Equal Analysis Failed!"))
+  }
 
+  fhEx.PrintFileManagerFields(fileMgr)
 }
 
-func PrintFileManagerFields(fileMgr pathFileOps.FileMgr) {
-	ePrefix := "PrintFileManagerFields() "
-	fmt.Println("======================================")
-	fmt.Println("            File Manager")
-	fmt.Println("======================================")
-	fmt.Println("isInitialized:", fileMgr.IsInitialized())
-	fmt.Println("originalPathFileName:", fileMgr.GetOriginalPathFileName())
-	fmt.Println("absolutePathFileName:", fileMgr.GetAbsolutePathFileName())
-	fmt.Println("isAbsolutePathFileNamePopulated:", fileMgr.IsAbsolutePathFileNamePopulated())
+func (fhEx FileHelperExamples) PathElementsAnalysis(pathFile string) {
+  fh := pathFileOps.FileHelper{}
+  commonDir := fh.AdjustPathSlash(pathFile)
 
-	doesFileExist, err := fileMgr.DoesThisFileExist()
-	if err != nil {
-		fmt.Printf(ePrefix+
-			"Error from fileMgr.DoesThisFileExist(). Error='%v' \n", err.Error())
-		return
-	}
+  fMgr, err := pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(commonDir)
 
-	fmt.Println("DoesThisFileExist():", doesFileExist)
-	fmt.Println("fileName:", fileMgr.GetFileName())
-	fmt.Println("isFileNamePopulated:", fileMgr.IsFileNamePopulated())
-	fmt.Println("fileExt:", fileMgr.GetFileExt())
-	fmt.Println("isFileExtPopulated:", fileMgr.IsFileExtPopulated())
-	fmt.Println("fileNameExt:", fileMgr.GetFileNameExt())
-	fmt.Println("isFileNameExtPopulated:", fileMgr.IsFileNameExtPopulated())
-	fmt.Println("isFilePtrOpen: ", fileMgr.IsFilePointerOpen())
+  if err != nil {
+    panic(errors.New("PathElementsAnalysis()- Error returned on fh.GetPathFileNameElements(), Error:" +
+      err.Error()))
+  }
 
-	fileInfoPlus, err := fileMgr.GetFileInfoPlus()
+  fMgr2 := fMgr.CopyOut()
 
-	if err != nil {
-		fmt.Printf(ePrefix+
-			"Error from fileMgr.GetFileInfoPlus(). Error='%v' \n", err.Error())
-		return
+  if !fMgr.Equal(&fMgr2) {
+    panic(errors.New("PathElementsAnalysis() - CopyOut Equal Analysis Failed!"))
+  }
 
-	}
-
-	PrintFileInfoPlusFields(fileInfoPlus)
-	PrintDirMgrFields(fileMgr.GetDirMgr())
-}
-
-func PrintFileInfoPlusFields(info pathFileOps.FileInfoPlus) {
-	fmt.Println("======================================")
-	fmt.Println("            File Info Plus")
-	fmt.Println("======================================")
-	du := appLib.DateTimeUtility{}
-	fmt.Println("  IsFInfoInitialized: ", info.IsFInfoInitialized)
-	fmt.Println("IsDirPathInitialized: ", info.IsDirPathInitialized)
-	fmt.Println("     CreateTimeStamp: ", du.GetDateTimeYMDAbbrvDowNano(info.CreateTimeStamp))
-	fmt.Println("              Name(): ", info.Name())
-	fmt.Println("              Size(): ", info.Size())
-	fmt.Println("              Mode(): ", info.Mode())
-	fmt.Println("           ModTime(): ", du.GetDateTimeYMDAbbrvDowNano(info.ModTime()))
-	fmt.Println("             IsDir(): ", info.IsDir())
-	fmt.Println("               Sys(): ", info.Sys())
-	fmt.Println("           DirPath(): ", info.DirPath())
-}
-
-func CreateFileOnTopOfExistingFile() {
-	tstFile := "..//logTest//testoverwrite//TestOverwrite001.txt"
-	fMgr, err := pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(tstFile)
-	ePrefix := "CreateFileOnTopOfExistingFile() "
-
-	if err != nil {
-		_ = fMgr.CloseFile()
-		panic(fmt.Errorf(ePrefix+
-			"- Error: FileMgr{}.NewFromPathFileNameExtStr(tstFile) Failed. tstFile='%v' Error='%v'",
-			tstFile, err.Error()))
-	}
-
-	if err != nil {
-		_ = fMgr.CloseFile()
-		panic(errors.New(fmt.Sprintf(ePrefix+
-			"Error Creating File: '%v' Error: %v", tstFile, err.Error())))
-	}
-
-	du := appLib.DateTimeUtility{}
-	str := "Test Over Write Time Stamp: " + du.GetDateTimeEverything(time.Now())
-	_, err = fMgr.WriteStrToFile(str)
-
-	if err != nil {
-		_ = fMgr.CloseFile()
-		panic(fmt.Errorf(ePrefix+" %v ", err.Error()))
-	}
-
-	err = fMgr.CloseFile()
-
-	if err != nil {
-		panic(fmt.Errorf(ePrefix+" %v ", err.Error()))
-	}
+  fhEx.PrintFileManagerFields(fMgr)
 
 }
 
-func ExampleReadTestFile() {
+func (fhEx FileHelperExamples) PrintFileManagerFields(fileMgr pathFileOps.FileMgr) {
 
-	ePrefix := "ExampleReadTestFile() "
-	tstFile := "../testfiles/TestRead.txt"
-	tstOutFile := "../testfiles/Output.txt"
-	fh := pathFileOps.FileHelper{}
-	f, err := fh.OpenFileForReading(tstFile)
+  ePrefix := "PrintFileManagerFields() "
+  fmt.Println("======================================")
+  fmt.Println("            File Manager")
+  fmt.Println("======================================")
+  fmt.Println("isInitialized:", fileMgr.IsInitialized())
+  fmt.Println("originalPathFileName:", fileMgr.GetOriginalPathFileName())
+  fmt.Println("absolutePathFileName:", fileMgr.GetAbsolutePathFileName())
+  fmt.Println("isAbsolutePathFileNamePopulated:", fileMgr.IsAbsolutePathFileNamePopulated())
 
-	if err != nil {
-		fmt.Printf("Error Opening file: %v\n", tstFile)
-	}
+  doesFileExist, err := fileMgr.DoesThisFileExist()
+  if err != nil {
+    fmt.Printf(ePrefix+
+      "Error from fileMgr.DoesThisFileExist(). Error='%v' \n", err.Error())
+    return
+  }
 
-	fOut, err2 := fh.CreateFile(tstOutFile)
+  fmt.Println("DoesThisFileExist():", doesFileExist)
+  fmt.Println("fileName:", fileMgr.GetFileName())
+  fmt.Println("isFileNamePopulated:", fileMgr.IsFileNamePopulated())
+  fmt.Println("fileExt:", fileMgr.GetFileExt())
+  fmt.Println("isFileExtPopulated:", fileMgr.IsFileExtPopulated())
+  fmt.Println("fileNameExt:", fileMgr.GetFileNameExt())
+  fmt.Println("isFileNameExtPopulated:", fileMgr.IsFileNameExtPopulated())
+  fmt.Println("isFilePtrOpen: ", fileMgr.IsFilePointerOpen())
 
-	if err2 != nil {
-		_ = f.Close()
-		fmt.Printf(ePrefix+"Error Opening file: %v\n", tstOutFile)
-		return
-	}
+  fileInfoPlus, err := fileMgr.GetFileInfoPlus()
 
-	buffer := make([]byte, 50000)
-	doRead := true
-	su := appLib.StringUtility{}
-	strCnt := 0
-	partialString := ""
+  if err != nil {
+    fmt.Printf(ePrefix+
+      "Error from fileMgr.GetFileInfoPlus(). Error='%v' \n", err.Error())
+    return
 
-	for doRead == true {
-		n, err := fh.ReadFileBytes(f, buffer)
+  }
 
-		nIdx := 0
-		s := ""
-		isPartialString := false
-		extractStr := true
+  fhEx.PrintFileInfoPlusFields(fileInfoPlus)
+  DirMgrExamples{}.PrintDirMgrFields(fileMgr.GetDirMgr())
+}
 
-		for extractStr == true && n > 0 {
-			s, nIdx, isPartialString = su.ReadStrNewLineFromBuffer(buffer, partialString, nIdx)
+func (fhEx FileHelperExamples) PrintFileInfoPlusFields(info pathFileOps.FileInfoPlus) {
+  fmt.Println("======================================")
+  fmt.Println("            File Info Plus")
+  fmt.Println("======================================")
+  du := appLib.DateTimeUtility{}
+  fmt.Println("  isFInfoInitialized: ", info.IsFileInfoInitialized())
+  fmt.Println("isDirPathInitialized: ", info.IsDirectoryPathInitialized())
+  fmt.Println("     CreateTimeStamp: ", du.GetDateTimeYMDAbbrvDowNano(info.CreateTimeStamp))
+  fmt.Println("              Name(): ", info.Name())
+  fmt.Println("              Size(): ", info.Size())
+  fmt.Println("              Mode(): ", info.Mode())
+  fmt.Println("           ModTime(): ", du.GetDateTimeYMDAbbrvDowNano(info.ModTime()))
+  fmt.Println("             IsDir(): ", info.IsDir())
+  fmt.Println("               Sys(): ", info.Sys())
+  fmt.Println("           DirPath(): ", info.DirPath())
+}
 
-			if !isPartialString {
-				strCnt++
+func (fhEx FileHelperExamples) CreateFileOnTopOfExistingFile() {
+  ePrefix := "CreateFileOnTopOfExistingFile() "
 
-				_, err = fh.WriteFileStr(fmt.Sprintf("%07d- %s\n", strCnt, s), fOut)
+  tstFile := "..//logTest//testoverwrite//TestOverwrite001.txt"
+  fMgr, err := pathFileOps.FileMgr{}.NewFromPathFileNameExtStr(tstFile)
 
-				if err != nil {
-					_ = f.Close()
-					_ = fOut.Close()
-					fmt.Printf(ePrefix+"Error Writhing File Str #1: %v\n", err.Error())
-					return
-				}
+  if err != nil {
+    _ = fMgr.CloseThisFile()
+    panic(fmt.Errorf(ePrefix+
+      "- Error: FileMgr{}.NewFromPathFileNameExtStr(tstFile) Failed. tstFile='%v' Error='%v'",
+      tstFile, err.Error()))
+    return
+  }
 
-			} else {
-				partialString = s
-				_, err = fh.WriteFileStr(fmt.Sprintf("******* Partial String %07d- %s **********\n", strCnt, s), fOut)
+  du := appLib.DateTimeUtility{}
+  str := "Test Over Write Time Stamp: " + du.GetDateTimeEverything(time.Now())
+  _, err = fMgr.WriteStrToFile(str)
 
-				if err != nil {
-					_ = f.Close()
-					_ = fOut.Close()
-					fmt.Printf(ePrefix+"Error Writing File Str #2: %v\n", err.Error())
-					return
-				}
+  if err != nil {
+    _ = fMgr.CloseThisFile()
+    panic(fmt.Errorf(ePrefix+" %v ", err.Error()))
+  }
 
-			}
+  err = fMgr.CloseThisFile()
 
-			if nIdx == -1 {
-				extractStr = false
-			}
+  if err != nil {
+    panic(fmt.Errorf(ePrefix+" %v ", err.Error()))
+  }
 
-		}
+}
 
-		if n < 50000 || err != nil {
-			doRead = false
-		}
+func (fhEx FileHelperExamples) ExampleReadTestFile() {
 
-	}
+  ePrefix := "ExampleReadTestFile() "
+  tstFile := "../testfiles/TestRead.txt"
+  tstOutFile := "../testfiles/Output.txt"
+  fh := pathFileOps.FileHelper{}
+  f, err := fh.OpenFileReadOnly(tstFile)
 
-	_ = f.Close()
-	_ = fOut.Close()
+  if err != nil {
+    fmt.Printf("Error Opening file: %v\n", tstFile)
+    return
+  }
 
-	fmt.Println("Completed File Read and output to output file: ", tstOutFile)
+  fOut, err2 := fh.CreateFile(tstOutFile)
+
+  if err2 != nil {
+    _ = f.Close()
+    fmt.Printf(ePrefix+"Error Opening file: %v\n", tstOutFile)
+    return
+  }
+
+  buffer := make([]byte, 50000)
+  doRead := true
+  su := appLib.StringUtility{}
+  strCnt := 0
+  partialString := ""
+
+  for doRead == true {
+    n, err := f.Read(buffer)
+
+    nIdx := 0
+    s := ""
+    isPartialString := false
+    extractStr := true
+
+    for extractStr == true && n > 0 {
+      s, nIdx, isPartialString = su.ReadStrNewLineFromBuffer(buffer, partialString, nIdx)
+
+      if !isPartialString {
+        strCnt++
+
+        _, err = fOut.WriteString(fmt.Sprintf("%07d- %s\n", strCnt, s))
+
+        if err != nil {
+          _ = f.Close()
+          _ = fOut.Close()
+          fmt.Printf(ePrefix+"Error Writhing File Str #1: %v\n", err.Error())
+          return
+        }
+
+      } else {
+        partialString = s
+        _, err = fOut.WriteString(fmt.Sprintf("******* Partial String %07d- %s **********\n", strCnt, s))
+
+        if err != nil {
+          _ = f.Close()
+          _ = fOut.Close()
+          fmt.Printf(ePrefix+"Error Writing File Str #2: %v\n", err.Error())
+          return
+        }
+
+      }
+
+      if nIdx == -1 {
+        extractStr = false
+      }
+
+    }
+
+    if n < 50000 {
+      doRead = false
+    }
+
+  }
+
+  _ = f.Close()
+  _ = fOut.Close()
+
+  fmt.Println("Completed File Read and output to output file: ", tstOutFile)
 }

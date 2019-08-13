@@ -1,1148 +1,988 @@
 package pathfileops
 
 import (
-	"testing"
-	"time"
+  "fmt"
+  "os"
+  "strings"
+  "testing"
 )
 
-func TestFileHelper_FilterFileName_01(t *testing.T) {
+func TestFileHelper_CleanFileNameExtStr_01(t *testing.T) {
+  fh := FileHelper{}
+  testPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01.txt")
+  expectedFileNameExt := "newerFileForTest_01.txt"
+  result, isFileNameEmpty, err := fh.CleanFileNameExtStr(testPath)
 
-	fia := FileInfoPlus{}
-	fia.SetName("newerFileForTest_01.txt")
-	fia.SetMode(0777)
-	fia.SetSize(107633)
-	fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
-	fModTimeStr := "2017-10-01 00:00:00.000000000 -0500 CDT"
-	fModTime, err := time.Parse(fmtstr, fModTimeStr)
+  if err != nil {
+    t.Errorf("Error returned by fh.CleanFileNameExtStr(testPath). testPath='%v' Error='%v'", testPath, err.Error())
+  }
 
-	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
-	}
+  if isFileNameEmpty {
+    t.Error("Expected isFileNameEmpty='false'. Instead, isFileNameEmpty='true'")
+  }
 
-	fia.SetModTime(fModTime)
-	fia.SetIsDir(false)
-	fia.SetSysDataSrc(nil)
-	fia.SetIsDir(true)
-
-	searchPattern := "*.txt"
-	filesOlderThan := time.Time{}
-	filesNewerThan := time.Time{}
-
-	fsc := FileSelectionCriteria{}
-
-	fsc.FileNamePatterns = []string{searchPattern}
-	fsc.FilesOlderThan = filesOlderThan
-	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
-
-	fh := FileHelper{}
-	isFound, err := fh.FilterFileName(fia, fsc)
-
-	if !isFound {
-		t.Errorf("File was NOT found. File should have been found. fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
-	}
+  if expectedFileNameExt != result {
+    t.Errorf("Expected fh.CleanFileNameExtStr to return '%v'. Instead, it returned '%v'", expectedFileNameExt, result)
+  }
 
 }
 
-func TestFileHelper_FilterFileName_02(t *testing.T) {
+func TestFileHelper_CleanFileNameExtStr_02(t *testing.T) {
+  fh := FileHelper{}
+  testPath := fh.AdjustPathSlash("newerFileForTest_01.txt")
+  expectedFileNameExt := "newerFileForTest_01.txt"
+  result, isFileNameEmpty, err := fh.CleanFileNameExtStr(testPath)
 
-	fia := FileInfoPlus{}
-	fia.SetName("newerFileForTest_01.txt")
-	fia.SetMode(0777)
-	fia.SetSize(107633)
-	fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
-	fModTimeStr := "2017-10-01 00:00:00.000000000 -0500 CDT"
-	fModTime, err := time.Parse(fmtstr, fModTimeStr)
+  if err != nil {
+    t.Errorf("Error returned by fh.CleanFileNameExtStr(testPath).\n"+
+      "testPath='%v'\nError='%v'",
+      testPath, err.Error())
+  }
 
-	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
-	}
+  if isFileNameEmpty {
+    t.Error("Expected isFileNameEmpty='false'.\n" +
+      "Instead, isFileNameEmpty='true'\n")
+  }
 
-	fia.SetModTime(fModTime)
-	fia.SetIsDir(false)
-	fia.SetSysDataSrc(nil)
-	fia.SetIsDir(true)
-
-	searchPattern := "*.txt"
-	//filesOlderThan := time.Time{}
-	fOlderThanStr := "2017-12-01 00:00:00.000000000 -0600 CST"
-	filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
-
-	if err != nil {
-		t.Errorf("Error returned by time.Parse(fmtstr, fOlderThanStr). "+
-			"fmtstr='%v' fOlderThanStr='%v' Error='%v'",
-			fmtstr, fOlderThanStr, err.Error())
-	}
-
-	filesNewerThan := time.Time{}
-
-	fsc := FileSelectionCriteria{}
-
-	fsc.FileNamePatterns = []string{searchPattern}
-	fsc.FilesOlderThan = filesOlderThan
-	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
-
-	fh := FileHelper{}
-	isFound, err := fh.FilterFileName(fia, fsc)
-
-	if !isFound {
-		t.Errorf("File was NOT found. File should have been found. fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
-	}
+  if expectedFileNameExt != result {
+    t.Errorf("Expected fh.CleanFileNameExtStr to return '%v'.\n"+
+      "Instead, it returned '%v'\n",
+      expectedFileNameExt, result)
+  }
 
 }
 
-func TestFileHelper_FilterFileName_03(t *testing.T) {
+func TestFileHelper_CleanFileNameExtStr_03(t *testing.T) {
+  fh := FileHelper{}
+  testPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest/")
+  // testPath is a directory which actually exists
+  _, isEmpty, err := fh.CleanFileNameExtStr(testPath)
 
-	fia := FileInfoPlus{}
-	fia.SetName("newerFileForTest_01.txt")
-	fia.SetMode(0777)
-	fia.SetSize(107633)
-	fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
-	fModTimeStr := "2017-10-01 00:00:00.000000000 -0500 CDT"
-	fModTime, err := time.Parse(fmtstr, fModTimeStr)
+  if err != nil {
+    t.Errorf("Unexpected Error returned by fh.CleanFileNameExtStr(testPath)\n"+
+      "testPath='%v'\nError='%v'\n",
+      testPath, err.Error())
+    return
+  }
 
-	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
-	}
-
-	fia.SetModTime(fModTime)
-	fia.SetIsDir(false)
-	fia.SetSysDataSrc(nil)
-	fia.SetIsDir(true)
-
-	searchPattern := ""
-	//filesOlderThan := time.Time{}
-	fOlderThanStr := "2017-12-01 00:00:00.000000000 -0600 CST"
-	filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
-	if err != nil {
-		t.Errorf("Error returned by time.Parse(fmtstr, fOlderThanStr). "+
-			"fmtstr='%v' fOlderThanStr='%v' Error='%v'", fmtstr, fOlderThanStr, err.Error())
-	}
-
-	filesNewerThan := time.Time{}
-
-	fsc := FileSelectionCriteria{}
-
-	fsc.FileNamePatterns = []string{searchPattern}
-	fsc.FilesOlderThan = filesOlderThan
-	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
-
-	fh := FileHelper{}
-	isFound, err := fh.FilterFileName(fia, fsc)
-
-	if !isFound {
-		t.Errorf("File was NOT found. File should have been found. fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
-	}
+  if isEmpty == false {
+    t.Error("ERROR: Expected 'isEmpty' == 'true' because input parameter\n" +
+      "'testPath' was an actual directory the physically exists on disk.\n" +
+      "However, 'isEmpty' return value was 'false'!\n")
+  }
 
 }
 
-func TestFileHelper_FilterFileName_04(t *testing.T) {
+func TestFileHelper_CleanFileNameExtStr_04(t *testing.T) {
+  fh := FileHelper{}
 
-	fia := FileInfoPlus{}
-	fia.SetName("newerFileForTest_01.txt")
-	fia.SetMode(0777)
-	fia.SetSize(107633)
-	fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
-	fModTimeStr := "2017-10-01 00:00:00.000000000 -0500 CDT"
-	fModTime, err := time.Parse(fmtstr, fModTimeStr)
+  _, _, err := fh.CleanFileNameExtStr("")
 
-	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
-	}
-
-	fia.SetModTime(fModTime)
-	fia.SetIsDir(false)
-	fia.SetSysDataSrc(nil)
-	fia.SetIsDir(true)
-
-	searchPattern := "*.txt"
-	filesOlderThan := time.Time{}
-	fNewerThanStr := "2017-09-01 00:00:00.000000000 -0500 CDT"
-	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
-
-	if err != nil {
-		t.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). "+
-			"fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
-	}
-
-	fsc := FileSelectionCriteria{}
-
-	fsc.FileNamePatterns = []string{searchPattern}
-	fsc.FilesOlderThan = filesOlderThan
-	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
-
-	fh := FileHelper{}
-	isFound, err := fh.FilterFileName(fia, fsc)
-
-	if !isFound {
-		t.Errorf("File was NOT found. File should have been found. "+
-			"fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
-	}
+  if err == nil {
+    t.Error("Expected error return from fh.CleanFileNameExtStr(\"\") " +
+      "because the input parameter is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
 
 }
 
-func TestFileHelper_FilterFileName_05(t *testing.T) {
+func TestFileHelper_CleanFileNameExtStr_05(t *testing.T) {
+  fh := FileHelper{}
 
-	fia := FileInfoPlus{}
-	fia.SetName("newerFileForTest_01.txt")
-	fia.SetMode(0777)
-	fia.SetSize(107633)
-	fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
-	fModTimeStr := "2017-10-01 00:00:00.000000000 -0500 CDT"
-	fModTime, err := time.Parse(fmtstr, fModTimeStr)
+  _, _, err := fh.CleanFileNameExtStr("     ")
 
-	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). "+
-			"fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
-	}
-
-	fia.SetModTime(fModTime)
-	fia.SetIsDir(false)
-	fia.SetSysDataSrc(nil)
-	fia.SetIsDir(true)
-
-	searchPattern := ""
-	filesOlderThan := time.Time{}
-	fNewerThanStr := "2017-09-01 00:00:00.000000000 -0500 CDT"
-	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
-
-	if err != nil {
-		t.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). "+
-			"fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
-	}
-
-	fsc := FileSelectionCriteria{}
-
-	fsc.FileNamePatterns = []string{searchPattern}
-	fsc.FilesOlderThan = filesOlderThan
-	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
-
-	fh := FileHelper{}
-	isFound, err := fh.FilterFileName(fia, fsc)
-
-	if !isFound {
-		t.Errorf("File was NOT found. File should have been found. "+
-			"fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
-	}
+  if err == nil {
+    t.Error("Expected error return from fh.CleanFileNameExtStr(\"    \") " +
+      "because the input parameter consists of all spaces. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
 
 }
 
-func TestFileHelper_FilterFileName_06(t *testing.T) {
+func TestFileHelper_CleanFileNameExtStr_06(t *testing.T) {
+  fh := FileHelper{}
 
-	fia := FileInfoPlus{}
-	fia.SetName("newerFileForTest_01.txt")
-	fia.SetMode(0777)
-	fia.SetSize(107633)
-	fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
-	fModTimeStr := "2017-10-01 00:00:00.000000000 -0500 CDT"
-	fModTime, err := time.Parse(fmtstr, fModTimeStr)
+  _, _, err := fh.CleanFileNameExtStr("...\\")
 
-	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). "+
-			"fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
-	}
-
-	fia.SetModTime(fModTime)
-	fia.SetIsDir(false)
-	fia.SetSysDataSrc(nil)
-	fia.SetIsDir(true)
-
-	searchPattern := "*.txt"
-	//filesOlderThan := time.Time{}
-	fOlderThanStr := "2017-12-01 00:00:00.000000000 -0600 CST"
-	filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
-
-	fNewerThanStr := "2017-12-20 00:00:00.000000000 -0600 CST"
-	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
-
-	if err != nil {
-		t.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). "+
-			"fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
-	}
-
-	fsc := FileSelectionCriteria{}
-
-	fsc.FileNamePatterns = []string{searchPattern}
-	fsc.FilesOlderThan = filesOlderThan
-	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
-
-	fh := FileHelper{}
-	isFound, err := fh.FilterFileName(fia, fsc)
-
-	if isFound {
-		t.Errorf("It was expected that this File would NOT be found. It WAS Found. "+
-			"Error! fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
-	}
+  if err == nil {
+    t.Error("Expected error return from fh.CleanFileNameExtStr(\"    \") " +
+      "because the input parameter includes 3-dots ('...'). " +
+      "However, NO ERROR WAS RETURNED!")
+  }
 
 }
 
-func TestFileHelper_FilterFileName_07(t *testing.T) {
+func TestFileHelper_CleanFileNameExtStr_07(t *testing.T) {
+  fh := FileHelper{}
+  testPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest/.gitignore")
+  expectedFileNameExt := ".gitignore"
+  result, isFileNameEmpty, err := fh.CleanFileNameExtStr(testPath)
 
-	fia := FileInfoPlus{}
-	fia.SetName("newerFileForTest_01.txt")
-	fia.SetMode(0777)
-	fia.SetSize(107633)
-	fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
-	fModTimeStr := "2017-10-01 00:00:00.000000000 -0500 CDT"
-	fModTime, err := time.Parse(fmtstr, fModTimeStr)
+  if err != nil {
+    t.Errorf("Error returned by fh.CleanFileNameExtStr(testPath). testPath='%v' Error='%v'", testPath, err.Error())
+  }
 
-	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
-	}
+  if isFileNameEmpty {
+    t.Error("Expected isFileNameEmpty='false'. Instead, isFileNameEmpty='true'")
+  }
 
-	fia.SetModTime(fModTime)
-	fia.SetIsDir(false)
-	fia.SetSysDataSrc(nil)
-	fia.SetIsDir(true)
-
-	searchPattern := ""
-	//filesOlderThan := time.Time{}
-	fOlderThanStr := "2017-12-01 00:00:00.000000000 -0600 CST"
-	filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
-
-	fNewerThanStr := "2017-12-20 00:00:00.000000000 -0600 CST"
-	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
-
-	if err != nil {
-		t.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). "+
-			"fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
-	}
-
-	fsc := FileSelectionCriteria{}
-
-	fsc.FileNamePatterns = []string{searchPattern}
-	fsc.FilesOlderThan = filesOlderThan
-	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
-
-	fh := FileHelper{}
-	isFound, err := fh.FilterFileName(fia, fsc)
-
-	if isFound {
-		t.Errorf("It was expected that this file would NOT be Found. Instead, it WAS found. "+
-			"Error! fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
-	}
+  if expectedFileNameExt != result {
+    t.Errorf("Expected fh.CleanFileNameExtStr to return '%v'. Instead, it returned '%v'", expectedFileNameExt, result)
+  }
 
 }
 
-func TestFileHelper_FilterFileName_08(t *testing.T) {
+func TestFileHelper_CleanFileNameExtStr_08(t *testing.T) {
+  fh := FileHelper{}
+  testPath := fh.AdjustPathSlash("../filesfortest/newfilesfortest/newerFileForTest_01")
+  expectedFileNameExt := "newerFileForTest_01"
+  result, isFileNameEmpty, err := fh.CleanFileNameExtStr(testPath)
 
-	fia := FileInfoPlus{}
-	fia.SetName("newerFileForTest_01.txt")
-	fia.SetMode(0777)
-	fia.SetSize(107633)
-	fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
-	fModTimeStr := "2017-10-01 00:00:00.000000000 -0500 CDT"
-	fModTime, err := time.Parse(fmtstr, fModTimeStr)
+  if err != nil {
+    t.Errorf("Error returned by fh.CleanFileNameExtStr(testPath). testPath='%v' Error='%v'",
+      testPath, err.Error())
+  }
 
-	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). "+
-			"fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
-	}
+  if isFileNameEmpty {
+    t.Error("Expected isFileNameEmpty='false'. Instead, isFileNameEmpty='true'")
+  }
 
-	fia.SetModTime(fModTime)
-	fia.SetIsDir(false)
-	fia.SetSysDataSrc(nil)
-	fia.SetIsDir(true)
-
-	searchPattern := "*.htm"
-	//filesOlderThan := time.Time{}
-	fOlderThanStr := "2017-08-01 00:00:00.000000000 -0500 CDT"
-	filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
-
-	fNewerThanStr := "2017-12-20 00:00:00.000000000 -0600 CST"
-	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
-
-	if err != nil {
-		t.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). "+
-			"fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
-	}
-
-	fsc := FileSelectionCriteria{}
-
-	fsc.FileNamePatterns = []string{searchPattern}
-	fsc.FilesOlderThan = filesOlderThan
-	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
-
-	fh := FileHelper{}
-	isFound, err := fh.FilterFileName(fia, fsc)
-
-	if isFound {
-		t.Errorf("Expected that File was NOT found. Instead, File WAS found - Error. "+
-			"fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
-	}
+  if expectedFileNameExt != result {
+    t.Errorf("Expected fh.CleanFileNameExtStr to return '%v'. Instead, it returned '%v'",
+      expectedFileNameExt, result)
+  }
 
 }
 
-func TestFileHelper_FilterFileName_09(t *testing.T) {
+func TestFileHelper_ConsolidateErrors_01(t *testing.T) {
 
-	fia := FileInfoPlus{}
-	fia.SetName("newerFileForTest_01.txt")
-	fia.SetMode(0777)
-	fia.SetSize(107633)
-	fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
-	fModTimeStr := "2017-10-01 00:00:00.000000000 -0500 CDT"
-	fModTime, err := time.Parse(fmtstr, fModTimeStr)
+  errs := make([]error, 0, 100)
 
-	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). "+
-			"fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
-	}
+  for i:=0; i < 3; i++ {
+    errNo := fmt.Sprintf("Error #%0.3d: Error message.\n", i)
+    err := fmt.Errorf(errNo)
 
-	fia.SetModTime(fModTime)
-	fia.SetIsDir(false)
-	fia.SetSysDataSrc(nil)
-	fia.SetIsDir(true)
+    errs = append(errs, err)
+  }
 
-	searchPattern := ""
-	//filesOlderThan := time.Time{}
-	fOlderThanStr := "2017-08-01 00:00:00.000000000 -0500 CDT"
-	filesOlderThan, err := time.Parse(fmtstr, fOlderThanStr)
+  fh := FileHelper{}
 
-	fNewerThanStr := "2017-12-20 00:00:00.000000000 -0600 CST"
-	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
+  err := fh.ConsolidateErrors(errs)
 
-	if err != nil {
-		t.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). "+
-			"fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
-	}
+  if err == nil {
+    t.Errorf("ERROR: fh.ConsolidateErrors(errs) returned 'nil'\n" +
+      "instead of the expected error value.\n")
+    return
+  }
 
-	fsc := FileSelectionCriteria{}
+  finalErrStr := fmt.Sprintf("%v", err.Error())
 
-	fsc.FileNamePatterns = []string{searchPattern}
-	fsc.FilesOlderThan = filesOlderThan
-	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+  for k:=0; k < 3; k++ {
+    testStr := fmt.Sprintf("Error #%0.3d:", k)
 
-	fh := FileHelper{}
-	isFound, err := fh.FilterFileName(fia, fsc)
+    if !strings.Contains(finalErrStr,testStr) {
+      t.Errorf("Error: Expected final error string would contain %v.\n" +
+        "It did NOT contain that text!\n" +
+        "Final Err Str='%v'\n" +
+        "Test text='%v'\n",
+        testStr,finalErrStr,testStr)
+      return
+    }
+  }
+}
 
-	if isFound {
-		t.Errorf("Expected that File was NOT found. Instead, File WAS found - Error. "+
-			"fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
-	}
+func TestFileHelper_ConsolidateErrors_02(t *testing.T) {
+  errs := make([]error, 0, 100)
+
+  fh := FileHelper{}
+
+  err := fh.ConsolidateErrors(errs)
+
+  if err != nil {
+    t.Error("ERROR: Expected fh.ConsolidateErrors(errs) to return 'nil'\n" +
+      "because 'errs' is an empty array.\n" +
+      "However, NO ERROR WAS RETURNED!!!")
+  }
 
 }
 
-func TestFileHelper_FilterFileName_10(t *testing.T) {
+func TestFileHelper_ConvertOctalToDecimal_01(t *testing.T) {
 
-	fia := FileInfoPlus{}
-	fia.SetName("newerFileForTest_01.txt")
-	fia.SetMode(0777)
-	fia.SetSize(107633)
-	fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
-	fModTimeStr := "2017-10-01 00:00:00.000000000 -0500 CDT"
-	fModTime, err := time.Parse(fmtstr, fModTimeStr)
+  fh := FileHelper{}
+  expectedValue := 511
 
-	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). "+
-			"fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
-	}
+  octalValue := 777
 
-	fia.SetModTime(fModTime)
-	fia.SetIsDir(false)
-	fia.SetSysDataSrc(nil)
-	fia.SetIsDir(true)
+  mode := fh.ConvertOctalToDecimal(octalValue)
 
-	searchPattern := ""
-	filesOlderThan := time.Time{}
-
-	fNewerThanStr := "2017-12-20 00:00:00.000000000 -0600 CST"
-	filesNewerThan, err := time.Parse(fmtstr, fNewerThanStr)
-
-	if err != nil {
-		t.Errorf("Error returned by time.Parse(fmtstr, fNewerThanStr). "+
-			"fmtstr='%v' fNewerThanStr='%v' Error='%v'", fmtstr, fNewerThanStr, err.Error())
-	}
-
-	fsc := FileSelectionCriteria{}
-
-	fsc.FileNamePatterns = []string{searchPattern}
-	fsc.FilesOlderThan = filesOlderThan
-	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
-
-	fh := FileHelper{}
-	isFound, err := fh.FilterFileName(fia, fsc)
-
-	if isFound {
-		t.Errorf("Expected that File was NOT found. Instead, File WAS found - Error. "+
-			"fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
-	}
+  if expectedValue != mode {
+    t.Errorf("Error: Expected Value='%v'. Instead, value='%v' ",
+      expectedValue, mode)
+  }
 
 }
 
-func TestFileHelper_FilterFileName_11(t *testing.T) {
+func TestFileHelper_ConvertOctalToDecimal_02(t *testing.T) {
 
-	fia := FileInfoPlus{}
-	fia.SetName("newerFileForTest_01.txt")
-	fia.SetMode(0777)
-	fia.SetSize(107633)
-	fmtstr := "2006-01-02 15:04:05.000000000 -0700 MST"
-	fModTimeStr := "2017-10-01 00:00:00.000000000 -0500 CDT"
-	fModTime, err := time.Parse(fmtstr, fModTimeStr)
+  fh := FileHelper{}
+  expectedValue := 438
 
-	if err != nil {
-		t.Errorf("Error returned from time.Parse(fmtstr, fModTimeStr). "+
-			"fmtstr='%v' fModTimeStr='%v' Error='%v'", fmtstr, fModTimeStr, err.Error())
-	}
+  octalValue := 666
 
-	fia.SetModTime(fModTime)
-	fia.SetIsDir(false)
-	fia.SetSysDataSrc(nil)
-	fia.SetIsDir(true)
+  mode := fh.ConvertOctalToDecimal(octalValue)
 
-	searchPattern := ""
-	filesOlderThan := time.Time{}
-	filesNewerThan := time.Time{}
-
-	fsc := FileSelectionCriteria{}
-
-	fsc.FileNamePatterns = []string{searchPattern}
-	fsc.FilesOlderThan = filesOlderThan
-	fsc.FilesNewerThan = filesNewerThan
-	fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
-
-	fh := FileHelper{}
-	isFound, err := fh.FilterFileName(fia, fsc)
-
-	if !isFound {
-		t.Errorf("Expected that File would be found. However, File WAS NOT found - Error. "+
-			"fia.Name()='%v fia.ModTime()='%v'", fia.Name(), fia.ModTime().Format(fmtstr))
-	}
+  if expectedValue != mode {
+    t.Errorf("Error: Expected Value='%v'. Instead, value='%v' ",
+      expectedValue, mode)
+  }
 
 }
 
-func TestFileHelper_FindFilesInPath_01(t *testing.T) {
+func TestFileHelper_ConvertDecimalToOctal_01(t *testing.T) {
 
-	fh := FileHelper{}
+  fh := FileHelper{}
 
-	targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
+  expectedOctalValue := 777
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath("+
-			"\"../dirmgrtests/levelfilesfortest \") "+
-			"Error='%v' ", err.Error())
-	}
+  initialDecimalValue := 511
 
-	sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
+  actualOctalValue := fh.ConvertDecimalToOctal(initialDecimalValue)
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath("+
-			"\"..../filesfortest/levelfilesfortest \") "+
-			"Error='%v' ", err.Error())
-	}
-
-	targetDir, err := DirMgr{}.New(targetDirStr)
-
-	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
-			"targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
-	}
-
-	sourceDir, err := DirMgr{}.New(sourceDirStr)
-
-	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
-			"sourceDir='%v' Error='%v' ", sourceDir, err.Error())
-	}
-
-	if targetDir.DoesDirMgrAbsolutePathExist() {
-
-		err = targetDir.DeleteAll()
-
-		if err != nil {
-			t.Errorf("Error returned by targetDir.DeleteAll() "+
-				"targetDir='%v' Error='%v' ",
-				targetDir.GetAbsolutePath(), err.Error())
-		}
-	}
-
-	// Target Directory does NOT Exist
-
-	fileSelect := FileSelectionCriteria{}
-
-	fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
-
-	fileOps := make([]FileOperationCode, 1, 5)
-
-	fileOps[0] = FileOperationCode(0).CopySourceToDestinationByIo()
-
-	errStrs := sourceDir.ExecuteDirectoryFileOps(fileSelect, fileOps, targetDir)
-
-	if len(errStrs) > 0 {
-		for i := 0; i < len(errStrs); i++ {
-			t.Errorf("sourceDir.ExecuteDirectoryFileOps-Error: %v", errStrs[i])
-		}
-	}
-
-	foundFiles, err := fh.FindFilesInPath(targetDir.GetAbsolutePath(), "*.*")
-
-	lenFoundFiles := len(foundFiles)
-
-	if lenFoundFiles != 5 {
-		t.Errorf("Error: Expected to find 5-files. Instead, found %v-files! ",
-			lenFoundFiles)
-	}
-
-	_ = targetDir.DeleteAll()
+  if expectedOctalValue != actualOctalValue {
+    t.Errorf("Error: Expected ocatal value='%v'. Instead, actual ocatal value='%v' ",
+      expectedOctalValue, actualOctalValue)
+  }
 
 }
 
-func TestFileHelper_FindFilesInPath_02(t *testing.T) {
+func TestFileHelper_ConvertDecimalToOctal_02(t *testing.T) {
 
-	fh := FileHelper{}
+  fh := FileHelper{}
 
-	targetDirStr, err := fh.MakeAbsolutePath("../dirmgrtests/levelfilesfortest")
+  expectedOctalValue := 666
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath("+
-			"\"../dirmgrtests/levelfilesfortest \") "+
-			"Error='%v' ", err.Error())
-	}
+  initialDecimalValue := 438
 
-	sourceDirStr, err := fh.MakeAbsolutePath("../filesfortest/levelfilesfortest")
+  actualOctalValue := fh.ConvertDecimalToOctal(initialDecimalValue)
 
-	if err != nil {
-		t.Errorf("Error returned by fh.MakeAbsolutePath("+
-			"\"..../filesfortest/levelfilesfortest \") "+
-			"Error='%v' ", err.Error())
-	}
-
-	targetDir, err := DirMgr{}.New(targetDirStr)
-
-	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(targetDirStr) "+
-			"targetDirStr='%v' Error='%v' ", targetDirStr, err.Error())
-	}
-
-	sourceDir, err := DirMgr{}.New(sourceDirStr)
-
-	if err != nil {
-		t.Errorf("Error returned by DirMgr{}.New(sourceDir) "+
-			"sourceDir='%v' Error='%v' ", sourceDir, err.Error())
-	}
-
-	if targetDir.DoesDirMgrAbsolutePathExist() {
-
-		err = targetDir.DeleteAll()
-
-		if err != nil {
-			t.Errorf("Error returned by targetDir.DeleteAll() "+
-				"targetDir='%v' Error='%v' ",
-				targetDir.GetAbsolutePath(), err.Error())
-		}
-	}
-
-	// Target Directory does NOT Exist
-
-	fileSelect := FileSelectionCriteria{}
-
-	fileSelect.SelectCriterionMode = FileSelectMode.ORSelect()
-
-	fileOps := make([]FileOperationCode, 1, 5)
-
-	fileOps[0] = FileOperationCode(0).CopySourceToDestinationByIo()
-
-	errStrs := sourceDir.ExecuteDirectoryTreeOps(fileSelect, fileOps, targetDir)
-
-	if len(errStrs) > 0 {
-		for i := 0; i < len(errStrs); i++ {
-			t.Errorf("sourceDir.ExecuteDirectoryTreeOps-Error: %v", errStrs[i])
-		}
-	}
-
-	foundFiles, err := fh.FindFilesInPath(targetDir.GetAbsolutePath(), "*")
-
-	lenFoundFiles := len(foundFiles)
-
-	if lenFoundFiles != 6 {
-		t.Errorf("Error: Expected to find 6-files. Instead, found %v-files! ",
-			lenFoundFiles)
-	}
-
-	_ = targetDir.DeleteAll()
+  if expectedOctalValue != actualOctalValue {
+    t.Errorf("Error: Expected ocatal value='%v'. Instead, actual ocatal value='%v' ",
+      expectedOctalValue, actualOctalValue)
+  }
 
 }
 
-func TestFileHelper_GetFileExtension_01(t *testing.T) {
-	fh := FileHelper{}
+func TestFileHelper_CopyFileByIo_01(t *testing.T) {
 
-	commonDir := fh.AdjustPathSlash(".\\xt_dirmgr_01_test.go")
+  rawDestFile := "..\\checkfiles\\scratchTestCopyFile80179658.txt"
 
-	expectedExt := ".go"
+  destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
 
-	result, isEmpty, err := fh.GetFileExtension(commonDir)
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile). "+
+      "rawDestFile='%v' Error='%v' ", rawDestFile, err.Error())
+  }
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetFileExt(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
-	}
+  _ = FileHelper{}.DeleteDirFile(destFile)
 
-	if isEmpty != false {
-		t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead isEmpty='%v' ", false, isEmpty)
-	}
+  err = FileHelper{}.CopyFileByIo("", destFile)
 
-	if result != expectedExt {
-		t.Errorf("Expected GetFileExt to return result == '.go' for valid file extension Instead result='%v' ", result)
-	}
+  if err == nil {
+    t.Error("Expected error from FileHelper{}.CopyFileByIo(\"\", destFile) " +
+      "because input parameter source file is an empty string. " +
+      "However, NO ERROR WAS RETURNED!")
+  }
 
-}
-
-func TestFileHelper_GetFileExtension_02(t *testing.T) {
-	fh := FileHelper{}
-
-	commonDir := fh.AdjustPathSlash("xt_dirmgr_01_test.go")
-
-	expectedExt := ".go"
-
-	result, isEmpty, err := fh.GetFileExtension(commonDir)
-
-	if err != nil {
-		t.Errorf("Error returned from fh.GetFileExt(commonDir). commonDir='%v' Error='%v'",
-			commonDir, err.Error())
-	}
-
-	if isEmpty != false {
-		t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead isEmpty='%v' ",
-			false, isEmpty)
-	}
-
-	if result != expectedExt {
-		t.Errorf("Expected GetFileExt to return file extension == '%v'.  "+
-			"Instead file extension='%v' ", expectedExt, result)
-	}
+  _ = FileHelper{}.DeleteDirFile(destFile)
 
 }
 
-func TestFileHelper_GetFileExtension_03(t *testing.T) {
-	fh := FileHelper{}
+func TestFileHelper_CopyFileByIo_02(t *testing.T) {
 
-	commonDir := fh.AdjustPathSlash("dirmgr_test")
+  rawSrcFile := "..\\filesfortest\\levelfilesfortest\\level_0_0_test.txt"
 
-	expectedExt := ""
+  srcFile, err := FileHelper{}.MakeAbsolutePath(rawSrcFile)
 
-	result, isEmpty, err := fh.GetFileExtension(commonDir)
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile).\n"+
+      "rawSrcFile='%v'\nError='%v'\n",
+      rawSrcFile, err.Error())
+    return
+  }
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetFileExt(commonDir). commonDir='%v' Error='%v'",
-			commonDir, err.Error())
-	}
+  err = FileHelper{}.CopyFileByIo(srcFile, "")
 
-	if true != isEmpty {
-		t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead, isEmpty='%v' ",
-			true, isEmpty)
-	}
-
-	if result != expectedExt {
-		t.Errorf("Expected GetFileExt to return file extension == '%v'. Instead file extension ='%v' ", expectedExt, result)
-	}
+  if err == nil {
+    t.Error("Expected error from FileHelper{}.CopyFileByIo(srcFile,\"\")\n" +
+      "because input parameter destination file is an empty string.\n" +
+      "\nHowever, NO ERROR WAS RETURNED!\n")
+  }
 
 }
 
-func TestFileHelper_GetFileExtension_04(t *testing.T) {
-	fh := FileHelper{}
+func TestFileHelper_CopyFileByIo_03(t *testing.T) {
 
-	commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
+  rawDestFile := "..\\checkfiles\\TestFileHelper_CopyFileByIo_03.txt"
 
-	expectedExt := ".go"
+  destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
 
-	result, isEmpty, err := fh.GetFileExtension(commonDir)
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile).\n"+
+      "rawDestFile='%v'\nError='%v'\n",
+      rawDestFile, err.Error())
+    return
+  }
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetFileExt(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
-	}
+  _ = FileHelper{}.DeleteDirFile(destFile)
 
-	if false != isEmpty {
-		t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead, isEmpty='%v' ", false, isEmpty)
-	}
+  rawSrcFile := "..\\checkfiles\\iDoNOTExist.txt"
 
-	if result != expectedExt {
-		t.Errorf("Expected GetFileExt to return file extension == '%v'. Instead, file extension='%v' ", expectedExt, result)
-	}
+  srcFile, err := FileHelper{}.MakeAbsolutePath(rawSrcFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile).\n"+
+      "rawSrcFile='%v'\nError='%v'\n",
+      rawSrcFile, err.Error())
+    return
+  }
+
+  err = FileHelper{}.CopyFileByIo(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected error from FileHelper{}.CopyFileByIo(srcFile,destFile)\n" +
+      "because input parameter source file does not exist.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+  _ = FileHelper{}.DeleteDirFile(destFile)
+}
+
+func TestFileHelper_CopyFileByIo_04(t *testing.T) {
+
+  rawDestFile := "..\\filesfortest\\levelfilesfortest\\level_0_0_test.txt"
+
+  destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile).\n"+
+      "rawDestFile='%v'\nError='%v'\n",
+      rawDestFile, err.Error())
+    return
+  }
+
+  srcFile := destFile
+
+  err = FileHelper{}.CopyFileByIo(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error from FileHelper{}.CopyFileByIo(srcFile,destFile)\n" +
+      "because input parameter source file is equivalent to destination file.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+}
+
+func TestFileHelper_CopyFileByIo_05(t *testing.T) {
+
+  rawDestFile := "..\\checkfiles\\TestFileHelper_CopyFileByIo_05.txt"
+  fh := FileHelper{}
+
+  destFile, err := fh.MakeAbsolutePath(rawDestFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile).\n"+
+      "rawDestFile='%v'\nError='%v'\n",
+      rawDestFile, err.Error())
+    return
+  }
+
+  err = FileHelper{}.CopyFileByIo("   ", destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from  err = FileHelper{}.CopyFileByIo(\"   \", destFile)\n" +
+      "because input parameter source file name consists entirely of blank spaces.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+  if fh.DoesFileExist(destFile) {
+    err = fh.DeleteDirFile(destFile)
+    if err != nil {
+      t.Errorf("Error returned from last attempt to delete destFile.\n"+
+        "fh.DeleteDirFile(destFile)\ndestFile='%v'\nError='%v'\n",
+        destFile, err.Error())
+    }
+  }
+}
+
+func TestFileHelper_CopyFileByIo_06(t *testing.T) {
+
+  rawSrcFile := "../filesfortest/levelfilesfortest/level_0_0_test.txt"
+  fh := FileHelper{}
+
+  srcFile, err := fh.MakeAbsolutePath(rawSrcFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile).\n"+
+      "rawSrcFile='%v'\nError='%v'\n",
+      rawSrcFile, err.Error())
+    return
+  }
+
+  err = FileHelper{}.CopyFileByIo(srcFile, "   ")
+
+  if err == nil {
+    t.Error("Expected an error return from  err = FileHelper{}.CopyFileByIo(src, \"    \")\n" +
+      "because input parameter destination file consists entirely of blank spaces.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
 
 }
 
-func TestFileHelper_GetFileExtension_05(t *testing.T) {
-	fh := FileHelper{}
+func TestFileHelper_CopyFileByIo_07(t *testing.T) {
 
-	commonDir := fh.AdjustPathSlash("D:\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
+  rawDestFile := "..\\filesfortest\\levelfilesfortest\\level_0_0_test.txt"
 
-	expectedExt := ".go"
+  destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
 
-	result, isEmpty, err := fh.GetFileExtension(commonDir)
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile).\n"+
+      "rawDestFile='%v'\nError='%v'\n",
+      rawDestFile, err.Error())
+    return
+  }
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetFileExt(commonDir). commonDir='%v' Error='%v'",
-			commonDir, err.Error())
-	}
+  srcFile := ""
 
-	if false != isEmpty {
-		t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead, isEmpty='%v' ",
-			false, isEmpty)
-	}
+  err = FileHelper{}.CopyFileByIo(srcFile, destFile)
 
-	if result != expectedExt {
-		t.Errorf("Expected GetFileExt to return result == '%v' for file extension. "+
-			"Instead result='%v' ", expectedExt, result)
-	}
-
-}
-
-func TestFileHelper_GetFileExtension_06(t *testing.T) {
-	fh := FileHelper{}
-
-	commonDir := fh.AdjustPathSlash("D:\\pathfilego\\003_filehelper\\common\\")
-
-	expectedExt := ""
-
-	result, isEmpty, err := fh.GetFileExtension(commonDir)
-
-	if err != nil {
-		t.Errorf("Error returned from fh.GetFileExt(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
-	}
-
-	if true != isEmpty {
-		t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead, isEmpty='%v' ", true, isEmpty)
-	}
-
-	if result != expectedExt {
-		t.Errorf("Expected GetFileExt to return result == '%v' for file extension. Instead result='%v' ", expectedExt, result)
-	}
+  if err == nil {
+    t.Error("Expected an error from FileHelper{}.CopyFileByIo(srcFile,destFile)\n" +
+      "because input parameter source file is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
 
 }
 
-func TestFileHelper_GetFileExtension_07(t *testing.T) {
-	fh := FileHelper{}
+func TestFileHelper_CopyFileByIo_08(t *testing.T) {
 
-	commonDir := fh.AdjustPathSlash(".go")
+  destFile := ""
 
-	expectedExt := ".go"
+  rawSrcFile := "..\\filesfortest\\levelfilesfortest\\level_0_0_test.txt"
 
-	result, isEmpty, err := fh.GetFileExtension(commonDir)
+  srcFile, err := FileHelper{}.MakeAbsolutePath(rawSrcFile)
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetFileExt(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawSrcFile).\n"+
+      "rawSrcFile='%v'\nError='%v'\n",
+      rawSrcFile, err.Error())
+    return
+  }
 
-	if false != isEmpty {
-		t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead, isEmpty='%v' ", false, isEmpty)
-	}
+  err = FileHelper{}.CopyFileByIo(srcFile, destFile)
 
-	if result != expectedExt {
-		t.Errorf("Expected GetFileExt to return result == '%v' for file extension. Instead result='%v' ", expectedExt, result)
-	}
-
-}
-
-func TestFileHelper_GetFileExtension_08(t *testing.T) {
-	fh := FileHelper{}
-
-	commonDir := fh.AdjustPathSlash("test.....go")
-
-	expectedExt := ".go"
-
-	result, isEmpty, err := fh.GetFileExtension(commonDir)
-
-	if err != nil {
-		t.Errorf("Error returned from fh.GetFileExt(commonDir). commonDir='%v' Error='%v'", commonDir, err.Error())
-	}
-
-	if false != isEmpty {
-		t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead, isEmpty='%v' ", false, isEmpty)
-	}
-
-	if result != expectedExt {
-		t.Errorf("Expected GetFileExt to return result == '%v' for file extension. Instead result='%v' ", expectedExt, result)
-	}
+  if err == nil {
+    t.Error("Expected an error from FileHelper{}.CopyFileByIo(srcFile,destFile)\n" +
+      "because input parameter destination file is an empty string.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
 
 }
 
-func TestFileHelper_GetFileExtension_09(t *testing.T) {
-	fh := FileHelper{}
+func TestFileHelper_CopyFileByIo_09(t *testing.T) {
 
-	commonDir := fh.AdjustPathSlash("")
+  fh := FileHelper{}
+  rawSrcFile := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir" +
+    "\\level_03_dir\\level_3_1_test.txt"
 
-	expectedExt := ""
+  srcFile := fh.AdjustPathSlash(rawSrcFile)
 
-	result, isEmpty, err := fh.GetFileExtension(commonDir)
+  if !fh.DoesFileExist(srcFile) {
+    t.Errorf("ERROR: Setup source file DOES NOT EXIST!\n"+
+      "srcFile='%v' \n", srcFile)
+    return
+  }
 
-	if err == nil {
-		t.Errorf("Expected an error to be returned from fh.GetFileExt(commonDir). "+
-			"commonDir='%v' NO Error was returned!", commonDir)
-	}
+  rawDestFile := "..\\checkfiles\\scratchTestFileHelper_CopyFileByIo_09.txt"
 
-	if true != isEmpty {
-		t.Errorf("Expected GetFileExt isEmpty=='%v'. Instead, isEmpty='%v' ",
-			true, isEmpty)
-	}
+  destFile := fh.AdjustPathSlash(rawDestFile)
 
-	if result != expectedExt {
-		t.Errorf("Expected GetFileExt to return result == '%v' for file extension. Instead result='%v' ", expectedExt, result)
-	}
+  if fh.DoesFileExist(destFile) {
 
-}
+    err := fh.DeleteDirFile(destFile)
 
-func TestFileHelper_GetFileNameWithExt_01(t *testing.T) {
-	fh := FileHelper{}
+    if err != nil {
+      t.Errorf("Error returned from fh.DeleteDirFile(destFile).\n"+
+        "Attempt to delete prexisting version of destination file FAILED!\n"+
+        "destFile='%v'\nError='%v'\n", destFile, err.Error())
+      return
+    }
 
-	commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
-	expectedFNameExt := "xt_dirmgr_01_test.go"
+    if fh.DoesFileExist(destFile) {
+      t.Errorf("ERROR: Prexisting Destination File could NOT be Deleted!\n"+
+        "Destination File:'%v'\n", destFile)
+      return
+    }
+  }
 
-	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+  err := fh.CopyFileByIo(srcFile, destFile)
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'",
-			commonDir, err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error while Copying Source File to  Destination File!\n"+
+      "Source File='%v'\nDestination File='%v'\nError='%v'\n",
+      srcFile, destFile, err.Error())
+  }
 
-	if isEmpty != false {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
-	}
+  if !fh.DoesFileExist(destFile) {
+    t.Error(fmt.Sprintf("After CopyIO Destination File DOES NOT EXIST!\n"+
+      "destFile='%v'\n", destFile))
+    return
+  }
 
-	if expectedFNameExt != fNameExt {
-		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
-			expectedFNameExt, fNameExt)
-	}
+  err = fh.DeleteDirFile(destFile)
 
-}
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirFile(destFile).\n"+
+      "During clean-up, the attempted deletion of the destination file FAILED!\n"+
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
+  }
 
-func TestFileHelper_GetFileNameWithExt_02(t *testing.T) {
-	fh := FileHelper{}
-
-	commonDir := fh.AdjustPathSlash(".\\pathfilego\\003_filehelper\\common\\dirmgr_test")
-	expectedFNameExt := "dirmgr_test"
-
-	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
-
-	if err != nil {
-		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
-	}
-
-	if isEmpty != false {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
-	}
-
-	if expectedFNameExt != fNameExt {
-		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ", expectedFNameExt, fNameExt)
-	}
+  if fh.DoesFileExist(destFile) {
+    t.Errorf("ERROR: Attempted deletion of the destination file during "+
+      "clean-up FAILED!\ndestFile='%v'", destFile)
+  }
 
 }
 
-func TestFileHelper_GetFileNameWithExt_03(t *testing.T) {
-	fh := FileHelper{}
+func TestFileHelper_CopyFileByIo_10(t *testing.T) {
 
-	commonDir := fh.AdjustPathSlash("F:\\pathfilego\\003_filehelper\\common\\xt_dirmgr_01_test.go")
-	expectedFNameExt := "xt_dirmgr_01_test.go"
+  rawDestFile := "..\\checkfiles\\scratchTestFileHelper_CopyFileByIo_10.txt"
 
-	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+  fh := FileHelper{}
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'",
-			commonDir, err.Error())
-	}
+  destFile := fh.AdjustPathSlash(rawDestFile)
 
-	if isEmpty != false {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ",
-			false, isEmpty)
-	}
+  err := fh.DeleteDirFile(destFile)
 
-	if expectedFNameExt != fNameExt {
-		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ", expectedFNameExt, fNameExt)
-	}
+  if err != nil {
+    t.Errorf("Error retunred by fh.DeleteDirFile(destFile) during setup.\n"+
+      "Attempt deletion of pre-existing version of destination file FAILED!\n"+
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
+    return
+  }
 
-}
+  if fh.DoesFileExist(destFile) {
+    t.Errorf("ERROR: Unable to delete pre-existing version of destination file!\n"+
+      "destFile='%v'", destFile)
+    return
+  }
 
-func TestFileHelper_GetFileNameWithExt_04(t *testing.T) {
-	fh := FileHelper{}
+  rawSrcFile := "../filesfortest/levelfilesfortest/level_0_2_test.txt"
 
-	commonDir := fh.AdjustPathSlash("F:\\pathfilego\\003_filehelper\\common\\dirmgr_test")
-	expectedFNameExt := "dirmgr_test"
+  srcFile := fh.AdjustPathSlash(rawSrcFile)
 
-	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+  err = fh.CopyFileByIo(srcFile, destFile)
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'", commonDir, err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.CopyFileByIo(srcFile, destFile).\n"+
+      "srcFile='%v'\ndestFile='%v\nError='%v'\n",
+      srcFile, destFile, err.Error())
+  }
 
-	if isEmpty != false {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
-	}
+  if !fh.DoesFileExist(destFile) {
+    t.Errorf("ERROR: CopyFileByIo FAILED! The destination file was NOT created!\n"+
+      "destFile='%v'\n", destFile)
+    return
+  }
 
-	if expectedFNameExt != fNameExt {
-		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ", expectedFNameExt, fNameExt)
-	}
+  err = fh.DeleteDirFile(destFile)
 
-}
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirFile(destFile).\n"+
+      "Attempted deletion of destination file during clean-up FAILED!\n"+
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
+  }
 
-func TestFileHelper_GetFileNameWithExt_05(t *testing.T) {
-	fh := FileHelper{}
-
-	commonDir := fh.AdjustPathSlash("F:\\pathfilego\\003_filehelper\\common\\")
-	expectedFNameExt := ""
-
-	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
-
-	if err != nil {
-		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'",
-			commonDir, err.Error())
-	}
-
-	if isEmpty != true {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ",
-			true, isEmpty)
-	}
-
-	if expectedFNameExt != fNameExt {
-		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
-			expectedFNameExt, fNameExt)
-	}
+  if fh.DoesFileExist(destFile) {
+    t.Errorf("ERROR: Attempted deletion of destination file during clean-up FAILED!\n"+
+      "Destination File STILL EXISTS!\n"+
+      "Destination File='%v'\n", destFile)
+  }
 
 }
 
-func TestFileHelper_GetFileNameWithExt_06(t *testing.T) {
-	fh := FileHelper{}
+func TestFileHelper_CopyFileByIo_11(t *testing.T) {
 
-	commonDir := fh.AdjustPathSlash("xt_dirmgr_01_test.go")
-	expectedFNameExt := "xt_dirmgr_01_test.go"
+  fh := FileHelper{}
 
-	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+  destFile := "..\\checkfiles\\scratchTestFileHelper_CopyFileByIo_11.txt"
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'",
-			commonDir, err.Error())
-	}
+  if fh.DoesFileExist(destFile) {
 
-	if isEmpty != false {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
-	}
+    err := fh.DeleteDirFile(destFile)
 
-	if expectedFNameExt != fNameExt {
-		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
-			expectedFNameExt, fNameExt)
-	}
+    if err != nil {
+      t.Errorf("Error retrned by setup fh.DeleteDirFile(destFile).\n"+
+        "Attempted deletion of pre-existing destination file FAILED!\n"+
+        "destFile='%v'\nError='%v'\n", destFile, err.Error())
+      return
+    }
 
-}
+    if fh.DoesFileExist(destFile) {
+      t.Errorf("Attempted deletion of pre-existing destination file FAILED!\n"+
+        "destFile='%v'\n", destFile)
+      return
+    }
 
-func TestFileHelper_GetFileNameWithExt_07(t *testing.T) {
-	fh := FileHelper{}
+  }
 
-	commonDir := fh.AdjustPathSlash("dirmgr_test")
-	expectedFNameExt := "dirmgr_test"
+  srcFile := "../filesfortest/levelfilesfortest/level_0_2_test.txt"
 
-	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+  err := fh.CopyFileByIo(srcFile, destFile)
 
-	if err != nil {
-		t.Errorf("Error returned from fh.GetFileNameWithExt(commonDir). commonDir='%v'  Error='%v'",
-			commonDir, err.Error())
-	}
+  if err != nil {
+    t.Errorf("Error returned by setup fh.CopyFileByIo(srcFile, destFile).\n"+
+      "srcFile='%v'\ndestFile='%v\nError='%v'\n",
+      srcFile, destFile, err.Error())
+  }
 
-	if isEmpty != false {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", false, isEmpty)
-	}
+  if !fh.DoesFileExist(destFile) {
+    t.Errorf("Error: Attempted creation of setup destination file FAILED!\n"+
+      "destFile='%v'\n", destFile)
+    return
+  }
 
-	if expectedFNameExt != fNameExt {
-		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
-			expectedFNameExt, fNameExt)
-	}
+  srcFile2 := "../filesfortest/levelfilesfortest/level_0_3_test.txt"
 
-}
+  err = fh.CopyFileByIo(srcFile2, destFile)
 
-func TestFileHelper_GetFileNameWithExt_08(t *testing.T) {
-	fh := FileHelper{}
+  if err != nil {
+    t.Errorf("Error returned by 2nd Copy fh.CopyFileByIo(srcFile2, destFile).\n"+
+      "srcFile2='%v'\ndestFile='%v\nError='%v'\n",
+      srcFile2, destFile, err.Error())
+  }
 
-	commonDir := fh.AdjustPathSlash(".go")
-	expectedFNameExt := ""
+  if !fh.DoesFileExist(destFile) {
+    t.Errorf("Error: 2nd Copy of destination file does NOT exist!\n"+
+      "Destination File='%v'\n", destFile)
+    return
+  }
 
-	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+  // 2nd destination file DOES EXIST!
 
-	if err == nil {
-		t.Errorf("Expected error returned from fh.GetFileNameWithExt(commonDir). "+
-			"Instead, NO ERROR was returned. commonDir='%v'  ", commonDir)
-	}
+  finfoSrcFile, err := os.Stat(srcFile2)
 
-	if isEmpty != true {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", true, isEmpty)
-	}
+  if err != nil {
+    t.Errorf("Error returned by os.Stat(srcFile2).\n"+
+      "srcFile2='%v'\nError='%v'\n", srcFile2, err.Error())
+  }
 
-	if expectedFNameExt != fNameExt {
-		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ",
-			expectedFNameExt, fNameExt)
-	}
+  finfoDestFile, err := os.Stat(destFile)
 
-}
+  if err != nil {
+    t.Errorf("Error returned by os.Stat(destFile).\n"+
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
+    _ = fh.DeleteDirFile(destFile)
+    return
+  }
 
-func TestFileHelper_GetFileNameWithExt_09(t *testing.T) {
-	fh := FileHelper{}
+  if finfoSrcFile.Size() != finfoDestFile.Size() {
+    t.Errorf("The sizes of the source file and destination file DO NOT MATHCH!\n"+
+      "Source File Size='%v'  Destination File Size='%v'.\n",
+      finfoSrcFile.Size(), finfoDestFile.Size())
+  }
 
-	commonDir := fh.AdjustPathSlash("")
-	expectedFNameExt := ""
+  err = fh.DeleteDirFile(destFile)
 
-	fNameExt, isEmpty, err := fh.GetFileNameWithExt(commonDir)
+  if err != nil {
+    t.Errorf("Error returned by clean-up fh.DeleteDirFile(destFile).\n"+
+      "destFile='%v'\nError='%v' ", destFile, err.Error())
+  }
 
-	if err == nil {
-		t.Errorf("Error error returned from fh.GetFileNameWithExt(commonDir). Result- commonDir='%v' No Error Returned!", commonDir)
-	}
-
-	if isEmpty != true {
-		t.Errorf("Expected isEmpty='%v', instead isEmpty='%v' ", true, isEmpty)
-	}
-
-	if expectedFNameExt != fNameExt {
-		t.Errorf("Expected GetFileNameWithExt to return fNameExt == '%v'. Istead, fNameExt='%v' ", expectedFNameExt, fNameExt)
-	}
-
-}
-
-func TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_01(t *testing.T) {
-
-	rawPath := "../filesfortest/newfilesfortest/newerFileForTest_01.txt"
-	fh := FileHelper{}
-	adjustedPath := fh.AdjustPathSlash(rawPath)
-
-	firstCharIdx, lastCharIdx, err := fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedPath)
-
-	if err != nil {
-		t.Errorf("Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
-	}
-
-	if firstCharIdx != 3 {
-		t.Errorf("Expected first char index= '3'.  Instead, first char index= '%v'", firstCharIdx)
-	}
-
-	expectedLastIdx := len(adjustedPath) - 1
-
-	if expectedLastIdx != lastCharIdx {
-		t.Errorf("Expected last index = '%v'.  Instead, last index = '%v'", expectedLastIdx, lastCharIdx)
-	}
+  if fh.DoesFileExist(destFile) {
+    t.Errorf("ERROR: Attempted deletion of destination file FAILED!\n"+
+      "Destination File='%v'\n", destFile)
+  }
 
 }
 
-func TestFileHelper_GetFirstLastNonSeparatorCharIndexInPathStr_02(t *testing.T) {
+func TestFileHelper_CopyFileByIoByLink_01(t *testing.T) {
 
-	rawPath := "D:/filesfortest/newfilesfortest/newerFileForTest_01.txt"
-	fh := FileHelper{}
-	adjustedPath := fh.AdjustPathSlash(rawPath)
+  fh := FileHelper{}
+  rawSrcFile := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir" +
+    "\\level_03_dir\\level_3_1_test.txt"
 
-	firstCharIdx, lastCharIdx, err := fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedPath)
+  srcFile := fh.AdjustPathSlash(rawSrcFile)
 
-	if err != nil {
-		t.Errorf("Error returned by fh.GetFirstLastNonSeparatorCharIndexInPathStr(adjustedPath). adjustedPath='%v'  Error='%v'", adjustedPath, err.Error())
-	}
+  if !fh.DoesFileExist(srcFile) {
+    t.Errorf("ERROR: Setup source file DOES NOT EXIST!\n"+
+      "srcFile='%v' \n", srcFile)
+    return
+  }
 
-	if firstCharIdx != 3 {
-		t.Errorf("Expected first char index= '3'.  Instead, first char index= '%v'", firstCharIdx)
-	}
+  rawDestFile := "..\\checkfiles\\CopyFileByIoByLink_01.txt"
 
-	expectedLastIdx := len(adjustedPath) - 1
+  destFile := fh.AdjustPathSlash(rawDestFile)
 
-	if expectedLastIdx != lastCharIdx {
-		t.Errorf("Expected last index = '%v'.  Instead, last index = '%v'", expectedLastIdx, lastCharIdx)
-	}
+  if fh.DoesFileExist(destFile) {
 
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error returned from fh.DeleteDirFile(destFile).\n"+
+        "Attempt to delete prexisting version of destination file FAILED!\n"+
+        "destFile='%v'\nError='%v'\n", destFile, err.Error())
+      return
+    }
+
+    if fh.DoesFileExist(destFile) {
+      t.Errorf("ERROR: Prexisting Destination File could NOT be Deleted!\n"+
+        "Destination File:'%v'\n", destFile)
+      return
+    }
+  }
+
+  err := fh.CopyFileByIoByLink(srcFile, destFile)
+
+  if err != nil {
+    t.Errorf("Error while Copying Source File to  Destination File!\n"+
+      "Source File='%v'\nDestination File='%v'\nError='%v'\n",
+      srcFile, destFile, err.Error())
+  }
+
+  if !fh.DoesFileExist(destFile) {
+    t.Error(fmt.Sprintf("After CopyIO Destination File DOES NOT EXIST!\n"+
+      "destFile='%v'\n", destFile))
+    return
+  }
+
+  err = fh.DeleteDirFile(destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.DeleteDirFile(destFile).\n"+
+      "During clean-up, the attempted deletion of the destination file FAILED!\n"+
+      "destFile='%v'\nError='%v'\n", destFile, err.Error())
+    return
+  }
+
+  if fh.DoesFileExist(destFile) {
+    t.Errorf("ERROR: Attempted deletion of the destination file during "+
+      "clean-up FAILED!\ndestFile='%v'", destFile)
+  }
+}
+
+func TestFileHelper_CopyFileByIoByLink_02(t *testing.T) {
+
+  fh := FileHelper{}
+  rawSrcFile := "../checkfiles/iDoNotExist.txt"
+
+  srcFile := fh.AdjustPathSlash(rawSrcFile)
+
+  rawDestFile := "..\\checkfiles\\TestFileHelper_CopyFileByIoByLink_02.txt"
+
+  destFile := fh.AdjustPathSlash(rawDestFile)
+
+  if fh.DoesFileExist(destFile) {
+
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error returned from fh.DeleteDirFile(destFile).\n"+
+        "Attempt to delete prexisting version of destination file FAILED!\n"+
+        "destFile='%v'\nError='%v'\n", destFile, err.Error())
+      return
+    }
+
+    if fh.DoesFileExist(destFile) {
+      t.Errorf("ERROR: Prexisting Destination File could NOT be Deleted!\n"+
+        "Destination File:'%v'\n", destFile)
+      return
+    }
+  }
+
+  err := fh.CopyFileByIoByLink(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.CopyFileByIoByLink(srcFile, destFile)\n" +
+      "because 'srcFile' DOES NOT EXIST!\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+}
+
+func TestFileHelper_CopyFileByIoByLink_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  rawSrcFile := "..\\filesfortest\\levelfilesfortest\\level_01_dir\\level_02_dir" +
+    "\\level_03_dir\\level_3_1_test.txt"
+
+  srcFile := fh.AdjustPathSlash(rawSrcFile)
+
+  rawDestFile := "../checkfiles/checkfiles02"
+
+  destFile := fh.AdjustPathSlash(rawDestFile)
+
+  err := fh.CopyFileByIoByLink(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.CopyFileByIoByLink(srcFile, destFile)\n" +
+      "because 'srcFile' DOES NOT EXIST!\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+}
+
+func TestFileHelper_CopyFileByLinkByIo_01(t *testing.T) {
+
+  fh := FileHelper{}
+
+  setupSrcFile := "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+
+  srcFile:="../createFilesTest/level_0_1_test.txt"
+
+  if fh.DoesFileExist(srcFile) {
+    err := fh.DeleteDirFile(srcFile)
+
+    if err != nil {
+      t.Errorf("Test Setup Error: Setup source file previously exists and "+
+        "cannot be deleted!\nsrcFile='%v'", srcFile)
+      return
+    }
+  }
+
+  err := fh.CopyFileByIo(setupSrcFile, srcFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupSrcFile, srcFile)\n" +
+      "setupSrcFile='%v'\nsrcFile='%v'\nError='%v'\n",
+      setupSrcFile, srcFile, err.Error())
+    return
+  }
+
+  destFile := "../createFilesTest/TestFileHelper_CopyFileByLinkByIo_01.txt"
+
+  if fh.DoesFileExist(destFile) {
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error: Target destination file previously exists and "+
+        "cannot be deleted!\ndestFile='%v'", destFile)
+      return
+    }
+  }
+
+  err = fh.CopyFileByLinkByIo(srcFile, destFile)
+
+  if err != nil {
+    t.Errorf("Error returned by fh.CopyFileByLinkByIo(srcFile, destFile).\n"+
+      "srcFile='%v'\ndestFile='%v'\nError='%v'\n",
+      srcFile, destFile, err.Error())
+  }
+
+  if fh.DoesFileExist(destFile) {
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error After Copy Destination File Existed. However, the attempted "+
+        "Deletion of Destination File Failed. "+
+        "It cannot be deleted!\ndestFile='%v'", destFile)
+      return
+    }
+
+  } else {
+    t.Errorf("Error: CopyFileByLink Failed. Destination File DOES NOT EXIST!\n"+
+      "destFile='%v'\n", destFile)
+  }
+
+  err = fh.DeleteDirFile(srcFile)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirFile(srcFile)\n" +
+      "srcFile='%v'\nError='%v'\n",srcFile, err.Error())
+  }
+
+}
+
+func TestFileHelper_CopyFileByLinkByIo_02(t *testing.T) {
+
+  fh := FileHelper{}
+
+  srcFile:=""
+
+  destFile := "../createFilesTest/TestFileHelper_CopyFileByLinkByIo_02.txt"
+
+  if fh.DoesFileExist(destFile) {
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error: Target destination file previously exists and "+
+        "cannot be deleted!\ndestFile='%v'", destFile)
+      return
+    }
+  }
+
+  err := fh.CopyFileByLinkByIo(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.CopyFileByLinkByIo(srcFile, destFile).\n"+
+      "because 'srcFile' is an empty string!\n" +
+      "However, NO ERROR WAS RETURNED!!\n")
+  }
+
+  if fh.DoesFileExist(destFile) {
+    err := fh.DeleteDirFile(destFile)
+
+    if err != nil {
+      t.Errorf("Error After Copy Destination File Existed. However, the attempted "+
+        "Deletion of Destination File Failed. "+
+        "It cannot be deleted!\ndestFile='%v'", destFile)
+      return
+    }
+
+  }
+
+}
+
+func TestFileHelper_CopyFileByLinkByIo_03(t *testing.T) {
+
+  fh := FileHelper{}
+
+  setupSrcFile := "../filesfortest/levelfilesfortest/level_0_1_test.txt"
+
+  srcFile:="../createFilesTest/level_0_1_test.txt"
+
+  if fh.DoesFileExist(srcFile) {
+    err := fh.DeleteDirFile(srcFile)
+
+    if err != nil {
+      t.Errorf("Test Setup Error: Setup source file previously exists and "+
+        "cannot be deleted!\nsrcFile='%v'", srcFile)
+      return
+    }
+  }
+
+  err := fh.CopyFileByIo(setupSrcFile, srcFile)
+
+  if err != nil {
+    t.Errorf("Test Setup Error returned by fh.CopyFileByIo(setupSrcFile, srcFile)\n" +
+      "setupSrcFile='%v'\nsrcFile='%v'\nError='%v'\n",
+      setupSrcFile, srcFile, err.Error())
+    return
+  }
+
+  destFile := ""
+
+  err = fh.CopyFileByLinkByIo(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected an rror return from fh.CopyFileByLinkByIo(srcFile, destFile).\n"+
+      "because destFile is an empty string!\n" +
+      "However, NO ERROR WAS RETURNED!!\n")
+  }
+
+  err = fh.DeleteDirFile(srcFile)
+
+  if err != nil {
+    t.Errorf("Test Clean-Up Error returned by fh.DeleteDirFile(srcFile)\n" +
+      "srcFile='%v'\nError='%v'\n",srcFile, err.Error())
+  }
 }
