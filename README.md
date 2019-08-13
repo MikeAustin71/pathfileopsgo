@@ -16,6 +16,11 @@ Mac-OS, Linux and Windows.
 
 __`To date, the source code has only been tested on Windows.`__
 
+___    
+[Source Code Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops)    
+___
+
+
 # Table Of Contents
 + [Getting Started](#getting-started)
   - [Supported Platforms](#supported-platforms)
@@ -77,7 +82,7 @@ and code coverage have also been significantly expanded.
 
 This version does NOT support *Go* modules.
 ___    
-[Click To View Source Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops)    
+[Source Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops)    
 ___
 
 <a name="primarytypes"></a>
