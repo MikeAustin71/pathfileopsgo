@@ -561,15 +561,15 @@ func (fPerm FilePermissionConfig) New(modeStr string) (FilePermissionConfig, err
 //
 //                                   Select this value with caution. See the warning below.
 //
-//  unixPermissionTextStr string - A 9-character string containing the unix permission
-//                            bits expressed as three groups of 3-characters each. Note:
-//                            if the string is the standard 10-character string, only the
-//                            last 9-characters will be used.
+//  unixPermissionTextStr string   - A 9-character string containing the unix permission
+//                                   bits expressed as three groups of 3-characters each.
+//                                   Note: if the string is the standard 10-character string,
+//                                   only the last 9-characters will be used.
 //
-//                            The 9-characters are constituents of the the three Symbolic
-//                            Groups: Owners/Users, Groups & Others. Each group has three
-//                            characters which may be 'r', 'w', 'x'. If a permission is not
-//                            set, that character position contains a '-'.
+//                                   The 9-characters are constituents of the the three Symbolic
+//                                   Groups: Owners/Users, Groups & Others. Each group has three
+//                                   characters which may be 'r', 'w', 'x'. If a permission is not
+//                                   set, that character position contains a '-'.
 //
 //   'unixPermissionTextStr'
 //        9-Character          File Access

@@ -156,7 +156,7 @@ func (fOpenMode FileOpenMode) IsValid() error {
 //                        OR
 //   t, err := FileOpenMode(0).ParseString("append", false)
 //
-//   In any cases shown above, t is now equal to FileOpenMode(0).Append()
+//   In any case shown above, t is now equal to FileOpenMode(0).Append()
 //
 func (fOpenMode FileOpenMode) ParseString(
   valueString string,

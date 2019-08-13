@@ -131,13 +131,13 @@ func (pathValid PathValidityStatusCode) Valid() PathValidityStatusCode {
 //
 // Usage:
 //
-//	t, err := PathValidityStatusCode(0).ParseString("Valid", true)
+//  t, err := PathValidityStatusCode(0).ParseString("Valid", true)
 //                            OR
-//	t, err := PathValidityStatusCode(0).ParseString("Valid()", true)
+//  t, err := PathValidityStatusCode(0).ParseString("Valid()", true)
 //                            OR
-//	t, err := PathValidityStatusCode(0).ParseString("valid", false)
+//  t, err := PathValidityStatusCode(0).ParseString("valid", false)
 //
-//	For all of the cases shown above,
+//  For all of the cases shown above,
 //  t is now equal to PathValidityStatusCode(0).Valid()
 //
 func (pathValid PathValidityStatusCode) ParseString(

@@ -45,22 +45,22 @@ var mFileOperationCodeLwrCaseStringToInt = map[string]int{}
 //
 // ----------------------------------------------------
 //
-// FileOperationCode(0).None()
-// FileOperationCode(0).MoveSourceFileToDestinationFile()
-// FileOperationCode(0).MoveSourceFileToDestinationDir()
-// FileOperationCode(0).DeleteDestinationFile()
-// FileOperationCode(0).DeleteSourceFile()
-// FileOperationCode(0).DeleteSourceAndDestinationFiles()
-// FileOperationCode(0).CopySourceToDestinationByHardLinkByIo()
-// FileOperationCode(0).CopySourceToDestinationByIoByHardLink()
-// FileOperationCode(0).CopySourceToDestinationByHardLink()
-// FileOperationCode(0).CopySourceToDestinationByIo()
-// FileOperationCode(0).CreateSourceDir()
-// FileOperationCode(0).CreateSourceDirAndFile()
-// FileOperationCode(0).CreateSourceFile()
-// FileOperationCode(0).CreateDestinationDir()
-// FileOperationCode(0).CreateDestinationDirAndFile()
-// FileOperationCode(0).CreateDestinationFile()
+//  FileOperationCode(0).None()
+//  FileOperationCode(0).MoveSourceFileToDestinationFile()
+//  FileOperationCode(0).MoveSourceFileToDestinationDir()
+//  FileOperationCode(0).DeleteDestinationFile()
+//  FileOperationCode(0).DeleteSourceFile()
+//  FileOperationCode(0).DeleteSourceAndDestinationFiles()
+//  FileOperationCode(0).CopySourceToDestinationByHardLinkByIo()
+//  FileOperationCode(0).CopySourceToDestinationByIoByHardLink()
+//  FileOperationCode(0).CopySourceToDestinationByHardLink()
+//  FileOperationCode(0).CopySourceToDestinationByIo()
+//  FileOperationCode(0).CreateSourceDir()
+//  FileOperationCode(0).CreateSourceDirAndFile()
+//  FileOperationCode(0).CreateSourceFile()
+//  FileOperationCode(0).CreateDestinationDir()
+//  FileOperationCode(0).CreateDestinationDirAndFile()
+//  FileOperationCode(0).CreateDestinationFile()
 //
 // FileOperationCode has been adapted to function as an enumeration of valid
 // File Operation Code values. Since Go does not directly support enumerations,
@@ -287,15 +287,15 @@ func (fop FileOperationCode) IsValid() error {
 //
 // Return Values
 //
-//	FileOperationCode - Upon successful completion, this method will return a new
-//	               instance of FileOperationCode set to the value of the enumeration
-//	               matched by the string search performed on input parameter,
-//	               'valueString'.
+//  FileOperationCode - Upon successful completion, this method will return a new
+//                      instance of FileOperationCode set to the value of the enumeration
+//                      matched by the string search performed on input parameter,
+//                      'valueString'.
 //
-//	error        - If this method completes successfully, the returned error
-//	               Type is set equal to 'nil'. If an error condition is encountered,
-//	               this method will return an error Type which encapsulates an
-//	               appropriate error message.
+//  error             - If this method completes successfully, the returned error
+//                      Type is set equal to 'nil'. If an error condition is encountered,
+//                      this method will return an error Type which encapsulates an
+//                      appropriate error message.
 //
 // ------------------------------------------------------------------------
 //

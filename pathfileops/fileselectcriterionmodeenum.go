@@ -120,15 +120,15 @@ func (fSel FileSelectCriterionMode) ORSelect() FileSelectCriterionMode {
 //
 // Return Values
 //
-//	FileSelectCriterionMode - Upon successful completion, this method will return a new
-//	               instance of FileSelectCriterionMode set to the value of the enumeration
-//	               matched by the string search performed on input parameter,
-//	               'valueString'.
+//  FileSelectCriterionMode - Upon successful completion, this method will return a new
+//                            instance of FileSelectCriterionMode set to the value of the
+//                            enumeration matched by the string search performed on input
+//                            parameter, 'valueString'.
 //
-//	error        - If this method completes successfully, the returned error
-//	               Type is set equal to 'nil'. If an error condition is encountered,
-//	               this method will return an error Type which encapsulates an
-//	               appropriate error message.
+//  error                   - If this method completes successfully, the returned error
+//                            Type is set equal to 'nil'. If an error condition is encountered,
+//                            this method will return an error Type which encapsulates an
+//                            appropriate error message.
 //
 // ------------------------------------------------------------------------
 //

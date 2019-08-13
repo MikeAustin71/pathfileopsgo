@@ -3130,8 +3130,8 @@ func (fMgr FileMgr) NewFromDirStrFileNameStr(
 //  dirPathStr      string - The directory path. NOTE: This does NOT contain the
 //	                         file name.
 //
-//	info       os.FileInfo - A valid and populated FileInfo structure containing the
-//	                         file name.
+//  info       os.FileInfo - A valid and populated FileInfo structure containing the
+//                           file name.
 //
 // ------------------------------------------------------------------------
 //
