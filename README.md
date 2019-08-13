@@ -1,9 +1,8 @@
-# pathfileops ![GoDoc](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops?status.svg)
- 
+# pathfileops
 
-*pathfileops* is a software library or in go parlance, a *package*.
+*pathfileops* is a software library or in go parlance, a software *package*.
  
-This package provides software types and methods used in the management
+This package provides software types and methods used in the management,
 organization and control of disk files and directories.
 
 *pathfileops* is written in the *Go* programming language, a.k.a 'golang'.
@@ -15,13 +14,15 @@ This package was developed and tested on Windows, although the package
 was designed to operate on multiple operating systems including 
 Mac-OS, Linux and Windows.
 
-####__`To date, the source code has only been tested on Windows.`__
+__`To date, the source code has only been tested on Windows.`__
 
 
 ## Version Number 1.5.0
 This version significantly expands the capabilities of *DirMgr*, as
 well as expanding the read/write features for *FileMgr*. Unit Testing
 and code coverage have also been significantly expanded. 
+
+This version does NOT support *Go* modules.
 ___    
 [Click To View Source Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops)    
 ___
@@ -88,9 +89,9 @@ The three types discussed above are interdependent.
 
 1. *./pathfilego/pathfileops/filehelper.go*
 
-2. *./pathfilego/pathfileops/dirmanagers.go*
+2. *./pathfilego/pathfileops/dirmanager.go*
 
-3. *./pathfilego/pathfileops/filemanagers.go*
+3. *./pathfilego/pathfileops/filemanager.go*
 
 ## Tests
 This version includes 1,793 tests with a source code coverage of 82%.
@@ -104,13 +105,16 @@ This package was developed and tested on Windows, although the package
 was designed to operate on multiple operating systems including 
 Mac-OS, Linux and Windows.
 
-####__`To date, the source code has only been tested on Windows.`__
+__`To date, the source code has only been tested on Windows.`__
 
  
 ## Version Number 1.5.0
 This version significantly expands the capabilities of *DirMgr*, as
 well as expanding the read/write features for *FileMgr*. Unit Testing
-and code coverage have also been significantly expanded. 
+and code coverage have also been significantly expanded.
+
+This version does NOT support *Go* modules.
+ 
 ___
     
 [Click To View Source Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops)
