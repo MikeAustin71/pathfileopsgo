@@ -37,6 +37,8 @@ ___
   - [Collections](#collections)
 + [Dependencies](#dependencies)
 + [Tests](#tests)
++ [License](#license)
++ [Comments And Questions](#comments-and-questions)
 
 <a name="getting-started"></a>
 # Getting Started 
@@ -143,6 +145,22 @@ All tests are currently completing successfully as documented in the
 following text file:
 
       '../pathfilego/pathfileops/v2/xx_tests.txt'
+
+
+<a name="license"></a>
+## License
+Copyright 2019 Mike Rapp. All rights reserved.
+
+Use of this source code is governed by the
+MIT-style license which can be found in the
+LICENSE file.
+
+<a name="comments-and-questions"></a>
+## Comments And Questions
+
+Send questions or comments to:
+
+    mike.go@paladinacs.net
 
 
  
