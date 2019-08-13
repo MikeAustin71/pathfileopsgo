@@ -158,8 +158,8 @@ func (dMgr DirMgr) ConsolidateErrors(errors []error) error {
 //                                    criterion. Examples for setting SelectByFileMode are shown as follows:
 //
 //                                         fsc := FileSelectionCriteria{}
-//                                           err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
-//                                           err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//                                         err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                         err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
 //
 //    SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
@@ -170,12 +170,12 @@ func (dMgr DirMgr) ConsolidateErrors(errors []error) error {
 //                                    FileSelectMode.ANDSelect() - File selected if all active selection
 //                                      criteria are satisfied.
 //
-//                                    	If this constant value is specified for the file selection mode,
-//                                    	then a given file will not be judged as 'selected' unless all of
-//                                    	the active selection criterion are satisfied. In other words, if
-//                                    	three active search criterion are provided for 'FileNamePatterns',
-//                                    	'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
-//                                    	selected unless it has satisfied all three criterion in this example.
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will not be judged as 'selected' unless all of
+//                                      the active selection criterion are satisfied. In other words, if
+//                                      three active search criterion are provided for 'FileNamePatterns',
+//                                      'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                      selected unless it has satisfied all three criterion in this example.
 //
 //                                    FileSelectMode.ORSelect() - File selected if any active selection
 //                                      criterion is satisfied.
@@ -361,8 +361,8 @@ func (dMgr *DirMgr) CopyDirectory(
 //                                    criterion. Examples for setting SelectByFileMode are shown as follows:
 //
 //                                         fsc := FileSelectionCriteria{}
-//                                           err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
-//                                           err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//                                         err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                         err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
 //
 //    SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
@@ -373,12 +373,12 @@ func (dMgr *DirMgr) CopyDirectory(
 //                                    FileSelectMode.ANDSelect() - File selected if all active selection
 //                                      criteria are satisfied.
 //
-//                                    	If this constant value is specified for the file selection mode,
-//                                    	then a given file will not be judged as 'selected' unless all of
-//                                    	the active selection criterion are satisfied. In other words, if
-//                                    	three active search criterion are provided for 'FileNamePatterns',
-//                                    	'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
-//                                    	selected unless it has satisfied all three criterion in this example.
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will not be judged as 'selected' unless all of
+//                                      the active selection criterion are satisfied. In other words, if
+//                                      three active search criterion are provided for 'FileNamePatterns',
+//                                      'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                      selected unless it has satisfied all three criterion in this example.
 //
 //                                    FileSelectMode.ORSelect() - File selected if any active selection
 //                                      criterion is satisfied.
@@ -651,8 +651,10 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
 // The file deletion operation is conducted in three steps:
 //    1. The criteria for selecting files to be deleted is created using
 //       input parameter 'deleteFileSelectionCriteria'.
+//
 //    2. A file search is conducted which includes the DirMgr parent directory
 //       and all sub-directories in the tree.
+//
 //    3. Files processed during the directory tree search are compared to the
 //       file selection criteria specified by 'deleteFileSelectionCriteria'.
 //       Those files which match the selection criteria are then deleted.
@@ -735,8 +737,8 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
 //                                    criterion. Examples for setting SelectByFileMode are shown as follows:
 //
 //                                         fsc := FileSelectionCriteria{}
-//                                           err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
-//                                           err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//                                         err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                         err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
 //
 //    SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
@@ -747,12 +749,12 @@ func (dMgr *DirMgr) DeleteAllSubDirectories() (errs []error) {
 //                                    FileSelectMode.ANDSelect() - File selected if all active selection
 //                                      criteria are satisfied.
 //
-//                                    	If this constant value is specified for the file selection mode,
-//                                    	then a given file will not be judged as 'selected' unless all of
-//                                    	the active selection criterion are satisfied. In other words, if
-//                                    	three active search criterion are provided for 'FileNamePatterns',
-//                                    	'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
-//                                    	selected unless it has satisfied all three criterion in this example.
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will not be judged as 'selected' unless all of
+//                                      the active selection criterion are satisfied. In other words, if
+//                                      three active search criterion are provided for 'FileNamePatterns',
+//                                      'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                      selected unless it has satisfied all three criterion in this example.
 //
 //                                    FileSelectMode.ORSelect() - File selected if any active selection
 //                                      criterion is satisfied.
@@ -961,8 +963,8 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(
 //                                    criterion. Examples for setting SelectByFileMode are shown as follows:
 //
 //                                         fsc := FileSelectionCriteria{}
-//                                           err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
-//                                           err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//                                         err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                         err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
 //
 //    SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
@@ -973,12 +975,12 @@ func (dMgr *DirMgr) DeleteFilesByNamePattern(
 //                                    FileSelectMode.ANDSelect() - File selected if all active selection
 //                                      criteria are satisfied.
 //
-//                                    	If this constant value is specified for the file selection mode,
-//                                    	then a given file will not be judged as 'selected' unless all of
-//                                    	the active selection criterion are satisfied. In other words, if
-//                                    	three active search criterion are provided for 'FileNamePatterns',
-//                                    	'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
-//                                    	selected unless it has satisfied all three criterion in this example.
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will not be judged as 'selected' unless all of
+//                                      the active selection criterion are satisfied. In other words, if
+//                                      three active search criterion are provided for 'FileNamePatterns',
+//                                      'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                      selected unless it has satisfied all three criterion in this example.
 //
 //                                    FileSelectMode.ORSelect() - File selected if any active selection
 //                                      criterion is satisfied.
@@ -1140,8 +1142,8 @@ func (dMgr *DirMgr) DeleteFilesBySelectionCriteria(
 //                                    criterion. Examples for setting SelectByFileMode are shown as follows:
 //
 //                                         fsc := FileSelectionCriteria{}
-//                                           err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
-//                                           err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//                                         err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                         err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
 //
 //    SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
@@ -1152,12 +1154,12 @@ func (dMgr *DirMgr) DeleteFilesBySelectionCriteria(
 //                                    FileSelectMode.ANDSelect() - File selected if all active selection
 //                                      criteria are satisfied.
 //
-//                                    	If this constant value is specified for the file selection mode,
-//                                    	then a given file will not be judged as 'selected' unless all of
-//                                    	the active selection criterion are satisfied. In other words, if
-//                                    	three active search criterion are provided for 'FileNamePatterns',
-//                                    	'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
-//                                    	selected unless it has satisfied all three criterion in this example.
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will not be judged as 'selected' unless all of
+//                                      the active selection criterion are satisfied. In other words, if
+//                                      three active search criterion are provided for 'FileNamePatterns',
+//                                      'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                      selected unless it has satisfied all three criterion in this example.
 //
 //                                    FileSelectMode.ORSelect() - File selected if any active selection
 //                                      criterion is satisfied.
@@ -1317,8 +1319,8 @@ func (dMgr *DirMgr) DeleteSubDirectoryTreeFiles(
 //                                    criterion. Examples for setting SelectByFileMode are shown as follows:
 //
 //                                         fsc := FileSelectionCriteria{}
-//                                           err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
-//                                           err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//                                         err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                         err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
 //
 //    SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
@@ -1329,12 +1331,12 @@ func (dMgr *DirMgr) DeleteSubDirectoryTreeFiles(
 //                                    FileSelectMode.ANDSelect() - File selected if all active selection
 //                                      criteria are satisfied.
 //
-//                                    	If this constant value is specified for the file selection mode,
-//                                    	then a given file will not be judged as 'selected' unless all of
-//                                    	the active selection criterion are satisfied. In other words, if
-//                                    	three active search criterion are provided for 'FileNamePatterns',
-//                                    	'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
-//                                    	selected unless it has satisfied all three criterion in this example.
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will not be judged as 'selected' unless all of
+//                                      the active selection criterion are satisfied. In other words, if
+//                                      three active search criterion are provided for 'FileNamePatterns',
+//                                      'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                      selected unless it has satisfied all three criterion in this example.
 //
 //                                    FileSelectMode.ORSelect() - File selected if any active selection
 //                                      criterion is satisfied.
@@ -1818,8 +1820,8 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //                                    criterion. Examples for setting SelectByFileMode are shown as follows:
 //
 //                                         fsc := FileSelectionCriteria{}
-//                                           err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
-//                                           err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//                                         err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                         err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
 //
 //    SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
@@ -1830,12 +1832,12 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //                                    FileSelectMode.ANDSelect() - File selected if all active selection
 //                                      criteria are satisfied.
 //
-//                                    	If this constant value is specified for the file selection mode,
-//                                    	then a given file will not be judged as 'selected' unless all of
-//                                    	the active selection criterion are satisfied. In other words, if
-//                                    	three active search criterion are provided for 'FileNamePatterns',
-//                                    	'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
-//                                    	selected unless it has satisfied all three criterion in this example.
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will not be judged as 'selected' unless all of
+//                                      the active selection criterion are satisfied. In other words, if
+//                                      three active search criterion are provided for 'FileNamePatterns',
+//                                      'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                      selected unless it has satisfied all three criterion in this example.
 //
 //                                    FileSelectMode.ORSelect() - File selected if any active selection
 //                                      criterion is satisfied.
@@ -1960,7 +1962,7 @@ func (dMgr *DirMgr) EqualPaths(dMgr2 *DirMgr) bool {
 //
 // Return Value:
 //
-//    [] error - This function will return an array of errors containing error messages
+//    [] error -  This function will return an array of errors containing error messages
 //                generated during the performance of specified File Operations on the
 //                designated directory. If the error array returned is empty or has
 //                a zero length, it signals that no errors were encountered and all operations
@@ -2109,8 +2111,8 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 //                                    criterion. Examples for setting SelectByFileMode are shown as follows:
 //
 //                                         fsc := FileSelectionCriteria{}
-//                                           err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
-//                                           err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//                                         err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                         err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
 //
 //    SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
@@ -2121,12 +2123,12 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 //                                    FileSelectMode.ANDSelect() - File selected if all active selection
 //                                      criteria are satisfied.
 //
-//                                    	If this constant value is specified for the file selection mode,
-//                                    	then a given file will not be judged as 'selected' unless all of
-//                                    	the active selection criterion are satisfied. In other words, if
-//                                    	three active search criterion are provided for 'FileNamePatterns',
-//                                    	'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
-//                                    	selected unless it has satisfied all three criterion in this example.
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will not be judged as 'selected' unless all of
+//                                      the active selection criterion are satisfied. In other words, if
+//                                      three active search criterion are provided for 'FileNamePatterns',
+//                                      'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                      selected unless it has satisfied all three criterion in this example.
 //
 //                                    FileSelectMode.ORSelect() - File selected if any active selection
 //                                      criterion is satisfied.
@@ -2253,7 +2255,7 @@ func (dMgr *DirMgr) ExecuteDirectoryFileOps(
 //
 // Return Values:
 //
-//  []error - This function will return an array of strings containing error messages
+//  []error -  This function will return an array of strings containing error messages
 //             generated during the performance of specified File Operations on the
 //             designated directory tree. If the string array returned is empty or has
 //             a zero length, it signals that no errors were encountered and all operations
@@ -2395,8 +2397,8 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 //                                    criterion. Examples for setting SelectByFileMode are shown as follows:
 //
 //                                         fsc := FileSelectionCriteria{}
-//                                           err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
-//                                           err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//                                         err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                         err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
 //
 //    SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
@@ -2407,12 +2409,12 @@ func (dMgr *DirMgr) ExecuteDirectoryTreeOps(
 //                                    FileSelectMode.ANDSelect() - File selected if all active selection
 //                                      criteria are satisfied.
 //
-//                                    	If this constant value is specified for the file selection mode,
-//                                    	then a given file will not be judged as 'selected' unless all of
-//                                    	the active selection criterion are satisfied. In other words, if
-//                                    	three active search criterion are provided for 'FileNamePatterns',
-//                                    	'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
-//                                    	selected unless it has satisfied all three criterion in this example.
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will not be judged as 'selected' unless all of
+//                                      the active selection criterion are satisfied. In other words, if
+//                                      three active search criterion are provided for 'FileNamePatterns',
+//                                      'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                      selected unless it has satisfied all three criterion in this example.
 //
 //                                    FileSelectMode.ORSelect() - File selected if any active selection
 //                                      criterion is satisfied.
@@ -2657,8 +2659,8 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
 //                                    criterion. Examples for setting SelectByFileMode are shown as follows:
 //
 //                                         fsc := FileSelectionCriteria{}
-//                                           err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
-//                                           err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//                                         err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                         err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
 //
 //    SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
@@ -2669,12 +2671,12 @@ func (dMgr *DirMgr) FindFilesByNamePattern(fileSearchPattern string) (FileMgrCol
 //                                    FileSelectMode.ANDSelect() - File selected if all active selection
 //                                      criteria are satisfied.
 //
-//                                    	If this constant value is specified for the file selection mode,
-//                                    	then a given file will not be judged as 'selected' unless all of
-//                                    	the active selection criterion are satisfied. In other words, if
-//                                    	three active search criterion are provided for 'FileNamePatterns',
-//                                    	'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
-//                                    	selected unless it has satisfied all three criterion in this example.
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will not be judged as 'selected' unless all of
+//                                      the active selection criterion are satisfied. In other words, if
+//                                      three active search criterion are provided for 'FileNamePatterns',
+//                                      'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                      selected unless it has satisfied all three criterion in this example.
 //
 //                                    FileSelectMode.ORSelect() - File selected if any active selection
 //                                      criterion is satisfied.
@@ -2863,8 +2865,8 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 //                                    criterion. Examples for setting SelectByFileMode are shown as follows:
 //
 //                                         fsc := FileSelectionCriteria{}
-//                                           err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
-//                                           err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//                                         err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                         err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
 //
 //    SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
@@ -2875,12 +2877,12 @@ func (dMgr *DirMgr) FindFilesBySelectCriteria(
 //                                    FileSelectMode.ANDSelect() - File selected if all active selection
 //                                      criteria are satisfied.
 //
-//                                    	If this constant value is specified for the file selection mode,
-//                                    	then a given file will not be judged as 'selected' unless all of
-//                                    	the active selection criterion are satisfied. In other words, if
-//                                    	three active search criterion are provided for 'FileNamePatterns',
-//                                    	'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
-//                                    	selected unless it has satisfied all three criterion in this example.
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will not be judged as 'selected' unless all of
+//                                      the active selection criterion are satisfied. In other words, if
+//                                      three active search criterion are provided for 'FileNamePatterns',
+//                                      'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                      selected unless it has satisfied all three criterion in this example.
 //
 //                                    FileSelectMode.ORSelect() - File selected if any active selection
 //                                      criterion is satisfied.
@@ -3074,8 +3076,8 @@ func (dMgr *DirMgr) FindWalkDirFiles(
 //                                    criterion. Examples for setting SelectByFileMode are shown as follows:
 //
 //                                         fsc := FileSelectionCriteria{}
-//                                           err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
-//                                           err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//                                         err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                         err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
 //
 //    SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
@@ -3086,12 +3088,12 @@ func (dMgr *DirMgr) FindWalkDirFiles(
 //                                    FileSelectMode.ANDSelect() - File selected if all active selection
 //                                      criteria are satisfied.
 //
-//                                    	If this constant value is specified for the file selection mode,
-//                                    	then a given file will not be judged as 'selected' unless all of
-//                                    	the active selection criterion are satisfied. In other words, if
-//                                    	three active search criterion are provided for 'FileNamePatterns',
-//                                    	'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
-//                                    	selected unless it has satisfied all three criterion in this example.
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will not be judged as 'selected' unless all of
+//                                      the active selection criterion are satisfied. In other words, if
+//                                      three active search criterion are provided for 'FileNamePatterns',
+//                                      'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                      selected unless it has satisfied all three criterion in this example.
 //
 //                                    FileSelectMode.ORSelect() - File selected if any active selection
 //                                      criterion is satisfied.
@@ -4121,8 +4123,8 @@ func (dMgr *DirMgr) MakeDir() error {
 //                                    criterion. Examples for setting SelectByFileMode are shown as follows:
 //
 //                                         fsc := FileSelectionCriteria{}
-//                                           err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
-//                                           err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
+//                                         err = fsc.SelectByFileMode.SetByFileMode(os.FileMode(0666))
+//                                         err = fsc.SelectByFileMode.SetFileModeByTextCode("-r--r--r--")
 //
 //    SelectCriterionMode FileSelectCriterionMode -
 //                                    This parameter selects the manner in which the file selection
@@ -4133,12 +4135,12 @@ func (dMgr *DirMgr) MakeDir() error {
 //                                FileSelectMode.ANDSelect() - File selected if all active selection
 //                                      criteria are satisfied.
 //
-//                                    	If this constant value is specified for the file selection mode,
-//                                    	then a given file will not be judged as 'selected' unless all of
-//                                    	the active selection criterion are satisfied. In other words, if
-//                                    	three active search criterion are provided for 'FileNamePatterns',
-//                                    	'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
-//                                    	selected unless it has satisfied all three criterion in this example.
+//                                      If this constant value is specified for the file selection mode,
+//                                      then a given file will not be judged as 'selected' unless all of
+//                                      the active selection criterion are satisfied. In other words, if
+//                                      three active search criterion are provided for 'FileNamePatterns',
+//                                      'FilesOlderThan' and 'FilesNewerThan', then a file will NOT be
+//                                      selected unless it has satisfied all three criterion in this example.
 //
 //                                FileSelectMode.ORSelect() - File selected if any active selection
 //                                      criterion is satisfied.
