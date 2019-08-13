@@ -17,23 +17,25 @@ Mac-OS, Linux and Windows.
 __`To date, the source code has only been tested on Windows.`__
 
 # Table Of Contents
-1. [Getting Started](#getting-started)
-2. [Operating Systems](#operating-systems)
-3. [Installation](#installation)
-4. [Source Code Import](#import)
-5. [Version](#version)
-6. [Primary Types](#primary-types)
-6. [Source Code Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops)
-8. [File Helper](#filehelpler)
-9. [Directory Manager](#dirmgr)
-10. [File Manager](#filemgr)
-11. [Collections](#collections)
++ [Getting Started](#getting-started)
+  - [Supported Platforms](#supported-platforms)
+  - [Installation](#installation)
+  - [Source Code Import](#source-code-import)
++ [Version](#version)
++ [Source Code Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops)
++ [Primary Types](#primary-types)
+  - [File Helper](#filehelpler)
+  - [Directory Manager](#dirmgr)
+  - [File Manager](#filemgr)
+  - [Collections](#collections)
++ [Dependencies](#dependencies)
++ [Tests](#tests)
 
 <a name="getting-started"></a>
 # Getting Started 
 
-<a name="operating-systems"></a>
-## Operating Systems
+<a name="supported-platforms"></a>
+## Supported Platforms
 This package was developed and tested on Windows, although the package
 was designed to operate on multiple operating systems including 
 Mac-OS, Linux and Windows.
@@ -51,8 +53,8 @@ To update the library run:
     
     go get -u github.com/MikeAustin71/pathfileopsgo/pathfileops
 
-<a name="import"></a>
-## Import        
+<a name="source-code-import"></a>
+## Source Code Import        
 After installation, you may import and reference the library
 as follows:
 
