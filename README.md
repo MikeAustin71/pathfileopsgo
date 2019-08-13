@@ -1,11 +1,11 @@
 # pathfileops
 
-*pathfileops* is a software library or in go parlance, a software *package*.
- 
-This package provides software types and methods used in the management,
-organization and control of disk files and directories.
+*pathfileops* is a software library or in *Go* parlance, a software *package*.
 
-*pathfileops* is written in the *Go* programming language, a.k.a 'golang'.
+This package is written in the *Go* programming language, a.k.a 'golang'.
+ 
+*pathfileops* provides software types and methods used in the management,
+organization and control of disk files and directories.
 
 The source code repository for this package is located at:
   https://github.com/MikeAustin71/pathfileopsgo.git
