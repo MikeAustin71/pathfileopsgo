@@ -154,11 +154,9 @@ following text file:
 ## License
 Copyright 2019 Mike Rapp. All rights reserved.
 
-Use of this source code is governed by the
-MIT-style license which can be found in the
-LICENSE file.
-
-Hint: This is an open-source project.
+Use of this source code is governed by the (open-source)
+MIT-style license which can be found in the LICENSE file
+found in this directory.
 
 ## Comments And Questions
 

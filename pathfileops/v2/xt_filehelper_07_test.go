@@ -1300,6 +1300,31 @@ func TestFileHelper_OpenDirectory_05(t *testing.T) {
   }
 }
 
+func TestFileHelper_OpenDirectory_06(t *testing.T) {
+
+  fh := FileHelper{}
+
+  directoryPath := "../../filesfortest/checkfiles/testRead857268.txt"
+  directoryPath = fh.AdjustPathSlash(directoryPath)
+
+  fPtr, err := fh.OpenDirectory(directoryPath, false)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.OpenDirectory(directoryPath, false)\n"+
+      "because directoryPath is a 'File' and NOT a directory\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+
+  if fPtr != nil {
+    _ = fPtr.Close()
+  }
+
+  if !fh.DoesFileExist(directoryPath) {
+    t.Error("ERROR: Test Directory Path DOES NOT EXIST!\n")
+  }
+
+}
+
 func TestFileHelper_OpenFile_01(t *testing.T) {
 
   targetFile := "../../filesfortest/levelfilesfortest/level_0_0_test.txt"
@@ -1629,6 +1654,62 @@ func TestFileHelper_OpenFile_06(t *testing.T) {
   if err == nil {
     t.Error("Expected an error return from fh.OpenFile(targetFile, fOpCfg, fPermCfg)\n" +
       "because targetFile does NOT exist.\n" +
+      "However, NO ERROR WAS RETURNED!")
+  }
+
+  if fPtr != nil {
+    _ = fPtr.Close()
+  }
+
+  return
+}
+
+func TestFileHelper_OpenFile_07(t *testing.T) {
+
+  targetFile := "../../createFilesTest/Level01/Level02"
+
+  fh := FileHelper{}
+
+  targetFile = fh.AdjustPathSlash(targetFile)
+
+  fOpCfg, err := FileOpenConfig{}.New(FOpenType.TypeNone(),
+    FOpenMode.ModeNone())
+
+  if err != nil {
+    t.Errorf("Error returned by FileOpenConfig{}.New().\n"+
+      "Error='%v'\n", err.Error())
+    return
+  }
+
+  err = fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly())
+
+  if err != nil {
+    t.Errorf("Error returned by fOpCfg.SetFileOpenType(FOpenType.TypeReadOnly()).\n"+
+      "Error='%v' \n", err.Error())
+    return
+  }
+
+  err = fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())
+
+  if err != nil {
+    t.Errorf("Error returned by fOpCfg.SetFileOpenModes(FOpenMode.ModeAppend())\n"+
+      "Error='%v' \n", err.Error())
+    return
+  }
+
+  fPermCfg, err := FilePermissionConfig{}.New("-r--r--r--")
+
+  if err != nil {
+    t.Errorf("Error returned by FilePermissionConfig{}.New(\"-r--r--r--\")\n"+
+      "Error='%v' \n", err.Error())
+    return
+  }
+
+  fPtr, err := fh.OpenFile(targetFile, fOpCfg, fPermCfg)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.OpenFile(targetFile, fOpCfg, fPermCfg)\n" +
+      "because targetFile is a Directory and NOT a File.\n" +
       "However, NO ERROR WAS RETURNED!")
   }
 

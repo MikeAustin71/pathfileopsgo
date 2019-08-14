@@ -21,6 +21,7 @@ func TestFileHelper_FindFilesWalkDirectory_01(t *testing.T) {
   fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
 
   startPath := "../../filesfortest/levelfilesfortest/level_01_dir"
+
   dTreeInfo, err := fh.FindFilesWalkDirectory(startPath, fsc)
 
   if err != nil {
@@ -180,6 +181,29 @@ func TestFileHelper_FindFilesWalkDirectory_06(t *testing.T) {
   if numOfFiles != 0 {
     t.Errorf("Expected zero found files. Instead, files were found. Error!"+
       "numOfFiles='%v' ", numOfFiles)
+  }
+
+}
+
+func TestFileHelper_FindFilesWalkDirectory_07(t *testing.T) {
+
+  fh := FileHelper{}
+
+  searchPattern := "....////&!////@$...///&*()"
+
+  fsc := FileSelectionCriteria{}
+
+  fsc.FileNamePatterns = []string{searchPattern}
+  fsc.FilesOlderThan = time.Time{}
+  fsc.FilesNewerThan = time.Time{}
+  fsc.SelectCriterionMode = FileSelectMode.ANDSelect()
+
+  _, err := fh.FindFilesWalkDirectory("    ", fsc)
+
+  if err == nil {
+    t.Error("Expected error return from fh.FindFilesWalkDirectory(\"....////&!////@$...///&*()\", fsc) " +
+      "because first input parameter is an invalid directory. " +
+      "However, NO ERROR WAS RETURNED!")
   }
 
 }
@@ -658,6 +682,23 @@ func TestFileHelper_GetFileLastModificationDate_04(t *testing.T) {
     t.Error(fmt.Sprintf("Expected Time value %v, instead got:", actualFileTime), fileTime)
   }
 }
+
+func TestFileHelper_GetFileLastModificationDate_05(t *testing.T) {
+
+  fh := FileHelper{}
+  tStrFmt := "2006-01-02 15:04:05.000000000"
+  targetPath :=
+    "../../createFilesTest/Level01/Level02/TestFileHelper_GetFileLastModificationDate_05.txt"
+
+  _, _, err := fh.GetFileLastModificationDate(targetPath, tStrFmt)
+
+  if err == nil {
+    t.Error("Expected error return from fh.GetFileLastModificationDate" +
+      "(targetPath, tStrFmt) because 'targetPath' does NOT exist!\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+}
+
 
 func TestFileHelper_GetFileMode_01(t *testing.T) {
 

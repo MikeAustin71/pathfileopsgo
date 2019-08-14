@@ -1156,7 +1156,22 @@ func TestFileHelper_DeleteFilesWalkDirectory_03(t *testing.T) {
 
 }
 
+func TestFileHelper_DeleteFilesWalkDirectory_04(t *testing.T) {
 
+  fsc := FileSelectionCriteria{}
+
+  target := "    "
+
+  _, err := FileHelper{}.DeleteFilesWalkDirectory(target, fsc)
+
+  if err == nil {
+    t.Error("Expected an error return from FileHelper{}." +
+      "DeleteFilesWalkDirectory(target, fsc)\n" +
+      "because 'target' is an empty string!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n")
+  }
+
+}
 
 func TestFileHelper_DoesStringEndWithPathSeparator_01(t *testing.T) {
   rawtestStr := "../../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/"

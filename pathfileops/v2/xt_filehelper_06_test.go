@@ -656,13 +656,35 @@ func TestFileHelper_GetVolumeName_05(t *testing.T) {
 
   testVolStr := "D:"
 
-  expectedVolName := strings.ToLower("D:")
+  isLinux := GlobalPathFileOpsSys{}.IsLinuxOperatingSystem()
+
+  if isLinux {
+    testVolStr = "/dev/sda1"
+  }
+
+  expectedVolName := strings.ToLower(testVolStr)
 
   volumeName := fh.GetVolumeName(testVolStr)
 
   if expectedVolName != strings.ToLower(volumeName) {
     t.Errorf("Expected volumeName='%v'. Instead, volName='%v' ",
       expectedVolName, strings.ToLower(volumeName))
+  }
+
+}
+
+func TestFileHelper_GetVolumeNameIndex_01(t *testing.T) {
+  fh := FileHelper{}
+
+  testVolStr := ""
+
+  _,
+  _,
+  volumeName := fh.GetVolumeNameIndex(testVolStr)
+
+  if volumeName != "" {
+    t.Errorf("Expected returned volumeName to be an EMPTY STRING.\n" +
+      "Instead, volume Name='%v'\n",  volumeName)
   }
 
 }

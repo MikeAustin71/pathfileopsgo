@@ -200,6 +200,28 @@ func TestFileHelper_OpenFileReadOnly_05(t *testing.T) {
 
 }
 
+func TestFileHelper_OpenFileReadOnly_06(t *testing.T) {
+
+  fh := FileHelper{}
+
+  target := "../../createFilesTest/Level01/Level02"
+
+  target = fh.AdjustPathSlash(target)
+
+  fPtr, err := fh.OpenFileReadOnly(target)
+
+  if err == nil {
+    t.Error("Expected an error return from fh.OpenFileReadOnly(target)\n" +
+      "because 'target' is a Directory and NOT a File!\n" +
+      "However, NO ERROR WAS RETURNED!!!\n",)
+  }
+
+  if fPtr != nil {
+    _ = fPtr.Close()
+  }
+
+}
+
 func TestFileHelper_OpenFileReadWrite_01(t *testing.T) {
 
   fh := FileHelper{}

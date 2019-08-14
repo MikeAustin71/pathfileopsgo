@@ -274,7 +274,7 @@ func TestFileHelper_ConvertDecimalToOctal_02(t *testing.T) {
 
 func TestFileHelper_CopyFileByIo_01(t *testing.T) {
 
-  rawDestFile := "..\\checkfiles\\scratchTestCopyFile80179658.txt"
+  rawDestFile := "..\\..\\checkfiles\\TestFileHelper_CopyFileByIo_01.txt"
 
   destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
 
@@ -299,7 +299,7 @@ func TestFileHelper_CopyFileByIo_01(t *testing.T) {
 
 func TestFileHelper_CopyFileByIo_02(t *testing.T) {
 
-  rawSrcFile := "..\\filesfortest\\levelfilesfortest\\level_0_0_test.txt"
+  rawSrcFile := "..\\..\\filesfortest\\levelfilesfortest\\level_0_0_test.txt"
 
   srcFile, err := FileHelper{}.MakeAbsolutePath(rawSrcFile)
 
@@ -322,7 +322,7 @@ func TestFileHelper_CopyFileByIo_02(t *testing.T) {
 
 func TestFileHelper_CopyFileByIo_03(t *testing.T) {
 
-  rawDestFile := "..\\checkfiles\\TestFileHelper_CopyFileByIo_03.txt"
+  rawDestFile := "..\\..\\checkfiles\\TestFileHelper_CopyFileByIo_03.txt"
 
   destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
 
@@ -335,7 +335,7 @@ func TestFileHelper_CopyFileByIo_03(t *testing.T) {
 
   _ = FileHelper{}.DeleteDirFile(destFile)
 
-  rawSrcFile := "..\\checkfiles\\iDoNOTExist.txt"
+  rawSrcFile := "..\\..\\checkfiles\\iDoNOTExist.txt"
 
   srcFile, err := FileHelper{}.MakeAbsolutePath(rawSrcFile)
 
@@ -359,7 +359,7 @@ func TestFileHelper_CopyFileByIo_03(t *testing.T) {
 
 func TestFileHelper_CopyFileByIo_04(t *testing.T) {
 
-  rawDestFile := "..\\filesfortest\\levelfilesfortest\\level_0_0_test.txt"
+  rawDestFile := "..\\..\\filesfortest\\levelfilesfortest\\level_0_0_test.txt"
 
   destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
 
@@ -383,7 +383,7 @@ func TestFileHelper_CopyFileByIo_04(t *testing.T) {
 
 func TestFileHelper_CopyFileByIo_05(t *testing.T) {
 
-  rawDestFile := "..\\checkfiles\\TestFileHelper_CopyFileByIo_05.txt"
+  rawDestFile := "..\\..\\checkfiles\\TestFileHelper_CopyFileByIo_05.txt"
   fh := FileHelper{}
 
   destFile, err := fh.MakeAbsolutePath(rawDestFile)
@@ -700,6 +700,83 @@ func TestFileHelper_CopyFileByIo_11(t *testing.T) {
   if fh.DoesFileExist(destFile) {
     t.Errorf("ERROR: Attempted deletion of destination file FAILED!\n"+
       "Destination File='%v'\n", destFile)
+  }
+
+}
+
+func TestFileHelper_CopyFileByIo_12(t *testing.T) {
+
+  rawDestFile := "..\\..\\checkfiles\\TestFileHelper_CopyFileByIo_12.txt"
+
+  destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile). "+
+      "rawDestFile='%v' Error='%v' ", rawDestFile, err.Error())
+  }
+
+  _ = FileHelper{}.DeleteDirFile(destFile)
+
+  srcFile := destFile
+
+  err = FileHelper{}.CopyFileByIo(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected error from FileHelper{}.CopyFileByIo(srcFile, destFile)\n" +
+      "because input parameters source file and destination file are equivalent.\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+  _ = FileHelper{}.DeleteDirFile(destFile)
+
+}
+
+func TestFileHelper_CopyFileByIo_13(t *testing.T) {
+
+  rawDestFile := "..\\..\\checkfiles\\TestFileHelper_CopyFileByIo_12.txt"
+
+  destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile). "+
+      "rawDestFile='%v' Error='%v' ", rawDestFile, err.Error())
+  }
+
+  _ = FileHelper{}.DeleteDirFile(destFile)
+
+  srcFile := "../../createFilesTest/Level01/Level02"
+
+  err = FileHelper{}.CopyFileByIo(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected error from FileHelper{}.CopyFileByIo(srcFile, destFile)\n" +
+      "because input parameter source file is a directory and NOT a file!\n" +
+      "However, NO ERROR WAS RETURNED!\n")
+  }
+
+  _ = FileHelper{}.DeleteDirFile(destFile)
+
+}
+
+func TestFileHelper_CopyFileByIo_14(t *testing.T) {
+
+  rawDestFile := "../../checkfiles"
+
+  destFile, err := FileHelper{}.MakeAbsolutePath(rawDestFile)
+
+  if err != nil {
+    t.Errorf("Error returned by FileHelper{}.MakeAbsolutePath(rawDestFile). "+
+      "rawDestFile='%v' Error='%v' ", rawDestFile, err.Error())
+  }
+
+  srcFile := "../../filesfortest/checkfiles/testRead2008.txt"
+
+  err = FileHelper{}.CopyFileByIo(srcFile, destFile)
+
+  if err == nil {
+    t.Error("Expected error from FileHelper{}.CopyFileByIo(srcFile, destFile)\n" +
+      "because input parameter 'destFile' is a directory and NOT a file!\n" +
+      "However, NO ERROR WAS RETURNED!\n")
   }
 
 }
