@@ -41,10 +41,8 @@ ___
 + [License](#license)
 + [Comments And Questions](#comments-and-questions)
 
-<a name="getting-started"></a>
 # Getting Started 
 
-<a name="supported-platforms"></a>
 ## Supported Platforms
 This package was developed and tested on Windows, although the package
 was designed to operate on multiple operating systems including 
@@ -52,20 +50,18 @@ Mac-OS, Linux and Windows.
 
 __`To date, the source code has only been tested on Windows.`__
 
-<a name="installation"></a>
 ## Installation
 Use this command to down load and install the *pathfileops* package
 locally. Note: Version 2+ supports *Go* modules.
 
     go get github.com/MikeAustin71/pathfileopsgo/pathfileops/v2
 
-To update the library run:
+To update the package run:
     
     go get -u github.com/MikeAustin71/pathfileopsgo/pathfileops/v2
 
-<a name="source-code-import"></a>
 ## Source Code Import        
-You will need to import and reference the package in your source code
+You will need to import and reference this package in your source code
 files.
 
 To import version 2, which DOES support *Go* modules and provides the 
@@ -83,13 +79,11 @@ following import statement:
             "MikeAustin71/pathfileopsgo/pathfileops"
         )    
 
-<a name="production-file-location"></a>
 ## Production File Location
 All of the active production files are located in directory path:
 
      github.com/MikeAustin71/pathfileopsgo/pathfileops/v2
 
-<a name="version"></a>
 ## Version
 
 This is Version 2.0.0.
@@ -99,10 +93,9 @@ This version DOES support *Go* modules.
 This version requires *Go* Version 1.12 or later.
 
 ___    
-[Source Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops/v2)    
+[Source Code Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops/v2)    
 ___
 
-<a name="primarytypes"></a>
 ## Primary Types
       
 This package incorporates three primary types: 
@@ -113,27 +106,23 @@ This package incorporates three primary types:
     
     3. FileMgr
 
-<a name="filehelper"></a>
 #### FileHelpler
 The type, *FileHelper* is located in directory *./pathfilego/pathfileops/v2*.
 The source code is located in source file, *filehelper.go*. This type includes
 a variety of general utility functions for managing files and directories.
 
-<a name="dirmgr"></a>
 #### DirMgr
 The type, *DirMgr*, is located in directory *./pathfilego/pathfileops/v2*.
 The source code is located in source file, *dirmanager.go*. Directory Manager
 is designed to manage file paths or directories. *DirMgr* is dependent on type
 *FileHelper* discussed above.
 
-<a name="filemgr"></a>
 #### FileMgr 
 The type, *FileMgr*, is located in directory *./pathfilego/pathfileopos/v2*. 
 The source code is located in source file, *filemanager.go*. The File Manager
 type is designed to manage disc files. *FileMgr* is dependent on *FileHelper*
 and *DirMgr*, discussed above.
 
-<a name="collections"></a>
 ### Collections
 This library also provides collections to manage groups of file and directory
 managers.
@@ -145,7 +134,6 @@ managers.
 3. FileOpsCollection - Manages collections of operations performed on disk
  files.
  
-<a name="dependencies"></a> 
 ### Dependencies
 The three types discussed above are interdependent.
 
@@ -155,7 +143,6 @@ The three types discussed above are interdependent.
 
 3. *./pathfilego/pathfileops/v2/filemanager.go*
 
-<a name="tests"></a>
 ## Tests
 This version includes 1,793 tests with a source code coverage of 82%.
 All tests are currently completing successfully as documented in the
@@ -164,7 +151,6 @@ following text file:
       '../pathfilego/pathfileops/v2/xx_tests.txt'
 
 
-<a name="license"></a>
 ## License
 Copyright 2019 Mike Rapp. All rights reserved.
 
@@ -172,7 +158,8 @@ Use of this source code is governed by the
 MIT-style license which can be found in the
 LICENSE file.
 
-<a name="comments-and-questions"></a>
+Hint: This is an open-source project.
+
 ## Comments And Questions
 
 Send questions or comments to:
