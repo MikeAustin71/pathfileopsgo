@@ -86,7 +86,7 @@ func (pfoSys GlobalPathFileOpsSys) IsWindowsOperatingSystem() bool {
 // is 'windows'
 func (pfoSys GlobalPathFileOpsSys) IsLinuxOperatingSystem() bool {
 
-  if strings.Contains(strings.ToLower(runtime.GOOS), "windows") {
+  if strings.Contains(strings.ToLower(runtime.GOOS), "linux") {
     return true
   }
 

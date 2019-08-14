@@ -6,7 +6,6 @@ import (
   "io"
   "os"
   pf "path/filepath"
-  "runtime"
   "strings"
   "time"
 )
@@ -3708,7 +3707,9 @@ func (dMgrHlpr *dirMgrHelper) getValidPathStr(
   if volNameIndex == 0 &&
     strings.ToLower(volNameStr) == strings.ToLower(pathStr) {
 
-    if strings.Contains(strings.ToLower(runtime.GOOS), "windows") {
+    isWindows := GlobalPathFileOpsSys{}.IsWindowsOperatingSystem()
+
+    if isWindows {
       pathStr += pathSepStr
     }
 
