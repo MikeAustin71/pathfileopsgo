@@ -1,6 +1,7 @@
 package main
 
 import (
+  p2 "../pathfileops/v2"
   pf "../pathfileops"
   "fmt"
   "io"
@@ -26,13 +27,38 @@ import (
 
 func main() {
 
-  mainTests{}.mainTest113AreSameFile()
+  mainTests{}.mainTest114StripLeadingDotPathSeparators()
 
 }
 
 type mainTests struct {
   Input  string
   Output string
+}
+
+func (mtst mainTests) mainTest114StripLeadingDotPathSeparators() {
+
+  fmt.Println("      mainTest114StripLeadingDotPathSeparators          ")
+  fmt.Println("********************************************************")
+  fmt.Println("                      START!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  dirName := ".././...    SomeDirDirName"
+
+  fh := p2.FileHelper{}
+
+  finalDirName, strLen := fh.StripLeadingDotSeparatorChars(dirName)
+
+
+  fmt.Println("      mainTest114StripLeadingDotPathSeparators          ")
+  fmt.Println("********************************************************")
+  fmt.Println("                    SUCCESS!!!                          ")
+  fmt.Println("********************************************************")
+  fmt.Println()
+  fmt.Println("      Beginning Dir Name: ", dirName)
+  fmt.Println("          Final Dir Name: ", finalDirName)
+  fmt.Println("Length of Final Dir Name: ", strLen)
+
 }
 
 func (mtst mainTests) mainTest113AreSameFile() {
