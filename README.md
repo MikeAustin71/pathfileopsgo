@@ -19,7 +19,7 @@ Mac-OS, Linux and Windows.
 __`To date, the source code has only been tested on Windows.`__
 
 ___    
-[Source Code Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops/v2)    
+[Source Code Documentation](https://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops)    
 ___
 
 
@@ -30,7 +30,7 @@ ___
   - [Source Code Import](#source-code-import)
 + [Production File Location](#production-file-location)  
 + [Version](#version)
-+ [Source Code Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops/v2)
++ [Source Code Documentation](https://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops)
 + [Primary Types](#primary-types)
   - [File Helper](#filehelpler)
   - [Directory Manager](#dirmgr)
@@ -93,7 +93,7 @@ This version DOES support *Go* modules.
 This version requires *Go* Version 1.12 or later.
 
 ___    
-[Source Code Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops/v2)    
+[Source Code Documentation](https://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops)    
 ___
 
 ## Primary Types
