@@ -1,4 +1,4 @@
-# pathfileops
+# pathfileops Version 2
 
 *pathfileops* is a software library or in *Go* parlance, a software *package*.
 
