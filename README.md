@@ -28,7 +28,7 @@ ___
   - [Source Code Import](#source-code-import)
 + [Production File Location](#production-file-location)  
 + [Version](#version)
-+ [Source Code Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops)
++ [Source Code Documentation](http://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops/v2)
 + [Primary Types](#primary-types)
   - [File Helper](#filehelpler)
   - [Directory Manager](#dirmgr)
