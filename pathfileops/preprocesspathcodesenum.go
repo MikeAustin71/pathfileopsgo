@@ -211,6 +211,17 @@ func (preProcPathCde PreProcessPathCode) Value() PreProcessPathCode {
   return preProcPathCde
 }
 
-
+// PreProcPathCode - public global variable of
+// type PreProcessPathCode.
+//
+// This variable serves as an easier, short hand
+// technique for accessing PathValidityStatusCode
+// values.
+//
+// Usage:
+//  PreProcPathCode.None()
+//  PreProcPathCode.PathSeparator()
+//  PreProcPathCode.AbsolutePath()
+//
 var PreProcPathCode PreProcessPathCode
 
