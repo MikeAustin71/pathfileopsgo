@@ -85,6 +85,60 @@ func (preProcPathCde PreProcessPathCode) Value() PreProcessPathCode {
 }
 
 
+// ParseString - Receives a string and attempts to match it with
+// the string value of the supported enumeration. If successful,
+// a new instance of PreProcessPathCode is returned set to
+// the value of the associated enumeration.
+//
+// This is a standard utility method and is not part of the valid
+// enumerations for this type.
+//
+// ------------------------------------------------------------------------
+//
+// Input Parameters:
+//
+//	valueString   string - A string which will be matched against the
+//	                       enumeration string values. If 'valueString'
+//	                       is equal to one of the enumeration names, this
+//	                       method will proceed to successful completion
+//
+//	caseSensitive   bool - If 'true' the search for enumeration names
+//	                       will be case sensitive and will require an
+//	                       exact match. Therefore, 'valid' will NOT
+//	                       match the enumeration name, 'Valid'.
+//
+//	                       If 'false' a case insensitive search is
+//	                       conducted for the enumeration name. In
+//	                       this case, 'valid' will match the
+//	                       enumeration name 'Valid'.
+//
+// ------------------------------------------------------------------------
+//
+// Return Values:
+//
+//	PreProcessPathCode      - Upon successful completion, this method will return a new
+//	                          instance of PreProcessPathCode set to the value of the
+//	                          enumeration matched by the string search performed on
+//	                          input parameter,'valueString'.
+//
+//	error                   - If this method completes successfully, the returned error
+//	                          Type is set equal to 'nil'. If an error condition is encountered,
+//	                          this method will return an error Type which encapsulates an
+//	                          appropriate error message.
+//
+// ------------------------------------------------------------------------
+//
+// Usage:
+//
+//  t, err := PreProcessPathCode(0).ParseString("AbsolutePath", true)
+//                            OR
+//  t, err := PathValidityStatusCode(0).ParseString("AbsolutePath()", true)
+//                            OR
+//  t, err := PathValidityStatusCode(0).ParseString("absolutepath", false)
+//
+//  For all of the cases shown above,
+//  t is now equal to PreProcessPathCode(0).AbsolutePath()
+//
 func (preProcPathCde PreProcessPathCode) ParseString(
   valueString string,
   caseSensitive bool) (PreProcessPathCode, error) {
