@@ -42,49 +42,6 @@ func (preProcPathCde PreProcessPathCode) AbsolutePath() PreProcessPathCode {
   return PreProcessPathCode(2)
 }
 
-
-// String - Returns a string with the name of the enumeration associated
-// with this instance of 'PreProcessPathCode'.
-//
-// This is a standard utility method and is not part of the valid enumerations
-// for this type.
-//
-// ------------------------------------------------------------------------
-//
-// Return Value:
-//
-//  string - The string label or description for the current enumeration
-//           value. If, the PreProcessPathCode value is invalid, this
-//           method will return an empty string.
-//
-// ------------------------------------------------------------------------
-//
-// Usage
-//
-//	t:= PreProcessPathCode(0).AbsolutePath()
-//	str := t.String()
-//	    str is now equal to "AbsolutePath"
-//
-func (preProcPathCde PreProcessPathCode) String() string {
-
-  label, ok := mPreProcessPathCodeToString[preProcPathCde]
-
-  if !ok {
-    return ""
-  }
-
-  return label
-}
-
-// Value - Returns the value of the PathFileTypeCode instance
-// as type PathFileTypeCode.
-//
-func (preProcPathCde PreProcessPathCode) Value() PreProcessPathCode {
-
-  return preProcPathCde
-}
-
-
 // ParseString - Receives a string and attempts to match it with
 // the string value of the supported enumeration. If successful,
 // a new instance of PreProcessPathCode is returned set to
@@ -186,6 +143,72 @@ func (preProcPathCde PreProcessPathCode) ParseString(
   }
 
   return preProcessPathCode, nil
+}
+
+
+// StatusIsValid - If the value of the current PreProcessPathCode instance
+// is 'invalid', this method will return an error.
+//
+// If the PreProcessPathCode is instance is 'valid', this method will
+// return a value of 'nil'.
+//
+// This is a standard utility method and is not part of the valid enumerations
+// for this type.
+//
+func (preProcPathCde PreProcessPathCode) StatusIsValid() error {
+
+  _, ok := mPreProcessPathCodeToString[preProcPathCde]
+
+  if !ok {
+    ePrefix := "PreProcessPathCode.StatusIsValid()\n"
+    return fmt.Errorf(ePrefix+
+      "Error: The current PreProcessPathCode is INVALID! "+
+      "PreProcessPathCode Value='%v'", int(preProcPathCde))
+  }
+
+  return nil
+}
+
+
+// String - Returns a string with the name of the enumeration associated
+// with this instance of 'PreProcessPathCode'.
+//
+// This is a standard utility method and is not part of the valid enumerations
+// for this type.
+//
+// ------------------------------------------------------------------------
+//
+// Return Value:
+//
+//  string - The string label or description for the current enumeration
+//           value. If, the PreProcessPathCode value is invalid, this
+//           method will return an empty string.
+//
+// ------------------------------------------------------------------------
+//
+// Usage
+//
+//	t:= PreProcessPathCode(0).AbsolutePath()
+//	str := t.String()
+//	    str is now equal to "AbsolutePath"
+//
+func (preProcPathCde PreProcessPathCode) String() string {
+
+  label, ok := mPreProcessPathCodeToString[preProcPathCde]
+
+  if !ok {
+    return ""
+  }
+
+  return label
+}
+
+// Value - Returns the value of the PathFileTypeCode instance
+// as type PathFileTypeCode.
+//
+func (preProcPathCde PreProcessPathCode) Value() PreProcessPathCode {
+
+  return preProcPathCde
 }
 
 
