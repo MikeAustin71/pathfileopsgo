@@ -5,7 +5,10 @@ import (
   "fmt"
   "io"
   "os"
+  "sort"
+  "strings"
 )
+
 
 /*
   This source code file contains type 'DirMgrCollection' .
@@ -22,6 +25,72 @@ import (
   'dirmanager.go' located in this directory.
 
 */
+
+
+// SortDirMgrByAbsPathCaseSensitive - Sorts and array of Directory
+// Managers (DirMgr) by absolute path. This sorting operation is
+// performed as a 'Case Sensitive' sort meaning the upper and lower
+// case characters are significant.
+//
+// This method is designed to be used with the 'Go' Sort package:
+//    https://golang.org/pkg/sort/
+//
+// Example Usage:
+//
+//    sort.Sort(SortDirMgrByAbsPathCaseSensitive(DirMgrArray))
+//
+type SortDirMgrByAbsPathCaseSensitive []DirMgr
+
+
+// Len - Required by the sort.Interface
+func (sortAbsPathSens SortDirMgrByAbsPathCaseSensitive) Len() int {
+  return len(sortAbsPathSens)
+}
+
+// Swap - Required by the sort.Interface
+func (sortAbsPathSens SortDirMgrByAbsPathCaseSensitive) Swap(i, j int) {
+  sortAbsPathSens[i], sortAbsPathSens[j] = sortAbsPathSens[j], sortAbsPathSens[i]
+}
+
+// Less - required by the sort.Interface
+func (sortAbsPathSens SortDirMgrByAbsPathCaseSensitive) Less(i, j int) bool {
+
+  return sortAbsPathSens[i].absolutePath < sortAbsPathSens[j].absolutePath
+}
+
+// SortDirMgrByAbsPathCaseInSensitive - Sort by Directory Managers by
+// absolute path. This sorting operation is performed as a 'Case Insensitive'
+// sort meaning the upper and lower case characters are not significant. All
+// sort comparisons are therefore made using the lower case version of the
+// absolute path.
+//
+// This method is designed to be used with the 'Go' Sort package:
+//    https://golang.org/pkg/sort/
+//
+// Example Usage:
+//
+//    sort.Sort(SortDirMgrByAbsPathCaseInSensitive(DirMgrArray))
+//
+type SortDirMgrByAbsPathCaseInSensitive []DirMgr
+
+
+// Len - Required by the sort.Interface
+func (sortAbsPathInSens SortDirMgrByAbsPathCaseInSensitive) Len() int {
+  return len(sortAbsPathInSens)
+}
+
+
+// Swap - Required by the sort.Interface
+func (sortAbsPathInSens SortDirMgrByAbsPathCaseInSensitive) Swap(i, j int) {
+  sortAbsPathInSens[i], sortAbsPathInSens[j] = sortAbsPathInSens[j], sortAbsPathInSens[i]
+}
+
+// Less - required by the sort.Interface
+func (sortAbsPathInSens SortDirMgrByAbsPathCaseInSensitive) Less(i, j int) bool {
+
+  return strings.ToLower(sortAbsPathInSens[i].absolutePath) <
+    strings.ToLower(sortAbsPathInSens[j].absolutePath)
+}
 
 // DirMgrCollection - A collection of Type DirMgr. The collection
 // is used to aid in the management of groups of paths and directories.
@@ -729,4 +798,38 @@ func (dMgrs *DirMgrCollection) PeekLastDirMgr() (DirMgr, error) {
   }
 
   return dMgrs.dirMgrs[arrayLen-1].CopyOut(), nil
+}
+
+
+// SortByAbsPath - Sorts the collection array of directory managers by
+// absolute path.
+//
+// If the input parameter 'caseInsensitiveSort' is set to 'true', it means
+// that upper and lower case characters are NOT significant in the sorting
+// operation. The sort operation therefore uses lower case versions of
+// absolute path for comparison purposes.
+//
+// On the other hand, if input parameter 'caseInsensitiveSort' is set to 'false',
+// it means that upper and lower chase characters ARE significant to the sort
+// operation.
+//
+func (dMgrs *DirMgrCollection) SortByAbsPath(caseInsensitiveSort bool) {
+
+  if dMgrs.dirMgrs == nil {
+    dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+  }
+
+  if len(dMgrs.dirMgrs) == 0 {
+    return
+  }
+
+  if caseInsensitiveSort {
+
+    sort.Sort( SortDirMgrByAbsPathCaseInSensitive(dMgrs.dirMgrs))
+
+  } else {
+
+    sort.Sort(SortDirMgrByAbsPathCaseSensitive(dMgrs.dirMgrs))
+
+  }
 }
