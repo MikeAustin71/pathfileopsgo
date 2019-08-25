@@ -27,13 +27,114 @@ import (
 
 func main() {
 
-  mainTests{}.mainTest116SortDirsCaseInsensitive()
+  mainTests{}.mainTests117SortFileMgrsCaseSensitive()
 
 }
 
 type mainTests struct {
   Input  string
   Output string
+}
+
+func (mtst mainTests) mainTests117SortFileMgrsCaseSensitive() {
+
+  testDir1 := "../../dirmgrtests/dir01/dir02"
+
+  runelc := 'a'
+
+
+  const aryLen = 12
+
+  fAry := make([]string, aryLen)
+
+  fh := p2.FileHelper{}
+
+  fMgrCol := p2.FileMgrCollection{}.New()
+
+  var err error
+
+  for i:=0 ; i < aryLen; i++ {
+
+
+    strChar := string(runelc)
+
+    if (i+1) % 2 == 0 {
+
+      strChar =  strings.ToUpper(strChar)
+
+    }
+
+    fileName := fmt.Sprintf("fileName_%v_%03d.txt", strChar, i+1)
+
+    testFile := testDir1 + "/" + fileName
+
+    testFile, err = fh.MakeAbsolutePath(testFile)
+
+    if err != nil {
+      fmt.Printf("Error returned by fh.MakeAbsolutePath(testFile)\n" +
+        "testFile='%v'\nError='%v'\n", testFile, err.Error())
+      return
+    }
+
+    runelc++
+
+    fAry[i] = testFile
+
+  }
+
+  for j:=0; j < aryLen; j++ {
+
+    err = fMgrCol.AddFileMgrByPathFileNameExt(fAry[aryLen-1-j])
+
+    if err != nil {
+      fmt.Printf("Error returned by fMgrCol.AddFileMgrByPathFileNameExt(fAry[%v])\n" +
+        "fAry[%v]='%v'\nError='%v'\n", j, j, fAry[j], err.Error())
+      return
+    }
+
+  }
+
+  fmt.Println("=============================")
+  fmt.Println("  Unordered FileMgr List")
+  fmt.Println("=============================")
+  fmt.Println()
+  var fMgr p2.FileMgr
+
+  for k:=0; k < aryLen; k++ {
+
+    fMgr, err = fMgrCol.PeekFileMgrAtIndex(k)
+
+    if err != nil {
+      fmt.Printf("Error returned by fMgrCol.PeekFileMgrAtIndex(index)\n" +
+        "index='%v'\nError='%v\n", k, err.Error())
+      return
+    }
+
+    fmt.Printf("%3d.\t%v\n", k+1, fMgr.GetAbsolutePathFileName() )
+  }
+
+  fMgrCol.SortByAbsPathFileName(false)
+
+  fmt.Println()
+  fmt.Println("=============================")
+  fmt.Println("    Ordered FileMgr List     ")
+  fmt.Println("=============================")
+  fmt.Println()
+
+  for m:=0; m < aryLen; m++ {
+
+    fMgr, err = fMgrCol.PeekFileMgrAtIndex(m)
+
+    if err != nil {
+      fmt.Printf("Error returned by fMgrCol.PeekFileMgrAtIndex(index)\n" +
+        "index='%v'\nError='%v\n", m, err.Error())
+      return
+    }
+
+    fmt.Printf("%3d.\t%v\n", m+1, fMgr.GetAbsolutePathFileName() )
+  }
+
+
 }
 
 func (mtst mainTests) mainTest116SortDirsCaseInsensitive() {
