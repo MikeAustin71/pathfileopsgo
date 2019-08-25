@@ -4,7 +4,74 @@ import (
   "errors"
   "fmt"
   "os"
+  "sort"
+  "strings"
 )
+
+// SortFileMgrByAbsPathCaseSensitive - Sorts an array of File Managers
+// (FileMgr) by absolute path, filename and file extension. This sorting
+// operation is performed as a 'Case Sensitive' sort meaning the upper
+// and lower case characters are significant.
+//
+// This method is designed to be used with the 'Go' Sort package:
+//    https://golang.org/pkg/sort/
+//
+// Example Usage:
+//
+//    sort.Sort(SortFileMgrByAbsPathCaseSensitive(FileMgrArray))
+//
+type SortFileMgrByAbsPathCaseSensitive []FileMgr
+
+// Len - Required by the sort.Interface
+func (sortAbsPathSens SortFileMgrByAbsPathCaseSensitive) Len() int {
+  return len(sortAbsPathSens)
+}
+
+// Swap - Required by the sort.Interface
+func (sortAbsPathSens SortFileMgrByAbsPathCaseSensitive) Swap(i, j int) {
+  sortAbsPathSens[i], sortAbsPathSens[j] = sortAbsPathSens[j], sortAbsPathSens[i]
+}
+
+// Less - required by the sort.Interface
+func (sortAbsPathSens SortFileMgrByAbsPathCaseSensitive) Less(i, j int) bool {
+
+  return sortAbsPathSens[i].absolutePathFileName < sortAbsPathSens[j].absolutePathFileName
+}
+
+// SortFileMgrByAbsPathCaseInSensitive - Sort by File Managers by
+// absolute path, filename and file extension. This sorting operation
+// is performed as a 'Case Insensitive' sort meaning the upper and
+// lower case characters are not significant. All sort comparisons
+// are therefore made by using lower case versions of the absolute
+// path, filename and file extension.
+//
+// This method is designed to be used with the 'Go' Sort package:
+//    https://golang.org/pkg/sort/
+//
+// Example Usage:
+//
+//    sort.Sort(SortFileMgrByAbsPathCaseInSensitive(FileMgrArray))
+//
+type SortFileMgrByAbsPathCaseInSensitive []FileMgr
+
+
+// Len - Required by the sort.Interface
+func (sortAbsPathInSens SortFileMgrByAbsPathCaseInSensitive) Len() int {
+  return len(sortAbsPathInSens)
+}
+
+
+// Swap - Required by the sort.Interface
+func (sortAbsPathInSens SortFileMgrByAbsPathCaseInSensitive) Swap(i, j int) {
+  sortAbsPathInSens[i], sortAbsPathInSens[j] = sortAbsPathInSens[j], sortAbsPathInSens[i]
+}
+
+// Less - required by the sort.Interface
+func (sortAbsPathInSens SortFileMgrByAbsPathCaseInSensitive) Less(i, j int) bool {
+
+  return strings.ToLower(sortAbsPathInSens[i].absolutePathFileName) <
+                       strings.ToLower(sortAbsPathInSens[j].absolutePathFileName)
+}
 
 // FileMgrCollection - Manages a collection of FileMgr
 // instances.
@@ -819,4 +886,37 @@ func (fMgrs *FileMgrCollection) PeekLastFileMgr() (FileMgr, error) {
   }
 
   return fMgrs.fileMgrs[arrayLen-1].CopyOut(), nil
+}
+
+// SortByAbsPathFileName - Sorts the collection array of file managers
+// by absolute path, file name and file extension.
+//
+// If the input parameter 'caseInsensitiveSort' is set to 'true', it means
+// that upper and lower case characters are NOT significant in the sorting
+// operation. The sort operation therefore uses lower case versions of
+// absolute path, file name and file extension for comparison purposes.
+//
+// On the other hand, if input parameter 'caseInsensitiveSort' is set to 'false',
+// it means that upper and lower chase characters ARE significant to the sort
+// operation.
+//
+func (fMgrs *FileMgrCollection) SortByAbsPathFileName(caseInsensitiveSort bool) {
+
+  if fMgrs.fileMgrs == nil {
+    fMgrs.fileMgrs = make([]FileMgr, 0, 50)
+  }
+
+  if len(fMgrs.fileMgrs) == 0 {
+    return
+  }
+
+  if caseInsensitiveSort {
+
+    sort.Sort(SortFileMgrByAbsPathCaseInSensitive(fMgrs.fileMgrs))
+
+  } else {
+
+    sort.Sort(SortFileMgrByAbsPathCaseSensitive(fMgrs.fileMgrs))
+
+  }
 }

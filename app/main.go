@@ -1,8 +1,8 @@
 package main
 
 import (
-  p2 "../pathfileops/v2"
   pf "../pathfileops"
+  p2 "../pathfileops/v2"
   "fmt"
   "io"
   "os"
@@ -27,13 +27,252 @@ import (
 
 func main() {
 
-  mainTests{}.mainTest114StripLeadingDotPathSeparators()
+  mainTests{}.mainTests117SortFileMgrsCaseSensitive()
 
 }
 
 type mainTests struct {
   Input  string
   Output string
+}
+
+func (mtst mainTests) mainTests117SortFileMgrsCaseSensitive() {
+
+  testDir1 := "../../dirmgrtests/dir01/dir02"
+
+  runelc := 'a'
+
+
+  const aryLen = 12
+
+  fAry := make([]string, aryLen)
+
+  fh := p2.FileHelper{}
+
+  fMgrCol := p2.FileMgrCollection{}.New()
+
+  var err error
+
+  for i:=0 ; i < aryLen; i++ {
+
+
+    strChar := string(runelc)
+
+    if (i+1) % 2 == 0 {
+
+      strChar =  strings.ToUpper(strChar)
+
+    }
+
+    fileName := fmt.Sprintf("fileName_%v_%03d.txt", strChar, i+1)
+
+    testFile := testDir1 + "/" + fileName
+
+    testFile, err = fh.MakeAbsolutePath(testFile)
+
+    if err != nil {
+      fmt.Printf("Error returned by fh.MakeAbsolutePath(testFile)\n" +
+        "testFile='%v'\nError='%v'\n", testFile, err.Error())
+      return
+    }
+
+    runelc++
+
+    fAry[i] = testFile
+
+  }
+
+  for j:=0; j < aryLen; j++ {
+
+    err = fMgrCol.AddFileMgrByPathFileNameExt(fAry[aryLen-1-j])
+
+    if err != nil {
+      fmt.Printf("Error returned by fMgrCol.AddFileMgrByPathFileNameExt(fAry[%v])\n" +
+        "fAry[%v]='%v'\nError='%v'\n", j, j, fAry[j], err.Error())
+      return
+    }
+
+  }
+
+  fmt.Println("=============================")
+  fmt.Println("  Unordered FileMgr List")
+  fmt.Println("=============================")
+  fmt.Println()
+  var fMgr p2.FileMgr
+
+  for k:=0; k < aryLen; k++ {
+
+    fMgr, err = fMgrCol.PeekFileMgrAtIndex(k)
+
+    if err != nil {
+      fmt.Printf("Error returned by fMgrCol.PeekFileMgrAtIndex(index)\n" +
+        "index='%v'\nError='%v\n", k, err.Error())
+      return
+    }
+
+    fmt.Printf("%3d.\t%v\n", k+1, fMgr.GetAbsolutePathFileName() )
+  }
+
+  fMgrCol.SortByAbsPathFileName(false)
+
+  fmt.Println()
+  fmt.Println("=============================")
+  fmt.Println("    Ordered FileMgr List     ")
+  fmt.Println("=============================")
+  fmt.Println()
+
+  for m:=0; m < aryLen; m++ {
+
+    fMgr, err = fMgrCol.PeekFileMgrAtIndex(m)
+
+    if err != nil {
+      fmt.Printf("Error returned by fMgrCol.PeekFileMgrAtIndex(index)\n" +
+        "index='%v'\nError='%v\n", m, err.Error())
+      return
+    }
+
+    fmt.Printf("%3d.\t%v\n", m+1, fMgr.GetAbsolutePathFileName() )
+  }
+
+
+}
+
+func (mtst mainTests) mainTest116SortDirsCaseInsensitive() {
+
+  df := make([]string, 10, 10)
+
+  df[0] = "../../dirmgrtests"
+  df[1] = "../../dirmgrtests/dir01"
+  df[2] = "../../dirmgrtests/dir01/dir02"
+  df[3] = "../../dirmgrtests/dir01/dir02/dir03"
+  df[4] = "../../dirmgrtests/dir01/dir02/dir03/dir04"
+  df[5] = "../../Dirmgrtests"
+  df[6] = "../../Dirmgrtests/Dir01"
+  df[7] = "../../Dirmgrtests/Dir01/Dir02"
+  df[8] = "../../Dirmgrtests/Dir01/Dir02/Dir03"
+  df[9] = "../../Dirmgrtests/Dir01/Dir02/Dir03/Dir04"
+
+  dmgrCol := p2.DirMgrCollection{}.New()
+
+  var err error
+  fh := p2.FileHelper{}
+
+  fmt.Println("  UnSorted List  ")
+  fmt.Println("=================")
+  fmt.Println()
+
+  for i := 0; i < 10; i++ {
+
+    err = dmgrCol.AddDirMgrByPathNameStr(df[i])
+
+    if err != nil {
+      fmt.Printf("Error returned by dmgrCol.AddDirMgrByPathNameStr(df[i]). "+
+        "i='%v', df[i]='%v' Error='%v' ", i, df[i], err.Error())
+      return
+    }
+
+    absUnSorted, err2 := fh.MakeAbsolutePath(df[i])
+
+    if err2 != nil {
+      fmt.Printf("Error returned by fh.MakeAbsolutePath(df[i])\n" +
+        "df[i]='%v'\nError='%v'\n", df[i], err2.Error())
+      return
+    }
+
+    fmt.Printf("%3d.\t%v\n", i+1, absUnSorted)
+
+  }
+
+  dmgrCol.SortByAbsPath(true)
+
+  fmt.Println()
+  fmt.Println("=================")
+  fmt.Println("  Sorted List    ")
+  fmt.Println("=================")
+  fmt.Println()
+
+  for k:=0; k < 10; k++ {
+
+    dMgr, err := dmgrCol.PeekDirMgrAtIndex(k)
+
+    if err != nil {
+      fmt.Printf("Error returned by dmgrCol.PeekDirMgrAtIndex(k)\n" +
+        "k='%v'\nError='%v'\n", k, err.Error())
+      return
+    }
+
+    fmt.Printf("%3d.\t%v\n", k+1, dMgr.GetAbsolutePath())
+
+  }
+}
+
+func (mtst mainTests) mainTest115SortDirs() {
+
+  df := make([]string, 10, 10)
+
+  df[0] = "../dirmgrtests"
+  df[1] = "../dirmgrtests/dir01"
+  df[2] = "../dirmgrtests/dir01/dir02"
+  df[3] = "../dirmgrtests/dir01/dir02/dir03"
+  df[4] = "../dirmgrtests/dir01/dir02/dir03/dir04"
+  df[5] = "../Dirmgrtests"
+  df[6] = "../Dirmgrtests/Dir01"
+  df[7] = "../Dirmgrtests/Dir01/Dir02"
+  df[8] = "../Dirmgrtests/Dir01/Dir02/Dir03"
+  df[9] = "../Dirmgrtests/Dir01/Dir02/Dir03/Dir04"
+
+  dmgrCol := p2.DirMgrCollection{}.New()
+
+  var err error
+  fh := p2.FileHelper{}
+
+  fmt.Println("  UnSorted List  ")
+  fmt.Println("=================")
+  fmt.Println()
+
+  for i := 0; i < 10; i++ {
+
+    err = dmgrCol.AddDirMgrByPathNameStr(df[i])
+
+    if err != nil {
+      fmt.Printf("Error returned by dmgrCol.AddDirMgrByPathNameStr(df[i]). "+
+        "i='%v', df[i]='%v' Error='%v' ", i, df[i], err.Error())
+      return
+    }
+
+    absUnSorted, err2 := fh.MakeAbsolutePath(df[i])
+
+    if err2 != nil {
+      fmt.Printf("Error returned by fh.MakeAbsolutePath(df[i])\n" +
+        "df[i]='%v'\nError='%v'\n", df[i], err2.Error())
+      return
+    }
+
+    fmt.Printf("%3d.\t%v\n", i+1, absUnSorted)
+
+  }
+
+  dmgrCol.SortByAbsPath(false)
+
+  fmt.Println()
+  fmt.Println("=================")
+  fmt.Println("  Sorted List    ")
+  fmt.Println("=================")
+  fmt.Println()
+
+  for k:=0; k < 10; k++ {
+
+    dMgr, err := dmgrCol.PeekDirMgrAtIndex(k)
+
+    if err != nil {
+      fmt.Printf("Error returned by dmgrCol.PeekDirMgrAtIndex(k)\n" +
+        "k='%v'\nError='%v'\n", k, err.Error())
+      return
+    }
+
+    fmt.Printf("%3d.\t%v\n", k+1, dMgr.GetAbsolutePath())
+
+  }
 }
 
 func (mtst mainTests) mainTest114StripLeadingDotPathSeparators() {

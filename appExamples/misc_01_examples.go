@@ -1,7 +1,6 @@
 package appExamples
 
 import (
-  appLib "../appLibs"
   pathFileOp "../pathfileops"
   "fmt"
   "io/ioutil"
@@ -537,65 +536,6 @@ func (mscEx MiscExamples) TestingDirMgr02TestSetupFileWalkDeleteFiles() (string,
   return origDir, nil
 }
 
-func (mscEx MiscExamples) TestingfileinfoplusEqual01() {
-  fh := pathFileOp.FileHelper{}
-
-  baseFileName := "newerFileForTest_01.txt"
-
-  baseDirPath := "../filesfortest/newfilesfortest"
-
-  absCurrPath, err := fh.GetAbsCurrDir()
-
-  if err != nil {
-    fmt.Printf("Error returned by fh.GetAbsCurrDir(). %v\n", err.Error())
-  }
-
-  fmt.Println("Absolute Current path: ", absCurrPath)
-
-  absBaseDirPath, err := fh.MakeAbsolutePath(baseDirPath)
-
-  if err != nil {
-    fmt.Printf("Error returned from fh.MakeAbsolutePath(baseDirPath). "+
-      "baseDirPath='%v' Error='%v'", baseDirPath, err.Error())
-    return
-  }
-
-  fmt.Printf("    Base path: %v\n", baseDirPath)
-  fmt.Printf("Absolute path: %v\n", absBaseDirPath)
-  fmt.Println()
-
-  absPathFileName, _ := fh.AddPathSeparatorToEndOfPathStr(absBaseDirPath)
-  absPathFileName = absPathFileName + baseFileName
-
-  fInfo, err := fh.GetFileInfo(absPathFileName)
-
-  if err != nil {
-    fmt.Printf("Error returned from fh.GetFileInfo(absPathFileName). "+
-      "absPathFileName='%v' Error='%v'", absPathFileName, err.Error())
-    return
-  }
-
-  fip := pathFileOp.FileInfoPlus{}.NewFromFileInfo(fInfo)
-
-  if fip.Name() != baseFileName {
-    fmt.Printf("Expected fip.Name()='%v'. Instead, fip.Name()='%v'.",
-      baseFileName, fip.Name())
-    return
-  }
-
-  fip2 := pathFileOp.FileInfoPlus{}.NewFromFileInfo(fInfo)
-
-  if fip.Equal(&fip2) == false {
-    fmt.Println("Expected  fip to EQUAL fip2. It DID NOT!")
-    fmt.Println("fip file info")
-    FileHelperExamples{}.PrintFileInfoPlusFields(fip)
-    fmt.Println()
-    fmt.Println("fip2 file info")
-    FileHelperExamples{}.PrintFileInfoPlusFields(fip2)
-  }
-
-}
-
 func (mscEx MiscExamples) TestWriteFile() {
   fh := pathFileOp.FileHelper{}
 
@@ -877,94 +817,6 @@ func (mscEx MiscExamples) Testcopydirectorytree01() {
   fmt.Println("Successful Completion")
 }
 
-func (mscEx MiscExamples) TestMainCleanDirStr(rawPath string) {
-  fh := pathFileOp.FileHelper{}
-
-  dirPath, isEmpty, err := fh.CleanDirStr(rawPath)
-
-  if err != nil {
-    fmt.Printf("Error returned by fh.CleanDirStr(rawPath) rawPath='%v'  Error='%v' \n",
-      rawPath, err.Error())
-    return
-  }
-
-  fmt.Println("=========================================")
-  fmt.Println("     Test Clean Directory String")
-  fmt.Println("=========================================")
-  fmt.Println()
-  fmt.Println("Returned Dir path: ", dirPath)
-  fmt.Println("          isEmpty: ", isEmpty)
-  fmt.Println("  raw path string: ", rawPath)
-
-}
-
-func (mscEx MiscExamples) TestNewFileMgrFromPathFileNameStr(pathFileNameExt string) {
-
-  fMgr, err := pathFileOp.FileMgr{}.NewFromPathFileNameExtStr(pathFileNameExt)
-
-  if err != nil {
-    fmt.Printf("Error returned from pathFileOp.FileMgr{}.NewFromPathFileNameExtStr("+
-      "pathFileNameExt)\npathFileNameExt='%v'\nError='%v' \n", pathFileNameExt, err.Error())
-  }
-
-  FileHelperExamples{}.PrintFileManagerFields(fMgr)
-}
-
-func (mscEx MiscExamples) TestNewFileMgrFromDirMgrFileNameExt(rawPath, rawFileNameExt string) {
-
-  fh := pathFileOp.FileHelper{}
-  adjustedPath := fh.AdjustPathSlash(rawPath)
-
-  dMgr, err := pathFileOp.DirMgr{}.New(adjustedPath)
-
-  if err != nil {
-    fmt.Printf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(adjustedPath). adjustedPath='%v'  Error='%v' \n",
-      adjustedPath, err.Error())
-    return
-  }
-
-  fMgr, err := pathFileOp.FileMgr{}.NewFromDirMgrFileNameExt(dMgr, rawFileNameExt)
-
-  if err != nil {
-    fmt.Printf("Error returned by FileMgr{}.NewFromDirMgrFileNameExt(dMgr, rawFileNameExt). "+
-      "dMgr.path='%v' rawFileNameExt='%v'  \n", dMgr.GetPath(), rawFileNameExt)
-  }
-
-  FileHelperExamples{}.PrintFileManagerFields(fMgr)
-
-}
-
-func (mscEx MiscExamples) TestDirMgr(rawPath string, expectedPath string) {
-
-  fh := pathFileOp.FileHelper{}
-
-  expectedAbsDir, err := fh.MakeAbsolutePath(expectedPath)
-
-  if err != nil {
-    fmt.Printf("Error returned from fh.GetAbsPathFromFilePath(origDir).\n"+
-      "origDir=='%v'\nError='%v'\n", expectedPath, err.Error())
-    return
-  }
-
-  dMgr, err := pathFileOp.DirMgr{}.New(rawPath)
-
-  if err != nil {
-    fmt.Printf("Error returned from DirMgr{}.NewFromPathFileNameExtStr(rawPath) rawPath='%v' Error='%v'", rawPath, err.Error())
-    return
-  }
-
-  DirMgrExamples{}.PrintDirMgrFields(dMgr)
-
-  fmt.Println()
-  fmt.Println("=========================================")
-  fmt.Println("             Expected Results")
-  fmt.Println("=========================================")
-  fmt.Println("          rawPath: ", rawPath)
-  fmt.Println("     expectedPath: ", expectedPath)
-  fmt.Println("   expectedAbsDir: ", expectedAbsDir)
-
-}
-
 func (mscEx MiscExamples) TestMainCleanFileNameExt(rawFileNameExt, expectedFileNameExt string) {
 
   fh := pathFileOp.FileHelper{}
@@ -1075,52 +927,6 @@ func (mscEx MiscExamples) TestGetFileName(pathFileName string) {
 
 }
 
-func (mscEx MiscExamples) TestDirMgrFileInfo() {
-  fh := pathFileOp.FileHelper{}
-  origDir := fh.AdjustPathSlash("D:/go/work/src/MikeAustin71/pathfilego/003_filehelper/logTest")
-
-  dMgr, err := pathFileOp.DirMgr{}.New(origDir)
-
-  if err != nil {
-    fmt.Printf("Error returned from pathFileOp.DirMgr{}.NewFromPathFileNameExtStr(origDir). origDir='%v' Error='%v'", origDir, err.Error())
-    return
-  }
-
-  fsc := pathFileOp.FileSelectionCriteria{}
-
-  findfiles, err := dMgr.FindWalkDirFiles(fsc)
-
-  if err != nil {
-    fmt.Printf("Error returned from dMgr.FindWalkDirFiles(fsc) "+
-      "dMgr.absolutePath='%v'  Error='%v'. \n",
-      dMgr.GetAbsolutePath(), err.Error())
-    return
-  }
-
-  lDirs := findfiles.Directories.GetNumOfDirs()
-
-  if lDirs == 0 {
-    fmt.Println("Didn't find any directories")
-    return
-  }
-
-  for i := 0; i < lDirs; i++ {
-
-    foundDMgr, err := findfiles.Directories.PeekDirMgrAtIndex(i)
-
-    if err != nil {
-      fmt.Printf(
-        "Error returned by findfiles.Directories.PeekDirMgrAtIndex(i). "+
-          "i='%v' Error='%v' ", i, err.Error())
-    }
-
-    DirMgrExamples{}.PrintDirMgrFields(foundDMgr)
-  }
-
-  fmt.Println("Success")
-  fmt.Println("absolutePath: ", dMgr.GetAbsolutePath())
-
-}
 
 func (mscEx MiscExamples) TestFilterFile() {
 
@@ -1184,20 +990,6 @@ func (mscEx MiscExamples) TestFilterFile() {
   fmt.Println("              fia.Sys: ", fia.Sys())
 }
 
-func (mscEx MiscExamples) DeleteDir01() {
-
-  origDir, err := mscEx.testMain01CreateCheckFiles03DirFiles()
-
-  if err != nil {
-    fmt.Printf("Error returned from testMain01CreateCheckFiles03DirFiles()."+
-      "\nError='%v'\n", err.Error())
-    return
-  }
-
-  fmt.Println("origDir Created")
-  fmt.Println("origDig = ", origDir)
-
-}
 
 func (mscEx MiscExamples) DeleteDir02() error {
 
@@ -1292,103 +1084,6 @@ func (mscEx MiscExamples) TestMain901() {
   fmt.Println("**** SUCCESS ****")
 }
 
-func (mscEx MiscExamples) testMain01CreateCheckFiles03DirFiles() (string, error) {
-
-  ePrefix := "TestFile: dirmgr_01_test.go Func: testDirMgrCreateCheckFiles03DirFiles() "
-  fh := pathFileOp.FileHelper{}
-
-  origDir := fh.AdjustPathSlash("../checkfiles/checkfiles02/checkfiles03")
-
-  if fh.DoesFileExist(origDir) {
-
-    err := os.RemoveAll(origDir)
-
-    if err != nil {
-      return "", fmt.Errorf(ePrefix+"Error returned by os.RemoveAll(origDir). origDir='%v'  Error='%v'", origDir, err.Error())
-    }
-
-  }
-
-  if fh.DoesFileExist(origDir) {
-    return "", fmt.Errorf(ePrefix+
-      "Error: Attempted to delete origDir='%v'. However, it still Exists!", origDir)
-  }
-
-  // origDir does NOT exist!
-  var ModePerm os.FileMode = 0777
-
-  err := os.MkdirAll(origDir, ModePerm)
-
-  if err != nil {
-    return "", fmt.Errorf(ePrefix+"Error returned from os.MkdirAll(origDir, ModePerm). origDir='%v' ModePerm='%v'  Error='%v'", origDir, ModePerm, err.Error())
-  }
-
-  if !fh.DoesFileExist(origDir) {
-    return "", fmt.Errorf(ePrefix+"Error: Failed to create directory! origDir='%v'", origDir)
-  }
-
-  fileDir := origDir + string(os.PathSeparator)
-  newFile1 := fileDir + "checkFile30001.txt"
-  fp1, err := os.Create(newFile1)
-
-  if err != nil {
-    return "", fmt.Errorf(ePrefix+"Error returned from os.Create(newFile1). newFile1='%v' Error='%v' ", newFile1, err.Error())
-  }
-
-  newFile2 := fileDir + "checkFile30002.txt"
-
-  fp2, err := os.Create(newFile2)
-
-  if err != nil {
-    _ = fp1.Close()
-
-    return "", fmt.Errorf(ePrefix+"Error returned from os.Create(newFile2). newFile2='%v' Error='%v' ", newFile2, err.Error())
-  }
-
-  newFile3 := fileDir + "checkFile30003.txt"
-
-  fp3, err := os.Create(newFile3)
-
-  if err != nil {
-    _ = fp1.Close()
-    _ = fp2.Close()
-    return "", fmt.Errorf(ePrefix+"Error returned from os.Create(newFile3). newFile3='%v' Error='%v' ", newFile3, err.Error())
-  }
-
-  newFile4 := fileDir + "checkFile30004.txt"
-
-  fp4, err := os.Create(newFile4)
-
-  if err != nil {
-
-    _ = fp1.Close()
-    _ = fp2.Close()
-    _ = fp3.Close()
-
-    return "", fmt.Errorf(ePrefix+"Error returned from os.Create(newFile4). newFile4='%v' Error='%v' ", newFile4, err.Error())
-  }
-
-  du := appLib.DateTimeUtility{}
-
-  _, err = fp4.WriteString(du.GetDateTimeYMDAbbrvDowNano(time.Now()))
-
-  if err != nil {
-    _ = fp1.Close()
-    _ = fp2.Close()
-    _ = fp3.Close()
-    _ = fp4.Close()
-
-    return "", fmt.Errorf(ePrefix+
-      "%v", err.Error())
-  }
-
-  _ = fp1.Close()
-  _ = fp2.Close()
-  _ = fp3.Close()
-  _ = fp4.Close()
-
-  return origDir, nil
-}
 
 func (mscEx MiscExamples) MainDirMgrTestSetupFileWalkDeleteFiles() (string, error) {
   ePrefix := "appExample.MainDirMgrTestSetupFileWalkDeleteFiles() "

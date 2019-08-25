@@ -218,6 +218,16 @@ func (pathValid PathValidityStatusCode) StatusIsValid() error {
   return nil
 }
 
+// StatusValue - Returns the value of the PathExistsStatusCode instance
+// as type PathExistsStatusCode.
+//
+// This is a standard utility method and is not part of the valid
+// enumerations for this type.
+//
+func (pathValid PathValidityStatusCode) StatusValue() PathValidityStatusCode {
+  return pathValid
+}
+
 
 // String - Returns a string with the name of the enumeration associated
 // with this instance of 'PathValidityStatusCode'.
@@ -250,16 +260,6 @@ func (pathValid PathValidityStatusCode) String() string {
   }
 
   return label
-}
-
-// Value - Returns the value of the PathExistsStatusCode instance
-// as type PathExistsStatusCode.
-//
-// This is a standard utility method and is not part of the valid
-// enumerations for this type.
-//
-func (pathValid PathValidityStatusCode) StatusValue() PathValidityStatusCode {
-  return pathValid
 }
 
 // PathValidStatus - public global variable of
