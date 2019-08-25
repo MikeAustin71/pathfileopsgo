@@ -786,10 +786,10 @@ func TestDirMgrCollection_PopLastDirMgr_01(t *testing.T) {
 func TestDirMgrCollection_PopLastDirMgr_02(t *testing.T) {
 
   dirStr := []string{
-    "..\\dirmgrtests",
-    "..\\dirmgrtests\\dir01",
-    "..\\dirmgrtests\\dir01\\dir02",
-    "..\\dirmgrtests\\dir01\\dir02\\dir03" }
+    "../dirmgrtests",
+    "../dirmgrtests/dir01",
+    "../dirmgrtests/dir01/dir02",
+    "../dirmgrtests/dir01/dir02/dir03" }
 
   expectedPathStr, err := FileHelper{}.MakeAbsolutePath(dirStr[3])
 
@@ -839,7 +839,7 @@ func TestDirMgrCollection_PopLastDirMgr_02(t *testing.T) {
 
 func TestDirMgrCollection_PopLastDirMgr_03(t *testing.T) {
 
-  pathStr :=  "..\\dirmgrtests"
+  pathStr :=  "../dirmgrtests"
 
   expectedPathStr, err := FileHelper{}.MakeAbsolutePath(pathStr)
 
@@ -1051,10 +1051,10 @@ func TestDirMgrCollection_PopDirMgrAtIndex_01(t *testing.T) {
 func TestDirMgrCollection_PopDirMgrAtIndex_02(t *testing.T) {
 
   dirStr := []string{
-    "..\\dirmgrtests",
-    "..\\dirmgrtests\\dir01",
-    "..\\dirmgrtests\\dir01\\dir02",
-    "..\\dirmgrtests\\dir01\\dir02\\dir03" }
+    "../dirmgrtests",
+    "../dirmgrtests/dir01",
+    "../dirmgrtests/dir01/dir02",
+    "../dirmgrtests/dir01/dir02/dir03" }
 
 
   dmgrCol := DirMgrCollection{}.New()
@@ -1085,10 +1085,10 @@ func TestDirMgrCollection_PopDirMgrAtIndex_02(t *testing.T) {
 func TestDirMgrCollection_PopDirMgrAtIndex_03(t *testing.T) {
 
   dirStr := []string{
-    "..\\dirmgrtests",
-    "..\\dirmgrtests\\dir01",
-    "..\\dirmgrtests\\dir01\\dir02",
-    "..\\dirmgrtests\\dir01\\dir02\\dir03" }
+    "../dirmgrtests",
+    "../dirmgrtests/dir01",
+    "../dirmgrtests/dir01/dir02",
+    "../dirmgrtests/dir01/dir02/dir03" }
 
 
   dmgrCol := DirMgrCollection{}.New()
@@ -1137,3 +1137,210 @@ func TestDirMgrCollection_PopDirMgrAtIndex_04(t *testing.T) {
 
 }
 
+func TestDirMgrCollection_SortByAbsPath_01(t *testing.T) {
+
+  df := make([]string, 5, 10)
+
+  df[4] = "../../dirmgrtests"
+  df[3] = "../../dirmgrtests/dir01"
+  df[2] = "../../dirmgrtests/dir01/dir02"
+  df[1] = "../../dirmgrtests/dir01/dir02/dir03"
+  df[0] = "../../dirmgrtests/dir01/dir02/dir03/dir04"
+
+  /* sorted
+  df[0] = "../../dirmgrtests"
+  df[1] = "../../dirmgrtests/dir01"
+  df[2] = "../../dirmgrtests/dir01/dir02"
+  df[3] = "../../dirmgrtests/dir01/dir02/dir03"
+  df[4] = "../../dirmgrtests/dir01/dir02/dir03/dir04"
+
+   */
+
+  dmgrCol := DirMgrCollection{}.New()
+
+  fh := FileHelper{}
+
+  var err error
+
+  for i := 0; i < 5; i++ {
+
+    err = dmgrCol.AddDirMgrByPathNameStr(df[i])
+
+    if err != nil {
+      t.Errorf("Error returned by dmgrCol.AddDirMgrByPathNameStr(df[i]). "+
+        "i='%v', df[i]='%v' Error='%v' ", i, df[i], err.Error())
+      return
+    }
+
+    df[i], err = fh.MakeAbsolutePath(df[i])
+
+    if err != nil {
+      t.Errorf("Error returned by fh.MakeAbsolutePath(df[i]). "+
+        "i='%v', df[i]='%v' Error='%v' ", i, df[i], err.Error())
+      return
+    }
+
+  }
+
+  dmgrCol.SortByAbsPath(true)
+
+  for k:=0; k < 5; k++ {
+
+    dMgr, err := dmgrCol.PeekDirMgrAtIndex(k)
+
+    if err != nil {
+      t.Errorf("Error returned by dmgrCol.PeekDirMgrAtIndex(k)\n" +
+        "k='%v'\nError='%v'\n", k, err.Error())
+      return
+    }
+
+    if dMgr.absolutePath != df[4-k] {
+      t.Errorf("Error: Expected '%v'\n" +
+        "Instead, received '%v'\n", df[4-k], dMgr.absolutePath)
+      return
+    }
+
+  }
+}
+
+func TestDirMgrCollection_SortByAbsPath_02(t *testing.T) {
+
+  df := make([]string, 10, 10)
+  
+  df[0] = "../../dirmgrtests"
+  df[1] = "../../dirmgrtests/dir01"
+  df[2] = "../../dirmgrtests/dir01/dir02"
+  df[3] = "../../dirmgrtests/dir01/dir02/dir03"
+  df[4] = "../../dirmgrtests/dir01/dir02/dir03/dir04"
+  df[5] = "../../Dirmgrtests"
+  df[6] = "../../Dirmgrtests/Dir01"
+  df[7] = "../../Dirmgrtests/Dir01/Dir02"
+  df[8] = "../../Dirmgrtests/Dir01/Dir02/Dir03"
+  df[9] = "../../Dirmgrtests/Dir01/Dir02/Dir03/Dir04"
+
+  dfSorted := make([]string, 10, 10)
+  dfSorted[0] = "../../Dirmgrtests"
+  dfSorted[1] = "../../Dirmgrtests/Dir01"
+  dfSorted[2] = "../../Dirmgrtests/Dir01/Dir02"
+  dfSorted[3] = "../../Dirmgrtests/Dir01/Dir02/Dir03"
+  dfSorted[4] = "../../Dirmgrtests/Dir01/Dir02/Dir03/Dir04"
+  dfSorted[5] = "../../dirmgrtests"
+  dfSorted[6] = "../../dirmgrtests/dir01"
+  dfSorted[7] = "../../dirmgrtests/dir01/dir02"
+  dfSorted[8] = "../../dirmgrtests/dir01/dir02/dir03"
+  dfSorted[9] = "../../dirmgrtests/dir01/dir02/dir03/dir04"
+
+
+  dmgrCol := DirMgrCollection{}.New()
+
+  var err error
+  fh := FileHelper{}
+
+  for i := 0; i < 10; i++ {
+
+    err = dmgrCol.AddDirMgrByPathNameStr(df[i])
+
+    if err != nil {
+      t.Errorf("Error returned by dmgrCol.AddDirMgrByPathNameStr(df[i]). "+
+        "i='%v', df[i]='%v' Error='%v' ", i, df[i], err.Error())
+      return
+    }
+
+    dfSorted[i], err = fh.MakeAbsolutePath(dfSorted[i])
+
+    if err != nil {
+      t.Errorf("Error returned by fh.MakeAbsolutePath(df[i]). "+
+        "i='%v', df[i]='%v' Error='%v' ", i, df[i], err.Error())
+      return
+    }
+  }
+
+  dmgrCol.SortByAbsPath(false)
+
+  for k:=0; k < 10; k++ {
+
+    dMgr, err := dmgrCol.PeekDirMgrAtIndex(k)
+
+    if err != nil {
+      t.Errorf("Error returned by dmgrCol.PeekDirMgrAtIndex(k)\n" +
+        "k='%v'\nError='%v'\n", k, err.Error())
+      return
+    }
+
+    if dMgr.absolutePath != dfSorted[k] {
+      t.Errorf("Error: index='%v' Expected '%v'\n" +
+        "Instead, received '%v'\n", k, dfSorted[k], dMgr.absolutePath)
+    }
+  }
+}
+
+func TestDirMgrCollection_SortByAbsPath_03(t *testing.T) {
+
+  df := make([]string, 10, 10)
+
+  df[0] = "../../dirmgrtests"
+  df[1] = "../../dirmgrtests/dir01"
+  df[2] = "../../dirmgrtests/dir01/dir02"
+  df[3] = "../../dirmgrtests/dir01/dir02/dir03"
+  df[4] = "../../dirmgrtests/dir01/dir02/dir03/dir04"
+  df[5] = "../../Dirmgrtests"
+  df[6] = "../../Dirmgrtests/Dir01"
+  df[7] = "../../Dirmgrtests/Dir01/Dir02"
+  df[8] = "../../Dirmgrtests/Dir01/Dir02/Dir03"
+  df[9] = "../../Dirmgrtests/Dir01/Dir02/Dir03/Dir04"
+
+  dfSorted := make([]string, 10, 10)
+  dfSorted[0] = "../../dirmgrtests"
+  dfSorted[1] = "../../Dirmgrtests"
+  dfSorted[2] = "../../dirmgrtests/dir01"
+  dfSorted[3] = "../../Dirmgrtests/Dir01"
+  dfSorted[4] = "../../dirmgrtests/dir01/dir02"
+  dfSorted[5] = "../../Dirmgrtests/Dir01/Dir02"
+  dfSorted[6] = "../../dirmgrtests/dir01/dir02/dir03"
+  dfSorted[7] = "../../Dirmgrtests/Dir01/Dir02/Dir03"
+  dfSorted[8] = "../../dirmgrtests/dir01/dir02/dir03/dir04"
+  dfSorted[9] = "../../Dirmgrtests/Dir01/Dir02/Dir03/Dir04"
+
+
+  dmgrCol := DirMgrCollection{}.New()
+
+  var err error
+  fh := FileHelper{}
+
+  for i := 0; i < 10; i++ {
+
+    err = dmgrCol.AddDirMgrByPathNameStr(df[i])
+
+    if err != nil {
+      t.Errorf("Error returned by dmgrCol.AddDirMgrByPathNameStr(df[i]). "+
+        "i='%v', df[i]='%v' Error='%v' ", i, df[i], err.Error())
+      return
+    }
+
+    dfSorted[i], err = fh.MakeAbsolutePath(dfSorted[i])
+
+    if err != nil {
+      t.Errorf("Error returned by fh.MakeAbsolutePath(df[i]). "+
+        "i='%v', df[i]='%v' Error='%v' ", i, df[i], err.Error())
+      return
+    }
+  }
+
+  dmgrCol.SortByAbsPath(true)
+
+  for k:=0; k < 10; k++ {
+
+    dMgr, err := dmgrCol.PeekDirMgrAtIndex(k)
+
+    if err != nil {
+      t.Errorf("Error returned by dmgrCol.PeekDirMgrAtIndex(k)\n" +
+        "k='%v'\nError='%v'\n", k, err.Error())
+      return
+    }
+
+    if dMgr.absolutePath != dfSorted[k] {
+      t.Errorf("Error: index='%v' Expected '%v'\n" +
+        "Instead, received '%v'\n", k, dfSorted[k], dMgr.absolutePath)
+    }
+  }
+}

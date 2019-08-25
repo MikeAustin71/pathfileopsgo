@@ -1,8 +1,8 @@
 package main
 
 import (
-  p2 "../pathfileops/v2"
   pf "../pathfileops"
+  p2 "../pathfileops/v2"
   "fmt"
   "io"
   "os"
@@ -27,13 +27,151 @@ import (
 
 func main() {
 
-  mainTests{}.mainTest114StripLeadingDotPathSeparators()
+  mainTests{}.mainTest116SortDirsCaseInsensitive()
 
 }
 
 type mainTests struct {
   Input  string
   Output string
+}
+
+func (mtst mainTests) mainTest116SortDirsCaseInsensitive() {
+
+  df := make([]string, 10, 10)
+
+  df[0] = "../../dirmgrtests"
+  df[1] = "../../dirmgrtests/dir01"
+  df[2] = "../../dirmgrtests/dir01/dir02"
+  df[3] = "../../dirmgrtests/dir01/dir02/dir03"
+  df[4] = "../../dirmgrtests/dir01/dir02/dir03/dir04"
+  df[5] = "../../Dirmgrtests"
+  df[6] = "../../Dirmgrtests/Dir01"
+  df[7] = "../../Dirmgrtests/Dir01/Dir02"
+  df[8] = "../../Dirmgrtests/Dir01/Dir02/Dir03"
+  df[9] = "../../Dirmgrtests/Dir01/Dir02/Dir03/Dir04"
+
+  dmgrCol := p2.DirMgrCollection{}.New()
+
+  var err error
+  fh := p2.FileHelper{}
+
+  fmt.Println("  UnSorted List  ")
+  fmt.Println("=================")
+  fmt.Println()
+
+  for i := 0; i < 10; i++ {
+
+    err = dmgrCol.AddDirMgrByPathNameStr(df[i])
+
+    if err != nil {
+      fmt.Printf("Error returned by dmgrCol.AddDirMgrByPathNameStr(df[i]). "+
+        "i='%v', df[i]='%v' Error='%v' ", i, df[i], err.Error())
+      return
+    }
+
+    absUnSorted, err2 := fh.MakeAbsolutePath(df[i])
+
+    if err2 != nil {
+      fmt.Printf("Error returned by fh.MakeAbsolutePath(df[i])\n" +
+        "df[i]='%v'\nError='%v'\n", df[i], err2.Error())
+      return
+    }
+
+    fmt.Printf("%3d.\t%v\n", i+1, absUnSorted)
+
+  }
+
+  dmgrCol.SortByAbsPath(true)
+
+  fmt.Println()
+  fmt.Println("=================")
+  fmt.Println("  Sorted List    ")
+  fmt.Println("=================")
+  fmt.Println()
+
+  for k:=0; k < 10; k++ {
+
+    dMgr, err := dmgrCol.PeekDirMgrAtIndex(k)
+
+    if err != nil {
+      fmt.Printf("Error returned by dmgrCol.PeekDirMgrAtIndex(k)\n" +
+        "k='%v'\nError='%v'\n", k, err.Error())
+      return
+    }
+
+    fmt.Printf("%3d.\t%v\n", k+1, dMgr.GetAbsolutePath())
+
+  }
+}
+
+func (mtst mainTests) mainTest115SortDirs() {
+
+  df := make([]string, 10, 10)
+
+  df[0] = "../dirmgrtests"
+  df[1] = "../dirmgrtests/dir01"
+  df[2] = "../dirmgrtests/dir01/dir02"
+  df[3] = "../dirmgrtests/dir01/dir02/dir03"
+  df[4] = "../dirmgrtests/dir01/dir02/dir03/dir04"
+  df[5] = "../Dirmgrtests"
+  df[6] = "../Dirmgrtests/Dir01"
+  df[7] = "../Dirmgrtests/Dir01/Dir02"
+  df[8] = "../Dirmgrtests/Dir01/Dir02/Dir03"
+  df[9] = "../Dirmgrtests/Dir01/Dir02/Dir03/Dir04"
+
+  dmgrCol := p2.DirMgrCollection{}.New()
+
+  var err error
+  fh := p2.FileHelper{}
+
+  fmt.Println("  UnSorted List  ")
+  fmt.Println("=================")
+  fmt.Println()
+
+  for i := 0; i < 10; i++ {
+
+    err = dmgrCol.AddDirMgrByPathNameStr(df[i])
+
+    if err != nil {
+      fmt.Printf("Error returned by dmgrCol.AddDirMgrByPathNameStr(df[i]). "+
+        "i='%v', df[i]='%v' Error='%v' ", i, df[i], err.Error())
+      return
+    }
+
+    absUnSorted, err2 := fh.MakeAbsolutePath(df[i])
+
+    if err2 != nil {
+      fmt.Printf("Error returned by fh.MakeAbsolutePath(df[i])\n" +
+        "df[i]='%v'\nError='%v'\n", df[i], err2.Error())
+      return
+    }
+
+    fmt.Printf("%3d.\t%v\n", i+1, absUnSorted)
+
+  }
+
+  dmgrCol.SortByAbsPath(false)
+
+  fmt.Println()
+  fmt.Println("=================")
+  fmt.Println("  Sorted List    ")
+  fmt.Println("=================")
+  fmt.Println()
+
+  for k:=0; k < 10; k++ {
+
+    dMgr, err := dmgrCol.PeekDirMgrAtIndex(k)
+
+    if err != nil {
+      fmt.Printf("Error returned by dmgrCol.PeekDirMgrAtIndex(k)\n" +
+        "k='%v'\nError='%v'\n", k, err.Error())
+      return
+    }
+
+    fmt.Printf("%3d.\t%v\n", k+1, dMgr.GetAbsolutePath())
+
+  }
 }
 
 func (mtst mainTests) mainTest114StripLeadingDotPathSeparators() {

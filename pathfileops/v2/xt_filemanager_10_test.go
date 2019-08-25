@@ -1070,9 +1070,11 @@ func TestFileMgr_NewFromPathFileNameExtStr_01(t *testing.T) {
 
 func TestFileMgr_NewFromPathFileNameExtStr_02(t *testing.T) {
 
-  path := "../../appExamples/filehelperexamples.go"
+  path := "../../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/level_2_2_test.txt"
 
-  eFileNameExt := "filehelperexamples.go"
+  eFileNameExt := "level_2_2_test.txt"
+  eFileName := "level_2_2_test"
+  eFileExt := ".txt"
 
   fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(path)
 
@@ -1089,16 +1091,16 @@ func TestFileMgr_NewFromPathFileNameExtStr_02(t *testing.T) {
       eFileNameExt, fileMgr.fileNameExt)
   }
 
-  if fileMgr.fileName != "filehelperexamples" {
-    t.Errorf("Expected fileMgr.fileName=='filehelperexamples'.\n"+
+  if fileMgr.fileName != eFileName {
+    t.Errorf("Expected fileMgr.fileName=='%v'.\n"+
       "Instead, fileMgr.fileName== %v\n",
-      fileMgr.fileName)
+      eFileName, fileMgr.fileName)
   }
 
-  if fileMgr.fileExt != ".go" {
-    t.Errorf("Expected fileMgr.fileExt=='.go'\n"+
+  if fileMgr.fileExt != eFileExt {
+    t.Errorf("Expected fileMgr.fileExt=='%v'\n"+
       "Instead, fileMgr.fileExt== %v\n",
-      fileMgr.fileExt)
+      eFileExt, fileMgr.fileExt)
   }
 
   if !fileMgr.dMgr.isPathPopulated {
@@ -1139,9 +1141,12 @@ func TestFileMgr_NewFromPathFileNameExtStr_03(t *testing.T) {
 
 func TestFileMgr_NewFromPathFileNameExtStr_04(t *testing.T) {
 
-  path := "../../appExamples/filehelperexamples.go"
+  path := "../../filesfortest/levelfilesfortest/level_01_dir/level_02_dir/" +
+    "level_03_dir/level_3_3_test.txt"
 
-  eFileNameExt := "filehelperexamples.go"
+  eFileNameExt := "level_3_3_test.txt"
+  eFileName := "level_3_3_test"
+  eFileExt := ".txt"
 
   fileMgr, err := FileMgr{}.NewFromPathFileNameExtStr(path)
 
@@ -1158,16 +1163,16 @@ func TestFileMgr_NewFromPathFileNameExtStr_04(t *testing.T) {
       eFileNameExt, fileMgr.fileNameExt)
   }
 
-  if "filehelperexamples" != fileMgr.fileName {
+  if eFileName != fileMgr.fileName {
     t.Errorf("Expected fileMgr.fileName== '%v'\n"+
       "Instead fileMgr.fileName== '%v'\n",
-      "filehelperexamples", fileMgr.fileName)
+      eFileName, fileMgr.fileName)
   }
 
-  if ".go" != fileMgr.fileExt {
-    t.Errorf("Expected fileMgr.fileExt=='.go'\n"+
+  if eFileExt != fileMgr.fileExt {
+    t.Errorf("Expected fileMgr.fileExt=='%v'\n"+
       "Instead, fileMgr.fileExt== %v\n",
-      fileMgr.fileExt)
+      eFileExt, fileMgr.fileExt)
   }
 
   if !fileMgr.dMgr.isPathPopulated {

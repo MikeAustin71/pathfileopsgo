@@ -36,7 +36,6 @@ ___
   - [Directory Manager](#dirmgr)
   - [File Manager](#filemgr)
   - [Collections](#collections)
-+ [Dependencies](#dependencies)
 + [Tests](#tests)
 + [License](#license)
 + [Comments And Questions](#comments-and-questions)
@@ -92,6 +91,8 @@ This version DOES support *Go* modules.
 
 This version requires *Go* Version 1.12 or later.
 
+[Release Notes](./pathfileops/v2/releasenotes.md)
+
 ___    
 [Source Code Documentation](https://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops/v2)    
 ___
@@ -124,7 +125,7 @@ type is designed to manage disc files. *FileMgr* is dependent on *FileHelper*
 and *DirMgr*, discussed above.
 
 ### Collections
-This library also provides collections to manage groups of file and directory
+This package also provides collections to manage groups of file and directory
 managers.
 
 1. DirMgrCollection - Processes and manages collections of type 'DirMgr'
@@ -133,15 +134,6 @@ managers.
 
 3. FileOpsCollection - Manages collections of operations performed on disk
  files.
- 
-### Dependencies
-The three types discussed above are interdependent.
-
-1. *./pathfilego/pathfileops/v2/filehelper.go*
-
-2. *./pathfilego/pathfileops/v2/dirmanager.go*
-
-3. *./pathfilego/pathfileops/v2/filemanager.go*
 
 ## Tests
 This version includes 1,793 tests with a source code coverage of 82%.
@@ -150,6 +142,7 @@ following text file:
 
       '../pathfilego/pathfileops/v2/xx_tests.txt'
 
+[How To Run Tests Documentation](./pathfileops/v2/wt_HowToRunTests.md)
 
 ## License
 Copyright 2019 Mike Rapp. All rights reserved.
@@ -157,6 +150,8 @@ Copyright 2019 Mike Rapp. All rights reserved.
 Use of this source code is governed by the (open-source)
 MIT-style license which can be found in the LICENSE file
 found in this directory.
+
+[MIT License](./LICENSE)
 
 ## Comments And Questions
 
