@@ -281,6 +281,47 @@ func (dMgrs *DirMgrCollection) AddDirMgrCollection(dMgrs2 *DirMgrCollection) {
   return
 }
 
+// ContainsDir - Runs a test to determine if the testDMgr currently
+// exists in the collection.
+func (dMgrs *DirMgrCollection) ContainsDir(testDMgr DirMgr) bool {
+
+  err := testDMgr.IsDirMgrValid("")
+
+  if err != nil {
+    return false
+  }
+
+  if dMgrs.dirMgrs == nil {
+    dMgrs.dirMgrs = make([]DirMgr, 0, 100)
+  }
+
+  lenDMgrs := len(dMgrs.dirMgrs)
+
+  if lenDMgrs  < 1 {
+    return false
+  }
+
+  testPath := testDMgr.GetAbsolutePath()
+
+  testPath = strings.ToLower(testPath)
+
+  dirDoesExist := false
+
+  for i:=0; i < lenDMgrs; i++ {
+
+    dPath := dMgrs.dirMgrs[i].GetAbsolutePath()
+
+    dPath = strings.ToLower(dPath)
+
+    if testPath == dPath {
+      dirDoesExist = true
+      break
+    }
+  }
+
+  return dirDoesExist
+}
+
 // CopyOut - Returns an DirMgrCollection which is an
 // exact duplicate of the current DirMgrCollection
 func (dMgrs *DirMgrCollection) CopyOut() (DirMgrCollection, error) {

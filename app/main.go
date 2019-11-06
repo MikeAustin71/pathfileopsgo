@@ -1,9 +1,9 @@
 package main
 
 import (
-  pf "../pathfileops"
-  p2 "../pathfileops/v2"
   "fmt"
+  pf "github.com/MikeAustin71/pathfileopsgo/pathfileops"
+  p2 "github.com/MikeAustin71/pathfileopsgo/pathfileops/v2"
   "io"
   "os"
   fp "path/filepath"
@@ -27,13 +27,99 @@ import (
 
 func main() {
 
-  mainTests{}.mainTests117SortFileMgrsCaseSensitive()
+  mainTests{}.mainTests118FindAllFiles()
 
 }
 
 type mainTests struct {
   Input  string
   Output string
+}
+
+func (mtst mainTests) mainTests118FindAllFiles() {
+
+  ePrefix := "mainTests.mainTests118FindAllFiles() "
+
+  testDir := "D:\\tz2\\zoneinfo"
+
+  testDMgr, err := p2.DirMgr{}.New(testDir)
+
+  if err != nil {
+    fmt.Printf(ePrefix +
+      "\nError returned by DirMgr{}.New(testDir)\n" +
+      "testDir='%v'\n" +
+      "Error='%v'\n", testDir, err.Error())
+    return
+  }
+
+  fSelect := p2.FileSelectionCriteria{}
+
+  errs := make([]error, 0)
+
+  var dirTreeInfo p2.DirectoryTreeInfo
+
+  dirTreeInfo, errs = testDMgr.FindDirectoryTreeFiles(fSelect)
+
+  err = p2.FileHelper{}.ConsolidateErrors(errs)
+
+  if err != nil {
+    fmt.Printf(ePrefix +
+      "Error returned by testDMgr.FindDirectoryTreeFiles(fSelect).\n" +
+      "Error='%v'\n", err.Error())
+  }
+
+  numOfDirs := dirTreeInfo.Directories.GetNumOfDirs()
+
+  fmt.Println("Directory Information")
+  fmt.Println("Number Of Directories: ", numOfDirs)
+  fmt.Println()
+
+  var dMgr p2.DirMgr
+
+  for i:=0; i < numOfDirs; i++ {
+
+    dMgr, err = dirTreeInfo.Directories.PeekDirMgrAtIndex(i)
+
+    if err != nil {
+     fmt.Printf(ePrefix +
+       "Error returned by dirTreeInfo.Directories.PeekDirMgrAtIndex(i)\n" +
+       "i='%v'\n" +
+       "Error='%v'\n", i, err.Error())
+     return
+    }
+
+    fmt.Printf("%3d. %v\n",
+      i+1,
+      dMgr.GetAbsolutePath())
+  }
+
+  numOfFiles := dirTreeInfo.FoundFiles.GetNumOfFileMgrs()
+
+  fmt.Println()
+  fmt.Println()
+  fmt.Println("File Information")
+  fmt.Println("Number Of Files: ", numOfFiles)
+  fmt.Println()
+
+  for i:=0; i < numOfFiles; i++ {
+
+    fMgr, err := dirTreeInfo.FoundFiles.PeekFileMgrAtIndex(i)
+
+    if err != nil {
+      fmt.Printf(ePrefix +
+        "Error returned by dirTreeInfo.FoundFiles.PeekFileMgrAtIndex(i)\n" +
+        "Error:='%v'\n", err.Error())
+      return
+    }
+
+    fmt.Printf("%3d. %v\n",
+      i+1,
+      fMgr.GetAbsolutePathFileName())
+
+  }
+
+  fmt.Println()
+  fmt.Println("*** ", ePrefix + "***")
 }
 
 func (mtst mainTests) mainTests117SortFileMgrsCaseSensitive() {
