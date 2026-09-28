@@ -79,7 +79,7 @@ following import statement:
         )    
 
 ## Production File Location
-All of the active production files are located in directory path:
+All the active production files are located in directory path:
 
      github.com/MikeAustin71/pathfileopsgo/pathfileops/v2
 
