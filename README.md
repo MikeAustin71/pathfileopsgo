@@ -3,7 +3,7 @@
 *pathfileops* is a software library or in *Go* parlance, a software *package*.
 
 This package is written in the *Go* programming language, a.k.a 'golang'.
- 
+
 *pathfileops* provides software types and methods used in the management,
 organization and control of disk files and directories.
 
@@ -18,8 +18,9 @@ Mac-OS, Linux and Windows.
 
 __`To date, the source code has only been tested on Windows.`__
 
-___    
+___
 [Source Code Documentation](https://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops/v2)    
+
 ___
 
 
@@ -55,8 +56,7 @@ locally. Note: Version 2+ supports *Go* modules.
 
     go get github.com/MikeAustin71/pathfileopsgo/pathfileops/v2
 
-To update the package run:
-    
+To update the package run:    
     go get -u github.com/MikeAustin71/pathfileopsgo/pathfileops/v2
 
 ## Source Code Import        
@@ -93,12 +93,12 @@ This version requires *Go* Version 1.12 or later.
 
 [Release Notes](./pathfileops/v2/releasenotes.md)
 
-___    
+___
 [Source Code Documentation](https://godoc.org/github.com/MikeAustin71/pathfileopsgo/pathfileops/v2)    
 ___
 
 ## Primary Types
-      
+
 This package incorporates three primary types: 
     
     1. FileHelper
@@ -160,6 +160,6 @@ Send questions or comments to:
     mike.go@paladinacs.net
 
 
- 
 
- 
+
+
